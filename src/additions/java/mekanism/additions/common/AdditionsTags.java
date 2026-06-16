@@ -2,17 +2,50 @@ package mekanism.additions.common;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 
 public class AdditionsTags {
 
     private AdditionsTags() {
+    }
+
+    public static class BlockItems {
+
+        public static final BlockItemTagId COMMON_FENCES_PLASTIC = commonTag("fences/plastic");
+        public static final BlockItemTagId COMMON_FENCE_GATES_PLASTIC = commonTag("fence_gates/plastic");
+        public static final BlockItemTagId COMMON_STAIRS_PLASTIC = commonTag("stairs/plastic");
+        public static final BlockItemTagId COMMON_SLABS_PLASTIC = commonTag("slabs/plastic");
+        public static final BlockItemTagId COMMON_STAIRS_PLASTIC_GLOW = commonTag("stairs/plastic/glow");
+        public static final BlockItemTagId COMMON_SLABS_PLASTIC_GLOW = commonTag("slabs/plastic/glow");
+        public static final BlockItemTagId COMMON_STAIRS_PLASTIC_TRANSPARENT = commonTag("stairs/plastic/transparent");
+        public static final BlockItemTagId COMMON_SLABS_PLASTIC_TRANSPARENT = commonTag("slabs/plastic/transparent");
+
+        public static final BlockItemTagId GLOW_PANELS = tag("glow_panels");
+
+        public static final BlockItemTagId PLASTIC_BLOCKS = tag("plastic_blocks");
+        public static final BlockItemTagId PLASTIC_BLOCKS_GLOW = tag("plastic_blocks/glow");
+        public static final BlockItemTagId PLASTIC_BLOCKS_PLASTIC = tag("plastic_blocks/plastic");
+        public static final BlockItemTagId PLASTIC_BLOCKS_REINFORCED = tag("plastic_blocks/reinforced");
+        public static final BlockItemTagId PLASTIC_BLOCKS_ROAD = tag("plastic_blocks/road");
+        public static final BlockItemTagId PLASTIC_BLOCKS_SLICK = tag("plastic_blocks/slick");
+        public static final BlockItemTagId PLASTIC_BLOCKS_TRANSPARENT = tag("plastic_blocks/transparent");
+
+        private static BlockItemTagId commonTag(String name) {
+            return tag(Identifier.fromNamespaceAndPath("c", name));
+        }
+
+        private static BlockItemTagId tag(String name) {
+            return tag(MekanismAdditions.rl(name));
+        }
+
+        private static BlockItemTagId tag(Identifier tag) {
+            return BlockItemTagId.create(tag, tag);
+        }
     }
 
     public static class Items {
@@ -21,15 +54,6 @@ public class AdditionsTags {
         }
 
         public static final TagKey<Item> BALLOONS = tag("balloons");
-
-        public static final TagKey<Item> COMMON_FENCES_PLASTIC = commonTag("fences/plastic");
-        public static final TagKey<Item> COMMON_FENCE_GATES_PLASTIC = commonTag("fence_gates/plastic");
-        public static final TagKey<Item> COMMON_STAIRS_PLASTIC = commonTag("stairs/plastic");
-        public static final TagKey<Item> COMMON_SLABS_PLASTIC = commonTag("slabs/plastic");
-        public static final TagKey<Item> COMMON_STAIRS_PLASTIC_GLOW = commonTag("stairs/plastic/glow");
-        public static final TagKey<Item> COMMON_SLABS_PLASTIC_GLOW = commonTag("slabs/plastic/glow");
-        public static final TagKey<Item> COMMON_STAIRS_PLASTIC_TRANSPARENT = commonTag("stairs/plastic/transparent");
-        public static final TagKey<Item> COMMON_SLABS_PLASTIC_TRANSPARENT = commonTag("slabs/plastic/transparent");
 
         public static final TagKey<Item> FENCES_PLASTIC = tag("plastic_fences");
         public static final TagKey<Item> FENCES_PLASTIC_NORMAL = tag("plastic_fences/normal");
@@ -44,56 +68,12 @@ public class AdditionsTags {
         public static final TagKey<Item> STAIRS_PLASTIC_TRANSPARENT = tag("plastic_stairs/transparent");
         public static final TagKey<Item> SLABS_PLASTIC_TRANSPARENT = tag("plastic_slabs/transparent");
 
-        public static final TagKey<Item> GLOW_PANELS = tag("glow_panels");
-
-        public static final TagKey<Item> PLASTIC_BLOCKS = tag("plastic_blocks");
-        public static final TagKey<Item> PLASTIC_BLOCKS_GLOW = tag("plastic_blocks/glow");
-        public static final TagKey<Item> PLASTIC_BLOCKS_PLASTIC = tag("plastic_blocks/plastic");
-        public static final TagKey<Item> PLASTIC_BLOCKS_REINFORCED = tag("plastic_blocks/reinforced");
-        public static final TagKey<Item> PLASTIC_BLOCKS_ROAD = tag("plastic_blocks/road");
-        public static final TagKey<Item> PLASTIC_BLOCKS_SLICK = tag("plastic_blocks/slick");
-        public static final TagKey<Item> PLASTIC_BLOCKS_TRANSPARENT = tag("plastic_blocks/transparent");
-
         private static TagKey<Item> commonTag(String name) {
             return ItemTags.create(Identifier.fromNamespaceAndPath("c", name));
         }
 
         private static TagKey<Item> tag(String name) {
             return ItemTags.create(MekanismAdditions.rl(name));
-        }
-    }
-
-    public static class Blocks {
-
-        private Blocks() {
-        }
-
-        //TODO - 26.2: Use BlockItemTagId in places?
-        public static final TagKey<Block> FENCES_PLASTIC = commonTag("fences/plastic");
-        public static final TagKey<Block> FENCE_GATES_PLASTIC = commonTag("fence_gates/plastic");
-        public static final TagKey<Block> STAIRS_PLASTIC = commonTag("stairs/plastic");
-        public static final TagKey<Block> SLABS_PLASTIC = commonTag("slabs/plastic");
-        public static final TagKey<Block> STAIRS_PLASTIC_GLOW = commonTag("stairs/plastic/glow");
-        public static final TagKey<Block> SLABS_PLASTIC_GLOW = commonTag("slabs/plastic/glow");
-        public static final TagKey<Block> STAIRS_PLASTIC_TRANSPARENT = commonTag("stairs/plastic/transparent");
-        public static final TagKey<Block> SLABS_PLASTIC_TRANSPARENT = commonTag("slabs/plastic/transparent");
-
-        public static final TagKey<Block> GLOW_PANELS = tag("glow_panels");
-
-        public static final TagKey<Block> PLASTIC_BLOCKS = tag("plastic_blocks");
-        public static final TagKey<Block> PLASTIC_BLOCKS_GLOW = tag("plastic_blocks/glow");
-        public static final TagKey<Block> PLASTIC_BLOCKS_PLASTIC = tag("plastic_blocks/plastic");
-        public static final TagKey<Block> PLASTIC_BLOCKS_REINFORCED = tag("plastic_blocks/reinforced");
-        public static final TagKey<Block> PLASTIC_BLOCKS_ROAD = tag("plastic_blocks/road");
-        public static final TagKey<Block> PLASTIC_BLOCKS_SLICK = tag("plastic_blocks/slick");
-        public static final TagKey<Block> PLASTIC_BLOCKS_TRANSPARENT = tag("plastic_blocks/transparent");
-
-        private static TagKey<Block> commonTag(String name) {
-            return BlockTags.create(Identifier.fromNamespaceAndPath("c", name));
-        }
-
-        private static TagKey<Block> tag(String name) {
-            return BlockTags.create(MekanismAdditions.rl(name));
         }
     }
 

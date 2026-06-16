@@ -41,7 +41,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(AdditionsAdvancements.GLOW_IN_THE_DARK)
               .display(AdditionsBlocks.GLOW_PANELS.get(EnumColor.ORANGE).getItemHolder(), AdvancementType.TASK, false)
-              .addCriterion("glow_panel", hasItems(items, AdditionsTags.Items.GLOW_PANELS))
+              .addCriterion("glow_panel", hasItems(items, AdditionsTags.BlockItems.GLOW_PANELS.item()))
               .save(consumer);
         advancement(AdditionsAdvancements.HURT_BY_BABIES)
               .display(items, BlockItemIds.CREEPER_HEAD.item(), null, AdvancementType.GOAL, true, true, true)

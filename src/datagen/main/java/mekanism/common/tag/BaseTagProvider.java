@@ -24,6 +24,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
@@ -127,6 +128,25 @@ public abstract class BaseTagProvider implements DataProvider {
                 knownHarvestRequirements.add(block.value());
             }
         }
+    }
+
+    protected void addToTags(TagKey<Item> itemTag, TagKey<Block> blockTag, BlockItemTagId... tags) {
+        getBuilder(itemTag).add(Arrays.stream(tags).map(BlockItemTagId::item).toList());
+        getBuilder(blockTag).add(Arrays.stream(tags).map(BlockItemTagId::block).toList());
+    }
+
+    protected void addToTags(BlockItemTagId tag, BlockItemTagId... tags) {
+        addToTags(tag.item(), tag.block(), tags);
+    }
+
+    protected void addToTags(BlockItemTagId tag, BlockRegistryObject<?, ?>... blockProviders) {
+        getBuilder(tag.item()).add(Arrays.stream(blockProviders).map(BlockRegistryObject::getItemHolder));
+        getBuilder(tag.block()).add(blockProviders);
+    }
+
+    protected void addToTags(BlockItemTagId tag, Collection<? extends BlockRegistryObject<?, ?>> blockProviders) {
+        getBuilder(tag.item()).add(blockProviders.stream().map(BlockRegistryObject::getItemHolder));
+        getBuilder(tag.block()).add(blockProviders);
     }
 
     protected void addToTags(TagKey<Item> itemTag, TagKey<Block> blockTag, BlockRegistryObject<?, ?>... blockProviders) {

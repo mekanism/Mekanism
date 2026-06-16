@@ -18,12 +18,13 @@ import mekanism.common.config.IMekanismConfig;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.MekanismDamageType;
-import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.LanguageProvider;
@@ -75,6 +76,11 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 
     protected void addHolder(Holder<? extends IHasTranslationKey> key, String value) {
         add(key.value(), value);
+    }
+
+    public void add(BlockItemTagId tagKey, String name) {
+        add(tagKey.item(), name);
+        add(tagKey.block(), name);
     }
 
     protected void add(IHasTranslationKey key, String value) {

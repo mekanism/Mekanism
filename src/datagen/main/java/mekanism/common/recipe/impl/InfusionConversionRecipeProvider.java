@@ -53,7 +53,7 @@ class InfusionConversionRecipeProvider extends BaseSubRecipeProvider {
 
     private void addInfusionConversionCarbonRecipes(RecipeOutput consumer, String basePath) {
         //Charcoal Block
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL), MekanismChemicals.CARBON.asTemplate(180), basePath, "from_charcoal_block");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.BlockItems.STORAGE_BLOCKS_CHARCOAL), MekanismChemicals.CARBON.asTemplate(180), basePath, "from_charcoal_block");
         //Charcoal
         infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
               this.items,

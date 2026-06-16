@@ -38,7 +38,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(this.items, 1, List.of(
                     Tags.Items.STORAGE_BLOCKS_COAL,
-                    MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL
+                    MekanismTags.BlockItems.STORAGE_BLOCKS_CHARCOAL.item()
               )),
               IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 1_000),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 1_000),

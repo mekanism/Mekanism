@@ -10,6 +10,7 @@ import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraft.core.Holder;
+import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -62,6 +63,10 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
 
     default void addItemAliases(Collection<ItemStack> stacks, IHasTranslationKey... aliases) {
         addItemAliases(stacks.stream().map(this::ingredient).toList(), aliases);
+    }
+
+    default void addItemAliases(BlockItemTagId tag, IHasTranslationKey... aliases) {
+        addItemAliases(tag.item(), aliases);
     }
 
     default void addItemAliases(TagKey<Item> tag, IHasTranslationKey... aliases) {

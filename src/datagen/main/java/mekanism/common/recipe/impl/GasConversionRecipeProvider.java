@@ -31,7 +31,7 @@ class GasConversionRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "flint_to_oxygen"));
         //Osmium block -> osmium
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM)),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM)),
               MekanismChemicals.OSMIUM.asTemplate(1_800)
         ).save(consumer, Mekanism.rl(basePath + "osmium_from_block"));
         //Osmium ingot -> osmium

@@ -121,7 +121,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
 
     private void registerGlowPanels() {
         final String basePath = "glow_panel/";
-        HolderSet<Item> glowPanelTag = this.items.getOrThrow(AdditionsTags.Items.GLOW_PANELS);
+        HolderSet<Item> glowPanelTag = this.items.getOrThrow(AdditionsTags.BlockItems.GLOW_PANELS.item());
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : AdditionsBlocks.GLOW_PANELS.entrySet()) {
             EnumColor color = entry.getKey();
             Holder<Item> glowPanel = entry.getValue().getItemHolder();

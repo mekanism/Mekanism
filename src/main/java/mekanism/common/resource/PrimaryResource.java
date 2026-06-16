@@ -11,11 +11,11 @@ import org.jspecify.annotations.Nullable;
 public enum PrimaryResource implements IResource {
     IRON("iron", 0xFFAF8E77, Tags.Items.ORES_IRON),
     GOLD("gold", 0xFFF2CD67, Tags.Items.ORES_GOLD),
-    OSMIUM("osmium", 0xFF1E79C3, () -> MekanismTags.Items.ORES.get(OreType.OSMIUM), BlockResourceInfo.OSMIUM, BlockResourceInfo.RAW_OSMIUM),
+    OSMIUM("osmium", 0xFF1E79C3, () -> MekanismTags.BlockItems.ORES.get(OreType.OSMIUM).item(), BlockResourceInfo.OSMIUM, BlockResourceInfo.RAW_OSMIUM),
     COPPER("copper", 0xFFAA4B19, Tags.Items.ORES_COPPER),
-    TIN("tin", 0xFFCCCCD9, () -> MekanismTags.Items.ORES.get(OreType.TIN), BlockResourceInfo.TIN, BlockResourceInfo.RAW_TIN),
-    LEAD("lead", 0xFF3A404A, () -> MekanismTags.Items.ORES.get(OreType.LEAD), BlockResourceInfo.LEAD, BlockResourceInfo.RAW_LEAD),
-    URANIUM("uranium", 0xFF46664F, () -> MekanismTags.Items.ORES.get(OreType.URANIUM), BlockResourceInfo.URANIUM, BlockResourceInfo.RAW_URANIUM);
+    TIN("tin", 0xFFCCCCD9, () -> MekanismTags.BlockItems.ORES.get(OreType.TIN).item(), BlockResourceInfo.TIN, BlockResourceInfo.RAW_TIN),
+    LEAD("lead", 0xFF3A404A, () -> MekanismTags.BlockItems.ORES.get(OreType.LEAD).item(), BlockResourceInfo.LEAD, BlockResourceInfo.RAW_LEAD),
+    URANIUM("uranium", 0xFF46664F, () -> MekanismTags.BlockItems.ORES.get(OreType.URANIUM).item(), BlockResourceInfo.URANIUM, BlockResourceInfo.RAW_URANIUM);
 
     private final String name;
     private final int tint;

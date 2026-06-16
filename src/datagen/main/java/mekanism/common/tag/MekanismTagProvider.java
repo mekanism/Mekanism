@@ -34,6 +34,7 @@ import net.minecraft.references.BlockItemId;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
@@ -410,19 +411,18 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismTags.Blocks.CHESTS_ELECTRIC).add(MekanismBlocks.PERSONAL_CHEST);
         getBuilder(MekanismTags.Blocks.CHESTS_PERSONAL).add(MekanismBlocks.PERSONAL_CHEST);
         getBuilder(Tags.Blocks.CHESTS).add(MekanismTags.Blocks.CHESTS_ELECTRIC, MekanismTags.Blocks.CHESTS_PERSONAL);
-        getBuilder(MekanismTags.Items.PERSONAL_STORAGE).add(MekanismBlocks.PERSONAL_BARREL.getItemHolder(), MekanismBlocks.PERSONAL_CHEST.getItemHolder());
-        getBuilder(MekanismTags.Blocks.PERSONAL_STORAGE).add(MekanismTags.Blocks.BARRELS_PERSONAL, MekanismTags.Blocks.CHESTS_PERSONAL);
+        getBuilder(MekanismTags.BlockItems.PERSONAL_STORAGE.item()).add(MekanismBlocks.PERSONAL_BARREL.getItemHolder(), MekanismBlocks.PERSONAL_CHEST.getItemHolder());
+        getBuilder(MekanismTags.BlockItems.PERSONAL_STORAGE.block()).add(MekanismTags.Blocks.BARRELS_PERSONAL, MekanismTags.Blocks.CHESTS_PERSONAL);
     }
 
     private void addOres() {
         for (Map.Entry<OreType, OreBlockType> entry : MekanismBlocks.ORES.entrySet()) {
             OreType type = entry.getKey();
             OreBlockType oreBlockType = entry.getValue();
-            TagKey<Item> itemTag = MekanismTags.Items.ORES.get(type);
-            TagKey<Block> blockTag = MekanismTags.Blocks.ORES.get(type);
-            addToTags(itemTag, blockTag, oreBlockType.stone(), oreBlockType.deepslate());
-            getBuilder(Tags.Items.ORES).add(itemTag);
-            getBuilder(Tags.Blocks.ORES).add(blockTag);
+            BlockItemTagId tag = MekanismTags.BlockItems.ORES.get(type);
+            addToTags(tag, oreBlockType.stone(), oreBlockType.deepslate());
+            getBuilder(Tags.Items.ORES).add(tag.item());
+            getBuilder(Tags.Blocks.ORES).add(tag.block());
             if (type.getResource() == MiscResource.FLUORITE) {
                 addToTags(Tags.Items.ORE_RATES_DENSE, Tags.Blocks.ORE_RATES_DENSE, oreBlockType.stone(), oreBlockType.deepslate());
             } else {
@@ -436,25 +436,22 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addStorageBlocks() {
-        addToTags(MekanismTags.Items.STORAGE_BLOCKS_BRONZE, MekanismTags.Blocks.STORAGE_BLOCKS_BRONZE, MekanismBlocks.BRONZE_BLOCK);
-        addToTags(MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL, MekanismTags.Blocks.STORAGE_BLOCKS_CHARCOAL, MekanismBlocks.CHARCOAL_BLOCK);
-        addToTags(MekanismTags.Items.STORAGE_BLOCKS_REFINED_GLOWSTONE, MekanismTags.Blocks.STORAGE_BLOCKS_REFINED_GLOWSTONE, MekanismBlocks.REFINED_GLOWSTONE_BLOCK);
-        addToTags(MekanismTags.Items.STORAGE_BLOCKS_REFINED_OBSIDIAN, MekanismTags.Blocks.STORAGE_BLOCKS_REFINED_OBSIDIAN, MekanismBlocks.REFINED_OBSIDIAN_BLOCK);
-        addToTags(MekanismTags.Items.STORAGE_BLOCKS_STEEL, MekanismTags.Blocks.STORAGE_BLOCKS_STEEL, MekanismBlocks.STEEL_BLOCK);
-        addToTags(MekanismTags.Items.STORAGE_BLOCKS_FLUORITE, MekanismTags.Blocks.STORAGE_BLOCKS_FLUORITE, MekanismBlocks.FLUORITE_BLOCK);
-        getBuilder(Tags.Items.STORAGE_BLOCKS).add(MekanismTags.Items.STORAGE_BLOCKS_BRONZE, MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL,
-              MekanismTags.Items.STORAGE_BLOCKS_REFINED_GLOWSTONE, MekanismTags.Items.STORAGE_BLOCKS_REFINED_OBSIDIAN, MekanismTags.Items.STORAGE_BLOCKS_STEEL,
-              MekanismTags.Items.STORAGE_BLOCKS_FLUORITE);
-        getBuilder(Tags.Blocks.STORAGE_BLOCKS).add(MekanismTags.Blocks.STORAGE_BLOCKS_BRONZE, MekanismTags.Blocks.STORAGE_BLOCKS_CHARCOAL,
-              MekanismTags.Blocks.STORAGE_BLOCKS_REFINED_GLOWSTONE, MekanismTags.Blocks.STORAGE_BLOCKS_REFINED_OBSIDIAN, MekanismTags.Blocks.STORAGE_BLOCKS_STEEL,
-              MekanismTags.Blocks.STORAGE_BLOCKS_FLUORITE);
+        addToTags(MekanismTags.BlockItems.STORAGE_BLOCKS_BRONZE, MekanismBlocks.BRONZE_BLOCK);
+        addToTags(MekanismTags.BlockItems.STORAGE_BLOCKS_CHARCOAL, MekanismBlocks.CHARCOAL_BLOCK);
+        addToTags(MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_GLOWSTONE, MekanismBlocks.REFINED_GLOWSTONE_BLOCK);
+        addToTags(MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_OBSIDIAN, MekanismBlocks.REFINED_OBSIDIAN_BLOCK);
+        addToTags(MekanismTags.BlockItems.STORAGE_BLOCKS_STEEL, MekanismBlocks.STEEL_BLOCK);
+        addToTags(MekanismTags.BlockItems.STORAGE_BLOCKS_FLUORITE, MekanismBlocks.FLUORITE_BLOCK);
+        addToTags(Tags.Items.STORAGE_BLOCKS, Tags.Blocks.STORAGE_BLOCKS,
+              MekanismTags.BlockItems.STORAGE_BLOCKS_BRONZE, MekanismTags.BlockItems.STORAGE_BLOCKS_CHARCOAL, MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_GLOWSTONE,
+              MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_OBSIDIAN, MekanismTags.BlockItems.STORAGE_BLOCKS_STEEL, MekanismTags.BlockItems.STORAGE_BLOCKS_FLUORITE
+        );
         // Dynamic storage blocks
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            TagKey<Item> itemTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(entry.getKey());
-            TagKey<Block> blockTag = MekanismTags.Blocks.RESOURCE_STORAGE_BLOCKS.get(entry.getKey());
-            addToTags(itemTag, blockTag, entry.getValue());
-            getBuilder(Tags.Items.STORAGE_BLOCKS).add(itemTag);
-            getBuilder(Tags.Blocks.STORAGE_BLOCKS).add(blockTag);
+            BlockItemTagId tag = MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(entry.getKey());
+            addToTags(tag, entry.getValue());
+            getBuilder(Tags.Items.STORAGE_BLOCKS).add(tag.item());
+            getBuilder(Tags.Blocks.STORAGE_BLOCKS).add(tag.block());
         }
     }
 
@@ -519,13 +516,9 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismTags.Items.COLORABLE_GLASS_PANES).add(BlockItemIds.STAINED_GLASS_PANE, BlockItemId::item);
         getBuilder(MekanismTags.Items.COLORABLE_TERRACOTTA).add(BlockItemIds.DYED_TERRACOTTA, BlockItemId::item);
         getBuilder(MekanismTags.Items.COLORABLE_CANDLE).add(BlockItemIds.DYED_CANDLE, BlockItemId::item);
-        ;
         getBuilder(MekanismTags.Items.COLORABLE_CONCRETE).add(BlockItemIds.CONCRETE, BlockItemId::item);
-        ;
         getBuilder(MekanismTags.Items.COLORABLE_CONCRETE_POWDER).add(BlockItemIds.CONCRETE_POWDER, BlockItemId::item);
-        ;
         getBuilder(MekanismTags.Items.COLORABLE_BANNERS).add(BlockItemIds.BANNER, BlockItemId::item);
-        ;
     }
 
     private void addBiomes() {

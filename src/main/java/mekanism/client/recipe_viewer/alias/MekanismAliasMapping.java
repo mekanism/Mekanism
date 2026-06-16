@@ -205,7 +205,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
               MekanismBlocks.ULTIMATE_BIN,
               MekanismBlocks.CREATIVE_BIN
         ), MekanismAliases.BIN_DRAWER, MekanismAliases.ITEM_STORAGE);
-        rv.addItemAliases(MekanismTags.Items.PERSONAL_STORAGE, MekanismAliases.PERSONAL_BACKPACK, MekanismAliases.ITEM_STORAGE, MekanismAliases.STORAGE_PORTABLE);
+        rv.addItemAliases(MekanismTags.BlockItems.PERSONAL_STORAGE.item(), MekanismAliases.PERSONAL_BACKPACK, MekanismAliases.ITEM_STORAGE, MekanismAliases.STORAGE_PORTABLE);
 
         rv.addAliases(List.of(
               MekanismBlocks.BASIC_FLUID_TANK,

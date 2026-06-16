@@ -18,6 +18,7 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
@@ -33,14 +34,57 @@ public class MekanismTags {
     private MekanismTags() {
     }
 
+    public static class BlockItems {
+
+        private BlockItems() {
+        }
+
+        public static final Map<OreType, BlockItemTagId> ORES = new EnumMap<>(OreType.class);
+        public static final Map<IResource, BlockItemTagId> PROCESSED_RESOURCE_BLOCKS = new HashMap<>();
+
+        static {
+            for (OreType ore : EnumUtils.ORE_TYPES) {
+                ORES.put(ore, commonTag("ores/" + ore.getResource().getRegistrySuffix()));
+            }
+            for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
+                if (!resource.isVanilla()) {
+                    PROCESSED_RESOURCE_BLOCKS.put(resource, commonTag("storage_blocks/" + resource.getRegistrySuffix()));
+                    BlockResourceInfo rawResource = resource.getRawResourceBlockInfo();
+                    if (rawResource != null) {
+                        PROCESSED_RESOURCE_BLOCKS.put(rawResource, commonTag("storage_blocks/" + rawResource.getRegistrySuffix()));
+                    }
+                }
+            }
+        }
+
+        public static final BlockItemTagId STORAGE_BLOCKS_BRONZE = commonTag("storage_blocks/bronze");
+        public static final BlockItemTagId STORAGE_BLOCKS_CHARCOAL = commonTag("storage_blocks/charcoal");
+        public static final BlockItemTagId STORAGE_BLOCKS_REFINED_GLOWSTONE = commonTag("storage_blocks/refined_glowstone");
+        public static final BlockItemTagId STORAGE_BLOCKS_REFINED_OBSIDIAN = commonTag("storage_blocks/refined_obsidian");
+        public static final BlockItemTagId STORAGE_BLOCKS_STEEL = commonTag("storage_blocks/steel");
+        public static final BlockItemTagId STORAGE_BLOCKS_FLUORITE = commonTag("storage_blocks/fluorite");
+
+        public static final BlockItemTagId PERSONAL_STORAGE = tag("personal_storage");
+
+        private static BlockItemTagId commonTag(String name) {
+            return tag(Identifier.fromNamespaceAndPath("c", name));
+        }
+
+        private static BlockItemTagId tag(String name) {
+            return tag(Mekanism.rl(name));
+        }
+
+        private static BlockItemTagId tag(Identifier tag) {
+            return BlockItemTagId.create(tag, tag);
+        }
+    }
+
     public static class Items {
 
         private Items() {
         }
 
         public static final Table<ResourceType, PrimaryResource, TagKey<Item>> PROCESSED_RESOURCES = HashBasedTable.create();
-        public static final Map<IResource, TagKey<Item>> PROCESSED_RESOURCE_BLOCKS = new HashMap<>();
-        public static final Map<OreType, TagKey<Item>> ORES = new EnumMap<>(OreType.class);
 
         static {
             for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
@@ -51,16 +95,6 @@ public class MekanismTags {
                         PROCESSED_RESOURCES.put(type, resource, tagKey);
                     }
                 }
-                if (!resource.isVanilla()) {
-                    PROCESSED_RESOURCE_BLOCKS.put(resource, commonTag("storage_blocks/" + resource.getRegistrySuffix()));
-                    BlockResourceInfo rawResource = resource.getRawResourceBlockInfo();
-                    if (rawResource != null) {
-                        PROCESSED_RESOURCE_BLOCKS.put(rawResource, commonTag("storage_blocks/" + rawResource.getRegistrySuffix()));
-                    }
-                }
-            }
-            for (OreType ore : EnumUtils.ORE_TYPES) {
-                ORES.put(ore, commonTag("ores/" + ore.getResource().getRegistrySuffix()));
             }
         }
 
@@ -69,7 +103,6 @@ public class MekanismTags {
         }
 
         public static final TagKey<Item> CONFIGURATORS = tag("configurators");
-        public static final TagKey<Item> PERSONAL_STORAGE = tag("personal_storage");
 
         public static final TagKey<Item> RODS_PLASTIC = commonTag("rods/plastic");
 
@@ -107,13 +140,6 @@ public class MekanismTags {
         public static final TagKey<Item> INGOTS_REFINED_GLOWSTONE = commonTag("ingots/refined_glowstone");
         public static final TagKey<Item> INGOTS_REFINED_OBSIDIAN = commonTag("ingots/refined_obsidian");
         public static final TagKey<Item> INGOTS_STEEL = commonTag("ingots/steel");
-
-        public static final TagKey<Item> STORAGE_BLOCKS_BRONZE = commonTag("storage_blocks/bronze");
-        public static final TagKey<Item> STORAGE_BLOCKS_CHARCOAL = commonTag("storage_blocks/charcoal");
-        public static final TagKey<Item> STORAGE_BLOCKS_REFINED_GLOWSTONE = commonTag("storage_blocks/refined_glowstone");
-        public static final TagKey<Item> STORAGE_BLOCKS_REFINED_OBSIDIAN = commonTag("storage_blocks/refined_obsidian");
-        public static final TagKey<Item> STORAGE_BLOCKS_STEEL = commonTag("storage_blocks/steel");
-        public static final TagKey<Item> STORAGE_BLOCKS_FLUORITE = commonTag("storage_blocks/fluorite");
 
         public static final TagKey<Item> CIRCUITS = commonTag("circuits");
         public static final TagKey<Item> CIRCUITS_BASIC = commonTag("circuits/basic");
@@ -176,24 +202,6 @@ public class MekanismTags {
         private Blocks() {
         }
 
-        public static final Map<IResource, TagKey<Block>> RESOURCE_STORAGE_BLOCKS = new HashMap<>();
-        public static final Map<OreType, TagKey<Block>> ORES = new EnumMap<>(OreType.class);
-
-        static {
-            for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
-                if (!resource.isVanilla()) {
-                    RESOURCE_STORAGE_BLOCKS.put(resource, commonTag("storage_blocks/" + resource.getRegistrySuffix()));
-                    BlockResourceInfo rawResource = resource.getRawResourceBlockInfo();
-                    if (rawResource != null) {
-                        RESOURCE_STORAGE_BLOCKS.put(rawResource, commonTag("storage_blocks/" + rawResource.getRegistrySuffix()));
-                    }
-                }
-            }
-            for (OreType ore : EnumUtils.ORE_TYPES) {
-                ORES.put(ore, commonTag("ores/" + ore.getResource().getRegistrySuffix()));
-            }
-        }
-
         public static final TagKey<Block> CARDBOARD_BLACKLIST = tag("cardboard_blacklist");
         public static final TagKey<Block> MINER_BLACKLIST = tag("miner_blacklist");
         public static final TagKey<Block> ATOMIC_DISASSEMBLER_ORE = tag("atomic_disassembler_ore");
@@ -205,14 +213,6 @@ public class MekanismTags {
         public static final TagKey<Block> CHESTS_ELECTRIC = commonTag("chests/electric");
         public static final TagKey<Block> CHESTS_PERSONAL = commonTag("chests/personal");
         public static final TagKey<Block> BARRELS_PERSONAL = commonTag("barrels/personal");
-        public static final TagKey<Block> PERSONAL_STORAGE = tag("personal_storage");
-
-        public static final TagKey<Block> STORAGE_BLOCKS_BRONZE = commonTag("storage_blocks/bronze");
-        public static final TagKey<Block> STORAGE_BLOCKS_CHARCOAL = commonTag("storage_blocks/charcoal");
-        public static final TagKey<Block> STORAGE_BLOCKS_REFINED_GLOWSTONE = commonTag("storage_blocks/refined_glowstone");
-        public static final TagKey<Block> STORAGE_BLOCKS_REFINED_OBSIDIAN = commonTag("storage_blocks/refined_obsidian");
-        public static final TagKey<Block> STORAGE_BLOCKS_STEEL = commonTag("storage_blocks/steel");
-        public static final TagKey<Block> STORAGE_BLOCKS_FLUORITE = commonTag("storage_blocks/fluorite");
 
         private static TagKey<Block> commonTag(String name) {
             return BlockTags.create(Identifier.fromNamespaceAndPath("c", name));

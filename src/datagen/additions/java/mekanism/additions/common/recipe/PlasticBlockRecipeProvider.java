@@ -78,7 +78,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
 
     private void registerPlasticBlocks(RecipeOutput consumer, String basePath) {
         basePath += "block/";
-        HolderSet<Item> plasticTag = this.items.getOrThrow(AdditionsTags.Items.PLASTIC_BLOCKS_PLASTIC);
+        HolderSet<Item> plasticTag = this.items.getOrThrow(AdditionsTags.BlockItems.PLASTIC_BLOCKS_PLASTIC.item());
         for (BlockRegistryObject<BlockPlastic, ?> blockRO : AdditionsBlocks.PLASTIC_BLOCKS.values()) {
             EnumColor color = blockRO.value().getColor();
             Holder<Item> result = blockRO.getItemHolder();
@@ -97,7 +97,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
 
     private void registerPlasticTransparent(RecipeOutput consumer, String basePath) {
         basePath += "transparent/";
-        HolderSet<Item> transparentTag = this.items.getOrThrow(AdditionsTags.Items.PLASTIC_BLOCKS_TRANSPARENT);
+        HolderSet<Item> transparentTag = this.items.getOrThrow(AdditionsTags.BlockItems.PLASTIC_BLOCKS_TRANSPARENT.item());
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.entrySet()) {
             EnumColor color = entry.getKey();
             Holder<Item> result = entry.getValue().getItemHolder();
@@ -116,7 +116,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
 
     private void registerPlasticGlow(RecipeOutput consumer, String basePath) {
         basePath += "glow/";
-        HolderSet<Item> glowTag = this.items.getOrThrow(AdditionsTags.Items.PLASTIC_BLOCKS_GLOW);
+        HolderSet<Item> glowTag = this.items.getOrThrow(AdditionsTags.BlockItems.PLASTIC_BLOCKS_GLOW.item());
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlastic, ?>> entry : AdditionsBlocks.PLASTIC_GLOW_BLOCKS.entrySet()) {
             EnumColor color = entry.getKey();
             Holder<Item> result = entry.getValue().getItemHolder();
@@ -131,7 +131,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
 
     private void registerReinforcedPlastic(RecipeOutput consumer, String basePath) {
         basePath += "reinforced/";
-        HolderSet<Item> reinforcedTag = this.items.getOrThrow(AdditionsTags.Items.PLASTIC_BLOCKS_REINFORCED);
+        HolderSet<Item> reinforcedTag = this.items.getOrThrow(AdditionsTags.BlockItems.PLASTIC_BLOCKS_REINFORCED.item());
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlastic, ?>> entry : AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS.entrySet()) {
             EnumColor color = entry.getKey();
             Holder<Item> result = entry.getValue().getItemHolder();
@@ -147,7 +147,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
 
     private void registerPlasticRoads(RecipeOutput consumer, String basePath) {
         basePath += "road/";
-        HolderSet<Item> roadTag = this.items.getOrThrow(AdditionsTags.Items.PLASTIC_BLOCKS_ROAD);
+        HolderSet<Item> roadTag = this.items.getOrThrow(AdditionsTags.BlockItems.PLASTIC_BLOCKS_ROAD.item());
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlasticRoad, ?>> entry : AdditionsBlocks.PLASTIC_ROADS.entrySet()) {
             EnumColor color = entry.getKey();
             Holder<Item> result = entry.getValue().getItemHolder();
@@ -164,7 +164,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
 
     private void registerSlickPlastic(RecipeOutput consumer, String basePath) {
         basePath += "slick/";
-        HolderSet<Item> slickTag = this.items.getOrThrow(AdditionsTags.Items.PLASTIC_BLOCKS_SLICK);
+        HolderSet<Item> slickTag = this.items.getOrThrow(AdditionsTags.BlockItems.PLASTIC_BLOCKS_SLICK.item());
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlastic, ?>> entry : AdditionsBlocks.SLICK_PLASTIC_BLOCKS.entrySet()) {
             EnumColor color = entry.getKey();
             Holder<Item> result = entry.getValue().getItemHolder();

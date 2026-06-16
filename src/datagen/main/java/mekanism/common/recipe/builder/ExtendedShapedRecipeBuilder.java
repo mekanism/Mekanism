@@ -14,6 +14,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -77,6 +78,10 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
 
     public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> lookup, ResourceKey<Item> id) {
         return key(symbol, lookup.getOrThrow(id));
+    }
+
+    public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> lookup, BlockItemTagId id) {
+        return key(symbol, lookup, id.item());
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> lookup, TagKey<Item> tag) {

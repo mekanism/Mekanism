@@ -170,7 +170,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
         advancement(MekanismAdvancements.PERSONAL_STORAGE)
               .display(MekanismBlocks.PERSONAL_CHEST.getItemHolder(), AdvancementType.TASK, false)
-              .addCriterion("storage", hasItems(items, MekanismTags.Items.PERSONAL_STORAGE))
+              .addCriterion("storage", hasItems(items, MekanismTags.BlockItems.PERSONAL_STORAGE.item()))
               .save(consumer);
         advancement(MekanismAdvancements.SIMPLE_MASS_STORAGE)
               .displayAndCriterion(MekanismBlocks.BASIC_BIN, AdvancementType.TASK, false)

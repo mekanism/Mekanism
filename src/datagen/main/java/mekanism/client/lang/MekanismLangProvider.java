@@ -161,7 +161,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addTags() {
         add(MekanismAPITags.Items.MEKA_UNITS, "Meka Units");
         add(MekanismTags.Items.CONFIGURATORS, "Configurators");
-        add(MekanismTags.Items.PERSONAL_STORAGE, "Personal Storage");
+        add(MekanismTags.BlockItems.PERSONAL_STORAGE, "Personal Storage");
 
         add(MekanismTags.Items.RODS_PLASTIC, "Plastic Rods");
 
@@ -200,12 +200,12 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, "Refined Obsidian Ingots");
         add(MekanismTags.Items.INGOTS_STEEL, "Steel Ingots");
 
-        add(MekanismTags.Items.STORAGE_BLOCKS_BRONZE, "Bronze Storage Blocks");
-        add(MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL, "Charcoal Storage Blocks");
-        add(MekanismTags.Items.STORAGE_BLOCKS_REFINED_GLOWSTONE, "Refined Glowstone Storage Blocks");
-        add(MekanismTags.Items.STORAGE_BLOCKS_REFINED_OBSIDIAN, "Refined Obsidian Storage Blocks");
-        add(MekanismTags.Items.STORAGE_BLOCKS_STEEL, "Steel Storage Blocks");
-        add(MekanismTags.Items.STORAGE_BLOCKS_FLUORITE, "Fluorite Storage Blocks");
+        add(MekanismTags.BlockItems.STORAGE_BLOCKS_BRONZE, "Bronze Storage Blocks");
+        add(MekanismTags.BlockItems.STORAGE_BLOCKS_CHARCOAL, "Charcoal Storage Blocks");
+        add(MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_GLOWSTONE, "Refined Glowstone Storage Blocks");
+        add(MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_OBSIDIAN, "Refined Obsidian Storage Blocks");
+        add(MekanismTags.BlockItems.STORAGE_BLOCKS_STEEL, "Steel Storage Blocks");
+        add(MekanismTags.BlockItems.STORAGE_BLOCKS_FLUORITE, "Fluorite Storage Blocks");
 
         add(MekanismTags.Items.CIRCUITS, "Circuits");
         add(MekanismTags.Items.CIRCUITS_BASIC, "Basic Circuits");
@@ -537,7 +537,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
             String name = TextUtils.formatAndCapitalize(key.getRegistrySuffix());
             add(entry.getValue(), "Block of " + name);
             addAlias(key.getRegistrySuffix(), name + " Block");
-            add(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(key), name + " Storage Blocks");
+            add(MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(key), name + " Storage Blocks");
         }
 
         //Tiered things
@@ -1814,7 +1814,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(oreBlockType.stone(), name + " Ore");
         add(oreBlockType.stone().value().getDescriptionTranslationKey(), description);
         add(oreBlockType.deepslate(), "Deepslate " + name + " Ore");
-        add(MekanismTags.Items.ORES.get(type), name + " Ores");
+        add(MekanismTags.BlockItems.ORES.get(type), name + " Ores");
     }
 
     private void addTiered(IHasTranslationKey basic, IHasTranslationKey advanced, IHasTranslationKey elite, IHasTranslationKey ultimate, String name) {

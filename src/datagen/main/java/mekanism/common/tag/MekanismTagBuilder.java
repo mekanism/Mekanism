@@ -1,6 +1,7 @@
 package mekanism.common.tag;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -36,6 +37,10 @@ public class MekanismTagBuilder<TYPE> {
 
     @SafeVarargs
     public final MekanismTagBuilder<TYPE> add(TagKey<TYPE>... tags) {
+        return apply(tagAdder, TagKey::location, tags);
+    }
+
+    public final MekanismTagBuilder<TYPE> add(List<TagKey<TYPE>> tags) {
         return apply(tagAdder, TagKey::location, tags);
     }
 

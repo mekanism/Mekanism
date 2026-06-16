@@ -159,7 +159,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
                 raw = Objects.requireNonNull(MekanismItems.getProcessedResource(ResourceType.RAW, resource));
                 rawTag = Objects.requireNonNull(MekanismTags.Items.getProcessedResource(ResourceType.RAW, resource));
                 rawBlock = Objects.requireNonNull(MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo())).getItemHolder();
-                rawBlockTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo()));
+                rawBlockTag = Objects.requireNonNull(MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo())).item();
                 OreBlockType oreBlockType = Objects.requireNonNull(MekanismBlocks.ORES.get(OreType.get(resource)));
                 ore = oreBlockType.stone().getItemHolder();
                 deepslateOre = oreBlockType.deepslate().getItemHolder();
@@ -610,7 +610,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
 
     private void addFluoriteRecipes(RecipeOutput consumer, String basePath) {
         OreBlockType fluorite = MekanismBlocks.ORES.get(OreType.FLUORITE);
-        addOreProcessingGemRecipes(consumer, basePath, fluorite.stone(), fluorite.deepslate(), MekanismTags.Items.ORES.get(OreType.FLUORITE),
+        addOreProcessingGemRecipes(consumer, basePath, fluorite.stone(), fluorite.deepslate(), MekanismTags.BlockItems.ORES.get(OreType.FLUORITE).item(),
               MekanismItems.FLUORITE_DUST, MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, 6, 14,
               Tags.Items.COBBLESTONES_NORMAL);
         //Gem from block
@@ -633,7 +633,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
               true
         ).save(consumer, Mekanism.rl(basePath + "hydrofluoric_acid"));
         ChemicalDissolutionRecipeBuilder.dissolution(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.STORAGE_BLOCKS_FLUORITE),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.BlockItems.STORAGE_BLOCKS_FLUORITE),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 9),
               MekanismChemicals.HYDROFLUORIC_ACID.asTemplate(9_000),
               true
