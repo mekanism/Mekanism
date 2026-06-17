@@ -131,7 +131,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
 
     @Override
     public void onContentsChanged() {
-        if (!isRemote()) {
+        if (!isClientSide()) {
             if (clientTemperature == -1) {
                 clientTemperature = ambientTemperature.getAsDouble();
             }

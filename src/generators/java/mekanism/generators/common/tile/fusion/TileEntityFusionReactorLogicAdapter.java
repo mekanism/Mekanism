@@ -73,11 +73,11 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     }
 
     public int getRedstoneLevel(Direction side) {
-        return !isRemote() && getMultiblock().isPositionOutsideBounds(worldPosition.relative(side)) && checkMode() ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
+        return level != null && !level.isClientSide() && getMultiblock().isPositionOutsideBounds(worldPosition.relative(side)) && checkMode() ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
     }
 
     public boolean checkMode() {
-        if (isRemote()) {
+        if (level != null && level.isClientSide()) {
             return prevOutputting;
         }
         FusionReactorMultiblockData multiblock = getMultiblock();

@@ -32,7 +32,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
             //No tile, we can just skip trying to use without an item
             return InteractionResult.PASS;
         } else if (world.isClientSide()) {
-            return genericClientActivated(stack, tile);
+            return genericClientActivated(world, stack, tile);
         }
         InteractionResult wrenchResult = tile.tryWrench(world, state, player, stack).getInteractionResult();
         if (wrenchResult != InteractionResult.PASS) {

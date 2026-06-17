@@ -19,7 +19,7 @@ public class TileEntityFissionAssembly extends TileEntityInternalMultiblock {
 
     /*@Override
     public void setRemoved() {
-        if (isRemote()) {
+        if (level != null && level.isClientSide()) {
             removeMultiblock(getMultiblockUUID(), this);
         }
         super.setRemoved();
@@ -28,7 +28,7 @@ public class TileEntityFissionAssembly extends TileEntityInternalMultiblock {
     @Override
     public void clearRemoved() {
         super.clearRemoved();
-        if (isRemote() && addMultiblock(getMultiblockUUID(), this)) {
+        if (level != null && level.isClientSide() && addMultiblock(getMultiblockUUID(), this)) {
             updateModelData();
         }
     }
@@ -36,7 +36,7 @@ public class TileEntityFissionAssembly extends TileEntityInternalMultiblock {
     @Override
     protected void multiblockChanged(@Nullable UUID old) {
         super.multiblockChanged(old);
-        if (isRemote()) {
+        if (level != null && level.isClientSide()) {
             //Note: We use binary or here to ensure that we first remove and then add but only update the model data
             // once and only if one of them needed it
             if (removeMultiblock(old, this) | addMultiblock(getMultiblockUUID(), this)) {

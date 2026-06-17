@@ -70,7 +70,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         //Merge the chemical scales
         long capacity = getCapacity();
         currentScale = Math.min(1, capacity == 0 ? 0 : (currentScale * oldCapacity + net.currentScale * net.capacity) / capacity);
-        if (isRemote()) {
+        if (isClientSide()) {
             if (this.container.isEmpty()) {
                 this.container.copyContents(net.container, null);
                 containerType().clearContents(net.container, null);

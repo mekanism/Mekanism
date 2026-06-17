@@ -176,7 +176,7 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
           Player player, InteractionHand hand, BlockHitResult hit) {
         if (player.isShiftKeyDown() && MekanismUtils.canUseAsWrench(stack)) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-            if (tile instanceof ITileRadioactive tileRadioactive && tileRadioactive.getRadiationScale() > 0) {
+            if (tile instanceof ITileRadioactive tileRadioactive && tileRadioactive.getRadiationScale(world) > 0) {
                 return InteractionResult.FAIL;
             }
         }

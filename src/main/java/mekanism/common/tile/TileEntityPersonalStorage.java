@@ -70,7 +70,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
         //Note: we allow access to the slots from all sides as long as it is public, unlike in 1.12 where we always denied the bottom face
         // We did that to ensure that things like hoppers that could check IInventory did not bypass any restrictions
         BiPredicate<ItemResource, AutomationType> canInteract = (_, automationType) ->
-              automationType.isManual() || ISecurityUtils.INSTANCE.getEffectiveSecurityMode(this, isRemote()) == SecurityMode.PUBLIC;
+              automationType.isManual() || level != null && ISecurityUtils.INSTANCE.getEffectiveSecurityMode(this, level.isClientSide()) == SecurityMode.PUBLIC;
         PersonalStorageManager.createSlots(builder::addContainer, canInteract, listener);
         return builder.build();
     }
@@ -104,8 +104,8 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
     protected abstract Identifier getStat();
 
     @Override
-    public InteractionResult openGui(Player player) {
-        InteractionResult result = super.openGui(player);
+    public InteractionResult openGui(Level level, Player player) {
+        InteractionResult result = super.openGui(level, player);
         if (result.consumesAction() && level instanceof ServerLevel serverLevel) {
             player.awardStat(Stats.CUSTOM.get(getStat()));
             PiglinAi.angerNearbyPiglins(serverLevel, player, true);
@@ -116,7 +116,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        if (!isRemote()) {
+        if (level != null && !level.isClientSide()) {
             UUID owner = input.get(MekanismDataComponents.OWNER);
             if (owner != null) {
                 AbstractPersonalStorageItemInventory storageItemInventory = PersonalStorageManager.getInventoryForUnchecked(input.get(MekanismDataComponents.PERSONAL_STORAGE_ID), owner);

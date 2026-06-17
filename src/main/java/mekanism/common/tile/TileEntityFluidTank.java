@@ -377,7 +377,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         private int valve;
 
         public void onTransfer(FluidResource resource, TransactionContext transaction) {
-            if (!isRemote()) {
+            if (level != null && !level.isClientSide()) {
                 updateSnapshots(transaction);
                 valve = SharedConstants.TICKS_PER_SECOND;
                 fluid = resource;

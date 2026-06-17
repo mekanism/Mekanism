@@ -220,8 +220,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     /// Like [BlockBehaviour#getDestroyProgress(BlockState, Player, BlockGetter, BlockPos)] except also passes the tile to only have to get it once.
-    protected float getDestroyProgress(BlockState state, Player player, BlockGetter blockGetter, BlockPos pos,
-          @Nullable BlockEntity tile) {
+    protected float getDestroyProgress(BlockState state, Player player, BlockGetter blockGetter, BlockPos pos, @Nullable BlockEntity tile) {
         Level level = tile == null ? null : tile.getLevel();
         //Do our best effort to see if we can figure out a corresponding level to look up the security from
         if (level == null && blockGetter instanceof Level) {
@@ -233,11 +232,21 @@ public abstract class BlockMekanism extends Block {
         }
         //Call super variant of player relative hardness to get default
         float speed = super.getDestroyProgress(state, player, blockGetter, pos);
-        if (RadiationManager.isGlobalRadiationEnabled() && tile instanceof ITileRadioactive radioactiveTile && radioactiveTile.getRadiationScale() > 0) {
-            //Our tile has some radioactive substance in it; slow down breaking it
-            //Note: Technically our getRadiationScale impls validate that radiation is enabled, but we do so here as well
-            // to make intentions clearer
-            return speed / 5F;
+        if (RadiationManager.isGlobalRadiationEnabled() && tile instanceof ITileRadioactive radioactiveTile) {
+            float radiationScale;
+            if (level != null) {
+                radiationScale = radioactiveTile.getRadiationScale(level);
+            } else if (blockGetter instanceof LevelReader levelReader) {
+                radiationScale = radioactiveTile.getRadiationScale(levelReader);
+            } else {
+                radiationScale = 0;
+            }
+            if (radiationScale > 0) {
+                //Our tile has some radioactive substance in it; slow down breaking it
+                //Note: Technically our getRadiationScale impls validate that radiation is enabled, but we do so here as well
+                // to make intentions clearer
+                return speed / 5F;
+            }
         }
         return speed;
     }
@@ -248,7 +257,7 @@ public abstract class BlockMekanism extends Block {
         if (RadiationManager.isGlobalRadiationEnabled()) {//Skip getting the tile if radiation is disabled in the config
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile instanceof ITileRadioactive radioactiveTile) {
-                int count = radioactiveTile.getRadiationParticleCount();
+                int count = radioactiveTile.getRadiationParticleCount(world);
                 if (count > 0) {
                     //Update count to be randomized but store it instead of calculating our max number each time we loop
                     count = random.nextInt(count);
@@ -263,9 +272,9 @@ public abstract class BlockMekanism extends Block {
         }
     }
 
-    protected InteractionResult genericClientActivated(ItemStack stack, BlockEntity blockEntity) {
+    protected InteractionResult genericClientActivated(Level level, ItemStack stack, BlockEntity blockEntity) {
         if (!Attribute.has(this, AttributeGui.class) && MekanismUtils.canUseAsWrench(stack)) {
-            if (blockEntity instanceof ITileRadioactive tileRadioactive && tileRadioactive.getRadiationScale() > 0) {
+            if (blockEntity instanceof ITileRadioactive tileRadioactive && tileRadioactive.getRadiationScale(level) > 0) {
                 return InteractionResult.FAIL;
             }
             return InteractionResult.SUCCESS;

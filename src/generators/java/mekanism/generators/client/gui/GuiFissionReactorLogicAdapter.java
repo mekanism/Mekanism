@@ -48,7 +48,7 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(tile.logicType.getColor(), tile.logicType), 0, 123, TextAlignment.CENTER, titleTextColor(), 4, false);
-        drawScrollingString(guiGraphics, MekanismLang.STATUS.translate(EnumColor.RED, tile.getStatus()), 0, 136, TextAlignment.CENTER, titleTextColor(), 4, false);
+        drawScrollingString(guiGraphics, MekanismLang.STATUS.translate(EnumColor.RED, tile.getStatusClient()), 0, 136, TextAlignment.CENTER, titleTextColor(), 4, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

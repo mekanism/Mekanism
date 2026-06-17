@@ -30,7 +30,7 @@ public class ChemicalNetwork extends DynamicBufferedResourceNetwork<ChemicalReso
 
     @Override
     protected void disperse(PressurizedTube triggerTransmitter, ChemicalResource resource, long amount) {
-        Level level = triggerTransmitter.getLevel();
+        Level level = world == null ? triggerTransmitter.getLevel() : world;
         if (level != null) {
             // Handle radiation leakage
             IRadiationManager.INSTANCE.dumpRadiation(level, triggerTransmitter.getBlockPos(), resource, amount);

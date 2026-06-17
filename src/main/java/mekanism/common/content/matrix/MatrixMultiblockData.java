@@ -90,7 +90,7 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     public long getEnergy() {
-        return isRemote() ? clientEnergy : energyContainer.getAmountAsLong();
+        return isClientSide() ? clientEnergy : energyContainer.getAmountAsLong();
     }
 
     @Override
@@ -121,31 +121,31 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     public long getStorageCap() {
-        return isRemote() ? clientMaxEnergy : energyContainer.getCapacityAsLong();
+        return isClientSide() ? clientMaxEnergy : energyContainer.getCapacityAsLong();
     }
 
     @ComputerMethod
     public long getTransferCap() {
-        return isRemote() ? clientMaxTransfer : energyContainer.getMaxTransfer();
+        return isClientSide() ? clientMaxTransfer : energyContainer.getMaxTransfer();
     }
 
     @ComputerMethod
     public long getLastInput() {
-        return isRemote() ? clientLastInput : energyContainer.getLastInput();
+        return isClientSide() ? clientLastInput : energyContainer.getLastInput();
     }
 
     @ComputerMethod
     public long getLastOutput() {
-        return isRemote() ? clientLastOutput : energyContainer.getLastOutput();
+        return isClientSide() ? clientLastOutput : energyContainer.getLastOutput();
     }
 
     @ComputerMethod(nameOverride = "getInstalledCells")
     public int getCellCount() {
-        return isRemote() ? clientCells : energyContainer.getCells();
+        return isClientSide() ? clientCells : energyContainer.getCells();
     }
 
     @ComputerMethod(nameOverride = "getInstalledProviders")
     public int getProviderCount() {
-        return isRemote() ? clientProviders : energyContainer.getProviders();
+        return isClientSide() ? clientProviders : energyContainer.getProviders();
     }
 }

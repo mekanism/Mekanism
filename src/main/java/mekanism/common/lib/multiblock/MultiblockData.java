@@ -225,7 +225,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     protected void updateEjectors(Level world) {
     }
 
-    protected boolean isRemote() {
+    protected boolean isClientSide() {
         Level level = getLevel();
         return level == null || level.isClientSide();
     }
@@ -355,12 +355,12 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
 
     @Override
     public List<IInventorySlot> getInventorySlots() {
-        return isFormed() || isRemote() ? inventorySlots : Collections.emptyList();
+        return isFormed() || isClientSide() ? inventorySlots : Collections.emptyList();
     }
 
     @Override
     public List<IFluidTank> getFluidTanks() {
-        return isFormed() || isRemote() ? fluidTanks : Collections.emptyList();
+        return isFormed() || isClientSide() ? fluidTanks : Collections.emptyList();
     }
 
     protected boolean hasFluidValveHandling() {
@@ -368,7 +368,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     }
 
     public List<IFluidTank> getValveFluidTanks(BlockPos pos) {
-        if (!hasFluidValveHandling() || isRemote()) {
+        if (!hasFluidValveHandling() || isClientSide()) {
             //Note: The client doesn't need to do any handling relating to valves, so just bypass valve handling for it
             return getFluidTanks();
         } else if (isFormed()) {
@@ -384,7 +384,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
 
     @Override
     public List<IChemicalTank> getChemicalTanks() {
-        return isFormed() || isRemote() ? chemicalTanks : Collections.emptyList();
+        return isFormed() || isClientSide() ? chemicalTanks : Collections.emptyList();
     }
 
     @Nullable
@@ -395,7 +395,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     @Nullable
     @Override
     public IEnergyContainer getEnergyContainer() {
-        return isFormed() || isRemote() ? energyContainer() : null;
+        return isFormed() || isClientSide() ? energyContainer() : null;
     }
 
     @Nullable
@@ -406,7 +406,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     @Nullable
     @Override
     public IHeatCapacitor getHeatCapacitor() {
-        return isFormed() || isRemote() ? heatCapacitor() : null;
+        return isFormed() || isClientSide() ? heatCapacitor() : null;
     }
 
     @Nullable

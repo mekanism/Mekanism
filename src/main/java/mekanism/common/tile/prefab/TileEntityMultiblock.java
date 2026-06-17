@@ -214,7 +214,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (player.isShiftKeyDown() || !getMultiblock().isFormed()) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
-        InteractionResult result = openGui(player);
+        InteractionResult result = openGui(level, player);
         return result;
         //TODO - 26.2: why are these being remapped??
         /*return switch (result) {

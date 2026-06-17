@@ -5,6 +5,7 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
 import mekanism.common.lib.radiation.RadiationManager;
+import net.minecraft.world.level.LevelReader;
 
 public interface ITileRadioactive {
 
@@ -24,9 +25,9 @@ public interface ITileRadioactive {
         return 0;
     }
 
-    float getRadiationScale();
+    float getRadiationScale(LevelReader level);
 
-    default int getRadiationParticleCount() {
-        return MathUtils.clampToInt(10 * getRadiationScale());
+    default int getRadiationParticleCount(LevelReader level) {
+        return MathUtils.clampToInt(10 * getRadiationScale(level));
     }
 }

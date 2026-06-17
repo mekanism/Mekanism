@@ -41,27 +41,27 @@ public class PlayerState {
     @Nullable
     private LevelAccessor level;
 
-    public void clear(boolean isRemote) {
+    public void clear(boolean isClientSide) {
         activeJetpacks.clear();
         activeScubaMasks.clear();
         activeGravitationalModulators.clear();
-        if (isRemote) {
+        if (isClientSide) {
             SoundHandler.clearPlayerSounds();
         }
     }
 
-    public void clearPlayer(UUID uuid, boolean isRemote) {
+    public void clearPlayer(UUID uuid, boolean isClientSide) {
         activeJetpacks.remove(uuid);
         activeScubaMasks.remove(uuid);
         activeGravitationalModulators.remove(uuid);
-        if (isRemote) {
+        if (isClientSide) {
             SoundHandler.clearPlayerSounds(uuid);
             if (Minecraft.getInstance().player == null || Minecraft.getInstance().player.getUUID().equals(uuid)) {
                 SoundHandler.radiationSoundMap.clear();
             }
         }
         PlayerExposure.resetPlayer(uuid);
-        if (!isRemote) {
+        if (!isClientSide) {
             PacketDistributor.sendToAllPlayers(new PacketResetPlayerClient(uuid));
         }
     }

@@ -167,8 +167,10 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return transmitterTile.getTileGlobalPos();
     }
 
-    public boolean isRemote() {
-        return transmitterTile.isRemote();
+    public boolean isClientSide() {
+        Level level = getLevel();
+        //TODO - 26.2: Re-evaluate this
+        return level == null || level.isClientSide();
     }
 
     protected TRANSMITTER getTransmitter() {
@@ -205,12 +207,12 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (theNetwork == network) {
             return false;
         }
-        if (isRemote() && theNetwork != null) {
+        if (isClientSide() && theNetwork != null) {
             theNetwork.removeTransmitter(getTransmitter());
         }
         theNetwork = network;
         orphaned = theNetwork == null;
-        if (isRemote()) {
+        if (isClientSide()) {
             if (theNetwork != null) {
                 theNetwork.addTransmitter(getTransmitter());
             }
@@ -339,7 +341,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             offset.setWithOffset(pos, side);
             BlockEntity tile = WorldUtils.getTileEntity(level, offset);
             if (canConnectMutual(side, tile)) {
-                if (!isRemote() && !WorldUtils.isBlockLoaded(level, offset)) {
+                if (!isClientSide() && !WorldUtils.isBlockLoaded(level, offset)) {
                     getTransmitterTile().setForceUpdate();
                     continue;
                 }
@@ -534,7 +536,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public void refreshConnections() {
-        if (!isRemote()) {
+        if (!isClientSide()) {
             recheckRedstone();
             byte possibleTransmitters = getPossibleTransmitterConnections();
             byte possibleAcceptors = getPossibleAcceptorConnections();
@@ -566,7 +568,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     /// Used by the network's acceptor cache to refresh and sync acceptor changes before actually querying what the acceptor on a given side is.
     public void refreshAcceptorConnections(Direction side) {
-        if (!isRemote()) {
+        if (!isClientSide()) {
             //Note: We don't need to mark the acceptor as dirty here as it already is
             boolean possibleAcceptor = getPossibleAcceptorConnection(side, false);
             if (possibleAcceptor != connectionMapContainsSide(acceptorCache.currentAcceptorConnections, side)) {
@@ -577,7 +579,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public void refreshConnections(Direction side) {
-        if (!isRemote()) {
+        if (!isClientSide()) {
             boolean possibleTransmitter = getPossibleTransmitterConnection(side);
             boolean possibleAcceptor = getPossibleAcceptorConnection(side, true);
             boolean transmitterChanged = false;
@@ -699,7 +701,10 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public void notifyTileChange() {
         //TODO: It is possible some of the places we are calling this method don't actually need to notify the loaded neighbors of changes and the capability invalidation is enough
         // for now though it doesn't really seem to hurt anything to just keep it though
-        WorldUtils.notifyLoadedNeighborsOfTileChange(getLevel(), getBlockPos());
+        Level level = getLevel();
+        if (level != null) {
+            WorldUtils.notifyLoadedNeighborsOfTileChange(level, getBlockPos());
+        }
     }
 
     public abstract void takeShare(@Nullable TransactionContext transaction);

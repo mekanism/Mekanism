@@ -89,7 +89,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         } else if (target instanceof TransporterItemHandler cursed) {
             LogisticalTransporterBase transporter = cursed.getTransporter();
             EnumColor color = outputColor == null ? transporter.getColor() : outputColor;
-            return transporter.insert(outputter, outputterPos, this, color, min, transaction);
+            return transporter.insert(level, outputter, outputterPos, this, color, min, transaction);
         }
         return addToInventoryUnchecked(target, min, transaction);
     }

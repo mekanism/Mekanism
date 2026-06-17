@@ -53,7 +53,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
         if (tile == null) {
             return InteractionResult.FAIL;
         } else if (world.isClientSide()) {
-            return genericClientActivated(stack, tile);
+            return genericClientActivated(world, stack, tile);
         }
         InteractionResult wrenchResult = tile.tryWrench(world, state, player, stack).getInteractionResult();
         if (wrenchResult != InteractionResult.PASS) {

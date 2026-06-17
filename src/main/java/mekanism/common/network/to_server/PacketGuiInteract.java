@@ -3,7 +3,6 @@ package mekanism.common.network.to_server;
 import io.netty.buffer.ByteBuf;
 import java.util.function.IntFunction;
 import mekanism.api.Upgrade;
-import mekanism.api.functions.TriConsumer;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
@@ -41,6 +40,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.ByIdMap.OutOfBoundsStrategy;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -76,161 +76,162 @@ public record PacketGuiInteract(GuiInteraction interaction, BlockPos tilePositio
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), tilePosition);
+        Level level = player.level();
+        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, level, tilePosition);
         if (tile != null) {
-            interaction.consume(tile, player, extra);
+            interaction.consume(level, tile, player, extra);
         }
     }
 
     public enum GuiInteraction {//TODO: Cleanup this enum/the elements in it as it is rather disorganized order wise currently
-        CONTAINER_STOP_TRACKING((_, player, extra) -> {
+        CONTAINER_STOP_TRACKING((_, _, player, extra) -> {
             if (player.containerMenu instanceof MekanismContainer container) {
                 container.stopTracking(extra);
             }
         }),
-        CONTAINER_TRACK_EJECTOR((tile, player, extra) -> {
+        CONTAINER_TRACK_EJECTOR((_, tile, player, extra) -> {
             if (player.containerMenu instanceof MekanismContainer container && tile instanceof ISideConfiguration sideConfig) {
                 container.startTrackingServer(extra, sideConfig.getEjector());
             }
         }),
-        CONTAINER_TRACK_SIDE_CONFIG((tile, player, extra) -> {
+        CONTAINER_TRACK_SIDE_CONFIG((_, tile, player, extra) -> {
             if (player.containerMenu instanceof MekanismContainer container && tile instanceof ISideConfiguration sideConfig) {
                 container.startTrackingServer(extra, sideConfig.getConfig());
             }
         }),
-        CONTAINER_TRACK_UPGRADES((tile, player, extra) -> {
+        CONTAINER_TRACK_UPGRADES((_, tile, player, extra) -> {
             if (player.containerMenu instanceof MekanismContainer container) {//tile instanceof IUpgradeTile
                 container.startTrackingServer(extra, tile.getComponent());
             }
         }),
-        QIO_REDSTONE_ADAPTER_COUNT((tile, _, extra) -> {
+        QIO_REDSTONE_ADAPTER_COUNT((_, tile, _, extra) -> {
             if (tile instanceof TileEntityQIORedstoneAdapter redstoneAdapter) {
                 redstoneAdapter.handleCountChange(extra);
             }
         }),
-        QIO_REDSTONE_ADAPTER_FUZZY((tile, _, _) -> {
+        QIO_REDSTONE_ADAPTER_FUZZY((_, tile, _, _) -> {
             if (tile instanceof TileEntityQIORedstoneAdapter redstoneAdapter) {
                 redstoneAdapter.toggleFuzzyMode();
             }
         }),
-        QIO_TOGGLE_IMPORT_WITHOUT_FILTER((tile, _, _) -> {
+        QIO_TOGGLE_IMPORT_WITHOUT_FILTER((_, tile, _, _) -> {
             if (tile instanceof TileEntityQIOImporter importer) {
                 importer.toggleImportWithoutFilter();
             }
         }),
-        QIO_TOGGLE_EXPORT_WITHOUT_FILTER((tile, _, _) -> {
+        QIO_TOGGLE_EXPORT_WITHOUT_FILTER((_, tile, _, _) -> {
             if (tile instanceof TileEntityQIOExporter exporter) {
                 exporter.toggleExportWithoutFilter();
             }
         }),
-        AUTO_SORT_BUTTON((tile, _, _) -> {
+        AUTO_SORT_BUTTON((_, tile, _, _) -> {
             if (tile instanceof TileEntityFactory<?> factory) {
                 factory.toggleSorting();
             }
         }),
-        TARGET_DIRECTION_BUTTON((tile, _, _) -> {
+        TARGET_DIRECTION_BUTTON((_, tile, _, _) -> {
             if (tile instanceof TileEntityQIODashboard dashboard) {
                 dashboard.toggleShiftClickDirection();
             }
         }),
-        DUMP_BUTTON((tile, _, _) -> {
+        DUMP_BUTTON((_, tile, _, _) -> {
             if (tile instanceof IHasDumpButton hasDumpButton) {
                 hasDumpButton.dump();
             }
         }),
-        GAS_MODE_BUTTON((tile, _, extra) -> {
+        GAS_MODE_BUTTON((_, tile, _, extra) -> {
             if (tile instanceof IHasGasMode hasGasMode) {
                 hasGasMode.nextMode(extra);
             }
         }),
 
-        AUTO_EJECT_BUTTON((tile, _, _) -> {
+        AUTO_EJECT_BUTTON((_, tile, _, _) -> {
             if (tile instanceof TileEntityDigitalMiner miner) {
                 miner.toggleAutoEject();
             } else if (tile instanceof TileEntityLogisticalSorter sorter) {
                 sorter.toggleAutoEject();
             }
         }),
-        AUTO_PULL_BUTTON((tile, _, _) -> {
+        AUTO_PULL_BUTTON((_, tile, _, _) -> {
             if (tile instanceof TileEntityDigitalMiner miner) {
                 miner.toggleAutoPull();
             }
         }),
-        INVERSE_BUTTON((tile, _, _) -> {
+        INVERSE_BUTTON((_, tile, _, _) -> {
             if (tile instanceof TileEntityDigitalMiner miner) {
                 miner.toggleInverse();
             } else if (tile instanceof TileEntityQIORedstoneAdapter adapter) {
                 adapter.invertSignal();
             }
         }),
-        INVERSE_REQUIRES_REPLACEMENT_BUTTON((tile, _, _) -> {
+        INVERSE_REQUIRES_REPLACEMENT_BUTTON((_, tile, _, _) -> {
             if (tile instanceof TileEntityDigitalMiner miner) {
                 miner.toggleInverseRequiresReplacement();
             }
         }),
-        RESET_BUTTON((tile, _, _) -> {
+        RESET_BUTTON((_, tile, _, _) -> {
             if (tile instanceof TileEntityDigitalMiner miner) {
                 miner.reset();
             }
         }),
-        SILK_TOUCH_BUTTON((tile, _, _) -> {
+        SILK_TOUCH_BUTTON((_, tile, _, _) -> {
             if (tile instanceof TileEntityDigitalMiner miner) {
                 miner.toggleSilkTouch();
             }
         }),
-        START_BUTTON((tile, _, _) -> {
+        START_BUTTON((_, tile, _, _) -> {
             if (tile instanceof TileEntityDigitalMiner miner) {
                 miner.start();
             }
         }),
-        STOP_BUTTON((tile, _, _) -> {
+        STOP_BUTTON((_, tile, _, _) -> {
             if (tile instanceof TileEntityDigitalMiner miner) {
                 miner.stop();
             }
         }),
-        SET_RADIUS((tile, _, extra) -> {
+        SET_RADIUS((_, tile, _, extra) -> {
             if (tile instanceof TileEntityDigitalMiner miner) {
                 miner.setRadiusFromPacket(extra);
             }
         }),
-        SET_MIN_Y((tile, _, extra) -> {
+        SET_MIN_Y((_, tile, _, extra) -> {
             if (tile instanceof TileEntityDigitalMiner miner) {
                 miner.setMinYFromPacket(extra);
             }
         }),
-        SET_MAX_Y((tile, _, extra) -> {
+        SET_MAX_Y((_, tile, _, extra) -> {
             if (tile instanceof TileEntityDigitalMiner miner) {
                 miner.setMaxYFromPacket(extra);
             }
         }),
 
-        MOVE_FILTER_UP((tile, _, extra) -> {
+        MOVE_FILTER_UP((_, tile, _, extra) -> {
             if (tile instanceof ITileFilterHolder<?> filterHolder && filterHolder.getFilterManager() instanceof SortableFilterManager<?> manager) {
                 manager.moveUp(extra);
             }
         }),
-        MOVE_FILTER_DOWN((tile, _, extra) -> {
+        MOVE_FILTER_DOWN((_, tile, _, extra) -> {
             if (tile instanceof ITileFilterHolder<?> filterHolder && filterHolder.getFilterManager() instanceof SortableFilterManager<?> manager) {
                 manager.moveDown(extra);
             }
         }),
-        MOVE_FILTER_TO_TOP((tile, _, extra) -> {
+        MOVE_FILTER_TO_TOP((_, tile, _, extra) -> {
             if (tile instanceof ITileFilterHolder<?> filterHolder && filterHolder.getFilterManager() instanceof SortableFilterManager<?> manager) {
                 manager.moveToTop(extra);
             }
         }),
-        MOVE_FILTER_TO_BOTTOM((tile, _, extra) -> {
+        MOVE_FILTER_TO_BOTTOM((_, tile, _, extra) -> {
             if (tile instanceof ITileFilterHolder<?> filterHolder && filterHolder.getFilterManager() instanceof SortableFilterManager<?> manager) {
                 manager.moveToBottom(extra);
             }
         }),
-        TOGGLE_FILTER_STATE((tile, _, extra) -> {
+        TOGGLE_FILTER_STATE((_, tile, _, extra) -> {
             if (tile instanceof ITileFilterHolder<?> filterHolder) {
                 filterHolder.getFilterManager().toggleState(extra);
             }
         }),
 
-        REMOVE_UPGRADE((tile, _, extra) -> {
+        REMOVE_UPGRADE((_, tile, _, extra) -> {
             if (tile.supportsUpgrades()) {
                 TileComponentUpgrade component = tile.getComponent();
                 if (component != null) {//Should never be null here
@@ -238,7 +239,7 @@ public record PacketGuiInteract(GuiInteraction interaction, BlockPos tilePositio
                 }
             }
         }),
-        REMOVE_ALL_UPGRADE((tile, _, extra) -> {
+        REMOVE_ALL_UPGRADE((_, tile, _, extra) -> {
             if (tile.supportsUpgrades()) {
                 TileComponentUpgrade component = tile.getComponent();
                 if (component != null) {//Should never be null here
@@ -247,132 +248,128 @@ public record PacketGuiInteract(GuiInteraction interaction, BlockPos tilePositio
             }
         }),
 
-        NEXT_SECURITY_MODE((tile, player, _) -> {
-            if (tile.getLevel() != null) {
-                SecurityUtils.get().incrementSecurityMode(player, IBlockSecurityUtils.INSTANCE.securityCapability(tile.getLevel(), tile.getBlockPos(), tile), null);
-            }
-        }),
-        PREVIOUS_SECURITY_MODE((tile, player, _) -> {
-            if (tile.getLevel() != null) {
-                SecurityUtils.get().decrementSecurityMode(player, IBlockSecurityUtils.INSTANCE.securityCapability(tile.getLevel(), tile.getBlockPos(), tile), null);
-            }
-        }),
+        NEXT_SECURITY_MODE((level, tile, player, _) ->
+              SecurityUtils.get().incrementSecurityMode(player, IBlockSecurityUtils.INSTANCE.securityCapability(level, tile.getBlockPos(), tile), null)
+        ),
+        PREVIOUS_SECURITY_MODE((level, tile, player, _) ->
+              SecurityUtils.get().decrementSecurityMode(player, IBlockSecurityUtils.INSTANCE.securityCapability(level, tile.getBlockPos(), tile), null)
+        ),
 
-        SECURITY_DESK_MODE((tile, _, extra) -> {
+        SECURITY_DESK_MODE((_, tile, _, extra) -> {
             if (tile instanceof TileEntitySecurityDesk desk) {
                 desk.setSecurityDeskMode(SecurityMode.BY_ID.apply(extra));
             }
         }),
 
-        NEXT_MODE((tile, _, _) -> {
+        NEXT_MODE((_, tile, _, _) -> {
             if (tile instanceof IHasMode hasMode) {
                 hasMode.nextMode();
             }
         }),
-        PREVIOUS_MODE((tile, _, _) -> {
+        PREVIOUS_MODE((_, tile, _, _) -> {
             if (tile instanceof IHasMode hasMode) {
                 hasMode.previousMode();
             }
         }),
-        NEXT_REDSTONE_CONTROL((tile, _, _) -> tile.setControlType(tile.getControlType().getNext(tile::supportsMode))),
-        PREVIOUS_REDSTONE_CONTROL((tile, _, _) -> tile.setControlType(tile.getControlType().getPrevious(tile::supportsMode))),
-        ENCODE_FORMULA((tile, _, _) -> {
+        NEXT_REDSTONE_CONTROL((_, tile, _, _) -> tile.setControlType(tile.getControlType().getNext(tile::supportsMode))),
+        PREVIOUS_REDSTONE_CONTROL((_, tile, _, _) -> tile.setControlType(tile.getControlType().getPrevious(tile::supportsMode))),
+        ENCODE_FORMULA((_, tile, _, _) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
                 assemblicator.encodeFormula();
             }
         }),
-        STOCK_CONTROL_BUTTON((tile, _, _) -> {
+        STOCK_CONTROL_BUTTON((level, tile, _, _) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
-                assemblicator.toggleStockControl();
+                assemblicator.toggleStockControl(level);
             }
         }),
-        CRAFT_SINGLE((tile, _, _) -> {
+        CRAFT_SINGLE((level, tile, _, _) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
-                assemblicator.craftSingle(tile.getLevel());
+                assemblicator.craftSingle(level);
             }
         }),
-        CRAFT_ALL((tile, _, _) -> {
+        CRAFT_ALL((level, tile, _, _) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
-                assemblicator.craftAll(tile.getLevel());
+                assemblicator.craftAll(level);
             }
         }),
-        EMPTY_GRID((tile, _, _) -> {
+        EMPTY_GRID((level, tile, _, _) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
-                assemblicator.emptyGrid(tile.getLevel());
+                assemblicator.emptyGrid(level);
             }
         }),
-        FILL_GRID((tile, _, _) -> {
+        FILL_GRID((level, tile, _, _) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
-                assemblicator.fillGrid(tile.getLevel());
+                assemblicator.fillGrid(level);
             }
         }),
 
-        STRICT_INPUT((tile, _, _) -> {
+        STRICT_INPUT((_, tile, _, _) -> {
             if (tile instanceof ISideConfiguration sideConfiguration) {
                 TileComponentEjector ejector = sideConfiguration.getEjector();
                 ejector.setStrictInput(!ejector.hasStrictInput());
             }
         }),
 
-        ROUND_ROBIN_BUTTON((tile, _, _) -> {
+        ROUND_ROBIN_BUTTON((_, tile, _, _) -> {
             if (tile instanceof IAdvancedTransportEjector sorter) {
                 sorter.toggleRoundRobin();
             }
         }),
-        SINGLE_ITEM_BUTTON((tile, _, _) -> {
+        SINGLE_ITEM_BUTTON((_, tile, _, _) -> {
             if (tile instanceof TileEntityLogisticalSorter sorter) {
                 sorter.toggleSingleItem();
             }
         }),
-        CHANGE_COLOR((tile, _, extra) -> {
+        CHANGE_COLOR((_, tile, _, extra) -> {
             if (tile instanceof TileEntityLogisticalSorter sorter) {
                 sorter.changeColor(TransporterUtils.readColor(extra));
             }
         }),
 
-        OVERRIDE_BUTTON((tile, _, _) -> {
+        OVERRIDE_BUTTON((_, tile, _, _) -> {
             if (tile instanceof TileEntitySecurityDesk desk) {
                 desk.toggleOverride();
             }
         }),
-        REMOVE_TRUSTED((tile, _, extra) -> {
+        REMOVE_TRUSTED((_, tile, _, extra) -> {
             if (tile instanceof TileEntitySecurityDesk desk) {
                 desk.removeTrusted(extra);
             }
         }),
 
-        SET_TIME((tile, _, extra) -> {
+        SET_TIME((_, tile, _, extra) -> {
             if (tile instanceof TileEntityLaserAmplifier amplifier) {
                 amplifier.setDelay(extra);
             }
         }),
-        MIN_THRESHOLD((tile, _, extra) -> {
+        MIN_THRESHOLD((_, tile, _, extra) -> {
             if (tile instanceof TileEntityLaserAmplifier amplifier) {
                 amplifier.setMinThresholdFromPacket(extra);
             }
         }),
-        MAX_THRESHOLD((tile, _, extra) -> {
+        MAX_THRESHOLD((_, tile, _, extra) -> {
             if (tile instanceof TileEntityLaserAmplifier amplifier) {
                 amplifier.setMaxThresholdFromPacket(extra);
             }
         }),
-        ENERGY_USAGE((tile, _, extra) -> {
+        ENERGY_USAGE((_, tile, _, extra) -> {
             if (tile instanceof TileEntityResistiveHeater heater) {
                 heater.setEnergyUsageFromPacket(extra);
             }
         }),
 
-        TOGGLE_CHUNKLOAD((tile, _, extra) -> {
+        TOGGLE_CHUNKLOAD((_, tile, _, extra) -> {
             if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
                 stabilizer.toggleChunkLoadingAt(extra / TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER, extra % TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER);
             }
         }),
-        ENABLE_RADIUS_CHUNKLOAD((tile, _, extra) -> {
+        ENABLE_RADIUS_CHUNKLOAD((_, tile, _, extra) -> {
             if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
                 stabilizer.adjustChunkLoadingRadius(extra, true);
             }
         }),
-        DISABLE_RADIUS_CHUNKLOAD((tile, _, extra) -> {
+        DISABLE_RADIUS_CHUNKLOAD((_, tile, _, extra) -> {
             if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
                 stabilizer.adjustChunkLoadingRadius(extra, false);
             }
@@ -381,14 +378,20 @@ public record PacketGuiInteract(GuiInteraction interaction, BlockPos tilePositio
         public static final IntFunction<GuiInteraction> BY_ID = ByIdMap.continuous(GuiInteraction::ordinal, values(), OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, GuiInteraction> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, GuiInteraction::ordinal);
 
-        private final TriConsumer<TileEntityMekanism, Player, Integer> consumerForTile;
+        private final TileConsumer consumerForTile;
 
-        GuiInteraction(TriConsumer<TileEntityMekanism, Player, Integer> consumerForTile) {
+        GuiInteraction(TileConsumer consumerForTile) {
             this.consumerForTile = consumerForTile;
         }
 
-        public void consume(TileEntityMekanism tile, Player player, int extra) {
-            consumerForTile.accept(tile, player, extra);
+        public void consume(Level level, TileEntityMekanism tile, Player player, int extra) {
+            consumerForTile.accept(level, tile, player, extra);
         }
+    }
+
+    @FunctionalInterface
+    private interface TileConsumer {
+
+        void accept(Level level, TileEntityMekanism tile, Player player, int extra);
     }
 }

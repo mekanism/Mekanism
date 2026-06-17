@@ -61,7 +61,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
         long theirScale = net.currentScale == 0 ? 0L : (long) (net.getCapacity() * net.currentScale);
         long capacity = getCapacity();
         currentScale = (float) Math.min(1, capacity == 0L ? 0D : (ourScale + theirScale) / (double) capacity);
-        if (!isRemote() && !net.energyContainer.isEmpty()) {
+        if (!isClientSide() && !net.energyContainer.isEmpty()) {
             energyContainer.setEnergy(MathUtils.addClamped(energyContainer.getAmountAsLong(), net.getBuffer()), null);
             net.energyContainer.setEnergy(0, null);
         }

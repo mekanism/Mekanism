@@ -19,6 +19,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
@@ -76,7 +77,8 @@ public class TileComponentSecurity implements ITileComponent {
             SecurityMode old = securityMode;
             securityMode = mode;
             tile.onSecurityChanged(old, securityMode);
-            if (!tile.isRemote()) {
+            Level level = tile.getLevel();
+            if (level != null && !level.isClientSide()) {
                 tile.markForSave();
             }
         }

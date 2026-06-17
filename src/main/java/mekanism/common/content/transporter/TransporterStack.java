@@ -186,33 +186,33 @@ public class TransporterStack {
         return pathType == null ? Path.NONE : pathType;
     }
 
-    public final TransitResponse recalculatePath(TransitRequest request, @Nullable BlockEntity ignored, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction) {
-        return recalculatePath(request, transporter, min, transaction);
+    public final TransitResponse recalculatePath(Level level, TransitRequest request, @Nullable BlockEntity ignored, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction) {
+        return recalculatePath(level, request, transporter, min, transaction);
     }
 
-    public TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction) {
+    public TransitResponse recalculatePath(Level level, TransitRequest request, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction) {
         Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, request, min, transaction);
         if (newPath == null) {
             return TransitResponse.EMPTY;
         }
         idleDir = null;
-        setPath(transporter.getLevel(), newPath.getPath(), Path.DEST, transaction);
+        setPath(level, newPath.getPath(), Path.DEST, transaction);
         initiatedPath = true;
-        return newPath.getResponse();
+        return newPath.getResponseOrEmpty();
     }
 
-    public TransitResponse recalculateRRPath(TransitRequest request, IAdvancedTransportEjector outputter, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction) {
+    public TransitResponse recalculateRRPath(Level level, TransitRequest request, IAdvancedTransportEjector outputter, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction) {
         Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, request, outputter, min, transaction);
         if (newPath == null) {
             return TransitResponse.EMPTY;
         }
         idleDir = null;
-        setPath(transporter.getLevel(), newPath.getPath(), Path.DEST, transaction);
+        setPath(level, newPath.getPath(), Path.DEST, transaction);
         initiatedPath = true;
-        return newPath.getResponse();
+        return newPath.getResponseOrEmpty();
     }
 
-    public boolean calculateIdle(LogisticalTransporterBase transporter, @Nullable TransactionContext transaction) {
+    public boolean calculateIdle(Level level, LogisticalTransporterBase transporter, @Nullable TransactionContext transaction) {
         IdlePathData newPath = TransporterPathfinder.getIdlePath(transporter, this, transaction);
         if (newPath == null) {
             return false;
@@ -220,7 +220,7 @@ public class TransporterStack {
         if (newPath.type().isHome()) {
             idleDir = null;
         }
-        setPath(transporter.getLevel(), newPath.path(), newPath.type(), transaction);
+        setPath(level, newPath.path(), newPath.type(), transaction);
         originalLocation = transporter.getWorldPositionLong();
         initiatedPath = true;
         return true;
@@ -238,7 +238,7 @@ public class TransporterStack {
     }
 
     public long getNext(LogisticalTransporterBase transporter) {
-        return transporter.isRemote() ? clientNext : getNext(transporter.getWorldPositionLong());
+        return transporter.isClientSide() ? clientNext : getNext(transporter.getWorldPositionLong());
     }
 
     private long getNext(long pos) {
@@ -250,7 +250,7 @@ public class TransporterStack {
     }
 
     public long getPrev(LogisticalTransporterBase transporter) {
-        return transporter.isRemote() ? clientPrev : getPrev(transporter.getBlockPos().asLong());
+        return transporter.isClientSide() ? clientPrev : getPrev(transporter.getBlockPos().asLong());
     }
 
     private long getPrev(long pos) {

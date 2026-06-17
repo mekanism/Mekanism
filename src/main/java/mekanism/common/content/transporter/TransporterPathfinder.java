@@ -345,6 +345,13 @@ public final class TransporterPathfinder {
             return response;
         }
 
+        public TransitResponse getResponseOrEmpty() {
+            if (response == null) {
+                return TransitResponse.EMPTY;
+            }
+            return response;
+        }
+
         public Path getPathType() {
             return pathType;
         }

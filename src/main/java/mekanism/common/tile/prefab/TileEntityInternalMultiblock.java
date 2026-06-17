@@ -42,7 +42,7 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     }
 
     protected void multiblockChanged(LevelReader level, @Nullable UUID old) {
-        if (!isRemote()) {
+        if (!level.isClientSide()) {
             sendUpdatePacket();
         }
     }

@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import com.mojang.math.Constants;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -239,7 +240,7 @@ public class CommonPlayerTickHandler {
         LivingEntity entity = event.getEntity();
         double safeFallDistance = entity.getAttributeValue(Attributes.SAFE_FALL_DISTANCE);
         double fallDistance = Math.max(event.getDistance() - safeFallDistance, 0);
-        if (fallDistance <= 1.0E-6) {//TODO - 26.2: Figure out where this constant is defined
+        if (fallDistance <= Constants.EPSILON) {
             return;
         }
         double damageMultiplier = event.getDamageMultiplier() * entity.getAttributeValue(Attributes.FALL_DAMAGE_MULTIPLIER);

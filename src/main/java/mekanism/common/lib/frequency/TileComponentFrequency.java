@@ -253,7 +253,8 @@ public class TileComponentFrequency implements ITileComponent {
 
     @Override
     public void applyImplicitComponents(DataComponentGetter input) {
-        if (!tile.isRemote()) {
+        Level level = tile.getLevel();
+        if (level != null && !level.isClientSide()) {
             for (FrequencyType<?> key : nonSecurityFrequencies.keySet()) {
                 setFrequencyFromComponent(input, key);
             }

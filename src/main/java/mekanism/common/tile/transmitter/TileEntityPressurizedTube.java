@@ -15,6 +15,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -51,12 +52,12 @@ public class TileEntityPressurizedTube extends TileEntityResourceTransmitter<Che
     }
 
     @Override
-    public float getRadiationScale() {
+    public float getRadiationScale(LevelReader level) {
         if (!RadiationManager.isGlobalRadiationEnabled()) {
             return 0;
         }
         PressurizedTube tube = getTransmitter();
-        if (isRemote()) {
+        if (level.isClientSide()) {
             if (tube.hasTransmitterNetwork()) {
                 ChemicalNetwork network = tube.getTransmitterNetworkNN();
                 if (!network.getLastType().isEmpty() && !network.getContainer().isEmpty() && network.getLastType().isRadioactive()) {
@@ -71,8 +72,8 @@ public class TileEntityPressurizedTube extends TileEntityResourceTransmitter<Che
     }
 
     @Override
-    public int getRadiationParticleCount() {
-        return MathUtils.clampToInt(3 * getRadiationScale());
+    public int getRadiationParticleCount(LevelReader level) {
+        return MathUtils.clampToInt(3 * getRadiationScale(level));
     }
 
     //Methods relating to IComputerTile

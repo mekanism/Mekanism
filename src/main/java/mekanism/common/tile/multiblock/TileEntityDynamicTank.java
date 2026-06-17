@@ -40,7 +40,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
                         return InteractionResult.SUCCESS_SERVER;
                     }
                 }
-                InteractionResult result = openGui(player);
+                InteractionResult result = openGui(level, player);
                 return result;
                 //TODO - 26.2: why are these being remapped??
                 /*return switch (result) {

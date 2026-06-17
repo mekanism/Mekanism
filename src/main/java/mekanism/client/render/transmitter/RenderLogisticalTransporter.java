@@ -77,7 +77,7 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
         LogisticalTransporterBase transmitter = transporter.getTransmitter();
         Collection<TransporterStack> inTransit = transmitter.getTransit();
         if (!inTransit.isEmpty()) {
-            Level level = transmitter.getLevel();
+            Level level = transporter.getLevel();
             float partial = partialTick * transmitter.tier.getSpeed();
             state.stacks = new ArrayList<>();
             Set<TransportInformation> information = new ObjectOpenHashSet<>(inTransit.size());

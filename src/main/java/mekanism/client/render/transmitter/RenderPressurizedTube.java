@@ -34,7 +34,6 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
         }
         state.currentScale = Math.max(0.2F, network.currentScale);
         state.chemicalTexture = MekanismRenderer.getChemicalTexture(network.getLastType());
-        //TODO - 26.2: Do we need to make this ARGB as technically alpha is currently empty
         state.chemicalTint = MekanismRenderer.getTint(network.getLastType().typeHolder());
     }
 

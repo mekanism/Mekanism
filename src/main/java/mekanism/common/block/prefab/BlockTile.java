@@ -59,7 +59,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
             //No tile, we can just skip trying to use without an item
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         } else if (world.isClientSide()) {
-            return genericClientActivated(stack, tile);
+            return genericClientActivated(world, stack, tile);
         }
         InteractionResult wrenchResult = tile.tryWrench(world, state, player, stack).getInteractionResult();
         return wrenchResult == InteractionResult.PASS ? InteractionResult.TRY_WITH_EMPTY_HAND : wrenchResult;
@@ -73,7 +73,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         } else if (world.isClientSide()) {
             return Attribute.has(this, AttributeGui.class) ? InteractionResult.SUCCESS : InteractionResult.PASS;
         }
-        return tile.openGui(player);
+        return tile.openGui(world, player);
     }
 
     @Override

@@ -498,7 +498,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     protected WrenchResult tryWrenchDismantle(Level level, BlockState state, Player player, ItemStack stack) {
         if (player.isShiftKeyDown()) {
-            if (RadiationManager.isGlobalRadiationEnabled() && getRadiationScale() > 0) {
+            if (RadiationManager.isGlobalRadiationEnabled() && getRadiationScale(level) > 0) {
                 //Don't allow dismantling radioactive blocks
                 return WrenchResult.RADIOACTIVE;
             }
@@ -549,9 +549,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return result;
     }
 
-    public InteractionResult openGui(Player player) {
-        //Everything that calls this has isRemote being false but add the check just in case anyway
-        if (hasGui() && !isRemote() && !player.isShiftKeyDown()) {
+    public InteractionResult openGui(Level level, Player player) {
+        //Everything that calls this has isClientSide being false but add the check just in case anyway
+        if (hasGui() && !level.isClientSide() && !player.isShiftKeyDown()) {
             if (hasSecurity() && !IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, player.level(), worldPosition, this)) {
                 return InteractionResult.FAIL;
             }
@@ -1199,7 +1199,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public float getRadiationScale() {
+    public float getRadiationScale(LevelReader level) {
         return RadiationManager.isGlobalRadiationEnabled() ? radiationScale : 0;
     }
 
@@ -1328,7 +1328,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //Methods for implementing ITileActive
     @Override
     public boolean getActive() {
-        return isRemote() ? getClientActive() : currentActive;
+        return level == null || level.isClientSide() ? getClientActive() : currentActive;
     }
 
     private boolean getClientActive() {

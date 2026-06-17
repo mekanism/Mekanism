@@ -457,7 +457,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             //TODO - 26.2: Should these configs be limited to ints?
             maxWater = injectionRate * MekanismGeneratorsConfig.generators.fusionWaterPerInjection.get();
             maxSteam = injectionRate * MekanismGeneratorsConfig.generators.fusionSteamPerInjection.get();
-            if (!isRemote()) {
+            if (!isClientSide()) {
                 ContainerType.FLUID.clampContents(waterTank, transaction);
                 ContainerType.CHEMICAL.clampContents(steamTank, transaction);
             }

@@ -2,7 +2,6 @@ package mekanism.common.tile.base;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketUpdateTile;
@@ -63,11 +62,6 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     public long getGameTime() {
         //TODO - 26.2: Re-evaluate this impl
         return level == null ? 0 : level.getGameTime();
-    }
-
-    /// Like [Level#isClientSide()], but for when you _know_ world won't be null
-    public boolean isRemote() {
-        return Objects.requireNonNull(level, "isRemote called before world set").isClientSide();
     }
 
     /// Called when the tile is permanently removed

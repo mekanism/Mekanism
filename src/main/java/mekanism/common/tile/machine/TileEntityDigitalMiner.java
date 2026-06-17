@@ -1154,7 +1154,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     @ComputerMethod(methodDescription = "Get the count of block found but not yet mined")
     public int getToMine() {
-        return !isRemote() && searcher.state == State.SEARCHING ? searcher.found : cachedToMine;
+        if (level == null) {
+            return 0;
+        }
+        return !level.isClientSide() && searcher.state == State.SEARCHING ? searcher.found : cachedToMine;
     }
 
     @ComputerMethod(methodDescription = "Whether the miner is currently running")

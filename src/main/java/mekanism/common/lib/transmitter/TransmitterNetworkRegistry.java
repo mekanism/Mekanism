@@ -230,6 +230,7 @@ public class TransmitterNetworkRegistry {
         private final Set<BlockPos> iterated = new ObjectOpenHashSet<>();
         private final Deque<BlockPos> queue = new LinkedList<>();
         private final TRANSMITTER startPoint;
+        @Nullable
         private final Level world;
 
         OrphanPathFinder(Transmitter<ACCEPTOR, NETWORK, TRANSMITTER> start) {

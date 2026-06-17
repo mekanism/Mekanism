@@ -574,8 +574,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return autoMode;
     }
 
-    public void toggleStockControl() {
-        if (!isRemote() && !formula.isEmpty()) {
+    public void toggleStockControl(Level level) {
+        if (!level.isClientSide() && !formula.isEmpty()) {
             stockControl = !stockControl;
             if (stockControl) {
                 organizeStock();
@@ -864,7 +864,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     void setStockControl(boolean mode) throws ComputerException {
         validateHasValidFormula("Stock Control");
         if (stockControl != mode) {
-            toggleStockControl();
+            toggleStockControl(validateLevel());
         }
     }
 

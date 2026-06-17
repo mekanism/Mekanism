@@ -3,6 +3,7 @@ package mekanism.common.tile.transmitter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
 import mekanism.api.text.EnumColor;
@@ -153,7 +154,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
 
     @Override
     public void onChunkUnloaded() {
-        if (!isRemote()) {
+        if (level != null && !level.isClientSide()) {
             //Only take the transmitter's share if it was unloaded and not if we are being removed
             getTransmitter().validateAndTakeShare(null);
         }
@@ -163,7 +164,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     @Override
     public void setRemoved() {
         super.setRemoved();
-        onWorldSeparate(false);
+        if (level != null) {//TODO - 26.2: Re-evaluate this check
+            onWorldSeparate(level, false);
+        }
         getTransmitter().remove();
     }
 
@@ -182,21 +185,21 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         if (!loaded) {
             //Only load it if it wasn't already loaded
             loaded = true;
-            if (!isRemote()) {
+            if (!level.isClientSide()) {
                 TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
             }
         }
     }
 
-    private void onWorldSeparate(boolean stillPresent) {
-        if (!isRemote() && !stillPresent) {
+    private void onWorldSeparate(Level level, boolean stillPresent) {
+        if (!level.isClientSide() && !stillPresent) {
             //If we aren't still present, and we are on the server, stop tracking this transmitter
             TransmitterNetworkRegistry.untrackTransmitter(getTransmitter());
         }
         if (loaded) {
             //Only unload it if it was actually loaded
             loaded = false;
-            if (isRemote()) {
+            if (level.isClientSide()) {
                 getTransmitter().setTransmitterNetwork(null);
             } else {
                 TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
@@ -206,13 +209,14 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     public void chunkAccessibilityChange(boolean loaded) {
+        Level level = Objects.requireNonNull(getLevel(), "Level should not be null if it is in a chunk that changed ticket level");
         if (loaded) {
             //Chunk went from "unloaded" to loaded
             onWorldJoin(level, true);
         } else {
             //Chunk went from loaded to "unloaded", need to take the share first like normally happens when it unloads
             getTransmitter().validateAndTakeShare(null);
-            onWorldSeparate(true);
+            onWorldSeparate(level, true);
         }
     }
 

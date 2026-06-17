@@ -2,6 +2,7 @@ package mekanism.common.capabilities.item;
 
 import java.util.Objects;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -58,10 +59,14 @@ public class TransporterItemHandler implements ResourceHandler<ItemResource> {
         if (amount == 0 || !transporter.hasTransmitterNetwork()) {
             return 0;
         }
+        Level level = transporter.getLevel();
+        if (level == null) {
+            return 0;
+        }
         //Note: We skip checking Transmitter#canConnectMutual, as transporters should never end up using this path,
         // so then it would just fall back to having checked Transmitter#canConnect, which is already covered by
         // the check to LogisticalTransporterBase#exposesInsertCap in TransporterCapabilityResolver
-        return transporter.insertUnchecked(fromPos, resource, Math.min(amount, transporter.tier.getPullAmount()), transaction);
+        return transporter.insertUnchecked(level, fromPos, resource, Math.min(amount, transporter.tier.getPullAmount()), transaction);
     }
 
     @Override

@@ -109,7 +109,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected void validTransmittersAdded() {
     }
 
-    public boolean isRemote() {
+    public boolean isClientSide() {
         return world == null ? EffectiveSide.get().isClient() : world.isClientSide();
     }
 
@@ -121,7 +121,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
         removeInvalid(triggerTransmitter);
         //Now invalidate the transmitters
-        if (!isRemote()) {
+        if (!isClientSide()) {
             try (Transaction transaction = Transaction.openRoot()) {
                 for (TRANSMITTER transmitter : getTransmitters()) {
                     if (transmitter.isValid()) {
@@ -177,7 +177,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void register() {
-        if (isRemote()) {
+        if (isClientSide()) {
             TransmitterNetworkRegistry.addClientNetwork(getUUID(), this);
         } else {
             TransmitterNetworkRegistry.registerNetwork(this);
@@ -189,7 +189,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         transmittersToAdd.clear();
         acceptorCache.deregister();
         transmitterValidator = null;
-        if (isRemote()) {
+        if (isClientSide()) {
             TransmitterNetworkRegistry.removeClientNetwork(this);
         } else {
             TransmitterNetworkRegistry.removeNetwork(this);

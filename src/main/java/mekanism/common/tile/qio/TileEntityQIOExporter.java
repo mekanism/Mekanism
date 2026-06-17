@@ -301,7 +301,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
 
         private static final double MAX_EJECT_ATTEMPTS = 100;
 
-        private void eject(TileEntityQIOExporter exporter, QIOFrequency freq, ResourceHandler<ItemResource> inventory, RandomSource random) {
+        private void eject(TileEntityQIOExporter exporter, ServerLevel level, QIOFrequency freq, ResourceHandler<ItemResource> inventory, RandomSource random) {
             int slots = inventory.size();
             if (slots == 0) {
                 //If the inventory has no slots just exit early and don't even bother calculating the eject map
@@ -346,7 +346,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                     } else {
                         //Note: We don't use transporter#insert as we already know the transporter is valid due to it having exposed a capability
                         // We also can't just use the transporter's handler as we want to support round-robin
-                        toUse = transporter.insertUnchecked(exporter, type, amountToInsert, transaction, pathCalculator);
+                        toUse = transporter.insertUnchecked(level, exporter, type, amountToInsert, transaction, pathCalculator);
                     }
                     //Try to remove the item from the frequency
                     if (toUse > 0 && freq.removeByType(type, toUse, transaction) == toUse) {

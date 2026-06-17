@@ -52,7 +52,7 @@ public class QIODriveSlot extends BasicInventorySlot {
             // Check if we need to update the drive data for the frequency
             ItemResource newDrive = resource();
             ItemResource originalDrive = originalState.resource();
-            if (!isRemote() && !newDrive.equals(originalDrive)) {
+            if (!isClientSide() && !newDrive.equals(originalDrive)) {
                 QIOFrequency frequency = driveHolder.getQIOFrequency();
                 if (frequency != null) {
                     // if we're about to empty this slot and a drive already exists here, remove the current drive from the frequency
@@ -73,7 +73,7 @@ public class QIODriveSlot extends BasicInventorySlot {
         return key;
     }
 
-    private boolean isRemote() {
+    private boolean isClientSide() {
         Level level = levelSupplier.get();
         //Treat world as remote if it is null (hasn't been assigned yet)
         // which may happen when loading the drives from memory

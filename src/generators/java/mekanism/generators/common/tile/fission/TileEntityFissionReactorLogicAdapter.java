@@ -11,6 +11,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -38,6 +39,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Redstone;
@@ -57,7 +59,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     @Override
     protected boolean onUpdateServer(ServerLevel level, FissionReactorMultiblockData multiblock) {
         boolean needsPacket = super.onUpdateServer(level, multiblock);
-        RedstoneStatus status = getStatus();
+        RedstoneStatus status = getStatusServer();
         if (status != prevStatus) {
             Direction side = multiblock.getOutsideSide(worldPosition);
             BlockState state = getBlockState();
@@ -86,14 +88,14 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     public int getRedstoneLevel(Direction side) {
-        return !isRemote() && getMultiblock().isPositionOutsideBounds(worldPosition.relative(side)) && getStatus() == RedstoneStatus.OUTPUTTING ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
+        return level != null && !level.isClientSide() && getMultiblock().isPositionOutsideBounds(worldPosition.relative(side)) && getStatusServer() == RedstoneStatus.OUTPUTTING ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
     }
 
-    @ComputerMethod(nameOverride = "getRedstoneLogicStatus")
-    public RedstoneStatus getStatus() {
-        if (isRemote()) {
-            return prevStatus;
-        }
+    public RedstoneStatus getStatusClient() {
+        return prevStatus;
+    }
+
+    private RedstoneStatus getStatusServer() {
         FissionReactorMultiblockData multiblock = getMultiblock();
         if (multiblock.isFormed()) {
             switch (logicType) {
@@ -190,6 +192,12 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     @Override
     public boolean canBeMaster() {
         return false;
+    }
+
+    @ComputerMethod
+    RedstoneStatus getRedstoneLogicStatus() throws ComputerException {
+        Level level = validateLevel();
+        return level.isClientSide() ? getStatusClient() : getStatusServer();
     }
 
     public enum FissionReactorLogic implements IReactorLogicMode<FissionReactorLogic>, IHasEnumNameTranslationKey, StringRepresentable {

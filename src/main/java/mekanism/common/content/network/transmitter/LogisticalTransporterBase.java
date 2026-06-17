@@ -198,7 +198,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
                     TransitRequest request = TransitRequest.anyItem(inventory, tier.getPullAmount(), transaction);
                     //There's a stack available to insert into the network...
                     if (!request.isEmpty()) {
-                        TransitResponse response = insert(null, getBlockPos().relative(side), request, getColor(), 0, transaction);
+                        TransitResponse response = insert(level, null, getBlockPos().relative(side), request, getColor(), 0, transaction);
                         if (response.useAll(transaction)) {
                             //If the insert succeeded, remove the inserted count and try again in another 10 ticks
                             transaction.commit();
@@ -453,8 +453,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
 
     private boolean recalculate(Level level, int stackId, TransporterStack stack, long from, @Nullable TransactionContext transaction) {
         //TODO: Why do we skip recalculating the path if it is idle. Is it possible for idle paths to eventually stop being idle or are they just idle forever??
-        boolean noPath = stack.getPathType().noTarget() || stack.recalculatePath(TransitRequest.simple(stack), this, 0, transaction).isEmpty();
-        if (noPath && !stack.calculateIdle(this, transaction)) {
+        boolean noPath = stack.getPathType().noTarget() || stack.recalculatePath(level, TransitRequest.simple(stack), this, 0, transaction).isEmpty();
+        if (noPath && !stack.calculateIdle(level, this, transaction)) {
             drop(level, stack, transaction);
             return false;
         }
@@ -467,30 +467,31 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
         return true;
     }
 
-    public TransitResponse insert(@Nullable BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, int min, @Nullable TransactionContext transaction) {
+    public TransitResponse insert(Level level, @Nullable BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, int min, @Nullable TransactionContext transaction) {
         Direction from = WorldUtils.sideDifference(getBlockPos(), outputterPos);
         if (from != null && canReceiveFrom(from.getOpposite())) {
             TransporterStack stack = createInsertStack(outputterPos.asLong(), color);
             if (stack.canInsertToTransporter(this, from, outputter)) {
                 if (outputter instanceof IAdvancedTransportEjector ejector && ejector.getRoundRobin()) {
-                    return insertUnchecked((BlockEntity & IAdvancedTransportEjector) outputter, request, stack, min, transaction, TransporterStack::recalculateRRPath);
+                    return insertUnchecked(level, (BlockEntity & IAdvancedTransportEjector) outputter, request, stack, min, transaction, TransporterStack::recalculateRRPath);
                 }
-                return insertUnchecked(outputter, request, stack, min, transaction, TransporterStack::recalculatePath);
+                return insertUnchecked(level, outputter, request, stack, min, transaction, TransporterStack::recalculatePath);
             }
         }
         return TransitResponse.EMPTY;
     }
 
-    public <BE extends BlockEntity> int insertUnchecked(BE outputter, ItemResource type, int amountToInsert, @Nullable TransactionContext transaction, PathCalculator<BE> pathCalculator) {
+    public <BE extends BlockEntity> int insertUnchecked(Level level, BE outputter, ItemResource type, int amountToInsert, @Nullable TransactionContext transaction,
+          PathCalculator<BE> pathCalculator) {
         TransitRequest request = TransitRequest.simple(type, amountToInsert);
         TransporterStack stack = createInsertStack(outputter.getBlockPos().asLong(), getColor());
-        return insertUnchecked(outputter, request, stack, 1, transaction, pathCalculator).sendingAmount();
+        return insertUnchecked(level, outputter, request, stack, 1, transaction, pathCalculator).sendingAmount();
     }
 
-    public int insertUnchecked(long outputterPos, ItemResource type, int amountToInsert, @Nullable TransactionContext transaction) {
+    public int insertUnchecked(Level level, long outputterPos, ItemResource type, int amountToInsert, @Nullable TransactionContext transaction) {
         TransitRequest request = TransitRequest.simple(type, amountToInsert);
         TransporterStack stack = createInsertStack(outputterPos, getColor());
-        return insertUnchecked(null, request, stack, 1, transaction, TransporterStack::recalculatePath).sendingAmount();
+        return insertUnchecked(level, null, request, stack, 1, transaction, TransporterStack::recalculatePath).sendingAmount();
     }
 
     private TransporterStack createInsertStack(long outputterCoord, @Nullable EnumColor color) {
@@ -501,12 +502,12 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
         return stack;
     }
 
-    private <BE extends @Nullable BlockEntity> TransitResponse insertUnchecked(BE outputter, TransitRequest request, TransporterStack stack, int min,
+    private <BE extends @Nullable BlockEntity> TransitResponse insertUnchecked(Level level, BE outputter, TransitRequest request, TransporterStack stack, int min,
           @Nullable TransactionContext transaction, PathCalculator<BE> pathCalculator) {
         //TODO: Technically if we still have more of the same item input, we want to allow trying to insert it into different transport
         // destinations, which this doesn't do as it only checks once, rather than trying to check all destinations we can send to
         // if the amount would be split between multiple destinations
-        TransitResponse response = pathCalculator.calculate(stack, request, outputter, this, min, transaction);
+        TransitResponse response = pathCalculator.calculate(stack, level, request, outputter, this, min, transaction);
         if (!response.isEmpty()) {
             stack.setStack(response.itemType(), response.sendingAmount());
             if (transaction == null) {
@@ -549,7 +550,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     @FunctionalInterface
     public interface PathCalculator<BE extends @Nullable BlockEntity> {
 
-        TransitResponse calculate(TransporterStack stack, TransitRequest request, BE outputter, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction);
+        TransitResponse calculate(TransporterStack stack, Level level, TransitRequest request, BE outputter, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction);
     }
 
     /// Based on [PlayerInventoryWrapper.DroppedItems]
