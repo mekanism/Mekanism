@@ -77,12 +77,12 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         return ret;
     }
 
-    public TransitResponse eject(BlockEntity outputter, @Nullable ResourceHandler<ItemResource> target, int min, @Nullable EnumColor outputColor,
+    public TransitResponse eject(BlockEntity outputter, Level level, @Nullable ResourceHandler<ItemResource> target, int min, @Nullable EnumColor outputColor,
           TransactionContext transaction) {
-        return eject(outputter, outputter.getBlockPos(), target, min, outputColor, transaction);
+        return eject(outputter, level, outputter.getBlockPos(), target, min, outputColor, transaction);
     }
 
-    public TransitResponse eject(BlockEntity outputter, BlockPos outputterPos, @Nullable ResourceHandler<ItemResource> target, int min,
+    public TransitResponse eject(BlockEntity outputter, Level level, BlockPos outputterPos, @Nullable ResourceHandler<ItemResource> target, int min,
           @Nullable EnumColor outputColor, TransactionContext transaction) {
         if (isEmpty()) {//Short circuit if our request is empty
             return TransitResponse.EMPTY;

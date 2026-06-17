@@ -292,7 +292,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                         }
                         //If the spot is not loaded just skip trying to eject to it
                         try (Transaction subTransaction = Transaction.open(transaction)) {
-                            TransitResponse response = ejectMap.eject(tile, capability, 1, this.outputColor, subTransaction);
+                            TransitResponse response = ejectMap.eject(tile, level, capability, 1, this.outputColor, subTransaction);
                             if (response.useAll(subTransaction)) {
                                 // use the items returned by the TransitResponse; will be visible next loop
                                 subTransaction.commit();

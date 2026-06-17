@@ -103,7 +103,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                     targetInventory = Capabilities.ITEM.createCache(level, getBlockPos().below(), Direction.UP);
                 }
                 try (Transaction transaction = Transaction.openRoot()) {
-                    TransitResponse response = request.eject(this, targetInventory.getCapability(), 1, null, transaction);
+                    TransitResponse response = request.eject(this, level, targetInventory.getCapability(), 1, null, transaction);
                     if (response.useAll(transaction)) {
                         transaction.commit();
                     }

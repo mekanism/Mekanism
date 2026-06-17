@@ -123,9 +123,9 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
         ResourceHandler<ItemResource> backHandler = backInventory.getCapability();
         if (backHandler != null) {
             if (getFilterManager().hasEnabledFilters()) {
-                FILTER_EJECTOR.eject(this, freq, backHandler, level.getRandom());
+                FILTER_EJECTOR.eject(this, level, freq, backHandler, level.getRandom());
             } else if (exportWithoutFilter) {
-                FILTERLESS_EJECTOR.eject(this, freq, backHandler, level.getRandom());
+                FILTERLESS_EJECTOR.eject(this, level, freq, backHandler, level.getRandom());
             }
         }
     }
