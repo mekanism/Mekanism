@@ -1,6 +1,5 @@
 package mekanism.client.render.tileentity;
 
-import com.google.common.primitives.Ints;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import java.util.Optional;
@@ -75,8 +74,8 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
             if (blockState.isEmpty() || !blockState.get().canOcclude() || !blockState.get().isFaceSturdy(level, coverPos, state.facing.getOpposite())) {
                 //Calculate lighting based on the light at the block the bin is facing
                 state.lightCoords = LightCoordsUtil.getLightCoords(level, coverPos);
-                //TODO - 26.2: Evaluate the seed we are passing, and if we want to use this as the seed for transporters or if maybe we should be using zero here as well?
-                int seed = Ints.saturatedCast(state.blockPos.asLong());
+                //Copy from how the campfire renderer calculates the seed
+                int seed = (int) state.blockPos.asLong();
                 //TODO - 26.2: Is this going to try and display a stack of items, or will it display a single one? If a stack we need to return a single sized item
                 this.itemModelResolver.updateForTopItem(state.item, binSlot.getBinItemType().toStack(), ItemDisplayContext.GUI, level, null, seed);
                 if (bin.getTier() == BinTier.CREATIVE) {

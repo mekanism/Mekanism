@@ -35,10 +35,11 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jspecify.annotations.Nullable;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
 public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransporterBase, STATE extends TransporterRenderState> extends RenderTransmitterBase<TILE, STATE> {
 
@@ -49,8 +50,8 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
         root.addOrReplaceChild("box", CubeListBuilder.create().addBox(0F, 0F, 0F, 7, 7, 7),
-              //TODO - 26.2: Do we need the offset, or can we just move the origin?
-              PartPose.offset(-3.5F, 0, -3.5F)
+              //TODO: Do we need the offset, or can we just move the origin?
+              PartPose.offset(-3.5F, 0.5F, -3.5F)
         );
         return LayerDefinition.create(mesh, 64, 64);
     }
@@ -80,16 +81,19 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
             Level level = transporter.getLevel();
             float partial = partialTick * transmitter.tier.getSpeed();
             state.stacks = new ArrayList<>();
+            record TransportInformation(int progress, ItemResource item, @Nullable EnumColor color) {
+            }
             Set<TransportInformation> information = new ObjectOpenHashSet<>(inTransit.size());
             for (TransporterStack stack : inTransit) {
                 //Shrink the in transit list as much as possible. Don't try to render things of the same type that are in the same spot with the same color, ignoring stack size
-                if (!stack.isEmpty() && information.add(new TransportInformation(stack))) {
+                if (!stack.isEmpty() && information.add(new TransportInformation(stack.progress, stack.getItemType(), stack.color))) {
                     //Ensure the stack is valid AND we did not already have information matching the stack
                     //We use add to check if it already contained the value, so that we only have to query the set once
                     Vector3f stackPos = TransporterUtils.getStackPosition(transmitter, stack, partial);
                     TransporterStackRenderState stackRenderState = new TransporterStackRenderState(stackPos, stack.color);
-                    //TODO - 26.2: Do we need to do any sort of seed?
-                    this.itemModelResolver.updateForTopItem(stackRenderState.item(), stack.asItemStack(), ItemDisplayContext.GROUND, level, null, 0);
+                    //Similar to campfire renderer's seed, except we bind it to the original location so that when the stack goes from one transporter to the next
+                    // it doesn't change types
+                    this.itemModelResolver.updateForTopItem(stackRenderState.item(), stack.asItemStack(), ItemDisplayContext.NONE, level, null, (int) stack.originalLocation);
                     state.stacks.add(stackRenderState);
                 }
             }
@@ -99,7 +103,6 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
     @Override
     public void submit(STATE state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (!state.stacks.isEmpty()) {
-            poseStack.pushPose();
             for (TransporterStackRenderState stackRenderState : state.stacks) {
                 poseStack.pushPose();
                 poseStack.translate(stackRenderState.stackPos().x(), stackRenderState.stackPos().y(), stackRenderState.stackPos().z());
@@ -107,64 +110,33 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
                     nodeCollector.submitModelPart(
                           this.modelBox,
                           poseStack,
-                          //TODO - 26.2: Is this the correct render type to be using? I believe it is what we used to use, so it probably is fine
                           RenderTypes.entityCutout(BOX_TEXTURE),
-                          //TODO - 26.2: I believe in the past we used LightTexture.FULL_BRIGHT for the model box, check which looks better state.lightCoords
                           LightCoordsUtil.FULL_BRIGHT,
                           OverlayTexture.NO_OVERLAY,
-                          //TODO - 26.2: Do we need to pass the texture here as well, or not?
                           null,
                           stackRenderState.color().getPackedColor(),
-                          null//TODO - 26.2: Should we render the crumbling progress onto the box around the item inside the transporter? Probably not
+                          null
                     );
                 }
-                //TODO - 26.2: We used to render the item before the box, but doing it after lets us skip an extra push/pop.
-                // Does this still render as we expect it to?
-                //Render the item at the center of the block, this translation used to be handled by the item entity's position
-                poseStack.translate(0.5, 0.5, 0.5);
-                poseStack.scale(0.75F, 0.75F, 0.75F);
+                AABB bb = stackRenderState.item().getModelBoundingBox();
+                double maxDimension = Math.max(bb.getXsize(), Math.max(bb.getYsize(), bb.getZsize()));
+                //TODO: Do we want to scale up tiny models?
+                if (maxDimension > 1) {
+                    //Scale any overly large models down to a single unit
+                    float scale = (float) (1 / maxDimension);
+                    poseStack.scale(scale, scale, scale);
+                    poseStack.translate(0, 0.25F, 0);
+                }
+                poseStack.translate(0, 0.25F, 0);
+                poseStack.scale(0.25F, 0.25F, 0.25F);
                 stackRenderState.item().submit(poseStack, nodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
                 poseStack.popPose();
             }
-            poseStack.popPose();
         }
     }
 
     @Override
     protected String getProfilerSection() {
         return ProfilerConstants.LOGISTICAL_TRANSPORTER;
-    }
-
-    private static class TransportInformation {
-
-        @Nullable
-        private final EnumColor color;
-        private final ItemResource item;
-        private final int progress;
-
-        private TransportInformation(TransporterStack transporterStack) {
-            this.progress = transporterStack.progress;
-            this.color = transporterStack.color;
-            this.item = transporterStack.getItemType();
-        }
-
-        @Override
-        public int hashCode() {
-            int code = 1;
-            code = 31 * code + progress;
-            code = 31 * code + item.hashCode();
-            if (color != null) {
-                code = 31 * code + color.hashCode();
-            }
-            return code;
-        }
-
-        @Override
-        public boolean equals(@Nullable Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            return obj instanceof TransportInformation other && progress == other.progress && color == other.color && item.equals(other.item);
-        }
     }
 }

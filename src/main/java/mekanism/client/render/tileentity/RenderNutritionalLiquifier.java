@@ -1,6 +1,5 @@
 package mekanism.client.render.tileentity;
 
-import com.google.common.primitives.Ints;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.ArrayList;
@@ -82,8 +81,8 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         }
         ItemStack stack = liquifier.getRenderStack();
         if (!stack.isEmpty()) {
-            //TODO - 26.2: Evaluate the seed we are passing, and if we want to use this as the seed for transporters or if maybe we should be using zero here as well?
-            int seed = Ints.saturatedCast(state.blockPos.asLong());
+            //Copy from how the campfire renderer calculates the seed
+            int seed = (int) state.blockPos.asLong();
             this.itemModelResolver.updateForTopItem(state.item, stack, ItemDisplayContext.GROUND, liquifier.getLevel(), null, seed);
         }
     }
