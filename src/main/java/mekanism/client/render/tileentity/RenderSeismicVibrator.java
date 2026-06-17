@@ -57,7 +57,6 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
         poseStack.pushPose();
         poseStack.translate(0, 0.625 * state.piston, 0);
         //TODO - 26.2: Test crumbling
-        //TODO - 26.2: Validate this render sheet
         nodeCollector.submitBlockModel(
               poseStack,
               Sheets.cutoutBlockItemSheet(),

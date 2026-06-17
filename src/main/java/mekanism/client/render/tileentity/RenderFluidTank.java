@@ -66,13 +66,16 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
 
     @Override
     public void submit(FluidTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        //TODO - 26.2: Validate this render sheet
         RenderType renderType = Sheets.translucentBlockItemSheet();
-        if (state.fluidScale > 0) {
-            RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.NOT_DOWN, CONTENTS_MIN_XZ, CONTENTS_MIN_Y, CONTENTS_MIN_XZ, CONTENTS_MAX_XZ, state.contentsMaxY, CONTENTS_MAX_XZ, poseStack, renderType, nodeCollector, state.fluidTint, state.fluidGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
+        if (state.fluidScale > 0 && state.fluidTexture != null) {
+            RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.NOT_DOWN, CONTENTS_MIN_XZ, CONTENTS_MIN_Y, CONTENTS_MIN_XZ, CONTENTS_MAX_XZ, state.contentsMaxY,
+                  CONTENTS_MAX_XZ, poseStack, renderType, nodeCollector, state.fluidTint, state.fluidGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
+                  camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
         if (state.valveFluidTexture != null) {
-            RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.HORIZONTAL, VALVE_MIN_XZ, state.valveMinY, VALVE_MIN_XZ, VALVE_MAX_XZ, VALVE_MAX_Y, VALVE_MAX_XZ, poseStack, renderType, nodeCollector, state.valveTint, state.valveGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.valveFluidTexture);
+            RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.HORIZONTAL, VALVE_MIN_XZ, state.valveMinY, VALVE_MIN_XZ, VALVE_MAX_XZ, VALVE_MAX_Y, VALVE_MAX_XZ,
+                  poseStack, renderType, nodeCollector, state.valveTint, state.valveGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos,
+                  Vec3.atLowerCornerOf(state.blockPos), state.valveFluidTexture);
         }
     }
 

@@ -2,10 +2,12 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.ModelRenderer;
@@ -18,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.SingleQuadParticle.FacingCameraMode;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
@@ -89,28 +92,25 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
 
     @Override
     public void submit(LiquifierRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        if (state.stage != 0 && state.pasteTexture != null) {
-            //TODO - 26.2: Validate this render sheet
+        if (state.stage > 0 && state.pasteTexture != null) {
             RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.NOT_DOWN, 0.001F, 0.313F, 0.001F, 0.999F,
                   0.313F + 0.624F * (state.stage / (float) stages), 0.999F, poseStack, Sheets.translucentBlockItemSheet(), nodeCollector,
                   state.pasteTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.pasteTexture);
         }
-        //TODO - 26.2: rendering
-        /*if (state.active) {
+        if (state.active) {
             //Render the blade at the correct rotation if we are active
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
             poseStack.mulPose(Axis.YP.rotationDegrees(state.bladeRotation));
             poseStack.translate(-0.5, -0.5, -0.5);
-            nodeCollector.submitModel(
-                  MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getBakedModel(),
-                  Unit.INSTANCE,
+            nodeCollector.submitBlockModel(
                   poseStack,
-                  Sheets.solidBlockSheet(),
+                  Sheets.cutoutBlockItemSheet(),
+                  MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getBakedModel(),
+                  BlockModelRenderState.EMPTY_TINTS,
                   state.lightCoords,
                   OverlayTexture.NO_OVERLAY,
-                  0,//No outline
-                  state.breakProgress
+                  0//No outline
             );
             poseStack.popPose();
         }
@@ -124,7 +124,8 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             }
             state.item.submit(poseStack, nodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();
-            if (state.active && Minecraft.getInstance().options.particles().get() != ParticleStatus.MINIMAL) {
+            //TODO - 26.2: rendering
+            /*if (state.active && Minecraft.getInstance().options.particles().get() != ParticleStatus.MINIMAL) {
                 //TODO - 26.2: Can this be transitioned to being a nodeCollector.submitParticleGroup call?
                 //Render eating particles
                 PseudoParticleData pseudoParticles = particles.computeIfAbsent(tile, t -> new PseudoParticleData());
@@ -150,8 +151,8 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                 poseStack.popPose();
             } else {
                 particles.remove(tile);
-            }
-        }*/
+            }*/
+        }
     }
 
     @Override

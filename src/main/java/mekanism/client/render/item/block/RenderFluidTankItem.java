@@ -37,9 +37,8 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
         if (argument == null) {
             return;
         }
-        if (argument.contentsMaxY > 0) {
+        if (argument.contentsMaxY > 0 && argument.fluidTexture != null) {
             int lightToUse = MekanismRenderer.calculateGlowLight(lightCoords, argument.fluidLight);
-            //TODO - 26.2: Validate this render sheet
             RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.NOT_DOWN, RenderFluidTank.CONTENTS_MIN_XZ, RenderFluidTank.CONTENTS_MIN_Y,
                   RenderFluidTank.CONTENTS_MIN_XZ, RenderFluidTank.CONTENTS_MAX_XZ, argument.contentsMaxY, RenderFluidTank.CONTENTS_MAX_XZ, poseStack,
                   Sheets.translucentBlockItemSheet(), submitNodeCollector, argument.fluidColor, lightToUse, overlayCoords, RenderResizableCuboid.FaceDisplay.FRONT,

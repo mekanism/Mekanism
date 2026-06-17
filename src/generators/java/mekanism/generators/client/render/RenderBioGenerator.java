@@ -94,8 +94,9 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     public void submit(BioGeneratorRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (state.fluidTexture != null) {
             //TODO - 26.2: Do we want to use the block light? (Also check other full bright usages and see if they should be switched over)
-            //TODO - 26.2: Validate this render sheet
-            RenderResizableCuboid.renderCube(state.renderCheck, state.minX, MODEL_MIN_Y_PAD, state.minZ, state.maxX, state.maxY, state.maxZ, poseStack, Sheets.translucentBlockItemSheet(), nodeCollector, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
+            RenderResizableCuboid.renderCube(state.renderCheck, state.minX, MODEL_MIN_Y_PAD, state.minZ, state.maxX, state.maxY, state.maxZ, poseStack,
+                  Sheets.translucentBlockItemSheet(), nodeCollector, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
+                  camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
     }
 

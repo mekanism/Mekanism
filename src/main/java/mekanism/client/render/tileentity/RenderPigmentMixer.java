@@ -70,7 +70,6 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         poseStack.translate(shift, 0, shift);
         poseStack.mulPose(Axis.YN.rotationDegrees(state.rotation));
         poseStack.translate(-shift, 0, -shift);
-        //TODO - 26.2: Validate this render sheet
         nodeCollector.submitBlockModel(
               poseStack,
               Sheets.cutoutBlockItemSheet(),
