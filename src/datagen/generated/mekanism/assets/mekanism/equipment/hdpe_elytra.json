@@ -1,0 +1,10 @@
+{
+  "layers": {
+    "wings": [
+      {
+        "texture": "mekanism:hdpe_elytra",
+        "use_player_texture": true
+      }
+    ]
+  }
+}

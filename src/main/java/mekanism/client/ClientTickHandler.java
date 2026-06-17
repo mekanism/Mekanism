@@ -35,7 +35,6 @@ import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
-import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
@@ -386,7 +385,7 @@ public class ClientTickHandler {
     }
 
     private static boolean itemHidesCape(Item item) {
-        return MekanismItems.HDPE_REINFORCED_ELYTRA.is(item) || item instanceof ItemJetpack || item instanceof ItemScubaTank;
+        return item instanceof ItemJetpack || item instanceof ItemScubaTank;
     }
 
     private record TeleportData(InteractionHand hand, FrequencyIdentity identity, long teleportTime) {

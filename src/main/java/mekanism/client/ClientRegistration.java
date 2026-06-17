@@ -1,6 +1,5 @@
 package mekanism.client;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.gear.IModuleHelper;
@@ -125,7 +124,6 @@ import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
-import mekanism.client.render.layer.MekanismElytraLayer;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderDimensionalStabilizer;
@@ -172,7 +170,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.layers.WingsLayer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -543,8 +540,6 @@ public class ClientRegistration {
 
     private static <STATE extends HumanoidRenderState, MODEL extends EntityModel<STATE>> void addCustomLayers(EntityType<?> type,
           LivingEntityRenderer<?, STATE, MODEL> renderer, EntityRendererProvider.Context context) {
-        int layerTypes = 2;
-        Map<String, RenderLayer<STATE, MODEL>> layersToAdd = new HashMap<>(layerTypes);
         for (RenderLayer<STATE, MODEL> layerRenderer : renderer.layers) {
             //Validate against the layer render being null, as it seems like some mods do stupid things and add in null layers
             //noinspection ConstantValue
@@ -554,23 +549,10 @@ public class ClientRegistration {
                 if (layerClass == HumanoidArmorLayer.class) {
                     //Note: We know that the MODEL is actually an instance of HumanoidModel, or there wouldn't be a
                     //noinspection unchecked,rawtypes
-                    layersToAdd.put("Armor", new MekanismArmorLayer(renderer, (HumanoidArmorLayer<?, ?, ?>) layerRenderer, context.getEquipmentRenderer()));
-                    if (layersToAdd.size() == layerTypes) {
-                        break;
-                    }
-                } else if (layerClass == WingsLayer.class) {
-                    layersToAdd.put("Elytra", new MekanismElytraLayer<>(renderer, context.getModelSet(), context.getEquipmentRenderer()));
-                    if (layersToAdd.size() == layerTypes) {
-                        break;
-                    }
+                    renderer.addLayer(new MekanismArmorLayer(renderer, (HumanoidArmorLayer<?, ?, ?>) layerRenderer, context.getEquipmentRenderer()));
+                    Mekanism.logger.debug("Added Mekanism Armor Layer to entity of type: {}", Util.getRegisteredName(BuiltInRegistries.ENTITY_TYPE, type));
+                    break;
                 }
-            }
-        }
-        if (!layersToAdd.isEmpty()) {
-            String entityName = Util.getRegisteredName(BuiltInRegistries.ENTITY_TYPE, type);
-            for (Map.Entry<String, RenderLayer<STATE, MODEL>> entry : layersToAdd.entrySet()) {
-                renderer.addLayer(entry.getValue());
-                Mekanism.logger.debug("Added Mekanism {} Layer to entity of type: {}", entry.getKey(), entityName);
             }
         }
     }

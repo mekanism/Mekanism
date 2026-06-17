@@ -7,6 +7,7 @@ import net.minecraft.world.item.equipment.EquipmentAssets;
 
 public class MekanismEquipmentAssets {
 
+    public static final ResourceKey<EquipmentAsset> HDPE_ELYTRA = createId("hdpe_elytra");
     public static final ResourceKey<EquipmentAsset> HAZMAT = createId("hazmat");
     public static final ResourceKey<EquipmentAsset> SCUBA_MASK = createId("scuba_mask");
     public static final ResourceKey<EquipmentAsset> SCUBA_GEAR = createId("scuba_gear");
