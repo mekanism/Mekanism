@@ -100,6 +100,7 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
             if (extended == (mode != RADIAL_MODES.trueMode())) {
                 toggleExtended(module, itemAccess, transaction, player.registryAccess());
             }
+            return true;
         }
         return false;
     }

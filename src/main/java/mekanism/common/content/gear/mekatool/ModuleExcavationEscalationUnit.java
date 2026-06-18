@@ -90,6 +90,7 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
             if (excavationMode != newMode) {
                 module.replaceModuleConfig(player.registryAccess(), itemAccess, transaction, module.<ExcavationMode>getConfigOrThrow(EXCAVATION_MODE).with(newMode));
             }
+            return true;
         }
         return false;
     }

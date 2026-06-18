@@ -88,6 +88,7 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
             if (blastRadius != newMode) {
                 module.replaceModuleConfig(player.registryAccess(), itemAccess, transaction, module.<BlastRadius>getConfigOrThrow(BLAST_RADIUS).with(newMode));
             }
+            return true;
         }
         return false;
     }
