@@ -34,6 +34,17 @@
       },
       "trigger": "minecraft:entity_hurt_player"
     },
+    "baby_parched": {
+      "conditions": {
+        "damage": {
+          "blocked": false,
+          "source_entity": {
+            "minecraft:entity_type": "mekanismadditions:baby_parched"
+          }
+        }
+      },
+      "trigger": "minecraft:entity_hurt_player"
+    },
     "baby_skeleton": {
       "conditions": {
         "damage": {
@@ -90,6 +101,9 @@
     ],
     [
       "baby_enderman"
+    ],
+    [
+      "baby_parched"
     ],
     [
       "baby_skeleton"

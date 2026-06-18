@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.List;
 import mekanism.additions.client.model.AdditionsModelCache;
-import mekanism.additions.client.render.entity.RenderBalloon.BalloonRenderState;
+import mekanism.additions.client.render.entity.BalloonRenderer.BalloonRenderState;
 import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.client.model.BaseModelCache;
 import net.minecraft.client.renderer.Sheets;
@@ -22,12 +22,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-public class RenderBalloon extends EntityRenderer<EntityBalloon, BalloonRenderState> {
+public class BalloonRenderer extends EntityRenderer<EntityBalloon, BalloonRenderState> {
 
     //TODO - 26.2: Validate this render sheet
     private static final RenderType RENDER_TYPE = Sheets.translucentBlockItemSheet();
 
-    public RenderBalloon(EntityRendererProvider.Context context) {
+    public BalloonRenderer(EntityRendererProvider.Context context) {
         super(context);
     }
 

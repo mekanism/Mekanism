@@ -20,7 +20,10 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.common.registration.impl.ItemRegistryObject;
+import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.SpawnEggItem;
 
 public class AdditionsLangProvider extends BaseLanguageProvider {
 
@@ -44,8 +47,8 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
     private void addConfigs() {
         addConfigs(MekanismAdditionsConfig.getConfigs());
         addConfigs(AdditionsConfigTranslations.values());
-        for (BabyType type : BabyType.values()) {
-            addConfigs(BabySpawnTranslations.create("baby_" + type.getSerializedName()).toArray());
+        for (BabyType type : BabyType.VALUES) {
+            addConfigs(BabySpawnTranslations.create(type).toArray());
         }
     }
 
@@ -86,12 +89,9 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
     }
 
     private void addItems() {
-        add(AdditionsItems.BABY_BOGGED_SPAWN_EGG, "Baby Bogged Spawn Egg");
-        add(AdditionsItems.BABY_CREEPER_SPAWN_EGG, "Baby Creeper Spawn Egg");
-        add(AdditionsItems.BABY_ENDERMAN_SPAWN_EGG, "Baby Enderman Spawn Egg");
-        add(AdditionsItems.BABY_SKELETON_SPAWN_EGG, "Baby Skeleton Spawn Egg");
-        add(AdditionsItems.BABY_STRAY_SPAWN_EGG, "Baby Stray Spawn Egg");
-        add(AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG, "Baby Wither Skeleton Spawn Egg");
+        for (Map.Entry<BabyType, ItemRegistryObject<SpawnEggItem>> entry : AdditionsItems.BABY_SPAWN_EGGS.entrySet()) {
+            add(entry.getValue(), entry.getKey().displayName() + " Spawn Egg");
+        }
         add(AdditionsItems.WALKIE_TALKIE, "Walkie-Talkie");
         for (Map.Entry<EnumColor, ItemRegistryObject<ItemBalloon>> entry : AdditionsItems.BALLOONS.entrySet()) {
             add(entry.getValue(), entry.getKey().getEnglishName() + " Balloon");
@@ -118,12 +118,9 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
     }
 
     private void addEntities() {
-        addEntity(AdditionsEntityTypes.BABY_BOGGED, "Baby Bogged");
-        addEntity(AdditionsEntityTypes.BABY_CREEPER, "Baby Creeper");
-        addEntity(AdditionsEntityTypes.BABY_ENDERMAN, "Baby Enderman");
-        addEntity(AdditionsEntityTypes.BABY_SKELETON, "Baby Skeleton");
-        addEntity(AdditionsEntityTypes.BABY_STRAY, "Baby Stray");
-        addEntity(AdditionsEntityTypes.BABY_WITHER_SKELETON, "Baby Wither Skeleton");
+        for (Map.Entry<BabyType, ? extends Holder<EntityType<?>>> entry : AdditionsEntityTypes.BABIES.entrySet()) {
+            addEntity(entry.getValue(), entry.getKey().displayName());
+        }
         addEntity(AdditionsEntityTypes.BALLOON, "Balloon");
         addEntity(AdditionsEntityTypes.OBSIDIAN_TNT, "Obsidian TNT");
     }

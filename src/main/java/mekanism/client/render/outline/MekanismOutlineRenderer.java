@@ -55,7 +55,6 @@ public class MekanismOutlineRenderer implements CustomBlockOutlineRenderer {
           Collection<Line> toDraw) {
         int outlineColor;
         if (highContrast) {
-            //TODO - 26.2: Figure this out, it seems to cause z-fighting
             submitLineDraw(submitNodeCollector, poseStack, RenderTypes.secondaryBlockOutline(), phase, new LineDrawer(toDraw, CommonColors.BLACK, 7F));
             outlineColor = CommonColors.HIGH_CONTRAST_DIAMOND;
         } else {

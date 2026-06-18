@@ -1,5 +1,6 @@
 package mekanism.additions.client.render.entity.layer;
 
+import mekanism.additions.client.model.BabyModelLayers;
 import mekanism.additions.client.model.ModelBabyCreeper;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -14,7 +15,7 @@ public class BabyCreeperChargeLayer extends EnergySwirlLayer<CreeperRenderState,
 
     public BabyCreeperChargeLayer(RenderLayerParent<CreeperRenderState, ModelBabyCreeper> renderer, EntityModelSet entityModelSet) {
         super(renderer);
-        creeperModel = new ModelBabyCreeper(entityModelSet.bakeLayer(ModelBabyCreeper.ARMOR_LAYER));
+        creeperModel = new ModelBabyCreeper(entityModelSet.bakeLayer(BabyModelLayers.BABY_CREEPER_ARMOR));
     }
 
     @Override

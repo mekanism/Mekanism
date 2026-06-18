@@ -1,36 +1,70 @@
 package mekanism.additions.common.entity.baby;
 
 import com.mojang.serialization.Codec;
-import java.util.Locale;
-import mekanism.api.MekanismAPITags;
+import mekanism.additions.common.MekanismAdditions;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypeIds;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
 public enum BabyType implements StringRepresentable {
-    BOGGED(MekanismAPITags.Biomes.BLACKLIST_BABY_BOGGED, MekanismAPITags.Structures.BLACKLIST_BABY_BOGGED),
-    CREEPER(MekanismAPITags.Biomes.BLACKLIST_BABY_CREEPERS, MekanismAPITags.Structures.BLACKLIST_BABY_CREEPERS),
-    ENDERMAN(MekanismAPITags.Biomes.BLACKLIST_BABY_ENDERMEN, MekanismAPITags.Structures.BLACKLIST_BABY_ENDERMEN),
-    SKELETON(MekanismAPITags.Biomes.BLACKLIST_BABY_SKELETONS, MekanismAPITags.Structures.BLACKLIST_BABY_SKELETONS),
-    STRAY(MekanismAPITags.Biomes.BLACKLIST_BABY_STRAYS, MekanismAPITags.Structures.BLACKLIST_BABY_STRAYS),
-    WITHER_SKELETON(MekanismAPITags.Biomes.BLACKLIST_BABY_WITHER_SKELETONS, MekanismAPITags.Structures.BLACKLIST_BABY_WITHER_SKELETONS);
+    BOGGED(EntityTypeIds.BOGGED, "Baby Bogged"),
+    CREEPER(EntityTypeIds.CREEPER, "Baby Creeper"),
+    ENDERMAN(EntityTypeIds.ENDERMAN, "Baby Enderman"),
+    PARCHED(EntityTypeIds.PARCHED, "Baby Parched"),
+    SKELETON(EntityTypeIds.SKELETON, "Baby Skeleton"),
+    STRAY(EntityTypeIds.STRAY, "Baby Stray"),
+    WITHER_SKELETON(EntityTypeIds.WITHER_SKELETON, "Baby Wither Skeleton");
+
+    /// @apiNote **Do not modify this array**
+    public static final BabyType[] VALUES = values();
 
     public static final Codec<BabyType> CODEC = StringRepresentable.fromEnum(BabyType::values);
 
-    public final TagKey<Structure> structureBlacklist;
-    public final TagKey<Biome> biomeBlacklist;
-    private final String serializedName;
+    private final ResourceKey<EntityType<?>> parentId;
+    private final TagKey<Structure> structureBlacklist;
+    private final TagKey<Biome> biomeBlacklist;
+    private final String displayName;
+    private final Identifier id;
+    private final String name;
 
-    BabyType(TagKey<Biome> biomeBlacklist, TagKey<Structure> structureBlacklist) {
-        this.serializedName = name().toLowerCase(Locale.ROOT);
-        this.biomeBlacklist = biomeBlacklist;
-        this.structureBlacklist = structureBlacklist;
+    BabyType(ResourceKey<EntityType<?>> parentId, String displayName) {
+        this.parentId = parentId;
+        this.displayName = displayName;
+        this.name = "baby_" + this.parentId.identifier().getPath();
+        this.id = MekanismAdditions.rl(this.name);
+        Identifier blacklist = id.withPrefix("blacklist/");
+        this.biomeBlacklist = TagKey.create(Registries.BIOME, blacklist);
+        this.structureBlacklist = TagKey.create(Registries.STRUCTURE, blacklist);
+    }
 
+    public String displayName() {
+        return this.displayName;
+    }
+
+    public ResourceKey<EntityType<?>> parentId() {
+        return this.parentId;
+    }
+
+    public Identifier id() {
+        return this.id;
+    }
+
+    public TagKey<Biome> biomeBlacklist() {
+        return this.biomeBlacklist;
+    }
+
+    public TagKey<Structure> structureBlacklist() {
+        return this.structureBlacklist;
     }
 
     @Override
     public String getSerializedName() {
-        return serializedName;
+        return this.name;
     }
 }

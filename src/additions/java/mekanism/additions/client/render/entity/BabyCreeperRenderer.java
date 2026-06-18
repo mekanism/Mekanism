@@ -1,6 +1,7 @@
 package mekanism.additions.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import mekanism.additions.client.model.BabyModelLayers;
 import mekanism.additions.client.model.ModelBabyCreeper;
 import mekanism.additions.client.render.entity.layer.BabyCreeperChargeLayer;
 import mekanism.additions.common.entity.baby.EntityBabyCreeper;
@@ -11,12 +12,12 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /// Copy of vanilla's [creeper render][net.minecraft.client.renderer.entity.CreeperRenderer], modified to use our own model/layer that is properly scaled
-public class RenderBabyCreeper extends MobRenderer<EntityBabyCreeper, CreeperRenderState, ModelBabyCreeper> {
+public class BabyCreeperRenderer extends MobRenderer<EntityBabyCreeper, CreeperRenderState, ModelBabyCreeper> {
 
     private static final Identifier CREEPER_TEXTURES = Identifier.withDefaultNamespace("textures/entity/creeper/creeper.png");
 
-    public RenderBabyCreeper(EntityRendererProvider.Context context) {
-        super(context, new ModelBabyCreeper(context.getModelSet().bakeLayer(ModelBabyCreeper.CREEPER_LAYER)), 0.5F);
+    public BabyCreeperRenderer(EntityRendererProvider.Context context) {
+        super(context, new ModelBabyCreeper(context.getModelSet().bakeLayer(BabyModelLayers.BABY_CREEPER)), 0.5F);
         this.addLayer(new BabyCreeperChargeLayer(this, context.getModelSet()));
     }
 

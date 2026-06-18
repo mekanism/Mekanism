@@ -45,23 +45,15 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(AdditionsAdvancements.HURT_BY_BABIES)
               .display(items, BlockItemIds.CREEPER_HEAD.item(), null, AdvancementType.GOAL, true, true, true)
-              .andCriteria(
-                    damagedCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_BOGGED),
-                    damagedCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_CREEPER),
-                    damagedCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_ENDERMAN),
-                    damagedCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_SKELETON),
-                    damagedCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_STRAY),
-                    damagedCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_WITHER_SKELETON)
+              .andCriteria(AdditionsEntityTypes.BABIES.values().stream()
+                    .map(baby -> damagedCriterion(entityTypeLookup, baby))
+                    .toArray(RecipeCriterion[]::new)
               ).save(consumer);
         advancement(AdditionsAdvancements.NOT_THE_BABIES)
               .display(items, BlockItemIds.WITHER_SKELETON_SKULL.item(), AdvancementType.GOAL, false)
-              .orCriteria(
-                    killCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_BOGGED),
-                    killCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_CREEPER),
-                    killCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_ENDERMAN),
-                    killCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_SKELETON),
-                    killCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_STRAY),
-                    killCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_WITHER_SKELETON)
+              .orCriteria(AdditionsEntityTypes.BABIES.values().stream()
+                    .map(baby -> killCriterion(entityTypeLookup, baby))
+                    .toArray(RecipeCriterion[]::new)
               ).save(consumer);
     }
 

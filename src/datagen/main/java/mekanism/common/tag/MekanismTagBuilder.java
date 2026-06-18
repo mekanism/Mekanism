@@ -54,6 +54,10 @@ public class MekanismTagBuilder<TYPE> {
         return apply(elementAdder, ResourceKey::identifier, keys);
     }
 
+    public final MekanismTagBuilder<TYPE> add(Identifier... locations) {
+        return apply(elementAdder, locations);
+    }
+
     @SafeVarargs
     public final MekanismTagBuilder<TYPE> add(Holder<TYPE>... elements) {
         return apply(elementAdder, holderToName, elements);

@@ -5,6 +5,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
@@ -35,8 +36,13 @@ public class EntityBabyWitherSkeleton extends WitherSkeleton {
         super.populateDefaultEquipmentSlots(random, difficulty);
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
-                this.setItemSlot(slot, ItemStack.EMPTY);
+                setItemSlot(slot, ItemStack.EMPTY);
             }
         }
+    }
+
+    @Override
+    public boolean is(EntityType<?> type) {
+        return type == EntityTypes.WITHER_SKELETON || super.is(type);
     }
 }

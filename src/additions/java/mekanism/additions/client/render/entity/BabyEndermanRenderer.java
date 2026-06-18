@@ -1,12 +1,13 @@
 package mekanism.additions.client.render.entity;
 
+import mekanism.additions.client.model.BabyModelLayers;
 import mekanism.additions.client.model.ModelBabyEnderman;
 import mekanism.additions.client.render.entity.layer.BabyEndermanEyesLayer;
 import mekanism.additions.client.render.entity.layer.BabyEndermanHeldBlockLayer;
 import mekanism.additions.common.entity.baby.EntityBabyEnderman;
 import net.minecraft.client.model.monster.enderman.EndermanModel;
 import net.minecraft.client.renderer.block.BlockModelResolver;
-import net.minecraft.client.renderer.block.model.BlockDisplayContext;
+import net.minecraft.client.renderer.entity.EndermanRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -18,15 +19,14 @@ import net.minecraft.world.phys.Vec3;
 
 /// Copy of vanilla's [enderman render][net.minecraft.client.renderer.entity.EndermanRenderer], modified to use our own model/layer that is properly scaled, so that the
 /// block is held in the correct spot and the head is in the proper place.
-public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, EndermanRenderState, EndermanModel<EndermanRenderState>> {
+public class BabyEndermanRenderer extends MobRenderer<EntityBabyEnderman, EndermanRenderState, EndermanModel<EndermanRenderState>> {
 
-    public static final BlockDisplayContext BLOCK_DISPLAY_CONTEXT = BlockDisplayContext.create();
     private static final Identifier ENDERMAN_TEXTURES = Identifier.withDefaultNamespace("textures/entity/enderman/enderman.png");
     private final RandomSource random = RandomSource.create();
     private final BlockModelResolver blockModelResolver;
 
-    public RenderBabyEnderman(EntityRendererProvider.Context context) {
-        super(context, new ModelBabyEnderman(context.bakeLayer(ModelBabyEnderman.BABY_ENDERMAN_LAYER)), 0.5F);
+    public BabyEndermanRenderer(EntityRendererProvider.Context context) {
+        super(context, new ModelBabyEnderman(context.bakeLayer(BabyModelLayers.BABY_ENDERMAN)), 0.5F);
         this.blockModelResolver = context.getBlockModelResolver();
         this.addLayer(new BabyEndermanEyesLayer(this));
         this.addLayer(new BabyEndermanHeldBlockLayer(this));
@@ -44,7 +44,7 @@ public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, Enderman
         state.isCreepy = enderman.isCreepy();
         BlockState carriedBlock = enderman.getCarriedBlock();
         if (carriedBlock != null) {
-            this.blockModelResolver.update(state.carriedBlock, carriedBlock, BLOCK_DISPLAY_CONTEXT);
+            this.blockModelResolver.update(state.carriedBlock, carriedBlock, EndermanRenderer.BLOCK_DISPLAY_CONTEXT);
         } else {
             state.carriedBlock.clear();
         }

@@ -3,6 +3,7 @@ package mekanism.additions.common;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsDataComponents;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
@@ -10,6 +11,7 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.text.EnumColor;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.tag.BaseTagProvider;
+import mekanism.common.tag.MekanismTagBuilder;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -21,6 +23,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypeIds;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -59,6 +62,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
         getBuilder(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(AdditionsEntityTypes.BALLOON);
         getBuilder(EntityTypeTags.SKELETONS).add(
               AdditionsEntityTypes.BABY_BOGGED,
+              AdditionsEntityTypes.BABY_PARCHED,
               AdditionsEntityTypes.BABY_SKELETON,
               AdditionsEntityTypes.BABY_STRAY,
               AdditionsEntityTypes.BABY_WITHER_SKELETON
@@ -76,14 +80,23 @@ public class AdditionsTagProvider extends BaseTagProvider {
         getBuilder(AdditionsTags.Entities.ENDERMEN)
               .add(EntityTypeIds.ENDERMAN)
               .add(AdditionsEntityTypes.BABY_ENDERMAN);
+        getBuilder(AdditionsTags.Entities.PARCHED)
+              .add(EntityTypeIds.PARCHED)
+              .add(AdditionsEntityTypes.BABY_PARCHED);
+        getBuilder(AdditionsTags.Entities.STRAY)
+              .add(EntityTypeIds.STRAY)
+              .add(AdditionsEntityTypes.BABY_STRAY);
         getBuilder(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES).add(AdditionsEntityTypes.BABY_STRAY);
-        getBuilder(PVI_COMPAT).add(
-              AdditionsEntityTypes.BABY_CREEPER,
-              AdditionsEntityTypes.BABY_ENDERMAN,
+        getBuilder(EntityTypeTags.BURN_IN_DAYLIGHT).add(
               AdditionsEntityTypes.BABY_SKELETON,
               AdditionsEntityTypes.BABY_STRAY,
-              AdditionsEntityTypes.BABY_WITHER_SKELETON
+              AdditionsEntityTypes.BABY_WITHER_SKELETON,
+              AdditionsEntityTypes.BABY_BOGGED
         );
+        MekanismTagBuilder<EntityType<?>> pviCompatBuilder = getBuilder(PVI_COMPAT);
+        for (BabyType babyType : BabyType.VALUES) {
+            pviCompatBuilder.add(babyType.id());
+        }
     }
 
     private void addDamageTypes() {

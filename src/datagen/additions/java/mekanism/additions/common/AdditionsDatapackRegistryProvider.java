@@ -18,13 +18,13 @@ public class AdditionsDatapackRegistryProvider extends BaseDatapackRegistryProvi
 
     private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
           .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, context -> {
-              for (BabyType babyType : BabyType.values()) {
-                  context.register(biomeModifier(MekanismAdditions.rl(babyType.getSerializedName())), new BabyEntitySpawnBiomeModifier(babyType));
+              for (BabyType babyType : BabyType.VALUES) {
+                  context.register(biomeModifier(babyType.id()), new BabyEntitySpawnBiomeModifier(babyType));
               }
           })
           .add(NeoForgeRegistries.Keys.STRUCTURE_MODIFIERS, context -> {
-              for (BabyType babyType : BabyType.values()) {
-                  context.register(structureModifier(MekanismAdditions.rl(babyType.getSerializedName())), new BabyEntitySpawnStructureModifier(babyType));
+              for (BabyType babyType : BabyType.VALUES) {
+                  context.register(structureModifier(babyType.id()), new BabyEntitySpawnStructureModifier(babyType));
               }
           });
 }

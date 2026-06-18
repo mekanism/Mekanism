@@ -10,6 +10,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.skeleton.Stray;
@@ -23,6 +24,7 @@ public class EntityBabyStray extends Stray {
 
     //Copy of stray spawn restrictions
     public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, ServerLevelAccessor world, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        //TODO - 26.2: Switch to using Stray's spawn restriction method https://github.com/neoforged/NeoForge/pull/3245
         BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ());
         do {
             mutable.move(Direction.UP);
@@ -69,5 +71,10 @@ public class EntityBabyStray extends Stray {
                 this.setItemSlot(slot, ItemStack.EMPTY);
             }
         }
+    }
+
+    @Override
+    public boolean is(EntityType<?> type) {
+        return type == EntityTypes.STRAY || super.is(type);
     }
 }

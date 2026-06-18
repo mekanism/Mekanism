@@ -1,9 +1,7 @@
 package mekanism.additions.client.model;
 
 import java.util.Set;
-import mekanism.additions.common.MekanismAdditions;
 import net.minecraft.client.model.BabyModelTransform;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -14,9 +12,6 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.model.monster.creeper.CreeperModel;
 
 public class ModelBabyCreeper extends CreeperModel {
-
-    public static final ModelLayerLocation CREEPER_LAYER = new ModelLayerLocation(MekanismAdditions.rl("baby_creeper"), "main");
-    public static final ModelLayerLocation ARMOR_LAYER = new ModelLayerLocation(MekanismAdditions.rl("baby_creeper"), "armor");
 
     //adapted from old AgeableListModel
     private static final BabyModelTransform BABY_MODEL_TRANSFORM = new BabyModelTransform(false, 5.0F, 2.0F, 2.0F, 2.0F, 24.0F, Set.of("head"));

@@ -6,6 +6,9 @@
     "mekanismadditions:baby_creeper": {
       "sound": "minecraft:entity.parrot.imitate.creeper"
     },
+    "mekanismadditions:baby_parched": {
+      "sound": "minecraft:entity.parrot.imitate.parched"
+    },
     "mekanismadditions:baby_skeleton": {
       "sound": "minecraft:entity.parrot.imitate.skeleton"
     },

@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.Level;
@@ -39,5 +40,10 @@ public class EntityBabyCreeper extends Creeper {
             triggerOnDeathMobEffects(serverLevel, Entity.RemovalReason.KILLED);
             discard();
         }
+    }
+
+    @Override
+    public boolean is(EntityType<?> type) {
+        return type == EntityTypes.CREEPER || super.is(type);
     }
 }

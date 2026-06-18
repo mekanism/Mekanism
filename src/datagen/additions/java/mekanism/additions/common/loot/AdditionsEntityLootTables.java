@@ -3,11 +3,13 @@ package mekanism.additions.common.loot;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.common.loot.table.BaseEntityLootTables;
 import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -33,15 +35,7 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
     public void generate() {
         //Copy of vanilla's bogged drops
         add(AdditionsEntityTypes.BABY_BOGGED, skeletonDrops()
-              .withPool(LootPool.lootPool()
-                    .name("tipped_arrows")
-                    .setRolls(ConstantValue.exactly(1.0F))
-                    .add(LootItem.lootTableItem(Items.TIPPED_ARROW)
-                          .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
-                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)).setLimit(1))
-                          .apply(SetPotionFunction.setPotion(Potions.POISON))
-                    ).when(LootItemKilledByPlayerCondition.killedByPlayer())
-              )
+              .withPool(tippedArrow(Potions.POISON))
         );
         //Copy of vanilla's creeper drops
         add(AdditionsEntityTypes.BABY_CREEPER, LootTable.lootTable()
@@ -70,19 +64,15 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
                     )
               )
         );
+        //Copy of vanilla's parched drops
+        add(AdditionsEntityTypes.BABY_PARCHED, skeletonDrops()
+              .withPool(tippedArrow(Potions.WEAKNESS))
+        );
         //Copy of vanilla's skeleton drops
         add(AdditionsEntityTypes.BABY_SKELETON, skeletonDrops());
         //Copy of vanilla's stray drops
         add(AdditionsEntityTypes.BABY_STRAY, skeletonDrops()
-              .withPool(LootPool.lootPool()
-                    .name("tipped_arrows")
-                    .setRolls(ConstantValue.exactly(1))
-                    .add(LootItem.lootTableItem(Items.TIPPED_ARROW)
-                          .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
-                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)).setLimit(1))
-                          .apply(SetPotionFunction.setPotion(Potions.SLOWNESS))
-                    ).when(LootItemKilledByPlayerCondition.killedByPlayer())
-              )
+              .withPool(tippedArrow(Potions.SLOWNESS))
         );
         //Copy of vanilla's wither skeleton drops
         add(AdditionsEntityTypes.BABY_WITHER_SKELETON, LootTable.lootTable()
@@ -107,6 +97,17 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
                     .when(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(this.registries, 0.05F, 0.01F))
               )
         );
+    }
+
+    private LootPool.Builder tippedArrow(Holder<Potion> potion) {
+        return LootPool.lootPool()
+              .name("tipped_arrows")
+              .setRolls(ConstantValue.exactly(1))
+              .add(LootItem.lootTableItem(Items.TIPPED_ARROW)
+                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
+                    .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)).setLimit(1))
+                    .apply(SetPotionFunction.setPotion(potion))
+              ).when(LootItemKilledByPlayerCondition.killedByPlayer());
     }
 
     /// Copy of vanilla's skeleton drops

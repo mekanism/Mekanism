@@ -22,6 +22,7 @@ public class AdditionsDataMapsProvider extends DataMapProvider {
         builder(NeoForgeDataMaps.PARROT_IMITATIONS)
               .add(AdditionsEntityTypes.BABY_BOGGED, new ParrotImitation(SoundEvents.PARROT_IMITATE_BOGGED), false)
               .add(AdditionsEntityTypes.BABY_CREEPER, new ParrotImitation(SoundEvents.PARROT_IMITATE_CREEPER), false)
+              .add(AdditionsEntityTypes.BABY_PARCHED, new ParrotImitation(SoundEvents.PARROT_IMITATE_PARCHED), false)
               .add(AdditionsEntityTypes.BABY_SKELETON, new ParrotImitation(SoundEvents.PARROT_IMITATE_SKELETON), false)
               .add(AdditionsEntityTypes.BABY_STRAY, new ParrotImitation(SoundEvents.PARROT_IMITATE_STRAY), false)
               .add(AdditionsEntityTypes.BABY_WITHER_SKELETON, new ParrotImitation(SoundEvents.PARROT_IMITATE_WITHER_SKELETON), false)

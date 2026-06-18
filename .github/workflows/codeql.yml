@@ -1,10 +1,10 @@
 name: "CodeQL"
 
 on:
-  #push:
-  #TODO - 26.2: re-enable when compile succeeds    branches: [ "26.1" ]
+  push:
+    branches: [ "26.2" ]
   pull_request:
-    branches: [ "26.1" ]
+    branches: [ "26.2" ]
     types:
       - synchronize
       - opened

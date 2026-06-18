@@ -1,8 +1,8 @@
 package mekanism.additions.common.config;
 
 import mekanism.additions.common.MekanismAdditions;
+import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.common.config.IConfigTranslation;
-import mekanism.common.util.text.TextUtils;
 import net.minecraft.util.Util;
 import org.jspecify.annotations.Nullable;
 
@@ -85,8 +85,9 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
             return Util.makeDescriptionId("configuration", MekanismAdditions.rl("server.baby.spawning." + name + "." + path));
         }
 
-        public static BabySpawnTranslations create(String key) {
-            String name = TextUtils.formatAndCapitalize(key);
+        public static BabySpawnTranslations create(BabyType babyType) {
+            String key = babyType.getSerializedName();
+            String name = babyType.displayName();
             return new BabySpawnTranslations(
                   new ConfigTranslation(getKey(key, "top_level"), name, "Config options regarding the spawning of " + name + ".", "Edit Spawn Settings"),
                   new ConfigTranslation(getKey(key, "should_spawn"), "Should Spawn", "Enable the spawning of " + name + ". Think baby zombies."),

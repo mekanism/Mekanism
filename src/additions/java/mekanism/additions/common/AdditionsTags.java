@@ -96,6 +96,8 @@ public class AdditionsTags {
 
         public static final TagKey<EntityType<?>> BOGGED = commonTag("bogged");
         public static final TagKey<EntityType<?>> ENDERMEN = commonTag("endermen");
+        public static final TagKey<EntityType<?>> PARCHED = commonTag("parched");
+        public static final TagKey<EntityType<?>> STRAY = commonTag("stray");
 
         private static TagKey<EntityType<?>> commonTag(String name) {
             return TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath("c", name));

@@ -4,22 +4,20 @@ import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.ConversionParams;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.monster.skeleton.Skeleton;
+import net.minecraft.world.entity.monster.skeleton.Parched;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.LevelEvent;
 import org.jspecify.annotations.Nullable;
 
-public class EntityBabySkeleton extends Skeleton {
+public class EntityBabyParched extends Parched {
 
-    public EntityBabySkeleton(EntityType<EntityBabySkeleton> type, Level world) {
+    public EntityBabyParched(EntityType<EntityBabyParched> type, Level world) {
         super(type, world);
         this.xpReward = (int) (this.xpReward * 2.5);
         AdditionsEntityTypes.setupBabyModifiers(this);
@@ -34,19 +32,6 @@ public class EntityBabySkeleton extends Skeleton {
     public EntityDimensions getDefaultDimensions(Pose pose) {
         //Note: We already have the age scale factored into the dimensions
         return getType().getDimensions();
-    }
-
-    @Override
-    protected void doFreezeConversion() {
-        convertTo(AdditionsEntityTypes.BABY_STRAY.value(), ConversionParams.single(this, true, true), stray -> {
-            net.neoforged.neoforge.event.EventHooks.onLivingConvert(this, stray);
-            if (!isSilent()) {
-                level().levelEvent(null, 1048, blockPosition(), 0);
-            }
-        });
-        if (!isSilent()) {
-            level().levelEvent(null, LevelEvent.SOUND_SKELETON_TO_STRAY, blockPosition(), 0);
-        }
     }
 
     @Override
@@ -68,6 +53,6 @@ public class EntityBabySkeleton extends Skeleton {
 
     @Override
     public boolean is(EntityType<?> type) {
-        return type == EntityTypes.SKELETON || super.is(type);
+        return type == EntityTypes.PARCHED || super.is(type);
     }
 }

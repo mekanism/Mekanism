@@ -1,4 +1,4 @@
-// 26.2	2026-06-16T13:39:50.7834824	Tags: mekanismadditions
+// 26.2	2026-06-18T12:33:50.805441	Tags: mekanismadditions
 56facda135aff10b73eb8fe66c50a57b81e2004f data/c/tags/block/dyed.json
 c0a3434189d007f164cd4c931b0a892a6837b5a1 data/c/tags/block/dyed/black.json
 64a804c0d747716198c47794e47fc07ff26cc005 data/c/tags/block/dyed/blue.json
@@ -29,6 +29,8 @@ c9004193eb0e4aa50fc6fbecbefbf257d580c5c0 data/c/tags/block/stairs/plastic/glow.j
 59ebe8c8f355627fc70da64c2d7501989709aaa1 data/c/tags/entity_type/bogged.json
 99e821b8d6e99125c15c06cde8010477919b82c3 data/c/tags/entity_type/creepers.json
 accce4e237aa4181015012af78ba3738ca8464eb data/c/tags/entity_type/endermen.json
+c12a865ce6a09a27ca7624b8e50dcf2ab7c58392 data/c/tags/entity_type/parched.json
+25590807d5494a95ccfcecfe71b436ff9bb6f86f data/c/tags/entity_type/stray.json
 fcc8f9ffab8b09b40067c488c2118f4409d6933b data/c/tags/item/dyed.json
 862da4ebc13e627357adf6c372c3d2c954131086 data/c/tags/item/dyed/black.json
 ea9fa1c785760474eeb7e834f8ef5859b6436ba3 data/c/tags/item/dyed/blue.json
@@ -90,12 +92,13 @@ e45a8082f976d0bb7eab6c111551cd0a80c2e02b data/minecraft/tags/block/impermeable.j
 343c9518072d50fdcda23623dce8081b619841d7 data/minecraft/tags/block/mineable/pickaxe.json
 0727994833549dd1ecb13bc6163a5bef159b1131 data/minecraft/tags/block/slabs.json
 bf113affffb3861c37792b9ea8bd1564e1af8d6a data/minecraft/tags/block/stairs.json
+828ca23789970f1d1ce7bbd0def38bc7d35a9962 data/minecraft/tags/entity_type/burn_in_daylight.json
 7afa561c11ab95d25582819547b1d50d56b88ded data/minecraft/tags/entity_type/fall_damage_immune.json
 250f04137941705828e4ae8fd8e813f4bba0f081 data/minecraft/tags/entity_type/freeze_immune_entity_types.json
 87bb4a7ec27918172ca6c66f27681cfd91f9e699 data/minecraft/tags/entity_type/no_anger_from_wind_charge.json
-6dfec3264850363eaf8423124b38ca20748c91e4 data/minecraft/tags/entity_type/skeletons.json
+1dfd467c0a0779aab973cc6a62994481fe7b1f46 data/minecraft/tags/entity_type/skeletons.json
 49c90df09fb9803707e99d724517e2eb441dbe57 data/minecraft/tags/item/fences.json
 6c72a079835fe22d3553edb0f05d066ca238eebe data/minecraft/tags/item/fence_gates.json
 aea35239906ec82e25999e826651b83d2a77a219 data/minecraft/tags/item/slabs.json
 07c1b673153a745dd278af6f56e3f0a2c47da121 data/minecraft/tags/item/stairs.json
-fd4476443818c2cceacdb8adb0af103d8ee3b87b data/per-viam-invenire/tags/entity_type/replace_vanilla_navigator.json
+a98eb2f0b7a3daf20da3991d923498161d5e26cc data/per-viam-invenire/tags/entity_type/replace_vanilla_navigator.json

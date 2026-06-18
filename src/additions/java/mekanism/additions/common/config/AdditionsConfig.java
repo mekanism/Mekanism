@@ -15,10 +15,10 @@ import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData;
 import net.neoforged.fml.config.ModConfig.Type;
@@ -57,19 +57,12 @@ public class AdditionsConfig extends BaseMekanismConfig {
         babyArrowDamageMultiplier = CachedDoubleValue.wrap(this, AdditionsConfigTranslations.SERVER_BABY_ARROW_DAMAGE.applyToBuilder(builder)
               .defineInRange("arrowDamageMultiplier", 0.25, 0.1, 10));
 
-        addBabyTypeConfig(BabyType.BOGGED, builder, AdditionsEntityTypes.BABY_BOGGED, EntityTypes.BOGGED);
-        addBabyTypeConfig(BabyType.CREEPER, builder, AdditionsEntityTypes.BABY_CREEPER, EntityTypes.CREEPER);
-        addBabyTypeConfig(BabyType.ENDERMAN, builder, AdditionsEntityTypes.BABY_ENDERMAN, EntityTypes.ENDERMAN);
-        addBabyTypeConfig(BabyType.SKELETON, builder, AdditionsEntityTypes.BABY_SKELETON, EntityTypes.SKELETON);
-        addBabyTypeConfig(BabyType.STRAY, builder, AdditionsEntityTypes.BABY_STRAY, EntityTypes.STRAY);
-        addBabyTypeConfig(BabyType.WITHER_SKELETON, builder, AdditionsEntityTypes.BABY_WITHER_SKELETON, EntityTypes.WITHER_SKELETON);
+        for (BabyType babyType : BabyType.VALUES) {
+            spawnConfigs.put(babyType, new SpawnConfig(this, builder, babyType));
+        }
         builder.pop();
 
         configSpec = builder.build();
-    }
-
-    private void addBabyTypeConfig(BabyType type, ModConfigSpec.Builder builder, Holder<EntityType<?>> entityTypeProvider, EntityType<?> parentType) {
-        spawnConfigs.put(type, new SpawnConfig(this, builder, "baby_" + type.getSerializedName(), entityTypeProvider, parentType));
     }
 
     @Override
@@ -105,14 +98,14 @@ public class AdditionsConfig extends BaseMekanismConfig {
         public final CachedDoubleValue spawnCostPerEntityPercentage;
         public final CachedDoubleValue maxSpawnCostPercentage;
         public final Holder<EntityType<?>> entityType;
-        public final EntityType<?> parentType;
+        public final ResourceKey<EntityType<?>> parentType;
 
-        private SpawnConfig(IMekanismConfig config, ModConfigSpec.Builder builder, String name, Holder<EntityType<?>> entityType, EntityType<?> parentType) {
-            this.entityType = entityType;
-            this.parentType = parentType;
-            BabySpawnTranslations translations = BabySpawnTranslations.create(name);
+        private SpawnConfig(IMekanismConfig config, ModConfigSpec.Builder builder, BabyType babyType) {
+            this.entityType = AdditionsEntityTypes.getBaby(babyType);
+            this.parentType = babyType.parentId();
+            BabySpawnTranslations translations = BabySpawnTranslations.create(babyType);
 
-            translations.topLevel().applyToBuilder(builder).push(name);
+            translations.topLevel().applyToBuilder(builder).push(babyType.getSerializedName());
             this.shouldSpawn = CachedBooleanValue.wrap(config, translations.shouldSpawn().applyToBuilder(builder)
                   .worldRestart()
                   .define("shouldSpawn", true));
@@ -146,7 +139,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
             //Note: We adjust the mob's spawning based on the adult's spawn rates
             List<Weighted<MobSpawnSettings.SpawnerData>> list = new ArrayList<>();
             for (Weighted<SpawnerData> monsterSpawn : monsterSpawns) {
-                if (monsterSpawn.value().type() == parentType) {
+                if (monsterSpawn.value().type().builtInRegistryHolder().is(parentType)) {
                     list.add(getSpawner(monsterSpawn));
                 }
             }

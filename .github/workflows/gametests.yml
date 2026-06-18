@@ -1,10 +1,10 @@
 name: "Run Game Tests"
 
 on:
-  #push: TODO - 26.2: re-enable when compiles
-  #  branches: [ "26.1" ]
+  #push: TODO - 26.2: re-enable when tests consistently pass
+  #  branches: [ "26.2" ]
   pull_request:
-    branches: [ "26.1" ]
+    branches: [ "26.2" ]
     types:
       - synchronize
       - opened

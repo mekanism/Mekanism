@@ -28,23 +28,25 @@ public class MekanismAPITags {
     }
 
     /// @since 10.6.4
-    public static class Biomes {//TODO - 26.2: Re-evaluate changing the syntax of these blacklist tags to be blacklist/<type>
+    public static class Biomes {
 
         private Biomes() {
         }
 
         /// Represents any biomes that baby bogged should not spawn in, even if normal bogged do.
-        public static final TagKey<Biome> BLACKLIST_BABY_BOGGED = additionsTag("blacklist_baby_bogged");
+        public static final TagKey<Biome> BLACKLIST_BABY_BOGGED = additionsTag("blacklist/baby_bogged");
         /// Represents any biomes that baby creepers should not spawn in, even if normal creepers do.
-        public static final TagKey<Biome> BLACKLIST_BABY_CREEPERS = additionsTag("blacklist_baby_creepers");
+        public static final TagKey<Biome> BLACKLIST_BABY_CREEPERS = additionsTag("blacklist/baby_creeper");
         /// Represents any biomes that baby endermen should not spawn in, even if normal endermen do.
-        public static final TagKey<Biome> BLACKLIST_BABY_ENDERMEN = additionsTag("blacklist_baby_endermen");
+        public static final TagKey<Biome> BLACKLIST_BABY_ENDERMEN = additionsTag("blacklist/baby_enderman");
+        /// Represents any biomes that baby parched should not spawn in, even if normal parched do.
+        public static final TagKey<Biome> BLACKLIST_BABY_PARCHED = additionsTag("blacklist/baby_parched");
         /// Represents any biomes that baby skeletons should not spawn in, even if normal skeletons do.
-        public static final TagKey<Biome> BLACKLIST_BABY_SKELETONS = additionsTag("blacklist_baby_skeletons");
+        public static final TagKey<Biome> BLACKLIST_BABY_SKELETONS = additionsTag("blacklist/baby_skeleton");
         /// Represents any biomes that baby strays should not spawn in, even if normal strays do.
-        public static final TagKey<Biome> BLACKLIST_BABY_STRAYS = additionsTag("blacklist_baby_strays");
+        public static final TagKey<Biome> BLACKLIST_BABY_STRAYS = additionsTag("blacklist/baby_stray");
         /// Represents any biomes that baby wither skeletons should not spawn in, even if normal wither skeletons do.
-        public static final TagKey<Biome> BLACKLIST_BABY_WITHER_SKELETONS = additionsTag("blacklist_baby_wither_skeletons");
+        public static final TagKey<Biome> BLACKLIST_BABY_WITHER_SKELETONS = additionsTag("blacklist/baby_wither_skeleton");
 
         private static TagKey<Biome> additionsTag(String name) {
             return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath("mekanismadditions", name));
@@ -197,17 +199,19 @@ public class MekanismAPITags {
         }
 
         /// Represents any structure that baby bogged should not spawn in, even if normal bogged do.
-        public static final TagKey<Structure> BLACKLIST_BABY_BOGGED = additionsTag("blacklist_baby_bogged");
+        public static final TagKey<Structure> BLACKLIST_BABY_BOGGED = additionsTag("blacklist/baby_bogged");
         /// Represents any structure that baby creepers should not spawn in, even if normal creepers do.
-        public static final TagKey<Structure> BLACKLIST_BABY_CREEPERS = additionsTag("blacklist_baby_creepers");
+        public static final TagKey<Structure> BLACKLIST_BABY_CREEPERS = additionsTag("blacklist/baby_creeper");
         /// Represents any structure that baby endermen should not spawn in, even if normal endermen do.
-        public static final TagKey<Structure> BLACKLIST_BABY_ENDERMEN = additionsTag("blacklist_baby_endermen");
+        public static final TagKey<Structure> BLACKLIST_BABY_ENDERMEN = additionsTag("blacklist/baby_enderman");
+        /// Represents any structure that baby parched should not spawn in, even if normal skeletons do.
+        public static final TagKey<Structure> BLACKLIST_BABY_PARCHED = additionsTag("blacklist/baby_parched");
         /// Represents any structure that baby skeletons should not spawn in, even if normal skeletons do.
-        public static final TagKey<Structure> BLACKLIST_BABY_SKELETONS = additionsTag("blacklist_baby_skeletons");
+        public static final TagKey<Structure> BLACKLIST_BABY_SKELETONS = additionsTag("blacklist/baby_skeleton");
         /// Represents any structure that baby strays should not spawn in, even if normal strays do.
-        public static final TagKey<Structure> BLACKLIST_BABY_STRAYS = additionsTag("blacklist_baby_strays");
+        public static final TagKey<Structure> BLACKLIST_BABY_STRAYS = additionsTag("blacklist/baby_stray");
         /// Represents any structure that baby wither skeletons should not spawn in, even if normal wither skeletons do.
-        public static final TagKey<Structure> BLACKLIST_BABY_WITHER_SKELETONS = additionsTag("blacklist_baby_wither_skeletons");
+        public static final TagKey<Structure> BLACKLIST_BABY_WITHER_SKELETONS = additionsTag("blacklist/baby_wither_skeleton");
 
         private static TagKey<Structure> additionsTag(String name) {
             return TagKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath("mekanismadditions", name));

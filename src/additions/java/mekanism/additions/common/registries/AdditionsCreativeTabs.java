@@ -3,14 +3,17 @@ package mekanism.additions.common.registries;
 import java.util.Map;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.MekanismAdditions;
+import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister;
+import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismCreativeTabs;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.SpawnEggItem;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 public class AdditionsCreativeTabs {
@@ -42,9 +45,9 @@ public class AdditionsCreativeTabs {
         } else if (tabKey == CreativeModeTabs.COMBAT) {
             CreativeTabDeferredRegister.addToDisplay(event, AdditionsBlocks.OBSIDIAN_TNT);
         } else if (tabKey == CreativeModeTabs.SPAWN_EGGS) {
-            CreativeTabDeferredRegister.addToDisplay(event, AdditionsItems.BABY_BOGGED_SPAWN_EGG, AdditionsItems.BABY_CREEPER_SPAWN_EGG,
-                  AdditionsItems.BABY_ENDERMAN_SPAWN_EGG, AdditionsItems.BABY_SKELETON_SPAWN_EGG, AdditionsItems.BABY_STRAY_SPAWN_EGG,
-                  AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);
+            for (ItemRegistryObject<SpawnEggItem> babySpawnEgg : AdditionsItems.BABY_SPAWN_EGGS.values()) {
+                CreativeTabDeferredRegister.addToDisplay(event, babySpawnEgg);
+            }
         }
     }
 

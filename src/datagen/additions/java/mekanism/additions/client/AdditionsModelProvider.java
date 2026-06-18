@@ -33,6 +33,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.Block;
 
 public class AdditionsModelProvider extends BaseModelProvider {
@@ -68,12 +69,9 @@ public class AdditionsModelProvider extends BaseModelProvider {
             itemModels.itemModelOutput.accept(balloon, modelToRegister);
         }
 
-        itemModels.generateFlatItem(AdditionsItems.BABY_BOGGED_SPAWN_EGG.value(), ModelTemplates.FLAT_ITEM);
-        itemModels.generateFlatItem(AdditionsItems.BABY_CREEPER_SPAWN_EGG.value(), ModelTemplates.FLAT_ITEM);
-        itemModels.generateFlatItem(AdditionsItems.BABY_ENDERMAN_SPAWN_EGG.value(), ModelTemplates.FLAT_ITEM);
-        itemModels.generateFlatItem(AdditionsItems.BABY_SKELETON_SPAWN_EGG.value(), ModelTemplates.FLAT_ITEM);
-        itemModels.generateFlatItem(AdditionsItems.BABY_STRAY_SPAWN_EGG.value(), ModelTemplates.FLAT_ITEM);
-        itemModels.generateFlatItem(AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG.value(), ModelTemplates.FLAT_ITEM);
+        for (ItemRegistryObject<SpawnEggItem> babySpawnEgg : AdditionsItems.BABY_SPAWN_EGGS.values()) {
+            itemModels.generateFlatItem(babySpawnEgg.value(), ModelTemplates.FLAT_ITEM);
+        }
 
         Item walkieTalkie = AdditionsItems.WALKIE_TALKIE.value();
         ItemModel.Unbaked baseWalkie = ItemModelUtils.plainModel(itemModels.createFlatItemModel(walkieTalkie, ModelTemplates.FLAT_ITEM));

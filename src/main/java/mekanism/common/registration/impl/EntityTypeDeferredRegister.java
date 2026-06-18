@@ -16,7 +16,6 @@ import net.minecraft.world.entity.SpawnPlacementType;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -32,11 +31,6 @@ public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityT
 
     public EntityTypeDeferredRegister(String modid) {
         super(Registries.ENTITY_TYPE, modid);
-    }
-
-    public <ENTITY extends Monster> MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> registerBasicMonster(String name,
-          Supplier<EntityType.Builder<ENTITY>> builder, Supplier<AttributeSupplier.Builder> attributes) {
-        return registerBasicPlacement(name, builder, attributes, Monster::checkMonsterSpawnRules);
     }
 
     public <ENTITY extends LivingEntity> MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> registerBasicPlacement(String name,
