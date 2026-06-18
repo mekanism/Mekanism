@@ -480,7 +480,6 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe')
     exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
     exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel.projecte', 'snownee.jade')
-    exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
     handler.exclusiveContent {
         it.forRepositories(handler.mavenCentral())
         it.filter {
@@ -541,13 +540,12 @@ dependencies {
     /// - CF
     //compileOnly("curse.maven:jade-api-324717:${jade_api_id}") - no longer on CF as such?
     //compileOnly("curse.maven:jade-api-324717:${jade_id}")
-    //localRuntime("curse.maven:jade-324717:${jade_id}")
+    localRuntime("curse.maven:jade-324717:${jade_id}")
     /// - Modrinth
     //compileOnly("maven.modrinth:jade:${jade_version_modrinth}") // - no sources, despite being uploaded as additional file
     //localRuntime("maven.modrinth:jade:${jade_version_modrinth}")
     /// - Maven (gradle build with added publish block, upload)
     compileOnly("snownee.jade:Jade:${jade_version}:api")
-    //TODO - 26.2: Re-enable when it updates
     //localRuntime("snownee.jade:Jade:${jade_version}")
 
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
@@ -569,7 +567,7 @@ dependencies {
     compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
-    compileOnly("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge-api:${cc_tweaked_version}")
+    compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
     //localRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
     compileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
