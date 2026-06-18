@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -10,6 +12,7 @@ import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.INestedRadialMode;
 import mekanism.api.radial.mode.IRadialMode;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.MekanismRenderPipelines;
 import mekanism.client.render.lib.ScrollIncrementer;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -21,10 +24,13 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StatUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -39,7 +45,7 @@ import org.jspecify.annotations.Nullable;
 public class GuiRadialSelector extends Screen {
 
     private static final Identifier BACK_BUTTON = MekanismUtils.getResource(ResourceType.GUI_RADIAL, "back.png");
-    private static final float DRAWS = 300;
+    private static final float DRAWS = 720;
 
     private static final float INNER = 40, OUTER = 100;
     private static final float MIDDLE_DISTANCE = (INNER + OUTER) / 2F;
@@ -47,7 +53,7 @@ public class GuiRadialSelector extends Screen {
 
     private final ScrollIncrementer scrollIncrementer = new ScrollIncrementer(true);
     private final Deque<RadialData<?>> parents = new ArrayDeque<>();
-    private final Supplier<Player> playerSupplier;
+    private final Supplier<@Nullable Player> playerSupplier;
     private final EquipmentSlot slot;
 
     private RadialData<?> radialData;
@@ -56,7 +62,7 @@ public class GuiRadialSelector extends Screen {
     private boolean overBackButton = false;
     private boolean updateOnClose = true;
 
-    public GuiRadialSelector(EquipmentSlot slot, RadialData<?> radialData, Supplier<Player> playerSupplier) {
+    public GuiRadialSelector(EquipmentSlot slot, RadialData<?> radialData, Supplier<@Nullable Player> playerSupplier) {
         super(MekanismLang.RADIAL_SCREEN.translate());
         this.slot = slot;
         this.radialData = radialData;
@@ -71,7 +77,6 @@ public class GuiRadialSelector extends Screen {
         render(guiGraphics, mouseX, mouseY, centerX, centerY, radialData);
     }
 
-    //TODO - 26.2: rendering
     private <MODE extends IRadialMode> void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float centerX, float centerY, RadialData<MODE> radialData) {
         // Calculate number of available modes to switch between
         List<MODE> modes = radialData.getModes();
@@ -91,15 +96,13 @@ public class GuiRadialSelector extends Screen {
         Matrix3x2fStack matrix = guiGraphics.pose();
         matrix.pushMatrix();
         matrix.translate(centerX, centerY);
-        //RenderSystem.enableBlend();
-        //RenderSystem.defaultBlendFunc();
 
         // draw base
         // Note: While there might be slightly better performance only drawing part of the Torus given
         // other bits may be drawn by hovering or current selection, it is not practical to do so due
         // to floating point precision causing some values to have gaps in the torus, and also the light
         // colors occasionally being harder to see without the added back layer torus
-        drawTorus(guiGraphics, 0, 360, 0.3F, 0.3F, 0.3F, 0.5F);
+        drawTorus(guiGraphics, centerX, centerY, 0, 360, 0.3F, 0.3F, 0.3F, 0.5F);
 
         MODE current = getCurrent(radialData);
         if (current == null) {
@@ -115,9 +118,9 @@ public class GuiRadialSelector extends Screen {
             float startAngle = -90F + 360F * (-0.5F + section) / activeModes;
             EnumColor color = current.color();
             if (color == null) {
-                drawTorus(guiGraphics, startAngle, angleSize, 0.4F, 0.4F, 0.4F, 0.7F);
+                drawTorus(guiGraphics, centerX, centerY, startAngle, angleSize, 0.4F, 0.4F, 0.4F, 0.7F);
             } else {
-                drawTorus(guiGraphics, startAngle, angleSize, color.getColor(0), color.getColor(1), color.getColor(2), 0.3F);
+                drawTorus(guiGraphics, centerX, centerY, startAngle, angleSize, color.getColor(0), color.getColor(1), color.getColor(2), 0.3F);
             }
         }
 
@@ -129,14 +132,14 @@ public class GuiRadialSelector extends Screen {
             // draw mouse selection highlight
             float angle = (float) (Mth.RAD_TO_DEG * Mth.atan2(yDiff, xDiff));
             float modeSize = 180F / activeModes;
-            drawTorus(guiGraphics, angle - modeSize, angleSize, 0.8F, 0.8F, 0.8F, 0.3F);
+            drawTorus(guiGraphics, centerX, centerY, angle - modeSize, angleSize, 0.8F, 0.8F, 0.8F, 0.3F);
 
             float selectionAngle = StatUtils.wrapDegrees(angle + modeSize + 90F);
             int selectionDrawnPos = (int) (selectionAngle * (activeModes / 360F));
             selection = modes.get(selectionDrawnPos);
 
             // draw hovered selection
-            drawTorus(guiGraphics, -90F + 360F * (-0.5F + selectionDrawnPos) / activeModes, angleSize, 0.6F, 0.6F, 0.6F, 0.7F);
+            drawTorus(guiGraphics, centerX, centerY, -90F + 360F * (-0.5F + selectionDrawnPos) / activeModes, angleSize, 0.6F, 0.6F, 0.6F, 0.7F);
         } else {
             selection = null;
         }
@@ -147,9 +150,9 @@ public class GuiRadialSelector extends Screen {
         if (!parents.isEmpty()) {
             overBackButton = distanceFromCenter <= SELECT_RADIUS_WITH_PARENT;
             if (overBackButton) {
-                drawTorus(guiGraphics, 0, 360, 0, SELECT_RADIUS_WITH_PARENT, 0.8F, 0.8F, 0.8F, 0.3F);
+                drawTorus(guiGraphics, centerX, centerY, 0, 360, 0, SELECT_RADIUS_WITH_PARENT, 0.8F, 0.8F, 0.8F, 0.3F);
             } else {
-                drawTorus(guiGraphics, 0, 360, 0, SELECT_RADIUS_WITH_PARENT, 0.3F, 0.3F, 0.3F, 0.5F);
+                drawTorus(guiGraphics, centerX, centerY, 0, 360, 0, SELECT_RADIUS_WITH_PARENT, 0.3F, 0.3F, 0.3F, 0.5F);
             }
             // draw icon
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACK_BUTTON, -12, -18, 0, 0, 24, 24, 18, 18, 18, 18);
@@ -173,23 +176,21 @@ public class GuiRadialSelector extends Screen {
 
         if (!textToDraw.isEmpty()) {
             // Labels (has to be separate from icons or the icons occasionally will get extra artifacts for some reason and also then we can't batch them)
+            //TODO: Is delaying them even necessary anymore?
             boolean whiteRadialText = MekanismConfig.client.whiteRadialText.get();
             for (PositionedText toDraw : textToDraw) {
                 matrix.pushMatrix();
                 matrix.translate(toDraw.x, toDraw.y);
-                matrix.scale(0.6F, 0.6F);
+                matrix.scale(0.8F, 0.8F);
                 Component text = toDraw.text;
                 if (whiteRadialText) {
                     text = text.copy().withStyle(ChatFormatting.RESET);
                 }
                 float x = -font.width(text) / 2F;
-                guiGraphics.text(font, text, (int) x, (int) (float) 8, 0xCCFFFFFF, true);
+                guiGraphics.text(font, text, (int) x, font.lineHeight, 0xCCFFFFFF, true);
                 matrix.popMatrix();
             }
-            //Flush and actually render out the labels
-            //guiGraphics.flush();
         }
-
         matrix.popMatrix();
     }
 
@@ -241,30 +242,15 @@ public class GuiRadialSelector extends Screen {
         return false;
     }
 
-    private void drawTorus(GuiGraphicsExtractor guiGraphics, float startAngle, float sizeAngle, float red, float green, float blue, float alpha) {
-        drawTorus(guiGraphics, startAngle, sizeAngle, INNER, OUTER, red, green, blue, alpha);
+    @Override
+    public boolean isInGameUi() {
+        return true;
     }
 
-    //TODO - 26.2: rendering
-    private void drawTorus(GuiGraphicsExtractor guiGraphics, float startAngle, float sizeAngle, float inner, float outer, float red, float green, float blue, float alpha) {
-        //RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        //Note: We still use the tesselator as that is what GuiGraphicsExtractor#innerBlit does, and we also need to be able to use a custom vertex mode
-        if (false) {
-            /*BufferBuilder vertexBuffer = Tesselator.getInstance().begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            Matrix4f matrix4f = null;//FIXME guiGraphics.pose().last().pose();
-            float draws = DRAWS * (sizeAngle / 360F);
-            for (int i = 0; i <= draws; i++) {
-                float degrees = startAngle + (i / DRAWS) * 360;
-                float angle = Mth.DEG_TO_RAD * degrees;
-                float cos = Mth.cos(angle);
-                float sin = Mth.sin(angle);
-                vertexBuffer.addVertex(matrix4f, outer * cos, outer * sin, 0)
-                      .setColor(red, green, blue, alpha);
-                vertexBuffer.addVertex(matrix4f, inner * cos, inner * sin, 0)
-                      .setColor(red, green, blue, alpha);
-            }*/
-            //BufferUploader.drawWithShader(vertexBuffer.buildOrThrow());
-        }
+    @Override
+    public void extractTransparentBackground(GuiGraphicsExtractor graphics) {
+        //NO-OP, ensure the background isn't blurred
+        //graphics.fillGradient(0, 0, this.width, this.height, 0xc0101010, 0xd0101010);
     }
 
     @Nullable
@@ -363,5 +349,44 @@ public class GuiRadialSelector extends Screen {
 
     public boolean shouldHideCrosshair() {
         return !parents.isEmpty();
+    }
+
+    private void drawTorus(GuiGraphicsExtractor guiGraphics, float centerX, float centerY, float startAngle, float sizeAngle, float red, float green, float blue, float alpha) {
+        drawTorus(guiGraphics, centerX, centerY, startAngle, sizeAngle, INNER, OUTER, red, green, blue, alpha);
+    }
+
+    private void drawTorus(GuiGraphicsExtractor guiGraphics, float centerX, float centerY, float startAngle, float sizeAngle, float inner, float outer, float red, float green, float blue, float alpha) {
+        ScreenRectangle scissorArea = guiGraphics.peekScissorStack();
+        ScreenRectangle bounds = new ScreenRectangle((int) (centerX - outer), (int) (centerY - outer), (int) outer * 2, (int) outer * 2);
+        guiGraphics.submitGuiElementRenderState(new TorusRenderState(centerX, centerY, startAngle, sizeAngle, inner, outer, red, green, blue, alpha, scissorArea, bounds));
+    }
+
+    private record TorusRenderState(float centerX, float centerY, float startAngle, float sizeAngle, float inner, float outer, float red, float green, float blue,
+                                    float alpha, @Nullable ScreenRectangle scissorArea, @Nullable ScreenRectangle bounds) implements GuiElementRenderState {
+
+        @Override
+        public void buildVertices(VertexConsumer vertexConsumer) {
+            float draws = DRAWS * (sizeAngle / 360F);
+            for (int i = 0; i <= draws; i++) {
+                float degrees = startAngle + (i / DRAWS) * 360;
+                float angle = Mth.DEG_TO_RAD * degrees;
+                float cos = Mth.cos(angle);
+                float sin = Mth.sin(angle);
+                vertexConsumer.addVertex(centerX + outer * cos, centerY + outer * sin, 0)
+                      .setColor(red, green, blue, alpha);
+                vertexConsumer.addVertex(centerX + inner * cos, centerY + inner * sin, 0)
+                      .setColor(red, green, blue, alpha);
+            }
+        }
+
+        @Override
+        public RenderPipeline pipeline() {
+            return MekanismRenderPipelines.GUI_TRIANGLE_STRIP;
+        }
+
+        @Override
+        public TextureSetup textureSetup() {
+            return TextureSetup.noTexture();
+        }
     }
 }
