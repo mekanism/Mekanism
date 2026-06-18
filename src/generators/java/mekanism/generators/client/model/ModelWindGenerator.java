@@ -1,9 +1,9 @@
 package mekanism.generators.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.Collection;
 import mekanism.client.model.MekanismJavaModel;
 import mekanism.client.model.ModelPartData;
+import mekanism.client.render.outline.Outlines.Line;
 import mekanism.generators.client.model.ModelWindGenerator.WindGeneratorRotationRenderState;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.model.Model;
@@ -131,9 +131,9 @@ public class ModelWindGenerator extends Model<WindGeneratorRotationRenderState> 
         bladeCenter = BLADE_CENTER.getFromRoot(root);
     }
 
-    public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, WindGeneratorRotationRenderState state, boolean isHighContrast) {
+    public Collection<Line> getWireFrame(WindGeneratorRotationRenderState state) {
         setupAnim(state);
-        MekanismJavaModel.renderPartsAsWireFrame(root().getAllParts(), matrix, vertexBuilder, isHighContrast);
+        return MekanismJavaModel.getPartsAsWireFrame(root().getAllParts());
     }
 
     @Override

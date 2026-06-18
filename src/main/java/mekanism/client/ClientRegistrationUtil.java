@@ -53,7 +53,6 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.client.fluid.FluidTintSources;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.joml.Vector4f;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 public class ClientRegistrationUtil {
@@ -179,7 +178,6 @@ public class ClientRegistrationUtil {
         }
     }
 
-    @NullMarked
     public static void registerFluidExtensions(RegisterClientExtensionsEvent event, FluidDeferredRegister allFluids) {
         for (Holder<FluidType> fluidTypeEntry : allFluids.getFluidTypeEntries()) {
             if (fluidTypeEntry.value() instanceof MekanismFluidType fluidType) {

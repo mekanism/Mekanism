@@ -19,7 +19,6 @@ import net.neoforged.neoforge.client.CustomBlockOutlineRenderer;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.jspecify.annotations.NullMarked;
 
 class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
 
@@ -43,7 +42,6 @@ class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
     }
 
     @Override
-    @NullMarked
     public boolean render(BlockOutlineRenderState renderState, SubmitNodeCollector submitNodeCollector, PoseStack poseStack, LevelRenderState levelRenderState) {
         //TODO - 26.2: Figure out if we need an equivalent to this
         //if (renderState.isTranslucent() == translucentPass) {

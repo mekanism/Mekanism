@@ -286,7 +286,6 @@ public class MekanismRenderer {
         //Reset any cached models now that the atlases are built
         RenderPigmentMixer.resetCached();
         RenderSeismicVibrator.resetCached();
-        RenderTickHandler.resetCached();
         SINGLE_TEXTURE_PICKERS.clear();
         VALVE_FLUID_TEX_CACHE.clear();
 

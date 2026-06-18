@@ -35,7 +35,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.EventHooks;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 public class Meltdown {
@@ -188,7 +187,6 @@ public class Meltdown {
         }
     }
 
-    @NullMarked
     private static class MeltdownDamageCalculator extends ExplosionDamageCalculator {
 
         private final VoxelCuboid bounds;

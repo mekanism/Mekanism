@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import mekanism.client.render.RenderTickHandler;
-import mekanism.client.render.lib.Outlines.Line;
+import mekanism.client.render.outline.Outlines;
+import mekanism.client.render.outline.Outlines.Line;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.ModelPart.Cube;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -16,11 +16,10 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import org.jspecify.annotations.Nullable;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.jspecify.annotations.Nullable;
 
 //TODO - 26.2: review if any of these can be converted back to regular java models - needs rendertype without texture & only single rendertype/light coords
 public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extends Model<STATE>*/ {
@@ -80,59 +79,52 @@ public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extend
         return LayerDefinition.create(mesh, textureWidth, textureHeight);
     }
 
-    public static void renderPartsAsWireFrame(List<ModelPart> parts, PoseStack poseStack, VertexConsumer vertexConsumer, boolean isHighContrast) {
+    public static Set<Line> getPartsAsWireFrame(List<ModelPart> parts) {
+        Set<Line> lines = new HashSet<>();
         //tmp variables to avoid allocating for each model part
         Vector4f pos = new Vector4f();
-        Vector3f normal = new Vector3f();
         Vector3f v0 = new Vector3f();
         Vector3f v1 = new Vector3f();
         Vector3f v2 = new Vector3f();
         Vector3f v3 = new Vector3f();
+        PoseStack poseStack = new PoseStack();
         for (ModelPart part : parts) {
-            visit(part, poseStack, vertexConsumer, pos, normal, v0, v1, v2, v3, isHighContrast);
+            visit(part, poseStack, v0, v1, v2, v3, pos, lines);
         }
+        return lines;
     }
 
     //Simplified version of ModelPart#visit that also avoids capturing lambdas
-    private static void visit(ModelPart part, PoseStack poseStack, VertexConsumer vertexConsumer,
-          //Variables that are just used to skip allocating extra times
-          Vector4f pos, Vector3f normal, Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3, boolean isHighContrast) {
+    private static void visit(ModelPart part, PoseStack poseStack, Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3, Vector4f pos, Set<Line> lines) {
         if (part.visible) {
             if (!part.isEmpty() || !part.children.isEmpty()) {
                 poseStack.pushPose();
                 part.translateAndRotate(poseStack);
-                visitAndRender(part.cubes, poseStack, vertexConsumer, pos, normal, v0, v1, v2, v3, isHighContrast);
+                visitAndRender(part.cubes, poseStack.last().pose(), v0, v1, v2, v3, pos, lines);
                 for (ModelPart child : part.children.values()) {
-                    visit(child, poseStack, vertexConsumer, pos, normal, v0, v1, v2, v3, isHighContrast);
+                    visit(child, poseStack, v0, v1, v2, v3, pos, lines);
                 }
                 poseStack.popPose();
             }
         }
     }
 
-    private static void visitAndRender(List<Cube> cubes, PoseStack matrix, VertexConsumer buffer,
-          //Variables that are just used to skip allocating extra times
-          Vector4f pos, Vector3f normal, Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3, boolean isHighContrast) {
-        Matrix4f pose = matrix.last().pose();
-        Matrix3f poseNormal = matrix.last().normal();
-        Set<Line> lines = new HashSet<>();
+    private static void visitAndRender(List<Cube> cubes, Matrix4f pose, Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3, Vector4f pos, Set<Line> lines) {
         for (Cube cube : cubes) {
             for (ModelPart.Polygon quad : cube.polygons) {
-                setVectorFromVertex(quad.vertices()[0], v0);
-                setVectorFromVertex(quad.vertices()[1], v1);
-                setVectorFromVertex(quad.vertices()[2], v2);
-                setVectorFromVertex(quad.vertices()[3], v3);
-                lines.add(Line.from(v0, v1));
-                lines.add(Line.from(v1, v2));
-                lines.add(Line.from(v2, v3));
-                lines.add(Line.from(v3, v0));
+                setVectorFromVertex(quad.vertices()[0], pose, pos, v0);
+                setVectorFromVertex(quad.vertices()[1], pose, pos, v1);
+                setVectorFromVertex(quad.vertices()[2], pose, pos, v2);
+                setVectorFromVertex(quad.vertices()[3], pose, pos, v3);
+                Outlines.addQuad(lines, v0, v1, v2, v3);
             }
         }
-        RenderTickHandler.renderVertexWireFrame(lines, buffer, pose, poseNormal, pos, normal, isHighContrast);
     }
 
-    private static void setVectorFromVertex(ModelPart.Vertex vertex, Vector3f vector) {
-        vector.set(vertex.worldX(), vertex.worldY(), vertex.worldZ());
+    private static void setVectorFromVertex(ModelPart.Vertex vertex, Matrix4f pose, Vector4f pos, Vector3f vector) {
+        pos.set(vertex.worldX(), vertex.worldY(), vertex.worldZ(), 1);
+        pose.transform(pos);
+        vector.set(pos);
     }
 
     public abstract static class NoState extends MekanismJavaModel<@Nullable Void> {

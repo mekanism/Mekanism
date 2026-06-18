@@ -1,13 +1,7 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
@@ -15,22 +9,15 @@ import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.hud.RadiationOverlay;
-import mekanism.client.render.lib.Outlines;
-import mekanism.client.render.lib.Outlines.Line;
 import mekanism.client.render.lib.effect.BoltRenderer;
-import mekanism.client.render.tileentity.IWireFrameRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.block.BlockBounding;
-import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -45,18 +32,10 @@ import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
-import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.ARGB;
-import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -74,7 +53,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.CustomBlockOutlineRenderer;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import net.neoforged.neoforge.client.event.RenderArmEvent;
@@ -83,19 +61,13 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import org.joml.Matrix3f;
 import org.joml.Matrix3x2fStack;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 public class RenderTickHandler {
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
-    private static final Map<BlockState, List<Line>> cachedWireFrames = new Reference2ObjectOpenHashMap<>();
     private static final BoltRenderer boltRenderer = new BoltRenderer();
     private static final Object2BooleanMap<Class<?>> IS_EMI_SCREEN = new Object2BooleanOpenHashMap<>();
 
@@ -103,10 +75,6 @@ public class RenderTickHandler {
 
     public static void clearQueued() {
         RadiationOverlay.INSTANCE.resetRadiation();
-    }
-
-    public static void resetCached() {
-        cachedWireFrames.clear();
     }
 
     public static void renderBolt(Object renderer, BoltEffect bolt, long gameTime) {
@@ -340,60 +308,28 @@ public class RenderTickHandler {
         BlockState blockState = event.getBlockState();
 
         //TODO - 26.2: blasting unit. don't forget translucency check
-            /*profiler.push(ProfilerConstants.AREA_MINE_OUTLINE);
-            // Draw outlines for area mining blocks
-            if (!outliningArea) {
-                ItemStack stack = player.getMainHandItem();
-                if (!stack.isEmpty() && stack.getItem() instanceof IBlastingItem tool) {
-                    Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(world, player, stack, pos, blockState);
-                    if (!blocks.isEmpty()) {
-                        outliningArea = true;
-                        Vec3 renderView = camera.position();
-                        LevelRenderer levelRenderer = event.getLevelRenderer();
-                        for (Map.Entry<BlockPos, BlockState> block : blocks.entrySet()) {
-                            BlockPos blastingTarget = block.getKey();
-                            // simulate ray tracing results for all block positions
-                            if (!pos.equals(blastingTarget) && TODO - 26.2: also move out of here. !ClientHooks.onDrawHighlight(levelRenderer, camera, rayTraceResult.withPosition(blastingTarget), event.getDeltaTracker(), matrix, renderer)) {
-                                levelRenderer.renderHitOutline(matrix, renderer.getBuffer(RenderTypes.lines()), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
-                            }
-                        }
-                        outliningArea = false;
-                    }
-                }
-            }
-            profiler.pop();*/
-
-        profiler.push(ProfilerConstants.MEKANISM_OUTLINE);
-        if (!blockState.isAir() && world.getWorldBorder().isWithinBounds(pos)) {
-            BlockPos actualPos = pos;
-            BlockState actualState = blockState;
-            if (blockState.is(MekanismBlocks.BOUNDING_BLOCK)) {
-                BlockPos mainPos = BlockBounding.getMainBlockPos(world, pos);
-                if (mainPos != null) {
-                    actualPos = mainPos;
-                    actualState = world.getBlockState(actualPos);
-                }
-            }
-            AttributeCustomSelectionBox customSelectionBox = Attribute.get(actualState, AttributeCustomSelectionBox.class);
-            if (customSelectionBox != null) {
-                if (customSelectionBox.isJavaModel()) {
-                    //If we use a TER to render the wire frame, grab the tile
-                    BlockEntity tile = WorldUtils.getTileEntity(world, actualPos);
-                    if (tile != null) {
-                        BlockEntityRenderer<BlockEntity, ?> tileRenderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(tile);
-                        if (tileRenderer instanceof IWireFrameRenderer wireFrameRenderer && wireFrameRenderer.hasSelectionBox(actualState)) {
-                            List<Line> outlinesFromModel = wireFrameRenderer.isCombined() ? getOutlinesFromModel(world, actualPos, actualState) : null;
-                            event.addCustomRenderer(new IWireframeRendererHandler(actualPos, outlinesFromModel, wireFrameRenderer, tile, actualState, event.isHighContrast()));
+        /*profiler.push(ProfilerConstants.AREA_MINE_OUTLINE);
+        // Draw outlines for area mining blocks
+        if (!outliningArea) {
+            ItemStack stack = player.getMainHandItem();
+            if (!stack.isEmpty() && stack.getItem() instanceof IBlastingItem tool) {
+                Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(world, player, stack, pos, blockState);
+                if (!blocks.isEmpty()) {
+                    outliningArea = true;
+                    Vec3 renderView = camera.position();
+                    LevelRenderer levelRenderer = event.getLevelRenderer();
+                    for (Map.Entry<BlockPos, BlockState> block : blocks.entrySet()) {
+                        BlockPos blastingTarget = block.getKey();
+                        // simulate ray tracing results for all block positions
+                        if (!pos.equals(blastingTarget) && TODO - 26.2: also move out of here. !ClientHooks.onDrawHighlight(levelRenderer, camera, rayTraceResult.withPosition(blastingTarget), event.getDeltaTracker(), matrix, renderer)) {
+                            levelRenderer.renderHitOutline(matrix, renderer.getBuffer(RenderTypes.lines()), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
                         }
                     }
-                } else {
-                    //Otherwise, skip getting the tile and just grab the model
-                    List<Line> outlinesFromModel = getOutlinesFromModel(world, actualPos, actualState);
-                    event.addCustomRenderer(new ModelOutlineHandler(actualPos, outlinesFromModel, event.isHighContrast()));
+                    outliningArea = false;
                 }
             }
         }
-        profiler.pop();
+        profiler.pop();*/
 
         ItemStack stack = player.getMainHandItem();
         if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
@@ -426,114 +362,8 @@ public class RenderTickHandler {
         profiler.pop();
     }
 
-    private static List<Line> getOutlinesFromModel(ClientLevel level, BlockPos pos, BlockState state) {
-        List<Line> lines = cachedWireFrames.get(state);
-        if (lines == null) {
-            BlockStateModel bakedModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(state);
-            lines = Outlines.extract(level, pos, state, bakedModel);
-            cachedWireFrames.put(state, lines);
-        }
-        return lines;
-    }
-
-    public static void renderVertexWireFrame(Collection<Line> lines, VertexConsumer buffer, PoseStack.Pose pose, boolean isHighContrast) {
-        //tmp variables to avoid allocating each loop
-        Vector4f pos = new Vector4f();
-        Vector3f normal = new Vector3f();
-        renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal(), pos, normal, isHighContrast);
-    }
-
-    public static void renderVertexWireFrame(Collection<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal, Vector4f pos, Vector3f normal, boolean isHighContrast) {
-        float lineWidth = Minecraft.getInstance().getWindow().getAppropriateLineWidth();
-        //TODO - 26.2: vanilla high contrast also does a black render. See net.minecraft.client.renderer.LevelRenderer.renderBlockOutline
-        int color = isHighContrast ? CommonColors.HIGH_CONTRAST_DIAMOND : ARGB.black(102);
-        for (Line line : lines) {
-            poseNormal.transform(line.nX(), line.nY(), line.nZ(), normal);
-
-            pose.transform(line.x1(), line.y1(), line.z1(), 1F, pos);
-            buffer.addVertex(pos.x, pos.y, pos.z)
-                  .setColor(color)
-                  .setNormal(normal.x, normal.y, normal.z)
-                  .setLineWidth(lineWidth);
-
-            pose.transform(line.x2(), line.y2(), line.z2(), 1F, pos);
-            buffer.addVertex(pos.x, pos.y, pos.z)
-                  .setColor(color)
-                  .setNormal(normal.x, normal.y, normal.z)
-                  .setLineWidth(lineWidth);
-        }
-    }
-
     private void renderJetpackSmoke(Level world, Vec3 pos, Vec3 motion) {
         world.addParticle(MekanismParticleTypes.JETPACK_FLAME.get(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
         world.addParticle(MekanismParticleTypes.JETPACK_SMOKE.get(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
     }
-
-    @NullMarked
-    private class IWireframeRendererHandler implements CustomBlockOutlineRenderer {
-
-        private final BlockPos blockPos;
-        @Nullable
-        private final List<Line> outlinesFromModel;
-        private final IWireFrameRenderer wireFrameRenderer;
-        private final BlockEntity tile;
-        private final BlockState blockState;
-        private final boolean isHighContrast;
-
-        public IWireframeRendererHandler(BlockPos blockPos, @Nullable List<Line> outlinesFromModel, IWireFrameRenderer wireFrameRenderer, BlockEntity tile, BlockState blockState, boolean isHighContrast) {
-            this.blockPos = blockPos;
-            this.outlinesFromModel = outlinesFromModel;
-            this.wireFrameRenderer = wireFrameRenderer;
-            this.tile = tile;
-            this.blockState = blockState;
-            this.isHighContrast = isHighContrast;
-        }
-
-        @Override
-        public boolean render(BlockOutlineRenderState renderState, SubmitNodeCollector submitNodeCollector, PoseStack matrix, LevelRenderState levelRenderState) {
-            //TODO - 26.2: Figure out if we need an equivalent to this
-            //if (renderState.isTranslucent() == translucentPass) {
-            matrix.pushPose();
-            Vec3 viewPosition = levelRenderState.cameraRenderState.pos;
-            matrix.translate(blockPos.getX() - viewPosition.x, blockPos.getY() - viewPosition.y, blockPos.getZ() - viewPosition.z);
-            //TODO - 26.2: Is custom geometry the correct way to do this?
-            if (outlinesFromModel != null) {
-                submitNodeCollector.submitCustomGeometry(matrix, RenderTypes.lines(), (pose, buffer) -> renderVertexWireFrame(outlinesFromModel, buffer, pose, isHighContrast));
-            }
-            wireFrameRenderer.renderWireFrame(tile, blockState, MekanismRenderer.getPartialTick(), submitNodeCollector, matrix, levelRenderState, isHighContrast);
-            matrix.popPose();
-            //}
-            return true;
-        }
-    }
-
-    @NullMarked
-    private class ModelOutlineHandler implements CustomBlockOutlineRenderer {
-
-        private final BlockPos blockPos;
-        private final List<Line> outlinesFromModel;
-        private final boolean isHighContrast;
-
-        public ModelOutlineHandler(BlockPos blockPos, List<Line> outlinesFromModel, boolean isHighContrast) {
-            this.blockPos = blockPos;
-            this.outlinesFromModel = outlinesFromModel;
-            this.isHighContrast = isHighContrast;
-        }
-
-        @Override
-        public boolean render(BlockOutlineRenderState renderState, SubmitNodeCollector submitNodeCollector, PoseStack matrix, LevelRenderState levelRenderState) {
-            //TODO - 26.2: Figure out if we need an equivalent to this
-            //if (renderState.isTranslucent() == translucentPass) {
-            matrix.pushPose();
-            Vec3 viewPosition = levelRenderState.cameraRenderState.pos;
-            matrix.translate(blockPos.getX() - viewPosition.x, blockPos.getY() - viewPosition.y, blockPos.getZ() - viewPosition.z);
-            //0.4 Alpha
-            //TODO - 26.2: Is custom geometry the correct way to do this?
-            submitNodeCollector.submitCustomGeometry(matrix, RenderTypes.lines(), (pose, buffer) -> renderVertexWireFrame(outlinesFromModel, buffer, pose, isHighContrast));
-            matrix.popPose();
-            //}
-            return true;
-        }
-    }
-
 }
