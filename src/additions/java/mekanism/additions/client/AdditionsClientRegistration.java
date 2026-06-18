@@ -1,6 +1,5 @@
 package mekanism.additions.client;
 
-import java.util.Map;
 import mekanism.additions.client.model.AdditionsModelCache;
 import mekanism.additions.client.model.BabyModelLayers;
 import mekanism.additions.client.model.ModelBabyCreeper;
@@ -16,7 +15,7 @@ import mekanism.additions.client.render.entity.BalloonRenderer;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
-import mekanism.api.text.EnumColor;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.client.model.HumanoidModel;
@@ -135,9 +134,9 @@ public class AdditionsClientRegistration {
     }
 
     @SafeVarargs
-    private static void registerBlockColorHandles(RegisterColorHandlersEvent event, Map<EnumColor, ? extends BlockRegistryObject<?, ?>>... blocks) {
-        for (Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blockMap : blocks) {
-            for (BlockRegistryObject<?, ?> block : blockMap.values()) {
+    private static void registerBlockColorHandles(RegisterColorHandlersEvent event, EnumColorCollection<? extends BlockRegistryObject<?, ?>>... blocks) {
+        for (EnumColorCollection<? extends BlockRegistryObject<?, ?>> blockMap : blocks) {
+            for (BlockRegistryObject<?, ?> block : blockMap.asList()) {
                 ClientRegistrationUtil.registerIColoredBlockHandler(event, block);
             }
         }

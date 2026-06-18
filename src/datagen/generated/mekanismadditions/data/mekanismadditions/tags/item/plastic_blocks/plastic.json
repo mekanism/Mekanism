@@ -1,22 +1,22 @@
 {
   "values": [
-    "mekanismadditions:black_plastic",
-    "mekanismadditions:blue_plastic",
-    "mekanismadditions:green_plastic",
-    "mekanismadditions:cyan_plastic",
-    "mekanismadditions:dark_red_plastic",
-    "mekanismadditions:purple_plastic",
-    "mekanismadditions:orange_plastic",
-    "mekanismadditions:light_gray_plastic",
-    "mekanismadditions:gray_plastic",
-    "mekanismadditions:light_blue_plastic",
-    "mekanismadditions:lime_plastic",
-    "mekanismadditions:aqua_plastic",
-    "mekanismadditions:red_plastic",
-    "mekanismadditions:magenta_plastic",
-    "mekanismadditions:yellow_plastic",
     "mekanismadditions:white_plastic",
+    "mekanismadditions:orange_plastic",
+    "mekanismadditions:magenta_plastic",
+    "mekanismadditions:light_blue_plastic",
+    "mekanismadditions:yellow_plastic",
+    "mekanismadditions:lime_plastic",
+    "mekanismadditions:pink_plastic",
+    "mekanismadditions:gray_plastic",
+    "mekanismadditions:light_gray_plastic",
+    "mekanismadditions:cyan_plastic",
+    "mekanismadditions:purple_plastic",
+    "mekanismadditions:blue_plastic",
     "mekanismadditions:brown_plastic",
-    "mekanismadditions:pink_plastic"
+    "mekanismadditions:green_plastic",
+    "mekanismadditions:red_plastic",
+    "mekanismadditions:black_plastic",
+    "mekanismadditions:dark_red_plastic",
+    "mekanismadditions:aqua_plastic"
   ]
 }

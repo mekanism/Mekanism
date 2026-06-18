@@ -1,14 +1,13 @@
 package mekanism.additions.common;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsDataComponents;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
-import mekanism.api.text.EnumColor;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.common.tag.MekanismTagBuilder;
@@ -55,7 +54,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
         addGlowPanels();
         addPlasticBlocks();
         addHarvestRequirements();
-        getBuilder(BlockTags.IMPERMEABLE).add(AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.values());
+        getBuilder(BlockTags.IMPERMEABLE).add(AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.asList());
     }
 
     private void addEntities() {
@@ -168,7 +167,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
               AdditionsTags.BlockItems.PLASTIC_BLOCKS_REINFORCED, AdditionsTags.BlockItems.PLASTIC_BLOCKS_ROAD, AdditionsTags.BlockItems.PLASTIC_BLOCKS_SLICK,
               AdditionsTags.BlockItems.PLASTIC_BLOCKS_TRANSPARENT);
 
-        getBuilder(FRAMEABLE).add(AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.values());
+        getBuilder(FRAMEABLE).add(AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.asList());
     }
 
     private void addHarvestRequirements() {
@@ -178,29 +177,29 @@ public class AdditionsTagProvider extends BaseTagProvider {
               AdditionsBlocks.PLASTIC_STAIRS, AdditionsBlocks.PLASTIC_GLOW_STAIRS, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS);
     }
 
-    private void addToTags(BlockItemTagId tag, Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blockProviders) {
+    private void addToTags(BlockItemTagId tag, EnumColorCollection<? extends BlockRegistryObject<?, ?>> blockProviders) {
         addToTags(tag.item(), tag.block(), blockProviders);
     }
 
-    private void addToTags(TagKey<Item> itemTag, TagKey<Block> blockTag, Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blockProviders) {
-        addToTags(itemTag, blockTag, blockProviders.values());
-        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : blockProviders.entrySet()) {
-            DyeColor dyeColor = entry.getKey().getDyeColor();
+    private void addToTags(TagKey<Item> itemTag, TagKey<Block> blockTag, EnumColorCollection<? extends BlockRegistryObject<?, ?>> blockProviders) {
+        addToTags(itemTag, blockTag, blockProviders.asList());
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, blockProviders, (color, provider) -> {
+            DyeColor dyeColor = color.getDyeColor();
             if (dyeColor != null) {
-                addToTags(Tags.Items.DYED, Tags.Blocks.DYED, entry.getValue());
-                addToTags(dyeColor.getDyedTag(), BlockTags.create(dyeColor.getDyedTag().location()), entry.getValue());
+                addToTags(Tags.Items.DYED, Tags.Blocks.DYED, provider);
+                addToTags(dyeColor.getDyedTag(), BlockTags.create(dyeColor.getDyedTag().location()), provider);
             }
-        }
+        });
     }
 
-    private void addToTag(TagKey<Item> itemTag, Map<EnumColor, ? extends Holder<Item>> itemProviders) {
-        getBuilder(itemTag).add(itemProviders.values());
-        for (Map.Entry<EnumColor, ? extends Holder<Item>> entry : itemProviders.entrySet()) {
-            DyeColor dyeColor = entry.getKey().getDyeColor();
+    private void addToTag(TagKey<Item> itemTag, EnumColorCollection<? extends Holder<Item>> itemProviders) {
+        getBuilder(itemTag).add(itemProviders.asList());
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, itemProviders, (color, provider) -> {
+            DyeColor dyeColor = color.getDyeColor();
             if (dyeColor != null) {
-                getBuilder(Tags.Items.DYED).add(entry.getValue());
-                getBuilder(dyeColor.getDyedTag()).add(entry.getValue());
+                getBuilder(Tags.Items.DYED).add(provider);
+                getBuilder(dyeColor.getDyedTag()).add(provider);
             }
-        }
+        });
     }
 }

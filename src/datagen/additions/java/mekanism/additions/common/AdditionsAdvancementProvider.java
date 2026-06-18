@@ -32,15 +32,15 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
         HolderGetter<Item> items = registries.lookupOrThrow(Registries.ITEM);
         HolderGetter<EntityType<?>> entityTypeLookup = registries.lookupOrThrow(Registries.ENTITY_TYPE);
         advancement(AdditionsAdvancements.BALLOON)
-              .display(AdditionsItems.BALLOONS.get(EnumColor.AQUA), AdvancementType.TASK, false)
+              .display(AdditionsItems.BALLOONS.pick(EnumColor.AQUA), AdvancementType.TASK, false)
               .addCriterion("balloon", hasItems(items, AdditionsTags.Items.BALLOONS))
               .save(consumer);
         advancement(AdditionsAdvancements.POP_POP)
-              .display(AdditionsItems.BALLOONS.get(EnumColor.RED), null, AdvancementType.GOAL, true, false, true)
+              .display(AdditionsItems.BALLOONS.pick(EnumColor.RED), null, AdvancementType.GOAL, true, false, true)
               .addCriterion("pop", kill(entityTypeLookup, AdditionsEntityTypes.BALLOON))
               .save(consumer);
         advancement(AdditionsAdvancements.GLOW_IN_THE_DARK)
-              .display(AdditionsBlocks.GLOW_PANELS.get(EnumColor.ORANGE).getItemHolder(), AdvancementType.TASK, false)
+              .display(AdditionsBlocks.GLOW_PANELS.pick(EnumColor.ORANGE).getItemHolder(), AdvancementType.TASK, false)
               .addCriterion("glow_panel", hasItems(items, AdditionsTags.BlockItems.GLOW_PANELS.item()))
               .save(consumer);
         advancement(AdditionsAdvancements.HURT_BY_BABIES)

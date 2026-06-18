@@ -93,7 +93,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         int flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     inputIngredient,
-                    MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).asTemplate(large ? 2 * flowerRate : flowerRate)
+                    MekanismChemicals.SIMPLE_PIGMENTS.pick(color).asTemplate(large ? 2 * flowerRate : flowerRate)
               ).addCondition(modLoaded)
               .addCondition(tagNotEmpty)
               .save(consumer, Mekanism.rl(basePath + "pigment_extracting/" + name));

@@ -1,11 +1,10 @@
 package mekanism.additions.common.recipe;
 
-import java.util.Map;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.text.EnumColor;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.impl.BaseSubRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
@@ -43,13 +42,12 @@ class PlasticStairsRecipeProvider extends BaseSubRecipeProvider {
               basePath + "glow/");
     }
 
-    private void registerPlasticStairs(RecipeOutput consumer, Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blocks,
-          Map<EnumColor, ? extends BlockRegistryObject<?, ?>> plasticMap, TagKey<Item> blockType, boolean transparent, String basePath) {
+    private void registerPlasticStairs(RecipeOutput consumer, EnumColorCollection<? extends BlockRegistryObject<?, ?>> blocks,
+          EnumColorCollection<? extends BlockRegistryObject<?, ?>> plasticMap, TagKey<Item> blockType, boolean transparent, String basePath) {
         HolderSet<Item> typeTag = this.items.getOrThrow(blockType);
-        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : blocks.entrySet()) {
-            EnumColor color = entry.getKey();
-            Holder<Item> result = entry.getValue().getItemHolder();
-            Holder<Item> plastic = plasticMap.get(color).getItemHolder();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, blocks, (color, block) -> {
+            Holder<Item> result = block.getItemHolder();
+            Holder<Item> plastic = plasticMap.pick(color).getItemHolder();
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
                   .pattern(PLASTIC_STAIRS)
                   .key(Pattern.CONSTANT, plastic)
@@ -60,6 +58,6 @@ class PlasticStairsRecipeProvider extends BaseSubRecipeProvider {
             } else {
                 PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, result, typeTag, color, basePath);
             }
-        }
+        });
     }
 }

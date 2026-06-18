@@ -1,12 +1,12 @@
 package mekanism.additions.client.integration.emi;
 
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.text.EnumColor;
 import mekanism.client.integration.emi.BaseEmiDefaults;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -21,13 +21,13 @@ public class AdditionsEmiDefaults extends BaseEmiDefaults {
     protected void addDefaults(HolderLookup.Provider lookupProvider) {
         addRecipe(AdditionsItems.WALKIE_TALKIE);
         addRecipe(AdditionsBlocks.OBSIDIAN_TNT);
-        addRecipes("balloon/", AdditionsItems.BALLOONS, true);
-        addRecipes("glow_panel/", AdditionsBlocks.GLOW_PANELS, true);
+        addColoredRecipes("balloon/", true);
+        addColoredRecipes("glow_panel/", true);
         addPlasticBlocks();
     }
 
-    private void addRecipes(String basePath, Map<EnumColor, ?> map, boolean requiresDye) {
-        for (EnumColor color : map.keySet()) {
+    private void addColoredRecipes(String basePath, boolean requiresDye) {
+        for (EnumColor color : EnumUtils.COLORS) {
             if (!requiresDye || color.getDyeColor() != null) {
                 addRecipe(basePath + color.getRegistryPrefix());
             }
@@ -36,29 +36,29 @@ public class AdditionsEmiDefaults extends BaseEmiDefaults {
 
     private void addPlasticBlocks() {
         String basePath = "plastic/";
-        addRecipes(basePath + "fence/", AdditionsBlocks.PLASTIC_FENCES, false);
-        addRecipes(basePath + "fence_gate/", AdditionsBlocks.PLASTIC_FENCE_GATES, false);
+        addColoredRecipes(basePath + "fence/", false);
+        addColoredRecipes(basePath + "fence_gate/", false);
         addPlasticSlabs(basePath);
         addPlasticStairs(basePath);
-        addRecipes(basePath + "block/", AdditionsBlocks.PLASTIC_BLOCKS, true);
-        addRecipes(basePath + "glow/", AdditionsBlocks.PLASTIC_GLOW_BLOCKS, false);
-        addRecipes(basePath + "reinforced/", AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS, false);
-        addRecipes(basePath + "road/", AdditionsBlocks.PLASTIC_ROADS, false);
-        addRecipes(basePath + "slick/enriching/", AdditionsBlocks.SLICK_PLASTIC_BLOCKS, false);
-        addRecipes(basePath + "transparent/", AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS, true);
+        addColoredRecipes(basePath + "block/", true);
+        addColoredRecipes(basePath + "glow/", false);
+        addColoredRecipes(basePath + "reinforced/", false);
+        addColoredRecipes(basePath + "road/", false);
+        addColoredRecipes(basePath + "slick/enriching/", false);
+        addColoredRecipes(basePath + "transparent/", true);
     }
 
     private void addPlasticSlabs(String basePath) {
         basePath += "slab/";
-        addRecipes(basePath, AdditionsBlocks.PLASTIC_SLABS, false);
-        addRecipes(basePath + "transparent/", AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS, false);
-        addRecipes(basePath + "glow/", AdditionsBlocks.PLASTIC_GLOW_SLABS, false);
+        addColoredRecipes(basePath, false);
+        addColoredRecipes(basePath + "transparent/", false);
+        addColoredRecipes(basePath + "glow/", false);
     }
 
     private void addPlasticStairs(String basePath) {
         basePath += "stairs/";
-        addRecipes(basePath, AdditionsBlocks.PLASTIC_STAIRS, false);
-        addRecipes(basePath + "transparent/", AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS, false);
-        addRecipes(basePath + "glow/", AdditionsBlocks.PLASTIC_GLOW_STAIRS, false);
+        addColoredRecipes(basePath, false);
+        addColoredRecipes(basePath + "transparent/", false);
+        addColoredRecipes(basePath + "glow/", false);
     }
 }

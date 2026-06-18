@@ -1,10 +1,9 @@
 package mekanism.additions.common.registries;
 
-import java.util.Map;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister;
@@ -21,7 +20,7 @@ public class AdditionsCreativeTabs {
     public static final CreativeTabDeferredRegister CREATIVE_TABS = new CreativeTabDeferredRegister(MekanismAdditions.MODID, AdditionsCreativeTabs::addToExistingTabs);
 
     public static final MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> ADDITIONS = CREATIVE_TABS.registerMain(AdditionsLang.MEKANISM_ADDITIONS,
-          AdditionsItems.BALLOONS.get(EnumColor.BRIGHT_GREEN), builder ->
+          AdditionsItems.BALLOONS.pick(EnumColor.BRIGHT_GREEN), builder ->
                 builder.backgroundTexture(MekanismAdditions.rl("textures/gui/creative_tab.png"))
                       .withSearchBar(65)//Allow our tabs to be searchable for convenience purposes
                       .withTabsBefore(MekanismCreativeTabs.MEKANISM.getKey())
@@ -52,9 +51,9 @@ public class AdditionsCreativeTabs {
     }
 
     @SafeVarargs
-    private static void addToDisplay(CreativeModeTab.Output output, Map<EnumColor, ? extends BlockRegistryObject<?, ?>>... blocks) {
-        for (Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blockMap : blocks) {
-            CreativeTabDeferredRegister.addToDisplay(output, blockMap.values().toArray(new BlockRegistryObject<?, ?>[0]));
+    private static void addToDisplay(CreativeModeTab.Output output, EnumColorCollection<? extends BlockRegistryObject<?, ?>>... blocks) {
+        for (EnumColorCollection<? extends BlockRegistryObject<?, ?>> blockMap : blocks) {
+            CreativeTabDeferredRegister.addToDisplay(output, blockMap.asList().toArray(new BlockRegistryObject<?, ?>[0]));
         }
     }
 }

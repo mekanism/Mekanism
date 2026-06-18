@@ -1,14 +1,13 @@
 package mekanism.additions.common.recipe;
 
 import java.util.List;
-import java.util.Map;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.api.text.EnumColor;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -17,7 +16,6 @@ import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
@@ -91,9 +89,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     private void registerBalloons() {
         final String basePath = "balloon/";
         HolderSet<Item> allBalloons = this.items.getOrThrow(AdditionsTags.Items.BALLOONS);
-        for (Map.Entry<EnumColor, ? extends Holder<Item>> entry : AdditionsItems.BALLOONS.entrySet()) {
-            EnumColor color = entry.getKey();
-            Holder<Item> balloon = entry.getValue();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsItems.BALLOONS, (color, balloon) -> {
             String colorString = color.getRegistryPrefix();
             Ingredient recolorInput = difference(allBalloons, balloon);
             DyeColor dye = color.getDyeColor();
@@ -112,19 +108,18 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
             }
             ItemStackChemicalToItemStackRecipeBuilder.painting(
                   IngredientCreatorAccess.item().from(recolorInput),
-                  IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
+                  IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE),
                   new ItemStackTemplate(balloon),
                   false
             ).save(output, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
-        }
+        });
     }
 
     private void registerGlowPanels() {
         final String basePath = "glow_panel/";
         HolderSet<Item> glowPanelTag = this.items.getOrThrow(AdditionsTags.BlockItems.GLOW_PANELS.item());
-        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : AdditionsBlocks.GLOW_PANELS.entrySet()) {
-            EnumColor color = entry.getKey();
-            Holder<Item> glowPanel = entry.getValue().getItemHolder();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.GLOW_PANELS, (color, block) -> {
+            Holder<Item> glowPanel = block.getItemHolder();
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
                 ExtendedShapedRecipeBuilder.shapedRecipe(glowPanel, 2)
@@ -137,6 +132,6 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                       .save(output, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             }
             PlasticBlockRecipeProvider.registerRecolor(output, this.items, glowPanel, glowPanelTag, color, basePath);
-        }
+        });
     }
 }

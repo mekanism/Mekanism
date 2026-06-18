@@ -1,19 +1,15 @@
 package mekanism.additions.client;
 
 import java.util.List;
-import java.util.Map;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.block.BlockGlowPanel;
-import mekanism.additions.common.block.plastic.BlockPlasticFenceGate;
-import mekanism.additions.common.block.plastic.BlockPlasticStairs;
-import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.item.ItemWalkieTalkie;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsDataComponents;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.client.model.BaseModelProvider;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
@@ -54,9 +50,8 @@ public class AdditionsModelProvider extends BaseModelProvider {
         Identifier latchedBalloonLoc = modLocation("item/balloon_latched");
         Identifier guiBalloonLoc = modLocation("item/balloon_gui");
         Identifier fixedBalloonLoc = modLocation("item/balloon_fixed");
-        for (Map.Entry<EnumColor, ItemRegistryObject<ItemBalloon>> entry : AdditionsItems.BALLOONS.entrySet()) {
-            EnumColor color = entry.getKey();
-            Item balloon = entry.getValue().value();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsItems.BALLOONS, (color, holder) -> {
+            Item balloon = holder.value();
             //Identifier generatedModel = balloonParent.create(ModelLocationUtils.getModelLocation(balloon), new TextureMapping(), itemModels.modelOutput);
             //TODO - 26.2: does this work, or does it need to define child model with parent? (previous line). check other usages if so
             //tintedItem(itemModels, balloon, balloonModelLoc, color);
@@ -67,7 +62,7 @@ public class AdditionsModelProvider extends BaseModelProvider {
                   ItemModelUtils.when(List.of(ItemDisplayContext.GROUND, ItemDisplayContext.FIXED), tintedModel(fixedBalloonLoc, color))
             );
             itemModels.itemModelOutput.accept(balloon, modelToRegister);
-        }
+        });
 
         for (ItemRegistryObject<SpawnEggItem> babySpawnEgg : AdditionsItems.BABY_SPAWN_EGGS.values()) {
             itemModels.generateFlatItem(babySpawnEgg.value(), ModelTemplates.FLAT_ITEM);
@@ -80,14 +75,10 @@ public class AdditionsModelProvider extends BaseModelProvider {
               ItemModelUtils.select(
                     new ComponentContents<>(AdditionsDataComponents.WALKIE_DATA.get()),
                     baseWalkie,
-                    ItemWalkieTalkie.WalkieData.runningChannels()
-                          .map(walkieData ->
-                                new SelectItemModel.SwitchCase<>(
-                                      List.of(walkieData),
-                                      ItemModelUtils.plainModel(itemModels.createFlatItemModel(walkieTalkie, "_ch" + walkieData.channel(), ModelTemplates.FLAT_ITEM))
-                                )
-                          )
-                          .toList()
+                    ItemWalkieTalkie.WalkieData.runningChannels().map(walkieData -> new SelectItemModel.SwitchCase<>(
+                          List.of(walkieData),
+                          ItemModelUtils.plainModel(itemModels.createFlatItemModel(walkieTalkie, "_ch" + walkieData.channel(), ModelTemplates.FLAT_ITEM))
+                    )).toList()
               )
         );
 
@@ -124,73 +115,70 @@ public class AdditionsModelProvider extends BaseModelProvider {
 
     private void glowPanels(BlockModelGenerators blockModels) {
         Identifier model = modLocation("block/glow_panel");
-        for (BlockRegistryObject<BlockGlowPanel, ?> blockRO : AdditionsBlocks.GLOW_PANELS.values()) {
-            BlockGlowPanel glowPanel = blockRO.value();
+        AdditionsBlocks.GLOW_PANELS.forEach(block -> {
+            BlockGlowPanel glowPanel = block.value();
             blockModels.blockStateOutput.accept(
                   MultiVariantGenerator.dispatch(
-                              glowPanel,
-                              BlockModelGenerators.plainVariant(model)
-                        )
-                        .with(BlockModelGenerators.ROTATIONS_COLUMN_WITH_FACING)
+                        glowPanel,
+                        BlockModelGenerators.plainVariant(model)
+                  ).with(BlockModelGenerators.ROTATIONS_COLUMN_WITH_FACING)
             );
-            blockModels.itemModelOutput.accept(blockRO.asItem(), ItemModelUtils.tintedModel(model, new Constant(glowPanel.getColor().getPackedColor())));
-        }
+            tintedItem(blockModels, glowPanel, model, glowPanel.getColor());
+        });
     }
 
-    private void coloredBlocks(BlockModelGenerators blockModels, Map<EnumColor, ? extends Holder<Block>> blocks, String modelName) {
+    private void coloredBlocks(BlockModelGenerators blockModels, EnumColorCollection<? extends Holder<Block>> blocks, String modelName) {
         Identifier model = modLocation("block/plastic/" + modelName);
-        for (Map.Entry<EnumColor, ? extends Holder<Block>> entry : blocks.entrySet()) {
-            Holder<Block> block = entry.getValue();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, blocks, (color, block) -> {
             blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block.value(), BlockModelGenerators.plainVariant(model)));
-            tintedItem(blockModels, block.value(), model, entry.getKey());
-        }
+            tintedItem(blockModels, block.value(), model, color);
+        });
     }
 
-    private void coloredSlabs(BlockModelGenerators blockModels, Map<EnumColor, ? extends Holder<Block>> slabs, String existingPrefix, String doubleType) {
+    private void coloredSlabs(BlockModelGenerators blockModels, EnumColorCollection<? extends Holder<Block>> slabs, String existingPrefix, String doubleType) {
         Identifier bottomModel = modLocation("block/plastic/" + existingPrefix + "slab");
         Identifier topModel = modLocation("block/plastic/" + existingPrefix + "slab_top");
         MultiVariant doubleModel = BlockModelGenerators.plainVariant(modLocation("block/plastic/" + doubleType));
-        for (Map.Entry<EnumColor, ? extends Holder<Block>> entry : slabs.entrySet()) {
-            Block slab = entry.getValue().value();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, slabs, (color, block) -> {
+            Block slab = block.value();
             MultiVariant top = BlockModelGenerators.plainVariant(topModel);
-            blockModels.blockStateOutput
-                  .accept(BlockModelGenerators.createSlab(slab, BlockModelGenerators.plainVariant(bottomModel), top, doubleModel));
-            tintedItem(blockModels, slab, bottomModel, entry.getKey());
-        }
+            blockModels.blockStateOutput.accept(BlockModelGenerators.createSlab(slab, BlockModelGenerators.plainVariant(bottomModel), top, doubleModel));
+            tintedItem(blockModels, slab, bottomModel, color);
+        });
     }
 
-    private void coloredStairs(BlockModelGenerators blockModels, Map<EnumColor, ? extends BlockRegistryObject<? extends BlockPlasticStairs, ?>> stairs, String existingPrefix) {
+    private void coloredStairs(BlockModelGenerators blockModels, EnumColorCollection<? extends Holder<Block>> stairs, String existingPrefix) {
         Identifier stairsModel = modLocation("block/plastic/" + existingPrefix + "stairs");
         MultiVariant stairsInner = BlockModelGenerators.plainVariant(modLocation("block/plastic/" + existingPrefix + "stairs_inner"));
         MultiVariant stairsOuter = BlockModelGenerators.plainVariant(modLocation("block/plastic/" + existingPrefix + "stairs_outer"));
-        for (BlockRegistryObject<? extends BlockPlasticStairs, ?> stair : stairs.values()) {
-            blockModels.blockStateOutput
-                  .accept(BlockModelGenerators.createStairs(stair.value(), stairsInner, BlockModelGenerators.plainVariant(stairsModel), stairsOuter));
-            tintedItem(blockModels, stair.value(), stairsModel, stair.get().getColor());
-        }
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, stairs, (color, block) -> {
+            Block stair = block.value();
+            blockModels.blockStateOutput.accept(BlockModelGenerators.createStairs(stair, stairsInner, BlockModelGenerators.plainVariant(stairsModel), stairsOuter));
+            tintedItem(blockModels, stair, stairsModel, color);
+        });
     }
 
-    private void coloredFences(BlockModelGenerators blockModels, Map<EnumColor, ? extends Holder<Block>> fences, String existingPrefix) {
+    private void coloredFences(BlockModelGenerators blockModels, EnumColorCollection<? extends Holder<Block>> fences, String existingPrefix) {
         MultiVariant post = BlockModelGenerators.plainVariant(modLocation("block/plastic/" + existingPrefix + "fence_post"));
         MultiVariant side = BlockModelGenerators.plainVariant(modLocation("block/plastic/" + existingPrefix + "fence_side"));
         Identifier inventory = modLocation("block/plastic/fence_inventory");
-        for (Map.Entry<EnumColor, ? extends Holder<Block>> entry : fences.entrySet()) {
-            Block fence = entry.getValue().value();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, fences, (color, block) -> {
+            Block fence = block.value();
             blockModels.blockStateOutput.accept(BlockModelGenerators.createFence(fence, post, side));
-            tintedItem(blockModels, fence, inventory, entry.getKey());
-        }
+            tintedItem(blockModels, fence, inventory, color);
+        });
     }
 
-    private void coloredFenceGates(BlockModelGenerators blockModels, Map<EnumColor, ? extends BlockRegistryObject<? extends BlockPlasticFenceGate, ?>> fenceGates, String existingPrefix) {
+    private void coloredFenceGates(BlockModelGenerators blockModels, EnumColorCollection<? extends Holder<Block>> fenceGates, String existingPrefix) {
         Identifier gate = modLocation("block/plastic/" + existingPrefix + "fence_gate");
         MultiVariant open = BlockModelGenerators.plainVariant(modLocation("block/plastic/" + existingPrefix + "fence_gate_open"));
         MultiVariant closed = BlockModelGenerators.plainVariant(gate);
         MultiVariant openWall = BlockModelGenerators.plainVariant(modLocation("block/plastic/" + existingPrefix + "fence_gate_wall_open"));
         MultiVariant closedWall = BlockModelGenerators.plainVariant(modLocation("block/plastic/" + existingPrefix + "fence_gate_wall"));
-        for (Map.Entry<EnumColor, ? extends Holder<Block>> entry : fenceGates.entrySet()) {
-            Block fenceGate = entry.getValue().value();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, fenceGates, (color, block) -> {
+            Block fenceGate = block.value();
             blockModels.blockStateOutput.accept(BlockModelGenerators.createFenceGate(fenceGate, open, closed, openWall, closedWall, true));
-            tintedItem(blockModels, fenceGate, gate, entry.getKey());
-        }
+            tintedItem(blockModels, fenceGate, gate, color);
+        });
     }
 }

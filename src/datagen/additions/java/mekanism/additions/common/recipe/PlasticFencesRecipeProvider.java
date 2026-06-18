@@ -1,19 +1,15 @@
 package mekanism.additions.common.recipe;
 
-import java.util.Map;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.additions.common.block.plastic.BlockPlasticFence;
-import mekanism.additions.common.block.plastic.BlockPlasticFenceGate;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.text.EnumColor;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.impl.BaseSubRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
@@ -40,39 +36,35 @@ class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "plastic/";
-        registerPlasticFences(consumer, basePath);
-        registerPlasticFenceGates(consumer, basePath);
+        registerPlasticFences(consumer, basePath + "fence/");
+        registerPlasticFenceGates(consumer, basePath + "fence_gate/");
     }
 
     private void registerPlasticFences(RecipeOutput consumer, String basePath) {
-        basePath += "fence/";
         HolderSet<Item> fencesTag = this.items.getOrThrow(AdditionsTags.Items.FENCES_PLASTIC_NORMAL);
-        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlasticFence, ?>> entry : AdditionsBlocks.PLASTIC_FENCES.entrySet()) {
-            EnumColor color = entry.getKey();
-            Holder<Item> result = entry.getValue().getItemHolder();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_FENCES, (color, fence) -> {
+            Holder<Item> result = fence.getItemHolder();
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
                   .pattern(PLASTIC_FENCE)
                   .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
-                  .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.get(color))
+                  .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.pick(color))
                   .category(RecipeCategory.DECORATIONS)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, result, fencesTag, color, basePath);
-        }
+        });
     }
 
     private void registerPlasticFenceGates(RecipeOutput consumer, String basePath) {
-        basePath += "fence_gate/";
         HolderSet<Item> gatesTag = this.items.getOrThrow(AdditionsTags.Items.FENCE_GATES_PLASTIC_NORMAL);
-        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlasticFenceGate, ?>> entry : AdditionsBlocks.PLASTIC_FENCE_GATES.entrySet()) {
-            EnumColor color = entry.getKey();
-            Holder<Item> result = entry.getValue().getItemHolder();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_FENCE_GATES, (color, fenceGate) -> {
+            Holder<Item> result = fenceGate.getItemHolder();
             ExtendedShapedRecipeBuilder.shapedRecipe(result)
                   .pattern(PLASTIC_FENCE_GATE)
                   .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
-                  .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.get(color))
+                  .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.pick(color))
                   .category(RecipeCategory.REDSTONE)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, result, gatesTag, color, basePath);
-        }
+        });
     }
 }

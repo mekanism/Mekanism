@@ -346,6 +346,6 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     public ItemStack getPickResult() {
-        return AdditionsItems.BALLOONS.get(color).asStack();
+        return AdditionsItems.BALLOONS.pick(color).asStack();
     }
 }

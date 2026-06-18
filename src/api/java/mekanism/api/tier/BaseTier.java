@@ -12,15 +12,16 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.material.MapColor;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.Nullable;
 
 /// The default tiers used in Mekanism.
 public enum BaseTier implements StringRepresentable, SupportsColorMap {
-    BASIC("Basic", new int[]{95, 255, 184}, MapColor.COLOR_LIGHT_GREEN),
-    ADVANCED("Advanced", new int[]{255, 128, 106}, MapColor.TERRACOTTA_PINK),
-    ELITE("Elite", new int[]{75, 248, 255}, MapColor.DIAMOND),
-    ULTIMATE("Ultimate", new int[]{247, 135, 255}, MapColor.COLOR_MAGENTA),
-    CREATIVE("Creative", new int[]{88, 88, 88}, MapColor.TERRACOTTA_CYAN);
+    BASIC("Basic", 0x5FFFB8, MapColor.COLOR_LIGHT_GREEN),
+    ADVANCED("Advanced", 0xFF806A, MapColor.TERRACOTTA_PINK),
+    ELITE("Elite", 0x4BF8FF, MapColor.DIAMOND),
+    ULTIMATE("Ultimate", 0xF787FF, MapColor.COLOR_MAGENTA),
+    CREATIVE("Creative", 0x585858, MapColor.TERRACOTTA_CYAN);
 
     /// Gets a tier by index, wrapping for out of bounds indices.
     ///
@@ -39,10 +40,10 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
     private int[] rgbCode;
     private int argb;
 
-    BaseTier(String name, int[] rgbCode, MapColor mapColor) {
+    BaseTier(String name, int rgb, MapColor mapColor) {
         this.name = name;
         this.mapColor = mapColor;
-        setColorFromAtlas(rgbCode);
+        setColorFromAtlas(new int[]{ARGB.red(rgb), ARGB.green(rgb), ARGB.blue(rgb)});
     }
 
     /// Gets the name of this tier.
@@ -73,8 +74,8 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
         return rgbCode;
     }
 
-    /// @apiNote This method is mostly for **INTERNAL** usage.
     /// @since 10.4.0
+    @Internal
     @Override
     public void setColorFromAtlas(int[] color) {
         this.rgbCode = color;

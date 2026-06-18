@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.gear.ModuleData;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
@@ -81,6 +82,10 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     public void add(BlockItemTagId tagKey, String name) {
         add(tagKey.item(), name);
         add(tagKey.block(), name);
+    }
+
+    protected void add(EnumColorCollection<? extends IHasTranslationKey> blocks, String suffix) {
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, blocks, (color, block) -> add(block, color.getEnglishName() + " " + suffix));
     }
 
     protected void add(IHasTranslationKey key, String value) {

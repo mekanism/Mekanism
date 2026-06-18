@@ -17,7 +17,6 @@ import mekanism.additions.common.voice.VoiceServerManager;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.lib.Version;
-import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.BlockSource;
@@ -130,9 +129,7 @@ public class MekanismAdditions implements IModModule {
                     return stack;
                 }
             };
-            for (ItemRegistryObject<ItemBalloon> balloon : AdditionsItems.BALLOONS.values()) {
-                DispenserBlock.registerBehavior(balloon, balloonBehavior);
-            }
+            AdditionsItems.BALLOONS.forEach(balloon -> DispenserBlock.registerBehavior(balloon, balloonBehavior));
         });
         Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
     }

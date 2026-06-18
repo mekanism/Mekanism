@@ -1,12 +1,11 @@
 package mekanism.common.registries;
 
 import java.util.EnumMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
-import mekanism.api.text.EnumColor;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.common.ChemicalConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.ChemicalDeferredRegister;
@@ -14,7 +13,6 @@ import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.util.ARGB;
 
 public class MekanismChemicals {
 
@@ -59,21 +57,13 @@ public class MekanismChemicals {
     public static final DeferredChemical<Chemical> POLONIUM = CHEMICALS.register("polonium", 0xFF1B9E7B);
     public static final DeferredChemical<Chemical> ANTIMATTER = CHEMICALS.register("antimatter", 0xFFA464B3);
 
-    public static Map<EnumColor, DeferredChemical<Chemical>> PIGMENT_COLOR_LOOKUP = new EnumMap<>(EnumColor.class);
-    public static final Map<PrimaryResource, SlurryRegistryObject<Chemical, Chemical>> PROCESSED_RESOURCES = new LinkedHashMap<>();
+    public static EnumColorCollection<DeferredChemical<Chemical>> SIMPLE_PIGMENTS = EnumColorCollection.VALUES
+          .map(color -> CHEMICALS.registerPigment(color.getRegistryPrefix(), color.getPackedColor()));
+    public static final Map<PrimaryResource, SlurryRegistryObject<Chemical, Chemical>> PROCESSED_RESOURCES = new EnumMap<>(PrimaryResource.class);
 
     static {
-        for (EnumColor color : EnumUtils.COLORS) {
-            PIGMENT_COLOR_LOOKUP.put(color, registerPigment(color));
-        }
         for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
             PROCESSED_RESOURCES.put(resource, CHEMICALS.registerSlurry(resource));
         }
-    }
-
-    private static DeferredChemical<Chemical> registerPigment(EnumColor color) {
-        int[] rgb = color.getRgbCode();
-        int tint = ARGB.color(0xFF, rgb[0], rgb[1], rgb[2]);
-        return CHEMICALS.registerPigment(color.getRegistryPrefix(), tint);
     }
 }

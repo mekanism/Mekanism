@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
@@ -120,13 +121,17 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     @SafeVarargs
-    protected final void addToHarvestTag(TagKey<Block> blockTag, Map<?, ? extends Holder<Block>>... blockProviders) {
+    protected final void addToHarvestTag(TagKey<Block> blockTag, EnumColorCollection<? extends Holder<Block>>... blockProviders) {
+        for (EnumColorCollection<? extends Holder<Block>> blockProvider : blockProviders) {
+            addToHarvestTag(blockTag, blockProvider.asList());
+        }
+    }
+
+    protected final void addToHarvestTag(TagKey<Block> blockTag, Collection<? extends Holder<Block>> blockProvider) {
         MekanismTagBuilder<Block> tagBuilder = getBuilder(blockTag);
-        for (Map<?, ? extends Holder<Block>> blockProvider : blockProviders) {
-            tagBuilder.add(blockProvider.values());
-            for (Holder<Block> block : blockProvider.values()) {
-                knownHarvestRequirements.add(block.value());
-            }
+        tagBuilder.add(blockProvider);
+        for (Holder<Block> block : blockProvider) {
+            knownHarvestRequirements.add(block.value());
         }
     }
 

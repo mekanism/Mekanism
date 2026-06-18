@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import mekanism.api.text.EnumColorCollection;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -45,6 +46,11 @@ public class MekanismTagBuilder<TYPE> {
     }
 
     public <COLOR> MekanismTagBuilder<TYPE> add(ColorCollection<COLOR> colorCollection, Function<COLOR, ResourceKey<TYPE>> keyExtractor) {
+        colorCollection.forEach(color -> elementAdder.accept(keyExtractor.apply(color).identifier()));
+        return this;
+    }
+
+    public <COLOR> MekanismTagBuilder<TYPE> add(EnumColorCollection<COLOR> colorCollection, Function<COLOR, ResourceKey<TYPE>> keyExtractor) {
         colorCollection.forEach(color -> elementAdder.accept(keyExtractor.apply(color).identifier()));
         return this;
     }

@@ -1,12 +1,12 @@
 package mekanism.additions.common.recipe;
 
-import java.util.Map;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.common.recipe.impl.BaseSubRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registration.impl.DeferredChemical;
@@ -40,9 +40,7 @@ class PigmentExtractingPlasticRecipeProvider extends BaseSubRecipeProvider {
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "pigment_extracting/plastic/";
-        for (Map.Entry<EnumColor, DeferredChemical<Chemical>> entry : MekanismChemicals.PIGMENT_COLOR_LOOKUP.entrySet()) {
-            EnumColor color = entry.getKey();
-            DeferredChemical<Chemical> pigment = entry.getValue();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, MekanismChemicals.SIMPLE_PIGMENTS, (color, pigment) -> {
             addExtractionRecipe(consumer, color, AdditionsBlocks.PLASTIC_BLOCKS, pigment, PLASTIC_BLOCK_RATE, basePath + "block/");
             addExtractionRecipe(consumer, color, AdditionsBlocks.SLICK_PLASTIC_BLOCKS, pigment, SLICK_PLASTIC_BLOCK_RATE, basePath + "slick/");
             addExtractionRecipe(consumer, color, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, pigment, PLASTIC_GLOW_BLOCK_RATE, basePath + "glow/");
@@ -55,13 +53,13 @@ class PigmentExtractingPlasticRecipeProvider extends BaseSubRecipeProvider {
             addExtractionRecipe(consumer, color, AdditionsBlocks.PLASTIC_GLOW_SLABS, pigment, PLASTIC_GLOW_SLAB_RATE, basePath + "slab/glow/");
             addExtractionRecipe(consumer, color, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS, pigment, TRANSPARENT_PLASTIC_STAIRS_RATE, basePath + "stairs/transparent");
             addExtractionRecipe(consumer, color, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS, pigment, TRANSPARENT_PLASTIC_SLAB_RATE, basePath + "slab/transparent");
-        }
+        });
     }
 
-    private static void addExtractionRecipe(RecipeOutput consumer, EnumColor color, Map<EnumColor, ? extends ItemLike> input, DeferredChemical<?> pigment,
+    private static void addExtractionRecipe(RecipeOutput consumer, EnumColor color, EnumColorCollection<? extends ItemLike> input, DeferredChemical<?> pigment,
           int rate, String basePath) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
-              IngredientCreatorAccess.item().from(input.get(color)),
+              IngredientCreatorAccess.item().from(input.pick(color)),
               pigment.asTemplate(rate)
         ).save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
     }

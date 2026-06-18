@@ -5,40 +5,44 @@ import io.netty.buffer.ByteBuf;
 import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.MekanismAPI;
 import mekanism.api.SupportsColorMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.material.MapColor;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.Nullable;
 
 /// Simple color enum for adding colors to in-game GUI strings of text.
-public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, StringRepresentable {
-    BLACK("§0", APILang.COLOR_BLACK, "Black", "black", new int[]{64, 64, 64}, DyeColor.BLACK),
-    DARK_BLUE("§1", APILang.COLOR_DARK_BLUE, "Blue", "blue", new int[]{54, 107, 208}, DyeColor.BLUE),
-    DARK_GREEN("§2", APILang.COLOR_DARK_GREEN, "Green", "green", new int[]{89, 193, 95}, DyeColor.GREEN),
-    DARK_AQUA("§3", APILang.COLOR_DARK_AQUA, "Cyan", "cyan", new int[]{0, 243, 208}, DyeColor.CYAN),
-    DARK_RED("§4", APILang.COLOR_DARK_RED, "Dark Red", "dark_red", new int[]{201, 7, 31}, MapColor.NETHER, null),
-    PURPLE("§5", APILang.COLOR_PURPLE, "Purple", "purple", new int[]{164, 96, 217}, DyeColor.PURPLE),
-    ORANGE("§6", APILang.COLOR_ORANGE, "Orange", "orange", new int[]{255, 161, 96}, DyeColor.ORANGE),
-    GRAY("§7", APILang.COLOR_GRAY, "Light Gray", "light_gray", new int[]{207, 207, 207}, DyeColor.LIGHT_GRAY),
-    DARK_GRAY("§8", APILang.COLOR_DARK_GRAY, "Gray", "gray", new int[]{122, 122, 122}, DyeColor.GRAY),
-    INDIGO("§9", APILang.COLOR_INDIGO, "Light Blue", "light_blue", new int[]{85, 158, 255}, DyeColor.LIGHT_BLUE),
-    BRIGHT_GREEN("§a", APILang.COLOR_BRIGHT_GREEN, "Lime", "lime", new int[]{117, 255, 137}, DyeColor.LIME),
-    AQUA("§b", APILang.COLOR_AQUA, "Aqua", "aqua", new int[]{48, 255, 249}, MapColor.COLOR_LIGHT_BLUE, null),
-    RED("§c", APILang.COLOR_RED, "Red", "red", new int[]{255, 56, 60}, DyeColor.RED),
-    PINK("§d", APILang.COLOR_PINK, "Magenta", "magenta", new int[]{213, 94, 203}, DyeColor.MAGENTA),
-    YELLOW("§e", APILang.COLOR_YELLOW, "Yellow", "yellow", new int[]{255, 221, 79}, DyeColor.YELLOW),
-    WHITE("§f", APILang.COLOR_WHITE, "White", "white", new int[]{255, 255, 255}, DyeColor.WHITE),
+public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, StringRepresentable, IHasTranslationKey {
+    BLACK(DyeColor.BLACK, "Black", 0x404040),
+    DARK_BLUE(DyeColor.BLUE, "Blue", 0x366BD0),
+    DARK_GREEN(DyeColor.GREEN, "Green", 0x59C15F),
+    DARK_AQUA(DyeColor.CYAN, "Cyan", 0x00F3D0),
+    DARK_RED("dark_red", "Dark Red", 0xC9071F, MapColor.NETHER),
+    PURPLE(DyeColor.PURPLE, "Purple", 0xA460D9),
+    ORANGE(DyeColor.ORANGE, "Orange", 0xFFA160),
+    GRAY(DyeColor.LIGHT_GRAY, "Light Gray", 0xCFCFCF),
+    DARK_GRAY(DyeColor.GRAY, "Gray", 0x7A7A7A),
+    INDIGO(DyeColor.LIGHT_BLUE, "Light Blue", 0x559EFF),
+    BRIGHT_GREEN(DyeColor.LIME, "Lime", 0x75FF89),
+    AQUA("aqua", "Aqua", 0x30FFF9, MapColor.COLOR_LIGHT_BLUE),
+    RED(DyeColor.RED, "Red", 0xFF383C),
+    PINK(DyeColor.MAGENTA, "Magenta", 0xD55ECB),
+    YELLOW(DyeColor.YELLOW, "Yellow", 0xFFDD4F),
+    WHITE(DyeColor.WHITE, "White", 0xFFFFFF),
     //Extras for dye-completeness
-    BROWN("§6", APILang.COLOR_BROWN, "Brown", "brown", new int[]{161, 118, 73}, DyeColor.BROWN),
-    BRIGHT_PINK("§d", APILang.COLOR_BRIGHT_PINK, "Pink", "pink", new int[]{255, 188, 196}, DyeColor.PINK);
+    BROWN(DyeColor.BROWN, "Brown", 0xA17649),
+    BRIGHT_PINK(DyeColor.PINK, "Pink", 0xFFBCC4);
 
     /// Codec for serializing colors based on their name.
     ///
@@ -56,9 +60,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     ///
     /// @since 10.6.0
     public static final StreamCodec<ByteBuf, Optional<EnumColor>> OPTIONAL_STREAM_CODEC = ByteBufCodecs.optional(STREAM_CODEC);
-    /// The color code that will be displayed
-    public final String code;
-    private final ILangEntry langEntry;
+    private final String translationKey;
     private final String englishName;
     private final String registryPrefix;
     @Nullable
@@ -69,18 +71,21 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     private int[] rgbCode;
     private int argb;
 
-    EnumColor(String s, ILangEntry langEntry, String englishName, String registryPrefix, int[] rgbCode, DyeColor dyeColor) {
-        this(s, langEntry, englishName, registryPrefix, rgbCode, dyeColor.getMapColor(), dyeColor);
+    EnumColor(DyeColor dyeColor, String englishName, int rgb) {
+        this(dyeColor.getName(), englishName, rgb, dyeColor.getMapColor(), dyeColor);
     }
 
-    EnumColor(String code, ILangEntry langEntry, String englishName, String registryPrefix, int[] rgbCode, MapColor mapColor, @Nullable DyeColor dyeColor) {
-        this.code = code;
-        this.langEntry = langEntry;
+    EnumColor(String registryPrefix, String englishName, int rgb, MapColor mapColor) {
+        this(registryPrefix, englishName, rgb, mapColor, null);
+    }
+
+    EnumColor(String registryPrefix, String englishName, int rgb, MapColor mapColor, @Nullable DyeColor dyeColor) {
         this.englishName = englishName;
         this.dyeColor = dyeColor;
         this.registryPrefix = registryPrefix;
-        setColorFromAtlas(rgbCode);
+        this.translationKey = Util.makeDescriptionId("color", Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, this.registryPrefix));
         this.mapColor = mapColor;
+        setColorFromAtlas(new int[]{ARGB.red(rgb), ARGB.green(rgb), ARGB.blue(rgb)});
     }
 
     /// Gets the prefix to use in registry names for this color.
@@ -115,12 +120,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     ///
     /// @return the color's name
     public MutableComponent getName() {
-        return langEntry.translate();
-    }
-
-    /// @apiNote For use by the data generators.
-    public ILangEntry getLangEntry() {
-        return langEntry;
+        return TextComponentUtil.translate(getTranslationKey());
     }
 
     /// Gets the corresponding text color for this color.
@@ -129,19 +129,14 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     }
 
     @Override
-    public String toString() {
-        return code;
-    }
-
-    @Override
     public EnumColor byIndex(int index) {
         return BY_ID.apply(index);
     }
 
-    /// @apiNote This method is mostly for **INTERNAL** usage.
+    @Internal
     @Override
     public void setColorFromAtlas(int[] color) {
-        rgbCode = color;
+        this.rgbCode = color;
         this.argb = ARGB.color(0xFF, rgbCode[0], rgbCode[1], rgbCode[2]);
         this.color = TextColor.fromRgb(this.argb);
     }
@@ -160,5 +155,10 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     @Override
     public String getSerializedName() {
         return registryPrefix;
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return translationKey;
     }
 }

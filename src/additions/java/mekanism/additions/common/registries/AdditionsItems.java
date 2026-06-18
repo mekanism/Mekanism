@@ -7,11 +7,10 @@ import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.item.ItemWalkieTalkie;
-import mekanism.api.text.EnumColor;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
@@ -32,9 +31,6 @@ public class AdditionsItems {
 
     public static final ItemRegistryObject<ItemWalkieTalkie> WALKIE_TALKIE = ITEMS.registerItem("walkie_talkie", ItemWalkieTalkie::new);
 
-    public static final Map<EnumColor, ItemRegistryObject<ItemBalloon>> BALLOONS = Util.make(new EnumMap<>(EnumColor.class), balloons -> {
-        for (EnumColor color : EnumUtils.COLORS) {
-            balloons.put(color, ITEMS.registerItem(color.getRegistryPrefix() + "_balloon", properties -> new ItemBalloon(properties, color)));
-        }
-    });
+    public static final EnumColorCollection<ItemRegistryObject<ItemBalloon>> BALLOONS = EnumColorCollection.VALUES
+          .map(color -> ITEMS.registerItem(color.getRegistryPrefix() + "_balloon", properties -> new ItemBalloon(properties, color)));
 }

@@ -1,16 +1,14 @@
 package mekanism.additions.common.recipe;
 
-import java.util.Map;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.additions.common.block.plastic.BlockPlastic;
-import mekanism.additions.common.block.plastic.BlockPlasticRoad;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
@@ -19,7 +17,6 @@ import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
@@ -68,20 +65,18 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "plastic/";
-        registerPlasticBlocks(consumer, basePath);
-        registerPlasticGlow(consumer, basePath);
-        registerReinforcedPlastic(consumer, basePath);
-        registerPlasticRoads(consumer, basePath);
-        registerSlickPlastic(consumer, basePath);
-        registerPlasticTransparent(consumer, basePath);
+        registerPlasticBlocks(consumer, basePath + "block/");
+        registerPlasticGlow(consumer, basePath + "glow/");
+        registerReinforcedPlastic(consumer, basePath + "reinforced/");
+        registerPlasticRoads(consumer, basePath + "road/");
+        registerSlickPlastic(consumer, basePath + "slick/");
+        registerPlasticTransparent(consumer, basePath + "transparent/");
     }
 
     private void registerPlasticBlocks(RecipeOutput consumer, String basePath) {
-        basePath += "block/";
         HolderSet<Item> plasticTag = this.items.getOrThrow(AdditionsTags.BlockItems.PLASTIC_BLOCKS_PLASTIC.item());
-        for (BlockRegistryObject<BlockPlastic, ?> blockRO : AdditionsBlocks.PLASTIC_BLOCKS.values()) {
-            EnumColor color = blockRO.value().getColor();
-            Holder<Item> result = blockRO.getItemHolder();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_BLOCKS, (color, block) -> {
+            Holder<Item> result = block.getItemHolder();
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
                 ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
@@ -92,15 +87,13 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
                       .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             }
             registerRecolor(consumer, this.items, result, plasticTag, color, basePath);
-        }
+        });
     }
 
     private void registerPlasticTransparent(RecipeOutput consumer, String basePath) {
-        basePath += "transparent/";
         HolderSet<Item> transparentTag = this.items.getOrThrow(AdditionsTags.BlockItems.PLASTIC_BLOCKS_TRANSPARENT.item());
-        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.entrySet()) {
-            EnumColor color = entry.getKey();
-            Holder<Item> result = entry.getValue().getItemHolder();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS, (color, block) -> {
+            Holder<Item> result = block.getItemHolder();
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
                 ExtendedShapedRecipeBuilder.shapedRecipe(result, 8)
@@ -111,47 +104,41 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
                       .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             }
             registerTransparentRecolor(consumer, this.items, result, transparentTag, color, basePath);
-        }
+        });
     }
 
     private void registerPlasticGlow(RecipeOutput consumer, String basePath) {
-        basePath += "glow/";
         HolderSet<Item> glowTag = this.items.getOrThrow(AdditionsTags.BlockItems.PLASTIC_BLOCKS_GLOW.item());
-        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlastic, ?>> entry : AdditionsBlocks.PLASTIC_GLOW_BLOCKS.entrySet()) {
-            EnumColor color = entry.getKey();
-            Holder<Item> result = entry.getValue().getItemHolder();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, (color, block) -> {
+            Holder<Item> result = block.getItemHolder();
             ExtendedShapelessRecipeBuilder.shapelessRecipe(result, 3)
-                  .addIngredient(AdditionsBlocks.PLASTIC_BLOCKS.get(color), 3)
+                  .addIngredient(AdditionsBlocks.PLASTIC_BLOCKS.pick(color), 3)
                   .addIngredient(this.items, Tags.Items.DUSTS_GLOWSTONE)
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             registerRecolor(consumer, this.items, result, glowTag, color, basePath);
-        }
+        });
     }
 
     private void registerReinforcedPlastic(RecipeOutput consumer, String basePath) {
-        basePath += "reinforced/";
         HolderSet<Item> reinforcedTag = this.items.getOrThrow(AdditionsTags.BlockItems.PLASTIC_BLOCKS_REINFORCED.item());
-        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlastic, ?>> entry : AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS.entrySet()) {
-            EnumColor color = entry.getKey();
-            Holder<Item> result = entry.getValue().getItemHolder();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS, (color, block) -> {
+            Holder<Item> result = block.getItemHolder();
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
                   .pattern(REINFORCED_PLASTIC)
                   .key(Pattern.OSMIUM, this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.OSMIUM))
-                  .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.get(color))
+                  .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.pick(color))
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             registerRecolor(consumer, this.items, result, reinforcedTag, color, basePath);
-        }
+        });
     }
 
     private void registerPlasticRoads(RecipeOutput consumer, String basePath) {
-        basePath += "road/";
         HolderSet<Item> roadTag = this.items.getOrThrow(AdditionsTags.BlockItems.PLASTIC_BLOCKS_ROAD.item());
-        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlasticRoad, ?>> entry : AdditionsBlocks.PLASTIC_ROADS.entrySet()) {
-            EnumColor color = entry.getKey();
-            Holder<Item> result = entry.getValue().getItemHolder();
-            Holder<Item> slickPlastic = AdditionsBlocks.SLICK_PLASTIC_BLOCKS.get(color).getItemHolder();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_ROADS, (color, block) -> {
+            Holder<Item> result = block.getItemHolder();
+            Holder<Item> slickPlastic = AdditionsBlocks.SLICK_PLASTIC_BLOCKS.pick(color).getItemHolder();
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
                   .pattern(PLASTIC_ROAD)
                   .key(AdditionsRecipeProvider.SAND_CHAR, this.items, Tags.Items.SANDS)
@@ -159,16 +146,14 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             registerRecolor(consumer, this.items, result, roadTag, color, basePath);
-        }
+        });
     }
 
     private void registerSlickPlastic(RecipeOutput consumer, String basePath) {
-        basePath += "slick/";
         HolderSet<Item> slickTag = this.items.getOrThrow(AdditionsTags.BlockItems.PLASTIC_BLOCKS_SLICK.item());
-        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlastic, ?>> entry : AdditionsBlocks.SLICK_PLASTIC_BLOCKS.entrySet()) {
-            EnumColor color = entry.getKey();
-            Holder<Item> result = entry.getValue().getItemHolder();
-            Holder<Item> plastic = AdditionsBlocks.PLASTIC_BLOCKS.get(color).getItemHolder();
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.SLICK_PLASTIC_BLOCKS, (color, block) -> {
+            Holder<Item> result = block.getItemHolder();
+            Holder<Item> plastic = AdditionsBlocks.PLASTIC_BLOCKS.pick(color).getItemHolder();
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
                   .pattern(SLICK_PLASTIC)
                   .key(Pattern.CONSTANT, plastic)
@@ -182,7 +167,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
             ).save(consumer, MekanismAdditions.rl(basePath + "enriching/" + color.getRegistryPrefix()));
             //Recolor recipes
             registerRecolor(consumer, this.items, result, slickTag, color, basePath);
-        }
+        });
     }
 
     public static void registerRecolor(RecipeOutput consumer, HolderGetter<Item> lookup, Holder<Item> result, HolderSet<Item> blockType, EnumColor color, String basePath) {
@@ -199,7 +184,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(recolorInput),
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE / 4),
+              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE / 4),
               new ItemStackTemplate(result.value()),
               false
         ).save(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
@@ -219,7 +204,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(recolorInput),
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE / 8),
+              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE / 8),
               new ItemStackTemplate(result.value()),
               false
         ).save(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));

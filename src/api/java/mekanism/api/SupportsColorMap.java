@@ -1,6 +1,7 @@
 package mekanism.api;
 
 import net.minecraft.util.ARGB;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
 /// @since 10.4.0
 public interface SupportsColorMap {
@@ -49,7 +50,6 @@ public interface SupportsColorMap {
     /// Sets the internal color representation of this color from the color atlas.
     ///
     /// @param color Color data.
-    ///
-    /// @apiNote This method is mostly for **INTERNAL** usage.
+    @Internal
     void setColorFromAtlas(int[] color);
 }

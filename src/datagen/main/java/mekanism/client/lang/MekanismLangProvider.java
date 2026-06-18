@@ -41,7 +41,6 @@ import mekanism.common.integration.lookingat.jade.JadeConstants;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType.ConfigSaveData;
 import mekanism.common.registration.impl.BlockRegistryObject;
-import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
@@ -629,9 +628,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addPigments() {
-        for (Map.Entry<EnumColor, DeferredChemical<Chemical>> entry : MekanismChemicals.PIGMENT_COLOR_LOOKUP.entrySet()) {
-            add(entry.getValue(), entry.getKey().getEnglishName() + " Pigment");
-        }
+        add(MekanismChemicals.SIMPLE_PIGMENTS, "Pigment");
     }
 
     private void addSlurries() {
@@ -903,7 +900,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_MAX_TOTAL, " - Maximum Output: %1$s");
         //Colors
         for (EnumColor color : EnumUtils.COLORS) {
-            add(color.getLangEntry(), color.getEnglishName());
+            add(color, color.getEnglishName());
         }
         addModInfo(modName + " is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.");
         addPackData(MekanismLang.MEKANISM, MekanismLang.PACK_DESCRIPTION);

@@ -750,7 +750,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         );
         addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE, MekanismBlocks.getFactoryBlocks());
         addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE,
-              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.values()
         );
         MekanismTagBuilder<Block> needsStoneToolBuilder = getBuilder(BlockTags.NEEDS_STONE_TOOL);
         for (OreBlockType ore : MekanismBlocks.ORES.values()) {
