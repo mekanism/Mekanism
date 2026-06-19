@@ -19,6 +19,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
+//TODO - 26.2: Move this to a registry so that it is extensible
 public enum Upgrade implements IHasEnumNameTranslationKey, StringRepresentable {
     SPEED("speed", APILang.UPGRADE_SPEED, APILang.UPGRADE_SPEED_DESCRIPTION, 8, EnumColor.RED),
     ENERGY("energy", APILang.UPGRADE_ENERGY, APILang.UPGRADE_ENERGY_DESCRIPTION, 8, EnumColor.BRIGHT_GREEN),
