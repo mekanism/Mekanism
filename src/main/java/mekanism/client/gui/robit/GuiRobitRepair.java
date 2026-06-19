@@ -33,7 +33,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
 
     private final Player player;
     @Nullable
-    private GuiTextField itemNameField;
+    private GuiTextField name;
     private long msDisplayCost;
 
     public GuiRobitRepair(RepairRobitContainer container, Inventory inv, Component title) {
@@ -45,7 +45,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        itemNameField = addRenderableWidget(new GuiTextField(this, ITEM_NAME_X, 21, ITEM_NAME_WIDTH, 12))
+        name = addRenderableWidget(new GuiTextField(this, ITEM_NAME_X, 21, ITEM_NAME_WIDTH, 12, Component.translatable("container.repair")))
               .setCanLoseFocus(false)
               .setTextColor(-1)
               .setTextColorUneditable(-1)
@@ -53,8 +53,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
               .setMaxLength(AnvilMenu.MAX_NAME_LENGTH)
               .setResponder(this::onNameChanged)
               .setEditable(menu.getSlot(0).hasItem());
-        setInitialFocus(itemNameField);
-        menu.removeSlotListener(this);
+        setInitialFocus(name);
         menu.addSlotListener(this);
     }
 
@@ -65,10 +64,16 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
         super.setInitialFocus(listener);
     }
 
+    @Override
+    protected void containerTick() {
+        super.containerTick();
+        this.minecraft.player.experienceDisplayStartTick = this.minecraft.player.tickCount;
+    }
+
     private void onNameChanged(String newText) {
-        if (!newText.isEmpty()) {
-            Slot slot = menu.getSlot(AnvilMenu.INPUT_SLOT);
-            if (slot.hasItem() && !slot.getItem().has(DataComponents.CUSTOM_NAME) && newText.equals(slot.getItem().getHoverName().getString())) {
+        Slot slot = menu.getSlot(AnvilMenu.INPUT_SLOT);
+        if (slot.hasItem()) {
+            if (!slot.getItem().has(DataComponents.CUSTOM_NAME) && newText.equals(slot.getItem().getHoverName().getString())) {
                 newText = "";
             }
             if (menu.setItemName(newText)) {
@@ -136,10 +141,10 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
 
     @Override
     public void slotChanged(AbstractContainerMenu container, int slotID, ItemStack stack) {
-        if (slotID == AnvilMenu.INPUT_SLOT && itemNameField != null) {
-            itemNameField.setText(stack.isEmpty() ? "" : stack.getHoverName().getString());
-            itemNameField.setEditable(!stack.isEmpty());
-            setFocused(itemNameField);
+        if (slotID == AnvilMenu.INPUT_SLOT && name != null) {
+            name.setText(stack.isEmpty() ? "" : stack.getHoverName().getString());
+            name.setEditable(!stack.isEmpty());
+            setFocused(name);
         }
     }
 
