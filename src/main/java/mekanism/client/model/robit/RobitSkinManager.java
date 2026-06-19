@@ -68,7 +68,7 @@ public class RobitSkinManager {
 
     @SubscribeEvent
     public static void registerFakeStandalone(ModelEvent.RegisterStandalone event) {
-        event.register(new StandaloneModelKey<>(()->"robit_model_bridge"), new FakeStandaloneModel());
+        event.register(new StandaloneModelKey<>(() -> "robit_model_bridge"), new FakeStandaloneModel());
     }
 
     private final Map<Identifier, ResolvedModel> resolvedModelMap;
@@ -113,7 +113,7 @@ public class RobitSkinManager {
     private BakeResult bake(Identifier skin, @Nullable Identifier activeTexture) {
         ResolvedModel resolved = resolvedModelMap.get(skin);
         if (resolved == null) {
-            Mekanism.logger.error("Requested robit model not found: {}", skin);
+            Mekanism.logger.error("Requested Robit model not found: {}", skin);
             return bakedMissingModel;
         }
         try {
@@ -126,7 +126,7 @@ public class RobitSkinManager {
             );
             return new BakeResult(Collections.singletonList(bakedModel), RobitSpriteUploader.RENDER_TYPE);
         } catch (Exception e) {
-            Mekanism.logger.error("Unable to bake robit model {} due to exception", skin, e);
+            Mekanism.logger.error("Unable to bake Robit model {} due to exception", skin, e);
             return bakedMissingModel;
         }
     }
@@ -144,10 +144,9 @@ public class RobitSkinManager {
             activeTexture = MekanismRobitSkins.BASE_SKIN_TEXTURE;
         }
 
-        resolver.addLast(
-              new TextureSlots.Data.Builder()
-                    .addTexture("robit", new Material(activeTexture))
-                    .build()
+        resolver.addLast(new TextureSlots.Data.Builder()
+              .addTexture("robit", new Material(activeTexture))
+              .build()
         );
 
         return resolver.resolve(top);
@@ -175,28 +174,27 @@ public class RobitSkinManager {
     }
 
     /// Gathers a list of models in models/robit/ by doing what the model manager does, then filtering.
+    ///
     /// Stored in a CompletableFuture so we can use it in the standalone model to force them to resolve
     private static class ModelGatherer implements PreparableReloadListener {
+
         @Nullable
         private static CompletableFuture<Set<Identifier>> robitModelIds = null;
 
         @Override
         public CompletableFuture<Void> reload(SharedState currentReload, Executor taskExecutor, PreparationBarrier preparationBarrier, Executor reloadExecutor) {
             ResourceManager manager = currentReload.resourceManager();
-            return CompletableFuture.supplyAsync(() -> ModelManager.MODEL_LISTER.listMatchingResources(manager), taskExecutor)
-            .thenAccept(
-                resources -> {
-                    Set<Identifier> robitModels = new HashSet<>();
-                    for (Map.Entry<Identifier, Resource> resource : resources.entrySet()) {
-                        Identifier modelId = ModelManager.MODEL_LISTER.fileToId(resource.getKey());
-                        if (modelId.getPath().startsWith("robit/")) {
-                            robitModels.add(modelId);
-                        }
-                    }
-                    Objects.requireNonNull(robitModelIds, "prepareSharedState not called??").complete(robitModels);
-                })
-                  .thenCompose(preparationBarrier::wait)
-                  .thenAccept(_->robitModelIds = null);//prevent use after the preparation barrier
+            return CompletableFuture.supplyAsync(() -> ModelManager.MODEL_LISTER.listMatchingResources(manager), taskExecutor).thenAccept(resources -> {
+                      Set<Identifier> robitModels = new HashSet<>();
+                      for (Map.Entry<Identifier, Resource> resource : resources.entrySet()) {
+                          Identifier modelId = ModelManager.MODEL_LISTER.fileToId(resource.getKey());
+                          if (modelId.getPath().startsWith("robit/")) {
+                              robitModels.add(modelId);
+                          }
+                      }
+                      Objects.requireNonNull(robitModelIds, "prepareSharedState not called??").complete(robitModels);
+                  }).thenCompose(preparationBarrier::wait)
+                  .thenAccept(_ -> robitModelIds = null);//prevent use after the preparation barrier
         }
 
         @Override

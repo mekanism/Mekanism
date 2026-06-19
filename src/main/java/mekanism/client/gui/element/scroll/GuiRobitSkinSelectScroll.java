@@ -3,12 +3,15 @@ package mekanism.client.gui.element.scroll;
 import com.mojang.math.Axis;
 import java.util.List;
 import java.util.function.Supplier;
+import mekanism.api.math.MathUtils;
 import mekanism.api.robit.RobitSkin;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.tooltip.TooltipUtils;
+import mekanism.client.model.robit.RobitSkinManager;
+import mekanism.client.pip.RobitSkinPreviewPiP;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.registries.MekanismRobitSkins;
@@ -22,8 +25,8 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
-import org.jspecify.annotations.Nullable;
 import org.joml.Quaternionf;
+import org.jspecify.annotations.Nullable;
 
 public class GuiRobitSkinSelectScroll extends GuiElement {
 
@@ -66,11 +69,11 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         List<ResourceKey<RobitSkin>> skins = getUnlockedSkins();
         if (skins != null) {
-            //Lighting.setupForFlatItems();
             //Every ten ticks consider the skin to change
+            //TODO - 26.2: This is actually every ten frames, as changing the frame limit in the minecraft options changes the speed at which the robits rotates
             int index = ticks / MekanismUtils.TICKS_PER_HALF_SECOND;
             float oldRot = rotation;
-            rotation = Mth.wrapDegrees(rotation - 0.5F);
+            rotation = Mth.wrapDegrees(rotation + 0.5F);
             float rot = Mth.rotLerp(partialTicks, oldRot, rotation);
             Quaternionf rotation = Axis.YP.rotationDegrees(rot);
             int slotStart = scrollBar.getCurrentSelection() * SLOT_COUNT, max = SLOT_COUNT * SLOT_COUNT;
@@ -80,21 +83,30 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
                 if (slot < skins.size()) {
                     ResourceKey<RobitSkin> skin = skins.get(slot);
                     if (skin == selectedSkin) {
-                        renderSlotBackground(guiGraphics, slotX, slotY, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE);
+                        renderSlotBackground(guiGraphics, slotX, slotY, GuiInnerScreen.SCREEN);
                     } else {
-                        renderSlotBackground(guiGraphics, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_BORDER_SIZE);
+                        renderSlotBackground(guiGraphics, slotX, slotY, GuiElementHolder.HOLDER);
                     }
-                    renderRobit(guiGraphics, skins.get(slot), slotX, slotY, rotation, index);
+                    SkinLookup skinLookup = MekanismRobitSkins.lookup(gui().registryAccess(), skins.get(slot));
+                    List<Identifier> textures = skinLookup.textures();
+                    //Translate to the proper position and do our best job at centering it
+                    Identifier texture = MathUtils.getByIndexMod(textures, index);
+                    guiGraphics.submitPictureInPictureRenderState(new RobitSkinPreviewPiP.State(
+                          getGuiLeft() + slotX, getGuiTop() + slotY,
+                          SLOT_DIMENSIONS,
+                          guiGraphics.peekScissorStack(),
+                          rotation,
+                          RobitSkinManager.get().getBaked(skinLookup.skin(), texture)
+                    ));
                 } else {
-                    renderSlotBackground(guiGraphics, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_BORDER_SIZE);
+                    renderSlotBackground(guiGraphics, slotX, slotY, GuiElementHolder.HOLDER);
                 }
             }
-            //Lighting.setupFor3DItems();
         }
     }
 
-    private static void renderSlotBackground(GuiGraphicsExtractor guiGraphics, int slotX, int slotY, Identifier resource, int size) {
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resource, size, size, slotX, slotY);
+    private static void renderSlotBackground(GuiGraphicsExtractor guiGraphics, int slotX, int slotY, Identifier resource) {
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resource, slotX, slotY, SLOT_DIMENSIONS, SLOT_DIMENSIONS);
     }
 
     @Override
@@ -174,33 +186,5 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
             cachedTooltipRect = null;
         }
         return null;
-    }
-
-    private void renderRobit(GuiGraphicsExtractor guiGraphics, ResourceKey<RobitSkin> skinKey, int x, int y, Quaternionf rotation, int index) {
-        SkinLookup skinLookup = MekanismRobitSkins.lookup(gui().registryAccess(), skinKey);
-        List<Identifier> textures = skinLookup.textures();
-        //TODO - 26.2 robit model
-        /*BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);
-        if (model == null) {
-            Mekanism.logger.warn("Failed to render skin: {} as it does not have a model.", skinLookup.identifier());
-            return;
-        }
-        MultiBufferSource.BufferSource buffer = guiGraphics.bufferSource();
-        VertexConsumer builder = buffer.getBuffer(RobitSpriteUploader.RENDER_TYPE);
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        //Translate to the proper position and do our best job at centering it
-        pose.translate(x + SLOT_DIMENSIONS, y + (int) (0.8 * SLOT_DIMENSIONS), 0);
-        pose.scale(SLOT_DIMENSIONS, SLOT_DIMENSIONS, SLOT_DIMENSIONS);
-        pose.mulPose(Axis.ZP.rotationDegrees(180));
-        pose.rotateAround(rotation,  0.5F, 0.0F, 0.5F);
-        PoseStack.Pose matrixEntry = pose.last();
-        ModelData modelData = ModelData.of(EntityRobit.SKIN_TEXTURE_PROPERTY, MathUtils.getByIndexMod(textures, index));
-        for (BakedQuad quad : model.getQuads(null, null, robit.level().random, modelData, null)) {
-            builder.putBulkData(matrixEntry, quad, 1, 1, 1, 1, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
-        }
-        buffer.endBatch(RobitSpriteUploader.RENDER_TYPE);
-
-        pose.popPose();*/
     }
 }

@@ -18,7 +18,6 @@ import org.jspecify.annotations.Nullable;
 public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerRecipeArea<GuiInnerScreen> {
 
     public static final Identifier SCREEN = Mekanism.rl("inner_screen");
-    public static int SCREEN_SIZE = 32;
 
     private List<Component> lastInfo = Collections.emptyList();
     @Nullable
@@ -37,7 +36,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
     private float textScale = 1.0F;
 
     public GuiInnerScreen(IGuiWrapper gui, int x, int y, int width, int height) {
-        super(SCREEN, gui, x, y, width, height, SCREEN_SIZE, SCREEN_SIZE);
+        super(SCREEN, gui, x, y, width, height);
     }
 
     public GuiInnerScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<List<Component>> renderStrings) {

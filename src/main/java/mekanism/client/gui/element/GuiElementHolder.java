@@ -13,11 +13,11 @@ import net.minecraft.util.ARGB;
 public class GuiElementHolder extends GuiScalableElement {
 
     public static final Identifier HOLDER = Mekanism.rl("element_holder");
-    public static final int HOLDER_BORDER_SIZE = 1;
+    private static final int HOLDER_BORDER_SIZE = 1;
     private static int BACKGROUND_COLOR = 0xFF787878;
 
     public GuiElementHolder(IGuiWrapper gui, int x, int y, int width, int height) {
-        super(HOLDER, gui, x, y, width, height, HOLDER_BORDER_SIZE, HOLDER_BORDER_SIZE);
+        super(HOLDER, gui, x, y, width, height);
     }
 
     @Override

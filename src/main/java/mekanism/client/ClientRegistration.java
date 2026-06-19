@@ -97,6 +97,7 @@ import mekanism.client.particle.JetpackSmokeParticle;
 import mekanism.client.particle.LaserParticle;
 import mekanism.client.particle.RadiationParticle;
 import mekanism.client.particle.ScubaBubbleParticle;
+import mekanism.client.pip.RobitSkinPreviewPiP;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.client.render.RenderPropertiesProvider.MekCustomArmorRenderProperties;
 import mekanism.client.render.RenderTickHandler;
@@ -197,6 +198,7 @@ import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -238,6 +240,11 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerKeybindings(RegisterKeyMappingsEvent event) {
         MekanismKeyHandler.registerKeybindings(event);
+    }
+
+    @SubscribeEvent
+    public static void registerPiPs(RegisterPictureInPictureRenderersEvent event) {
+        event.register(RobitSkinPreviewPiP.State.class, RobitSkinPreviewPiP::new);
     }
 
     @SubscribeEvent
