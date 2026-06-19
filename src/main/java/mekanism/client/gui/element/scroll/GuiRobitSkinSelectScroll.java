@@ -30,6 +30,7 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiRobitSkinSelectScroll extends GuiElement {
 
+    private static final int ROTATION_INCREMENT = 4;
     private static final int SLOT_DIMENSIONS = 48;
     private static final int SLOT_COUNT = 3;
     private static final int INNER_DIMENSIONS = SLOT_DIMENSIONS * SLOT_COUNT;
@@ -70,15 +71,12 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         List<ResourceKey<RobitSkin>> skins = getUnlockedSkins();
         if (skins != null) {
             //Every ten ticks consider the skin to change
-            //TODO - 26.2: This is actually every ten frames, as changing the frame limit in the minecraft options changes the speed at which the robits rotates
             int index = ticks / MekanismUtils.TICKS_PER_HALF_SECOND;
-            float oldRot = rotation;
-            rotation = Mth.wrapDegrees(rotation + 0.5F);
-            float rot = Mth.rotLerp(partialTicks, oldRot, rotation);
+            float rot = Mth.rotLerp(partialTicks, rotation - ROTATION_INCREMENT, rotation);
             Quaternionf rotation = Axis.YP.rotationDegrees(rot);
             int slotStart = scrollBar.getCurrentSelection() * SLOT_COUNT, max = SLOT_COUNT * SLOT_COUNT;
             for (int i = 0; i < max; i++) {
-                int slotX = relativeX + (i % SLOT_COUNT) * SLOT_DIMENSIONS, slotY = relativeY + (i / SLOT_COUNT) * SLOT_DIMENSIONS;
+                int slotX = (i % SLOT_COUNT) * SLOT_DIMENSIONS, slotY = (i / SLOT_COUNT) * SLOT_DIMENSIONS;
                 int slot = slotStart + i;
                 if (slot < skins.size()) {
                     ResourceKey<RobitSkin> skin = skins.get(slot);
@@ -92,7 +90,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
                     //Translate to the proper position and do our best job at centering it
                     Identifier texture = MathUtils.getByIndexMod(textures, index);
                     guiGraphics.submitPictureInPictureRenderState(new RobitSkinPreviewPiP.State(
-                          getGuiLeft() + slotX, getGuiTop() + slotY,
+                          getX() + slotX, getY() + slotY,
                           SLOT_DIMENSIONS,
                           guiGraphics.peekScissorStack(),
                           rotation,
@@ -105,8 +103,8 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         }
     }
 
-    private static void renderSlotBackground(GuiGraphicsExtractor guiGraphics, int slotX, int slotY, Identifier resource) {
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resource, slotX, slotY, SLOT_DIMENSIONS, SLOT_DIMENSIONS);
+    private void renderSlotBackground(GuiGraphicsExtractor guiGraphics, int slotX, int slotY, Identifier resource) {
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resource, relativeX + slotX, relativeY + slotY, SLOT_DIMENSIONS, SLOT_DIMENSIONS);
     }
 
     @Override
@@ -134,6 +132,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     public void tick() {
         super.tick();
         ticks++;
+        rotation = Mth.wrapDegrees(rotation + ROTATION_INCREMENT);
     }
 
     @Override

@@ -174,7 +174,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     }
 
     @Override
-    public void containerTick() {
+    protected void containerTick() {
         super.containerTick();
         updateButtons();
     }

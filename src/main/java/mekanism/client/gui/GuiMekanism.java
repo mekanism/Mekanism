@@ -201,7 +201,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public void containerTick() {
+    protected void containerTick() {
         super.containerTick();
         for (GuiEventListener child : children()) {
             if (child instanceof GuiElement element) {

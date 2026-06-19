@@ -65,11 +65,19 @@ public class GuiTextField extends GuiElement {
         this(gui, gui, x, y, width, height);
     }
 
+    public GuiTextField(IGuiWrapper gui, int x, int y, int width, int height, Component narration) {
+        this(gui, gui, x, y, width, height, narration);
+    }
+
     public GuiTextField(IGuiWrapper gui, ContainerEventHandler parent, int x, int y, int width, int height) {
+        this(gui, parent, x, y, width, height, CommonComponents.EMPTY);
+    }
+
+    public GuiTextField(IGuiWrapper gui, ContainerEventHandler parent, int x, int y, int width, int height, Component narration) {
         super(gui, x, y, width, height);
         this.parent = parent;
 
-        textField = new ClearingEditBox(font(), getX(), getY(), width, height, CommonComponents.EMPTY);
+        textField = new ClearingEditBox(font(), getX(), getY(), width, height, narration);
         textField.setBordered(false);
         textField.setResponder(s -> {
             if (responder != null) {
@@ -385,8 +393,8 @@ public class GuiTextField extends GuiElement {
 
         private boolean allowColors;
 
-        public ClearingEditBox(Font font, int x, int y, int width, int height, Component message) {
-            super(font, x, y, width, height, message);
+        public ClearingEditBox(Font font, int x, int y, int width, int height, Component narration) {
+            super(font, x, y, width, height, narration);
         }
 
         @Override

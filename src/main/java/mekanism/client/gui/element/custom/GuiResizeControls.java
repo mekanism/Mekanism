@@ -43,7 +43,9 @@ public class GuiResizeControls extends GuiSideHolder {
     @Override
     public void tick() {
         super.tick();
-        tooltipTicks = Math.max(0, tooltipTicks - 1);
+        if (tooltipTicks > 0) {
+            tooltipTicks--;
+        }
     }
 
     @Override

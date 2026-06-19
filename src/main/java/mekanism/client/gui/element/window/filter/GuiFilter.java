@@ -27,6 +27,7 @@ import mekanism.common.network.to_server.filter.PacketEditFilter;
 import mekanism.common.network.to_server.filter.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
@@ -196,7 +197,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
 
     protected void filterSaveFailed(ILangEntry reason, Object... args) {
         status = reason.translateColored(EnumColor.DARK_RED, args);
-        ticker = 100;
+        ticker = 5 * SharedConstants.TICKS_PER_SECOND;
     }
 
     protected void filterSaveSuccess() {
