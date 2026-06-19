@@ -308,7 +308,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .recipe(PaintingRecipeManager.INSTANCE)
               .addExample("paint_sand", IngredientCreatorAccess.item().from(items, Tags.Items.SANDS_COLORLESS),
-                    IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.pick(EnumColor.RED), 256),
+                    IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.red(), 256),
                     RecipeProviderUtil.template(items, BlockItemIds.RED_SAND), false)
               .end()
               .comment("Removes the Painting Recipe that allows creating White Dye.")
@@ -388,7 +388,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .recipe(PigmentExtractingRecipeManager.INSTANCE)
               .addExample("extract_lapis_block_pigment", IngredientCreatorAccess.item().from(items, Tags.Items.STORAGE_BLOCKS_LAPIS),
-                    MekanismChemicals.SIMPLE_PIGMENTS.pick(EnumColor.DARK_BLUE).asTemplate(6_912))
+                    MekanismChemicals.SIMPLE_PIGMENTS.darkBlue().asTemplate(6_912))
               .end()
               .comment("Removes the Pigment Extracting Recipe that extracts Brown Pigment from Brown Dye.")
               .blankLine()
@@ -409,9 +409,9 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Pigment Mixing Recipe that mixes 1 mB of White Pigment with 4 mB of Dark Red Pigment to produce 5 mB of Red Pigment.")
               .blankLine()
               .recipe(PigmentMixingRecipeManager.INSTANCE)
-              .addExample("pigment_mixing/white_dark_red_to_red", IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.pick(EnumColor.WHITE), 1),
-                    IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.pick(EnumColor.DARK_RED), 4),
-                    MekanismChemicals.SIMPLE_PIGMENTS.pick(EnumColor.RED).asTemplate(5))
+              .addExample("pigment_mixing/white_dark_red_to_red", IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.white(), 1),
+                    IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.darkRed(), 4),
+                    MekanismChemicals.SIMPLE_PIGMENTS.red().asTemplate(5))
               .end()
               .comment("Removes the Pigment Mixing Recipe that produces Dark Red Pigment from Black and Red Pigment.")
               .blankLine()

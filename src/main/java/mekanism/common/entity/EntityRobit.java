@@ -241,7 +241,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         goalSelector.addGoal(4, new FloatGoal(this));
     }
 
-    @Nullable
     @Override
     public Level getLevel() {
         return level();
@@ -700,7 +699,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     public RobitSkin getSkin() {
-        return MekanismRobitSkins.get(Objects.requireNonNull(getLevel(), "not in level").registryAccess(), getSkinId());
+        return MekanismRobitSkins.get(level().registryAccess(), getSkinId());
     }
 
     //TODO - 26.2: cache the skin instance and index

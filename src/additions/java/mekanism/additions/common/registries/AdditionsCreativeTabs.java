@@ -2,7 +2,6 @@ package mekanism.additions.common.registries;
 
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.api.text.EnumColor;
 import mekanism.api.text.EnumColorCollection;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -20,7 +19,7 @@ public class AdditionsCreativeTabs {
     public static final CreativeTabDeferredRegister CREATIVE_TABS = new CreativeTabDeferredRegister(MekanismAdditions.MODID, AdditionsCreativeTabs::addToExistingTabs);
 
     public static final MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> ADDITIONS = CREATIVE_TABS.registerMain(AdditionsLang.MEKANISM_ADDITIONS,
-          AdditionsItems.BALLOONS.pick(EnumColor.BRIGHT_GREEN), builder ->
+          AdditionsItems.BALLOONS.brightGreen(), builder ->
                 builder.backgroundTexture(MekanismAdditions.rl("textures/gui/creative_tab.png"))
                       .withSearchBar(65)//Allow our tabs to be searchable for convenience purposes
                       .withTabsBefore(MekanismCreativeTabs.MEKANISM.getKey())
