@@ -21,7 +21,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Util;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
 
 public class MekanismRobitSkins {
@@ -37,8 +36,6 @@ public class MekanismRobitSkins {
     public static final ResourceKey<RobitSkin> BASE = ROBIT_SKINS.dataKey("robit");
     public static final Identifier BASE_SKIN_TEXTURE = Mekanism.rl("robit");
     public static final ResourceKey<RobitSkin> ALLAY = ROBIT_SKINS.dataKey("allay");
-
-    public static final Holder<RobitSkin> BASE_HOLDER = DeferredHolder.create(BASE);
 
     public static final Map<RobitPrideSkinData, ResourceKey<RobitSkin>> PRIDE_SKINS = Util.make(() -> {
         Map<RobitPrideSkinData, ResourceKey<RobitSkin>> internal = new EnumMap<>(RobitPrideSkinData.class);
@@ -70,7 +67,7 @@ public class MekanismRobitSkins {
     public static RobitSkin get(RegistryAccess registryAccess, ResourceKey<RobitSkin> key) {
         Registry<RobitSkin> skinRegistry = getSkinRegistry(registryAccess);
         RobitSkin value = skinRegistry.getValue(key);
-        return value == null ? BASE_HOLDER.value() : value;
+        return value == null ? skinRegistry.getValueOrThrow(BASE) : value;
     }
 
     public record SkinLookup(ResourceKey<RobitSkin> name, Holder.Reference<RobitSkin> skinHolder) {

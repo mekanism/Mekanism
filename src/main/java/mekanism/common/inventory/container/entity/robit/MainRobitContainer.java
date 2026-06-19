@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container.entity.robit;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 import mekanism.api.MekanismAPI;
@@ -10,6 +11,7 @@ import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerT
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.list.SyncableResourceKeyList;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismRobitSkins;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Inventory;
@@ -31,7 +33,7 @@ public class MainRobitContainer extends RobitContainer implements ISpecificConta
         ISyncableData data;
         if (getLevel().isClientSide()) {
             //Client side sync handling
-            data = SyncableResourceKeyList.create(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, () -> unlockedSkins, value -> unlockedSkins = value);
+            data = SyncableResourceKeyList.create(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, () -> unlockedSkins, this::setSkins);
         } else {
             //Server side sync handling
             //Note: It is important these are in the same order as the client side trackers
@@ -41,12 +43,19 @@ public class MainRobitContainer extends RobitContainer implements ISpecificConta
             Registry<RobitSkin> registry = getLevel().registryAccess()
                   .lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
             data = SyncableResourceKeyList.create(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, () -> registry.entrySet().stream()
-                        .filter(entry -> entry.getValue().isUnlocked(inv.player))
+                        //Base skin is always unlocked so we don't have to sync it
+                        .filter(entry -> !MekanismRobitSkins.BASE.equals(entry.getKey()) && entry.getValue().isUnlocked(inv.player))
                         .map(Entry::getKey)
+                        .sorted(Comparator.comparing(ResourceKey::identifier))
                         .toList(),
-                  value -> unlockedSkins = value
+                  this::setSkins
             );
         }
         return Collections.singletonList(data);
+    }
+
+    private void setSkins(List<ResourceKey<RobitSkin>> skins) {
+        skins.addFirst(MekanismRobitSkins.BASE);
+        unlockedSkins = skins;
     }
 }
