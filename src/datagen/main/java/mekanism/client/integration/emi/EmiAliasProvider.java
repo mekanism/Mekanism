@@ -19,6 +19,7 @@ import dev.emi.emi.registry.EmiPluginContainer;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -37,6 +38,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
@@ -44,7 +46,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredient, EmiIngredient, EmiIngredient> {
+public class EmiAliasProvider implements DataProvider {
 
     private static boolean emiSerializersInitialized;
 
@@ -62,7 +64,6 @@ public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredie
     }
 
     private final CompletableFuture<HolderLookup.Provider> registries;
-    private final HashList<AliasInfo> data = new HashList<>();
     private final Supplier<IAliasMapping> mappings;
     private final PathProvider pathProvider;
     private final String modid;
@@ -79,93 +80,10 @@ public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredie
         bootstrapEmi();
         return this.registries.thenCompose(lookupProvider -> {
             IAliasMapping mapping = mappings.get();
-            mapping.addAliases(this);
+            HashList<AliasInfo> data = new HashList<>();
+            mapping.addAliases(new EmiAliasHelper(lookupProvider, data));
             return DataProvider.saveStable(cachedOutput, lookupProvider, AliasInfo.LIST_CODEC, data.elements(), pathProvider.json(Mekanism.hooks.emi.rl(modid)));
         });
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    private List<EmiIngredient> tagContents(TagKey<?> tag) {
-        //Note: We can't use the method in EmiIngredient as it does checks against things that aren't initialized in datagen
-        return List.of(new TagEmiIngredient(tag, 1));
-    }
-
-    @Override
-    public EmiIngredient ingredient(ItemStack item) {
-        return EmiStack.of(item);
-    }
-
-    @Override
-    public EmiIngredient itemIngredient(Holder<Item> item) {
-        return EmiStack.of(item.value());
-    }
-
-    @Override
-    public List<EmiIngredient> itemTagContents(TagKey<Item> tag) {
-        return tagContents(tag);
-    }
-
-    @Override
-    public EmiIngredient fluidIngredient(Holder<Fluid> fluid) {
-        return EmiStack.of(fluid.value(), 1);
-    }
-
-    @Override
-    public EmiIngredient ingredient(FluidStack fluid) {
-        return NeoForgeEmiStack.of(fluid);
-    }
-
-    @Override
-    public List<EmiIngredient> fluidTagContents(TagKey<Fluid> tag) {
-        return tagContents(tag);
-    }
-
-    @Override
-    public EmiIngredient chemicalIngredient(Holder<Chemical> chemical) {
-        throw new UnsupportedOperationException("emi disabled");
-        //return new ChemicalEmiStack(chemical, 1);
-    }
-
-    @Override
-    public List<EmiIngredient> chemicalTagContents(TagKey<Chemical> tag) {
-        return tagContents(tag);
-    }
-
-    @Override
-    public void addAliases(Holder<Fluid> fluidProvider, Holder<Chemical> chemicalProvider, IHasTranslationKey... aliases) {
-        addAliases(List.of(fluidIngredient(fluidProvider), chemicalIngredient(chemicalProvider)), aliases);
-    }
-
-    @Override
-    public void addItemAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
-        addAliases(stacks, aliases);
-    }
-
-    @Override
-    public void addFluidAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
-        addAliases(stacks, aliases);
-    }
-
-    @Override
-    public void addChemicalAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
-        addAliases(stacks, aliases);
-    }
-
-    private void addAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
-        if (aliases.length == 0) {
-            throw new IllegalArgumentException("Expected to have at least one alias");
-        }
-        //Sort the translation key aliases so that our datagen output is more stable
-        List<String> sortedAliases = Arrays.stream(aliases)
-              .map(IHasTranslationKey::getTranslationKey)
-              .sorted()
-              .toList();
-        //TODO: Is there some global sort, or stack based sort we can apply as well?
-        if (!data.add(new AliasInfo(stacks, sortedAliases))) {
-            //TODO: Can we improve the validation we have relating to duplicate values/make things more compact?
-            // This if statement exists mainly as a simple check against copy-paste errors
-            throw new IllegalStateException("Duplicate alias pair added");
-        }
     }
 
     @Override
@@ -192,6 +110,93 @@ public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredie
                   either -> either.map(List::of, Function.identity()),
                   list -> list.size() == 1 ? Either.left(list.getFirst()) : Either.right(list)
             );
+        }
+    }
+
+    private record EmiAliasHelper(HolderLookup.Provider registries, Set<AliasInfo> data) implements RVAliasHelper<EmiIngredient, EmiIngredient, EmiIngredient> {
+
+        @Override
+        public EmiIngredient ingredient(ItemStack item) {
+            return EmiStack.of(item);
+        }
+
+        @Override
+        public EmiIngredient itemIngredient(Holder<Item> item) {
+            return EmiStack.of(item.value());
+        }
+
+        @Override
+        public List<EmiIngredient> itemTagContents(TagKey<Item> tag) {
+            return tagContents(tag);
+        }
+
+        @Override
+        public EmiIngredient fluidIngredient(Holder<Fluid> fluid) {
+            return EmiStack.of(fluid.value(), 1);
+        }
+
+        @Override
+        public EmiIngredient ingredient(FluidStack fluid) {
+            return NeoForgeEmiStack.of(fluid);
+        }
+
+        @Override
+        public List<EmiIngredient> fluidTagContents(TagKey<Fluid> tag) {
+            return tagContents(tag);
+        }
+
+        @Override
+        public EmiIngredient chemicalIngredient(Holder<Chemical> chemical) {
+            throw new UnsupportedOperationException("emi disabled");
+            //return new ChemicalEmiStack(chemical, 1);
+        }
+
+        @Override
+        public List<EmiIngredient> chemicalTagContents(TagKey<Chemical> tag) {
+            return tagContents(tag);
+        }
+
+        @Override
+        public void addAliases(Holder<Fluid> fluidProvider, ResourceKey<Chemical> chemicalProvider, IHasTranslationKey... aliases) {
+            addAliases(List.of(fluidIngredient(fluidProvider), chemicalIngredient(registries.getOrThrow(chemicalProvider))), aliases);
+        }
+
+        @Override
+        public void addItemAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
+            addAliases(stacks, aliases);
+        }
+
+        @Override
+        public void addFluidAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
+            addAliases(stacks, aliases);
+        }
+
+        @Override
+        public void addChemicalAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
+            addAliases(stacks, aliases);
+        }
+
+        @SuppressWarnings("UnstableApiUsage")
+        private List<EmiIngredient> tagContents(TagKey<?> tag) {
+            //Note: We can't use the method in EmiIngredient as it does checks against things that aren't initialized in datagen
+            return List.of(new TagEmiIngredient(tag, 1));
+        }
+
+        private void addAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
+            if (aliases.length == 0) {
+                throw new IllegalArgumentException("Expected to have at least one alias");
+            }
+            //Sort the translation key aliases so that our datagen output is more stable
+            List<String> sortedAliases = Arrays.stream(aliases)
+                  .map(IHasTranslationKey::getTranslationKey)
+                  .sorted()
+                  .toList();
+            //TODO: Is there some global sort, or stack based sort we can apply as well?
+            if (!data.add(new AliasInfo(stacks, sortedAliases))) {
+                //TODO: Can we improve the validation we have relating to duplicate values/make things more compact?
+                // This if statement exists mainly as a simple check against copy-paste errors
+                throw new IllegalStateException("Duplicate alias pair added");
+            }
         }
     }
 }

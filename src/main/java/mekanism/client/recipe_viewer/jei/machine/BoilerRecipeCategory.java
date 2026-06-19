@@ -51,7 +51,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
                 boilRate = 0;
             } else {
                 temperature = recipe.temperature();
-                boilRate = recipe.steam().amount();
+                boilRate = recipe.steamAmount();
             }
             return List.of(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(temperature, TemperatureUnit.KELVIN, true)),
                   MekanismLang.BOIL_RATE.translate(TextUtils.format(boilRate)));
@@ -97,10 +97,10 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
         initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water().getRepresentations(context));
         ChemicalStackTemplate cooledCoolant = recipe.cooledCoolant();
         if (recipe.superHeatedCoolant() == null || cooledCoolant == null) {
-            initChemical(builder, steamTank, Collections.singletonList(recipe.steam()));
+            initChemical(builder, steamTank, recipe.steamRepresentations());
         } else {
             initChemical(builder, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant().getRepresentations(context));
-            initChemical(builder, steamTank, Collections.singletonList(recipe.steam()));
+            initChemical(builder, steamTank, recipe.steamRepresentations());
             initChemical(builder, cooledCoolantTank, Collections.singletonList(cooledCoolant));
         }
     }

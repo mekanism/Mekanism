@@ -108,7 +108,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
             }
             ItemStackChemicalToItemStackRecipeBuilder.painting(
                   IngredientCreatorAccess.item().from(recolorInput),
-                  IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE),
+                  IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE),
                   new ItemStackTemplate(balloon),
                   false
             ).save(output, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
@@ -131,7 +131,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                       .category(RecipeCategory.BUILDING_BLOCKS)
                       .save(output, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             }
-            PlasticBlockRecipeProvider.registerRecolor(output, this.items, glowPanel, glowPanelTag, color, basePath);
+            PlasticBlockRecipeProvider.registerRecolor(output, this.items, this.chemicals, glowPanel, glowPanelTag, color, basePath);
         });
     }
 }

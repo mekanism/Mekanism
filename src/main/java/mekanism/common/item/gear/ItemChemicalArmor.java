@@ -1,5 +1,6 @@
 package mekanism.common.item.gear;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.component.containers.type.ContainerType;
@@ -9,7 +10,10 @@ import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Holder.Reference;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -25,7 +29,7 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
         super(material, armorType, properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1));
     }
 
-    protected abstract Holder<Chemical> getChemicalType();
+    protected abstract ResourceKey<Chemical> getChemicalType();
 
     @Override
     public boolean hasChemical(ItemAccess itemAccess) {
@@ -55,7 +59,11 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
     }
 
     @Override
-    public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ContainerType.CHEMICAL.getFilledVariant(item, getChemicalType(), null));
+    public void addItems(ItemDisplayParameters displayParameters, Holder<Item> item, Consumer<ItemStack> tabOutput) {
+        Optional<Reference<Chemical>> chemical = displayParameters.holders().get(getChemicalType());
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (chemical.isPresent()) {
+            tabOutput.accept(ContainerType.CHEMICAL.getFilledVariant(item, chemical.get(), null));
+        }
     }
 }

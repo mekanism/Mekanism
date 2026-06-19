@@ -2,9 +2,11 @@ package mekanism.client.recipe_viewer.jei;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -74,6 +76,7 @@ import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -154,11 +157,19 @@ public class MekanismJEI implements IModPlugin {
     @Override
     public void registerIngredients(IModIngredientRegistration registry) {
         //Note: We register the ingredient types regardless of if EMI is loaded so that we don't crash any addons that are trying to reference them
-        List<ChemicalStack> types = MekanismAPI.CHEMICAL_REGISTRY.listElements()
-              //Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
-              .filter(chemical -> !chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY))
-              .map(chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME))
-              .toList();
+        List<ChemicalStack> types;
+        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        if (optionalRegistry.isEmpty()) {
+            //Something went horribly wrong, bail
+            Mekanism.logger.warn("Failed to find chemical registry");
+            types = Collections.emptyList();
+        } else {
+            types = optionalRegistry.get().listElements()
+                  //Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
+                  .filter(chemical -> !chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY))
+                  .map(chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME))
+                  .toList();
+        }
         CHEMICAL_STACK_HELPER.setColorHelper(registry.getColorHelper());
         registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer(), Chemical.CODEC.xmap(
               chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME),

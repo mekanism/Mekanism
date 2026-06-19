@@ -50,7 +50,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
         //Gunpowder -> sulfur
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.GUNPOWDERS),
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN_CHLORIDE, 1),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.HYDROGEN_CHLORIDE, 1),
               MekanismItems.SULFUR_DUST.asTemplate(),
               true
         ).save(consumer, Mekanism.rl(basePath + "gunpowder_to_sulfur"));
@@ -104,7 +104,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
 
     private void addChemicalInjectorOxidizingRecipe(RecipeOutput consumer, String basePath) {
         //Generate baseline recipes from weathering recipe set
-        ChemicalStackIngredient oxygen = IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 1);
+        ChemicalStackIngredient oxygen = IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.OXYGEN, 1);
         //TODO - 26.2: Switch this to being created at runtime and making use of the Neo DataMap?
         // https://github.com/neoforged/NeoForge/commit/87875183dcd8239404cbddbe8717db1dbe4f64ee
         // Likely will require a PR based on https://github.com/neoforged/NeoForge/pull/1915 to move data maps before registries?

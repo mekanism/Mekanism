@@ -12,14 +12,15 @@ import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -38,7 +39,7 @@ public class ItemScubaTank extends ItemChemicalArmor implements IItemHUDProvider
     }
 
     @Override
-    protected Holder<Chemical> getChemicalType() {
+    protected ResourceKey<Chemical> getChemicalType() {
         return MekanismChemicals.OXYGEN;
     }
 
@@ -58,7 +59,7 @@ public class ItemScubaTank extends ItemChemicalArmor implements IItemHUDProvider
             if (handler != null && handler.size() > 0) {
                 stored = handler.getAmountAsLong(0);
             }
-            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismChemicals.OXYGEN, EnumColor.ORANGE, stored));
+            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, ChemicalUtils.chemicalName(getChemicalType()), EnumColor.ORANGE, stored));
         }
     }
 

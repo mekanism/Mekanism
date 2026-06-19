@@ -32,6 +32,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.references.BlockItemIds;
@@ -48,13 +49,17 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     private static final Holder<Item> ITEM_TO_REPLACE = MekanismItems.INFUSED_ALLOY;
     private static final Holder<Fluid> FLUID_TO_REPLACE = MekanismFluids.HYDROGEN;
-    private static final Holder<Chemical> CHEMICAL_TO_REPLACE = MekanismChemicals.HYDROGEN;
+    private static final ResourceKey<Chemical> CHEMICAL_TO_REPLACE = MekanismChemicals.HYDROGEN;
     public static final UnaryOperator<String> REPLACE_TO_INVALID_ITEM = replaceInvalid(ITEM_TO_REPLACE);
     public static final UnaryOperator<String> REPLACE_TO_INVALID_FLUID = replaceInvalid(FLUID_TO_REPLACE);
     public static final UnaryOperator<String> REPLACE_TO_INVALID_CHEMICAL = replaceInvalid(CHEMICAL_TO_REPLACE);
 
     private static UnaryOperator<String> replaceInvalid(Holder<?> providerToReplace) {
         return rawJson -> rawJson.replaceAll(providerToReplace.getRegisteredName(), "mekanism:invalid");
+    }
+
+    private static UnaryOperator<String> replaceInvalid(ResourceKey<?> keyToReplace) {
+        return rawJson -> rawJson.replaceAll(keyToReplace.identifier().toString(), "mekanism:invalid");
     }
 
     public MissingObjectTestHelper(GameTestInfo info) {
@@ -70,7 +75,13 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public ChemicalResource failureChemicalType() {
-        return ChemicalResource.of(CHEMICAL_TO_REPLACE);
+        return ChemicalResource.of(getLevel().registryAccess().getOrThrow(CHEMICAL_TO_REPLACE));
+    }
+
+    public <TYPE, RESOURCE extends RegisteredResource<TYPE>> void succeedIfAttachedCycle(DataComponentType<AttachedResources<RESOURCE>> dataComponentType,
+          LargeResourceStack.StackHelper<RESOURCE> stackHelper, RESOURCE failureType, ResourceKey<TYPE> a, ResourceKey<TYPE> b, Function<Holder<TYPE>, RESOURCE> resourceCreator) {
+        RegistryAccess registryAccess = getLevel().registryAccess();
+        succeedIfAttachedCycle(dataComponentType, stackHelper, failureType, resourceCreator.apply(registryAccess.getOrThrow(a)), resourceCreator.apply(registryAccess.getOrThrow(b)));
     }
 
     public <RESOURCE extends RegisteredResource<?>> void succeedIfAttachedCycle(DataComponentType<AttachedResources<RESOURCE>> dataComponentType,

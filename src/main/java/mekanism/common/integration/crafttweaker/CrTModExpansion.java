@@ -27,7 +27,10 @@ public class CrTModExpansion {
     @ZenCodeType.Method
     @ZenCodeType.Getter("chemicals")
     public static Collection<Chemical> getChemicals(Mod _this) {
-        return getModSpecific(_this, MekanismAPI.CHEMICAL_REGISTRY);
+        return getModSpecific(_this, CraftTweakerAPI.getAccessibleElementsProvider()
+              .registryAccess()
+              .lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME)
+              .entrySet());
     }
 
     /// Gets the module types that are registered under this mod's ID.

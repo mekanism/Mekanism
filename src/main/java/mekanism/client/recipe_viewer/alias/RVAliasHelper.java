@@ -2,6 +2,7 @@ package mekanism.client.recipe_viewer.alias;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.text.IHasTranslationKey;
@@ -10,6 +11,9 @@ import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -19,6 +23,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
+
+    HolderLookup.Provider registries();
 
     ITEM ingredient(ItemStack item);
 
@@ -36,9 +42,13 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
 
     List<CHEMICAL> chemicalTagContents(TagKey<Chemical> tag);
 
-    default void addAliases(Holder<Fluid> fluidProvider, Holder<Chemical> chemicalProvider, IHasTranslationKey... aliases) {
+    default void addAliases(Holder<Fluid> fluidProvider, ResourceKey<Chemical> chemicalKey, IHasTranslationKey... aliases) {
         addFluidAliases(fluidProvider, aliases);
-        addChemicalAliases(chemicalProvider, aliases);
+        Optional<Reference<Chemical>> chemicalProvider = registries().get(chemicalKey);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (chemicalProvider.isPresent()) {
+            addChemicalAliases(chemicalProvider.get(), aliases);
+        }
     }
 
     default void addAliases(BlockRegistryObject<?, ?> block, IHasTranslationKey... aliases) {

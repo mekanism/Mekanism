@@ -1,6 +1,8 @@
 package mekanism.generators.client.recipe_viewer.alias;
 
 import java.util.List;
+import java.util.Optional;
+import mekanism.api.chemical.Chemical;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
 import mekanism.client.recipe_viewer.alias.MekanismAliases;
 import mekanism.client.recipe_viewer.alias.RVAliasHelper;
@@ -10,6 +12,7 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
+import net.minecraft.core.Holder.Reference;
 import net.minecraft.world.item.ItemStack;
 
 public class GeneratorsAliasMapping implements IAliasMapping {
@@ -44,6 +47,7 @@ public class GeneratorsAliasMapping implements IAliasMapping {
               GeneratorsBlocks.CONTROL_ROD_ASSEMBLY,
               GeneratorsBlocks.REACTOR_GLASS
         ), GeneratorsAliases.FISSION_COMPONENT);
+        Optional<Reference<Chemical>> fusionFuel = rv.registries().get(GeneratorsChemicals.FUSION_FUEL);
         rv.addItemAliases(List.of(
               new ItemStack(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER),
               new ItemStack(GeneratorsBlocks.FUSION_REACTOR_FRAME),
@@ -51,7 +55,7 @@ public class GeneratorsAliasMapping implements IAliasMapping {
               new ItemStack(GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER),
               new ItemStack(GeneratorsBlocks.LASER_FOCUS_MATRIX),
               new ItemStack(GeneratorsBlocks.REACTOR_GLASS),
-              ContainerType.CHEMICAL.getFilledVariant(GeneratorsItems.HOHLRAUM, GeneratorsChemicals.FUSION_FUEL, null)
+              fusionFuel.map(chemicalReference -> ContainerType.CHEMICAL.getFilledVariant(GeneratorsItems.HOHLRAUM, chemicalReference, null)).orElseGet(GeneratorsItems.HOHLRAUM::asStack)
         ), GeneratorsAliases.FUSION_COMPONENT);
         rv.addAliases(List.of(
               GeneratorsBlocks.TURBINE_CASING,

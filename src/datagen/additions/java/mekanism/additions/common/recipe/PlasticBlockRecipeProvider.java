@@ -86,7 +86,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
                       .category(RecipeCategory.BUILDING_BLOCKS)
                       .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             }
-            registerRecolor(consumer, this.items, result, plasticTag, color, basePath);
+            registerRecolor(consumer, this.items, this.chemicals, result, plasticTag, color, basePath);
         });
     }
 
@@ -103,7 +103,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
                       .category(RecipeCategory.BUILDING_BLOCKS)
                       .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             }
-            registerTransparentRecolor(consumer, this.items, result, transparentTag, color, basePath);
+            registerTransparentRecolor(consumer, this.items, this.chemicals, result, transparentTag, color, basePath);
         });
     }
 
@@ -116,7 +116,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
                   .addIngredient(this.items, Tags.Items.DUSTS_GLOWSTONE)
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-            registerRecolor(consumer, this.items, result, glowTag, color, basePath);
+            registerRecolor(consumer, this.items, this.chemicals, result, glowTag, color, basePath);
         });
     }
 
@@ -130,7 +130,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
                   .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.pick(color))
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-            registerRecolor(consumer, this.items, result, reinforcedTag, color, basePath);
+            registerRecolor(consumer, this.items, this.chemicals, result, reinforcedTag, color, basePath);
         });
     }
 
@@ -145,7 +145,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
                   .key(Pattern.CONSTANT, slickPlastic)
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-            registerRecolor(consumer, this.items, result, roadTag, color, basePath);
+            registerRecolor(consumer, this.items, this.chemicals, result, roadTag, color, basePath);
         });
     }
 
@@ -166,11 +166,12 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
                   new ItemStackTemplate(result)
             ).save(consumer, MekanismAdditions.rl(basePath + "enriching/" + color.getRegistryPrefix()));
             //Recolor recipes
-            registerRecolor(consumer, this.items, result, slickTag, color, basePath);
+            registerRecolor(consumer, this.items, this.chemicals, result, slickTag, color, basePath);
         });
     }
 
-    public static void registerRecolor(RecipeOutput consumer, HolderGetter<Item> lookup, Holder<Item> result, HolderSet<Item> blockType, EnumColor color, String basePath) {
+    public static void registerRecolor(RecipeOutput consumer, HolderGetter<Item> items, HolderGetter<Chemical> chemicals, Holder<Item> result, HolderSet<Item> blockType,
+          EnumColor color, String basePath) {
         Ingredient recolorInput = BaseRecipeProvider.difference(blockType, result);
         String colorString = color.getRegistryPrefix();
         DyeColor dye = color.getDyeColor();
@@ -178,19 +179,20 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
                   .pattern(PLASTIC)
                   .key(Pattern.CONSTANT, recolorInput)
-                  .key(Pattern.DYE, lookup, dye.getTag())
+                  .key(Pattern.DYE, items, dye.getTag())
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(recolorInput),
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE / 4),
+              IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE / 4),
               new ItemStackTemplate(result.value()),
               false
         ).save(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
     }
 
-    public static void registerTransparentRecolor(RecipeOutput consumer, HolderGetter<Item> lookup, Holder<Item> result, HolderSet<Item> blockType, EnumColor color, String basePath) {
+    public static void registerTransparentRecolor(RecipeOutput consumer, HolderGetter<Item> items, HolderGetter<Chemical> chemicals, Holder<Item> result,
+          HolderSet<Item> blockType, EnumColor color, String basePath) {
         Ingredient recolorInput = BaseRecipeProvider.difference(blockType, result);
         String colorString = color.getRegistryPrefix();
         DyeColor dye = color.getDyeColor();
@@ -198,13 +200,13 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 8)
                   .pattern(PLASTIC_TRANSPARENT)
                   .key(Pattern.CONSTANT, recolorInput)
-                  .key(Pattern.DYE, lookup, dye.getTag())
+                  .key(Pattern.DYE, items, dye.getTag())
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(recolorInput),
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE / 8),
+              IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE / 8),
               new ItemStackTemplate(result.value()),
               false
         ).save(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));

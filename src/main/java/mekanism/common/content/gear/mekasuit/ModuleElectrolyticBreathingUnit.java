@@ -62,23 +62,27 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
             productionRate = getMaxRate(module) / 2;
         }
         if (productionRate > 0) {
-            int usage = MathUtils.multiplyClamped(2, ChemicalUtils.hydrogenEnergyDensity());
+            ChemicalResource hydrogen = ChemicalUtils.getResource(player.level(), MekanismChemicals.HYDROGEN);
+            if (hydrogen.isEmpty()) {
+                return;
+            }
+            int usage = MathUtils.multiplyClamped(2, ChemicalUtils.fuelEnergyDensity(hydrogen));
             //Calculate the max rate based on how much energy is available and can be extracted
             int maxRate = module.getEnergyRateLimit(player, itemAccess, usage, productionRate, transaction);
             int hydrogenUsed = 0;
             int availableHydrogen = 2 * maxRate;
             ItemAccess chestAccess = ItemAccessUtils.forEntitySlot(player, EquipmentSlot.CHEST);
             try (Transaction subTransaction = Transaction.open(transaction)) {
-                if (checkChestPlate(chestAccess.getResource())) {
+                if (!hydrogen.isEmpty() && checkChestPlate(chestAccess.getResource())) {
                     ResourceHandler<ChemicalResource> chestCapability = Capabilities.CHEMICAL.getCapability(chestAccess);
                     if (chestCapability != null) {
-                        hydrogenUsed = chestCapability.insert(MekanismChemicals.HYDROGEN.asResource(), availableHydrogen, subTransaction);
+                        hydrogenUsed = chestCapability.insert(hydrogen, availableHydrogen, subTransaction);
                     }
                 }
-                if (fillHeld) {
+                if (fillHeld && !hydrogen.isEmpty()) {
                     ResourceHandler<ChemicalResource> handCapability = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.playerHandAccess(player, InteractionHand.MAIN_HAND));
                     if (handCapability != null) {
-                        hydrogenUsed += handCapability.insert(MekanismChemicals.HYDROGEN.asResource(), availableHydrogen - hydrogenUsed, subTransaction);
+                        hydrogenUsed += handCapability.insert(hydrogen, availableHydrogen - hydrogenUsed, subTransaction);
                     }
                 }
                 int oxygenUsed = Math.min(maxRate, player.getMaxAirSupply() - player.getAirSupply());

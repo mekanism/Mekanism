@@ -1,5 +1,6 @@
 package mekanism.common.integration.crafttweaker.chemical;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -29,7 +30,9 @@ public class CrTChemical {
     @ZenCodeType.Method
     @ZenCodeType.Getter("registryName")
     public static Identifier getRegistryName(Chemical _this) {
-        return MekanismAPI.CHEMICAL_REGISTRY.getKey(_this);
+        return CraftTweakerAPI.getAccessibleElementsProvider()
+              .registryAccess()
+              .lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME).getKey(_this);
     }
 
     /// Get the tint for rendering the chemical
@@ -58,7 +61,9 @@ public class CrTChemical {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.MUL)
     public static ICrTChemicalStack makeStack(Chemical _this, int amount) {
-        return new CrTChemicalStack(new ChemicalStack(MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(_this), amount));
+        return new CrTChemicalStack(new ChemicalStack(CraftTweakerAPI.getAccessibleElementsProvider()
+              .registryAccess()
+              .lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME).wrapAsHolder(_this), amount));
     }
 
     /// Gets the tags that this chemical is a part of.

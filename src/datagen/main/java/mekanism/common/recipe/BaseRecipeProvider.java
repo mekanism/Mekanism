@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
@@ -15,12 +16,15 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
 public abstract class BaseRecipeProvider extends RecipeProvider {
@@ -75,5 +79,29 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
 
     public static HolderSet<Item> tinIngot(HolderGetter<Item> lookup) {
         return lookup.getOrThrow(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.TIN));
+    }
+
+    public ItemStackTemplate template(ResourceKey<Item> item) {
+        return RecipeProviderUtil.template(items, item);
+    }
+
+    public ItemStackTemplate template(ResourceKey<Item> item, int amount) {
+        return RecipeProviderUtil.template(items, item, amount);
+    }
+
+    public ItemStackTemplate template(BlockItemId item) {
+        return RecipeProviderUtil.template(items, item);
+    }
+
+    public ItemStackTemplate template(BlockItemId item, int amount) {
+        return RecipeProviderUtil.template(items, item, amount);
+    }
+
+    public ChemicalStackTemplate chemicalTemplate(ResourceKey<Chemical> chemical, int amount) {
+        return RecipeProviderUtil.chemicalTemplate(chemicals, chemical, amount);
+    }
+
+    public FluidStackTemplate fluidTemplate(ResourceKey<Fluid> fluid, int amount) {
+        return RecipeProviderUtil.fluidTemplate(fluids, fluid, amount);
     }
 }

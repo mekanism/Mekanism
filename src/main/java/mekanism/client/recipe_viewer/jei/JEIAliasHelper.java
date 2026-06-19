@@ -2,6 +2,7 @@ package mekanism.client.recipe_viewer.jei;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import mekanism.api.MekanismAPI;
@@ -14,7 +15,9 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.registration.IIngredientAliasRegistration;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,6 +38,11 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack, FluidStack, Chem
 
     public JEIAliasHelper(IIngredientAliasRegistration registration) {
         this.registration = registration;
+    }
+
+    @Override
+    public HolderLookup.Provider registries() {
+        return Objects.requireNonNull(Minecraft.getInstance().level, "Level should be present during jei alias mapping").registryAccess();
     }
 
     @Override

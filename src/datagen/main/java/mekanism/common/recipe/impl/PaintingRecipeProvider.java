@@ -62,7 +62,7 @@ class PaintingRecipeProvider extends BaseSubRecipeProvider {
             if (dyeColor != null) {
                 ItemStackChemicalToItemStackRecipeBuilder.painting(
                       IngredientCreatorAccess.item().fromHolder(MekanismItems.DYE_BASE),
-                      IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE),
+                      IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE),
                       new ItemStackTemplate(items.getOrThrow(ItemIds.DYE.pick(dyeColor))),
                       false
                 ).save(consumer, Mekanism.rl(basePath + dyeColor));
@@ -78,7 +78,7 @@ class PaintingRecipeProvider extends BaseSubRecipeProvider {
                 Holder<Item> result = items.getOrThrow(outputs.pick(dyeColor).item());
                 ItemStackChemicalToItemStackRecipeBuilder.painting(
                       IngredientCreatorAccess.item().from(BaseRecipeProvider.difference(inputTag, result)),
-                      IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.pick(color), rate),
+                      IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismChemicals.SIMPLE_PIGMENTS.pick(color), rate),
                       new ItemStackTemplate(result),
                       false
                 ).save(consumer, Mekanism.rl(basePath + dyeColor));

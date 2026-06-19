@@ -82,6 +82,7 @@ public class MekanismAPI {
     ///
     /// @see #CHEMICAL_REGISTRY_NAME
     /// @since 10.7.0
+    @Deprecated(forRemoval = true)//TODO - 26.2: Switch this to a datapack registry
     public static final DefaultedRegistry<Chemical> CHEMICAL_REGISTRY = (DefaultedRegistry<Chemical>) new RegistryBuilder<>(CHEMICAL_REGISTRY_NAME)
           .defaultKey(EMPTY_CHEMICAL_KEY)
           .sync(true)

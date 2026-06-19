@@ -20,12 +20,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.IComponentAware;
-import mekanism.common.component.containers.chemical.ChemicalTanksBuilder;
-import mekanism.common.component.containers.chemical.ComponentBackedChemicalTank;
-import mekanism.common.component.containers.fluid.ComponentBackedFluidTank;
-import mekanism.common.component.containers.fluid.FluidTanksBuilder;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.GenericTankSpec;
 import mekanism.common.capabilities.ICapabilityAware;
@@ -33,6 +27,12 @@ import mekanism.common.capabilities.laser.item.LaserDissipationHandler;
 import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
+import mekanism.common.component.IComponentAware;
+import mekanism.common.component.containers.chemical.ChemicalTanksBuilder;
+import mekanism.common.component.containers.chemical.ComponentBackedChemicalTank;
+import mekanism.common.component.containers.fluid.ComponentBackedFluidTank;
+import mekanism.common.component.containers.fluid.FluidTanksBuilder;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
@@ -51,6 +51,7 @@ import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
@@ -64,6 +65,7 @@ import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
@@ -235,7 +237,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
+    public void addItems(ItemDisplayParameters displayParameters, Holder<Item> item, Consumer<ItemStack> tabOutput) {
         tabOutput.accept(ContainerType.ENERGY.getFilledVariant(item, null));
     }
 
@@ -370,16 +372,20 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public <ITEM extends TypedInstance<Item> & DataComponentGetter> double useJetpackFuel(ItemAccess itemAccess, ITEM primaryInstance, TransactionContext transaction) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> double useJetpackFuel(RegistryAccess registryAccess, ItemAccess itemAccess, ITEM primaryInstance, TransactionContext transaction) {
         //Use the primary jetpack for calculating the thrust
         IModule<ModuleJetpackUnit> module = getEnabledModule(primaryInstance, MekanismModules.JETPACK_UNIT);
         if (module != null) {
+            ChemicalResource fuel = ChemicalUtils.getResource(registryAccess, MekanismChemicals.HYDROGEN);
+            if (fuel.isEmpty()) {
+                return 0;
+            }
             ResourceHandler<ChemicalResource> handler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(itemAccess));
             if (handler != null) {
                 float thrustMultiplier = module.getCustomInstance().getThrustMultiplier();
                 //If we don't have enough gas stored to go at the set thrust, scale down the thrust
                 // to be whatever gas we have remaining (this might be zero)
-                return 0.15 * handler.extract(MekanismChemicals.HYDROGEN.asResource(), Mth.ceil(thrustMultiplier), transaction);
+                return 0.15 * handler.extract(fuel, Mth.ceil(thrustMultiplier), transaction);
             }
         }
         return 0;

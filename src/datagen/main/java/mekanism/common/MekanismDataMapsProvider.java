@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
 import mekanism.api.datamaps.chemical.ChemicalSolidTag;
@@ -11,12 +12,12 @@ import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
-import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
+import mekanism.common.util.ChemicalUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -27,8 +28,6 @@ import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 import net.neoforged.neoforge.registries.datamaps.builtin.VibrationFrequency;
 
 public class MekanismDataMapsProvider extends DataMapProvider {
-
-    public static final int HYDROGEN_ENERGY_DENSITY = 2;
 
     public MekanismDataMapsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(packOutput, lookupProvider);
@@ -62,14 +61,14 @@ public class MekanismDataMapsProvider extends DataMapProvider {
         ;
 
         Builder<ChemicalSolidTag, Chemical> chemicalSolidTagBuilder = builder(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
-        for (Map.Entry<PrimaryResource, SlurryRegistryObject<Chemical, Chemical>> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
-            chemicalSolidTagBuilder.add(entry.getValue().getCleanSlurry(), new ChemicalSolidTag(entry.getKey().getOreTag()), false);
+        for (Map.Entry<PrimaryResource, CleanDirtySlurryId> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
+            chemicalSolidTagBuilder.add(entry.getValue().clean(), new ChemicalSolidTag(entry.getKey().getOreTag()), false);
         }
 
         builder(IMekanismDataMapTypes.INSTANCE.chemicalFuel())
               //GENERAL_ENERGY_CONVERSION_HYDROGEN("general.energy_conversion.hydrogen", "Hydrogen Energy Density",
               //"How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas-Burning Generator energy capacity."),
-              .add(MekanismChemicals.HYDROGEN, new ChemicalFuel(10, HYDROGEN_ENERGY_DENSITY), false)
+              .add(MekanismChemicals.HYDROGEN, new ChemicalFuel(10, ChemicalUtils.DEFAULT_HYDROGEN_ENERGY_DENSITY), false)
               .add(MekanismChemicals.ETHENE, new ChemicalFuel(10, 8), false)
         ;
 
@@ -81,10 +80,10 @@ public class MekanismDataMapsProvider extends DataMapProvider {
         ;
 
         builder(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant())
-              .add(MekanismChemicals.SODIUM, new CooledCoolant(MekanismChemicals.SUPERHEATED_SODIUM, 5, 1), false)
+              .add(MekanismChemicals.SODIUM, new CooledCoolant(provider.getOrThrow(MekanismChemicals.SUPERHEATED_SODIUM), 5, 1), false)
         ;
         builder(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant())
-              .add(MekanismChemicals.SUPERHEATED_SODIUM, new HeatedCoolant(MekanismChemicals.SODIUM, 5), false)
+              .add(MekanismChemicals.SUPERHEATED_SODIUM, new HeatedCoolant(provider.getOrThrow(MekanismChemicals.SODIUM), 5), false)
         ;
     }
 }

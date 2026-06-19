@@ -25,14 +25,14 @@ class SeparatingRecipeProvider extends BaseSubRecipeProvider {
         //Brine
         ElectrolysisRecipeBuilder.separating(
               IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.BRINE, 10),
-              MekanismChemicals.SODIUM.asTemplate(1),
-              MekanismChemicals.CHLORINE.asTemplate(1)
+              chemicalTemplate(MekanismChemicals.SODIUM, 1),
+              chemicalTemplate(MekanismChemicals.CHLORINE, 1)
         ).save(consumer, Mekanism.rl(basePath + "brine"));
         //Water
         ElectrolysisRecipeBuilder.separating(
               IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 2),
-              MekanismChemicals.HYDROGEN.asTemplate(2),
-              MekanismChemicals.OXYGEN.asTemplate(1)
+              chemicalTemplate(MekanismChemicals.HYDROGEN, 2),
+              chemicalTemplate(MekanismChemicals.OXYGEN, 1)
         ).save(consumer, Mekanism.rl(basePath + "water"));
     }
 }

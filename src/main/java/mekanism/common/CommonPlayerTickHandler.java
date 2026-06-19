@@ -31,9 +31,11 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -107,6 +109,7 @@ public class CommonPlayerTickHandler {
         if (player instanceof ServerPlayer serverPlayer) {
             PlayerExposure.tickServer(serverPlayer);
         }
+        RegistryAccess registryAccess = player.level().registryAccess();
 
         ItemAccess jetpack = IJetpackItem.getActiveJetpack(player);
         if (jetpack != null) {
@@ -117,7 +120,7 @@ public class CommonPlayerTickHandler {
                 JetpackMode mode = IJetpackItem.getPlayerJetpackMode(player, primaryMode, p -> Mekanism.keyMap.has(p.getUUID(), KeySync.ASCEND));
                 if (mode != JetpackMode.DISABLED) {
                     try (Transaction transaction = Transaction.openRoot()) {
-                        double jetpackThrust = ((IJetpackItem) jetpack.getResource().getItem()).useJetpackFuel(jetpack, primaryJetpack, transaction);
+                        double jetpackThrust = ((IJetpackItem) jetpack.getResource().getItem()).useJetpackFuel(registryAccess, jetpack, primaryJetpack, transaction);
                         if (jetpackThrust > 0) {
                             if (IJetpackItem.handleJetpackMotion(player, mode, jetpackThrust, p -> Mekanism.keyMap.has(p.getUUID(), KeySync.ASCEND))) {
                                 player.resetFallDistance();
@@ -140,13 +143,16 @@ public class CommonPlayerTickHandler {
             final int max = player.getMaxAirSupply();
             ResourceHandler<ChemicalResource> chemicalHandler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(chest));
             if (chemicalHandler != null) {
-                try (Transaction transaction = Transaction.openRoot()) {
-                    //TODO - 26.2: Re-evaluate this single usage on its own
-                    chemicalHandler.extract(MekanismChemicals.OXYGEN.asResource(), 1, transaction);
-                    int extracted = chemicalHandler.extract(MekanismChemicals.OXYGEN.asResource(), max - player.getAirSupply(), transaction);
-                    if (extracted > 0) {
-                        player.setAirSupply(player.getAirSupply() + extracted);
-                        transaction.commit();
+                ChemicalResource oxygen = ChemicalUtils.getResource(registryAccess, MekanismChemicals.OXYGEN);
+                if (!oxygen.isEmpty()) {
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        //TODO - 26.2: Re-evaluate this single usage on its own
+                        chemicalHandler.extract(oxygen, 1, transaction);
+                        int extracted = chemicalHandler.extract(oxygen, max - player.getAirSupply(), transaction);
+                        if (extracted > 0) {
+                            player.setAirSupply(player.getAirSupply() + extracted);
+                            transaction.commit();
+                        }
                     }
                 }
             }

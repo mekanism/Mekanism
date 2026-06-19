@@ -4,12 +4,12 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.prefab.BlockBase;
 import mekanism.common.block.transmitter.BlockTransmitter;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.registration.MekanismDeferredHolder;
@@ -39,9 +39,9 @@ public class MekanismCreativeTabs {
           MekanismBlocks.METALLURGIC_INFUSER.getItemHolder(), builder ->
                 builder.withSearchBar()//Allow our tabs to be searchable for convenience purposes
                       .displayItems((displayParameters, output) -> {
-                          CreativeTabDeferredRegister.addToDisplay(MekanismItems.ITEMS, output);
-                          CreativeTabDeferredRegister.addToDisplay(MekanismBlocks.BLOCKS, output);
-                          CreativeTabDeferredRegister.addToDisplay(MekanismFluids.FLUIDS, output);
+                          CreativeTabDeferredRegister.addToDisplay(MekanismItems.ITEMS, displayParameters, output);
+                          CreativeTabDeferredRegister.addToDisplay(MekanismBlocks.BLOCKS, displayParameters, output);
+                          CreativeTabDeferredRegister.addToDisplay(MekanismFluids.FLUIDS, displayParameters, output);
                           addFilledTanks(displayParameters, output, true);
                       })
     );

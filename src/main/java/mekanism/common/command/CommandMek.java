@@ -23,6 +23,7 @@ import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.clock.ClockTimeMarkers;
 import net.minecraft.world.clock.WorldClocks;
@@ -70,7 +71,8 @@ public class CommandMek {
                   .executes(ctx -> {
                       CommandSourceStack source = ctx.getSource();
                       MinecraftServer server = source.getServer();
-                      GameRules rules = source.getLevel().getGameRules();
+                      ServerLevel level = source.getLevel();
+                      GameRules rules = level.getGameRules();
                       rules.set(GameRules.KEEP_INVENTORY, true, server);
                       rules.set(GameRules.SPAWN_MOBS, false, server);
                       rules.set(GameRules.SPAWN_MONSTERS, false, server);
@@ -81,10 +83,10 @@ public class CommandMek {
                       rules.set(GameRules.ADVANCE_WEATHER, false, server);
                       rules.set(GameRules.MOB_GRIEFING, false, server);
                       //TODO - 26.2: check this is correct
-                      source.getLevel().clockManager().moveToTimeMarker(server.registryAccess().holderOrThrow(WorldClocks.OVERWORLD), ClockTimeMarkers.NOON);
+                      level.clockManager().moveToTimeMarker(level.registryAccess().holderOrThrow(WorldClocks.OVERWORLD), ClockTimeMarkers.NOON);
                       //Act as if /weather clear was ran
-                      source.getLevel().getWeatherData().setRaining(false);
-                      source.getLevel().getWeatherData().setThundering(false);
+                      level.getWeatherData().setRaining(false);
+                      level.getWeatherData().setThundering(false);
                       source.sendSuccess(() -> MekanismLang.COMMAND_TEST_RULES.translateColored(EnumColor.GRAY), true);
                       return Command.SINGLE_SUCCESS;
                   });

@@ -4,7 +4,7 @@ import com.google.common.collect.Table.Cell;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.APILang;
@@ -42,7 +42,6 @@ import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType.ConfigSaveData;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
-import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDamageTypes;
@@ -589,57 +588,57 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addGases() {
-        addHolder(MekanismAPI.EMPTY_CHEMICAL_HOLDER, "Empty");
-        add(MekanismChemicals.HYDROGEN, "Hydrogen");
-        add(MekanismChemicals.OXYGEN, "Oxygen");
-        add(MekanismChemicals.STEAM, "Steam");
-        add(MekanismChemicals.WATER_VAPOR, "Water Vapor");
-        add(MekanismChemicals.CHLORINE, "Chlorine");
-        add(MekanismChemicals.SULFUR_DIOXIDE, "Sulfur Dioxide");
-        add(MekanismChemicals.SULFUR_TRIOXIDE, "Sulfur Trioxide");
-        add(MekanismChemicals.SULFURIC_ACID, "Sulfuric Acid");
-        add(MekanismChemicals.HYDROGEN_CHLORIDE, "Hydrogen Chloride");
-        add(MekanismChemicals.HYDROFLUORIC_ACID, "Hydrofluoric Acid");
-        add(MekanismChemicals.URANIUM_OXIDE, "Uranium Oxide");
-        add(MekanismChemicals.URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride");
-        add(MekanismChemicals.ETHENE, "Ethene");
-        add(MekanismChemicals.SODIUM, "Sodium");
-        add(MekanismChemicals.SUPERHEATED_SODIUM, "Superheated Sodium");
-        add(MekanismChemicals.BRINE, "Gaseous Brine");
-        add(MekanismChemicals.LITHIUM, "Lithium");
-        add(MekanismChemicals.OSMIUM, "Osmium");
-        add(MekanismChemicals.FISSILE_FUEL, "Fissile Fuel");
-        add(MekanismChemicals.NUCLEAR_WASTE, "Nuclear Waste");
-        add(MekanismChemicals.SPENT_NUCLEAR_WASTE, "Spent Nuclear Waste");
-        add(MekanismChemicals.ANTIMATTER, "Antimatter");
-        add(MekanismChemicals.PLUTONIUM, "Plutonium");
-        add(MekanismChemicals.POLONIUM, "Polonium");
+        addChemical(MekanismAPI.EMPTY_CHEMICAL_KEY, "Empty");
+        addChemical(MekanismChemicals.HYDROGEN, "Hydrogen");
+        addChemical(MekanismChemicals.OXYGEN, "Oxygen");
+        addChemical(MekanismChemicals.STEAM, "Steam");
+        addChemical(MekanismChemicals.WATER_VAPOR, "Water Vapor");
+        addChemical(MekanismChemicals.CHLORINE, "Chlorine");
+        addChemical(MekanismChemicals.SULFUR_DIOXIDE, "Sulfur Dioxide");
+        addChemical(MekanismChemicals.SULFUR_TRIOXIDE, "Sulfur Trioxide");
+        addChemical(MekanismChemicals.SULFURIC_ACID, "Sulfuric Acid");
+        addChemical(MekanismChemicals.HYDROGEN_CHLORIDE, "Hydrogen Chloride");
+        addChemical(MekanismChemicals.HYDROFLUORIC_ACID, "Hydrofluoric Acid");
+        addChemical(MekanismChemicals.URANIUM_OXIDE, "Uranium Oxide");
+        addChemical(MekanismChemicals.URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride");
+        addChemical(MekanismChemicals.ETHENE, "Ethene");
+        addChemical(MekanismChemicals.SODIUM, "Sodium");
+        addChemical(MekanismChemicals.SUPERHEATED_SODIUM, "Superheated Sodium");
+        addChemical(MekanismChemicals.BRINE, "Gaseous Brine");
+        addChemical(MekanismChemicals.LITHIUM, "Lithium");
+        addChemical(MekanismChemicals.OSMIUM, "Osmium");
+        addChemical(MekanismChemicals.FISSILE_FUEL, "Fissile Fuel");
+        addChemical(MekanismChemicals.NUCLEAR_WASTE, "Nuclear Waste");
+        addChemical(MekanismChemicals.SPENT_NUCLEAR_WASTE, "Spent Nuclear Waste");
+        addChemical(MekanismChemicals.ANTIMATTER, "Antimatter");
+        addChemical(MekanismChemicals.PLUTONIUM, "Plutonium");
+        addChemical(MekanismChemicals.POLONIUM, "Polonium");
     }
 
     private void addInfusionTypes() {
-        add(MekanismChemicals.CARBON, "Carbon");
-        add(MekanismChemicals.REDSTONE, "Redstone");
-        add(MekanismChemicals.DIAMOND, "Diamond");
-        add(MekanismChemicals.REFINED_OBSIDIAN, "Refined Obsidian");
-        add(MekanismChemicals.GOLD, "Gold");
-        add(MekanismChemicals.TIN, "Tin");
-        add(MekanismChemicals.FUNGI, "Fungi");
-        add(MekanismChemicals.BIO, "Biomass");
+        addChemical(MekanismChemicals.CARBON, "Carbon");
+        addChemical(MekanismChemicals.REDSTONE, "Redstone");
+        addChemical(MekanismChemicals.DIAMOND, "Diamond");
+        addChemical(MekanismChemicals.REFINED_OBSIDIAN, "Refined Obsidian");
+        addChemical(MekanismChemicals.GOLD, "Gold");
+        addChemical(MekanismChemicals.TIN, "Tin");
+        addChemical(MekanismChemicals.FUNGI, "Fungi");
+        addChemical(MekanismChemicals.BIO, "Biomass");
     }
 
     private void addPigments() {
-        add(MekanismChemicals.SIMPLE_PIGMENTS, "Pigment");
+        addChemicals(MekanismChemicals.SIMPLE_PIGMENTS, "Pigment");
     }
 
     private void addSlurries() {
-        for (Map.Entry<PrimaryResource, SlurryRegistryObject<Chemical, Chemical>> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
+        for (Map.Entry<PrimaryResource, CleanDirtySlurryId> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
             addSlurry(entry.getValue(), TextUtils.formatAndCapitalize(entry.getKey().getRegistrySuffix()));
         }
     }
 
-    private void addSlurry(SlurryRegistryObject<Chemical, Chemical> slurryRO, String name) {
-        addHolder(slurryRO, "Dirty " + name + " Slurry");
-        addHolder(slurryRO.getCleanSlurry(), "Clean " + name + " Slurry");
+    private void addSlurry(CleanDirtySlurryId slurryRO, String name) {
+        addChemical(slurryRO.dirty(), "Dirty " + name + " Slurry");
+        addChemical(slurryRO.clean(), "Clean " + name + " Slurry");
     }
 
     private void addDamageSources() {
@@ -661,10 +660,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
             }
             addRobitSkin(prideSkin, name);
         }
-    }
-
-    private void addRobitSkin(ResourceKey<RobitSkin> name, String value) {
-        add(RobitSkin.getTranslationKey(name), value);
     }
 
     private void addSubtitles() {

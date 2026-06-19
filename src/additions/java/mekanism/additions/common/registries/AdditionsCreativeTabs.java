@@ -23,9 +23,9 @@ public class AdditionsCreativeTabs {
                 builder.backgroundTexture(MekanismAdditions.rl("textures/gui/creative_tab.png"))
                       .withSearchBar(65)//Allow our tabs to be searchable for convenience purposes
                       .withTabsBefore(MekanismCreativeTabs.MEKANISM.getKey())
-                      .displayItems((_, output) -> {
-                          CreativeTabDeferredRegister.addToDisplay(AdditionsItems.ITEMS, output);
-                          CreativeTabDeferredRegister.addToDisplay(AdditionsBlocks.BLOCKS, output);
+                      .displayItems((displayParameters, output) -> {
+                          CreativeTabDeferredRegister.addToDisplay(AdditionsItems.ITEMS, displayParameters, output);
+                          CreativeTabDeferredRegister.addToDisplay(AdditionsBlocks.BLOCKS, displayParameters, output);
                       })
     );
 
@@ -50,9 +50,9 @@ public class AdditionsCreativeTabs {
     }
 
     @SafeVarargs
-    private static void addToDisplay(CreativeModeTab.Output output, EnumColorCollection<? extends BlockRegistryObject<?, ?>>... blocks) {
+    private static void addToDisplay(BuildCreativeModeTabContentsEvent event, EnumColorCollection<? extends BlockRegistryObject<?, ?>>... blocks) {
         for (EnumColorCollection<? extends BlockRegistryObject<?, ?>> blockMap : blocks) {
-            CreativeTabDeferredRegister.addToDisplay(output, blockMap.asList().toArray(new BlockRegistryObject<?, ?>[0]));
+            CreativeTabDeferredRegister.addToDisplay(event, blockMap.asList().toArray(new BlockRegistryObject<?, ?>[0]));
         }
     }
 }

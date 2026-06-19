@@ -116,14 +116,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
     public ChemicalStack(Holder<Chemical> chemical, int amount) {
         Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical holder");
         if (chemical.kind() == Holder.Kind.DIRECT) {
-            if (!chemical.isBound()) {//This should always be true, unless someone made a custom direct holder for some reason
-                throw new IllegalArgumentException("Cannot create a ChemicalStack from an unbound direct holder");
-            }
-            //Try to look up the reference holder from the registry
-            chemical = MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical.value());
-            if (chemical.kind() == Holder.Kind.DIRECT) {
-                throw new IllegalArgumentException("Cannot create a ChemicalStack from a direct holder for a chemical that is not yet registered");
-            }
+            throw new IllegalArgumentException("Cannot create a ChemicalStack from a direct holder for a chemical that is not yet registered");
         }
         this.chemical = chemical;
         this.amount = amount;

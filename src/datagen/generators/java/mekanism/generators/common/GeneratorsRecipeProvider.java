@@ -15,7 +15,6 @@ import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
-import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
@@ -31,6 +30,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
@@ -69,8 +69,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Heavy water
         ElectrolysisRecipeBuilder.separating(
                     IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.HEAVY_WATER, 2),
-                    GeneratorsChemicals.DEUTERIUM.asTemplate(2),
-                    MekanismChemicals.OXYGEN.asTemplate(1)
+                    chemicalTemplate(GeneratorsChemicals.DEUTERIUM, 2),
+                    chemicalTemplate(MekanismChemicals.OXYGEN, 1)
               ).energyMultiplier(2)
               .save(output, MekanismGenerators.rl(basePath + "heavy_water"));
     }
@@ -82,31 +82,30 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         addRotaryCondensentratorRecipe(basePath, GeneratorsChemicals.TRITIUM, GeneratorsFluids.TRITIUM, GeneratorTags.Fluids.TRITIUM, GeneratorTags.Chemicals.TRITIUM);
     }
 
-    private void addRotaryCondensentratorRecipe(String basePath, DeferredChemical<Chemical> gas, Holder<Fluid> fluidOutput,
-          TagKey<Fluid> fluidInput, TagKey<Chemical> gasInput) {
+    private void addRotaryCondensentratorRecipe(String basePath, ResourceKey<Chemical> chemicalOutput, Holder<Fluid> fluidOutput, TagKey<Fluid> fluidInput, TagKey<Chemical> chemicalInput) {
         RotaryRecipeBuilder.rotary(
               IngredientCreatorAccess.fluid().from(this.fluids, fluidInput, 1),
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, gasInput, 1),
-              gas.asTemplate(1),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, chemicalInput, 1),
+              chemicalTemplate(chemicalOutput, 1),
               new FluidStackTemplate(fluidOutput, 1)
-        ).save(output, MekanismGenerators.rl(basePath + gas.getName()));
+        ).save(output, MekanismGenerators.rl(basePath + chemicalOutput.identifier().getPath()));
     }
 
     private void addChemicalInfuserRecipes() {
         String basePath = "chemical_infusing/";
         //DT Fuel
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
-              IngredientCreatorAccess.chemicalStack().fromHolder(GeneratorsChemicals.DEUTERIUM, 1),
-              IngredientCreatorAccess.chemicalStack().fromHolder(GeneratorsChemicals.TRITIUM, 1),
-              GeneratorsChemicals.FUSION_FUEL.asTemplate(2)
+              IngredientCreatorAccess.chemicalStack().from(chemicals, GeneratorsChemicals.DEUTERIUM, 1),
+              IngredientCreatorAccess.chemicalStack().from(chemicals, GeneratorsChemicals.TRITIUM, 1),
+              chemicalTemplate(GeneratorsChemicals.FUSION_FUEL, 2)
         ).save(output, MekanismGenerators.rl(basePath + "fusion_fuel"));
     }
 
     private void addSolarNeutronActivatorRecipes() {
         String basePath = "activating/";
         ChemicalToChemicalRecipeBuilder.activating(
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.LITHIUM, 1),
-              GeneratorsChemicals.TRITIUM.asTemplate(1)
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.LITHIUM, 1),
+              chemicalTemplate(GeneratorsChemicals.TRITIUM, 1)
         ).save(output, MekanismGenerators.rl(basePath + "tritium"));
     }
 

@@ -2,7 +2,6 @@ package mekanism.common.tests.container;
 
 import mekanism.api.AutomationType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tests.helpers.ContainerGameTestHelper;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.EnergyCubeTier;
@@ -28,8 +27,8 @@ public class ContainerRateLimitTest {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(1, 1, 1).set(0, 0, 0, MekanismBlocks.BASIC_CHEMICAL_TANK.defaultState()));
         test.onGameTest(ContainerGameTestHelper.class, helper -> helper.startSequence()
               .thenMap(() -> helper.getBlockEntity(0, 0, 0, TileEntityChemicalTank.class).getChemicalTank())
-              .thenExecute(tank -> helper.testTransfer(tank, MekanismChemicals.HYDROGEN.asResource(), ChemicalTankTier.BASIC.getTransferRate(), AutomationType.INTERNAL, AutomationType.MANUAL))
-              .thenExecuteAfter(1, tank -> helper.testTransfer(tank, MekanismChemicals.HYDROGEN.asResource(), ChemicalTankTier.BASIC.getTransferRate(), AutomationType.INTERNAL, AutomationType.MANUAL))
+              .thenExecute(tank -> helper.testTransfer(tank, helper.hydrogen(), ChemicalTankTier.BASIC.getTransferRate(), AutomationType.INTERNAL, AutomationType.MANUAL))
+              .thenExecuteAfter(1, tank -> helper.testTransfer(tank, helper.hydrogen(), ChemicalTankTier.BASIC.getTransferRate(), AutomationType.INTERNAL, AutomationType.MANUAL))
               .thenSucceed()
         );
     }
@@ -40,8 +39,8 @@ public class ContainerRateLimitTest {
     public static void testItemChemicalLimit(final ContainerGameTestHelper helper) {
         helper.startSequence()
               .thenMap(() -> helper.getChemicalTank(MekanismBlocks.BASIC_CHEMICAL_TANK.getItemHolder()))
-              .thenExecute(tank -> helper.testTransfer(tank, MekanismChemicals.HYDROGEN.asResource(), ChemicalTankTier.BASIC.getTransferRate(), AutomationType.INTERNAL, AutomationType.MANUAL))
-              .thenExecuteAfter(1, tank -> helper.testTransfer(tank, MekanismChemicals.HYDROGEN.asResource(), ChemicalTankTier.BASIC.getTransferRate(), AutomationType.INTERNAL, AutomationType.MANUAL))
+              .thenExecute(tank -> helper.testTransfer(tank, helper.hydrogen(), ChemicalTankTier.BASIC.getTransferRate(), AutomationType.INTERNAL, AutomationType.MANUAL))
+              .thenExecuteAfter(1, tank -> helper.testTransfer(tank, helper.hydrogen(), ChemicalTankTier.BASIC.getTransferRate(), AutomationType.INTERNAL, AutomationType.MANUAL))
               .thenSucceed();
     }
 

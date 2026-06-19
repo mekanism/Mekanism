@@ -38,6 +38,7 @@ import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.ItemAccessUtils;
@@ -231,15 +232,18 @@ public class FusionReactorMultiblockData extends MultiblockData {
         try (Transaction transaction = Transaction.openRoot()) {
             //Only thermal transfer happens unless we're hot enough to burn.
             if (getPlasmaTemp() >= BURN_TEMPERATURE) {
-                //If we're not burning, yet we need a hohlraum to ignite
-                if (!isBurning()) {
-                    vaporiseHohlraum(transaction);
-                }
+                ChemicalResource fusionFuel = ChemicalUtils.getResource(world, GeneratorsChemicals.FUSION_FUEL);
+                if (!fusionFuel.isEmpty()) {
+                    //If we're not burning, yet we need a hohlraum to ignite
+                    if (!isBurning()) {
+                        vaporiseHohlraum(transaction, fusionFuel);
+                    }
 
-                //Only inject fuel if we're burning
-                if (isBurning()) {
-                    injectFuel(transaction);
-                    fuelBurned = burnFuel(transaction);
+                    //Only inject fuel if we're burning
+                    if (isBurning()) {
+                        injectFuel(transaction, fusionFuel);
+                        fuelBurned = burnFuel(transaction);
+                    }
                 }
                 if (fuelBurned == 0) {
                     setBurning(false);
@@ -252,7 +256,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             }
 
             //Perform the heat transfer calculations
-            transferHeat(transaction);
+            transferHeat(world, transaction);
 
             if (!energyOutputTargets.isEmpty() && !energyContainer.isEmpty()) {
                 EnergyUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer, transaction);
@@ -308,13 +312,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
         }
     }
 
-    private void vaporiseHohlraum(TransactionContext transaction) {
+    private void vaporiseHohlraum(TransactionContext transaction, ChemicalResource fuelType) {
         if (GeneratorsItems.HOHLRAUM.is(reactorSlot.resource())) {
             ResourceHandler<ChemicalResource> handler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(reactorSlot.asItemAccess()));
             if (handler != null && ResourceHandlerUtil.isFull(handler)) {
                 //Validate that the handler has some fusion fuel in it
                 try (Transaction subTransaction = Transaction.open(transaction)) {
-                    ChemicalResource fuelType = GeneratorsChemicals.FUSION_FUEL.asResource();
                     int needed = fuelTank.getNeededAsInt(ChemicalResource.EMPTY);
                     int availableFuel = needed == 0 ? 0 : handler.extract(fuelType, needed, subTransaction);
                     //If we don't need any fuel, we can't try to transfer any, so just work
@@ -328,8 +331,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
         }
     }
 
-    private void injectFuel(TransactionContext transaction) {
-        int amountNeeded = fuelTank.getNeededAsInt(ChemicalResource.EMPTY);
+    private void injectFuel(TransactionContext transaction, ChemicalResource fuelType) {
+        int amountNeeded = fuelTank.getNeededAsInt(fuelType);
         int amountAvailable = 2 * Math.min(deuteriumTank.amountAsInt(), tritiumTank.amountAsInt());
         int amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
@@ -339,7 +342,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                 //Note: We don't have to validate if the deuterium or tritium resources are empty, as if either is, then the injecting amount will be zero
                 if (deuteriumTank.extract(deuteriumTank.resource(), injectingAmount, subTransaction, AutomationType.MANUAL) == injectingAmount &&
                     tritiumTank.extract(tritiumTank.resource(), injectingAmount, subTransaction, AutomationType.MANUAL) == injectingAmount &&
-                    fuelTank.insert(GeneratorsChemicals.FUSION_FUEL.asResource(), amountToInject, subTransaction, AutomationType.MANUAL) == amountToInject) {
+                    fuelTank.insert(fuelType, amountToInject, subTransaction, AutomationType.MANUAL) == amountToInject) {
                     //Only inject if we actually are able to transfer the proper amounts
                     subTransaction.commit();
                 }
@@ -363,7 +366,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         return fuelBurned;
     }
 
-    private void transferHeat(TransactionContext transaction) {
+    private void transferHeat(ServerLevel level, TransactionContext transaction) {
         //Transfer from plasma to casing
         double plasmaCaseHeat = PLASMA_CASE_CONDUCTIVITY * (getPlasmaTemp() - heatCapacitor.getTemperature());
         if (Math.abs(plasmaCaseHeat) > HeatAPI.EPSILON) {
@@ -376,16 +379,18 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (heatCapacitor.getTemperature() - biomeAmbientTemp);
         double lostToWater = 0;
         if (!waterTank.isEmpty() && Math.abs(caseWaterHeat) > HeatAPI.EPSILON) {
-            try (Transaction subTransaction = Transaction.open(transaction)) {
-                ChemicalResource steam = MekanismChemicals.STEAM.asResource();
-                int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
-                int vaporized = waterTank.extract(waterTank.resource(), Math.min(waterToVaporize, steamTank.getNeededAsInt(steam)), subTransaction, AutomationType.INTERNAL);
-                if (vaporized > 0) {
-                    //Note: We don't validate the full amount could be inserted as we allow venting the excess steam
-                    steamTank.insert(steam, vaporized, subTransaction, AutomationType.INTERNAL);
-                    lostToWater = vaporized * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
-                    heatCapacitor.handleHeat(-lostToWater, subTransaction);
-                    subTransaction.commit();
+            ChemicalResource steam = ChemicalUtils.getResource(level, MekanismChemicals.STEAM);
+            if (!steam.isEmpty()) {
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
+                    int vaporized = waterTank.extract(waterTank.resource(), Math.min(waterToVaporize, steamTank.getNeededAsInt(steam)), subTransaction, AutomationType.INTERNAL);
+                    if (vaporized > 0) {
+                        //Note: We don't validate the full amount could be inserted as we allow venting the excess steam
+                        steamTank.insert(steam, vaporized, subTransaction, AutomationType.INTERNAL);
+                        lostToWater = vaporized * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
+                        heatCapacitor.handleHeat(-lostToWater, subTransaction);
+                        subTransaction.commit();
+                    }
                 }
             }
         }

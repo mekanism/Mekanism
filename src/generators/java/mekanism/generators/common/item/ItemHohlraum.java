@@ -1,6 +1,8 @@
 package mekanism.generators.common.item;
 
+import java.util.Optional;
 import java.util.function.Consumer;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.Capabilities;
@@ -11,7 +13,9 @@ import mekanism.common.util.StorageUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsChemicals;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Holder.Reference;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -54,7 +58,11 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
     }
 
     @Override
-    public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ContainerType.CHEMICAL.getFilledVariant(item, GeneratorsChemicals.FUSION_FUEL, null));
+    public void addItems(ItemDisplayParameters displayParameters, Holder<Item> item, Consumer<ItemStack> tabOutput) {
+        Optional<Reference<Chemical>> fusionFuel = displayParameters.holders().get(GeneratorsChemicals.FUSION_FUEL);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (fusionFuel.isPresent()) {
+            tabOutput.accept(ContainerType.CHEMICAL.getFilledVariant(item, fusionFuel.get(), null));
+        }
     }
 }

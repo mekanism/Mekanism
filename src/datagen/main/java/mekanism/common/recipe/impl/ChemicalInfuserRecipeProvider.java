@@ -22,21 +22,21 @@ class ChemicalInfuserRecipeProvider extends BaseSubRecipeProvider {
         String basePath = "chemical_infusing/";
         //Hydrogen Chloride
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN, 1),
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.CHLORINE, 1),
-              MekanismChemicals.HYDROGEN_CHLORIDE.asTemplate(1)
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.HYDROGEN, 1),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.CHLORINE, 1),
+              chemicalTemplate(MekanismChemicals.HYDROGEN_CHLORIDE, 1)
         ).save(consumer, Mekanism.rl(basePath + "hydrogen_chloride"));
         //Sulfur Trioxide
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 1),
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFUR_DIOXIDE, 2),
-              MekanismChemicals.SULFUR_TRIOXIDE.asTemplate(2)
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.OXYGEN, 1),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.SULFUR_DIOXIDE, 2),
+              chemicalTemplate(MekanismChemicals.SULFUR_TRIOXIDE, 2)
         ).save(consumer, Mekanism.rl(basePath + "sulfur_trioxide"));
         //Sulfuric Acid
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFUR_TRIOXIDE, 1),
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.WATER_VAPOR, 1),
-              MekanismChemicals.SULFURIC_ACID.asTemplate(1)
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.SULFUR_TRIOXIDE, 1),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.WATER_VAPOR, 1),
+              chemicalTemplate(MekanismChemicals.SULFURIC_ACID, 1)
         ).save(consumer, Mekanism.rl(basePath + "sulfuric_acid"));
     }
 }

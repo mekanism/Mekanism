@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
-import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDamageTypes;
@@ -656,10 +656,11 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST).add(MekanismChemicals.PLUTONIUM, MekanismChemicals.POLONIUM);
 
         // add dynamic slurry tags
-        getBuilder(MekanismAPITags.Chemicals.DIRTY).add(MekanismChemicals.PROCESSED_RESOURCES.values());
+        MekanismTagBuilder<Chemical> dirtyTagBuilder = getBuilder(MekanismAPITags.Chemicals.DIRTY);
         MekanismTagBuilder<Chemical> cleanTagBuilder = getBuilder(MekanismAPITags.Chemicals.CLEAN);
-        for (SlurryRegistryObject<?, ?> slurryRO : MekanismChemicals.PROCESSED_RESOURCES.values()) {
-            cleanTagBuilder.add(slurryRO.getCleanSlurry());
+        for (CleanDirtySlurryId slurry : MekanismChemicals.PROCESSED_RESOURCES.values()) {
+            dirtyTagBuilder.add(slurry.dirty());
+            cleanTagBuilder.add(slurry.clean());
         }
 
         getBuilder(MekanismAPITags.Chemicals.GASEOUS).add(

@@ -41,6 +41,7 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismChemicals;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -194,12 +195,17 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         try (Transaction transaction = Transaction.openRoot()) {
             // burn reactor fuel, create energy
             if (isActive()) {
-                burnFuel(world, transaction);
+                ChemicalResource waste = ChemicalUtils.getResource(world, MekanismChemicals.NUCLEAR_WASTE);
+                if (!waste.isEmpty()) {
+                    burnFuel(world, waste, transaction);
+                } else {
+                    lastBurnRate = 0;
+                }
             } else {
                 lastBurnRate = 0;
             }
             // handle coolant heating (water -> steam)
-            handleCoolant(transaction);
+            handleCoolant(world, transaction);
             if (!chemicalOutputTargets.isEmpty()) {
                 if (!heatedCoolantTank.isEmpty()) {
                     ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets, FissionPortMode.OUTPUT_COOLANT), heatedCoolantTank, transaction);
@@ -356,7 +362,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 if (RadiationManager.isGlobalRadiationEnabled()) {
                     //Calculate radiation level and clear any tanks that had radioactive substances and are contributing to the
                     // amount of radiation released
-                    double radiation = getTankRadioactivityAndDump(fuelTank, transaction) + getWasteTankRadioactivity(transaction) +
+                    double radiation = getTankRadioactivityAndDump(fuelTank, transaction) + getWasteTankRadioactivity(world, transaction) +
                                        getTankRadioactivityAndDump(coolantTank.getChemicalTank(), transaction) + getTankRadioactivityAndDump(heatedCoolantTank, transaction);
                     radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
                     //When the meltdown actually happens, release radiation into the atmosphere
@@ -385,11 +391,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     /// @apiNote Assumes radiation is enabled instead of checking and returning zero if it is not.
-    private double getWasteTankRadioactivity(@Nullable TransactionContext transaction) {
+    private double getWasteTankRadioactivity(Level level, @Nullable TransactionContext transaction) {
         ChemicalResource wasteType = wasteTank.resource();
         double wasteRadioactivity;
         if (wasteType.isEmpty()) {
-            wasteRadioactivity = MekanismChemicals.NUCLEAR_WASTE.get().getRadioactivity();
+            wasteRadioactivity = level.registryAccess().get(MekanismChemicals.NUCLEAR_WASTE).map(chemicalReference -> chemicalReference.value().getRadioactivity()).orElse(0.0);
         } else {
             //Note: We need to know the baseline radioactivity, and not the scaled amount. So we get it from the chemical
             // instead of directly off the stack
@@ -424,7 +430,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         return resource.isEmpty() ? null : resource.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant());
     }
 
-    private void handleCoolant(TransactionContext transaction) {
+    private void handleCoolant(ServerLevel level, TransactionContext transaction) {
         CurrentType currentType = this.coolantTank.getCurrentType();
         if (currentType == CurrentType.EMPTY) {
             lastBoilRate = 0;
@@ -439,7 +445,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             coolantTank = this.coolantTank.getFluidTank();
             coolantConductivity = waterConductivity;
             coolantEnthalpy = HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
-            heatedCoolant = MekanismChemicals.STEAM.asResource();
+            heatedCoolant = ChemicalUtils.getResource(level, MekanismChemicals.STEAM);
+            if (heatedCoolant.isEmpty()) {
+                lastBurnRate = 0;
+                return;
+            }
         } else {//if (currentType == CurrentType.CHEMICAL)
             IChemicalTank chemicalCoolantTank = this.coolantTank.getChemicalTank();
             ChemicalResource coolant = chemicalCoolantTank.resource();
@@ -480,7 +490,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         return Math.clamp(MathUtils.clampToInt(heated), 0, stored);
     }
 
-    private void burnFuel(Level world, TransactionContext transaction) {
+    private void burnFuel(Level world, ChemicalResource waste, TransactionContext transaction) {
         double lastPartialWaste = partialWaste;
         double lastBurnRemaining = burnRemaining;
         double storedFuel = fuelTank.amountAsLong() + burnRemaining;
@@ -496,7 +506,6 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         int newWaste = Mth.floor(partialWaste);
         if (newWaste > 0) {
             partialWaste %= 1;
-            ChemicalResource waste = MekanismChemicals.NUCLEAR_WASTE.asResource();
             newWaste -= wasteTank.insert(waste, newWaste, transaction, AutomationType.INTERNAL);
             if (newWaste > 0 && RadiationManager.isGlobalRadiationEnabled()) {
                 //Check if radiation is enabled in order to allow for short-circuiting when it will NO-OP further down the line anyway
@@ -516,7 +525,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     private void radiateEntities(Level world) {
         if (hotZone != null && RadiationManager.isGlobalRadiationEnabled() && isBurning() && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
-            double wasteRadiation = getWasteTankRadioactivity(null) / 3_600F; // divide down to Sv/s
+            double wasteRadiation = getWasteTankRadioactivity(world, null) / 3_600F; // divide down to Sv/s
             double magnitude = lastBurnRate + wasteRadiation;
             if (magnitude <= IRadiationManager.INSTANCE.baselineRadiation()) {
                 return;

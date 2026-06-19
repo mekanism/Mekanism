@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.SequencedSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,6 +34,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -179,5 +181,13 @@ public class RecipeViewerUtils {
         }
         // Don't provide world as context, as it is not thread safe
         return Item.TooltipContext.of(level.registryAccess());
+    }
+
+    public static <E> Optional<Registry<E>> getRegistry(ResourceKey<? extends Registry<? extends E>> registryKey) {
+        Level level = MekanismClient.tryGetClientWorld();
+        if (level == null) {
+            return Optional.empty();
+        }
+        return level.registryAccess().lookup(registryKey);
     }
 }

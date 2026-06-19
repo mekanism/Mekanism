@@ -48,7 +48,7 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
 
     /// Helper method to create an [NSSChemical] representing a chemical from a [Identifier]
     public static NSSChemical createChemical(Identifier chemicalId) {
-        if (chemicalId.equals(MekanismAPI.CHEMICAL_REGISTRY.getDefaultKey())) {
+        if (chemicalId.equals(MekanismAPI.EMPTY_CHEMICAL_KEY.identifier())) {
             throw new IllegalArgumentException("Can't make NSSChemical with an empty chemical");
         }
         return new NSSChemical(chemicalId, false);

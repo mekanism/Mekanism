@@ -9,11 +9,11 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.EnumColorCollection;
 import mekanism.common.recipe.impl.BaseSubRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
-import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registries.MekanismChemicals;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
@@ -56,11 +56,11 @@ class PigmentExtractingPlasticRecipeProvider extends BaseSubRecipeProvider {
         });
     }
 
-    private static void addExtractionRecipe(RecipeOutput consumer, EnumColor color, EnumColorCollection<? extends ItemLike> input, DeferredChemical<?> pigment,
+    private void addExtractionRecipe(RecipeOutput consumer, EnumColor color, EnumColorCollection<? extends ItemLike> input, ResourceKey<Chemical> pigment,
           int rate, String basePath) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(input.pick(color)),
-              pigment.asTemplate(rate)
+              chemicalTemplate(pigment, rate)
         ).save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
     }
 }

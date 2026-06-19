@@ -37,6 +37,7 @@ import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntityBoilerValve;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -193,13 +194,14 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             double heatAvailable = getHeatAvailable();
             lastMaxBoil = Mth.floor(HeatUtils.getSteamEnergyEfficiency() * heatAvailable / HeatUtils.getWaterThermalEnthalpy());
             FluidResource water = waterTank.resource();
-            if (water.isEmpty()) {
+            ChemicalResource steam = ChemicalUtils.getResource(world, MekanismChemicals.STEAM);
+            if (water.isEmpty() || steam.isEmpty()) {
                 lastBoilRate = 0;
             } else {
                 try (Transaction transaction = Transaction.openRoot()) {
                     int amountToBoil = Math.min(lastMaxBoil, steamTank.getNeededAsInt(ChemicalResource.EMPTY));
                     int boiled = waterTank.extract(water, amountToBoil, transaction, AutomationType.INTERNAL);
-                    if (boiled > 0 && steamTank.insert(MekanismChemicals.STEAM.asResource(), boiled, transaction, AutomationType.INTERNAL) == boiled) {
+                    if (boiled > 0 && steamTank.insert(steam, boiled, transaction, AutomationType.INTERNAL) == boiled) {
                         heatCapacitor.handleHeat(-boiled * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency(), transaction);
                         transaction.commit();
                     }

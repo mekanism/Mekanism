@@ -1,5 +1,7 @@
 package mekanism.common.recipe;
 
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
@@ -20,7 +22,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jspecify.annotations.Nullable;
 
 /// Class for helpers that are also used by some of our recipe compat providers for convenience
@@ -149,5 +153,13 @@ public class RecipeProviderUtil {
 
     public static ItemStackTemplate template(HolderGetter<Item> items, BlockItemId item, int amount) {
         return template(items, item.item(), amount);
+    }
+
+    public static ChemicalStackTemplate chemicalTemplate(HolderGetter<Chemical> chemicals, ResourceKey<Chemical> chemical, int amount) {
+        return new ChemicalStackTemplate(chemicals.getOrThrow(chemical), amount);
+    }
+
+    public static FluidStackTemplate fluidTemplate(HolderGetter<Fluid> fluids, ResourceKey<Fluid> fluid, int amount) {
+        return new FluidStackTemplate(fluids.getOrThrow(fluid), amount);
     }
 }

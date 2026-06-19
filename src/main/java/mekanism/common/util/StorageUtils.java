@@ -17,9 +17,9 @@ import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.tier.IStorageTier;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -102,7 +102,7 @@ public class StorageUtils {//TODO - 26.2: Re-evaluate which of these methods are
         }
     }
 
-    public static long getContainedChemical(@Nullable ResourceHandler<ChemicalResource> handler, Holder<Chemical> type) {
+    public static long getContainedChemical(@Nullable ResourceHandler<ChemicalResource> handler, ResourceKey<Chemical> type) {
         if (handler != null) {
             for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
                 ChemicalResource chemicalInTank = handler.getResource(tank);

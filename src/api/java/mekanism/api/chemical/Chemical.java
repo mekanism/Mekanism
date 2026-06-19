@@ -206,4 +206,13 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
             attribute.collectTooltips(context, tooltips, tooltipFlag);
         }
     }
+
+    /// Helper to get the proper translation key path for a given [Chemical].
+    ///
+    /// @param key [Chemical] name.
+    ///
+    /// @since 10.8.0
+    public static String getTranslationKey(ResourceKey<? extends Chemical> key) {
+        return Util.makeDescriptionId("chemical", key.identifier());
+    }
 }

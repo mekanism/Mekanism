@@ -54,9 +54,9 @@ class PlasticStairsRecipeProvider extends BaseSubRecipeProvider {
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             if (transparent) {
-                PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, this.items, result, typeTag, color, basePath);
+                PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, this.items, this.chemicals, result, typeTag, color, basePath);
             } else {
-                PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, result, typeTag, color, basePath);
+                PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, result, typeTag, color, basePath);
             }
         });
     }

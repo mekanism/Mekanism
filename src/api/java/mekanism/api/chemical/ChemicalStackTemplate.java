@@ -3,7 +3,6 @@ package mekanism.api.chemical;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -39,18 +38,7 @@ public record ChemicalStackTemplate(Holder<Chemical> chemical, @Range(from = 1, 
           ChemicalStackTemplate::new);
 
     public ChemicalStackTemplate {
-        Objects.requireNonNull(chemical, "Chemical must be non-null");
-        if (chemical.kind() == Holder.Kind.DIRECT) {
-            if (!chemical.isBound()) {//This should always be true, unless someone made a custom direct holder for some reason
-                throw new IllegalArgumentException("Chemical may not be an unbound direct holder");
-            }
-            //Try to look up the reference holder from the registry
-            chemical = MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical.value());
-            if (chemical.kind() == Holder.Kind.DIRECT) {
-                throw new IllegalArgumentException("Cannot create a ChemicalStackTemplate from a direct holder for a chemical that is not yet registered");
-            }
-        }
-        if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) || amount <= 0) {
+        if (amount <= 0 || chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             throw new IllegalStateException("Chemical must be non-empty");
         }
     }

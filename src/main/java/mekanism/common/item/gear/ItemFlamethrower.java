@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
@@ -30,6 +31,7 @@ import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
@@ -37,6 +39,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
@@ -45,6 +48,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -107,31 +111,42 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     @Override
     public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingDuration) {
         //TODO: Do we want to allow non players to use the flamethrower?
-        if (remainingDuration >= 0 && entity instanceof Player player) {
-            //If the flamethrower has gas, add the entity if we are on the server and use gas if we aren't creative
-            ResourceHandler<ChemicalResource> chemicalHandler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack)));
-            if (chemicalHandler != null) {
-                //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
-                    if (chemicalHandler.extract(ChemicalResource.of(getChemicalType()), 1, transaction) == 1) {
-                        if (!level.isClientSide()) {
-                            EntityFlame flame = EntityFlame.create(level, entity, entity.getUsedItemHand(), getMode(stack));
-                            if (flame != null) {
-                                if (flame.isAlive()) {
-                                    //If the flame is alive (and didn't just instantly hit a block while trying to spawn add it to the world)
-                                    level.addFreshEntity(flame);
-                                }
-                                if (MekanismUtils.isPlayingMode(player)) {
-                                    //Only consume fuel if the player is actually playing and isn't in creative
-                                    transaction.commit();
-                                }
-                            }
-                        }
-                        return;
+        if (remainingDuration < 0 || !(entity instanceof Player player)) {
+            onUseTickNoChemical(level, entity, stack, remainingDuration);
+            return;
+        }
+        ChemicalResource fuel = ChemicalUtils.getResource(level, getChemicalType());
+        if (fuel.isEmpty()) {//Fuel isn't registered, a datapack might have removed it?
+            onUseTickNoChemical(level, entity, stack, remainingDuration);
+            return;
+        }
+        //If the flamethrower has gas, add the entity if we are on the server and use gas if we aren't creative
+        ResourceHandler<ChemicalResource> chemicalHandler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack)));
+        if (chemicalHandler == null) {
+            onUseTickNoChemical(level, entity, stack, remainingDuration);
+            return;
+        }
+        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+            if (chemicalHandler.extract(fuel, 1, transaction) == 0) {
+                onUseTickNoChemical(level, entity, stack, remainingDuration);
+            } else if (!level.isClientSide()) {
+                EntityFlame flame = EntityFlame.create(level, entity, entity.getUsedItemHand(), getMode(stack));
+                if (flame != null) {
+                    if (flame.isAlive()) {
+                        //If the flame is alive (and didn't just instantly hit a block while trying to spawn add it to the world)
+                        level.addFreshEntity(flame);
+                    }
+                    if (MekanismUtils.isPlayingMode(player)) {
+                        //Only consume fuel if the player is actually playing and isn't in creative
+                        transaction.commit();
                     }
                 }
             }
         }
+    }
+
+    private void onUseTickNoChemical(Level level, LivingEntity entity, ItemStack stack, int remainingDuration) {
         //If the flamethrower runs out of gas, make it act as if the entity stopped using the item
         // Have this happen on both the server and the client
         entity.releaseUsingItem();
@@ -153,11 +168,15 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     }
 
     @Override
-    public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ContainerType.CHEMICAL.getFilledVariant(item, getChemicalType(), null));
+    public void addItems(ItemDisplayParameters displayParameters, Holder<Item> item, Consumer<ItemStack> tabOutput) {
+        Optional<Reference<Chemical>> chemical = displayParameters.holders().get(getChemicalType());
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (chemical.isPresent()) {
+            tabOutput.accept(ContainerType.CHEMICAL.getFilledVariant(item, chemical.get(), null));
+        }
     }
 
-    private Holder<Chemical> getChemicalType() {
+    private ResourceKey<Chemical> getChemicalType() {
         return MekanismChemicals.HYDROGEN;
     }
 

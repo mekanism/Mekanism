@@ -4,15 +4,21 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.recipe_viewer.INamedRVRecipe;
+import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 
 //TODO - V11: Make the SPS have a proper recipe type to allow for custom recipes
@@ -25,10 +31,22 @@ public record SPSRecipeViewerRecipe(Identifier id, ChemicalStackIngredient input
     ).apply(instance, SPSRecipeViewerRecipe::new));
 
     public static List<SPSRecipeViewerRecipe> getSPSRecipes() {
+        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        if (optionalRegistry.isEmpty()) {
+            //Something went horribly wrong, bail
+            Mekanism.logger.warn("Failed to find chemical registry");
+            return Collections.emptyList();
+        }
+        Registry<Chemical> chemicals = optionalRegistry.get();
+        Optional<Reference<Chemical>> poloniumReference = chemicals.get(MekanismChemicals.POLONIUM);
+        Optional<Reference<Chemical>> antimatterReference = chemicals.get(MekanismChemicals.ANTIMATTER);
+        if (poloniumReference.isEmpty() || antimatterReference.isEmpty()) {
+            return Collections.emptyList();
+        }
         return Collections.singletonList(new SPSRecipeViewerRecipe(
-              RegistryUtils.synthetic(Mekanism.rl("antimatter"), "sps"),
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.POLONIUM, MekanismConfig.general.spsInputPerAntimatter.get()),
-              MekanismChemicals.ANTIMATTER.asTemplate(1)
+              RegistryUtils.synthetic(MekanismChemicals.ANTIMATTER.identifier(), "sps"),
+              IngredientCreatorAccess.chemicalStack().fromHolder(poloniumReference.get(), MekanismConfig.general.spsInputPerAntimatter.get()),
+              new ChemicalStackTemplate(antimatterReference.get(), 1)
         ));
     }
 }
