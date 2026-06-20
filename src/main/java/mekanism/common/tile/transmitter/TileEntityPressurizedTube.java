@@ -60,7 +60,7 @@ public class TileEntityPressurizedTube extends TileEntityResourceTransmitter<Che
         if (level.isClientSide()) {
             if (tube.hasTransmitterNetwork()) {
                 ChemicalNetwork network = tube.getTransmitterNetworkNN();
-                if (!network.getLastType().isEmpty() && !network.getContainer().isEmpty() && network.getLastType().isRadioactive()) {
+                if (!network.getLastType().isEmpty() && !network.getContainer().isEmpty() && network.getLastType().isRadioactive(level.registryAccess())) {
                     //Note: This may act as full when the network isn't actually full if there is radioactive stuff
                     // going through it, but it shouldn't matter too much
                     return network.currentScale;
@@ -68,7 +68,7 @@ public class TileEntityPressurizedTube extends TileEntityResourceTransmitter<Che
             }
             return 0;
         }
-        return tube.getRadiationScale();
+        return tube.getRadiationScale(level);
     }
 
     @Override

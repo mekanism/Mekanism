@@ -15,6 +15,7 @@ import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.resources.Identifier;
@@ -62,11 +63,12 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
             productionRate = getMaxRate(module) / 2;
         }
         if (productionRate > 0) {
-            ChemicalResource hydrogen = ChemicalUtils.getResource(player.level(), MekanismChemicals.HYDROGEN);
+            RegistryAccess registryAccess = player.level().registryAccess();
+            ChemicalResource hydrogen = ChemicalUtils.getResource(registryAccess, MekanismChemicals.HYDROGEN);
             if (hydrogen.isEmpty()) {
                 return;
             }
-            int usage = MathUtils.multiplyClamped(2, ChemicalUtils.fuelEnergyDensity(hydrogen));
+            int usage = MathUtils.multiplyClamped(2, hydrogen.fuelEnergyDensity(registryAccess));
             //Calculate the max rate based on how much energy is available and can be extracted
             int maxRate = module.getEnergyRateLimit(player, itemAccess, usage, productionRate, transaction);
             int hydrogenUsed = 0;

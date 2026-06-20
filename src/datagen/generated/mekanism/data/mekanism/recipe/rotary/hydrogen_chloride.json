@@ -2,7 +2,7 @@
   "type": "mekanism:rotary",
   "chemical_input": {
     "amount": 1,
-    "chemical": "mekanism:hydrogen_chloride"
+    "ingredient": "mekanism:hydrogen_chloride"
   },
   "chemical_output": {
     "amount": 1,

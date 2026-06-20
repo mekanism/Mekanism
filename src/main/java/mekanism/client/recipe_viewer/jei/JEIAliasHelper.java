@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.IHasTranslationKey;
@@ -32,7 +31,7 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack, FluidStack, Chem
 
     private static final Function<ItemStack, String> ITEM_TO_STRING = stack -> stack.getItem().toString();
     private static final Function<FluidStack, String> FLUID_TO_STRING = stack -> stack.getFluid().toString();
-    private static final Function<ChemicalStack, String> CHEMICAL_TO_STRING = stack -> stack.getChemical().toString();
+    private static final Function<ChemicalStack, String> CHEMICAL_TO_STRING = stack -> stack.typeHolder().getRegisteredName();
 
     private final IIngredientAliasRegistration registration;
 
@@ -82,7 +81,11 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack, FluidStack, Chem
 
     @Override
     public List<ChemicalStack> chemicalTagContents(TagKey<Chemical> tag) {
-        return tagContents(MekanismAPI.CHEMICAL_REGISTRY, tag, holder -> new ChemicalStack(holder, FluidType.BUCKET_VOLUME));
+        return registries().get(tag)
+              .stream()
+              .flatMap(HolderSet::stream)
+              .map(holder -> new ChemicalStack(holder, FluidType.BUCKET_VOLUME))
+              .toList();
     }
 
     private <TYPE, STACK> List<STACK> tagContents(Registry<TYPE> registry, TagKey<TYPE> tag, Function<Holder<TYPE>, STACK> stackFunction) {

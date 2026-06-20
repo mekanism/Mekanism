@@ -20,6 +20,7 @@ import mekanism.common.upgrade.transmitter.ResourceTransmitterUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 
@@ -72,10 +73,10 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
         return super.isValidTransmitter(transmitter, side) && transmitter.getTransmitter() instanceof PressurizedTube other && isValidTransmitter(other);
     }
 
-    public float getRadiationScale() {
+    public float getRadiationScale(LevelReader level) {
         IChemicalTank chemicalTank = getContainer();
         ChemicalResource resource = chemicalTank.resource();
-        if (!resource.isEmpty() && resource.isRadioactive()) {
+        if (!resource.isEmpty() && resource.isRadioactive(level.registryAccess())) {
             return chemicalTank.amountAsLong() / (float) chemicalTank.capacityAsLong(resource);
         }
         return 0;

@@ -2,7 +2,7 @@
   "type": "mekanism:crystallizing",
   "input": {
     "amount": 200,
-    "chemical": "mekanism:clean_gold"
+    "ingredient": "mekanism:clean_gold"
   },
   "output": {
     "id": "mekanism:crystal_gold"

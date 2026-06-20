@@ -2,7 +2,7 @@
   "type": "mekanism:rotary",
   "chemical_input": {
     "amount": 1,
-    "tag": "mekanism:deuterium"
+    "ingredient": "#mekanism:deuterium"
   },
   "chemical_output": {
     "amount": 1,

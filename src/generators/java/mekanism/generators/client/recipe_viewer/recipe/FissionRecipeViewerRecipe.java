@@ -55,7 +55,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
         Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
-            Mekanism.logger.warn("Failed to find chemical registry");
+            Mekanism.logger.warn("Failed to find chemical registry when generating fission recipes");
             return Collections.emptyList();
         }
         Registry<Chemical> chemicals = optionalRegistry.get();

@@ -8,12 +8,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Predicate;
+import java.util.function.Supplier;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
@@ -44,6 +43,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -59,8 +59,6 @@ import org.jspecify.annotations.Nullable;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
 
-    public static final Predicate<ChemicalResource> IS_HEATED_COOLANT = type -> type.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()) != null;
-    public static final Predicate<ChemicalResource> IS_COOLED_COOLANT = type -> type.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()) != null;
     public static final Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
     public static final double CASING_HEAT_CAPACITY = 50;
@@ -124,12 +122,13 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         super(tile);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
-        superheatedCoolantTank = VariableCapacityChemicalTank.input(this, () -> superheatedCoolantCapacity, IS_HEATED_COOLANT, this);
+        Supplier<@Nullable RegistryAccess> registryAccessSupplier = getRegistryAccess();
+        superheatedCoolantTank = VariableCapacityChemicalTank.input(this, () -> superheatedCoolantCapacity, chemical -> chemical.getHeatedCoolant(registryAccessSupplier.get()) != null, this);
         waterTank = VariableCapacityFluidTank.input(this, () -> waterTankCapacity, fluid -> fluid.is(FluidTags.WATER),
               createSaveAndComparator());
         fluidTanks.add(waterTank);
         steamTank = VariableCapacityChemicalTank.output(this, () -> steamTankCapacity, chemical -> chemical.is(MekanismChemicals.STEAM), this);
-        cooledCoolantTank = VariableCapacityChemicalTank.output(this, () -> cooledCoolantCapacity, IS_COOLED_COOLANT, this);
+        cooledCoolantTank = VariableCapacityChemicalTank.output(this, () -> cooledCoolantCapacity, chemical -> chemical.getCooledCoolant(registryAccessSupplier.get()) != null, this);
         inputTanks = List.of(superheatedCoolantTank);
         outputSteamTanks = List.of(steamTank);
         outputCoolantTanks = List.of(cooledCoolantTank);
@@ -158,9 +157,9 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     @Nullable
-    private HeatedCoolant getHeatedCoolant() {
+    private HeatedCoolant getHeatedCoolant(RegistryAccess registryAccess) {
         ChemicalResource resource = superheatedCoolantTank.resource();
-        return resource.isEmpty() ? null : resource.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
+        return resource.isEmpty() ? null : resource.getHeatedCoolant(registryAccess);
     }
 
     @Override
@@ -174,7 +173,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         }
         // handle coolant heat transfer
         if (!superheatedCoolantTank.isEmpty()) {
-            HeatedCoolant coolantType = getHeatedCoolant();
+            HeatedCoolant coolantType = getHeatedCoolant(world.registryAccess());
             if (coolantType != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     ChemicalResource heatedTankType = superheatedCoolantTank.resource();
@@ -194,7 +193,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             double heatAvailable = getHeatAvailable();
             lastMaxBoil = Mth.floor(HeatUtils.getSteamEnergyEfficiency() * heatAvailable / HeatUtils.getWaterThermalEnthalpy());
             FluidResource water = waterTank.resource();
-            ChemicalResource steam = ChemicalUtils.getResource(world, MekanismChemicals.STEAM);
+            ChemicalResource steam = ChemicalUtils.getResource(world.registryAccess(), MekanismChemicals.STEAM);
             if (water.isEmpty() || steam.isEmpty()) {
                 lastBoilRate = 0;
             } else {

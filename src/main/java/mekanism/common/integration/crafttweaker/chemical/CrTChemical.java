@@ -37,20 +37,20 @@ public class CrTChemical {
 
     /// Get the tint for rendering the chemical
     ///
-    /// @return int representation of color in AARRGGBB format
+    /// @return int representation of color in ARGB format
     @ZenCodeType.Method
     @ZenCodeType.Getter("tint")
     public static int getTint(Chemical _this) {
-        return _this.getTint();
+        return _this.tint();
     }
 
     /// Get the color representation used for displaying in things like durability bars of chemical tanks.
     ///
-    /// @return int representation of color in AARRGGBB format
+    /// @return int representation of color in ARGB format
     @ZenCodeType.Method
     @ZenCodeType.Getter("colorRepresentation")
     public static int getColorRepresentation(Chemical _this) {
-        return _this.getColorRepresentation();
+        return _this.colorRepresentation();
     }
 
     /// Creates a new [ICrTChemicalStack] with the given amount of chemical.

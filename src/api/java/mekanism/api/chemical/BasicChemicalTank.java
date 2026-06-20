@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismPreconditions;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.BasicResourceContainer;
 import mekanism.api.transaction.RateLimitTracker;

@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.robit.RobitSkin;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
@@ -18,6 +19,10 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.jspecify.annotations.Nullable;
 
 public class DatapackDeferredRegister<T> extends DeferredMapCodecRegister<T> {
+
+    public static DatapackDeferredRegister<Chemical> chemicals(String modid) {
+        return new DatapackDeferredRegister<>(modid, MekanismAPI.CHEMICAL_SERIALIZER_REGISTRY_NAME, MekanismAPI.CHEMICAL_REGISTRY_NAME);
+    }
 
     public static DatapackDeferredRegister<RobitSkin> robitSkins(String modid) {
         return new DatapackDeferredRegister<>(modid, MekanismAPI.ROBIT_SKIN_SERIALIZER_REGISTRY_NAME, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);

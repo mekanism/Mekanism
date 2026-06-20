@@ -10,7 +10,7 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;

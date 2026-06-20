@@ -12,7 +12,6 @@ import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
@@ -59,7 +58,7 @@ public class ItemScubaTank extends ItemChemicalArmor implements IItemHUDProvider
             if (handler != null && handler.size() > 0) {
                 stored = handler.getAmountAsLong(0);
             }
-            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, ChemicalUtils.chemicalName(getChemicalType()), EnumColor.ORANGE, stored));
+            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, Chemical.getTranslatedName(getChemicalType()), EnumColor.ORANGE, stored));
         }
     }
 

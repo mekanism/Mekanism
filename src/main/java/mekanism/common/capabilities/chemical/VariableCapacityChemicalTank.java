@@ -9,7 +9,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.lib.multiblock.MultiblockData;

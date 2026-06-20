@@ -10,6 +10,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
+import net.minecraft.util.ExtraCodecs;
 import org.jspecify.annotations.Nullable;
 
 /// Immutable class representing a color based module config (name and int value).
@@ -19,7 +20,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
 
     /// Codec for (de)serializing ARGB based color module configs.
     public static final Codec<ModuleColorConfig> ARGB_CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
-          .and(Codec.INT.fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get))
+          .and(ExtraCodecs.ARGB_COLOR_CODEC.fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get))
           .apply(instance, ModuleColorConfig::argb));
     /// Stream codec for encoding and decoding ARGB based color module configs over the network.
     public static final StreamCodec<ByteBuf, ModuleColorConfig> ARGB_STREAM_CODEC = StreamCodec.composite(
@@ -30,7 +31,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
     );
     /// Codec for (de)serializing RGB based color module configs.
     public static final Codec<ModuleColorConfig> RGB_CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
-          .and(Codec.INT.fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get))
+          .and(ExtraCodecs.RGB_COLOR_CODEC.fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get))
           //If we don't handle alpha make sure we do have the alpha component present
           .apply(instance, ModuleColorConfig::rgb));
     /// Stream codec for encoding and decoding RGB based color module configs over the network.

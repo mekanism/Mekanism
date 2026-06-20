@@ -54,6 +54,7 @@ import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -230,9 +231,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
         boolean needsPacket = super.tick(world);
         int fuelBurned = 0;
         try (Transaction transaction = Transaction.openRoot()) {
+            RegistryAccess registryAccess = world.registryAccess();
             //Only thermal transfer happens unless we're hot enough to burn.
             if (getPlasmaTemp() >= BURN_TEMPERATURE) {
-                ChemicalResource fusionFuel = ChemicalUtils.getResource(world, GeneratorsChemicals.FUSION_FUEL);
+                ChemicalResource fusionFuel = ChemicalUtils.getResource(registryAccess, GeneratorsChemicals.FUSION_FUEL);
                 if (!fusionFuel.isEmpty()) {
                     //If we're not burning, yet we need a hohlraum to ignite
                     if (!isBurning()) {
@@ -256,7 +258,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             }
 
             //Perform the heat transfer calculations
-            transferHeat(world, transaction);
+            transferHeat(registryAccess, transaction);
 
             if (!energyOutputTargets.isEmpty() && !energyContainer.isEmpty()) {
                 EnergyUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer, transaction);
@@ -366,7 +368,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         return fuelBurned;
     }
 
-    private void transferHeat(ServerLevel level, TransactionContext transaction) {
+    private void transferHeat(RegistryAccess registryAccess, TransactionContext transaction) {
         //Transfer from plasma to casing
         double plasmaCaseHeat = PLASMA_CASE_CONDUCTIVITY * (getPlasmaTemp() - heatCapacitor.getTemperature());
         if (Math.abs(plasmaCaseHeat) > HeatAPI.EPSILON) {
@@ -379,7 +381,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (heatCapacitor.getTemperature() - biomeAmbientTemp);
         double lostToWater = 0;
         if (!waterTank.isEmpty() && Math.abs(caseWaterHeat) > HeatAPI.EPSILON) {
-            ChemicalResource steam = ChemicalUtils.getResource(level, MekanismChemicals.STEAM);
+            ChemicalResource steam = ChemicalUtils.getResource(registryAccess, MekanismChemicals.STEAM);
             if (!steam.isEmpty()) {
                 try (Transaction subTransaction = Transaction.open(transaction)) {
                     int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());

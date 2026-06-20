@@ -2,7 +2,7 @@ package mekanism.common.component.containers.chemical;
 
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.component.containers.resource.AttachedResources;
 import mekanism.common.item.block.ItemBlockChemicalTank;

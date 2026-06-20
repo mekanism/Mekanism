@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.common.component.containers.resource.ComponentBackedResourceContainer;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.ResourceContainerType;

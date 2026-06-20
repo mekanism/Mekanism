@@ -1,2 +1,5 @@
-// 26.2	2026-06-16T12:47:14.9647632	Datapack registries: mekanismgenerators
+// 26.2	2026-06-20T16:09:11.6369348	Datapack registries: mekanismgenerators
 42c208d6673a0c7c7f1f2b7dd2ce2d5679edcb02 data/mekanismgenerators/damage_type/fusion.json
+11887c13e743c5b05c7d2ed45f66861c44db0c85 data/mekanismgenerators/mekanism/chemical/deuterium.json
+a75b164389d9c6c3726259bc1725c17c67a5c5f1 data/mekanismgenerators/mekanism/chemical/fusion_fuel.json
+df19b34958dfc1aea7375fdcccb8e2537f3fa932 data/mekanismgenerators/mekanism/chemical/tritium.json

@@ -20,5 +20,5 @@ public interface IFilter<FILTER extends IFilter<FILTER>> {
     @ComputerMethod(threadSafe = true)
     void setEnabled(boolean enabled);
 
-    void setRegistryAccess(Supplier<HolderLookup.@Nullable Provider> registryAccess);
+    void setRegistryAccess(Supplier<? extends HolderLookup.@Nullable Provider> registryAccess);
 }

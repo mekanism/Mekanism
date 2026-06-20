@@ -16,7 +16,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 
-/// A [`chemical`][MekanismAPI#CHEMICAL_REGISTRY] data map that allows defining fuel values for a chemical.
+/// A [`chemical`][MekanismAPI#CHEMICAL_REGISTRY_NAME] data map that allows defining fuel values for a chemical.
 ///
 /// @param otherVariant    Chemical representing the cooled variant of this heated coolant.
 /// @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause boilers to require more of the chemical to produce steam.

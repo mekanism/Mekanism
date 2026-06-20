@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.display.ForChemicalStacks;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
@@ -50,7 +52,7 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
     ///
     /// @since 10.6.0
     public static final Codec<ChemicalStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          IngredientCreatorAccess.chemical().mapCodecNonEmpty().forGetter(ChemicalStackIngredient::ingredient),
+          IngredientCreatorAccess.chemical().codec().fieldOf(SerializationConstants.INGREDIENT).forGetter(ChemicalStackIngredient::ingredient),
           ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.AMOUNT).forGetter(ChemicalStackIngredient::amount)
     ).apply(instance, ChemicalStackIngredient::new));
 
@@ -75,9 +77,7 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
     /// @since 10.6.0
     public static ChemicalStackIngredient of(ChemicalIngredient ingredient, int amount) {
         Objects.requireNonNull(ingredient, "ChemicalStackIngredients cannot be created from a null ingredient.");
-        if (ingredient.isEmpty()) {
-            throw new IllegalArgumentException("ChemicalStackIngredients cannot be created using the empty ingredient.");
-        } else if (amount <= 0) {
+        if (amount <= 0) {
             throw new IllegalArgumentException("Size must be positive");
         }
         return new ChemicalStackIngredient(ingredient, amount);
@@ -102,7 +102,10 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
     @Override
     public boolean testType(TypedInstance<Chemical> stack) {
         Objects.requireNonNull(stack);
-        return testType(stack.typeHolder());
+        return switch (stack) {
+            case ChemicalResource resource -> ingredient.test(resource);
+            default -> testType(stack.typeHolder());
+        };
     }
 
     /// Evaluates this predicate on the given argument, ignoring any size data.
@@ -129,7 +132,7 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
 
     @Override
     public boolean hasNoMatchingInstances() {
-        return ingredient.hasNoChemicals();
+        return ingredient.isEmpty();
     }
 
     @Override
@@ -139,11 +142,8 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
 
     @Override
     public List<ChemicalStack> getRepresentations(ContextMap context) {
-        //TODO - 26.2: Refactor this to be based off the display
         if (this.representations == null) {
-            this.representations = ingredient.getChemicalHolders().stream()
-                  .map(chemical -> new ChemicalStack(chemical, amount))
-                  .toList();
+            this.representations = ingredient.display().resolve(context, (ForChemicalStacks<ChemicalStack>) stack -> stack.copyWithAmount(amount)).toList();
         }
         return representations;
     }

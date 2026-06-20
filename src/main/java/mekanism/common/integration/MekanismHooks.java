@@ -8,7 +8,6 @@ import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.framedblocks.FramedBlocksIntegration;
 import mekanism.common.integration.gender.MekanismGenderArmor;
-import mekanism.common.integration.jsonthings.JsonThingsIntegration;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.resources.Identifier;
@@ -58,7 +57,6 @@ public final class MekanismHooks {
     public final IntegrationInfo genderMod;
     public final IntegrationInfo jei;
     public final IntegrationInfo jeiTweaker;
-    public final IntegrationInfo jsonThings;
     public final IntegrationInfo projecte;
     public final IntegrationInfo recipeStages;
     public final IntegrationInfo theOneProbe;
@@ -74,7 +72,6 @@ public final class MekanismHooks {
         jei = new IntegrationInfo("jei", loadedCheck);
         emi = new IntegrationInfo("emi", loadedCheck);
         jeiTweaker = new IntegrationInfo(JEITWEAKER_MOD_ID, loadedCheck);
-        jsonThings = new IntegrationInfo("jsonthings", loadedCheck);
         projecte = new IntegrationInfo(PROJECTE_MOD_ID, loadedCheck);
         recipeStages = new IntegrationInfo("recipestages", loadedCheck);
         theOneProbe = new IntegrationInfo("TOP_MOD_ID", loadedCheck);
@@ -86,9 +83,6 @@ public final class MekanismHooks {
         //TODO: Evaluate if we want to move any of these into their own class and just have them in a constructor as another entrypoint
         if (curios.isLoaded()) {
             CuriosIntegration.addListeners(modEventBus);
-        }
-        if (jsonThings.isLoaded()) {
-            JsonThingsIntegration.hook(modEventBus);
         }
         //TODO - 26.2: projectE
         //if (projecte.isLoaded()) {

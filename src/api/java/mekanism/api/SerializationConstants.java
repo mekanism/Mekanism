@@ -118,9 +118,15 @@ public final class SerializationConstants {
     public static final String CHANNEL = "channel";
     /// @since 10.7.0
     public static final String CHEMICAL_TANKS = "chemical_tanks";
+    /// @since 10.7.0
+    public static final String CHEMICAL_STORED_ALT = "chemical_1";
+    /// @since 10.7.0
+    public static final String CHEMICAL_STORED_ALT_2 = "chemical_2";
     public static final String CHUNK_SET = "chunk_set";
     public static final String COILS = "coils";
     public static final String COLOR = "color";
+    /// @since 10.8.0
+    public static final String COLOR_REPRESENTATION = "color_representation";
     public static final String COMPONENT_CONFIG = "component_config";
     public static final String COMPONENT_EJECTOR = "component_ejector";
     public static final String COMPONENT_FREQUENCY = "component_frequency";
@@ -149,6 +155,8 @@ public final class SerializationConstants {
     public static final String DIMENSION = "dimension";
     public static final String DIRECTION = "direction";
     public static final String DISABLED = "disabled";
+    /// @since 10.8.0
+    public static final String DISPLAY = "display";
     public static final String DISTANCE = "distance";
     public static final String DRIVES = "drives";
     public static final String DUMP_LEFT = "dump_left";
@@ -176,10 +184,6 @@ public final class SerializationConstants {
     public static final String FOLLOW = "follow";
     public static final String FREQUENCY_LIST = "freq_list";
     public static final String FUZZY = "fuzzy";
-    /// @since 10.7.0
-    public static final String CHEMICAL_STORED_ALT = "chemical_1";
-    /// @since 10.7.0
-    public static final String CHEMICAL_STORED_ALT_2 = "chemical_2";
     public static final String GUI = "gui";
     public static final String HANDLE_SOUND = "handle_sound";
     /// @since 10.8.0
@@ -190,6 +194,8 @@ public final class SerializationConstants {
     /// @since 10.7.11
     public static final String HOT_VARIANT = "hot_variant";
     public static final String HUMAN_NAME = "human_name";
+    /// @since 10.8.0
+    public static final String ICON = "icon";
     public static final String IDENTITY = "identity";
     public static final String IDLE_DIR = "idle_dir";
     public static final String INDEX = "index";
@@ -290,6 +296,8 @@ public final class SerializationConstants {
     /// @since 10.7.11
     public static final String THERMAL_ENTHALPY = "thermal_enthalpy";
     public static final String TIME = "time";
+    /// @since 10.8.0
+    public static final String TINT = "tint";
     public static final String TRUSTED = "trusted";
     public static final String TYPES = "types";
     public static final String UPDATE_DELAY = "update_delay";

@@ -10,22 +10,24 @@ import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
+import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTextComponent;
-import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
+import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import org.jspecify.annotations.Nullable;
 
-public final class ChemicalStack implements ChemicalInstance, IHasTextComponent, IHasTranslationKey {
+public final class ChemicalStack implements SizedChemicalInstance {
 
     /// Empty ChemicalStack instance.
     public static final ChemicalStack EMPTY = new ChemicalStack(null);
@@ -114,11 +116,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
     /// @throws IllegalArgumentException If the chemical holder is a direct holder that is either: not bound, the value it is bound to doesn't have a registered reference
     /// in the chemical registry.
     public ChemicalStack(Holder<Chemical> chemical, int amount) {
-        Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical holder");
-        if (chemical.kind() == Holder.Kind.DIRECT) {
-            throw new IllegalArgumentException("Cannot create a ChemicalStack from a direct holder for a chemical that is not yet registered");
-        }
-        this.chemical = chemical;
+        this.chemical = Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical holder");
         this.amount = amount;
     }
 
@@ -152,7 +150,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
     public ChemicalStack split(int amount) {
         int i = Math.min(amount, amount());
         ChemicalStack stack = copyWithAmount(i);
-        this.shrink(i);
+        shrink(i);
         return stack;
     }
 
@@ -164,7 +162,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
             return EMPTY;
         }
         ChemicalStack stack = copy();
-        this.setAmount(0);
+        setAmount(0);
         return stack;
     }
 
@@ -183,7 +181,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
     @Override
     public Holder<Chemical> typeHolder() {
         //Note: We know chemical is not null here as that gets checked as part of isEmpty
-        return isEmpty() ? MekanismAPI.EMPTY_CHEMICAL_HOLDER : Objects.requireNonNull(chemical);
+        return isEmpty() ? ChemicalResource.EMPTY.typeHolder() : Objects.requireNonNull(chemical);
     }
 
     /// Gets whether this chemical stack is empty.
@@ -246,22 +244,35 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
     /// @param tooltips    List of tooltips to add to.
     /// @param tooltipFlag Flag representing if advanced tooltips are to be shown.
     ///
-    /// @see Chemical#appendHoverText(ChemicalStack, TooltipContext, List, TooltipFlag)
+    /// @see IChemicalAttribute#collectTooltips(TooltipContext, List, TooltipFlag)
     /// @since 10.7.11
     public void appendHoverText(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
-        Holder<Chemical> chemicalHolder = typeHolder();
-        if (chemicalHolder.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+        if (isEmpty()) {
             return;
         }
-        //TODO - 26.2: Do we want to fire an event similar to fluid stacks?
-        chemicalHolder.value().appendHoverText(this, context, tooltips, tooltipFlag);
-        if (chemicalHolder.is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST)) {
+        //TODO - 26.2: Fire an event similar to what Neo does for fluid stacks, as we don't provide any other way to add custom tooltip information now
+        for (DataMapType<Chemical, ? extends IChemicalAttribute> attributeType : IMekanismDataMapTypes.INSTANCE.chemicalAttributeTypes()) {
+            IChemicalAttribute attribute = getData(attributeType);
+            if (attribute != null) {
+                attribute.collectTooltips(context, tooltips, tooltipFlag);
+            }
+        }
+        if (is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST)) {
             tooltips.add(APILang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
         }
         if (tooltipFlag.isAdvanced()) {
             //If advanced tooltips are on, display the registry name
             tooltips.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, typeHolder().getRegisteredName()));
         }
+    }
+
+    @Nullable
+    @Override
+    public <DATA> DATA getData(@Nullable RegistryAccess registryAccess, DataMapType<Chemical, DATA> type) {
+        if (isEmpty()) {
+            return null;
+        }
+        return SizedChemicalInstance.super.getData(registryAccess, type);
     }
 
     @Override
@@ -289,18 +300,6 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
     @Override
     public String toString() {
         return amount() + " " + typeHolder().getRegisteredName();
-    }
-
-    @Override
-    public Component getTextComponent() {
-        //Wrapper to get display name of the chemical type easier
-        return getChemical().getTextComponent();
-    }
-
-    @Override
-    public String getTranslationKey() {
-        //Wrapper to get translation key of the chemical type easier
-        return getChemical().getTranslationKey();
     }
 
     /// Checks if the two chemical stacks have the same chemical type. Ignores amount.

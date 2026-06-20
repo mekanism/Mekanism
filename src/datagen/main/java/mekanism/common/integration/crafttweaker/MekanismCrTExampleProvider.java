@@ -1,7 +1,6 @@
 package mekanism.common.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
-import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
@@ -81,27 +80,6 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         HolderGetter<Chemical> chemicals = registries.lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME);
         //Recipes
         addRecipeExamples(registries);
-        //Content
-        exampleBuilder("mekanism/custom_chemicals")
-              .addComponent(() -> "#loader " + CrTConstants.CONTENT_LOADER)
-              .blankLine()
-              .imports()
-              .comment("Adds five very simple chemicals to show a very basic usage of the content creation capabilities provided. Custom content needs to be created "
-                       + "in the mekanismcontent loader and requires a full game restart to take effect as well as have names defined in a lang file. One thing to note "
-                       + "is that these examples are extremely basic and there is quite a bit more that is possible with this system including using custom textures and "
-                       + "adding various attributes.",
-                    "1) Creates an example Gas that is colored magenta.",
-                    "2) Creates an example Infuse Type that is colored green.",
-                    "3) Creates an example Pigment that is colored yellowish green.",
-                    "4) Creates an example Dirty Slurry that is for a yellow ore.",
-                    "5) Creates an example Clean Slurry that is for the same yellow ore."
-              ).blankLine()
-              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_CHEMICAL), "builder", "example_gas", 0xDF03FC))
-              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_CHEMICAL), "infuseType", "example_infuse_type", 0x03FC0B))
-              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_CHEMICAL), "pigment", "example_pigment", 0xCAFC03))
-              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_CHEMICAL), "dirty", "example_dirty_slurry", 0xF0FC03))
-              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_CHEMICAL), "clean", "example_clean_slurry", 0xF0FC03))
-        ;
         //JEITweaker integration
         exampleBuilder("mekanism/jeitweaker_integration")
               .addComponent(() -> "#modloaded " + Mekanism.hooks.jeiTweaker.modid())
@@ -524,14 +502,6 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         public String asString() {
             return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".hideIngredient(" +
                    describer.apply(new ChemicalStack(chemicalProvider, FluidType.BUCKET_VOLUME)).getCommandString() + ");";
-        }
-    }
-
-    private record SimpleCustomChemicalComponent(String type, String constructor, String name, int color) implements ICrTExampleComponent {
-
-        @Override
-        public String asString() {
-            return type + '.' + constructor + "().tint(0x" + Integer.toHexString(color).toUpperCase(Locale.ROOT) + ").build(\"" + name + "\");";
         }
     }
 }

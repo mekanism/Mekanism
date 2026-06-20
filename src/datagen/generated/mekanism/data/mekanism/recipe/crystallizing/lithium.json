@@ -2,7 +2,7 @@
   "type": "mekanism:crystallizing",
   "input": {
     "amount": 100,
-    "chemical": "mekanism:lithium"
+    "ingredient": "mekanism:lithium"
   },
   "output": {
     "id": "mekanism:dust_lithium"

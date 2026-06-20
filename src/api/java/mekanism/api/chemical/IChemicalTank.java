@@ -1,6 +1,5 @@
 package mekanism.api.chemical;
 
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;

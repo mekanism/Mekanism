@@ -2,7 +2,7 @@
   "type": "mekanism:centrifuging",
   "input": {
     "amount": 1,
-    "chemical": "mekanism:uranium_hexafluoride"
+    "ingredient": "mekanism:uranium_hexafluoride"
   },
   "output": {
     "amount": 1,

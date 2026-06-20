@@ -9,7 +9,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.math.MathUtils;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
@@ -194,7 +194,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                 if (toAdd == 0) {
                     return 0;
                 }
-                ChemicalResource antimatter = ChemicalUtils.getResource(level, MekanismChemicals.ANTIMATTER);
+                ChemicalResource antimatter = ChemicalUtils.getResource(level.registryAccess(), MekanismChemicals.ANTIMATTER);
                 if (antimatter.isEmpty() || outputTank.insert(antimatter, toAdd, transaction, AutomationType.INTERNAL) < toAdd) {
                     return 0;
                 }

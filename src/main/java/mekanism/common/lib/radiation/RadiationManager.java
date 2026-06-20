@@ -197,7 +197,7 @@ public final class RadiationManager implements IRadiationManager {
         //Note: We only attempt to dump and mark that we did if radiation is enabled in order to allow persisting radioactive
         // substances when radiation is disabled
         if (isGlobalRadiationEnabled() && !type.isEmpty() && amount > 0) {
-            double radioactivity = type.getRadioactivity();
+            double radioactivity = type.getRadioactivity(level.registryAccess());
             if (radioactivity > 0) {
                 radiate(level, pos, radioactivity * amount);
                 return true;

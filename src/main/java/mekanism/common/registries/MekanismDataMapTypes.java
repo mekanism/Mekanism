@@ -1,15 +1,17 @@
 package mekanism.common.registries;
 
+import java.util.List;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
+import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
+import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.DataMapTypeRegister;
 import net.minecraft.core.Holder;
@@ -35,6 +37,13 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
           ChemicalRadioactivity.CODEC, ChemicalRadioactivity.RADIOACTIVITY_CODEC);
     private static final DataMapType<Chemical, CooledCoolant> COOLED_CHEMICAL_COOLANT = REGISTER.registerSimpleSynced(CooledCoolant.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME, CooledCoolant.CODEC);
     private static final DataMapType<Chemical, HeatedCoolant> HEATED_CHEMICAL_COOLANT = REGISTER.registerSimpleSynced(HeatedCoolant.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME, HeatedCoolant.CODEC);
+    //TODO - 26.2: Figure out how to make this extensible. Maybe just loop after the data map registry finishes being populated and do instance checks?
+    private static final List<DataMapType<Chemical, ? extends IChemicalAttribute>> ATTRIBUTE_TYPES = List.of(
+          CHEMICAL_RADIOACTIVITY,
+          CHEMICAL_FUEL,
+          COOLED_CHEMICAL_COOLANT,
+          HEATED_CHEMICAL_COOLANT
+    );
 
     @Override
     public DataMapType<DamageType, MekaSuitAbsorption> mekaSuitAbsorption() {
@@ -68,10 +77,12 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
 
     @Nullable
     @Override
-    public <TYPE, DATA> DATA getData(RegistryAccess registryAccess, ResourceKey<? extends Registry<? extends TYPE>> registryName, Holder<TYPE> holder, DataMapType<TYPE, DATA> type) {
+    public <TYPE, DATA> DATA getData(@Nullable RegistryAccess registryAccess, ResourceKey<? extends Registry<? extends TYPE>> registryName, Holder<TYPE> holder, DataMapType<TYPE, DATA> type) {
         if (holder.kind() == Holder.Kind.REFERENCE) {
             //Reference holders can query data map values
             return holder.getData(type);
+        } else if (registryAccess == null) {
+            return null;
         }
         Optional<Registry<TYPE>> registry = registryAccess.lookup(registryName);
         //noinspection OptionalIsPresent - Capturing lambda
@@ -79,5 +90,10 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
             return registry.get().wrapAsHolder(holder.value()).getData(type);
         }
         return null;
+    }
+
+    @Override
+    public List<DataMapType<Chemical, ? extends IChemicalAttribute>> chemicalAttributeTypes() {
+        return ATTRIBUTE_TYPES;
     }
 }

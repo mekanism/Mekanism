@@ -2,7 +2,7 @@
   "type": "mekanism:metallurgic_infusing",
   "chemical_input": {
     "amount": 60,
-    "tag": "mekanism:redstone"
+    "ingredient": "#mekanism:redstone"
   },
   "item_input": {
     "count": 1,

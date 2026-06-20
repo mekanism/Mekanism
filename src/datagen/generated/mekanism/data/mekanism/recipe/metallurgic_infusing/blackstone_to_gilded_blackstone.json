@@ -2,7 +2,7 @@
   "type": "mekanism:metallurgic_infusing",
   "chemical_input": {
     "amount": 100,
-    "tag": "mekanism:gold"
+    "ingredient": "#mekanism:gold"
   },
   "item_input": {
     "count": 1,

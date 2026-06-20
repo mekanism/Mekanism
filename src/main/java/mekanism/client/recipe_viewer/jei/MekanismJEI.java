@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalSerializationHelper;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.robit.GuiRobitRepair;
@@ -161,7 +162,7 @@ public class MekanismJEI implements IModPlugin {
         Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
-            Mekanism.logger.warn("Failed to find chemical registry");
+            Mekanism.logger.warn("Failed to find chemical registry while registering JEI ingredients");
             types = Collections.emptyList();
         } else {
             types = optionalRegistry.get().listElements()
@@ -171,7 +172,7 @@ public class MekanismJEI implements IModPlugin {
                   .toList();
         }
         CHEMICAL_STACK_HELPER.setColorHelper(registry.getColorHelper());
-        registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer(), Chemical.CODEC.xmap(
+        registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer(), ChemicalSerializationHelper.REFERENCE_CODEC.xmap(
               chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME),
               ChemicalStack::typeHolder
         ));

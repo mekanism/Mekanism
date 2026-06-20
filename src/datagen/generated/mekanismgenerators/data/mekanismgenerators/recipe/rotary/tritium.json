@@ -2,7 +2,7 @@
   "type": "mekanism:rotary",
   "chemical_input": {
     "amount": 1,
-    "tag": "mekanism:tritium"
+    "ingredient": "#mekanism:tritium"
   },
   "chemical_output": {
     "amount": 1,

@@ -108,7 +108,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getChemicalTexture(Holder<Chemical> chemical) {
-        return getSprite(chemical.value().getIcon());
+        return getSprite(chemical.value().icon());
     }
 
     public static TextureAtlasSprite getSprite(Identifier spriteLocation) {
@@ -156,7 +156,7 @@ public class MekanismRenderer {
         if (instance.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return -1;
         }
-        return instance.typeHolder().value().getTint();
+        return instance.typeHolder().value().tint();
     }
 
     public static int color(@Nullable SupportsColorMap color) {
@@ -197,7 +197,7 @@ public class MekanismRenderer {
     }
 
     public static int getTint(Holder<Chemical> chemical) {
-        return chemical.value().getTint();
+        return chemical.value().tint();
     }
 
     public static int getColorARGB(Holder<Chemical> chemical, float scale) {

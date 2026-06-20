@@ -12,7 +12,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
-/// A [`chemical`][MekanismAPI#CHEMICAL_REGISTRY] data map that allows defining a solid tag for a chemical.
+/// A [`chemical`][MekanismAPI#CHEMICAL_REGISTRY_NAME] data map that allows defining a solid tag for a chemical.
 ///
 /// @param solidRepresentation the item tag that represents the ore or block that goes with a chemical.
 ///

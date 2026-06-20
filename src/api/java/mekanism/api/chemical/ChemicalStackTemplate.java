@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Range;
 /// @param amount   Amount of the chemical.
 ///
 /// @since 10.8.0
-public record ChemicalStackTemplate(Holder<Chemical> chemical, @Range(from = 1, to = Integer.MAX_VALUE) int amount) implements ChemicalInstance {
+public record ChemicalStackTemplate(Holder<Chemical> chemical, @Range(from = 1, to = Integer.MAX_VALUE) int amount) implements SizedChemicalInstance {
 
     /// A standard map codec for chemical stack templates.
     public static final MapCodec<ChemicalStackTemplate> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(

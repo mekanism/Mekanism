@@ -8,7 +8,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
@@ -104,7 +104,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
-        builder.addContainer(inputTank = BasicChemicalTank.create(MAX_GAS, MekContainerHelper.radioactiveInputTankPredicate(() -> outputTank),
+        builder.addContainer(inputTank = BasicChemicalTank.create(MAX_GAS, MekContainerHelper.radioactiveInputTankPredicate(() -> outputTank, this::getLevel),
               ConstantPredicates.alwaysTrueBi(), this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
         builder.addContainer(outputTank = BasicChemicalTank.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();

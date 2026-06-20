@@ -20,7 +20,10 @@ import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 public class MekContainerHelper<CONTAINER> {
@@ -29,11 +32,12 @@ public class MekContainerHelper<CONTAINER> {
     public static final Function<ISlotInfo, List<IFluidTank>> FLUID_SLOT_PARSER = slotInfo -> slotInfo instanceof FluidSlotInfo info ? info.getTanks() : Collections.emptyList();
     public static final Function<ISlotInfo, List<IChemicalTank>> CHEMICAL_SLOT_PARSER = slotInfo -> slotInfo instanceof ChemicalSlotInfo info ? info.getTanks() : Collections.emptyList();
 
-    public static BiPredicate<ChemicalResource, AutomationType> radioactiveInputTankPredicate(Supplier<IChemicalTank> outputTank) {
+    public static BiPredicate<ChemicalResource, AutomationType> radioactiveInputTankPredicate(Supplier<IChemicalTank> outputTank, Supplier<@Nullable Level> levelSupplier) {
+        Supplier<@Nullable RegistryAccess> registryAccess = MekanismUtils.registryAccess(levelSupplier);
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         //Note: This only is the case if radiation is enabled as otherwise things like gauge droppers can work as the way to remove radioactive contents
         return (type, automationType) -> !automationType.isExternal() ||
-                                         (outputTank.get().isEmpty() && type.isRadioactive() && RadiationManager.isGlobalRadiationEnabled());
+                                         (outputTank.get().isEmpty() && RadiationManager.isGlobalRadiationEnabled() && type.isRadioactive(registryAccess.get()));
     }
 
     private final IContainerHolder<CONTAINER> containerHolder;

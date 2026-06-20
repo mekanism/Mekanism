@@ -6,25 +6,33 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
-import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalSlotDisplay;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.crafting.ICustomIngredient;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
 /// This class serves as the chemical analogue of an item [Ingredient], that is, a representation of both a [predicate][#test] to test [Chemical]s against, and a
-/// [list][#getChemicalHolders] of matching chemicals for e.g. display purposes.
+/// [list][#chemicals] of matching chemicals for e.g. display purposes.
 ///
 /// @see mekanism.api.recipes.ingredients.ChemicalStackIngredient
 /// @since 10.6.0
-public abstract sealed class ChemicalIngredient implements Predicate<Holder<Chemical>> permits CompoundChemicalIngredient, DifferenceChemicalIngredient,
-      EmptyChemicalIngredient, IntersectionChemicalIngredient, SingleChemicalIngredient, TagChemicalIngredient {
-
-    //TODO - 26.2: Refactor this to make sure it is like FluidIngredient, and maybe switch from Holder<Chemical> to ChemicalResource in case we at some point let chemicals have data components
+public abstract sealed class ChemicalIngredient implements Predicate<ChemicalResource> permits SimpleChemicalIngredient, CompoundChemicalIngredient,
+      DifferenceChemicalIngredient, IntersectionChemicalIngredient, CustomDisplayChemicalIngredient {
 
     @Nullable
-    private List<Holder<Chemical>> chemicalHolders;
+    private List<Holder<Chemical>> chemicals;
+
+    /// Checks if a given chemical matches this ingredient.
+    ///
+    /// @param chemical the chemical to test
+    ///
+    /// @return `true` if the chemical matches, `false` otherwise
+    ///
+    /// @since 10.8.0
+    @Override
+    public abstract boolean test(ChemicalResource chemical);
 
     /// Checks if a given chemical matches this ingredient.
     ///
@@ -33,58 +41,63 @@ public abstract sealed class ChemicalIngredient implements Predicate<Holder<Chem
     /// @return `true` if the chemical matches, `false` otherwise
     ///
     /// @since 10.7.11
-    @Override
-    public abstract boolean test(Holder<Chemical> chemical);
+    public final boolean test(Holder<Chemical> chemical) {
+        return test(ChemicalResource.of(chemical));
+    }
 
     /// Generates a stream of all chemicals this ingredient matches against.
     ///
     /// Unlike fluid and item ingredients, as chemicals have no data components, this should be exhaustive and perfectly accurate.
     /// - It is important that the returned chemicals correspond exactly to all the accepted [Chemical]s.
-    /// - At least one chemical should always be returned, otherwise the ingredient may be considered [accidentally empty][#hasNoChemicals()].
+    /// - At least one chemical should always be returned, otherwise the ingredient may be considered [accidentally empty][#isEmpty()].
     ///
     /// @return a stream of all chemicals this ingredient accepts.
     ///
-    /// @see ICustomIngredient#items()
+    /// @see net.neoforged.neoforge.common.crafting.ICustomIngredient#items()
     /// @since 10.7.11
     public abstract Stream<Holder<Chemical>> generateChemicals();
 
     /// {@return a list of chemicals this ingredient accepts}
     ///
     /// @see #generateChemicals()
-    /// @since 10.7.11
-    public final List<Holder<Chemical>> getChemicalHolders() {
-        if (chemicalHolders == null) {
-            chemicalHolders = generateChemicals().toList();
+    /// @since 10.8.0
+    public final List<Holder<Chemical>> chemicals() {
+        if (chemicals == null) {
+            chemicals = generateChemicals().toList();
         }
-        return chemicalHolders;
+        return chemicals;
     }
 
-    /// Checks if this ingredient is **explicitly empty**, i.e. equal to [IChemicalIngredientCreator#empty()].
+    /// {@return a slot display for this ingredient, used for display on the client-side}
     ///
-    /// Note: This does _not_ return true for "accidentally empty" ingredients, including compound ingredients that are explicitly constructed with no children or
-    /// intersection / difference ingredients that resolve to an empty set.
-    ///
-    /// @return `true` if this ingredient is [IChemicalIngredientCreator#empty()], `false` otherwise
-    public final boolean isEmpty() {
-        return this == IngredientCreatorAccess.chemical().empty();
+    /// @implNote The default implementation just constructs a list of stacks from [#chemicals()]. This is generally suitable for chemical ingredients. If a more accurate
+    /// display is desired, ingredients can either override this method to provide a more customized display, or let data pack writers use
+    /// [CustomDisplayChemicalIngredient] to override the display of an ingredient.
+    /// @see Ingredient#display()
+    /// @see net.neoforged.neoforge.fluids.crafting.FluidIngredient#display()
+    public SlotDisplay display() {
+        return new SlotDisplay.Composite(chemicals()
+              .stream()
+              .<SlotDisplay>map(ChemicalSlotDisplay::new)
+              .toList());
     }
 
-    /// Checks if this ingredient matches no chemicals, i.e. if its list of [matching chemicals][#getChemicalHolders()] is empty.
+    /// Checks if this ingredient matches no chemicals, i.e. if its list of [matching chemicals][#chemicals()] is empty.
     ///
     /// Note that this method explicitly **resolves** the ingredient; if this is not desired, you will need to check for emptiness another way!
     ///
     /// @return `true` if this ingredient matches no chemicals, `false` otherwise
     ///
     /// @see #isEmpty()
-    public final boolean hasNoChemicals() {
-        return getChemicalHolders().isEmpty();
+    public final boolean isEmpty() {
+        return chemicals().isEmpty();
     }
 
     public abstract void logMissingTags();
 
     /// {@return The type of this chemical ingredient.}
     ///
-    /// The type **must** be registered to the corresponding type register.
+    /// The type **must** be registered to the [MekanismAPI#CHEMICAL_INGREDIENT_TYPES].
     ///
     /// @see MekanismAPI#CHEMICAL_INGREDIENT_TYPES
     public abstract MapCodec<? extends ChemicalIngredient> codec();

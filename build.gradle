@@ -473,7 +473,6 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://maven.squiddev.cc', 'cc.tweaked')
-    exclusiveRepo(handler, 'https://dogforce-games.com/maven/', 'dev.gigaherz.jsonthings')
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
     exclusiveRepo(handler, 'https://api.modrinth.com/maven', 'maven.modrinth')
@@ -559,8 +558,6 @@ dependencies {
     compileOnly(jeiTweaker)
     //TODO: Re-enable when it updates
     //localRuntime(jeiTweaker)
-
-    compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minor_minecraft_version}:${json_things_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
@@ -820,7 +817,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
                     'biomes-o-plenty', 'oh-the-biomes-weve-gone',
                     //Misc
                     'applied-energistics-2', 'ctm', 'curios', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-neoforge',
-                    'framedblocks', 'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
+                    'framedblocks', 'perviaminvenire', 'projecte', 'recipe-stages'
             )
         }
 

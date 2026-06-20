@@ -2,7 +2,7 @@
   "type": "mekanism:injecting",
   "chemical_input": {
     "amount": 3,
-    "tag": "mekanism:water_vapor"
+    "ingredient": "#mekanism:water_vapor"
   },
   "item_input": {
     "count": 1,

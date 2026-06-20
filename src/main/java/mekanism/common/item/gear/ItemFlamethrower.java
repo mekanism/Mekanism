@@ -115,7 +115,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
             onUseTickNoChemical(level, entity, stack, remainingDuration);
             return;
         }
-        ChemicalResource fuel = ChemicalUtils.getResource(level, getChemicalType());
+        ChemicalResource fuel = ChemicalUtils.getResource(level.registryAccess(), getChemicalType());
         if (fuel.isEmpty()) {//Fuel isn't registered, a datapack might have removed it?
             onUseTickNoChemical(level, entity, stack, remainingDuration);
             return;

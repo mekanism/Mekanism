@@ -2,7 +2,7 @@
   "type": "mekanism:dissolution",
   "chemical_input": {
     "amount": 2,
-    "chemical": "mekanism:sulfuric_acid"
+    "ingredient": "mekanism:sulfuric_acid"
   },
   "item_input": {
     "count": 1,

@@ -24,7 +24,7 @@ final class ChemicalCamoClientHandler extends ResourceCamoContentClientHandler<C
         ChemicalResource resource = chemicalCamoContent.getResource();
         //TODO - 26.2: Should we force translucency?
         Material.Baked stillMaterial = new Material.Baked(MekanismRenderer.getChemicalTexture(resource), false);
-        return new ResourceModelSpec(stillMaterial, null, resource.getChemicalTint() != CommonColors.WHITE, null);
+        return new ResourceModelSpec(stillMaterial, null, resource.value().tint() != CommonColors.WHITE, null);
     }
 
     @Override
@@ -39,16 +39,16 @@ final class ChemicalCamoClientHandler extends ResourceCamoContentClientHandler<C
 
     @Override
     public void collectTintValues(ChemicalCamoContent camo, BlockAndTintGetter level, BlockPos pos, IntList tintList) {
-        tintList.add(camo.getResource().getChemicalTint());
+        tintList.add(getParticleTintValue(camo));
     }
 
     @Override
     public void collectTintValues(ChemicalCamoContent camo, ItemStack stack, IntList tintList) {
-        tintList.add(camo.getResource().getChemicalTint());
+        tintList.add(getParticleTintValue(camo));
     }
 
     @Override
     public int getParticleTintValue(ChemicalCamoContent camo) {
-        return camo.getResource().getChemicalTint();
+        return camo.getResource().value().tint();
     }
 }

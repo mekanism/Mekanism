@@ -3,8 +3,6 @@ package mekanism.client.recipe_viewer.jei;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -16,7 +14,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -58,19 +55,16 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
                 desiredHeight = height;
             }
             //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
-            //TODO - 26.2: reimplement the directional tiling
             GuiUtils.drawTiledSprite(guiGraphics, 0, 0, height, width, desiredHeight, MekanismRenderer.getChemicalTexture(stack),
                   TEXTURE_SIZE, TEXTURE_SIZE, 100, GuiUtils.TilingDirection.UP_RIGHT, MekanismRenderer.color(stack));
-            //GuiUtils.drawTiledSpriteVanilla(guiGraphics, 0, 0, width, height, ARGB.color(255, stack.getChemicalTint()), desiredHeight, MekanismRenderer.getChemicalTexture(stack));
         }
     }
 
     @Override
     public List<Component> getTooltip(ChemicalStack stack, TooltipFlag tooltipFlag) {
         List<Component> tooltips = new ArrayList<>();
-        Holder<Chemical> chemical = stack.typeHolder();
-        if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-            tooltips.add(TextComponentUtil.build(chemical));
+        if (!stack.isEmpty()) {
+            tooltips.add(TextComponentUtil.build(stack));
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
                 tooltips.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.amount()), TextUtils.format(capacityMb)));
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {

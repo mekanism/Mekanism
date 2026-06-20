@@ -29,7 +29,7 @@ final class ChemicalCamoContent extends ResourceCamoContent<ChemicalResource, Ch
 
     ChemicalCamoContent(ChemicalResource chemicalType) {
         super(chemicalType);
-        this.mapColor = FluidDeferredRegister.getClosestColor(resource.getChemicalColorRepresentation());
+        this.mapColor = FluidDeferredRegister.getClosestColor(resource.value().colorRepresentation());
     }
 
     @Override
@@ -110,7 +110,7 @@ final class ChemicalCamoContent extends ResourceCamoContent<ChemicalResource, Ch
 
     @Override
     public Integer getBeaconColorMultiplier(LevelReader levelReader, BlockPos pos, BlockPos beaconPos) {
-        return getResource().getChemicalColorRepresentation();
+        return getResource().value().colorRepresentation();
     }
 
     @Override

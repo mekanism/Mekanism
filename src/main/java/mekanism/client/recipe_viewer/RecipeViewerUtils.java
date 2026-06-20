@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
-import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
@@ -35,6 +34,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -158,8 +158,9 @@ public class RecipeViewerUtils {
 
     public static List<ItemStack> getDisplayItems(ChemicalStackIngredient ingredient) {
         SequencedSet<Named<Item>> tags = new LinkedHashSet<>();
+        RegistryAccess registryAccess = getRegistryAccess();
         for (ChemicalStack chemicalStack : ingredient.getRepresentations(getSlotDisplayContext())) {
-            ChemicalSolidTag tag = chemicalStack.getData(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
+            ChemicalSolidTag tag = chemicalStack.getSolidTag(registryAccess);
             if (tag != null) {
                 tag.lookupTag().ifPresent(tags::add);
             }
@@ -189,5 +190,14 @@ public class RecipeViewerUtils {
             return Optional.empty();
         }
         return level.registryAccess().lookup(registryKey);
+    }
+
+    @Nullable
+    public static RegistryAccess getRegistryAccess() {
+        Level level = MekanismClient.tryGetClientWorld();
+        if (level == null) {
+            return null;
+        }
+        return level.registryAccess();
     }
 }

@@ -2,7 +2,7 @@
   "type": "mekanism:centrifuging",
   "input": {
     "amount": 10,
-    "chemical": "mekanism:nuclear_waste"
+    "ingredient": "mekanism:nuclear_waste"
   },
   "output": {
     "amount": 1,

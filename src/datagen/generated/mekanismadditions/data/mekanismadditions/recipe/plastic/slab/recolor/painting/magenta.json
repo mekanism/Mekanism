@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemical_input": {
     "amount": 64,
-    "chemical": "mekanism:magenta"
+    "ingredient": "mekanism:magenta"
   },
   "item_input": {
     "count": 1,
