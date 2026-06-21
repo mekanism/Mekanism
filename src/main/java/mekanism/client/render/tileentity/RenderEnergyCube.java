@@ -78,7 +78,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
               ModelEnergyCore.BATCHED_RENDER_TYPE,
               LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
-              null,//TODO - 26.2: Do we need to specify the texture or is doing so in the render type good enough?
+              null,
               state.coreTint,
               null//No break overlay for the core
         );
