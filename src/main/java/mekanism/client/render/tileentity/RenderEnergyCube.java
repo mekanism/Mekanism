@@ -75,9 +75,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
         nodeCollector.submitModelPart(
               this.energyCore,
               poseStack,
-              //TODO - 26.2: Figure out the render type
-              ModelEnergyCore.RENDER_TYPE,
-              //TODO - 26.2: Do we want to be using the state's light level instead?
+              ModelEnergyCore.BATCHED_RENDER_TYPE,
               LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
               null,//TODO - 26.2: Do we need to specify the texture or is doing so in the render type good enough?
