@@ -5,24 +5,26 @@ import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismPreconditions;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
-import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.neoforged.neoforge.transfer.resource.RegisteredResource;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.Nullable;
 
 //TODO - 26.2: Update docs on this
-public final class ChemicalResource implements RegisteredResource<Chemical>, ChemicalInstance {
+public class ChemicalResource implements RegisteredResource<Chemical>, ChemicalInstance {
 
     /// The empty resource instance of a [ChemicalResource]
-    public static final ChemicalResource EMPTY = new ChemicalResource(null);
+    @SuppressWarnings("StaticInitializerReferencesSubClass")
+    public static final ChemicalResource EMPTY = new EmptyChemicalResource();
 
     /// Codec for a chemical resource. Does **not** accept empty resources.
     public static final Codec<ChemicalResource> CODEC = CHEMICAL_HOLDER_CODEC.xmap(ChemicalResource::of, ChemicalResource::typeHolder);
@@ -81,7 +83,8 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, Che
     /// @return the chemical holder of this resource
     @Override
     public Holder<Chemical> typeHolder() {
-        return chemicalType == null ? getEmptyHolder() : chemicalType;
+        //Note: The one case it can be null is for the empty chemical resource, which overrides this method
+        return Objects.requireNonNull(chemicalType, "Chemical reference is null, this should not happen");
     }
 
     /// Checks if this resource is empty. The resource will be empty if the chemical is [MekanismAPI#EMPTY_CHEMICAL_KEY].
@@ -89,7 +92,7 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, Che
     /// @return if this resource is empty
     @Override
     public boolean isEmpty() {
-        //Note: We can skip checking if the
+        //Note: We can skip checking if the key matches as it isn't possible to create a resource where it is empty without it being null
         return chemicalType == null;
     }
 
@@ -136,16 +139,15 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, Che
     public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
-        } else if (obj == null || this.getClass() != obj.getClass()) {
-            return false;
+        } else if (obj instanceof ChemicalResource other) {
+            if (chemicalType == null) {
+                return other.chemicalType == null;
+            } else if (other.chemicalType == null) {
+                return false;
+            }
+            return is(other.chemicalType.value());
         }
-        ChemicalResource other = (ChemicalResource) obj;
-        if (chemicalType == null) {
-            return other.chemicalType == null;
-        } else if (other.chemicalType == null) {
-            return false;
-        }
-        return is(other.chemicalType.value());
+        return false;
     }
 
     @Override
@@ -170,15 +172,44 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, Che
         return ChemicalInstance.super.getData(registryAccess, type);
     }
 
-    private static Holder<Chemical> getEmptyHolder() {
-        //TODO - 26.2: Re-evaluate this method, and how it hard fails if it can't actually find it. Also see if we should be caching this in any way
-        RegistryAccess registryAccess;
-        if (FMLEnvironment.getDist().isClient()) {
-            ClientLevel level = Minecraft.getInstance().level;
-            registryAccess = Objects.requireNonNull(level).registryAccess();
-        } else {
-            registryAccess = Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer()).registryAccess();
+    /// **DO NOT DIRECTLY INTERACT WITH THIS CLASS**
+    @Internal
+    public static class EmptyChemicalResource extends ChemicalResource {
+
+        @Nullable
+        private Holder<Chemical> emptyHolder = null;
+
+        private EmptyChemicalResource() {
+            super(null);
         }
-        return registryAccess.getOrThrow(MekanismAPI.EMPTY_CHEMICAL_KEY);
+
+        /// @return the chemical holder of this resource
+        @Override
+        public Holder<Chemical> typeHolder() {
+            return Objects.requireNonNull(emptyHolder, "Chemical registry has not been initialized");
+        }
+
+        /// **DO NOT CALL THIS METHOD**
+        @Internal
+        public void updateEmptyHolder(Holder<Chemical> holder) {
+            emptyHolder = holder;
+        }
+
+        @SubscribeEvent
+        private void clientTagsLoaded(TagsUpdatedEvent.ClientPacketReceived event) {
+            emptyHolder = event.getRegistries().get(MekanismAPI.EMPTY_CHEMICAL_KEY).orElse(null);
+        }
+
+        @SubscribeEvent
+        private void serverStopped(ServerStoppedEvent event) {
+            //Note: This is likely redundant as either the server is stopped if it was dedicated, or this was caught by the client leaving the server event
+            // but there is no harm in setting it just in case
+            emptyHolder = null;
+        }
+
+        @SubscribeEvent
+        private void clientLeftServer(ClientPlayerNetworkEvent.LoggingOut event) {
+            emptyHolder = null;
+        }
     }
 }

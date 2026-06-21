@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.chemical.ChemicalResource.EmptyChemicalResource;
 import mekanism.api.chemical.ChemicalSerializationHelper;
 import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.api.text.EnumColorCollection;
@@ -84,10 +86,14 @@ public class MekanismChemicals {
 
     public static void createAndRegisterDatapack(IEventBus modEventBus) {
         CHEMICALS.createAndRegisterDatapack(modEventBus, ChemicalSerializationHelper.DIRECT_CODEC, ChemicalSerializationHelper.NETWORK_CODEC.codec(),
-              registryBuilder -> registryBuilder.defaultKey(MekanismAPI.EMPTY_CHEMICAL_KEY));
+              registryBuilder -> registryBuilder
+                    .defaultKey(MekanismAPI.EMPTY_CHEMICAL_KEY)
+                    .onBake(registry -> ((EmptyChemicalResource) ChemicalResource.EMPTY).updateEmptyHolder(registry.getOrThrow(MekanismAPI.EMPTY_CHEMICAL_KEY)))
+        );
     }
 
     private static Registry<Chemical> getChemicalRegistry(RegistryAccess registryAccess) {
+        //TODO - 26.2: Just do registryAccess#getOrThrow(key), as it can handle looking up the registry
         return registryAccess.lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME);
     }
 

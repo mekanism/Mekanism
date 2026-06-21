@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
@@ -176,6 +177,7 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(this::onTagsReload);
         NeoForge.EVENT_BUS.addListener(this::onDataMapsUpdated);
         NeoForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
+        NeoForge.EVENT_BUS.register(ChemicalResource.EMPTY);
         NeoForge.EVENT_BUS.register(IncompleteRecipeScanner.class);
         NeoForge.EVENT_BUS.addListener(OnDatapackSyncEvent.class, event -> {
             //Sync all Mekanism Recipes
