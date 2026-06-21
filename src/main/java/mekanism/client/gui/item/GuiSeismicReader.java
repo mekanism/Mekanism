@@ -11,11 +11,15 @@ import mekanism.client.gui.element.GuiArrowSelection;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,7 +34,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 
@@ -38,7 +42,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     private final List<BlockInfo<?>> blockList = new ArrayList<>();
     private final Reference2IntMap<Block> blockFrequencies = new Reference2IntOpenHashMap<>();
-    private final Reference2IntMap<FluidType> fluidFrequencies = new Reference2IntOpenHashMap<>();
+    private final Reference2IntMap<FluidResource> fluidFrequencies = new Reference2IntOpenHashMap<>();
     private final int minHeight;
     @Nullable
     private GuiScrollBar scrollBar;
@@ -69,14 +73,10 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 if (fluid == Fluids.EMPTY) {
                     blockList.add(new BlockInfo<>(state, state, null));
                 } else {
-                    FluidType fluidType = fluid.getFluidType();
+                    FluidResource fluidType = FluidResource.of(fluid);
                     blockList.add(new BlockInfo<>(state, fluidType, (graphics, f, x, y) -> {
-                        //TODO - 26.2: fluid rendering
-                        //IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(f);
-                        //MekanismRenderer.color(graphics, properties.getTintColor());
-                        //TextureAtlasSprite texture = MekanismRenderer.getSprite(properties.getStillTexture());
-                        //graphics.blit(x, y, 0, 16, 16, texture);
-                        //MekanismRenderer.resetColor(graphics);
+                        TextureAtlasSprite texture = MekanismRenderer.getFluidTexture(f, FluidTextureType.STILL);
+                        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, 16, 16, MekanismRenderer.color(f));
                     }));
                     fluidFrequencies.mergeInt(fluidType, 1, Integer::sum);
                 }
@@ -85,7 +85,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 FluidState fluid = state.getFluidState();
                 if (!fluid.isEmpty()) {//Take the fluid into account for frequency count
                     //TODO: Do we want to render the fact that it is fluid logged in some way?
-                    fluidFrequencies.mergeInt(fluid.getFluidType(), 1, Integer::sum);
+                    fluidFrequencies.mergeInt(FluidResource.of(fluid.getType()), 1, Integer::sum);
                 }
             }
         }
@@ -110,8 +110,8 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                     text.add(block.getName());
                     text.add(MekanismLang.ABUNDANCY.translate(blockFrequencies.getInt(block)));
                 }
-                if (blockInfo.type() instanceof FluidType fluidType) {//TODO: Improve this so it actually displays for fluid logged blocks
-                    text.add(fluidType.getDescription());
+                if (blockInfo.type() instanceof FluidResource fluidType) {//TODO: Improve this so it actually displays for fluid logged blocks
+                    text.add(fluidType.getFluidType().getDescription());
                     text.add(MekanismLang.ABUNDANCY.translate(fluidFrequencies.getInt(fluidType)));
                 }
                 return text;
