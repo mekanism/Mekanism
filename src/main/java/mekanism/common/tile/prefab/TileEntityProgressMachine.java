@@ -31,8 +31,8 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
         ticksRequired = this.baseTicksRequired;
     }
 
-    public double getScaledProgress() {
-        return getOperatingTicks() / (double) ticksRequired;
+    public float getScaledProgress() {
+        return getOperatingTicks() / (float) ticksRequired;
     }
 
     protected void setOperatingTicks(int ticks) {

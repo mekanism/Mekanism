@@ -102,8 +102,8 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         return upgradeOutputSlot;
     }
 
-    public double getScaledUpgradeProgress() {
-        return upgradeTicks / (double) UPGRADE_TICKS_REQUIRED;
+    public float getScaledUpgradeProgress() {
+        return upgradeTicks / (float) UPGRADE_TICKS_REQUIRED;
     }
 
     public int getUpgrades(Upgrade upgrade) {

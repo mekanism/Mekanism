@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.progress;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -9,8 +11,16 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
+import org.joml.Matrix3x2f;
+import org.joml.Matrix3x2fc;
 import org.jspecify.annotations.Nullable;
 
 public class GuiProgress extends GuiTexturedElement implements IRecipeViewerRecipeArea<GuiProgress>, ISupportsWarning<GuiProgress> {
@@ -51,7 +61,7 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
             Identifier resource = getResource();
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, relativeX, relativeY, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
-            double progress = warning ? 1 : getProgress();
+            float progress = warning ? 1 : getProgress();
             if (type.isVertical()) {
                 int displayInt = (int) (progress * height);
                 if (displayInt > 0) {
@@ -59,8 +69,8 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
                     if (type.isReverse()) {
                         innerOffsetY += type.getTextureHeight() - displayInt;
                     }
-                    blit(guiGraphics, resource, relativeX, relativeY + innerOffsetY, type.getOverlayX(warning), type.getOverlayY(warning) + innerOffsetY, width, displayInt,
-                          type.getTextureWidth(), type.getTextureHeight(), progress, warning);
+                    blit(guiGraphics, resource, relativeX, relativeY + innerOffsetY, type.getOverlayX(warning), type.getOverlayY(warning) + innerOffsetY,
+                          width, displayInt, progress, warning);
                 }
             } else {
                 int innerOffsetX = type == ProgressType.BAR ? 1 : 0;
@@ -69,14 +79,14 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
                     if (type.isReverse()) {
                         innerOffsetX += type.getTextureWidth() - displayInt;
                     }
-                    blit(guiGraphics, resource, relativeX + innerOffsetX, relativeY, type.getOverlayX(warning) + innerOffsetX, type.getOverlayY(warning), displayInt, height,
-                          type.getTextureWidth(), type.getTextureHeight(), progress, warning);
+                    blit(guiGraphics, resource, relativeX + innerOffsetX, relativeY, type.getOverlayX(warning) + innerOffsetX, type.getOverlayY(warning),
+                          displayInt, height, progress, warning);
                 }
             }
         }
     }
 
-    protected double getProgress() {
+    protected float getProgress() {
         //Ensure we clamp the progress to a single unit so that if we installed a bunch of speed upgrades
         // and are unable to continue progressing due to lack of energy that we don't show a bunch of arrows
         // that are stretched past their background area
@@ -101,101 +111,44 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
         return recipeCategories;
     }
 
-    private void blit(GuiGraphicsExtractor guiGraphics, Identifier resource, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight, double progress,
+    private void blit(GuiGraphicsExtractor guiGraphics, Identifier resource, int x, int y, float uOffset, float vOffset, int width, int height, float progress,
           boolean warning) {
         if (warning || colorDetails == null) {
             //If we are drawing a warning or don't have any color details just draw it normally
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, x, y, uOffset, vOffset, width, height, type.getTextureWidth(), type.getTextureHeight());
             return;
         }
-        //TODO - 26.2: rendering, possible PIP
-        /*int colorFrom = colorDetails.getColorFrom();
+        int colorFrom = colorDetails.getColorFrom();
         int colorTo = colorDetails.getColorTo();
         if (colorFrom == CommonColors.WHITE && colorTo == CommonColors.WHITE) {
             //No coloring needed, just use the normal blit method
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, x, y, uOffset, vOffset, width, height, type.getTextureWidth(), type.getTextureHeight());
             return;
         }
         //Merge of blit and fillGradient
-        int x2 = x + width;
-        int y2 = y + height;
-        Matrix4f matrix = guiGraphics.pose().last().pose();
-        float minU = uOffset / textureWidth;
-        float maxU = (uOffset + width) / textureWidth;
-        float minV = vOffset / textureHeight;
-        float maxV = (vOffset + height) / textureHeight;
-
-        float alphaFrom = ARGB.alphaFloat(colorFrom);
-        float redFrom = ARGB.redFloat(colorFrom);
-        float greenFrom = ARGB.greenFloat(colorFrom);
-        float blueFrom = ARGB.blueFloat(colorFrom);
-        float alphaTo = ARGB.alphaFloat(colorTo);
-        float redTo = ARGB.redFloat(colorTo);
-        float greenTo = ARGB.greenFloat(colorTo);
-        float blueTo = ARGB.blueFloat(colorTo);
-        //Adjust coloring to be based on how much of the progress bar is actually filled
-        // so that it properly has the correct colors for the start and the end
-        float percent = (float) progress;
-        alphaTo = alphaFrom + percent * (alphaTo - alphaFrom);
-        redTo = redFrom + percent * (redTo - redFrom);
-        greenTo = greenFrom + percent * (greenTo - greenFrom);
-        blueTo = blueFrom + percent * (blueTo - blueFrom);
+        int to, from;
         if (type.isReverse()) {
-            //If we are going in the reverse direction flip the color portions
-            // We have to do this here, instead of when we set colorFrom and colorTo
-            // to ensure that the percentage is properly taken into account
-            float alphaTemp = alphaTo;
-            float redTemp = redTo;
-            float greenTemp = greenTo;
-            float blueTemp = blueTo;
-            alphaTo = alphaFrom;
-            redTo = redFrom;
-            greenTo = greenFrom;
-            blueTo = blueFrom;
-            alphaFrom = alphaTemp;
-            redFrom = redTemp;
-            greenFrom = greenTemp;
-            blueFrom = blueTemp;
-        }
-        //Prep colored blit
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderTexture(0, resource);
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-
-        BufferBuilder builder = Tesselator.getInstance().begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-
-        if (type.isVertical()) {
-            builder.addVertex(matrix, x, y2, 0)
-                  .setUv(minU, maxV)
-                  .setColor(redTo, greenTo, blueTo, alphaTo);
-            builder.addVertex(matrix, x2, y2, 0)
-                  .setUv(maxU, maxV)
-                  .setColor(redTo, greenTo, blueTo, alphaTo);
-            builder.addVertex(matrix, x2, y, 0)
-                  .setUv(maxU, minV)
-                  .setColor(redFrom, greenFrom, blueFrom, alphaFrom);
-            builder.addVertex(matrix, x, y, 0)
-                  .setUv(minU, minV)
-                  .setColor(redFrom, greenFrom, blueFrom, alphaFrom);
+            from = colorTo;
+            to = ARGB.srgbLerp(progress, colorTo, colorFrom);
         } else {
-            builder.addVertex(matrix, x, y2, 0)
-                  .setUv(minU, maxV)
-                  .setColor(redFrom, greenFrom, blueFrom, alphaFrom);
-            builder.addVertex(matrix, x2, y2, 0)
-                  .setUv(maxU, maxV)
-                  .setColor(redTo, greenTo, blueTo, alphaTo);
-            builder.addVertex(matrix, x2, y, 0)
-                  .setUv(maxU, minV)
-                  .setColor(redTo, greenTo, blueTo, alphaTo);
-            builder.addVertex(matrix, x, y, 0)
-                  .setUv(minU, minV)
-                  .setColor(redFrom, greenFrom, blueFrom, alphaFrom);
+            from = colorFrom;
+            to = ARGB.srgbLerp(progress, colorFrom, colorTo);
         }
 
-        BufferUploader.drawWithShader(builder.buildOrThrow());
-        //Reset blit and fill gradient states
-        RenderSystem.disableBlend();*/
+        AbstractTexture texture = minecraft.getTextureManager().getTexture(resource);
+        ScreenRectangle scissorArea = guiGraphics.peekScissorStack();
+        Matrix3x2f pose = new Matrix3x2f(guiGraphics.pose());
+        ScreenRectangle bounds = new ScreenRectangle(x, y, width, height).transformMaxBounds(pose);
+
+        float u0 = uOffset / type.getTextureWidth();
+        float u1 = (uOffset + width) / type.getTextureWidth();
+        float v0 = vOffset / type.getTextureHeight();
+        float v1 = (vOffset + height) / type.getTextureHeight();
+
+        guiGraphics.submitGuiElementRenderState(new ProgressRenderState(x, y, x + width, y + height, u0, u1, v0, v1, from, to, type.isVertical(),
+              scissorArea, scissorArea == null ? bounds : scissorArea.intersection(bounds), TextureSetup.singleTexture(texture.getTextureView(), texture.getSampler()),
+              pose));
+
     }
 
     public interface ColorDetails {
@@ -203,5 +156,23 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
         int getColorFrom();
 
         int getColorTo();
+    }
+
+    private record ProgressRenderState(int x0, int y0, int x1, int y1, float u0, float u1, float v0, float v1, int colorFrom, int colorTo, boolean vertical,
+                                       @Nullable ScreenRectangle scissorArea, @Nullable ScreenRectangle bounds, TextureSetup textureSetup, Matrix3x2fc pose)
+          implements GuiElementRenderState {
+
+        @Override
+        public void buildVertices(VertexConsumer vertexConsumer) {
+            vertexConsumer.addVertexWith2DPose(pose, x0, y1).setUv(u0, v1).setColor(vertical ? colorTo : colorFrom);
+            vertexConsumer.addVertexWith2DPose(pose, x1, y1).setUv(u1, v1).setColor(colorTo);
+            vertexConsumer.addVertexWith2DPose(pose, x1, y0).setUv(u1, v0).setColor(vertical ? colorFrom : colorTo);
+            vertexConsumer.addVertexWith2DPose(pose, x0, y0).setUv(u0, v0).setColor(colorFrom);
+        }
+
+        @Override
+        public RenderPipeline pipeline() {
+            return RenderPipelines.GUI_TEXTURED;
+        }
     }
 }

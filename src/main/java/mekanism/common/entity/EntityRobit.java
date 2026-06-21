@@ -444,8 +444,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         level().addFreshEntity(entityItem);
     }
 
-    public double getScaledProgress() {
-        return getOperatingTicks() / (double) ticksRequired;
+    public float getScaledProgress() {
+        return getOperatingTicks() / (float) ticksRequired;
     }
 
     public int getOperatingTicks() {

@@ -339,8 +339,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         return getProgress(cacheIndex);
     }
 
-    public double getScaledProgress(int i, int process) {
-        return (double) getProgress(process) * i / ticksRequired;
+    public float getScaledProgress(int i, int process) {
+        return (float) getProgress(process) * i / ticksRequired;
     }
 
     public void toggleSorting() {

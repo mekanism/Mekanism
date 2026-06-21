@@ -156,8 +156,8 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         }
     }
 
-    public double getScaledProgress() {
-        return (double) operatingTicks / ticksRequired;
+    public float getScaledProgress() {
+        return (float) operatingTicks / ticksRequired;
     }
 
     @Override

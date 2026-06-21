@@ -358,7 +358,8 @@ public class GuiRadialSelector extends Screen {
     private void drawTorus(GuiGraphicsExtractor guiGraphics, float centerX, float centerY, float startAngle, float sizeAngle, float inner, float outer, float red, float green, float blue, float alpha) {
         ScreenRectangle scissorArea = guiGraphics.peekScissorStack();
         ScreenRectangle bounds = new ScreenRectangle((int) (centerX - outer), (int) (centerY - outer), (int) outer * 2, (int) outer * 2);
-        guiGraphics.submitGuiElementRenderState(new TorusRenderState(centerX, centerY, startAngle, sizeAngle, inner, outer, red, green, blue, alpha, scissorArea, bounds));
+        guiGraphics.submitGuiElementRenderState(new TorusRenderState(centerX, centerY, startAngle, sizeAngle, inner, outer, red, green, blue, alpha, scissorArea,
+              scissorArea == null ? bounds : scissorArea.intersection(bounds)));
     }
 
     private record TorusRenderState(float centerX, float centerY, float startAngle, float sizeAngle, float inner, float outer, float red, float green, float blue,

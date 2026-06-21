@@ -33,8 +33,8 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
         )));
         addRenderableWidget(new GuiFlame(new IProgressInfoHandler() {
             @Override
-            public double getProgress() {
-                return tile.burnTime / (double) tile.maxBurnTime;
+            public float getProgress() {
+                return tile.burnTime / (float) tile.maxBurnTime;
             }
 
             @Override

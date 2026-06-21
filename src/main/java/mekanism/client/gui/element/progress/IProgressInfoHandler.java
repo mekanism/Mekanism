@@ -2,7 +2,7 @@ package mekanism.client.gui.element.progress;
 
 public interface IProgressInfoHandler {
 
-    double getProgress();
+    float getProgress();
 
     default boolean isActive() {
         return true;
@@ -13,7 +13,7 @@ public interface IProgressInfoHandler {
         boolean fillProgressBar();
 
         @Override
-        default double getProgress() {
+        default float getProgress() {
             return fillProgressBar() ? 1 : 0;
         }
     }

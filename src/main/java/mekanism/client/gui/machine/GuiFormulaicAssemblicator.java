@@ -51,7 +51,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         });
         //Overwrite the output slots with a "combined" slot
         addRenderableWidget(new GuiSlot(SlotType.OUTPUT_LARGE, this, 115, 16));
-        addRenderableWidget(new GuiProgress(() -> tile.getOperatingTicks() / (double) tile.getTicksRequired(), ProgressType.TALL_RIGHT, this, 86, 43).recipeViewerCrafting());
+        addRenderableWidget(new GuiProgress(() -> tile.getOperatingTicks() / (float) tile.getTicksRequired(), ProgressType.TALL_RIGHT, this, 86, 43).recipeViewerCrafting());
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::usedEnergy));
         addRenderableWidget(new MekanismImageButton(this, 7, 45, 14, getButtonLocation("encode_formula"),
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ENCODE_FORMULA, ((GuiFormulaicAssemblicator) element.gui()).tile))))

@@ -233,7 +233,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         if (timer == null) {
             timer = guiHelper.createTickTimer(SharedConstants.TICKS_PER_SECOND, SharedConstants.TICKS_PER_SECOND, false);
         }
-        return () -> timer.getValue() / (double) SharedConstants.TICKS_PER_SECOND;
+        return () -> timer.getValue() / (float) SharedConstants.TICKS_PER_SECOND;
     }
 
     protected IBarInfoHandler getBarProgressTimer() {
