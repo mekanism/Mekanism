@@ -9,8 +9,9 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.util.Unit;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
 public class RenderScubaTank implements NoDataSpecialModelRenderer {
 
@@ -26,14 +27,14 @@ public class RenderScubaTank implements NoDataSpecialModelRenderer {
         poseStack.translate(0.5, 0.5, 0.5);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180));
         //TODO - 26.2: Figure out foil
-        this.scubaTank.collect(poseStack, nodeCollector, lightCoords, overlayCoords);
+        nodeCollector.submitModel(this.scubaTank, Unit.INSTANCE, poseStack, scubaTank.RENDER_TYPE, lightCoords, overlayCoords, 0, null);
         poseStack.popPose();
     }
 
     @Override
     public void getExtents(Consumer<Vector3fc> output) {
         PoseStack poseStack = new PoseStack();
-        this.scubaTank.setupAnim();
+        this.scubaTank.setupAnim(Unit.INSTANCE);
         this.scubaTank.root().getExtentsForGui(poseStack, output);
     }
 

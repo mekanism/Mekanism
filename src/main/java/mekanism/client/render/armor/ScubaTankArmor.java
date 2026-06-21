@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
@@ -42,7 +43,8 @@ public class ScubaTankArmor implements ICustomArmor, ResourceManagerReloadListen
         }
         baseModel.body.translateAndRotate(poseStack);
         poseStack.translate(0, 0, 0.06);
-        this.model.collect(poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY);
+        //TODO - 26.2 foil rendering? Not actually enchantable by default
+        nodeCollector.submitModel(this.model, Unit.INSTANCE, poseStack, model.RENDER_TYPE, lightCoords, OverlayTexture.NO_OVERLAY, 0, null);
         poseStack.popPose();
     }
 }
