@@ -1,0 +1,7 @@
+# Made in Blockbench 5.1.4
+newmtl m_452e9b56-79a2-614e-e654-71443e238d24
+map_Kd #atomic_disassembler
+newmtl glow
+map_Kd #atomic_disassembler
+Ka 1 1 1
+newmtl none

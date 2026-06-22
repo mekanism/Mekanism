@@ -1,9 +1,6 @@
 {
   "model": {
-    "type": "minecraft:special",
-    "base": "mekanism:item/atomic_disassembler",
-    "model": {
-      "type": "mekanism:atomic_disassembler"
-    }
+    "type": "minecraft:model",
+    "model": "mekanism:item/atomic_disassembler"
   }
 }

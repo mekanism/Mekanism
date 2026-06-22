@@ -1,47 +1,42 @@
 {
-    "textures": {
-        "particle": "mekanism:block/block_steel"
+  "loader": "neoforge:obj",
+  "model": "mekanism:models/entity/atomic_disassembler.obj",
+  "flip_v": true,
+  "emissiveAmbient": true,
+  "textures": {
+    "particle": "mekanism:block/block_steel",
+    "atomic_disassembler": "mekanism:item/atomic_disassembler"
+  },
+  "display": {
+    "thirdperson_lefthand": {
+      "translation": [ -0.5, -5, 8.1 ]
     },
-    "display": {
-        "gui": {
-            "rotation": [ 90, 45, 270 ],
-            "translation": [ 2, 1.5, 0],
-            "scale":[ 0.525, 0.525, 0.525 ]
-        },
-        "ground": {
-            "rotation": [ 0, 0, 0 ],
-            "translation": [ 0, 6, 0],
-            "scale":[ 0.35, 0.35, 0.35 ]
-        },
-        "thirdperson_righthand": {
-            "rotation": [ 0, 0, 180 ],
-            "translation": [ 0.5, 6.5, 4],
-            "scale": [ -1.05, -1.05, 1.05 ]
-        },
-        "firstperson_righthand": {
-            "rotation": [ 0, 10, 0 ],
-            "translation": [ 0, 2.75, 2.5],
-            "scale": [ 0.56, 0.56, 0.56 ]
-        },
-        "thirdperson_lefthand": {
-            "rotation": [ 0, 0, 180 ],
-            "translation": [ -0.5, 6.5, 4],
-            "scale": [ -1.05, -1.05, 1.05 ]
-        },
-        "firstperson_lefthand": {
-            "rotation": [ 0, 10, 0 ],
-            "translation": [ -0.5, 2.75, 2.5],
-            "scale": [ 0.56, 0.56, 0.56 ]
-        },
-        "head": {
-            "rotation": [ 90, 160, 75 ],
-            "translation": [ -5.5, 13, 0],
-            "scale":[ 1, 1, 1]
-        },
-        "fixed": {
-            "rotation": [ 90, 135, 270 ],
-            "translation": [ -0.75, 3, -1],
-            "scale":[ 0.725, 0.725, 0.725 ]
-        }
+    "thirdperson_righthand": {
+      "translation": [ 0.5, -4, 8.4 ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [ 12, 6, 4 ],
+      "translation": [ 3, -4, 4 ],
+      "scale": [ 0.6, 0.6, 0.6 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 8, 10, 0 ],
+      "translation": [ 0, -4, 4 ],
+      "scale": [ 0.56, 0.56, 0.56 ]
+    },
+    "gui": {
+      "rotation": [ 280, 142, 90 ],
+      "translation": [ -0.3, -4.4, 0 ],
+      "scale": [ 0.5, 0.5, 0.5 ]
+    },
+    "ground": {
+      "translation": [ 0.1, 0, 3.5 ],
+      "scale": [ 0.5, 0.5, 0.5 ]
+    },
+    "fixed": {
+      "rotation": [ 270, 138, 270 ],
+      "translation": [ 7, 0, 0 ],
+      "scale": [ 0.7, 0.7, 0.7 ]
     }
+  }
 }

@@ -22,7 +22,6 @@ import mekanism.client.model.props.CraftingFormulaStatus;
 import mekanism.client.render.item.RenderRobitItem;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
-import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.client.render.item.gear.RenderJetpack;
@@ -190,7 +189,8 @@ public class MekanismModelProvider extends BaseModelProvider {
         simpleISTER(itemModels, MekanismItems.ARMORED_FREE_RUNNERS, RenderFreeRunners.ARMORED);
         simpleISTER(itemModels, MekanismItems.JETPACK, RenderJetpack.REGULAR);
         simpleISTER(itemModels, MekanismItems.ARMORED_JETPACK, RenderJetpack.ARMORED);
-        simpleISTER(itemModels, MekanismItems.ATOMIC_DISASSEMBLER, RenderAtomicDisassembler.Unbaked.INSTANCE);
+        //simpleISTER(itemModels, MekanismItems.ATOMIC_DISASSEMBLER, RenderAtomicDisassembler.Unbaked.INSTANCE);
+        itemModels.declareCustomModelItem(MekanismItems.ATOMIC_DISASSEMBLER.asItem());
         simpleISTER(itemModels, MekanismItems.FLAMETHROWER, RenderFlameThrower.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismItems.SCUBA_MASK, RenderScubaMask.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismItems.SCUBA_TANK, RenderScubaTank.Unbaked.INSTANCE);
