@@ -7,33 +7,29 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class GuiEntityPreview extends GuiElement {
 
-    private static final Vector3f PREVIEW_TRANSLATION = new Vector3f();
+    private static final Vector3f PREVIEW_TRANSLATION = new Vector3f(0, 1, 0);
     private static final Quaternionf PREVIEW_ANGLE = new Quaternionf().rotateZ(Mth.PI);
 
-    private final Supplier<LivingEntity> preview;
+    private final Supplier<? extends LivingEntityRenderState> preview;
     private final int scale;
-    private final float xOffset;
-    private final float yOffset;
 
     private float rotation;
 
-    public GuiEntityPreview(IGuiWrapper gui, int x, int y, int size, Supplier<LivingEntity> preview) {
+    public GuiEntityPreview(IGuiWrapper gui, int x, int y, int size, Supplier<? extends LivingEntityRenderState> preview) {
         this(gui, x, y, size, size, preview);
     }
 
-    public GuiEntityPreview(IGuiWrapper gui, int x, int y, int width, int height, Supplier<LivingEntity> preview) {
+    public GuiEntityPreview(IGuiWrapper gui, int x, int y, int width, int height, Supplier<? extends LivingEntityRenderState> preview) {
         super(gui, x, y, width, height);
         int size = Math.min(this.width, this.height);
         this.scale = size / 2;
-        this.xOffset = this.width / 2F;
-        this.yOffset = this.height - 2 - (this.height - size) / 2F;
         this.preview = preview;
     }
 
@@ -46,17 +42,12 @@ public class GuiEntityPreview extends GuiElement {
     @Override
     public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        LivingEntity preview = this.preview.get();
-        float oldBodyRot = preview.yBodyRot;
-        float oldYRot = preview.getYRot();
-        //Apply our rotation to the entity
-        preview.yBodyRot = 180.0F + rotation * 20.0F;
-        preview.setYRot(180.0F + rotation * 40.0F);
-        //TODO - 26.2: InventoryScreen.renderEntityInInventory(guiGraphics, relativeX + xOffset, relativeY + yOffset, scale, PREVIEW_TRANSLATION, PREVIEW_ANGLE, null, preview);
-        //Reset the values to what they were before we applied the rotation, even though our one use case doesn't actually care
-        // as we only use the preview entity for rendering, so the correct rotation gets set every time before it is rendered
-        preview.yBodyRot = oldBodyRot;
-        preview.setYRot(oldYRot);
+        LivingEntityRenderState preview = this.preview.get();
+        //Apply our rotation to the render state (copied from InventoryScreen#renderEntityInInventory)
+        preview.bodyRot = Mth.wrapDegrees(180.0F + rotation * 20.0F);
+        preview.yRot = Mth.wrapDegrees(rotation * 20.0F);
+        preview.xRot = 0;
+        guiGraphics.entity(preview, scale, PREVIEW_TRANSLATION, PREVIEW_ANGLE, null, getX(), getY(), getRight(), getBottom());
     }
 
     @Override

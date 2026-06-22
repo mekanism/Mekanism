@@ -15,7 +15,6 @@ import mekanism.common.lib.Color;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
@@ -87,8 +86,6 @@ class ColorSelection extends MiniElement<Integer> {
                 ItemResource containerType = parent.getContainerType();
                 Equippable equippable = containerType.get(DataComponents.EQUIPPABLE);
                 if (StackUtils.isRenderableArmor(equippable)) {
-                    //Ensure the preview has been initialized
-                    armorPreview.get();
                     EquipmentSlot slot = equippable.slot();
                     ItemStack stack = containerType.toStack();
                     //Replace the current preview with our copy
@@ -98,7 +95,7 @@ class ColorSelection extends MiniElement<Integer> {
                         IModule<ModuleColorModulationUnit> module = IModuleHelper.INSTANCE.getModule(itemAccess.getResource(), MekanismModules.COLOR_MODULATION_UNIT);
                         if (module != null) {//Note: Should always be present
                             //Note: We can use the source data to ensure we have the correct config option, as with does not mutate it
-                            module.replaceModuleConfig(Minecraft.getInstance().level.registryAccess(), itemAccess, null, data.with(color));
+                            module.replaceModuleConfig(registryAccess(), itemAccess, null, data.with(color));
                         }
                     };
                     previewReset = () -> armorPreview.resetToDefault(slot);

@@ -2,6 +2,7 @@ package mekanism.client.gui.element.custom.module;
 
 import mekanism.api.gear.config.ModuleConfig;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 
 abstract class MiniElement<TYPE> {
@@ -60,5 +61,9 @@ abstract class MiniElement<TYPE> {
         // We sort of do this now, but options that have side effects don't necessarily get properly updated
         this.data = data.with(value);
         parent.saveCallback.accept(data);
+    }
+
+    protected RegistryAccess registryAccess() {
+        return parent.gui().registryAccess();
     }
 }

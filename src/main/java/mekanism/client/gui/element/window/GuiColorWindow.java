@@ -32,11 +32,11 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
-import net.minecraft.world.entity.LivingEntity;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fc;
 import org.jspecify.annotations.Nullable;
@@ -63,7 +63,7 @@ public class GuiColorWindow extends GuiWindow {
         this(gui, x, y, handlesAlpha, initialColor, callback, null, null, null);
     }
 
-    public GuiColorWindow(IGuiWrapper gui, int x, int y, boolean handlesAlpha, Color initialColor, IntConsumer callback, @Nullable Supplier<LivingEntity> armorPreview,
+    public GuiColorWindow(IGuiWrapper gui, int x, int y, boolean handlesAlpha, Color initialColor, IntConsumer callback, @Nullable Supplier<? extends LivingEntityRenderState> armorPreview,
           @Nullable IntConsumer updatePreviewColor, @Nullable Runnable previewReset) {
         super(gui, x, y, (handlesAlpha ? 184 : 158) + (armorPreview == null ? 0 : 83), handlesAlpha ? 152 : 140, WindowType.COLOR);
         interactionStrategy = InteractionStrategy.NONE;
