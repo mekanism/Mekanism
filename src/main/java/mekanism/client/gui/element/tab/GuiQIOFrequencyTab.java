@@ -4,6 +4,7 @@ import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.button.PacketItemButtonPress;
@@ -11,8 +12,6 @@ import mekanism.common.network.to_server.button.PacketItemButtonPress.ClickedIte
 import mekanism.common.network.to_server.button.PacketTileButtonPress;
 import mekanism.common.network.to_server.button.PacketTileButtonPress.ClickedTileButton;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.resources.Identifier;
@@ -21,7 +20,7 @@ import org.jspecify.annotations.Nullable;
 
 public abstract class GuiQIOFrequencyTab<DATA_SOURCE extends @Nullable Object> extends GuiInsetElement<DATA_SOURCE> {
 
-    private static final Identifier FREQUENCY = MekanismUtils.getResource(ResourceType.GUI, "frequency.png");
+    private static final Identifier FREQUENCY = Mekanism.rl("button/frequency");
 
     protected GuiQIOFrequencyTab(IGuiWrapper gui, DATA_SOURCE dataSource) {
         super(FREQUENCY, gui, dataSource, -26, 6, 26, 18, true);

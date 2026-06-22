@@ -6,13 +6,12 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.GuiTransporterConfig;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class GuiTransporterConfigTab<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindowCreatorTab<TILE, GuiTransporterConfigTab<TILE>> {
@@ -20,7 +19,7 @@ public class GuiTransporterConfigTab<TILE extends TileEntityMekanism & ISideConf
     private static final SelectedWindowData WINDOW_DATA = new SelectedWindowData(WindowType.TRANSPORTER_CONFIG);
 
     public GuiTransporterConfigTab(IGuiWrapper gui, TILE tile, Supplier<GuiTransporterConfigTab<TILE>> elementSupplier) {
-        super(MekanismUtils.getResource(ResourceType.GUI, "transporter_config.png"), gui, tile, -26, 34, 26, 18, true, elementSupplier);
+        super(Mekanism.rl("button/transporter_config"), gui, tile, -26, 34, 26, 18, true, elementSupplier);
         setTooltip(MekanismLang.TRANSPORTER_CONFIG);
     }
 

@@ -10,12 +10,9 @@ import mekanism.client.gui.element.window.GuiSideConfiguration;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
 public class GuiConfigTypeTab extends GuiInsetElement<@Nullable Void> {
@@ -25,13 +22,9 @@ public class GuiConfigTypeTab extends GuiInsetElement<@Nullable Void> {
     private final GuiSideConfiguration<?> config;
 
     public GuiConfigTypeTab(IGuiWrapper gui, TransmissionType type, int x, int y, GuiSideConfiguration<?> config, boolean left) {
-        super(getResource(type), gui, null, x, y, 26, 18, left);
+        super(type.guiTexture(), gui, null, x, y, 26, 18, left);
         this.config = config;
         transmission = type;
-    }
-
-    private static Identifier getResource(TransmissionType t) {
-        return MekanismUtils.getResource(ResourceType.GUI, t.getTransmission() + ".png");
     }
 
     public TransmissionType getTransmissionType() {

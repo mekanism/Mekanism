@@ -8,14 +8,13 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -24,9 +23,9 @@ import net.minecraft.resources.Identifier;
 
 public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidContainerManager> extends GuiInsetElement<TILE> {
 
-    private static final Identifier BOTH = MekanismUtils.getResource(ResourceType.GUI, "container_edit_mode_both.png");
-    private static final Identifier FILL = MekanismUtils.getResource(ResourceType.GUI, "container_edit_mode_fill.png");
-    private static final Identifier EMPTY = MekanismUtils.getResource(ResourceType.GUI, "container_edit_mode_empty.png");
+    private static final Identifier BOTH = Mekanism.rl("container_edit_mode/both");
+    private static final Identifier FILL = Mekanism.rl("container_edit_mode/fill");
+    private static final Identifier EMPTY = Mekanism.rl("container_edit_mode/empty");
 
     private final Map<ContainerEditMode, Tooltip> tooltips = new EnumMap<>(ContainerEditMode.class);
 

@@ -5,11 +5,13 @@ import io.netty.buffer.ByteBuf;
 import java.util.function.IntFunction;
 import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 
@@ -40,6 +42,10 @@ public enum TransmissionType implements IHasEnumNameTranslationKey, StringRepres
 
     public String getTransmission() {
         return transmission;
+    }
+
+    public Identifier guiTexture() {
+        return Mekanism.rl("transmission/" + transmission);
     }
 
     public ILangEntry getLangEntry() {

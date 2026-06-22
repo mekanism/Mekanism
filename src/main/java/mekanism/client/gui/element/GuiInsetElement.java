@@ -1,12 +1,8 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.BlendFactor;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.Mekanism;
+import mekanism.client.render.MekanismRenderPipelines;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -15,11 +11,6 @@ import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
 public abstract class GuiInsetElement<DATA_SOURCE extends @Nullable Object> extends GuiSideHolder implements ISupportsWarning<GuiInsetElement<DATA_SOURCE>> {
-
-    private static final RenderPipeline WARNING_PIPELINE = RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET)
-          .withLocation(Mekanism.rl("pipeline/gui_textured_dst_color"))
-          .withColorTargetState(new ColorTargetState(new BlendFunction(BlendFactor.DST_COLOR, BlendFactor.ZERO)))
-          .build();
 
     protected final int border;
     protected final int innerWidth;
@@ -84,7 +75,7 @@ public abstract class GuiInsetElement<DATA_SOURCE extends @Nullable Object> exte
         if (warning) {
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
             //Draw the warning overlay (multiply-blended)
-            guiGraphics.blit(WARNING_PIPELINE, WARNING_TEXTURE, relativeX, relativeY, 0, 0, width, height, 256, 256);
+            guiGraphics.blit(MekanismRenderPipelines.WARNING_PIPELINE, WARNING_TEXTURE, relativeX, relativeY, 0, 0, width, height, 256, 256);
         } else {
             super.draw(guiGraphics);
         }
@@ -98,10 +89,6 @@ public abstract class GuiInsetElement<DATA_SOURCE extends @Nullable Object> exte
             //Validate the background didn't get set to none by a child
             drawButton(guiGraphics, mouseX, mouseY);
         }
-        drawBackgroundOverlay(guiGraphics);
-    }
-
-    protected void drawBackgroundOverlay(GuiGraphicsExtractor guiGraphics) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getOverlay(), getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getOverlay(), getButtonX(), getButtonY(), innerWidth, innerHeight);
     }
 }

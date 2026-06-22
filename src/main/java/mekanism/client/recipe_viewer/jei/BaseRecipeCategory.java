@@ -22,6 +22,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.ITickTimer;
@@ -68,7 +69,8 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
             if (icon == null) {
                 throw new IllegalStateException("Expected recipe type to have either an icon stack or an icon location");
             }
-            return helper.drawableBuilder(icon, 0, 0, 18, 18).setTextureSize(18, 18).build();
+            //TODO: Calculate the texture size from the gui sprite
+            return helper.drawableBuilder(MekanismUtils.toLegacyResource(icon), 0, 0, 18, 18).setTextureSize(18, 18).build();
         }
         return helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, stack);
     }

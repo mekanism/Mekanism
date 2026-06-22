@@ -21,6 +21,7 @@ import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.element.tab.GuiSecurityTab.SecurityInfoProvider;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityUtils;
@@ -32,8 +33,6 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.network.to_server.PacketItemGuiInteract;
 import mekanism.common.network.to_server.PacketItemGuiInteract.ItemGuiInteraction;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
@@ -48,9 +47,9 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
 
-    private static final Identifier PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
-    private static final Identifier PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
-    private static final Identifier PROTECTED = MekanismUtils.getResource(ResourceType.GUI, "protected.png");
+    private static final Identifier PUBLIC = Mekanism.rl("security/public");
+    private static final Identifier PRIVATE = Mekanism.rl("security/private");
+    private static final Identifier PROTECTED = Mekanism.rl("security/protected");
 
     @Nullable
     private final InteractionHand currentHand;

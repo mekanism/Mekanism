@@ -8,13 +8,12 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -23,9 +22,10 @@ import net.minecraft.resources.Identifier;
 
 public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
 
-    private static final Identifier DISABLED = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_disabled.png");
-    private static final Identifier HIGH = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_high.png");
-    private static final Identifier LOW = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_low.png");
+    private static final Identifier REDSTONE_PULSE_ID = Mekanism.rl("redstone_control/pulse");
+    private static final Identifier DISABLED = Mekanism.rl("redstone_control/disabled");
+    private static final Identifier HIGH = Mekanism.rl("redstone_control/high");
+    private static final Identifier LOW = Mekanism.rl("redstone_control/low");
 
     private final Map<RedstoneControl, Tooltip> tooltips = new EnumMap<>(RedstoneControl.class);
 
@@ -54,6 +54,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
         return switch (dataSource.getControlType()) {
             case HIGH -> HIGH;
             case LOW -> LOW;
+            case PULSE -> REDSTONE_PULSE_ID;
             default -> super.getOverlay();
         };
     }
@@ -61,15 +62,5 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     @Override
     protected int getTabColor(GuiGraphicsExtractor guiGraphics) {
         return MekanismRenderer.color(SpecialColors.TAB_REDSTONE_CONTROL);
-    }
-
-    @Override
-    protected void drawBackgroundOverlay(GuiGraphicsExtractor guiGraphics) {
-        if (dataSource.getControlType() == RedstoneControl.PULSE) {
-            //TODO - 26.2: figure out the rest of the params
-            //guiGraphics.blit(RenderPipelines.GUI, MekanismRenderer.REDSTONE_PULSE_ID, getButtonX() + 1, getButtonY() + 1, 0, innerWidth - 2, innerHeight - 2);
-        } else {
-            super.drawBackgroundOverlay(guiGraphics);
-        }
     }
 }

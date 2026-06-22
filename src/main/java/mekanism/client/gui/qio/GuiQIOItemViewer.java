@@ -22,6 +22,7 @@ import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.GuiCraftingWindow;
 import mekanism.client.gui.element.window.GuiWindow;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.SearchQueryParser.QueryType;
@@ -112,10 +113,10 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         addRenderableWidget(new GuiDigitalIconToggle<>(this, imageWidth - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, menu::getSortDirection, menu::setSortDirection));
         addRenderableWidget(new GuiTargetDirectionTab(this, menu, 60));
-        addRenderableWidget(new GuiToggleClientConfigTab(this, imageHeight - 35, true, getButtonLocation("recipe_viewer_inventory"), getButtonLocation("recipe_viewer_frequency"),
+        addRenderableWidget(new GuiToggleClientConfigTab(this, imageHeight - 35, true, Mekanism.rl("button/recipe_viewer_inventory"), Mekanism.rl("button/recipe_viewer_frequency"),
               //Note: This is backwards as it describes what the button will be doing
               MekanismConfig.client.qioRejectsToInventory, MekanismLang.QIO_REJECTS_TO_INVENTORY.translate(), MekanismLang.QIO_REJECTS_TO_FREQUENCY.translate()));
-        addRenderableWidget(new GuiToggleClientConfigTab(this, 6, false, getButtonLocation("searchbar_autofocus_off"), getButtonLocation("searchbar_autofocus_on"),
+        addRenderableWidget(new GuiToggleClientConfigTab(this, 6, false, Mekanism.rl("button/searchbar_autofocus_off"), Mekanism.rl("button/searchbar_autofocus_on"),
               //Note: This is backwards as it describes what the button will be doing
               MekanismConfig.client.qioAutoFocusSearchBar, MekanismLang.QIO_SEARCH_MANUAL_FOCUS.translate(), MekanismLang.QIO_SEARCH_AUTO_FOCUS.translate()));
         addRenderableWidget(new GuiResizeControls(this, (minecraft.getWindow().getGuiScaledHeight() / 2) - topPos));

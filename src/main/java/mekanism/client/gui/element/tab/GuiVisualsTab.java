@@ -6,10 +6,9 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.tile.interfaces.IHasVisualization;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
@@ -32,7 +31,7 @@ public class GuiVisualsTab extends GuiInsetElement<IHasVisualization> {
     private static final Tooltip VISUALS_OFF_TOO_BIG = TooltipUtils.create(OFF, TOO_BIG);
 
     public GuiVisualsTab(IGuiWrapper gui, IHasVisualization hasVisualization) {
-        super(MekanismUtils.getResource(ResourceType.GUI, "visuals.png"), gui, hasVisualization, -26, 6, 26, 18, true);
+        super(Mekanism.rl("button/visuals"), gui, hasVisualization, -26, 6, 26, 18, true);
     }
 
     @Override

@@ -12,13 +12,12 @@ import mekanism.client.gui.element.window.GuiCraftingWindow;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.util.Util;
@@ -40,7 +39,7 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<@Nullable Void, Gu
     private byte currentWindows;
 
     public GuiCraftingWindowTab(IGuiWrapper gui, Supplier<GuiCraftingWindowTab> elementSupplier, QIOItemViewerContainer container) {
-        super(MekanismUtils.getResource(ResourceType.GUI_BUTTON, "crafting.png"), gui, null, -26, 34, 26, 18, true, elementSupplier);
+        super(Mekanism.rl("button/crafting"), gui, null, -26, 34, 26, 18, true, elementSupplier);
         this.container = container;
     }
 

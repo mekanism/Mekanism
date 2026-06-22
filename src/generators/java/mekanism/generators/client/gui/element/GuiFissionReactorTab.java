@@ -6,10 +6,9 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiTabElementType;
 import mekanism.client.gui.element.tab.TabType;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.PacketUtils;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab.FissionReactorTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.network.to_server.PacketGeneratorsTileButtonPress;
@@ -25,16 +24,16 @@ public class GuiFissionReactorTab extends GuiTabElementType<TileEntityFissionRea
     }
 
     public enum FissionReactorTab implements TabType<TileEntityFissionReactorCasing> {
-        MAIN("radioactive.png", MekanismLang.MAIN_TAB, ClickedGeneratorsTileButton.TAB_MAIN, SpecialColors.TAB_MULTIBLOCK_MAIN),
-        STAT("stats.png", GeneratorsLang.STATS_TAB, ClickedGeneratorsTileButton.TAB_STATS, SpecialColors.TAB_MULTIBLOCK_STATS);
+        MAIN(Mekanism.rl("button/radioactive"), MekanismLang.MAIN_TAB, ClickedGeneratorsTileButton.TAB_MAIN, SpecialColors.TAB_MULTIBLOCK_MAIN),
+        STAT(Mekanism.rl("button/stats"), GeneratorsLang.STATS_TAB, ClickedGeneratorsTileButton.TAB_STATS, SpecialColors.TAB_MULTIBLOCK_STATS);
 
         private final ClickedGeneratorsTileButton button;
         private final ColorRegistryObject colorRO;
         private final ILangEntry description;
-        private final String path;
+        private final Identifier resource;
 
-        FissionReactorTab(String path, ILangEntry description, ClickedGeneratorsTileButton button, ColorRegistryObject colorRO) {
-            this.path = path;
+        FissionReactorTab(Identifier resource, ILangEntry description, ClickedGeneratorsTileButton button, ColorRegistryObject colorRO) {
+            this.resource = resource;
             this.description = description;
             this.button = button;
             this.colorRO = colorRO;
@@ -42,7 +41,7 @@ public class GuiFissionReactorTab extends GuiTabElementType<TileEntityFissionRea
 
         @Override
         public Identifier getResource() {
-            return MekanismUtils.getResource(ResourceType.GUI, path);
+            return resource;
         }
 
         @Override

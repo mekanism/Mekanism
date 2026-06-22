@@ -280,7 +280,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
             if (transmissionType == null) {
                 this.icon = Objects.requireNonNull(icon, "Icon should only be null if there is a transmission type present.");
             } else {
-                this.icon = MekanismUtils.getResource(ResourceType.GUI, transmissionType.getTransmission() + ".png");
+                this.icon = MekanismUtils.toLegacyResource(transmissionType.guiTexture());
             }
         }
 

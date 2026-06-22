@@ -1,7 +1,10 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.BlendFactor;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.neoforged.api.distmarker.Dist;
@@ -18,8 +21,14 @@ public class MekanismRenderPipelines {
           .withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP)
           .build();
 
+    public static final RenderPipeline WARNING_PIPELINE = RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET)
+          .withLocation(Mekanism.rl("pipeline/gui_textured_dst_color"))
+          .withColorTargetState(new ColorTargetState(new BlendFunction(BlendFactor.DST_COLOR, BlendFactor.ZERO)))
+          .build();
+
     @SubscribeEvent
     public static void registerPipelines(RegisterRenderPipelinesEvent event) {
         event.registerPipeline(GUI_TRIANGLE_STRIP);
+        event.registerPipeline(WARNING_PIPELINE);
     }
 }

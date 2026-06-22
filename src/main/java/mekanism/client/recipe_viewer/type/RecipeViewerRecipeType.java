@@ -20,11 +20,10 @@ import mekanism.client.recipe_viewer.recipe.BoilerRecipeViewerRecipe;
 import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -70,9 +69,9 @@ public class RecipeViewerRecipeType {
     public static final RVRecipeTypeWrapper<?, NucleosynthesizingRecipe, ?> NUCLEOSYNTHESIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.NUCLEOSYNTHESIZING, NucleosynthesizingRecipe.class, -6, -18, 182, 80, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
 
     //TODO: Decide if we want to make it so all mekanism energy supporting blocks that have gui's are added as catalysts?
-    public static final SimpleRVRecipeType<?, ItemStackToEnergyRecipe, ?> ENERGY_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.ENERGY_CONVERSION, ItemStackToEnergyRecipe.class, MekanismLang.CONVERSION_ENERGY, MekanismUtils.getResource(ResourceType.GUI, "energy.png"), -20, -12, 132, 62, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
+    public static final SimpleRVRecipeType<?, ItemStackToEnergyRecipe, ?> ENERGY_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.ENERGY_CONVERSION, ItemStackToEnergyRecipe.class, MekanismLang.CONVERSION_ENERGY, TransmissionType.ENERGY.guiTexture(), -20, -12, 132, 62, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
 
-    public static final SimpleRVRecipeType<?, ItemStackToChemicalRecipe, ?> CHEMICAL_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.CHEMICAL_CONVERSION, ItemStackToChemicalRecipe.class, MekanismLang.CONVERSION_CHEMICAL, MekanismUtils.getResource(ResourceType.GUI, "chemicals.png"), -20, -12, 132, 62, MekanismBlocks.PURIFICATION_CHAMBER, MekanismBlocks.METALLURGIC_INFUSER, MekanismBlocks.OSMIUM_COMPRESSOR, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
+    public static final SimpleRVRecipeType<?, ItemStackToChemicalRecipe, ?> CHEMICAL_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.CHEMICAL_CONVERSION, ItemStackToChemicalRecipe.class, MekanismLang.CONVERSION_CHEMICAL, TransmissionType.CHEMICAL.guiTexture(), -20, -12, 132, 62, MekanismBlocks.PURIFICATION_CHAMBER, MekanismBlocks.METALLURGIC_INFUSER, MekanismBlocks.OSMIUM_COMPRESSOR, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
 
     public static final RVRecipeTypeWrapper<?, ItemStackToChemicalRecipe, ?> OXIDIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.OXIDIZING, ItemStackToChemicalRecipe.class, -20, -12, 132, 62, MekanismBlocks.CHEMICAL_OXIDIZER);
 
@@ -93,7 +92,7 @@ public class RecipeViewerRecipeType {
 
     public static final RVRecipeTypeWrapper<?, SawmillRecipe, ?> SAWING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SAWING, SawmillRecipe.class, -28, -16, 144, 54, MekanismBlocks.PRECISION_SAWMILL);
 
-    public static final FakeRVRecipeType<BoilerRecipeViewerRecipe> BOILER = new FakeRVRecipeType<>(MekanismBlocks.BOILER_CASING.getId(), MekanismUtils.getResource(ResourceType.GUI, "heat.png"), MekanismLang.BOILER, BoilerRecipeViewerRecipe.class, -6, -13, 180, 60, MekanismBlocks.BOILER_CASING, MekanismBlocks.BOILER_VALVE, MekanismBlocks.PRESSURE_DISPERSER, MekanismBlocks.SUPERHEATING_ELEMENT);
+    public static final FakeRVRecipeType<BoilerRecipeViewerRecipe> BOILER = new FakeRVRecipeType<>(MekanismBlocks.BOILER_CASING.getId(), TransmissionType.HEAT.guiTexture(), MekanismLang.BOILER, BoilerRecipeViewerRecipe.class, -6, -13, 180, 60, MekanismBlocks.BOILER_CASING, MekanismBlocks.BOILER_VALVE, MekanismBlocks.PRESSURE_DISPERSER, MekanismBlocks.SUPERHEATING_ELEMENT);
     public static final FakeRVRecipeType<SPSRecipeViewerRecipe> SPS = new FakeRVRecipeType<>(MekanismBlocks.SPS_CASING.getId(), MekanismItems.ANTIMATTER_PELLET, MekanismLang.SPS, SPSRecipeViewerRecipe.class, -3, -12, 168, 74, false, MekanismBlocks.SPS_CASING, MekanismBlocks.SPS_PORT, MekanismBlocks.SUPERCHARGED_COIL);
 
     public static final FakeRVRecipeType<BasicItemStackToFluidOptionalItemRecipe> NUTRITIONAL_LIQUIFICATION = new FakeRVRecipeType<>(MekanismBlocks.NUTRITIONAL_LIQUIFIER, BasicItemStackToFluidOptionalItemRecipe.class, -20, -12, 132, 62);

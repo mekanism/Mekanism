@@ -51,7 +51,6 @@ import org.jspecify.annotations.Nullable;
 @EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT)
 public class MekanismRenderer {
 
-    public static final Identifier REDSTONE_PULSE_ID = Mekanism.rl("icon/redstone_control_pulse");
     //TODO: Replace various usages of LightTexture.FULL_BRIGHT with the getter for calculating glow light, at least if we end up making it only
     // effect block light for the glow rather than having it actually become full light
     public static TextureAtlasSprite energyIcon;

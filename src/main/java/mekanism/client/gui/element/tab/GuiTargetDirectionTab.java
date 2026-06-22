@@ -4,6 +4,7 @@ import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -19,7 +20,7 @@ public class GuiTargetDirectionTab extends GuiInsetToggleElement<QIOItemViewerCo
     private static final Tooltip QIO_TRANSFER_TO_FREQUENCY = TooltipUtils.create(MekanismLang.QIO_TRANSFER_TO_FREQUENCY);
 
     public GuiTargetDirectionTab(IGuiWrapper gui, QIOItemViewerContainer holder, int y) {
-        super(gui, holder, -26, y, 26, 18, true, getButtonLocation("crafting_in"), getButtonLocation("crafting_out"), QIOItemViewerContainer::shiftClickIntoFrequency);
+        super(gui, holder, -26, y, 26, 18, true, Mekanism.rl("button/crafting_in"), Mekanism.rl("button/crafting_out"), QIOItemViewerContainer::shiftClickIntoFrequency);
     }
 
     @Override

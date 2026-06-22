@@ -381,6 +381,10 @@ public final class MekanismUtils {
         return Mekanism.rl(type.getPrefix() + name);
     }
 
+    public static Identifier toLegacyResource(Identifier identifier) {
+        return identifier.withPrefix("textures/gui/sprites/").withSuffix(".png");
+    }
+
     public static boolean lighterThanAirGas(FluidResource resource) {
         return resource.is(Tags.Fluids.GASEOUS) && resource.getFluidType().isLighterThanAir();
     }
