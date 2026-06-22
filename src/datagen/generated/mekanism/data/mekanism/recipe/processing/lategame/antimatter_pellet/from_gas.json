@@ -2,7 +2,7 @@
   "type": "mekanism:crystallizing",
   "input": {
     "amount": 1000,
-    "chemical": "mekanism:antimatter"
+    "ingredient": "mekanism:antimatter"
   },
   "output": {
     "id": "mekanism:pellet_antimatter"

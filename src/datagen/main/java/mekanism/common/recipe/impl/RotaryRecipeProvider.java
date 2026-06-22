@@ -1,10 +1,10 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tags.MekanismTags;
@@ -12,6 +12,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -47,12 +48,13 @@ class RotaryRecipeProvider extends BaseSubRecipeProvider {
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismChemicals.WATER_VAPOR, fluids.getOrThrow(FluidIds.WATER), FluidTags.WATER);
     }
 
-    private void addRotaryCondensentratorRecipe(RecipeOutput consumer, String basePath, DeferredChemical<Chemical> gas, Holder<Fluid> fluidOutput, TagKey<Fluid> fluidInput) {
+    private void addRotaryCondensentratorRecipe(RecipeOutput consumer, String basePath, ResourceKey<Chemical> chemical, Holder<Fluid> fluidOutput, TagKey<Fluid> fluidInput) {
+        Holder<Chemical> chemicalHolder = chemicals.getOrThrow(chemical);
         RotaryRecipeBuilder.rotary(
               IngredientCreatorAccess.fluid().from(this.fluids, fluidInput, 1),
-              IngredientCreatorAccess.chemicalStack().fromHolder(gas, 1),
-              gas.asTemplate(1),
+              IngredientCreatorAccess.chemicalStack().fromHolder(chemicalHolder, 1),
+              new ChemicalStackTemplate(chemicalHolder, 1),
               new FluidStackTemplate(fluidOutput, 1)
-        ).save(consumer, Mekanism.rl(basePath + gas.getName()));
+        ).save(consumer, Mekanism.rl(basePath + chemical.identifier().getPath()));
     }
 }

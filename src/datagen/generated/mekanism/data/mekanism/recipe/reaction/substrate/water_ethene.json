@@ -2,7 +2,7 @@
   "type": "mekanism:reaction",
   "chemical_input": {
     "amount": 100,
-    "chemical": "mekanism:ethene"
+    "ingredient": "mekanism:ethene"
   },
   "chemical_output": {
     "amount": 10,

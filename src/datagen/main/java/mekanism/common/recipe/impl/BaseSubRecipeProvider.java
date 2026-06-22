@@ -22,4 +22,14 @@ public abstract class BaseSubRecipeProvider implements ISubRecipeProvider {
     public HolderGetter<Item> items() {
         return items;
     }
+
+    @Override
+    public HolderGetter<Chemical> chemicals() {
+        return chemicals;
+    }
+
+    @Override
+    public HolderGetter<Fluid> fluids() {
+        return fluids;
+    }
 }

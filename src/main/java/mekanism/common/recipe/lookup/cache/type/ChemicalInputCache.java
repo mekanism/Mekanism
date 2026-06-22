@@ -14,7 +14,7 @@ public class ChemicalInputCache<RECIPE extends MekanismRecipe<?>> extends BaseIn
 
     @Override
     public boolean mapInputs(RECIPE recipe, ChemicalStackIngredient inputIngredient) {
-        for (Holder<Chemical> chemicalHolder : inputIngredient.ingredient().getChemicalHolders()) {
+        for (Holder<Chemical> chemicalHolder : inputIngredient.ingredient().chemicals()) {
             if (!chemicalHolder.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
                 //Ignore empty stacks as some mods have ingredients that some stacks are empty
                 addInputCache(chemicalHolder, recipe);

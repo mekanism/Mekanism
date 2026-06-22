@@ -19,7 +19,11 @@ public class CrTGameExpansion {
     @ZenCodeType.Method
     @ZenCodeType.Getter("chemicals")
     public static Collection<Chemical> getChemicals(Game _this) {
-        return MekanismAPI.CHEMICAL_REGISTRY.stream().toList();
+        return CraftTweakerAPI.getAccessibleElementsProvider()
+              .registryAccess()
+              .lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME)
+              .stream()
+              .toList();
     }
 
     /// Gets all registered module types.

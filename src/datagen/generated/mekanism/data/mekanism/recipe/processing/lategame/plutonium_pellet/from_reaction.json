@@ -2,7 +2,7 @@
   "type": "mekanism:reaction",
   "chemical_input": {
     "amount": 1000,
-    "chemical": "mekanism:plutonium"
+    "ingredient": "mekanism:plutonium"
   },
   "chemical_output": {
     "amount": 1000,

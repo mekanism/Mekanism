@@ -29,6 +29,7 @@ import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
+import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -107,7 +108,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Override
-    public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
+    public void addItems(ItemDisplayParameters displayParameters, Holder<Item> item, Consumer<ItemStack> tabOutput) {
         if (tier == EnergyCubeTier.CREATIVE) {
             //Add the empty and charged variants
             tabOutput.accept(withCreativeSideConfig(ALL_INPUT).toStack());

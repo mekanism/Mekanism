@@ -2,7 +2,7 @@
   "type": "mekanism:rotary",
   "chemical_input": {
     "amount": 1,
-    "chemical": "mekanism:superheated_sodium"
+    "ingredient": "mekanism:superheated_sodium"
   },
   "chemical_output": {
     "amount": 1,

@@ -1,5 +1,6 @@
 package mekanism.api.datamaps;
 
+import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datamaps.chemical.ChemicalSolidTag;
@@ -7,6 +8,7 @@ import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
+import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -26,14 +28,14 @@ public interface IMekanismDataMapTypes {
 
     /// Helper to get data from a holder. This method supports both reference and direct holders.
     ///
-    /// @param registryAccess Registry access to look up the reference if a direct holder was provided.
+    /// @param registryAccess Registry access to look up the reference if a direct holder was provided. If `null`, this will just return `null` for direct holders.
     /// @param registryName   Name of the registry that contains the holder.
     /// @param holder         Holder to query.
     /// @param type           Type of data to lookup.
     ///
-    /// @return Absorption values or null if there are no absorption values defined for the damage type.
+    /// @return Data or null if there is no data defined for the holder.
     @Nullable
-    <TYPE, DATA> DATA getData(RegistryAccess registryAccess, ResourceKey<? extends Registry<? extends TYPE>> registryName, Holder<TYPE> holder, DataMapType<TYPE, DATA> type);
+    <TYPE, DATA> DATA getData(@Nullable RegistryAccess registryAccess, ResourceKey<? extends Registry<? extends TYPE>> registryName, Holder<TYPE> holder, DataMapType<TYPE, DATA> type);
 
     /// The [DamageType][DamageType] data map that defines how much of a particular damage type the MekaSuit can absorb.
     ///
@@ -104,4 +106,9 @@ public interface IMekanismDataMapTypes {
     ///
     /// @apiNote While having the coolant reference itself as a target works, it is highly discouraged.
     DataMapType<Chemical, HeatedCoolant> heatedChemicalCoolant();
+
+    /// {@return the list of all registered chemical attribute types}
+    ///
+    /// @since 10.8.0
+    List<DataMapType<Chemical, ? extends IChemicalAttribute>> chemicalAttributeTypes();
 }

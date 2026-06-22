@@ -1,5 +1,6 @@
 package mekanism.common.integration.crafttweaker.chemical;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -29,25 +30,27 @@ public class CrTChemical {
     @ZenCodeType.Method
     @ZenCodeType.Getter("registryName")
     public static Identifier getRegistryName(Chemical _this) {
-        return MekanismAPI.CHEMICAL_REGISTRY.getKey(_this);
+        return CraftTweakerAPI.getAccessibleElementsProvider()
+              .registryAccess()
+              .lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME).getKey(_this);
     }
 
     /// Get the tint for rendering the chemical
     ///
-    /// @return int representation of color in AARRGGBB format
+    /// @return int representation of color in ARGB format
     @ZenCodeType.Method
     @ZenCodeType.Getter("tint")
     public static int getTint(Chemical _this) {
-        return _this.getTint();
+        return _this.tint();
     }
 
     /// Get the color representation used for displaying in things like durability bars of chemical tanks.
     ///
-    /// @return int representation of color in AARRGGBB format
+    /// @return int representation of color in ARGB format
     @ZenCodeType.Method
     @ZenCodeType.Getter("colorRepresentation")
     public static int getColorRepresentation(Chemical _this) {
-        return _this.getColorRepresentation();
+        return _this.colorRepresentation();
     }
 
     /// Creates a new [ICrTChemicalStack] with the given amount of chemical.
@@ -58,7 +61,9 @@ public class CrTChemical {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.MUL)
     public static ICrTChemicalStack makeStack(Chemical _this, int amount) {
-        return new CrTChemicalStack(new ChemicalStack(MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(_this), amount));
+        return new CrTChemicalStack(new ChemicalStack(CraftTweakerAPI.getAccessibleElementsProvider()
+              .registryAccess()
+              .lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME).wrapAsHolder(_this), amount));
     }
 
     /// Gets the tags that this chemical is a part of.

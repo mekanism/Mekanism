@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_mixing",
   "left_input": {
     "amount": 1,
-    "chemical": "mekanism:light_blue"
+    "ingredient": "mekanism:light_blue"
   },
   "output": {
     "amount": 2,
@@ -10,6 +10,6 @@
   },
   "right_input": {
     "amount": 1,
-    "chemical": "mekanism:lime"
+    "ingredient": "mekanism:lime"
   }
 }

@@ -23,12 +23,12 @@ class ChemicalCrystallizerRecipeProvider extends BaseSubRecipeProvider {
         String basePath = "crystallizing/";
         //Salt
         ChemicalCrystallizerRecipeBuilder.crystallizing(
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.BRINE, 15),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.BRINE, 15),
               MekanismItems.SALT.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "salt"));
         //Lithium
         ChemicalCrystallizerRecipeBuilder.crystallizing(
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.LITHIUM, 100),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.LITHIUM, 100),
               MekanismItems.LITHIUM_DUST.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "lithium"));
     }

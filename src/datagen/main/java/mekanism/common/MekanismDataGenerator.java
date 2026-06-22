@@ -17,6 +17,7 @@ import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -55,6 +56,7 @@ import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber(modid = Mekanism.MODID)
 public class MekanismDataGenerator {
@@ -76,6 +78,8 @@ public class MekanismDataGenerator {
         SET_CONFIG = ObfuscationReflectionHelper.findMethod(ModConfig.class, "setConfig", loadedConfig, Function.class);
     }
 
+    @Nullable
+    private static CompletableFuture<HolderLookup.Provider> lookupProvider = null;
 
     private MekanismDataGenerator() {
     }
@@ -87,7 +91,8 @@ public class MekanismDataGenerator {
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
         MekanismDatapackRegistryProvider drProvider = new MekanismDatapackRegistryProvider(output, event.getLookupProvider());
-        CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
+        lookupProvider = drProvider.getRegistryProvider();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = getLookupProvider();
         ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         //Client side data generators
         gen.addProvider(true, new MekanismLangProvider(output));
@@ -108,6 +113,10 @@ public class MekanismDataGenerator {
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         PersistingDisabledProvidersProvider.addDisableableProviders(event, lookupProvider, disabledCompats);
+    }
+
+    public static CompletableFuture<HolderLookup.Provider> getLookupProvider() {
+        return Objects.requireNonNull(lookupProvider);
     }
 
     /// Used to bootstrap configs to their default values so that if we are querying if things exist we don't have issues with it happening to early or in cases we have

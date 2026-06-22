@@ -2,7 +2,7 @@
   "type": "mekanism:reaction",
   "chemical_input": {
     "amount": 100,
-    "chemical": "mekanism:hydrogen"
+    "ingredient": "mekanism:hydrogen"
   },
   "chemical_output": {
     "amount": 300,

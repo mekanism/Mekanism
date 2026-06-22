@@ -52,9 +52,9 @@ class PlasticSlabsRecipeProvider extends BaseSubRecipeProvider {
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             if (transparent) {
-                PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, this.items, slab, typeTag, color, basePath);
+                PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, this.items, this.chemicals, slab, typeTag, color, basePath);
             } else {
-                PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, slab, typeTag, color, basePath);
+                PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, slab, typeTag, color, basePath);
             }
             ExtendedShapedRecipeBuilder.shapedRecipe(plastic, 1)
                   .pattern(PLASTIC_RECOMBINATION)

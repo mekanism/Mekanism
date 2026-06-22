@@ -11,17 +11,20 @@ import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.RegistryUtils;
 import mezz.jei.api.helpers.IColorHelper;
 import mezz.jei.api.ingredients.IIngredientHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -49,7 +52,18 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
 
     @Override
     public Identifier getIdentifier(ChemicalStack ingredient) {
-        return RegistryUtils.getName(ingredient.typeHolder(), MekanismAPI.CHEMICAL_REGISTRY);
+        Optional<ResourceKey<Chemical>> key = ingredient.typeHolder().unwrapKey();
+        if (key.isPresent()) {
+            return key.get().identifier();
+        }
+        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        if (optionalRegistry.isEmpty()) {
+            //Something went horribly wrong, bail
+            Mekanism.logger.warn("Failed to find chemical registry when looking up ingredient id");
+            return MekanismAPI.EMPTY_CHEMICAL_KEY.identifier();
+        }
+        Identifier identifier = optionalRegistry.get().getKey(ingredient.getChemical());
+        return identifier == null ? MekanismAPI.EMPTY_CHEMICAL_KEY.identifier() : identifier;
     }
 
     @Override
@@ -72,7 +86,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
         if (colorHelper == null) {
             return IIngredientHelper.super.getColors(ingredient);
         }
-        return colorHelper.getColors(MekanismRenderer.getChemicalTexture(ingredient.typeHolder()), ingredient.getChemical().getTint(), 1);
+        return colorHelper.getColors(MekanismRenderer.getChemicalTexture(ingredient.typeHolder()), ingredient.getChemical().tint(), 1);
     }
 
     @Override
@@ -109,8 +123,15 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
             //One of the chemicals is there more than once, definitely not a tag
             return Optional.empty();
         }
+        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        if (optionalRegistry.isEmpty()) {
+            //Something went horribly wrong, bail
+            Mekanism.logger.warn("Failed to find chemical registry when calculating tag key equivalents");
+            return Optional.empty();
+        }
+        Registry<Chemical> registry = optionalRegistry.get();
         for (TagKey<Chemical> tagKey : values.getFirst().tags().toList()) {
-            Optional<Named<Chemical>> optionalTag = MekanismAPI.CHEMICAL_REGISTRY.get(tagKey);
+            Optional<Named<Chemical>> optionalTag = registry.get(tagKey);
             if (optionalTag.isPresent()) {
                 Named<Chemical> tag = optionalTag.get();
                 if (tag.size() == expected && values.stream().allMatch(tag::contains)) {

@@ -11,6 +11,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.lib.collection.HashList;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -104,10 +105,7 @@ public class FilterManager<FILTER extends IFilter<?>> {
     }
 
     private boolean addFilter(FILTER filter, boolean save) {
-        filter.setRegistryAccess(() -> {
-            Level level = this.levelSupplier.get();
-            return level == null ? null : level.registryAccess();
-        });
+        filter.setRegistryAccess(MekanismUtils.registryAccess(this.levelSupplier));
         boolean result = filters.add(filter);
         if (save) {
             markForSave.run();

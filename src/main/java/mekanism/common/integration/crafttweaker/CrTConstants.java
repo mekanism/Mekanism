@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import mekanism.common.Mekanism;
-import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.Logger;
 
 /// Constants we use throughout our CraftTweaker integration.
@@ -10,8 +9,6 @@ public class CrTConstants {
 
     public static final Logger CRT_LOGGER = CraftTweakerAPI.getLogger(Mekanism.MOD_NAME);
 
-    public static final String CONTENT_LOADER = Mekanism.MODID + "content";
-    public static final Identifier CONTENT_LOADER_SOURCE_ID = Mekanism.rl("content");
     public static final String JEI_PLUGIN_NAME = Mekanism.MODID + ":crt_jei";
 
     public static final String BRACKET_CHEMICAL = "chemical";
@@ -96,8 +93,6 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_ROTARY_CHEMICAL_TO_FLUID = CLASS_RECIPE_ROTARY + ".ChemicalToFluid";
     public static final String CLASS_RECIPE_ROTARY_FLUID_TO_CHEMICAL = CLASS_RECIPE_ROTARY + ".FluidToChemical";
     public static final String CLASS_RECIPE_SAWING = "mods." + Mekanism.MODID + ".recipe.Sawing";
-
-    public static final String CLASS_BUILDER_CHEMICAL = "mods." + Mekanism.MODID + ".content.builder.ChemicalBuilder";
 
     //Expansions, declared below classes we can reference the partial string parts of our other types
     private static final String EXPANSION_TARGET_MANY = "crafttweaker.api.util.Many";

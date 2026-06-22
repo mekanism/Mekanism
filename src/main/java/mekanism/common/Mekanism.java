@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
@@ -84,6 +85,7 @@ import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismPlacementModifiers;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.registries.MekanismRobitSkins;
+import mekanism.common.registries.MekanismSlotDisplayTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTicketTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
@@ -175,6 +177,7 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(this::onTagsReload);
         NeoForge.EVENT_BUS.addListener(this::onDataMapsUpdated);
         NeoForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
+        NeoForge.EVENT_BUS.register(ChemicalResource.EMPTY);
         NeoForge.EVENT_BUS.register(IncompleteRecipeScanner.class);
         NeoForge.EVENT_BUS.addListener(OnDatapackSyncEvent.class, event -> {
             //Sync all Mekanism Recipes
@@ -234,18 +237,19 @@ public class Mekanism {
         MekanismRecipeSerializersInternal.RECIPE_SERIALIZERS.register(modEventBus);
         MekanismDataSerializers.DATA_SERIALIZERS.register(modEventBus);
         MekanismLootFunctions.REGISTER.register(modEventBus);
-        MekanismChemicals.CHEMICALS.register(modEventBus);
+        MekanismChemicals.createAndRegisterDatapack(modEventBus);
         MekanismChemicalIngredientTypes.INGREDIENT_TYPES.register(modEventBus);
         MekanismRobitSkins.createAndRegisterDatapack(modEventBus);
         MekanismModules.MODULES.register(modEventBus);
         MekanismRecipeConditions.CONDITION_CODECS.register(modEventBus);
         MekanismItemPredicates.PREDICATES.register(modEventBus);
         MekanismDataMapTypes.REGISTER.register(modEventBus);
+        MekanismSlotDisplayTypes.SLOT_DISPLAY_TYPES.register(modEventBus);
         MekanismTicketTypes.TICKET_TYPES.register(modEventBus);
     }
 
     private void registerRegistries(NewRegistryEvent event) {
-        event.register(MekanismAPI.CHEMICAL_REGISTRY);
+        event.register(MekanismAPI.CHEMICAL_SERIALIZER_REGISTRY);
         event.register(MekanismAPI.CHEMICAL_INGREDIENT_TYPES);
         event.register(MekanismAPI.MODULE_REGISTRY);
         event.register(MekanismAPI.ROBIT_SKIN_SERIALIZER_REGISTRY);
@@ -272,9 +276,7 @@ public class Mekanism {
     }
 
     private void onDataMapsUpdated(DataMapsUpdatedEvent event) {
-        event.ifRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME, registry -> registry.listElements().forEach(
-              holder -> holder.value().updateFromDataMap(holder)
-        ));
+        //TODO: Re-evaluate the performance impact of looking up the data map values for elements from the holders themselves rather than caching the values somewhere
     }
 
     private void addReloadListenersLowest(AddServerReloadListenersEvent event) {

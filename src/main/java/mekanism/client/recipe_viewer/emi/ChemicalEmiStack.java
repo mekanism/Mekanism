@@ -6,10 +6,11 @@ import dev.emi.emi.api.stack.EmiStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalInstance;
+import mekanism.api.chemical.SizedChemicalInstance;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
@@ -21,6 +22,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -32,7 +34,7 @@ public class ChemicalEmiStack extends EmiStack {
 
     private final Holder<Chemical> chemical;
 
-    public ChemicalEmiStack(ChemicalInstance stack) {
+    public ChemicalEmiStack(SizedChemicalInstance stack) {
         this(stack.typeHolder(), stack.amount());
     }
 
@@ -40,7 +42,8 @@ public class ChemicalEmiStack extends EmiStack {
         //TODO - 26.2: Re-evaluate usage and if we can just use the below, or what needs to happen
         // I am not sure if EmiRegistryAdapter even works with data pack registries in the first place,
         // so we might have to request a different entry point from Emi anyway
-        this(MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical), amount);
+        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        this(optionalRegistry.orElseThrow().wrapAsHolder(chemical), amount);
     }
 
     public ChemicalEmiStack(Holder<Chemical> chemical, long amount) {
@@ -99,7 +102,7 @@ public class ChemicalEmiStack extends EmiStack {
     @Override
     public Identifier getId() {
         ResourceKey<Chemical> key = chemical.getKey();
-        return key == null ? MekanismAPI.CHEMICAL_REGISTRY.getDefaultKey() : key.identifier();
+        return key == null ? MekanismAPI.EMPTY_CHEMICAL_KEY.identifier() : key.identifier();
     }
 
     @Override

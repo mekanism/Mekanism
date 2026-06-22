@@ -1,16 +1,16 @@
 package mekanism.common.integration.framedblocks;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import io.github.xfacthd.framedblocks.api.camo.TriggerRegistrar;
 import io.github.xfacthd.framedblocks.api.camo.resource.ResourceCamoContainerFactory;
 import io.github.xfacthd.framedblocks.api.util.CamoMessageVerbosity;
 import io.github.xfacthd.framedblocks.api.util.Utils;
 import java.util.function.Predicate;
-import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.ItemAccessUtils;
@@ -29,10 +29,11 @@ import org.jspecify.annotations.Nullable;
 final class ChemicalCamoContainerFactory extends ResourceCamoContainerFactory<ChemicalResource, ChemicalCamoContent, ChemicalCamoContainer> {
 
     private static final TagKey<Item> CRAFTING_BLOCKED_CONTAINERS = Utils.itemTag("crafting_blocked_chemical_containers");
-    private static final MapCodec<ChemicalCamoContainer> CODEC = ChemicalResource.CODEC.xmap(
+    private static final MapCodec<ChemicalCamoContainer> MAP_CODEC = ChemicalResource.CODEC.xmap(
           ChemicalCamoContainer::new,
           ChemicalCamoContainer::getChemicalType
     ).fieldOf(SerializationConstants.CHEMICAL);
+    private static final Codec<ChemicalCamoContainer> CODEC = MAP_CODEC.codec();
     private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalCamoContainer> STREAM_CODEC = ChemicalResource.STREAM_CODEC.map(
           ChemicalCamoContainer::new,
           ChemicalCamoContainer::getChemicalType
@@ -45,13 +46,13 @@ final class ChemicalCamoContainerFactory extends ResourceCamoContainerFactory<Ch
 
     @Override
     protected void writeToNetwork(ValueOutput output, ChemicalCamoContainer camo) {
-        output.putInt(SerializationConstants.CHEMICAL, MekanismAPI.CHEMICAL_REGISTRY.getId(camo.getChemicalType().value()));
+        output.store(SerializationConstants.CHEMICAL, CODEC, camo);
     }
 
     @Override
     protected ChemicalCamoContainer readFromNetwork(ValueInput input) {
-        Chemical chemical = MekanismAPI.CHEMICAL_REGISTRY.byId(input.getIntOr(SerializationConstants.CHEMICAL, -1));
-        return new ChemicalCamoContainer(ChemicalResource.of(chemical));
+        //TODO - 26.2: Re-evaluate this throwing
+        return input.read(SerializationConstants.CHEMICAL, CODEC).orElseThrow();
     }
 
     @Override
@@ -63,19 +64,20 @@ final class ChemicalCamoContainerFactory extends ResourceCamoContainerFactory<Ch
     protected boolean isValidResource(ChemicalResource resource, @Nullable Player player) {
         if (resource.isEmpty()) {
             return false;
-        } else if (resource.value().hasAttributesWithValidation()) {
-            displayValidationMessage(player, MSG_HAS_SPECIAL_HANDLING, CamoMessageVerbosity.DEFAULT);
-            return false;
-        } else if (resource.is(MekanismAPITags.Chemicals.FRAMEDBLOCKS_BLACKLISTED)) {
-            displayValidationMessage(player, MSG_BLACKLISTED, CamoMessageVerbosity.DEFAULT);
-            return false;
+        } else if (ChemicalAttributeValidator.DEFAULT.process(resource)) {
+            if (resource.is(MekanismAPITags.Chemicals.FRAMEDBLOCKS_BLACKLISTED)) {
+                displayValidationMessage(player, MSG_BLACKLISTED, CamoMessageVerbosity.DEFAULT);
+                return false;
+            }
+            return true;
         }
-        return true;
+        displayValidationMessage(player, MSG_HAS_SPECIAL_HANDLING, CamoMessageVerbosity.DEFAULT);
+        return false;
     }
 
     @Override
     public MapCodec<ChemicalCamoContainer> codec() {
-        return CODEC;
+        return MAP_CODEC;
     }
 
     @Override

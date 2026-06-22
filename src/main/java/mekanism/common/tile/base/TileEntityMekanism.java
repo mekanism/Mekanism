@@ -619,7 +619,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         //TODO - 26.2: Should we validate this is a server level??
         boolean sendUpdatePacket = tile.onUpdateServer((ServerLevel) level);
-        if (tile.updateRadiationScale()) {
+        if (tile.updateRadiationScale(level)) {
             sendUpdatePacket = true;
         }
         //TODO - 1.18: More generic "needs update" flag that we set that then means we don't end up sending an update packet more than once per tick
@@ -1187,9 +1187,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     /// @apiNote Only call on server.
-    private boolean updateRadiationScale() {
+    private boolean updateRadiationScale(Level level) {
         if (shouldDumpRadiation()) {
-            float scale = ITileRadioactive.calculateRadiationScale(getChemicalTanks());
+            float scale = ITileRadioactive.calculateRadiationScale(level, getChemicalTanks());
             if (Math.abs(scale - radiationScale) > 0.05F) {
                 radiationScale = scale;
                 return true;

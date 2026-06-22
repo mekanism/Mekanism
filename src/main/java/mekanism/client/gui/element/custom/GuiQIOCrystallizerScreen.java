@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
@@ -69,7 +69,7 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
                     prevSlurry = chemical;
                     iterStacks.clear();
                     if (!prevSlurry.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-                        ChemicalSolidTag tag = chemical.getData(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
+                        ChemicalSolidTag tag = chemical.getSolidTag(gui().registryAccess());
                         if (tag != null) {
                             Named<Item> tagContents = tag.lookupTag().orElse(null);
                             if (tagContents != null) {
@@ -106,7 +106,7 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
                     recipeComponent = MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(chemical));
                 }
             }
-            return List.of(chemical.getTextComponent(), recipeComponent);
+            return List.of(TextComponentUtil.build(chemical), recipeComponent);
         }
         return Collections.emptyList();
     }

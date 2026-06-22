@@ -2,7 +2,7 @@
   "type": "mekanism:rotary",
   "chemical_input": {
     "amount": 1,
-    "chemical": "mekanism:ethene"
+    "ingredient": "mekanism:ethene"
   },
   "chemical_output": {
     "amount": 1,

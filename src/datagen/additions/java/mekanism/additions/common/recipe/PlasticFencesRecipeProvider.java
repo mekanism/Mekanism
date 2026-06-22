@@ -50,7 +50,7 @@ class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
                   .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.pick(color))
                   .category(RecipeCategory.DECORATIONS)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-            PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, result, fencesTag, color, basePath);
+            PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, result, fencesTag, color, basePath);
         });
     }
 
@@ -64,7 +64,7 @@ class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
                   .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.pick(color))
                   .category(RecipeCategory.REDSTONE)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-            PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, result, gatesTag, color, basePath);
+            PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, result, gatesTag, color, basePath);
         });
     }
 }

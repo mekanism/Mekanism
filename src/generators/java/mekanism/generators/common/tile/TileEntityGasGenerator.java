@@ -1,12 +1,10 @@
 package mekanism.generators.common.tile;
 
-import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
@@ -37,8 +35,6 @@ import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 public class TileEntityGasGenerator extends TileEntityGenerator {
-
-    public static final Predicate<ChemicalResource> HAS_FUEL = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel()) != null;
 
     /// The tank this block is storing fuel in.
     @UnknownNullability//Initialized via getInitialChemicalTanks
@@ -160,7 +156,9 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     private class FuelTank extends VariableCapacityChemicalTank {
 
         protected FuelTank(@Nullable IContentsListener listener) {
-            super(MekanismGeneratorsConfig.generators.gbgTankCapacity, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), HAS_FUEL, null, null, null, listener);
+            super(MekanismGeneratorsConfig.generators.gbgTankCapacity, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(),
+                  chemical -> chemical.getFuel(level == null ? null : level.registryAccess()) != null,
+                  null, null, null, listener);
         }
 
         @Override
@@ -169,7 +167,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             ChemicalResource newType = resource();
             if (!newType.isEmpty() && !originalState.matches(newType)) {
                 //Check if the type changed (as this method might have been called from the amount changing)
-                cachedFuel = newType.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
+                cachedFuel = newType.getFuel(level == null ? null : level.registryAccess());
             }
         }
     }

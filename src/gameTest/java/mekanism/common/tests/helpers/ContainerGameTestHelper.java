@@ -1,12 +1,14 @@
 package mekanism.common.tests.helpers;
 
 import mekanism.api.AutomationType;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.gametest.framework.GameTestInfo;
@@ -32,6 +34,10 @@ public class ContainerGameTestHelper extends MekGameTestHelper {
 
     public IEnergyContainer getEnergyContainer(Holder<Item> itemHolder) {
         return getContainer(ContainerType.ENERGY, itemHolder);
+    }
+
+    public ChemicalResource hydrogen() {
+        return ChemicalResource.of(getLevel().registryAccess().getOrThrow(MekanismChemicals.HYDROGEN));
     }
 
     private <CONTAINER extends ValueIOSerializable> CONTAINER getContainer(IContainerType<CONTAINER, ?> containerType, Holder<Item> itemHolder) {

@@ -79,12 +79,12 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
                     }
                     if (recipe != null) {
                         ChemicalStackTemplate output = recipe.getOutput(input.toStack(inputSlot.amountAsInt()));
-                        return output.typeHolder().value().getColorRepresentation();
+                        return output.typeHolder().value().colorRepresentation();
                     }
                 }
                 return CommonColors.WHITE;
             }
-            return tile.pigmentTank.resource().getChemicalColorRepresentation();
+            return tile.pigmentTank.resource().value().colorRepresentation();
         }
 
         @Nullable

@@ -7,7 +7,7 @@ import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
@@ -130,7 +130,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
-        builder.addContainer(inputGasTank = BasicChemicalTank.create(MAX_GAS, MekContainerHelper.radioactiveInputTankPredicate(() -> outputGasTank),
+        builder.addContainer(inputGasTank = BasicChemicalTank.create(MAX_GAS, MekContainerHelper.radioactiveInputTankPredicate(() -> outputGasTank, this::getLevel),
               (chemicalType, _) -> containsRecipeCAB(inputSlot.resource(), inputFluidTank.resource(), chemicalType), this::containsRecipeC,
               ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
         builder.addContainer(outputGasTank = BasicChemicalTank.output(MAX_GAS, recipeCacheUnpauseListener));

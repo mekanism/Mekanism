@@ -2,7 +2,7 @@
   "type": "mekanism:activating",
   "input": {
     "amount": 1,
-    "chemical": "mekanism:lithium"
+    "ingredient": "mekanism:lithium"
   },
   "output": {
     "amount": 1,

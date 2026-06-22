@@ -1,19 +1,24 @@
 package mekanism.generators.common.registries;
 
 import mekanism.api.chemical.Chemical;
-import mekanism.common.registration.impl.DeferredChemical;
-import mekanism.common.registration.impl.ChemicalDeferredRegister;
+import mekanism.common.base.IChemicalConstant;
+import mekanism.common.registration.DatapackDeferredRegister;
 import mekanism.generators.common.GeneratorsChemicalConstants;
 import mekanism.generators.common.MekanismGenerators;
+import net.minecraft.resources.ResourceKey;
 
 public class GeneratorsChemicals {
 
     private GeneratorsChemicals() {
     }
 
-    public static final ChemicalDeferredRegister CHEMICALS = new ChemicalDeferredRegister(MekanismGenerators.MODID);
+    public static final DatapackDeferredRegister<Chemical> CHEMICALS = DatapackDeferredRegister.chemicals(MekanismGenerators.MODID);
 
-    public static final DeferredChemical<Chemical> DEUTERIUM = CHEMICALS.register(GeneratorsChemicalConstants.DEUTERIUM);
-    public static final DeferredChemical<Chemical> TRITIUM = CHEMICALS.register("tritium", 0xFF64FF70);
-    public static final DeferredChemical<Chemical> FUSION_FUEL = CHEMICALS.register("fusion_fuel", 0xFF7E007D);
+    public static final ResourceKey<Chemical> DEUTERIUM = dataKey(GeneratorsChemicalConstants.DEUTERIUM);
+    public static final ResourceKey<Chemical> TRITIUM = CHEMICALS.dataKey("tritium");
+    public static final ResourceKey<Chemical> FUSION_FUEL = CHEMICALS.dataKey("fusion_fuel");
+
+    private static ResourceKey<Chemical> dataKey(IChemicalConstant constant) {
+        return CHEMICALS.dataKey(constant.getName());
+    }
 }

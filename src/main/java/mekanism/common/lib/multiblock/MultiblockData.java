@@ -35,9 +35,11 @@ import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.BlockGetter;
@@ -233,6 +235,10 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     @Nullable
     public Level getLevel() {
         return worldSupplier.get();
+    }
+
+    protected Supplier<@Nullable RegistryAccess> getRegistryAccess() {
+        return MekanismUtils.registryAccess(worldSupplier);
     }
 
     protected boolean shouldCache(CacheSubstance<?> type) {

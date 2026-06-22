@@ -2,7 +2,7 @@
   "type": "mekanism:crystallizing",
   "input": {
     "amount": 200,
-    "chemical": "mekanism:clean_tin"
+    "ingredient": "mekanism:clean_tin"
   },
   "output": {
     "id": "mekanism:crystal_tin"

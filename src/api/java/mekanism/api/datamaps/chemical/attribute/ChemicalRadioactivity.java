@@ -15,7 +15,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 
-/// A [`chemical`][MekanismAPI#CHEMICAL_REGISTRY] data map that allows defining radioactivity values for a chemical. If the radiation manager is enabled, this attribute
+/// A [`chemical`][MekanismAPI#CHEMICAL_REGISTRY_NAME] data map that allows defining radioactivity values for a chemical. If the radiation manager is enabled, this attribute
 /// *requires validation*, meaning chemical containers won't be able to accept chemicals with this attribute by default. Radioactivity is measured in Sv/h.
 ///
 /// @param radioactivity Radioactivity of the chemical measured in Sv/h, must be greater than [`baseline radiation`][IRadiationManager#baselineRadiation()].
@@ -29,10 +29,10 @@ public record ChemicalRadioactivity(double radioactivity) implements IChemicalAt
     public static final Identifier ID = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_radioactivity");
 
     private static final Codec<Double> RADIATION_CODEC = Codec.doubleRange(IRadiationManager.INSTANCE.baselineRadiation(), Double.MAX_VALUE).validate(val -> {
-        if (val <= IRadiationManager.INSTANCE.baselineRadiation()) {
-            return DataResult.error(() -> "Radiation must be greater than the baseline value");
+        if (val > IRadiationManager.INSTANCE.baselineRadiation()) {
+            return DataResult.success(val);
         }
-        return DataResult.success(val);
+        return DataResult.error(() -> "Radiation must be greater than the baseline value");
     });
     /// Compressed codec for serializing and deserializing chemical radioactivity for use over the network.
     public static final Codec<ChemicalRadioactivity> RADIOACTIVITY_CODEC = RADIATION_CODEC.xmap(ChemicalRadioactivity::new, ChemicalRadioactivity::radioactivity);

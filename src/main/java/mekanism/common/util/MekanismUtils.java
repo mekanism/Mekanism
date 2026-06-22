@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.LongSupplier;
+import java.util.function.Supplier;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.api.Upgrade;
@@ -47,6 +48,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -72,6 +74,7 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BubbleColumnBlock;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -144,6 +147,13 @@ public final class MekanismUtils {
         //Note: Ideally we would have some way to get which player is in question on the server
         // as this is mostly used in tooltips, but odds are it won't end up being called
         return null;
+    }
+
+    public static Supplier<@Nullable RegistryAccess> registryAccess(Supplier<? extends @Nullable LevelReader> levelSupplier) {
+        return () -> {
+            LevelReader level = levelSupplier.get();
+            return level == null ? null : level.registryAccess();
+        };
     }
 
     /// Gets the creator's modid if it exists, or falls back to the registry name.

@@ -47,6 +47,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -155,6 +156,7 @@ public class ClientTickHandler {
         if (minecraft.level == null || minecraft.player == null) {
             return;
         }
+        RegistryAccess registryAccess = minecraft.level.registryAccess();
         boolean tickingNormally = MekanismRenderer.isRunningNormally();
         HolidayManager.notify(minecraft.player);
 
@@ -200,7 +202,7 @@ public class ClientTickHandler {
                 JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, p -> p.input.keyPresses.jump());
                 MekanismClient.updateKey(minecraft.player.input.keyPresses.jump(), KeySync.ASCEND);
                 try (Transaction simulation = Transaction.openRoot()) {
-                    double jetpackThrust = ((IJetpackItem) jetpack.getResource().getItem()).useJetpackFuel(jetpack, primaryJetpack, simulation);
+                    double jetpackThrust = ((IJetpackItem) jetpack.getResource().getItem()).useJetpackFuel(registryAccess, jetpack, primaryJetpack, simulation);
                     if (jetpackThrust > 0 && jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, p -> p.input.keyPresses.jump())) {
                         minecraft.player.resetFallDistance();
                     }

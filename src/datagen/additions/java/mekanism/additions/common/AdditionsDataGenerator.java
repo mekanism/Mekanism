@@ -34,7 +34,7 @@ public class AdditionsDataGenerator {
         MekanismDataGenerator.bootstrapConfigs(MekanismAdditions.MODID);
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
-        AdditionsDatapackRegistryProvider drProvider = new AdditionsDatapackRegistryProvider(output, event.getLookupProvider());
+        AdditionsDatapackRegistryProvider drProvider = new AdditionsDatapackRegistryProvider(output, MekanismDataGenerator.getLookupProvider());
         CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
         ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         //Client side data generators

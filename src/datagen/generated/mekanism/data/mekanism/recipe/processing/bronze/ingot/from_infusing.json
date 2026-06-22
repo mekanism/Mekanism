@@ -2,7 +2,7 @@
   "type": "mekanism:metallurgic_infusing",
   "chemical_input": {
     "amount": 10,
-    "tag": "mekanism:tin"
+    "ingredient": "#mekanism:tin"
   },
   "item_input": {
     "count": 3,

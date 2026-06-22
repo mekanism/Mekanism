@@ -2,7 +2,7 @@
   "type": "mekanism:washing",
   "chemical_input": {
     "amount": 1,
-    "chemical": "mekanism:dirty_lead"
+    "ingredient": "mekanism:dirty_lead"
   },
   "fluid_input": {
     "amount": 5,

@@ -48,7 +48,7 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     //Enabled by default
     private boolean enabled = true;
     //late init, once added to a manager
-    protected Supplier<HolderLookup.@Nullable Provider> registryAccess = NO_ACCESS;
+    protected Supplier<? extends HolderLookup.@Nullable Provider> registryAccess = NO_ACCESS;
 
     protected BaseFilter() {
     }
@@ -96,7 +96,7 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     }
 
     @Override
-    public void setRegistryAccess(Supplier<HolderLookup.@Nullable Provider> registryAccess) {
+    public void setRegistryAccess(Supplier<? extends HolderLookup.@Nullable Provider> registryAccess) {
         this.registryAccess = registryAccess;
     }
 

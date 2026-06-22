@@ -70,12 +70,12 @@ class PigmentMixingRecipeProvider extends BaseSubRecipeProvider {
         addMix(consumer, EnumColor.GRAY, 1, EnumColor.BRIGHT_PINK, 4, EnumColor.PINK, basePath);*/
     }
 
-    private static void addMix(RecipeOutput consumer, EnumColor leftInput, int leftInputAmount, EnumColor rightInput, int rightInputAmount,
+    private void addMix(RecipeOutput consumer, EnumColor leftInput, int leftInputAmount, EnumColor rightInput, int rightInputAmount,
           EnumColor output, String basePath) {
         ChemicalChemicalToChemicalRecipeBuilder.pigmentMixing(
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.pick(leftInput), leftInputAmount),
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SIMPLE_PIGMENTS.pick(rightInput), rightInputAmount),
-              MekanismChemicals.SIMPLE_PIGMENTS.pick(output).asTemplate(leftInputAmount + rightInputAmount)
+              IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismChemicals.SIMPLE_PIGMENTS.pick(leftInput), leftInputAmount),
+              IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismChemicals.SIMPLE_PIGMENTS.pick(rightInput), rightInputAmount),
+              chemicalTemplate(MekanismChemicals.SIMPLE_PIGMENTS.pick(output), leftInputAmount + rightInputAmount)
         ).save(consumer, Mekanism.rl(basePath + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix()));
     }
 }

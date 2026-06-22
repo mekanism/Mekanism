@@ -2,7 +2,7 @@
   "type": "mekanism:reaction",
   "chemical_input": {
     "amount": 10,
-    "chemical": "mekanism:oxygen"
+    "ingredient": "mekanism:oxygen"
   },
   "duration": 60,
   "energy_required": 10,

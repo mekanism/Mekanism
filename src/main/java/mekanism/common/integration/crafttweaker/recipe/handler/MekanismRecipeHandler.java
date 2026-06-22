@@ -1,5 +1,6 @@
 package mekanism.common.integration.crafttweaker.recipe.handler;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
@@ -28,13 +29,14 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
-import mekanism.api.recipes.ingredients.chemical.TagChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.SimpleChemicalIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -129,15 +131,17 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
     }
 
     private static String convertChemicalIngredient(ChemicalIngredient ingredient, int amount) {
-        if (ingredient instanceof TagChemicalIngredient tagIngredient) {
-            KnownTag<Chemical> tag = CrTUtils.chemicalTags().tag(tagIngredient.tag());
-            if (amount == 1) {
-                return tag.getCommandString();
+        if (ingredient instanceof SimpleChemicalIngredient simple) {
+            if (simple.chemicalSet() instanceof HolderSet.Named<Chemical> named) {
+                KnownTag<Chemical> tag = CrTUtils.chemicalTags().tag(named.key());
+                if (amount == 1) {
+                    return tag.getCommandString();
+                }
+                return tag.withAmount(amount).getCommandString();
             }
-            return tag.withAmount(amount).getCommandString();
         }
         List<ICrTChemicalStack> list = new ArrayList<>();
-        for (Holder<Chemical> chemical : ingredient.getChemicalHolders()) {
+        for (Holder<Chemical> chemical : ingredient.chemicals()) {
             list.add(CrTUtils.fromChemical(chemical, 1));
         }
         if (list.size() == 1) {

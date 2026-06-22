@@ -2,7 +2,7 @@
   "type": "mekanism:washing",
   "chemical_input": {
     "amount": 1,
-    "chemical": "mekanism:dirty_copper"
+    "ingredient": "mekanism:dirty_copper"
   },
   "fluid_input": {
     "amount": 5,

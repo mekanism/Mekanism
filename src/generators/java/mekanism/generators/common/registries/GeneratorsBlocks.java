@@ -80,7 +80,7 @@ public class GeneratorsBlocks {
           BLOCKS.registerDetails("gas_burning_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.GAS_BURNING_GENERATOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
-                            .addBasic(MekanismGeneratorsConfig.generators.gbgTankCapacity, TileEntityGasGenerator.HAS_FUEL)
+                            .addBasic(MekanismGeneratorsConfig.generators.gbgTankCapacity, chemical -> chemical.getFuel(null) != null)
                             .build()
                       ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addChemicalFillSlot(0)

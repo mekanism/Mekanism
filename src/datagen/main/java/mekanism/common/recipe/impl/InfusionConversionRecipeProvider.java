@@ -46,39 +46,39 @@ class InfusionConversionRecipeProvider extends BaseSubRecipeProvider {
 
     private void addInfusionConversionBioRecipes(RecipeOutput consumer, String basePath) {
         //Bio fuel
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.FUELS_BIO), MekanismChemicals.BIO.asTemplate(5), basePath, "from_bio_fuel");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.FUELS_BIO), chemicalTemplate(MekanismChemicals.BIO, 5), basePath, "from_bio_fuel");
         //Bio fuel block
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.FUELS_BLOCK_BIO), MekanismChemicals.BIO.asTemplate(5 * 9), basePath, "from_bio_fuel_block");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.FUELS_BLOCK_BIO), chemicalTemplate(MekanismChemicals.BIO, 5 * 9), basePath, "from_bio_fuel_block");
     }
 
     private void addInfusionConversionCarbonRecipes(RecipeOutput consumer, String basePath) {
         //Charcoal Block
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.BlockItems.STORAGE_BLOCKS_CHARCOAL), MekanismChemicals.CARBON.asTemplate(180), basePath, "from_charcoal_block");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.BlockItems.STORAGE_BLOCKS_CHARCOAL), chemicalTemplate(MekanismChemicals.CARBON, 180), basePath, "from_charcoal_block");
         //Charcoal
         infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
               this.items,
               MekanismTags.Items.DUSTS_CHARCOAL,
               ItemIds.CHARCOAL
-        )), MekanismChemicals.CARBON.asTemplate(20), basePath, "from_charcoal");
+        )), chemicalTemplate(MekanismChemicals.CARBON, 20), basePath, "from_charcoal");
 
         //Coal Block
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, Tags.Items.STORAGE_BLOCKS_COAL), MekanismChemicals.CARBON.asTemplate(90), basePath, "from_coal_block");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, Tags.Items.STORAGE_BLOCKS_COAL), chemicalTemplate(MekanismChemicals.CARBON, 90), basePath, "from_coal_block");
         //Coal
         infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
               this.items,
               MekanismTags.Items.DUSTS_COAL,
               ItemIds.COAL
-        )), MekanismChemicals.CARBON.asTemplate(10), basePath, "from_coal");
+        )), chemicalTemplate(MekanismChemicals.CARBON, 10), basePath, "from_coal");
 
         //Enriched
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_CARBON), MekanismChemicals.CARBON.asTemplate(80), basePath, "from_enriched");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_CARBON), chemicalTemplate(MekanismChemicals.CARBON, 80), basePath, "from_enriched");
     }
 
     private void addInfusionConversionDiamondRecipes(RecipeOutput consumer, String basePath) {
         //Dust
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_DIAMOND), MekanismChemicals.DIAMOND.asTemplate(10), basePath, "from_dust");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_DIAMOND), chemicalTemplate(MekanismChemicals.DIAMOND, 10), basePath, "from_dust");
         //Enriched
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_DIAMOND), MekanismChemicals.DIAMOND.asTemplate(80), basePath, "from_enriched");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_DIAMOND), chemicalTemplate(MekanismChemicals.DIAMOND, 80), basePath, "from_enriched");
     }
 
     private void addInfusionConversionFungiRecipes(RecipeOutput consumer, String basePath) {
@@ -89,36 +89,36 @@ class InfusionConversionRecipeProvider extends BaseSubRecipeProvider {
               //TODO: If these get added to the mushroom tag then we can remove them from here
               BlockItemIds.WARPED_FUNGUS.item(),
               BlockItemIds.CRIMSON_FUNGUS.item()
-        )), MekanismChemicals.FUNGI.asTemplate(10), basePath, "from_mushrooms");
+        )), chemicalTemplate(MekanismChemicals.FUNGI, 10), basePath, "from_mushrooms");
     }
 
     private void addInfusionConversionRedstoneRecipes(RecipeOutput consumer, String basePath) {
         //Block
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, Tags.Items.STORAGE_BLOCKS_REDSTONE), MekanismChemicals.REDSTONE.asTemplate(90), basePath, "from_block");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, Tags.Items.STORAGE_BLOCKS_REDSTONE), chemicalTemplate(MekanismChemicals.REDSTONE, 90), basePath, "from_block");
         //Dust
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, Tags.Items.DUSTS_REDSTONE), MekanismChemicals.REDSTONE.asTemplate(10), basePath, "from_dust");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, Tags.Items.DUSTS_REDSTONE), chemicalTemplate(MekanismChemicals.REDSTONE, 10), basePath, "from_dust");
         //Enriched
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_REDSTONE), MekanismChemicals.REDSTONE.asTemplate(80), basePath, "from_enriched");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_REDSTONE), chemicalTemplate(MekanismChemicals.REDSTONE, 80), basePath, "from_enriched");
     }
 
     private void addInfusionConversionRefinedObsidianRecipes(RecipeOutput consumer, String basePath) {
         //Dust
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_REFINED_OBSIDIAN), MekanismChemicals.REFINED_OBSIDIAN.asTemplate(10), basePath, "from_dust");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_REFINED_OBSIDIAN), chemicalTemplate(MekanismChemicals.REFINED_OBSIDIAN, 10), basePath, "from_dust");
         //Enriched
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_OBSIDIAN), MekanismChemicals.REFINED_OBSIDIAN.asTemplate(80), basePath, "from_enriched");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_OBSIDIAN), chemicalTemplate(MekanismChemicals.REFINED_OBSIDIAN, 80), basePath, "from_enriched");
     }
 
     private void addInfusionConversionGoldRecipes(RecipeOutput consumer, String basePath) {
         //Dust
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD)), MekanismChemicals.GOLD.asTemplate(10), basePath, "from_dust");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD)), chemicalTemplate(MekanismChemicals.GOLD, 10), basePath, "from_dust");
         //Enriched
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_GOLD), MekanismChemicals.GOLD.asTemplate(80), basePath, "from_enriched");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_GOLD), chemicalTemplate(MekanismChemicals.GOLD, 80), basePath, "from_enriched");
     }
 
     private void addInfusionConversionTinRecipes(RecipeOutput consumer, String basePath) {
         //Dust
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.TIN)), MekanismChemicals.TIN.asTemplate(10), basePath, "from_dust");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.TIN)), chemicalTemplate(MekanismChemicals.TIN, 10), basePath, "from_dust");
         //Enriched
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_TIN), MekanismChemicals.TIN.asTemplate(80), basePath, "from_enriched");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_TIN), chemicalTemplate(MekanismChemicals.TIN, 80), basePath, "from_enriched");
     }
 }

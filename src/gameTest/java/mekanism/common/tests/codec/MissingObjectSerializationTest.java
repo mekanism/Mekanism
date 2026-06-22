@@ -1,6 +1,7 @@
 
 package mekanism.common.tests.codec;
 
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.component.FormulaComponent;
@@ -48,7 +49,7 @@ public class MissingObjectSerializationTest {
     @TestHolder(description = "Tests to make sure that attached chemicals load as best as they can when a chemical is missing.")
     public static void testAttachedChemicals(final MissingObjectTestHelper helper) {
         helper.succeedIfAttachedCycle(MekanismDataComponents.ATTACHED_CHEMICALS.get(), LargeResourceStack.CHEMICAL_HELPER, helper.failureChemicalType(),
-              MekanismChemicals.ANTIMATTER.asResource(), MekanismChemicals.GOLD.asResource());
+              MekanismChemicals.ANTIMATTER, MekanismChemicals.GOLD, ChemicalResource::of);
     }
 
     @GameTest

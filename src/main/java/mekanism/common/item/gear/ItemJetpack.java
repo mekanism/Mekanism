@@ -18,11 +18,12 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
-import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -46,7 +47,7 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
     }
 
     @Override
-    protected Holder<Chemical> getChemicalType() {
+    protected ResourceKey<Chemical> getChemicalType() {
         return MekanismChemicals.HYDROGEN;
     }
 
@@ -78,12 +79,16 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
     }
 
     @Override
-    public <ITEM extends TypedInstance<Item> & DataComponentGetter> double useJetpackFuel(ItemAccess itemAccess, ITEM primaryInstance, TransactionContext transaction) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> double useJetpackFuel(RegistryAccess registryAccess, ItemAccess itemAccess, ITEM primaryInstance, TransactionContext transaction) {
+        ChemicalResource fuel = ChemicalUtils.getResource(registryAccess, getChemicalType());
+        if (fuel.isEmpty()) {
+            return 0;
+        }
         ResourceHandler<ChemicalResource> chemicalHandler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(itemAccess));
         if (chemicalHandler == null) {
             return 0;
         }
-        return 0.15 * chemicalHandler.extract(ChemicalResource.of(getChemicalType()), 1, transaction);
+        return 0.15 * chemicalHandler.extract(fuel, 1, transaction);
     }
 
     @Override
@@ -95,7 +100,7 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
             ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
             if (handler != null && handler.size() > 0) {
                 stored = handler.getAmountAsLong(0);
-                capacity = handler.getCapacityAsLong(0, ChemicalResource.of(getChemicalType()));
+                capacity = handler.getCapacityAsLong(0, handler.getResource(0));
             }
             list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored, String.format(Locale.ROOT, "%.0f", 100.0 * stored / capacity)));
         }

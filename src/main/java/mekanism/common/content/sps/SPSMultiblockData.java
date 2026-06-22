@@ -9,7 +9,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.math.MathUtils;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
@@ -26,6 +26,7 @@ import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.tile.multiblock.TileEntitySPSPort;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
@@ -110,13 +111,13 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             int inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeededAsInt(ChemicalResource.EMPTY) - 1);
             double processable = (double) receivedEnergy / MekanismConfig.general.spsEnergyPerInput.get();
             if (processable + progress >= inputNeeded) {
-                processed = process(inputNeeded);
+                processed = process(world, inputNeeded);
                 progress = 0;
             } else {
                 processed = processable;
                 progress += processable;
                 int toProcess = MathUtils.clampToInt(progress);
-                int actualProcessed = process(toProcess);
+                int actualProcessed = process(world, toProcess);
                 if (actualProcessed < toProcess) {
                     //If we processed less than we intended to we need to adjust how much our values actually changed by
                     int processedDif = toProcess - actualProcessed;
@@ -178,7 +179,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         return ContainerType.CHEMICAL.getRedstoneSignalFromContainer(inputTank);
     }
 
-    private int process(int operations) {
+    private int process(ServerLevel level, int operations) {
         ChemicalResource inputResource = inputTank.resource();
         if (operations == 0 || inputResource.isEmpty()) {
             return 0;
@@ -190,7 +191,11 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
             if (totalProcessed >= inputPerAntimatter) {
                 int toAdd = totalProcessed / inputPerAntimatter;
-                if (toAdd == 0 || outputTank.insert(MekanismChemicals.ANTIMATTER.asResource(), toAdd, transaction, AutomationType.INTERNAL) < toAdd) {
+                if (toAdd == 0) {
+                    return 0;
+                }
+                ChemicalResource antimatter = ChemicalUtils.getResource(level.registryAccess(), MekanismChemicals.ANTIMATTER);
+                if (antimatter.isEmpty() || outputTank.insert(antimatter, toAdd, transaction, AutomationType.INTERNAL) < toAdd) {
                     return 0;
                 }
                 totalProcessed %= inputPerAntimatter;

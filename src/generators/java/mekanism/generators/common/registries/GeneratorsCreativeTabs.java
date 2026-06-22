@@ -24,18 +24,18 @@ public class GeneratorsCreativeTabs {
                 builder.backgroundTexture(MekanismGenerators.rl("textures/gui/creative_tab.png"))
                       .withSearchBar(50)//Allow our tabs to be searchable for convenience purposes
                       .withTabsBefore(MekanismCreativeTabs.MEKANISM.getId())
-                      .displayItems((_, output) -> {
-                          CreativeTabDeferredRegister.addToDisplay(GeneratorsItems.ITEMS, output);
-                          CreativeTabDeferredRegister.addToDisplay(GeneratorsBlocks.BLOCKS, output);
-                          CreativeTabDeferredRegister.addToDisplay(GeneratorsFluids.FLUIDS, output);
+                      .displayItems((displayParameters, output) -> {
+                          CreativeTabDeferredRegister.addToDisplay(GeneratorsItems.ITEMS, displayParameters, output);
+                          CreativeTabDeferredRegister.addToDisplay(GeneratorsBlocks.BLOCKS, displayParameters, output);
+                          CreativeTabDeferredRegister.addToDisplay(GeneratorsFluids.FLUIDS, displayParameters, output);
                       })
     );
 
     private static void addToExistingTabs(BuildCreativeModeTabContentsEvent event) {
         ResourceKey<CreativeModeTab> tabKey = event.getTabKey();
         if (tabKey == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            CreativeTabDeferredRegister.addToDisplay(event, GeneratorsBlocks.HEAT_GENERATOR, GeneratorsBlocks.SOLAR_GENERATOR, GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR,
-                  GeneratorsBlocks.WIND_GENERATOR, GeneratorsBlocks.BIO_GENERATOR, GeneratorsBlocks.GAS_BURNING_GENERATOR);
+            CreativeTabDeferredRegister.addToDisplay(event, GeneratorsBlocks.HEAT_GENERATOR, GeneratorsBlocks.SOLAR_GENERATOR,
+                  GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, GeneratorsBlocks.WIND_GENERATOR, GeneratorsBlocks.BIO_GENERATOR, GeneratorsBlocks.GAS_BURNING_GENERATOR);
         } else if (tabKey == CreativeModeTabs.REDSTONE_BLOCKS) {
             for (Holder<Item> item : GeneratorsBlocks.BLOCKS.getSecondaryEntries()) {
                 //Note: This should always be a block item

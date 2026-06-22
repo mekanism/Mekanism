@@ -30,7 +30,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.api.recipes.ingredients.chemical.TagChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.SimpleChemicalIngredient;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -39,6 +39,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -250,13 +251,12 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         addSupportedConversion(ChemicalStackIngredient.class, ChemicalStackIngredient.class,
               (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(CrTConstants.CLASS_CHEMICAL_STACK_INGREDIENT), CrTChemicalStack::new, CrTUtils.chemicalTags()),
               (_, ingredient) -> {
-                  if (ingredient.ingredient() instanceof TagChemicalIngredient tagged) {
-                      return CrTUtils.chemicalTags().tag(tagged.tag()).withAmount(ingredient.amount()).getCommandString();
-                  } else {
-                      List<ChemicalStack> chemicals = ingredient.getRepresentations(ContextMap.EMPTY);
-                      if (chemicals.size() == 1) {
-                          return new CrTChemicalStack(chemicals.getFirst()).getCommandString();
-                      }
+                  if (ingredient.ingredient() instanceof SimpleChemicalIngredient simple && simple.chemicalSet() instanceof HolderSet.Named<Chemical> named) {
+                      return CrTUtils.chemicalTags().tag(named.key()).withAmount(ingredient.amount()).getCommandString();
+                  }
+                  List<ChemicalStack> chemicals = ingredient.getRepresentations(ContextMap.EMPTY);
+                  if (chemicals.size() == 1) {
+                      return new CrTChemicalStack(chemicals.getFirst()).getCommandString();
                   }
                   return null;
               });
@@ -264,8 +264,8 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     private String getIngredientRepresentation(ChemicalStackIngredient ingredient, String ingredientType, Function<ChemicalStack, CommandStringDisplayable> singleDescription,
           KnownTagManager<Chemical> tagManager) {
-        if (ingredient.ingredient() instanceof TagChemicalIngredient tagged) {
-            String tagRepresentation = tagManager.tag(tagged.tag()).getCommandString();
+        if (ingredient.ingredient() instanceof SimpleChemicalIngredient simple && simple.chemicalSet() instanceof HolderSet.Named<Chemical> named) {
+            String tagRepresentation = tagManager.tag(named.key()).getCommandString();
             return ingredientType + ".from(" + tagRepresentation + ", " + ingredient.amount() + ")";
         }
         List<ChemicalStack> chemicals = ingredient.getRepresentations(ContextMap.EMPTY);

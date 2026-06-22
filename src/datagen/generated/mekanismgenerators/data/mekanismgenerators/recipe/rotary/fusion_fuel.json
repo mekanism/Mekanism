@@ -2,7 +2,7 @@
   "type": "mekanism:rotary",
   "chemical_input": {
     "amount": 1,
-    "tag": "mekanism:fusion_fuel"
+    "ingredient": "#mekanism:fusion_fuel"
   },
   "chemical_output": {
     "amount": 1,

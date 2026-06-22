@@ -53,7 +53,7 @@ public class GuiPaintingMachine extends GuiConfigurableTile<TileEntityPaintingMa
                 //Should never actually be null, but just in case check it to make intellij happy
                 return CommonColors.WHITE;
             }
-            return tile.pigmentTank.resource().getChemicalColorRepresentation();
+            return tile.pigmentTank.resource().value().colorRepresentation();
         }
 
         @Override

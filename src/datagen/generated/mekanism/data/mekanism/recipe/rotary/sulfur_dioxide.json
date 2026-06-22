@@ -2,7 +2,7 @@
   "type": "mekanism:rotary",
   "chemical_input": {
     "amount": 1,
-    "chemical": "mekanism:sulfur_dioxide"
+    "ingredient": "mekanism:sulfur_dioxide"
   },
   "chemical_output": {
     "amount": 1,

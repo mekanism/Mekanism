@@ -96,9 +96,9 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
     }
 
     private void addGases() {
-        add(GeneratorsChemicals.DEUTERIUM, "Deuterium");
-        add(GeneratorsChemicals.FUSION_FUEL, "D-T Fuel");
-        add(GeneratorsChemicals.TRITIUM, "Tritium");
+        addChemical(GeneratorsChemicals.DEUTERIUM, "Deuterium");
+        addChemical(GeneratorsChemicals.FUSION_FUEL, "D-T Fuel");
+        addChemical(GeneratorsChemicals.TRITIUM, "Tritium");
     }
 
     private void addDamageSources() {

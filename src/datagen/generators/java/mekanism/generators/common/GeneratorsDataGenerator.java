@@ -32,7 +32,7 @@ public class GeneratorsDataGenerator {
         MekanismDataGenerator.bootstrapConfigs(MekanismGenerators.MODID);
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
-        GeneratorsDatapackRegistryProvider drProvider = new GeneratorsDatapackRegistryProvider(output, event.getLookupProvider());
+        GeneratorsDatapackRegistryProvider drProvider = new GeneratorsDatapackRegistryProvider(output, MekanismDataGenerator.getLookupProvider());
         CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
         ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         //Client side data generators

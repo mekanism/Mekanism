@@ -14,6 +14,7 @@ import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
@@ -24,7 +25,7 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
     private final Consumer<BuildCreativeModeTabContentsEvent> addToExistingTabs;
 
     public CreativeTabDeferredRegister(String modid) {
-        this(modid, event -> {
+        this(modid, _ -> {
         });
     }
 
@@ -55,21 +56,30 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
         });
     }
 
-    public static void addToDisplay(CreativeModeTab.Output output, Collection<? extends Holder<Item>> items, Predicate<Holder<Item>> shouldSkip) {
+    public static void addToDisplay(ItemDisplayParameters displayParameters, CreativeModeTab.Output output, Collection<? extends Holder<Item>> items, Predicate<Holder<Item>> shouldSkip) {
         for (Holder<Item> itemProvider : items) {
             if (!shouldSkip.test(itemProvider)) {
-                addToDisplay(output, itemProvider);
+                addToDisplay(displayParameters, output, itemProvider);
             }
         }
     }
 
+    public static void addToDisplay(BuildCreativeModeTabContentsEvent event, BlockRegistryObject<?, ?>... blocks) {
+        addToDisplay(event.getParameters(), event, blocks);
+    }
+
     @SuppressWarnings("unchecked")
-    public static void addToDisplay(CreativeModeTab.Output output, BlockRegistryObject<?, ?>... blocks) {
-        addToDisplay(output, Arrays.stream(blocks).map(BlockRegistryObject::getItemHolder).toArray(Holder[]::new));
+    public static void addToDisplay(ItemDisplayParameters displayParameters, CreativeModeTab.Output output, BlockRegistryObject<?, ?>... blocks) {
+        addToDisplay(displayParameters, output, Arrays.stream(blocks).map(BlockRegistryObject::getItemHolder).toArray(Holder[]::new));
     }
 
     @SafeVarargs
-    public static void addToDisplay(CreativeModeTab.Output output, Holder<Item>... items) {
+    public static void addToDisplay(BuildCreativeModeTabContentsEvent event, Holder<Item>... items) {
+        addToDisplay(event.getParameters(), event, items);
+    }
+
+    @SafeVarargs
+    public static void addToDisplay(ItemDisplayParameters displayParameters, CreativeModeTab.Output output, Holder<Item>... items) {
         CreativeModeTab.TabVisibility visibility;
         if (output instanceof BuildCreativeModeTabContentsEvent) {
             //If we are added from the event, only add the item to the parent tab, as we will already be contained in the search tab
@@ -84,29 +94,42 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
                 if (contents.addDefault()) {
                     output.accept(itemLike, visibility);
                 }
-                contents.addItems(item, stack -> output.accept(stack, visibility));
+                contents.addItems(displayParameters, item, stack -> output.accept(stack, visibility));
             } else {
                 output.accept(itemLike, visibility);
             }
         }
     }
 
-    public static void addToDisplay(ItemDeferredRegister register, CreativeModeTab.Output output) {
-        addToDisplay(output, register.getEntries(), ConstantPredicates.alwaysFalse());
+    public static void addToDisplay(ItemDeferredRegister register, BuildCreativeModeTabContentsEvent event) {
+        addToDisplay(register, event.getParameters(), event);
     }
 
-    public static void addToDisplay(BlockDeferredRegister register, CreativeModeTab.Output output) {
+    public static void addToDisplay(ItemDeferredRegister register, ItemDisplayParameters displayParameters, CreativeModeTab.Output output) {
+        addToDisplay(displayParameters, output, register.getEntries(), ConstantPredicates.alwaysFalse());
+    }
+
+    public static void addToDisplay(BlockDeferredRegister register, BuildCreativeModeTabContentsEvent event) {
+        addToDisplay(register, event.getParameters(), event);
+    }
+
+    public static void addToDisplay(BlockDeferredRegister register, ItemDisplayParameters displayParameters, CreativeModeTab.Output output) {
         //Don't add bounding blocks to the creative tab
-        addToDisplay(output, register.getSecondaryEntries(), MekanismBlocks.BOUNDING_BLOCK::secondaryKeyMatches);
+        addToDisplay(displayParameters, output, register.getSecondaryEntries(), MekanismBlocks.BOUNDING_BLOCK::secondaryKeyMatches);
     }
 
-    public static void addToDisplay(FluidDeferredRegister register, CreativeModeTab.Output output) {
-        addToDisplay(output, register.getBucketEntries(), ConstantPredicates.alwaysFalse());
+    public static void addToDisplay(FluidDeferredRegister register, BuildCreativeModeTabContentsEvent event) {
+        addToDisplay(register, event.getParameters(), event);
     }
 
+    public static void addToDisplay(FluidDeferredRegister register, ItemDisplayParameters displayParameters, CreativeModeTab.Output output) {
+        addToDisplay(displayParameters, output, register.getBucketEntries(), ConstantPredicates.alwaysFalse());
+    }
+
+    @FunctionalInterface
     public interface ICustomCreativeTabContents {
 
-        void addItems(Holder<Item> item, Consumer<ItemStack> addToTab);
+        void addItems(ItemDisplayParameters displayParameters, Holder<Item> item, Consumer<ItemStack> addToTab);
 
         default boolean addDefault() {
             return true;

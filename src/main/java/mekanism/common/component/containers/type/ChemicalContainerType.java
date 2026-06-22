@@ -17,6 +17,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -61,7 +62,7 @@ public class ChemicalContainerType extends ResourceContainerType<ChemicalResourc
 
     @Override
     public int getRGBDurabilityForDisplay(ChemicalResource chemicalType) {
-        return chemicalType.isEmpty() ? 0 : chemicalType.getChemicalColorRepresentation();
+        return chemicalType.isEmpty() ? 0 : chemicalType.value().colorRepresentation();
     }
 
     /// Dumps the contents of a container into the level, and then clears the container. If the level is `null`, this will instead just clear the contents.
@@ -89,12 +90,14 @@ public class ChemicalContainerType extends ResourceContainerType<ChemicalResourc
     @Nullable
     @Override
     public AttachedResources<ChemicalResource> copyFromTile(TileEntityMekanism tile, List<IChemicalTank> containers) {
+        Level level = tile.getLevel();
+        RegistryAccess registryAccess = level == null ? null : level.registryAccess();
         boolean skipRadioactive = RadiationManager.isGlobalRadiationEnabled() && tile.shouldDumpRadiation();
         boolean hasNonEmpty = false;
         List<LargeResourceStack<ChemicalResource>> stacks = new ArrayList<>(containers.size());
         for (IChemicalTank container : containers) {
             LargeResourceStack<ChemicalResource> stack;
-            if (skipRadioactive && container.resource().isRadioactive()) {
+            if (skipRadioactive && container.resource().isRadioactive(registryAccess)) {
                 stack = stackHelper().empty();
             } else {
                 stack = container.asStack();

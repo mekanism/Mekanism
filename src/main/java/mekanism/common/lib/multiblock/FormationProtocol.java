@@ -27,6 +27,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.InventoryUtils.ItemDropper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -87,6 +88,7 @@ public class FormationProtocol<T extends MultiblockData> {
         if (world == null) {
             return FormationResult.FAIL;
         }
+        RegistryAccess registryAccess = world.registryAccess();
         validator.init(world, manager, multiblockType, structure);
         if (!validator.precheck()) {
             return FormationResult.FAIL;
@@ -137,7 +139,7 @@ public class FormationProtocol<T extends MultiblockData> {
                     for (ObjectIterator<Object2LongMap.Entry<ChemicalResource>> iter = Object2LongMaps.fastIterator(rejectContents.rejectedChemicals); iter.hasNext(); ) {
                         Object2LongMap.Entry<ChemicalResource> rejectedChemical = iter.next();
                         //If we have a radioactive substance, we need to calculate how much radiation got vented
-                        radiation += rejectedChemical.getKey().getRadioactivity() * rejectedChemical.getLongValue();
+                        radiation += rejectedChemical.getKey().getRadioactivity(registryAccess) * rejectedChemical.getLongValue();
                     }
                     if (radiation > 0) {
                         IRadiationManager.INSTANCE.radiate(world, structureFound.getBounds().getCenter(), radiation);

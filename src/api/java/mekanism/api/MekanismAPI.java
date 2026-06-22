@@ -8,15 +8,13 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.robit.RobitSkin;
-import net.minecraft.core.DefaultedRegistry;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 public class MekanismAPI {
@@ -37,19 +35,24 @@ public class MekanismAPI {
         return Identifier.fromNamespaceAndPath(MEKANISM_MODID, path);
     }
 
-    private static <T> ResourceKey<Registry<T>> registryKey(@SuppressWarnings("unused") Class<T> compileTimeTypeValidator, String path) {
+    private static <T> ResourceKey<Registry<T>> registryKey(@SuppressWarnings("unused") @Nullable Class<T> compileTimeTypeValidator, String path) {
         return ResourceKey.createRegistryKey(rl(path));
     }
 
-    private static <T> ResourceKey<Registry<MapCodec<? extends T>>> codecRegistryKey(@SuppressWarnings("unused") Class<T> compileTimeTypeValidator, String path) {
+    private static <T> ResourceKey<Registry<MapCodec<? extends T>>> codecRegistryKey(@SuppressWarnings("unused") @Nullable Class<T> compileTimeTypeValidator, String path) {
         return ResourceKey.createRegistryKey(rl(path));
     }
+    //TODO - 26.2: Restructure these keys so that they are in their own class, and the registries are also in their own class
 
-    /// Gets the [ResourceKey] representing the name of the Registry for [`chemicals`][Chemical].
+    /// Gets the [ResourceKey] representing the name of the Datapack Registry for [`chemicals`][Chemical].
     ///
-    /// @apiNote When registering [`chemicals`][Chemical] using [DeferredRegister], use this field to get access to the [ResourceKey].
     /// @since 10.7.0
-    public static final ResourceKey<Registry<Chemical>> CHEMICAL_REGISTRY_NAME = registryKey(Chemical.class, "chemical");
+    public static final ResourceKey<Registry<Chemical>> CHEMICAL_REGISTRY_NAME = registryKey(Chemical.class, "chemical");//TODO - 26.2: Docs on how to register chemicals
+    /// Gets the [ResourceKey] representing the name of the Registry for [`chemicals`][Chemical] serializers.
+    ///
+    /// @apiNote When registering [`chemicals`][Chemical] serializers using [DeferredRegister], use this field to get access to the [ResourceKey].
+    /// @since 10.8.0
+    public static final ResourceKey<Registry<MapCodec<? extends Chemical>>> CHEMICAL_SERIALIZER_REGISTRY_NAME = codecRegistryKey(Chemical.class, "chemical_serializer");
 
     /// Constant location representing the name all empty chemicals will be registered under.
     ///
@@ -66,8 +69,8 @@ public class MekanismAPI {
     ///
     /// @apiNote When registering [`modules`][ModuleData] using [DeferredRegister], use this field to get access to the [ResourceKey].
     /// @since 10.4.0
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static final ResourceKey<Registry<ModuleData<?>>> MODULE_REGISTRY_NAME = registryKey((Class) ModuleData.class, "module");
+    public static final ResourceKey<Registry<ModuleData<?>>> MODULE_REGISTRY_NAME = registryKey(null, "module");
+
     /// Gets the [ResourceKey] representing the name of the Datapack Registry for [`robit skins`][RobitSkin].
     ///
     /// @since 10.4.0
@@ -78,13 +81,11 @@ public class MekanismAPI {
     /// @since 10.4.0
     public static final ResourceKey<Registry<MapCodec<? extends RobitSkin>>> ROBIT_SKIN_SERIALIZER_REGISTRY_NAME = codecRegistryKey(RobitSkin.class, "robit_skin_serializer");
 
-    /// Gets the Registry for [Chemical].
+    /// Gets the Registry for [Chemical] serializers.
     ///
-    /// @see #CHEMICAL_REGISTRY_NAME
-    /// @since 10.7.0
-    public static final DefaultedRegistry<Chemical> CHEMICAL_REGISTRY = (DefaultedRegistry<Chemical>) new RegistryBuilder<>(CHEMICAL_REGISTRY_NAME)
-          .defaultKey(EMPTY_CHEMICAL_KEY)
-          .sync(true)
+    /// @see #CHEMICAL_SERIALIZER_REGISTRY_NAME
+    /// @since 10.8.0
+    public static final Registry<MapCodec<? extends Chemical>> CHEMICAL_SERIALIZER_REGISTRY = new RegistryBuilder<>(CHEMICAL_SERIALIZER_REGISTRY_NAME)
           .create();
 
     /// Gets the Registry for [ChemicalIngredient] type serializers.
@@ -108,11 +109,6 @@ public class MekanismAPI {
     /// @since 10.5.0
     public static final Registry<MapCodec<? extends RobitSkin>> ROBIT_SKIN_SERIALIZER_REGISTRY = new RegistryBuilder<>(ROBIT_SKIN_SERIALIZER_REGISTRY_NAME)
           .create();
-
-    /// Holder for the empty Chemical instance.
-    ///
-    /// @since 10.7.11
-    public static final Holder<Chemical> EMPTY_CHEMICAL_HOLDER = DeferredHolder.create(EMPTY_CHEMICAL_KEY);
 
     @Internal
     private static final ClassLoader SERVICE_CL = MekanismAPI.class.getClassLoader();

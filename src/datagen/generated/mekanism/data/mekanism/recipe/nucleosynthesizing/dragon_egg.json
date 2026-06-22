@@ -2,7 +2,7 @@
   "type": "mekanism:nucleosynthesizing",
   "chemical_input": {
     "amount": 4,
-    "chemical": "mekanism:antimatter"
+    "ingredient": "mekanism:antimatter"
   },
   "duration": 1000,
   "item_input": {

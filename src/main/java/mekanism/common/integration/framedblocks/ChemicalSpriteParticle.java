@@ -30,7 +30,7 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
         this.vo = random.nextFloat() * 3F;
         this.brightness = 0;
 
-        int tint = chemical.getChemicalTint();
+        int tint = chemical.value().tint();
         this.rCol = 0.6F * ARGB.redFloat(tint);
         this.gCol = 0.6F * ARGB.greenFloat(tint);
         this.bCol = 0.6F * ARGB.blueFloat(tint);

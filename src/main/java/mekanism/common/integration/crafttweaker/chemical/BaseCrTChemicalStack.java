@@ -4,7 +4,7 @@ import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.util.RegistryUtils;
+import org.jspecify.annotations.Nullable;
 
 public abstract class BaseCrTChemicalStack implements ICrTChemicalStack {
 
@@ -20,7 +20,7 @@ public abstract class BaseCrTChemicalStack implements ICrTChemicalStack {
         return new StringBuilder().append('<')
               .append(CrTConstants.BRACKET_CHEMICAL)
               .append(':')
-              .append(RegistryUtils.getName(stack.typeHolder(), MekanismAPI.CHEMICAL_REGISTRY))
+              .append(stack.typeHolder().unwrapKey().orElse(MekanismAPI.EMPTY_CHEMICAL_KEY).identifier())
               .append('>');
     }
 

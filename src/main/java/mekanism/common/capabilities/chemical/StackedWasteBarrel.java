@@ -3,9 +3,8 @@ package mekanism.common.capabilities.chemical;
 import java.util.Objects;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
 import mekanism.api.functions.ConstantPredicates;
@@ -13,8 +12,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.util.WorldUtils;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 public class StackedWasteBarrel extends VariableCapacityChemicalTank {
 
@@ -25,8 +24,9 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank {
         }
 
         @Override
-        public boolean process(Chemical chemical) {
-            return chemical.isRadioactive();
+        public boolean process(ChemicalResource chemical) {
+            //TODO: Should we try to get the registry access in order to better support direct holders? It probably isn't worth the effort
+            return chemical.isRadioactive(null);
         }
     };
 

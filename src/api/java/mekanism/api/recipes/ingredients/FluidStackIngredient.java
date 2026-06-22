@@ -49,10 +49,6 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, FluidS
     /// @since 10.6.0
     public static FluidStackIngredient of(SizedFluidIngredient ingredient) {
         Objects.requireNonNull(ingredient, "FluidStackIngredients cannot be created from a null ingredient.");
-        //TODO - 26.2: Figure out how to validate against empty fluid ingredients?
-        /*if (ingredient.ingredient().isEmpty()) {
-            throw new IllegalArgumentException("FluidStackIngredients cannot be created using the empty ingredient.");
-        }*/
         return new FluidStackIngredient(ingredient);
     }
 

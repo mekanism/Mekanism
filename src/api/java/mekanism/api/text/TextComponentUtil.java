@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.Chemical;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -79,6 +80,7 @@ public class TextComponentUtil {
                 case HoverEvent event -> cachedStyle = cachedStyle.withHoverEvent(event);
                 case Block block -> current = block.getName().copy();
                 case Item item -> current = logLiteralItemUsage(item);
+                case Chemical chemical -> current = logLiteralChemicalUsage(chemical);
                 case ItemStack stack -> current = stack.getHoverName().copy();
                 case ItemStackTemplate template -> current = template.create().getHoverName().copy();
                 case ItemResource resource -> current = resource.getHoverName().copy();
@@ -209,6 +211,8 @@ public class TextComponentUtil {
                 current = block.getName().copy();
             } else if (component instanceof Item item) {
                 current = logLiteralItemUsage(item);
+            } else if (component instanceof Chemical chemical) {
+                current = logLiteralChemicalUsage(chemical);
             } else if (component instanceof ItemStack stack) {
                 current = stack.getHoverName().copy();
             } else if (component instanceof ItemStackTemplate template) {
@@ -323,5 +327,13 @@ public class TextComponentUtil {
             MekanismAPI.logger.error("Item instance ({}) passed directly to translate method", item, new Exception());
         }
         return item.getName(new ItemStack(item)).copy();
+    }
+
+    //TODO - 26.2: find and remove these?
+    private static MutableComponent logLiteralChemicalUsage(Chemical chemical) {
+        if (!FMLEnvironment.isProduction()) {
+            MekanismAPI.logger.error("Chemical instance ({}) passed directly to translate method", chemical, new Exception());
+        }
+        return getString(chemical.toString());
     }
 }

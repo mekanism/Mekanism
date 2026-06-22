@@ -2,7 +2,7 @@
   "type": "mekanism:rotary",
   "chemical_input": {
     "amount": 1,
-    "chemical": "mekanism:water_vapor"
+    "ingredient": "mekanism:water_vapor"
   },
   "chemical_output": {
     "amount": 1,

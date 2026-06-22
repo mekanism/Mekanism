@@ -7,10 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.DataGenSerializationConstants;
 import mekanism.common.Mekanism;
-import mekanism.common.registration.INamedEntry;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.HolderLookup;
@@ -20,6 +20,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -74,10 +75,10 @@ public abstract class BaseEmiDefaults implements DataProvider {
         addRecipe(output.getId());
     }
 
-    protected void addRotaryRecipe(INamedEntry gas) {
+    protected void addRotaryRecipe(ResourceKey<Chemical> chemical) {
         //Allow showing all gas -> fluid rotary recipes by default, in case someone needs a fluid variant that then it consistently gets them to the gas
         // But we don't bother with the decondensentrating ones
-        addUncheckedRecipe(RegistryUtils.synthetic(Identifier.fromNamespaceAndPath(modid, "rotary/" + gas.getName()), "condensentrating"));
+        addUncheckedRecipe(RegistryUtils.synthetic(Identifier.fromNamespaceAndPath(modid, "rotary/" + chemical.identifier().getPath()), "condensentrating"));
     }
 
     protected void addRecipe(String recipePath) {

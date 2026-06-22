@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalInstance;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
@@ -12,6 +13,7 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.RecipeUnlockedTrigger;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -139,7 +141,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         return ResourceKey.create(Registries.RECIPE, chemicalId(chemical));
     }
 
-    public static Identifier chemicalId(ChemicalInstance chemical) {
+    public static Identifier chemicalId(TypedInstance<Chemical> chemical) {
         return chemical.typeHolder().unwrapKey().orElseThrow().identifier();
     }
 }

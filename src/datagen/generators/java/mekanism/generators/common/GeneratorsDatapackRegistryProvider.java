@@ -1,8 +1,11 @@
 package mekanism.generators.common;
 
 import java.util.concurrent.CompletableFuture;
+import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.BasicChemical;
 import mekanism.common.registration.impl.MekanismDamageType;
 import mekanism.common.registries.BaseDatapackRegistryProvider;
+import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsDamageTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
@@ -20,5 +23,13 @@ public class GeneratorsDatapackRegistryProvider extends BaseDatapackRegistryProv
               for (MekanismDamageType damageType : GeneratorsDamageTypes.DAMAGE_TYPES.damageTypes()) {
                   context.register(damageType.key(), damageType.toVanilla());
               }
-          });
+          })
+          .add(MekanismAPI.CHEMICAL_REGISTRY_NAME, context -> {
+              for (GeneratorsChemicalConstants constant : GeneratorsChemicalConstants.values()) {
+                  registerConstant(context, MekanismGenerators.MODID, constant);
+              }
+              context.register(GeneratorsChemicals.TRITIUM, BasicChemical.defaultIcon(0xFF64FF70));
+              context.register(GeneratorsChemicals.FUSION_FUEL, BasicChemical.defaultIcon(0xFF7E007D));
+          })
+          ;
 }

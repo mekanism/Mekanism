@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.ModuleData;
+import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.EnumColorCollection;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.FormatSplitter.Component;
@@ -23,6 +25,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Util;
@@ -75,17 +78,17 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         add(configKey.toLanguageKey("module"), value);
     }
 
-    protected void addHolder(Holder<? extends IHasTranslationKey> key, String value) {
-        add(key.value(), value);
-    }
-
     public void add(BlockItemTagId tagKey, String name) {
         add(tagKey.item(), name);
         add(tagKey.block(), name);
     }
 
-    protected void add(EnumColorCollection<? extends IHasTranslationKey> blocks, String suffix) {
-        EnumColorCollection.zipApply(EnumColorCollection.VALUES, blocks, (color, block) -> add(block, color.getEnglishName() + " " + suffix));
+    protected void addChemicals(EnumColorCollection<ResourceKey<Chemical>> chemicals, String suffix) {
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, chemicals, (color, chemical) -> addChemical(chemical, color.getEnglishName() + " " + suffix));
+    }
+
+    protected void add(EnumColorCollection<? extends IHasTranslationKey> keys, String suffix) {
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, keys, (color, key) -> add(key, color.getEnglishName() + " " + suffix));
     }
 
     protected void add(IHasTranslationKey key, String value) {
@@ -116,6 +119,14 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         add(fluidRO.getBlock(), name);
         add(fluidRO.getBucket(), name + " Bucket");
         add(ItemTags.create(Tags.Items.BUCKETS.location().withSuffix("/" + fluidRO.getName())), name + " Buckets");
+    }
+
+    protected void addChemical(ResourceKey<Chemical> id, String value) {
+        add(Chemical.getTranslationKey(id), value);
+    }
+
+    protected void addRobitSkin(ResourceKey<RobitSkin> id, String value) {
+        add(RobitSkin.getTranslationKey(id), value);
     }
 
     protected void add(MekanismAdvancement advancement, String title, String description) {

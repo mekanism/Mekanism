@@ -32,7 +32,7 @@ public class ToolsDataGenerator {
         MekanismDataGenerator.bootstrapConfigs(MekanismTools.MODID);
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = MekanismDataGenerator.getLookupProvider();
         ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         //Client side data generators
         gen.addProvider(true, new ToolsLangProvider(output));
