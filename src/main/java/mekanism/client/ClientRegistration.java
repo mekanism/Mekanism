@@ -73,7 +73,6 @@ import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.model.ModelArmoredFreeRunners;
 import mekanism.client.model.ModelArmoredJetpack;
-import mekanism.client.model.ModelAtomicDisassembler;
 import mekanism.client.model.ModelFlamethrower;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelIndustrialAlarm;
@@ -118,7 +117,6 @@ import mekanism.client.render.item.RenderRobitItem;
 import mekanism.client.render.item.TransmitterTypeDecorator;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
-import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.client.render.item.gear.RenderJetpack;
@@ -301,7 +299,6 @@ public class ClientRegistration {
     public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(ModelJetpack.JETPACK_LAYER, ModelJetpack::createLayerDefinition);
         event.registerLayerDefinition(ModelArmoredJetpack.ARMORED_JETPACK_LAYER, ModelArmoredJetpack::createLayerDefinition);
-        event.registerLayerDefinition(ModelAtomicDisassembler.DISASSEMBLER_LAYER, ModelAtomicDisassembler::createLayerDefinition);
         event.registerLayerDefinition(RenderEnergyCube.CORE_LAYER, RenderEnergyCube::createCoreLayer);
         event.registerLayerDefinition(ModelFlamethrower.FLAMETHROWER_LAYER, ModelFlamethrower::createLayerDefinition);
         event.registerLayerDefinition(ModelArmoredFreeRunners.ARMORED_FREE_RUNNER_LAYER, ModelArmoredFreeRunners::createLayerDefinition);
@@ -333,7 +330,6 @@ public class ClientRegistration {
         event.register(Mekanism.rl("free_runner"), RenderFreeRunners.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("fluid_tank"), RenderFluidTankItem.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("jetpack"), RenderJetpack.Unbaked.MAP_CODEC);
-        event.register(Mekanism.rl("atomic_disassembler"), RenderAtomicDisassembler.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("flamethrower"), RenderFlameThrower.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("scuba_mask"), RenderScubaMask.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("scuba_tank"), RenderScubaTank.Unbaked.MAP_CODEC);

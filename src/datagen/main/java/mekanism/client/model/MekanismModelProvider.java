@@ -189,8 +189,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         simpleISTER(itemModels, MekanismItems.ARMORED_FREE_RUNNERS, RenderFreeRunners.ARMORED);
         simpleISTER(itemModels, MekanismItems.JETPACK, RenderJetpack.REGULAR);
         simpleISTER(itemModels, MekanismItems.ARMORED_JETPACK, RenderJetpack.ARMORED);
-        //simpleISTER(itemModels, MekanismItems.ATOMIC_DISASSEMBLER, RenderAtomicDisassembler.Unbaked.INSTANCE);
-        itemModels.declareCustomModelItem(MekanismItems.ATOMIC_DISASSEMBLER.asItem());
         simpleISTER(itemModels, MekanismItems.FLAMETHROWER, RenderFlameThrower.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismItems.SCUBA_MASK, RenderScubaMask.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismItems.SCUBA_TANK, RenderScubaTank.Unbaked.INSTANCE);
@@ -548,6 +546,7 @@ public class MekanismModelProvider extends BaseModelProvider {
         itemModels.declareCustomModelItem(MekanismItems.ADVANCED_CONTROL_CIRCUIT.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ADVANCED_TIER_INSTALLER.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ATOMIC_ALLOY.asItem());
+        itemModels.declareCustomModelItem(MekanismItems.ATOMIC_DISASSEMBLER.asItem());
         itemModels.declareCustomModelItem(MekanismItems.INFUSED_ALLOY.asItem());
         itemModels.declareCustomModelItem(MekanismItems.REINFORCED_ALLOY.asItem());
         itemModels.declareCustomModelItem(MekanismItems.BASIC_CONTROL_CIRCUIT.asItem());
