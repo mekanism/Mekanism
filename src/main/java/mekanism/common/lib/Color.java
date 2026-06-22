@@ -20,19 +20,19 @@ public class Color {
 
     public int r() {
         //TODO - 26.2: Should this use ARGB.as8BitChannel() to be consistent with it flooring instead of what we are doing which is rounding?
-        return (int) Math.round(r * 255D);
+        return (int) Math.round(r * 0xFF);
     }
 
     public int g() {
-        return (int) Math.round(g * 255D);
+        return (int) Math.round(g * 0xFF);
     }
 
     public int b() {
-        return (int) Math.round(b * 255D);
+        return (int) Math.round(b * 0xFF);
     }
 
     public int a() {
-        return (int) Math.round(a * 255D);
+        return (int) Math.round(a * 0xFF);
     }
 
     public float rf() {
@@ -171,7 +171,7 @@ public class Color {
     }
 
     public static Color rgbi(int r, int g, int b) {
-        return rgbai(r, g, b, 255);
+        return rgbai(r, g, b, 0xFF);
     }
 
     public static Color rgbd(double r, double g, double b) {
@@ -186,6 +186,8 @@ public class Color {
         return rgbi(color[0], color[1], color[2]);
     }
 
+    /// @apiNote This does not seem to currently be replaceable by [net.minecraft.util.Mth#hsvToArgb(float, float, float, int)] due to the vanilla method breaking when
+    /// the hue is maxed. (Also the vanilla method has the hue be `hue / 360`)
     public static Color hsv(double h, double s, double v) {
         double hueIndex = (h % 360) / 60D;
         int i = (int) hueIndex;
@@ -250,7 +252,7 @@ public class Color {
 
     public interface ColorFunction {
 
-        ColorFunction HEAT = level -> rgbai((int) Math.min(200, 400 * level), (int) Math.max(0, 200 - Math.max(0, -200 + 400 * level)), 0, 255);
+        ColorFunction HEAT = level -> rgbai((int) Math.min(200, 400 * level), (int) Math.max(0, 200 - Math.max(0, -200 + 400 * level)), 0, 0xFF);
 
         static ColorFunction scale(Color from, Color to) {
             return level -> from.blend(to, level);

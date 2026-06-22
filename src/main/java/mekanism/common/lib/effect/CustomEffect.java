@@ -13,7 +13,7 @@ public class CustomEffect {
     protected final RandomSource rand = RandomSource.create();
 
     private Vec3 pos = new Vec3(0, 0, 0);
-    private Color color = Color.rgbai(255, 255, 255, 255);
+    private Color color = Color.WHITE;
     private float scale = 1F;
 
     protected int ticker;

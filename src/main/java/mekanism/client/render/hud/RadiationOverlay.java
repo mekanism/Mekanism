@@ -44,7 +44,7 @@ public class RadiationOverlay implements GuiLayer {
                 }
             }
             if (severity > IRadiationManager.INSTANCE.baselineRadiation()) {
-                int effect = (int) (prevRadiation * 255);
+                int effect = (int) (prevRadiation * 0xFF);
                 int color = (0x701E1E << 8) + effect;
                 MekanismRenderer.renderColorOverlay(graphics, 0, 0, color);
             }

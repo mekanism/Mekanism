@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.custom.module;
 
-import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.config.ModuleColorConfig;
@@ -80,7 +80,7 @@ class ColorSelection extends MiniElement<Integer> {
     @Override
     protected void click(double mouseX, double mouseY) {
         if (mouseOver(mouseX, mouseY, OFFSET_X, OFFSET_Y, 18, 18)) {
-            Consumer<Color> updatePreviewColor = null;
+            IntConsumer updatePreviewColor = null;
             Runnable previewReset = null;
             IModule<?> currentModule = parent.getCurrentModule();
             if (armorPreview != null && data.name().equals(ModuleColorModulationUnit.COLOR) && currentModule != null) {
@@ -93,19 +93,19 @@ class ColorSelection extends MiniElement<Integer> {
                     ItemStack stack = containerType.toStack();
                     //Replace the current preview with our copy
                     armorPreview.updatePreview(slot, stack);
-                    updatePreviewColor = c -> {
+                    updatePreviewColor = color -> {
                         ItemAccess itemAccess = ItemAccess.forStack(stack);
                         IModule<ModuleColorModulationUnit> module = IModuleHelper.INSTANCE.getModule(itemAccess.getResource(), MekanismModules.COLOR_MODULATION_UNIT);
                         if (module != null) {//Note: Should always be present
                             //Note: We can use the source data to ensure we have the correct config option, as with does not mutate it
-                            module.replaceModuleConfig(Minecraft.getInstance().level.registryAccess(), itemAccess, null, data.with(c.argb()));
+                            module.replaceModuleConfig(Minecraft.getInstance().level.registryAccess(), itemAccess, null, data.with(color));
                         }
                     };
                     previewReset = () -> armorPreview.resetToDefault(slot);
                 }
             }
             parent.gui().addWindow(new GuiColorWindow(parent.gui(), (parent.getGuiWidth() - 160) / 2, (parent.getGuiHeight() - 120) / 2, supportsAlpha,
-                              getColor(), color -> setData(color.argb()), armorPreview, updatePreviewColor, previewReset));
+                              getColor(), this::setData, armorPreview, updatePreviewColor, previewReset));
         }
     }
 }

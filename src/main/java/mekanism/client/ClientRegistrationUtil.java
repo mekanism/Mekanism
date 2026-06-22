@@ -74,7 +74,7 @@ public class ClientRegistrationUtil {
                 return 0xFF555555;
             }
             int[] rgbCode = color.getRgbCode();
-            return ARGB.color(255, rgbCode[0], rgbCode[1], rgbCode[2]);
+            return ARGB.color(0xFF, rgbCode[0], rgbCode[1], rgbCode[2]);
         }
         return -1;
     };*/

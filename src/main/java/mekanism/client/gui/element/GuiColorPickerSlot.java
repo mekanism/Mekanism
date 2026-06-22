@@ -1,6 +1,6 @@
 package mekanism.client.gui.element;
 
-import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiUtils;
@@ -18,7 +18,7 @@ import org.jspecify.annotations.Nullable;
 public class GuiColorPickerSlot extends GuiElement {
 
     private final Supplier<Color> supplier;
-    private final Consumer<Color> consumer;
+    private final IntConsumer consumer;
     private final boolean handlesAlpha;
 
     @Nullable
@@ -27,7 +27,7 @@ public class GuiColorPickerSlot extends GuiElement {
     private Color lastColor = null;
 
 
-    public GuiColorPickerSlot(IGuiWrapper gui, int x, int y, boolean handlesAlpha, Supplier<Color> supplier, Consumer<Color> consumer) {
+    public GuiColorPickerSlot(IGuiWrapper gui, int x, int y, boolean handlesAlpha, Supplier<Color> supplier, IntConsumer consumer) {
         super(gui, x, y, 18, 18);
         this.handlesAlpha = handlesAlpha;
         this.supplier = supplier;

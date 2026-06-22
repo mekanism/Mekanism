@@ -35,7 +35,7 @@ import org.jspecify.annotations.Nullable;
 public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, TileEntitySPSCasing, SPSRenderState> {
 
     private static final CustomEffect CORE = Util.make(new CustomEffect(MekanismUtils.getResource(ResourceType.RENDER, "energy_effect.png")),
-          core -> core.setColor(Color.rgbai(255, 255, 255, 240)));
+          core -> core.setColor(Color.rgbai(0xFF, 0xFF, 0xFF, 0xF0)));
     private static final Map<UUID, BoltRenderer> boltRendererMap = new HashMap<>();
     private static final float MIN_SCALE = 0.1F, MAX_SCALE = 4F;
     private static final RandomSource rand = RandomSource.create();

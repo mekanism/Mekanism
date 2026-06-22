@@ -134,20 +134,12 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
             from = colorFrom;
             to = ARGB.srgbLerp(progress, colorFrom, colorTo);
         }
-
-        AbstractTexture texture = minecraft.getTextureManager().getTexture(resource);
-        ScreenRectangle scissorArea = guiGraphics.peekScissorStack();
-        Matrix3x2f pose = new Matrix3x2f(guiGraphics.pose());
-        ScreenRectangle bounds = new ScreenRectangle(x, y, width, height).transformMaxBounds(pose);
-
         float u0 = uOffset / type.getTextureWidth();
         float u1 = (uOffset + width) / type.getTextureWidth();
         float v0 = vOffset / type.getTextureHeight();
         float v1 = (vOffset + height) / type.getTextureHeight();
-
         guiGraphics.submitGuiElementRenderState(new ProgressRenderState(x, y, x + width, y + height, u0, u1, v0, v1, from, to, type.isVertical(),
-              scissorArea, scissorArea == null ? bounds : scissorArea.intersection(bounds), TextureSetup.singleTexture(texture.getTextureView(), texture.getSampler()),
-              pose));
+              new Matrix3x2f(guiGraphics.pose()), minecraft.getTextureManager().getTexture(resource), guiGraphics.peekScissorStack()));
 
     }
 
@@ -159,8 +151,15 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
     }
 
     private record ProgressRenderState(int x0, int y0, int x1, int y1, float u0, float u1, float v0, float v1, int colorFrom, int colorTo, boolean vertical,
-                                       @Nullable ScreenRectangle scissorArea, @Nullable ScreenRectangle bounds, TextureSetup textureSetup, Matrix3x2fc pose)
-          implements GuiElementRenderState {
+                                       Matrix3x2fc pose, TextureSetup textureSetup, @Nullable ScreenRectangle scissorArea, @Nullable ScreenRectangle bounds
+    ) implements GuiElementRenderState {
+
+        public ProgressRenderState(int x0, int y0, int x1, int y1, float u0, float u1, float v0, float v1, int colorFrom, int colorTo, boolean vertical,
+              Matrix3x2fc pose, AbstractTexture texture, @Nullable ScreenRectangle scissorArea) {
+            ScreenRectangle bounds = new ScreenRectangle(x0, y0, x1 - x0, y1 - y0).transformMaxBounds(pose);
+            this(x0, y0, x1, y1, u0, u1, v0, v1, colorFrom, colorTo, vertical, pose, TextureSetup.singleTexture(texture.getTextureView(), texture.getSampler()),
+                  scissorArea, scissorArea == null ? bounds : scissorArea.intersection(bounds));
+        }
 
         @Override
         public void buildVertices(VertexConsumer vertexConsumer) {

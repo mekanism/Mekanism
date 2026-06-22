@@ -9,22 +9,23 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement.HUDColor;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.ARGB;
 
 public class GuiMekaSuitHelmetOptions extends GuiWindow {
 
     public GuiMekaSuitHelmetOptions(IGuiWrapper gui, int x, int y) {
         super(gui, x, y, 140, 140, WindowType.MEKA_SUIT_HELMET);
         interactionStrategy = InteractionStrategy.NONE;
-        addChild(new GuiColorPickerSlot(gui, relativeX + 12, relativeY + 32, false, HUDColor.REGULAR::getColor, color -> {
-            MekanismConfig.client.hudColor.set(color.rgb());
+        addChild(new GuiColorPickerSlot(gui, relativeX + 12, relativeY + 32, false, HUDColor.REGULAR::getColor, rgb -> {
+            MekanismConfig.client.hudColor.set(rgb);
             MekanismConfig.client.save();
         }));
-        addChild(new GuiColorPickerSlot(gui, relativeX + 61, relativeY + 32, false, HUDColor.WARNING::getColor, color -> {
-            MekanismConfig.client.hudWarningColor.set(color.rgb());
+        addChild(new GuiColorPickerSlot(gui, relativeX + 61, relativeY + 32, false, HUDColor.WARNING::getColor, rgb -> {
+            MekanismConfig.client.hudWarningColor.set(rgb);
             MekanismConfig.client.save();
         }));
-        addChild(new GuiColorPickerSlot(gui, relativeX + 110, relativeY + 32, false, HUDColor.DANGER::getColor, color -> {
-            MekanismConfig.client.hudDangerColor.set(color.rgb());
+        addChild(new GuiColorPickerSlot(gui, relativeX + 110, relativeY + 32, false, HUDColor.DANGER::getColor, rgb -> {
+            MekanismConfig.client.hudDangerColor.set(rgb);
             MekanismConfig.client.save();
         }));
 
