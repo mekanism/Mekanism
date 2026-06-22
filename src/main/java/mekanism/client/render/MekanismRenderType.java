@@ -7,13 +7,7 @@ import net.minecraft.resources.Identifier;
 
 public class MekanismRenderType {
 //TODO - 26.2 render types
-    /*private static final RenderStateShard.TransparencyStateShard BLADE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("mek_blade_transparency", () -> {
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(SourceFactor.ONE, DestFactor.ONE_MINUS_SRC_ALPHA);
-    }, () -> {
-        RenderSystem.disableBlend();
-        RenderSystem.defaultBlendFunc();
-    });
+    /*
     private static final RenderStateShard.TransparencyStateShard PARTICLE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("mek_particle_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -48,17 +42,6 @@ public static final RenderType MEK_LIGHTNING = RenderTypes.lightning();/*RenderT
         ).createCompositeState(true);
         return RenderType.create(name, DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 256, true, sortOnUpload, state);
     }*/
-
-    public static final Function<Identifier, RenderType> BLADE = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation -> {
-        RenderType.CompositeState state = RenderType.CompositeState.builder()
-              //Note: We use the eyes shader as it is effectively equivalent to NEW_ENTITY except takes fog into account for purposes of
-              // things like blindness and darkness
-              .setShaderState(RenderType.RENDERTYPE_EYES_SHADER)
-              .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-              .setTransparencyState(BLADE_TRANSPARENCY)
-              .createCompositeState(true);
-        return RenderType.create("mek_blade", DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 256, true, false, state);
-    });*/
 
     public static final Function<Identifier, RenderType> FLAME = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation -> {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
