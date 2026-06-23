@@ -27,7 +27,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
 
     @Override
     public boolean render(GuiGraphicsExtractor guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
-        if (stack.isEmpty() || !(stack.getItem() instanceof ItemMekaSuitArmor armor)) {
+        if (!(stack.getItem() instanceof ItemMekaSuitArmor armor)) {
             return false;
         }
         yOffset += 12;

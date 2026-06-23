@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
 import mekanism.client.gui.machine.GuiElectricMachine;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -181,7 +180,6 @@ public class ClientRegistrationUtil {
     public static void registerFluidExtensions(RegisterClientExtensionsEvent event, FluidDeferredRegister allFluids) {
         for (Holder<FluidType> fluidTypeEntry : allFluids.getFluidTypeEntries()) {
             if (fluidTypeEntry.value() instanceof MekanismFluidType fluidType) {
-                int fluidTint = fluidType.color;
                 event.registerFluidType(new IClientFluidTypeExtensions() {
 
                     @Override
@@ -192,16 +190,15 @@ public class ClientRegistrationUtil {
                     @Override
                     public void modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector4f fluidFogColor) {
                         //TODO - 26.2: is alpha needed?
-                        fluidFogColor.set(ARGB.redFloat(fluidTint), ARGB.greenFloat(fluidTint), ARGB.blueFloat(fluidTint));
+                        fluidFogColor.set(ARGB.redFloat(fluidType.color), ARGB.greenFloat(fluidType.color), ARGB.blueFloat(fluidType.color));
                     }
 
                     @Override
                     public void modifyFogRender(Camera camera, @Nullable FogEnvironment environment, float renderDistance, float partialTick, FogData fog) {
                         //Copy of logic for water except always treating it as if it was a player who has no water vision
                         // and does not take the biome's closer water fog into account
-                        float partialTicks = MekanismRenderer.getPartialTick();
-                        fog.environmentalStart = camera.attributeProbe().getValue(EnvironmentAttributes.WATER_FOG_START_DISTANCE, partialTicks);
-                        fog.environmentalEnd = camera.attributeProbe().getValue(EnvironmentAttributes.WATER_FOG_END_DISTANCE, partialTicks);
+                        fog.environmentalStart = camera.attributeProbe().getValue(EnvironmentAttributes.WATER_FOG_START_DISTANCE, partialTick);
+                        fog.environmentalEnd = camera.attributeProbe().getValue(EnvironmentAttributes.WATER_FOG_END_DISTANCE, partialTick);
 
                         fog.skyEnd = fog.environmentalEnd;
                         fog.cloudEnd = fog.environmentalEnd;

@@ -83,6 +83,7 @@ public class HUDRenderer {
             prevRotationYaw = player.getYRot();
             prevRotationPitch = player.getXRot();
         }
+        //TODO - 26.2: Can we do this via DeltaTracker#getGameTimeDeltaTicks or DeltaTracker#getRealtimeDeltaTicks?
         lastTick = level.getGameTime();
         float yawDiff = player.yHeadRot - prevRotationYaw;
         float pitchDiff = player.getXRot() - prevRotationPitch;

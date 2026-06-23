@@ -178,7 +178,7 @@ public class RenderTickHandler {
         Level world;
         //noinspection ConstantValue
         if (minecraft.player != null && (world = minecraft.player.level()) != null && minecraft.gameMode != null && MekanismRenderer.isRunningNormally()) {
-            float partialTicks = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+            float partialTicks = MekanismRenderer.getPartialTick();
             for (Player p : world.players()) {
                 //Traverse active jetpacks and do animations
                 if (Mekanism.playerState.isJetpackOn(p)) {
@@ -268,7 +268,7 @@ public class RenderTickHandler {
         boolean rightHanded = MekanismUtils.isRightArm(player, hand);
         if (minecraft.player == player && minecraft.options.getCameraType().isFirstPerson()) {
             flameVec = new Pos3D(1, 1, 1)
-                  .multiply(player.getViewVector(minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false)))
+                  .multiply(player.getViewVector(MekanismRenderer.getPartialTick()))
                   .yRot(rightHanded ? 15 : -15)
                   .translate(0, player.getEyeHeight() - 0.1, 0);
         } else {
