@@ -21,7 +21,6 @@ import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
@@ -148,7 +147,7 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
             this.langEntry = langEntry;
             this.efficiency = efficiency;
             this.color = color;
-            this.icon = MekanismUtils.getResource(MekanismUtils.ResourceType.GUI_RADIAL, texture + ".png");
+            this.icon = Mekanism.rl("radial/" + texture);
             this.label = TextComponentUtil.getString(Integer.toString(efficiency));
         }
 

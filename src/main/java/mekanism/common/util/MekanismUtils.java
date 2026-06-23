@@ -718,9 +718,7 @@ public final class MekanismUtils {
         GUI("gui"),
         GUI_BUTTON("gui/button"),
         GUI_BAR("gui/bar"),
-        GUI_ICONS("gui/icons"),
         GUI_PROGRESS("gui/progress"),
-        GUI_RADIAL("gui/radial"),
         GUI_SLOT("gui/slot"),
         RENDER("render");
 

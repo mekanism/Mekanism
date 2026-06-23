@@ -14,13 +14,12 @@ import mekanism.api.radial.mode.IRadialMode;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderPipelines;
 import mekanism.client.render.lib.ScrollIncrementer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketRadialModeChange;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StatUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -44,7 +43,7 @@ import org.jspecify.annotations.Nullable;
 // For now no as it might be confusing to people what the menu is relating to especially on the Meka-Tool but it is worth thinking more about
 public class GuiRadialSelector extends Screen {
 
-    private static final Identifier BACK_BUTTON = MekanismUtils.getResource(ResourceType.GUI_RADIAL, "back.png");
+    private static final Identifier BACK_BUTTON = Mekanism.rl("radial/back");
     private static final float DRAWS = 720;
 
     private static final float INNER = 40, OUTER = 100;
@@ -155,7 +154,7 @@ public class GuiRadialSelector extends Screen {
                 drawTorus(guiGraphics, centerX, centerY, 0, 360, 0, SELECT_RADIUS_WITH_PARENT, 0.3F, 0.3F, 0.3F, 0.5F);
             }
             // draw icon
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACK_BUTTON, -12, -18, 0, 0, 24, 24, 18, 18, 18, 18);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACK_BUTTON, -12, -18, 24, 24);
             textToDraw.add(new PositionedText(0, 0, MekanismLang.BACK.translate()));
         } else {
             overBackButton = false;
@@ -169,7 +168,7 @@ public class GuiRadialSelector extends Screen {
             float x = Mth.cos(angle) * MIDDLE_DISTANCE;
             float y = Mth.sin(angle) * MIDDLE_DISTANCE;
             // draw icon
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, mode.icon(), Math.round(x - 12), Math.round(y - 20), 0, 0, 24, 24, 18, 18, 18, 18);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, mode.icon(), Math.round(x - 12), Math.round(y - 20), 24, 24);
             // queue label
             textToDraw.add(new PositionedText(x, y, mode.sliceName()));
         }

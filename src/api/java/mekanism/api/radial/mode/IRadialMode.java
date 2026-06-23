@@ -13,7 +13,7 @@ public interface IRadialMode {
     /// @return Name to display in this mode's slice of the radial menu.
     Component sliceName();
 
-    /// @return Asset location of the icon to draw in this mode's slice of the radial menu.
+    /// @return Asset location of the icon on the GUI atlas to draw in this mode's slice of the radial menu.
     Identifier icon();
 
     /// Gets the color to that is used for rendering this mode's slice of the radial menu when this mode is currently selected.

@@ -67,7 +67,7 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
 
     private static final BooleanRadialModes RADIAL_MODES = new BooleanRadialModes(
           new BasicRadialMode(MekanismLang.RADIAL_VEIN_NORMAL, DisassemblerMode.VEIN.icon(), EnumColor.AQUA),
-          new BasicRadialMode(MekanismLang.RADIAL_VEIN_EXTENDED, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI_RADIAL, "vein_extended.png"), EnumColor.PINK)
+          new BasicRadialMode(MekanismLang.RADIAL_VEIN_EXTENDED, Mekanism.rl("radial/vein_extended"), EnumColor.PINK)
     );
     private static final RadialData<IRadialMode> RADIAL_DATA = IRadialDataHelper.INSTANCE.booleanBasedData(Mekanism.rl("vein_mining_mode"), RADIAL_MODES);
     private static final NestedRadialMode NESTED_RADIAL_MODE = new NestedRadialMode(RADIAL_DATA, MekanismLang.RADIAL_VEIN, DisassemblerMode.VEIN.icon(), EnumColor.AQUA);

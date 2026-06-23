@@ -19,7 +19,6 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
@@ -130,7 +129,7 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
             this.label = MekanismLang.MODULE_BLAST_AREA.translate(2 * radius + 1);
             this.langEntry = langEntry;
             this.color = color;
-            this.icon = MekanismUtils.getResource(MekanismUtils.ResourceType.GUI_RADIAL, texture + ".png");
+            this.icon = Mekanism.rl("radial/" + texture);
         }
 
         @Override
