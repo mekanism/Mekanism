@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import mekanism.api.functions.ToFloatFunction;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
@@ -16,15 +17,19 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
+import mekanism.common.registries.MekanismModules;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
@@ -32,6 +37,8 @@ import org.jspecify.annotations.Nullable;
 public class PlayerState {
 
     private static final Identifier STEP_ASSIST_MODIFIER_ID = Mekanism.rl("step_assist");
+    private static final Identifier DISABLE_ELYTRA_MODIFIER_ID = Mekanism.rl("disable_elytra");
+    private static final AttributeModifier DISABLE_ELYTRA_MODIFIER = new AttributeModifier(DISABLE_ELYTRA_MODIFIER_ID, -1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     //these are read from the render thread on client, so use a map which is more resilient to that (even if data is 'outdated')
     private final Set<UUID> activeJetpacks = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -180,6 +187,35 @@ public class PlayerState {
             if (additional > 0) {
                 //If we should have the attribute, but we don't have it set yet, or our stored amount was different, update
                 attributeInstance.addTransientModifier(new AttributeModifier(id, additional, Operation.ADD_VALUE));
+            }
+        }
+    }
+
+    // ----------------------
+    //
+    // Elytra Unit holding shift to disengage flight handling
+    //
+    // ----------------------
+
+    public void updateElytraFlight(Player player) {
+        //TODO - 26.2: Elytra - https://github.com/neoforged/NeoForge/pull/3192
+        AttributeInstance attributeInstance = null;//player.getAttribute(NeoForgeMod.GLIDING_FLIGHT);
+        if (attributeInstance != null) {
+            boolean shouldDisableElytra = false;
+            if (player.isShiftKeyDown() && player.isFallFlying()) {
+                ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
+                if (IModuleHelper.INSTANCE.isEnabled(stack, MekanismModules.ELYTRA_UNIT) && LivingEntity.canGlideUsing(stack, EquipmentSlot.CHEST)) {
+                    //If the elytra unit is providing flight, allow disabling the flight by pressing shift
+                    shouldDisableElytra = true;
+                }
+            }
+            AttributeModifier existing = attributeInstance.getModifier(DISABLE_ELYTRA_MODIFIER_ID);
+            if (existing != null) {
+                if (!shouldDisableElytra) {
+                    attributeInstance.removeModifier(DISABLE_ELYTRA_MODIFIER);
+                }
+            } else if (shouldDisableElytra) {
+                attributeInstance.addTransientModifier(DISABLE_ELYTRA_MODIFIER);
             }
         }
     }

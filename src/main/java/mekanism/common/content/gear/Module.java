@@ -189,6 +189,22 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
+    public int usePossibleEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction, boolean freeCreative) {
+        if (energy == 0 || freeCreative && wearer instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
+            return energy;
+        }
+        EnergyHandler energyHandler = getEnergyHandler(itemAccess, true);
+        if (energyHandler == null) {
+            return 0;
+        }
+        try (Transaction subTransaction = Transaction.open(transaction)) {
+            int extracted = energyHandler.extract(energy, subTransaction);
+            subTransaction.commit();
+            return extracted;
+        }
+    }
+
+    @Override
     public ModuleData<?> getUntypedData() {
         return holder.value();
     }

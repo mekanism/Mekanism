@@ -14,7 +14,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.listener.ConfigBasedCachedIntSupplier;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.registries.MekanismGameEvents;
-import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -27,7 +26,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForgeMod;
@@ -71,9 +69,8 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
     }
 
     @Override
-    public void adjustAttributes(IModule<ModuleGravitationalModulatingUnit> module, ItemAttributeModifierEvent event) {
-        ItemStack stack = event.getItemStack();
-        if (stack.is(MekanismItems.MEKASUIT_BODYARMOR) && module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(stack), MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation)) {
+    public void adjustAttributes(IModule<ModuleGravitationalModulatingUnit> module, IModuleContainer moduleContainer, ItemAttributeModifierEvent event) {
+        if (module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(event.getItemStack()), MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation)) {
             event.addModifier(NeoForgeMod.CREATIVE_FLIGHT, CREATIVE_FLIGHT_MODIFIER, EquipmentSlotGroup.CHEST);
         }
     }

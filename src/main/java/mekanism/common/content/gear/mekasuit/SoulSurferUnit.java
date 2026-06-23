@@ -2,6 +2,7 @@ package mekanism.common.content.gear.mekasuit;
 
 import mekanism.api.gear.EnchantmentAwareModule;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.common.Mekanism;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -17,7 +18,7 @@ public class SoulSurferUnit implements EnchantmentAwareModule<SoulSurferUnit> {
     private static final Identifier MOVEMENT_EFFICIENCY = Mekanism.rl("movement_efficiency");
 
     @Override
-    public void adjustAttributes(IModule<SoulSurferUnit> module, ItemAttributeModifierEvent event) {
+    public void adjustAttributes(IModule<SoulSurferUnit> module, IModuleContainer moduleContainer, ItemAttributeModifierEvent event) {
         AttributeModifier modifier = new AttributeModifier(MOVEMENT_EFFICIENCY, Math.min(1, 0.33333334F * module.getInstalledCount()), AttributeModifier.Operation.ADD_VALUE);
         event.addModifier(Attributes.MOVEMENT_EFFICIENCY, modifier, EquipmentSlotGroup.FEET);
     }

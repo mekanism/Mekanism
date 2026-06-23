@@ -38,6 +38,7 @@ import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
+import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.lib.transaction.TransactionHelper;
@@ -311,44 +312,19 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return slotType == armorType.getSlot() && getModules(instance).stream().anyMatch(IModule::handlesModeChange);
     }
 
-    //TODO - 26.2 Elytra unit
-    /*@Override
-    public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
-        if (getType() == ArmorType.CHESTPLATE && !entity.isShiftKeyDown()) {
-            //Don't allow elytra flight if the player is sneaking. This lets the player exit elytra flight early
-            IModuleContainer container = moduleContainer(stack);
-            if (container != null) {
-                IModule<ModuleElytraUnit> elytra = container.getIfEnabled(MekanismModules.ELYTRA_UNIT);
-                if (elytra != null && elytra.canUseEnergy(entity, stack, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get())) {
-                    //If we can use the elytra, check if the jetpack unit is also installed, and if it is,
-                    // only mark that we can use the elytra if the jetpack is not set to hover or if it is if it has no hydrogen stored
-                    IModule<ModuleJetpackUnit> jetpack = container.getIfEnabled(MekanismModules.JETPACK_UNIT);
-                    return jetpack == null || jetpack.getCustomInstance().mode() != JetpackMode.HOVER ||
-                           StorageUtils.getContainedChemical(stack, MekanismChemicals.HYDROGEN).isEmpty();
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean elytraFlightTick(ItemStack stack, LivingEntity entity, int flightTicks) {
+    //@Override//TODO - 26.2: Elytra - https://github.com/neoforged/NeoForge/pull/3192
+    public void onGlideDamage(ItemStack stack, LivingEntity wearer, EquipmentSlot slot) {
         //Note: As canElytraFly is checked just before this we don't bother validating ahead of time we have the energy
         // or that we are the correct slot
-        if (!entity.level().isClientSide()) {
-            int nextFlightTicks = flightTicks + 1;
-            if (nextFlightTicks % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
-                if (nextFlightTicks % SharedConstants.TICKS_PER_SECOND == 0) {
-                    IModule<ModuleElytraUnit> module = getEnabledModule(stack, MekanismModules.ELYTRA_UNIT);
-                    if (module != null) {
-                        module.useEnergy(entity, stack, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get());
-                    }
-                }
-                entity.gameEvent(GameEvent.ELYTRA_GLIDE);
+        IModule<ModuleElytraUnit> module = getEnabledModule(stack, MekanismModules.ELYTRA_UNIT);
+        if (module != null) {
+            try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+                //Theoretically we can use the amount of energy specified the config, but in case we can't use as much as we can
+                module.usePossibleEnergy(wearer, ItemAccess.forStack(stack), MekanismConfig.gear.mekaSuitElytraEnergyUsage.get(), transaction);
+                transaction.commit();
             }
         }
-        return true;
-    }*/
+    }
 
     @Override
     public boolean canUseJetpack(ItemAccess itemAccess) {

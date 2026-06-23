@@ -105,6 +105,7 @@ public class CommonPlayerTickHandler {
     }
 
     private void tickEnd(Player player) {
+        Mekanism.playerState.updateElytraFlight(player);
         Mekanism.playerState.updateStepAssist(player);
         if (player instanceof ServerPlayer serverPlayer) {
             PlayerExposure.tickServer(serverPlayer);

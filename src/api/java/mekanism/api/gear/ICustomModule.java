@@ -179,11 +179,12 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
 
     /// Called when this module is enabled to modify the attributes of the item this module is installed on. (MekaSuit or Meka-Tool)
     ///
-    /// @param module Module instance.
-    /// @param event  Event that provides helper to use to modify the attributes on the stack.
+    /// @param module          Module instance.
+    /// @param moduleContainer The container this module is part of.
+    /// @param event           Event that provides helper to use to modify the attributes on the stack.
     ///
-    /// @since 10.6.3
-    default void adjustAttributes(IModule<MODULE> module, ItemAttributeModifierEvent event) {
+    /// @since 10.8.0
+    default void adjustAttributes(IModule<MODULE> module, IModuleContainer moduleContainer, ItemAttributeModifierEvent event) {
     }
 
     /// Called when this module is added to an item.

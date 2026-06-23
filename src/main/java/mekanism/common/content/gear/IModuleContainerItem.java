@@ -45,15 +45,18 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
 
     @Override
     default void adjustAttributes(ItemAttributeModifierEvent event) {
-        for (IModule<?> module : getModules(event.getItemStack())) {
-            if (module.isEnabled()) {
-                adjustAttributes(module, event);
+        IModuleContainer moduleContainer = moduleContainer(event.getItemStack());
+        if (moduleContainer != null) {
+            for (IModule<?> module : moduleContainer.modules()) {
+                if (module.isEnabled()) {
+                    adjustAttributes(module, moduleContainer, event);
+                }
             }
         }
     }
 
-    private <MODULE extends ICustomModule<MODULE>> void adjustAttributes(IModule<MODULE> module, ItemAttributeModifierEvent event) {
-        module.getCustomInstance().adjustAttributes(module, event);
+    private <MODULE extends ICustomModule<MODULE>> void adjustAttributes(IModule<MODULE> module, IModuleContainer moduleContainer, ItemAttributeModifierEvent event) {
+        module.getCustomInstance().adjustAttributes(module, moduleContainer, event);
     }
 
     default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean hasInstalledModules(ITEM instance) {
