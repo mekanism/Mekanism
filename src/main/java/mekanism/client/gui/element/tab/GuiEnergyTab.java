@@ -8,10 +8,9 @@ import java.util.function.LongSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.tooltip.TooltipUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
@@ -28,7 +27,7 @@ public class GuiEnergyTab extends GuiTexturedElement {
     private Tooltip lastTooltip;
 
     public GuiEnergyTab(IGuiWrapper gui, IInfoHandler handler) {
-        super(MekanismUtils.getResource(ResourceType.GUI_TAB, "energy_info.png"), gui, -26, 137, 26, 26);
+        super(Mekanism.rl("tab/energy_info"), gui, -26, 137, 26, 26);
         infoHandler = handler;
     }
 
@@ -52,7 +51,7 @@ public class GuiEnergyTab extends GuiTexturedElement {
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, 0, 0, width, height, width, height);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
     }
 
     @Override

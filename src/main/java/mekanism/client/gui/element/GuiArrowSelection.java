@@ -2,20 +2,20 @@ package mekanism.client.gui.element;
 
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
 public class GuiArrowSelection extends GuiTexturedElement {
 
-    private static final Identifier ARROW = MekanismUtils.getResource(ResourceType.GUI, "arrow_selection.png");
+    private static final Identifier ARROW = Mekanism.rl("arrow_selection");
 
-    private final Supplier<Component> targetText;
+    private final Supplier<@Nullable Component> targetText;
 
-    public GuiArrowSelection(IGuiWrapper gui, int x, int y, Supplier<Component> targetText) {
+    public GuiArrowSelection(IGuiWrapper gui, int x, int y, Supplier<@Nullable Component> targetText) {
         super(ARROW, gui, x, y, 33, 19);
         this.targetText = targetText;
     }
@@ -38,6 +38,6 @@ public class GuiArrowSelection extends GuiTexturedElement {
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, 0, 0, width, height, width, height);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
     }
 }

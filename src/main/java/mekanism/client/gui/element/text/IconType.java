@@ -1,11 +1,10 @@
 package mekanism.client.gui.element.text;
 
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.Mekanism;
 import net.minecraft.resources.Identifier;
 
 public enum IconType {
-    DIGITAL(MekanismUtils.getResource(ResourceType.GUI, "digital_text_input.png"), 4, 7);
+    DIGITAL(Mekanism.rl("digital_text_input"), 4, 7);
 
     private final Identifier icon;
     private final int xSize, ySize;

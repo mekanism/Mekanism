@@ -11,10 +11,9 @@ import mekanism.api.IIncrementalEnum;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.tooltip.TooltipUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
@@ -35,14 +34,14 @@ public class GuiHeatTab extends GuiTexturedElement {
     private Tooltip lastTooltip;
 
     public GuiHeatTab(IGuiWrapper gui, IInfoHandler handler) {
-        super(MekanismUtils.getResource(ResourceType.GUI_TAB, "heat_info_k.png"), gui, -26, 109, 26, 26);
+        super(Mekanism.rl("tab/heat_info_k"), gui, -26, 109, 26, 26);
         infoHandler = handler;
     }
 
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, 0, 0, width, height, width, height);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
     }
 
     @Override
@@ -58,8 +57,7 @@ public class GuiHeatTab extends GuiTexturedElement {
 
     @Override
     protected Identifier getResource() {
-        return ICONS.computeIfAbsent(MekanismConfig.common.tempUnit.get(), type -> MekanismUtils.getResource(ResourceType.GUI_TAB,
-              "heat_info_" + type.getTabName() + ".png"));
+        return ICONS.computeIfAbsent(MekanismConfig.common.tempUnit.get(), type -> Mekanism.rl("tab/heat_info_" + type.getTabName()));
     }
 
     @Override

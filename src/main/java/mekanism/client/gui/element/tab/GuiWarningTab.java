@@ -7,10 +7,9 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.tooltip.TooltipUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.warning.IWarningTracker;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -20,8 +19,8 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiWarningTab extends GuiTexturedElement {
 
-    private static final Identifier WARNING_LEFT = MekanismUtils.getResource(ResourceType.GUI_TAB, "warning_info_left.png");
-    private static final Identifier WARNING_RIGHT = MekanismUtils.getResource(ResourceType.GUI_TAB, "warning_info_right.png");
+    private static final Identifier WARNING_LEFT = Mekanism.rl("tab/warning_info_left");
+    private static final Identifier WARNING_RIGHT = Mekanism.rl("tab/warning_info_right");
 
     private final IWarningTracker warningTracker;
     private List<Component> lastInfo = Collections.emptyList();
@@ -48,7 +47,7 @@ public class GuiWarningTab extends GuiTexturedElement {
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, 0, 0, width, height, width, height);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
     }
 
     @Override
