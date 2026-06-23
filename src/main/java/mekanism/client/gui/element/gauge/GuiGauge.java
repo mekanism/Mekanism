@@ -108,8 +108,7 @@ public abstract class GuiGauge<T extends @Nullable Object> extends GuiTexturedEl
     }
 
     public void drawBarOverlay(GuiGraphicsExtractor guiGraphics) {
-        GaugeOverlay gaugeOverlay = getGaugeOverlay();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, 0, 0, getWidth() - 2, getHeight() - 2, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, getButtonWidth() - 2, getButtonHeight() - 2);
     }
 
     @Override

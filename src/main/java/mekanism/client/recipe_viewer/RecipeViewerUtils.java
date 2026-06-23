@@ -157,12 +157,15 @@ public class RecipeViewerUtils {
     }
 
     public static List<ItemStack> getDisplayItems(ChemicalStackIngredient ingredient) {
-        SequencedSet<Named<Item>> tags = new LinkedHashSet<>();
         RegistryAccess registryAccess = getRegistryAccess();
+        if (registryAccess == null) {
+            return Collections.emptyList();
+        }
+        SequencedSet<Named<Item>> tags = new LinkedHashSet<>();
         for (ChemicalStack chemicalStack : ingredient.getRepresentations(getSlotDisplayContext())) {
             ChemicalSolidTag tag = chemicalStack.getSolidTag(registryAccess);
             if (tag != null) {
-                tag.lookupTag().ifPresent(tags::add);
+                tag.lookupTag(registryAccess).ifPresent(tags::add);
             }
         }
         if (tags.size() == 1) {

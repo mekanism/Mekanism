@@ -6,6 +6,7 @@ import mekanism.client.gui.element.custom.GuiFrequencySelector;
 import mekanism.client.gui.element.custom.GuiFrequencySelector.IGuiColorFrequencySelector;
 import mekanism.client.gui.element.custom.GuiFrequencySelector.IItemGuiFrequencySelector;
 import mekanism.client.gui.tooltip.TooltipUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.item.QIOFrequencySelectItemContainer;
 import mekanism.common.lib.frequency.FrequencyType;
@@ -29,7 +30,7 @@ public class GuiQIOItemFrequencySelect extends GuiMekanism<QIOFrequencySelectIte
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiFrequencySelector<>(this, 17));
-        addRenderableWidget(new MekanismImageButton(this, 6, 6, 14, getButtonLocation("back"),
+        addRenderableWidget(new MekanismImageButton(this, 6, 6, 14, Mekanism.rl("button/back"),
               (element, _, _) -> PacketUtils.sendToServer(new PacketItemButtonPress(ClickedItemButton.BACK_BUTTON, ((GuiQIOItemFrequencySelect) element.gui()).menu.getHand()))))
               .setTooltip(TooltipUtils.BACK);
     }

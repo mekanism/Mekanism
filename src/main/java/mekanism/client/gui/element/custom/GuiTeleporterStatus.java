@@ -6,9 +6,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityTeleporter.TeleporterStatus;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -17,11 +16,11 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiTeleporterStatus extends GuiTexturedElement {
 
-    private static final Identifier NEEDS_ENERGY = MekanismUtils.getResource(ResourceType.GUI, "teleporter_needs_energy.png");
-    private static final Identifier NO_FRAME = MekanismUtils.getResource(ResourceType.GUI, "teleporter_no_frame.png");
-    private static final Identifier NO_FREQUENCY = MekanismUtils.getResource(ResourceType.GUI, "teleporter_no_frequency.png");
-    private static final Identifier NO_DESTINATION = MekanismUtils.getResource(ResourceType.GUI, "teleporter_no_link.png");
-    private static final Identifier READY = MekanismUtils.getResource(ResourceType.GUI, "teleporter_ready.png");
+    private static final Identifier NEEDS_ENERGY = Mekanism.rl("teleporter/needs_energy");
+    private static final Identifier NO_FRAME = Mekanism.rl("teleporter/no_frame");
+    private static final Identifier NO_FREQUENCY = Mekanism.rl("teleporter/no_frequency");
+    private static final Identifier NO_DESTINATION = Mekanism.rl("teleporter/no_link");
+    private static final Identifier READY = Mekanism.rl("teleporter/ready");
     private static final Map<TeleporterStatus, Tooltip> CACHED_TOOLTIPS = new EnumMap<>(TeleporterStatus.class);
 
     private final BooleanSupplier hasFrequency;
@@ -56,7 +55,7 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, 0, 0, width, height, width, height);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
     }
 
     @Override

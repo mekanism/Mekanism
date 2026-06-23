@@ -283,6 +283,7 @@ public class MekanismRenderer {
         RenderTransmitterBase.onStitch();
 
         //Reset any cached models now that the atlases are built
+        //TODO - 26.2: Move model cache clearing to the baking complete event?
         RenderPigmentMixer.resetCached();
         RenderSeismicVibrator.resetCached();
         SINGLE_TEXTURE_PICKERS.clear();

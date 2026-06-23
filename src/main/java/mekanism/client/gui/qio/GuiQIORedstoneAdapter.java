@@ -12,6 +12,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab.GuiQIOFrequencyTileTab;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostItemConsumer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketUtils;
@@ -59,7 +60,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
         addRenderableWidget(new ToggleButton(this, 9, 64, 14, tile::isInverted,
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, ((GuiQIORedstoneAdapter) element.gui()).tile))))
               .setTooltip(MekanismLang.REDSTONE_ADAPTER_TOGGLE_SIGNAL);
-        addRenderableWidget(new MekanismImageButton(this, 9, 80, 14, getButtonLocation("fuzzy"),
+        addRenderableWidget(new MekanismImageButton(this, 9, 80, 14, Mekanism.rl("button/fuzzy"),
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_REDSTONE_ADAPTER_FUZZY, ((GuiQIORedstoneAdapter) element.gui()).tile))))
               .setTooltip(MekanismLang.FUZZY_MODE);
         addRenderableWidget(new GuiInnerScreen(this, 7, 16, imageWidth - 15, 12, GuiQIOFilterHandler.getFrequencyText(tile))

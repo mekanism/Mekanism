@@ -10,6 +10,7 @@ import mekanism.client.gui.element.window.filter.transporter.GuiSorterFilerSelec
 import mekanism.client.gui.element.window.filter.transporter.GuiSorterItemStackFilter;
 import mekanism.client.gui.element.window.filter.transporter.GuiSorterModIDFilter;
 import mekanism.client.gui.element.window.filter.transporter.GuiSorterTagFilter;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.IFilter;
@@ -48,13 +49,13 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
             gui.addWindow(new GuiSorterFilerSelect(gui, gui.tile));
             return true;
         }));
-        addRenderableWidget(new MekanismImageButton(this, 12, 46, 14, getButtonLocation("single"),
+        addRenderableWidget(new MekanismImageButton(this, 12, 46, 14, Mekanism.rl("button/single"),
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SINGLE_ITEM_BUTTON, ((GuiLogisticalSorter) element.gui()).tile))))
               .setTooltip(MekanismLang.SORTER_SINGLE_ITEM_DESCRIPTION);
-        addRenderableWidget(new MekanismImageButton(this, 12, 76, 14, getButtonLocation("round_robin"),
+        addRenderableWidget(new MekanismImageButton(this, 12, 76, 14, Mekanism.rl("button/round_robin"),
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ROUND_ROBIN_BUTTON, ((GuiLogisticalSorter) element.gui()).tile))))
               .setTooltip(MekanismLang.SORTER_ROUND_ROBIN_DESCRIPTION);
-        addRenderableWidget(new MekanismImageButton(this, 12, 106, 14, getButtonLocation("auto_eject"),
+        addRenderableWidget(new MekanismImageButton(this, 12, 106, 14, Mekanism.rl("button/auto_eject"),
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, ((GuiLogisticalSorter) element.gui()).tile))))
               .setTooltip(MekanismLang.SORTER_AUTO_EJECT_DESCRIPTION);
         addRenderableWidget(new ColorButton(this, 13, 137, 16, 16, () -> tile.color, (element, event, _) -> {

@@ -9,11 +9,10 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.window.filter.GuiFilter;
 import mekanism.client.gui.element.window.filter.GuiFilterHelper;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostBlockItemConsumer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -34,8 +33,8 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
                   getFilter().replaceTarget = ((ItemStack) ingredient).getItem();
                   Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
               }));
-        childAdder.apply(new TooltipToggleButton(gui, getRelativeX() + 148, getRelativeY() + 45, 14, 16,
-              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "exclamation.png"), () -> getFilter().requiresReplacement, (_, _, _) -> {
+        childAdder.apply(new TooltipToggleButton(gui, getRelativeX() + 148, getRelativeY() + 45, 14, Mekanism.rl("button/exclamation"),
+              () -> getFilter().requiresReplacement, (_, _, _) -> {
             MinerFilter<?> filter = getFilter();
             filter.requiresReplacement = !filter.requiresReplacement;
             return true;

@@ -10,6 +10,7 @@ import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.text.GuiTextField;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
@@ -44,7 +45,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     @Override
     protected void init() {
         super.init();
-        addChild(new MekanismImageButton(gui(), relativeX + 3, relativeY + 38, 12, getButtonLocation("left"), (_, _, _) -> {
+        addChild(new MekanismImageButton(gui(), relativeX + 3, relativeY + 38, 12, Mekanism.rl("button/left"), (_, _, _) -> {
             if (filter.hasFilter()) {
                 filter.previous();
                 slotDisplay.updateStackList();
@@ -52,7 +53,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             }
             return false;
         })).setTooltip(MekanismLang.LAST_ITEM);
-        addChild(new MekanismImageButton(gui(), relativeX + 16, relativeY + 38, 12, getButtonLocation("right"), (_, _, _) -> {
+        addChild(new MekanismImageButton(gui(), relativeX + 16, relativeY + 38, 12, Mekanism.rl("button/right"), (_, _, _) -> {
             if (filter.hasFilter()) {
                 filter.next();
                 slotDisplay.updateStackList();

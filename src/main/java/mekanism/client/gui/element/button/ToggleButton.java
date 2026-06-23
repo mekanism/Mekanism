@@ -3,8 +3,7 @@ package mekanism.client.gui.element.button;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.tooltip.TooltipUtils;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -12,8 +11,8 @@ import org.jspecify.annotations.Nullable;
 
 public class ToggleButton extends MekanismImageButton {
 
-    private static final Identifier TOGGLE = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "toggle.png");
-    private static final Identifier TOGGLE_FLIPPED = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "toggle_flipped.png");
+    private static final Identifier TOGGLE = Mekanism.rl("button/toggle");
+    private static final Identifier TOGGLE_FLIPPED = Mekanism.rl("button/toggle_flipped");
 
     private final Identifier flipped;
     private final BooleanSupplier toggled;
@@ -27,17 +26,12 @@ public class ToggleButton extends MekanismImageButton {
     }
 
     public ToggleButton(IGuiWrapper gui, int x, int y, int size, BooleanSupplier toggled, IClickable onPress) {
-        this(gui, x, y, size, 18, TOGGLE, TOGGLE_FLIPPED, toggled, onPress, null, null);
+        this(gui, x, y, size, size, TOGGLE, TOGGLE_FLIPPED, toggled, onPress, null, null);
     }
 
-    public ToggleButton(IGuiWrapper gui, int x, int y, int size, int textureSize, Identifier toggle, Identifier flipped, BooleanSupplier toggled,
-          IClickable onPress, @Nullable Component yes, @Nullable Component no) {
-        this(gui, x, y, size, size, textureSize, textureSize, toggle, flipped, toggled, onPress, yes, no);
-    }
-
-    public ToggleButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, Identifier toggle, Identifier flipped,
+    public ToggleButton(IGuiWrapper gui, int x, int y, int width, int height, Identifier toggle, Identifier flipped,
           BooleanSupplier toggled, IClickable onPress, @Nullable Component yes, @Nullable Component no) {
-        super(gui, x, y, width, height, textureWidth, textureHeight, toggle, onPress);
+        super(gui, x, y, width, height, toggle, onPress);
         this.toggled = toggled;
         this.flipped = flipped;
         this.yes = TooltipUtils.create(yes);

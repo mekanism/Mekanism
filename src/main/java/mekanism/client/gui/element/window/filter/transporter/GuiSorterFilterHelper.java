@@ -13,11 +13,10 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.filter.GuiFilterHelper;
 import mekanism.client.render.IFancyFontRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.InputValidator;
@@ -49,7 +48,7 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
             filter.color = TransporterUtils.decrement(filter.color);
             return true;
         }));
-        childAdder.apply(new MekanismImageButton(gui, relativeX + 148, relativeY + 18, 11, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "default.png"), (_, _, _) -> {
+        childAdder.apply(new MekanismImageButton(gui, relativeX + 148, relativeY + 18, 11, Mekanism.rl("button/default"), (_, _, _) -> {
             SorterFilter<?> filter = getFilter();
             filter.allowDefault = !filter.allowDefault;
             return true;
@@ -66,7 +65,7 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         maxField.setText(Integer.toString(getFilter().max));
         childAdder.apply(maxField);
         rangeSetter.accept(minField, maxField);
-        childAdder.apply(new TooltipToggleButton(gui, relativeX + 148, relativeY + 56, 11, 14, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "silk_touch.png"),
+        childAdder.apply(new TooltipToggleButton(gui, relativeX + 148, relativeY + 56, 11, Mekanism.rl("button/silk_touch"),
               () -> isSingleItem() && getFilter().isEnabled(), (_, _, _) -> {
                   SorterFilter<?> filter = getFilter();
                   filter.sizeMode = !filter.sizeMode;

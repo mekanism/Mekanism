@@ -28,8 +28,6 @@ import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.collection.LRU;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -248,10 +246,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         drawScrollingString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TextAlignment.LEFT, titleTextColor(), 53, 0, false);
         int rightStart = inventoryLabelX + 51;
         drawScrollingString(guiGraphics, rightAlignedText, rightStart, inventoryLabelY, TextAlignment.RIGHT, titleTextColor(), getImageWidth() - rightStart - rightEndPad, 6, false);
-    }
-
-    protected Identifier getButtonLocation(String name) {
-        return MekanismUtils.getResource(ResourceType.GUI_BUTTON, name + ".png");
     }
 
     @Override

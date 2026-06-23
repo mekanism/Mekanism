@@ -5,8 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
@@ -33,7 +33,7 @@ public record ChemicalSolidTag(TagKey<Item> solidRepresentation) {//TODO - 26.2:
     ).apply(in, ChemicalSolidTag::new)), SOLID_TAG_CODEC);
 
     /// Looks up the contents of the solid representation tag.
-    public Optional<HolderSet.Named<Item>> lookupTag() {
-        return BuiltInRegistries.ITEM.get(solidRepresentation);
+    public Optional<HolderSet.Named<Item>> lookupTag(HolderGetter.Provider registries) {
+        return registries.get(solidRepresentation);
     }
 }

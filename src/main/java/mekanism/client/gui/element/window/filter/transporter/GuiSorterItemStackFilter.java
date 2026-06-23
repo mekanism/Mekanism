@@ -4,6 +4,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.filter.GuiItemStackFilter;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -42,7 +43,7 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
             minField = min;
             maxField = max;
         });
-        addChild(new MekanismImageButton(gui(), relativeX + 148, relativeY + 68, 11, 14, getButtonLocation("fuzzy"), (_, _, _) -> {
+        addChild(new MekanismImageButton(gui(), relativeX + 148, relativeY + 68, 11, Mekanism.rl("button/fuzzy"), (_, _, _) -> {
             filter.fuzzyMode = !filter.fuzzyMode;
             return true;
         })).setTooltip(MekanismLang.FUZZY_MODE);

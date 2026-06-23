@@ -726,14 +726,7 @@ public final class MekanismUtils {
         GUI_RADIAL("gui/radial"),
         GUI_SLOT("gui/slot"),
         GUI_TAB("gui/tabs"),
-        SOUND("sound"),
-        RENDER("render"),
-        TEXTURE_BLOCKS("textures/block"),
-        TEXTURE_ITEMS("textures/item"),
-        MODEL("models"),
-        INFUSE("infuse"),
-        PIGMENT("pigment"),
-        SLURRY("slurry");
+        RENDER("render");
 
         private final String prefix;
 

@@ -17,6 +17,7 @@ import mekanism.client.gui.element.window.filter.miner.GuiMinerModIDFilter;
 import mekanism.client.gui.element.window.filter.miner.GuiMinerTagFilter;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostBlockItemConsumer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.TagCache;
 import mekanism.common.config.MekanismConfig;
@@ -75,7 +76,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
             gui.addWindow(new GuiMinerFilerSelect(gui, gui.tile));
             return true;
         }));
-        addRenderableWidget(new MekanismImageButton(this, 5, 5, 11, 14, getButtonLocation("back"),
+        addRenderableWidget(new MekanismImageButton(this, 5, 5, 11, Mekanism.rl("button/back"),
               (element, _, _) -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.BACK_BUTTON, ((GuiDigitalMinerConfig) element.gui()).tile))))
               .setTooltip(TooltipUtils.BACK);
         addRenderableWidget(new GuiDigitalSwitch(this, 10, 115, INVERSE, tile::getInverse, (element, _, _) ->
@@ -99,7 +100,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
                   updateInverseReplaceTarget(((ItemStack) ingredient).getItem());
                   minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
               });
-        addRenderableWidget(new TooltipToggleButton(this, 35, 137, 14, 16, getButtonLocation("exclamation"), tile::getInverseRequiresReplacement,
+        addRenderableWidget(new TooltipToggleButton(this, 35, 137, 14, Mekanism.rl("button/exclamation"), tile::getInverseRequiresReplacement,
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_REQUIRES_REPLACEMENT_BUTTON, ((GuiDigitalMinerConfig) element.gui()).tile)),
               MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.YES), MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.NO)));
         addRenderableWidget(new GuiTextField(this, 13, 45, 38, 11))

@@ -46,7 +46,6 @@ import mekanism.common.network.to_server.qio.PacketQIOItemViewerSlotTake;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
@@ -744,8 +743,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public enum SortDirection implements IToggleEnum<SortDirection>, IHasEnumNameTranslationKey {
-        ASCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_up.png"), MekanismLang.LIST_SORT_ASCENDING, MekanismLang.LIST_SORT_ASCENDING_DESC),
-        DESCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_down.png"), MekanismLang.LIST_SORT_DESCENDING, MekanismLang.LIST_SORT_DESCENDING_DESC);
+        ASCENDING(Mekanism.rl("button/arrow_up"), MekanismLang.LIST_SORT_ASCENDING, MekanismLang.LIST_SORT_ASCENDING_DESC),
+        DESCENDING(Mekanism.rl("button/arrow_down"), MekanismLang.LIST_SORT_DESCENDING, MekanismLang.LIST_SORT_DESCENDING_DESC);
 
         private final Identifier icon;
         private final ILangEntry name;

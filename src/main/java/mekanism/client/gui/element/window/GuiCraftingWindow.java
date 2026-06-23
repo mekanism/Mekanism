@@ -7,6 +7,7 @@ import mekanism.client.gui.element.GuiRightArrow;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
@@ -42,7 +43,7 @@ public class GuiCraftingWindow extends GuiWindow {
         addChild(new GuiRightArrow(gui, relativeX + 70, relativeY + 38).recipeViewerCrafting());
         slots.add(addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 100, relativeY + 36,
               this.container.getCraftingWindowSlot(this.index, 9))));
-        addChild(new MekanismImageButton(gui, relativeX + width - 20, relativeY + height - 20, 14, getButtonLocation("clear_sides"),
+        addChild(new MekanismImageButton(gui, relativeX + width - 20, relativeY + height - 20, 14, Mekanism.rl("button/clear_sides"),
               (_, event, _) -> PacketUtils.sendToServer(new PacketQIOClearCraftingWindow(index, event.hasShiftDown()))))
               .setTooltip(MekanismLang.CRAFTING_WINDOW_CLEAR);
     }

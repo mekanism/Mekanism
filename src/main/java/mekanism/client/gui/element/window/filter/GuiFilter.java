@@ -18,6 +18,7 @@ import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostIngredientConsumer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.SorterFilter;
@@ -69,7 +70,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         if (!isFocusOverlay()) {
             if (isNew && hasFilterSelect()) {
                 //If it is a new filter, and we have a filter select screen add a back button instead of a close button
-                addChild(new MekanismImageButton(gui, relativeX + 6, relativeY + 6, 11, 14, getButtonLocation("back"), (element, event, isDoubleClick) -> {
+                addChild(new MekanismImageButton(gui, relativeX + 6, relativeY + 6, 11, Mekanism.rl("button/back"), (element, event, isDoubleClick) -> {
                     //Add the window for the filter select dialog to the parent gui
                     IGuiWrapper wrapper = element.gui();
                     GuiFilterSelect<TILE> filterSelect = Objects.requireNonNull(getFilterSelect(wrapper, this.tile),

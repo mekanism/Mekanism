@@ -13,10 +13,9 @@ import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -121,11 +120,9 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         addRenderableWidget(new GuiInnerScreen(this, 77, 11, 51, 160));
         scrollBar = addRenderableWidget(new GuiScrollBar(this, 129, 25, 132, blockList::size, () -> 1));
         addRenderableWidget(new GuiArrowSelection(this, 79, 81, () -> TextComponentUtil.build(minHeight + getCurrentLayer())));
-        addRenderableWidget(new MekanismImageButton(this, 129, 11, 14,
-              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), (_, _, _) -> scrollBar.adjustScroll(1)))
+        addRenderableWidget(new MekanismImageButton(this, 129, 11, 14, Mekanism.rl("button/up"), (_, _, _) -> scrollBar.adjustScroll(1)))
               .setCheckActive(() -> scrollBar.getCurrentSelection() > 0);
-        addRenderableWidget(new MekanismImageButton(this, 129, 157, 14,
-              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), (_, _, _) -> scrollBar.adjustScroll(-1)))
+        addRenderableWidget(new MekanismImageButton(this, 129, 157, 14, Mekanism.rl("button/down"), (_, _, _) -> scrollBar.adjustScroll(-1)))
               .setCheckActive(() -> getCurrentLayer() > 0);
     }
 

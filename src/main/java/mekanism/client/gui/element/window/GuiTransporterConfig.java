@@ -10,6 +10,7 @@ import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.SideDataButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
@@ -40,9 +41,9 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
         addChild(new GuiInnerScreen(gui, relativeX + 38, relativeY + 15, 80, 12,
               () -> Collections.singletonList(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(tile.getEjector().hasStrictInput())))));
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 111, relativeY + 48));
-        addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, 16, getButtonLocation("exclamation"),
-              (_, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STRICT_INPUT, this.tile))))
-              .setTooltip(MekanismLang.STRICT_INPUT);
+        addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, Mekanism.rl("button/exclamation"),
+              (_, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STRICT_INPUT, this.tile)))
+        ).setTooltip(MekanismLang.STRICT_INPUT);
         addChild(new ColorButton(gui, relativeX + 112, relativeY + 49, 16, 16, () -> this.tile.getEjector().getOutputColor(),
               (_, event, _) -> PacketUtils.sendToServer(new PacketEjectColor(this.tile.getBlockPos(), MekClickType.left(event.hasShiftDown()))),
               (_, _, _) -> PacketUtils.sendToServer(new PacketEjectColor(this.tile.getBlockPos(), MekClickType.RIGHT))));

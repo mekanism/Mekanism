@@ -7,6 +7,7 @@ import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.client.gui.tooltip.TooltipUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.warning.IWarningTracker;
@@ -33,7 +34,7 @@ public abstract class GuiFusionReactorInfo extends GuiMekanismTile<TileEntityFus
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new MekanismImageButton(this, 6, 6, 14, getButtonLocation("back"),
+        addRenderableWidget(new MekanismImageButton(this, 6, 6, 14, Mekanism.rl("button/back"),
               (element, _, _) -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.BACK_BUTTON, ((GuiFusionReactorInfo) element.gui()).tile))))
               .setTooltip(TooltipUtils.BACK);
         addRenderableWidget(new GuiEnergyTab(this, () -> {

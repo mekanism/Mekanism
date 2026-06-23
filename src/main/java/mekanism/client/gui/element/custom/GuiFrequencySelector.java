@@ -20,6 +20,7 @@ import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.GuiConfirmationDialog;
 import mekanism.client.gui.element.window.GuiConfirmationDialog.DialogType;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.FrequencyItemContainer;
 import mekanism.common.lib.frequency.Frequency;
@@ -62,21 +63,21 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         this.frequencySelector = frequencySelector;
         boolean hasColor = frequencySelector instanceof IGuiColorFrequencySelector;
         scrollList = addChild(new GuiTextScrollList(frequencySelector, relativeX, relativeY + 22, 122, 42));
-        publicButton = addChild(new MekanismImageButton(frequencySelector, relativeX, relativeY, 38, 20, 38, 20, getButtonLocation("public"),
+        publicButton = addChild(new MekanismImageButton(frequencySelector, relativeX, relativeY, 38, 20, Mekanism.rl("security/button_public"),
               (_, _, _) -> {
                   this.securityMode = SecurityMode.PUBLIC;
                   this.scrollList.clearSelection();
                   updateButtons();
                   return true;
               })).setTooltip(MekanismLang.PUBLIC_MODE);
-        trustedButton = addChild(new MekanismImageButton(frequencySelector, relativeX + 42, relativeY, 38, 20, 38, 20, getButtonLocation("trusted"),
+        trustedButton = addChild(new MekanismImageButton(frequencySelector, relativeX + 42, relativeY, 38, 20, Mekanism.rl("security/button_trusted"),
               (_, _, _) -> {
                   this.securityMode = SecurityMode.TRUSTED;
                   this.scrollList.clearSelection();
                   updateButtons();
                   return true;
               })).setTooltip(MekanismLang.TRUSTED_MODE);
-        privateButton = addChild(new MekanismImageButton(frequencySelector, relativeX + 84, relativeY, 38, 20, 38, 20, getButtonLocation("private"),
+        privateButton = addChild(new MekanismImageButton(frequencySelector, relativeX + 84, relativeY, 38, 20, Mekanism.rl("security/button_private"),
               (_, _, _) -> {
                   this.securityMode = SecurityMode.PRIVATE;
                   this.scrollList.clearSelection();

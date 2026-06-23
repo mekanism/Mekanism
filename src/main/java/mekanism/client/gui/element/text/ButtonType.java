@@ -4,15 +4,14 @@ import java.util.function.BiFunction;
 import mekanism.client.gui.element.GuiElement.ButtonBackground;
 import mekanism.client.gui.element.GuiElement.IClickable;
 import mekanism.client.gui.element.button.MekanismImageButton;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.Mekanism;
 
 public enum ButtonType {
     NORMAL((field, callback) -> new MekanismImageButton(field.gui(), field.getRelativeRight() - field.getHeight(), field.getRelativeY(),
-          field.getHeight(), 12, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark.png"), callback)),
+          field.getHeight(), Mekanism.rl("button/checkmark"), callback)),
     DIGITAL((field, callback) -> {
         MekanismImageButton ret = new MekanismImageButton(field.gui(), field.getRelativeRight() - field.getHeight(), field.getRelativeY(),
-              field.getHeight(), 12, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark_digital.png"), callback);
+              field.getHeight(), Mekanism.rl("button/checkmark_digital"), callback);
         ret.setButtonBackground(ButtonBackground.DIGITAL);
         return ret;
     });

@@ -10,6 +10,7 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.component.FormulaComponent;
@@ -53,7 +54,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         addRenderableWidget(new GuiSlot(SlotType.OUTPUT_LARGE, this, 115, 16));
         addRenderableWidget(new GuiProgress(() -> tile.getOperatingTicks() / (float) tile.getTicksRequired(), ProgressType.TALL_RIGHT, this, 86, 43).recipeViewerCrafting());
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::usedEnergy));
-        addRenderableWidget(new MekanismImageButton(this, 7, 45, 14, getButtonLocation("encode_formula"),
+        addRenderableWidget(new MekanismImageButton(this, 7, 45, 14, Mekanism.rl("button/encode_formula"),
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ENCODE_FORMULA, ((GuiFormulaicAssemblicator) element.gui()).tile))))
               .setCheckActive(() -> {
                   if (!tile.getAutoMode() && tile.hasRecipe() && !tile.hasValidFormula()) {
@@ -65,26 +66,26 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
                   }
                   return false;
               }).setTooltip(MekanismLang.ENCODE_FORMULA);
-        addRenderableWidget(new TooltipToggleButton(this, 26, 75, 16, getButtonLocation("stock_control"), tile::getStockControl,
+        addRenderableWidget(new TooltipToggleButton(this, 26, 75, 16, Mekanism.rl("button/stock_control"), tile::getStockControl,
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STOCK_CONTROL_BUTTON, ((GuiFormulaicAssemblicator) element.gui()).tile)),
               MekanismLang.STOCK_CONTROL.translate(OnOff.ON), MekanismLang.STOCK_CONTROL.translate(OnOff.OFF)))
               .setCheckActive(tile::hasValidFormula);
-        addRenderableWidget(new ToggleButton(this, 44, 75, 16, 16, getButtonLocation("empty"),
-              getButtonLocation("fill"), () -> tile.formula.isEmpty(), (element, _, _) -> {
+        addRenderableWidget(new ToggleButton(this, 44, 75, 16, 16, Mekanism.rl("button/empty"), Mekanism.rl("button/fill"),
+              () -> tile.formula.isEmpty(), (element, _, _) -> {
             TileEntityFormulaicAssemblicator tile = ((GuiFormulaicAssemblicator) element.gui()).tile;
             GuiInteraction interaction = tile.formula.isEmpty() ? GuiInteraction.EMPTY_GRID : GuiInteraction.FILL_GRID;
             return PacketUtils.sendToServer(new PacketGuiInteract(interaction, tile));
         }, MekanismLang.EMPTY_ASSEMBLICATOR.translate(), MekanismLang.FILL_ASSEMBLICATOR.translate()))
               .setCheckActive(() -> !tile.getAutoMode());
-        addRenderableWidget(new MekanismImageButton(this, 71, 75, 16, getButtonLocation("craft_single"),
+        addRenderableWidget(new MekanismImageButton(this, 71, 75, 16, Mekanism.rl("button/craft_single"),
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_SINGLE, ((GuiFormulaicAssemblicator) element.gui()).tile))))
               .setTooltip(MekanismLang.CRAFT_SINGLE)
               .setCheckActive(() -> !tile.getAutoMode() && tile.hasRecipe());
-        addRenderableWidget(new MekanismImageButton(this, 89, 75, 16, getButtonLocation("craft_available"),
+        addRenderableWidget(new MekanismImageButton(this, 89, 75, 16, Mekanism.rl("button/craft_available"),
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_ALL, ((GuiFormulaicAssemblicator) element.gui()).tile))))
               .setTooltip(MekanismLang.CRAFT_AVAILABLE)
               .setCheckActive(() -> !tile.getAutoMode() && tile.hasRecipe());
-        addRenderableWidget(new TooltipToggleButton(this, 107, 75, 16, getButtonLocation("auto_toggle"), tile::getAutoMode,
+        addRenderableWidget(new TooltipToggleButton(this, 107, 75, 16, Mekanism.rl("button/auto_toggle"), tile::getAutoMode,
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, ((GuiFormulaicAssemblicator) element.gui()).tile)),
               MekanismLang.AUTO_MODE.translate(OnOff.ON), MekanismLang.AUTO_MODE.translate(OnOff.OFF)))
               .setCheckActive(tile::hasValidFormula);

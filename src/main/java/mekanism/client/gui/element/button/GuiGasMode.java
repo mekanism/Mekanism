@@ -2,12 +2,11 @@ package mekanism.client.gui.element.button;
 
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.Mekanism;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.BlockPos;
@@ -16,9 +15,9 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiGasMode extends MekanismImageButton {
 
-    private static final Identifier IDLE = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_idle.png");
-    private static final Identifier EXCESS = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_excess.png");
-    private static final Identifier DUMP = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_dump.png");
+    private static final Identifier IDLE = Mekanism.rl("chemical_mode/idle");
+    private static final Identifier EXCESS = Mekanism.rl("chemical_mode/dump_excess");
+    private static final Identifier DUMP = Mekanism.rl("chemical_mode/dump");
 
     @Nullable
     private final Tooltip dumpExcess;

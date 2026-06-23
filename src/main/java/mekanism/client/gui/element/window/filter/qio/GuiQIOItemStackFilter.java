@@ -3,6 +3,7 @@ package mekanism.client.gui.element.window.filter.qio;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.window.filter.GuiItemStackFilter;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
@@ -32,7 +33,7 @@ public class GuiQIOItemStackFilter extends GuiItemStackFilter<QIOItemStackFilter
     @Override
     protected void init() {
         super.init();
-        addChild(new MekanismImageButton(gui(), relativeX + 148, relativeY + 18, 11, 14, getButtonLocation("fuzzy"), (_, _, _) -> {
+        addChild(new MekanismImageButton(gui(), relativeX + 148, relativeY + 18, 11, Mekanism.rl("button/fuzzy"), (_, _, _) -> {
             filter.fuzzyMode = !filter.fuzzyMode;
             return true;
         })).setTooltip(MekanismLang.FUZZY_MODE);

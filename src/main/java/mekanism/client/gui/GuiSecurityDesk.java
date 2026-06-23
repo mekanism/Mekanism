@@ -15,6 +15,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.security.SecurityFrequency;
@@ -23,8 +24,6 @@ import mekanism.common.network.to_server.PacketAddTrusted;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntitySecurityDesk;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.OwnerDisplay;
@@ -39,8 +38,8 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, MekanismTileContainer<TileEntitySecurityDesk>> {
 
-    private static final Identifier PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
-    private static final Identifier PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
+    private static final Identifier PUBLIC = Mekanism.rl("security/public");
+    private static final Identifier PRIVATE = Mekanism.rl("security/private");
     private static final int TRUSTED_X = 35;
     @Nullable
     private MekanismButton removeButton;
@@ -96,28 +95,28 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
               .addCheckmarkButton(this::setTrusted)
               .setInputValidator(InputValidator.USERNAME)
               .setMaxLength(SharedConstants.MAX_PLAYER_NAME_LENGTH);
-        publicButton = addRenderableWidget(new MekanismImageButton(this, 13, 113, 40, 16, 40, 16, getButtonLocation("public"),
+        publicButton = addRenderableWidget(new MekanismImageButton(this, 13, 113, 40, 16, Mekanism.rl("security/button_public"),
               (element, _, _) -> {
                   GuiSecurityDesk desk = (GuiSecurityDesk) element.gui();
                   PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, desk.tile, SecurityMode.PUBLIC.ordinal()));
                   desk.updateButtons();
                   return true;
               })).setTooltip(MekanismLang.PUBLIC_MODE);
-        privateButton = addRenderableWidget(new MekanismImageButton(this, 54, 113, 40, 16, 40, 16, getButtonLocation("private"),
+        privateButton = addRenderableWidget(new MekanismImageButton(this, 54, 113, 40, 16, Mekanism.rl("security/button_private"),
               (element, _, _) -> {
                   GuiSecurityDesk desk = (GuiSecurityDesk) element.gui();
                   PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, desk.tile, SecurityMode.PRIVATE.ordinal()));
                   desk.updateButtons();
                   return true;
               })).setTooltip(MekanismLang.PRIVATE_MODE);
-        trustedButton = addRenderableWidget(new MekanismImageButton(this, 95, 113, 40, 16, 40, 16, getButtonLocation("trusted"),
+        trustedButton = addRenderableWidget(new MekanismImageButton(this, 95, 113, 40, 16, Mekanism.rl("security/button_trusted"),
               (element, _, _) -> {
                   GuiSecurityDesk desk = (GuiSecurityDesk) element.gui();
                   PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, desk.tile, SecurityMode.TRUSTED.ordinal()));
                   desk.updateButtons();
                   return true;
               })).setTooltip(MekanismLang.TRUSTED_MODE);
-        overrideButton = addRenderableWidget(new TooltipToggleButton(this, 146, 59, 16, 16, getButtonLocation("exclamation"), () -> {
+        overrideButton = addRenderableWidget(new TooltipToggleButton(this, 146, 59, 16, Mekanism.rl("button/exclamation"), () -> {
             SecurityFrequency frequency = tile.getFreq();
             return frequency != null && frequency.isOverridden();
         }, (element, _, _) -> {

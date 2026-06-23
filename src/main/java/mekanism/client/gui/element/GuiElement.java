@@ -247,10 +247,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         children.forEach(GuiElement::onWindowClose);
     }
 
-    protected static Identifier getButtonLocation(String name) {
-        return MekanismUtils.getResource(ResourceType.GUI_BUTTON, name + ".png");
-    }
-
     public boolean hasPersistentData() {
         return children.stream().anyMatch(GuiElement::hasPersistentData);
     }

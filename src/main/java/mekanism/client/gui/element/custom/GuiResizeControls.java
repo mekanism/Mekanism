@@ -6,11 +6,10 @@ import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
@@ -27,14 +26,14 @@ public class GuiResizeControls extends GuiSideHolder {
 
     private int tooltipTicks;
 
-    private static final Identifier MINUS = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "minus.png");
-    private static final Identifier PLUS = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "plus.png");
+    private static final Identifier MINUS = Mekanism.rl("button/minus");
+    private static final Identifier PLUS = Mekanism.rl("button/plus");
 
     public <GUI extends IGuiWrapper & ResizeController> GuiResizeControls(GUI gui, int y) {
         super(gui, -26, y, 40, true, false);
-        expandButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 5, 19, 9, 19, 9, PLUS,
+        expandButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 5, 19, 9, PLUS,
               (_, event, _) -> handleResize(ResizeType.EXPAND_Y, event.hasShiftDown())));
-        shrinkButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 26, 19, 9, 19, 9, MINUS,
+        shrinkButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 26, 19, 9, MINUS,
               (_, event, _) -> handleResize(ResizeType.SHRINK_Y, event.hasShiftDown())));
         updateButtonState();
         active = true;

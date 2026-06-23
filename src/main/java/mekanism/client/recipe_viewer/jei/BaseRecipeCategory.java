@@ -269,7 +269,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     }
 
     private IDrawable createDrawable(IGuiHelper helper, GaugeOverlay gaugeOverlay) {
-        return helper.drawableBuilder(gaugeOverlay.getBarOverlay(), 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight())
+        return helper.drawableBuilder(MekanismUtils.toLegacyResource(gaugeOverlay.getBarOverlay()), 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight())
               .setTextureSize(gaugeOverlay.getWidth(), gaugeOverlay.getHeight())
               .build();
     }

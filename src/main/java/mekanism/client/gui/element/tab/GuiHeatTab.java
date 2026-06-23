@@ -35,7 +35,7 @@ public class GuiHeatTab extends GuiTexturedElement {
     private Tooltip lastTooltip;
 
     public GuiHeatTab(IGuiWrapper gui, IInfoHandler handler) {
-        super(MekanismUtils.getResource(ResourceType.GUI_TAB, "heat_info.png"), gui, -26, 109, 26, 26);
+        super(MekanismUtils.getResource(ResourceType.GUI_TAB, "heat_info_k.png"), gui, -26, 109, 26, 26);
         infoHandler = handler;
     }
 
