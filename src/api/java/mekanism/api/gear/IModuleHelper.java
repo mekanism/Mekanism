@@ -254,7 +254,7 @@ public interface IModuleHelper {
 
     /// Helper method to create a HUD element with a given icon, text, and color.
     ///
-    /// @param icon  Element icon.
+    /// @param icon  Element sprite, bound to the gui atlas.
     /// @param text  Text to display.
     /// @param color Color to render the icon and text in.
     ///
@@ -263,7 +263,7 @@ public interface IModuleHelper {
 
     /// Helper method to create a HUD element representing an enabled state with a given icon.
     ///
-    /// @param icon          Element icon.
+    /// @param icon          Element sprite, bound to the gui atlas.
     /// @param enabled`true` if the element should use the enabled text and color, `false` if it should use the disabled text and color.
     ///
     /// @return A new HUD element.
@@ -271,7 +271,7 @@ public interface IModuleHelper {
 
     /// Helper method to create a HUD element representing a ratio with a given icon.
     ///
-    /// @param icon  Element icon.
+    /// @param icon  Element sprite, bound to the gui atlas.
     /// @param ratio Ratio. Values below 0.1 will display using [HUDColor#DANGER], values above 0.1 and below 0.2 will display using [HUDColor#WARNING], and
     ///              values above 0.2 will display using [HUDColor#REGULAR].
     ///

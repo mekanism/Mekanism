@@ -1,6 +1,5 @@
 package mekanism.client.render.hud;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.gear.IModuleContainer;
@@ -19,7 +18,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -28,10 +26,8 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.gui.GuiLayer;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jspecify.annotations.Nullable;
-import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
-import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
 
 public class MekanismHUD implements GuiLayer {
 
@@ -90,12 +86,10 @@ public class MekanismHUD implements GuiLayer {
                 }
             }
             Font font = minecraft.font;
-            List<DelayedString> delayedDraws = null;
 
             boolean reverseHud = MekanismConfig.client.reverseHUD.get();
             int maxTextHeight = graphics.guiHeight();
             if (count > 0) {
-                delayedDraws = new ArrayList<>();
                 float hudScale = MekanismConfig.client.hudScale.get();
                 int xScale = (int) (graphics.guiWidth() / hudScale);
                 int yScale = (int) (graphics.guiHeight() / hudScale);
@@ -123,15 +117,13 @@ public class MekanismHUD implements GuiLayer {
                     GuiUtils.drawBackdrop(graphics, Minecraft.getInstance(), x, y, maxTextWidth, maxTextHeight, CommonColors.WHITE);
                 }
 
-                Matrix3x2f matrix = new Matrix3x2f(pose);
                 for (List<Component> group : renderStrings) {
                     for (Component text : group) {
                         int textWidth = font.width(text);
                         //Align text to right if hud is reversed, otherwise align to the left
                         //Note: that we always offset by 2 pixels from the edge of the screen regardless of how it is aligned
                         int x = reverseHud ? xScale - textWidth - 2 : 2;
-                        //TODO - 26.2: rendering
-                        //delayedDraws.add(new DelayedString(matrix, text, x, y, 0xFFC8C8C8, true));
+                        graphics.text(font, text, x, y, 0xFFC8C8C8);
                         y += 9;
                     }
                     y += 2;
@@ -140,19 +132,7 @@ public class MekanismHUD implements GuiLayer {
             }
 
             if (player.getItemBySlot(EquipmentSlot.HEAD).is(MekanismTags.Items.MEKASUIT_HUD_RENDERER)) {
-                if (delayedDraws == null) {
-                    delayedDraws = new ArrayList<>();
-                }
-                hudRenderer.renderHUD(minecraft, graphics, font, delayedDraws, delta, graphics.guiWidth(), graphics.guiHeight(), maxTextHeight, reverseHud);
-            }
-
-            if (delayedDraws != null && !delayedDraws.isEmpty()) {
-                for (DelayedString delayedDraw : delayedDraws) {
-                    delayedDraw.draw(graphics, font);
-                }
-                //Flush once at the end of the draws
-                //TODO - 26.2: rendering
-                //graphics.flush();
+                hudRenderer.renderHUD(minecraft, player, graphics, font, delta, graphics.guiWidth(), graphics.guiHeight(), maxTextHeight, reverseHud);
             }
         }
     }
@@ -171,23 +151,5 @@ public class MekanismHUD implements GuiLayer {
     private interface HudComponentBuilder {
 
         void add(IItemHUDProvider hudProvider, List<Component> existing, Player player, ItemStack stack, EquipmentSlot slot);
-    }
-
-    public record DelayedString(Matrix4f matrix, Component component, float x, float y, int color, boolean dropShadow) {
-
-        public DelayedString {
-            if (ARGB.alpha(color) == 0) {
-                Mekanism.logger.warn("Possible missed alpha?", new Exception());
-            }
-        }
-
-        public DelayedString(PoseStack pose, Component component, float x, float y, int color, boolean dropShadow) {
-            this(new Matrix4f(pose.last().pose()), component, x, y, color, dropShadow);
-        }
-
-        public void draw(GuiGraphicsExtractor graphics, Font font) {
-            //TODO - 26.2: use the matrix? yeet Delayed String completely?
-            graphics.text(font, component, (int) x, (int) y, color, dropShadow);
-        }
     }
 }

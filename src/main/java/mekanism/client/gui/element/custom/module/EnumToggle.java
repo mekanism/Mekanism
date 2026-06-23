@@ -68,7 +68,7 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
             GuiUtils.fill(guiGraphics, getRelativeX() + optionCenter, getRelativeY() + 17, 1, 3, color);
             if (usesIcons) {
                 IHasModeIcon hasModeIcon = (IHasModeIcon) option;
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, hasModeIcon.getModeIcon(), getRelativeX() + optionCenter - 8, getRelativeY() + 19, 0, 0, 16, 16, 16, 16);
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, hasModeIcon.getModeIcon(), getRelativeX() + optionCenter - 8, getRelativeY() + 19, 16, 16);
             } else {
                 //Similar to logic for drawScaledCenteredText except shifts values slightly if they go past the max length
                 int textWidth = parent.font().width(text);

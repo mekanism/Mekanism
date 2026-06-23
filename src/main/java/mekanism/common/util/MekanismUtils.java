@@ -718,14 +718,10 @@ public final class MekanismUtils {
         GUI("gui"),
         GUI_BUTTON("gui/button"),
         GUI_BAR("gui/bar"),
-        GUI_GAUGE("gui/gauge"),
-        GUI_HUD("gui/hud"),
         GUI_ICONS("gui/icons"),
-        GUI_MODE("gui/mode"),
         GUI_PROGRESS("gui/progress"),
         GUI_RADIAL("gui/radial"),
         GUI_SLOT("gui/slot"),
-        GUI_TAB("gui/tabs"),
         RENDER("render");
 
         private final String prefix;

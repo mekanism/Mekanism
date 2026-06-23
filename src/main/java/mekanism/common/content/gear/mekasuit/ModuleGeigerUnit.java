@@ -8,12 +8,11 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.radiation.IRadiationManager;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.ClientRadiation;
 import mekanism.common.lib.radiation.RadiationUtil;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
 import mekanism.common.util.text.TextUtils;
@@ -26,7 +25,7 @@ import net.minecraft.world.item.Item;
 
 public class ModuleGeigerUnit implements ICustomModule<ModuleGeigerUnit> {
 
-    private static final Identifier icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "geiger_counter.png");
+    private static final Identifier icon = Mekanism.rl("hud/geiger_counter");
 
     @Override
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDElements(IModule<ModuleGeigerUnit> module, IModuleContainer moduleContainer, ITEM instance,

@@ -7,13 +7,13 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.MathUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.resources.Identifier;
@@ -28,7 +28,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutritionalInjectionUnit> {
 
-    private static final Identifier icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "nutritional_injection_unit.png");
+    private static final Identifier icon = Mekanism.rl("hud/nutritional_injection_unit");
 
     @Override
     public void tickServer(IModule<ModuleNutritionalInjectionUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {

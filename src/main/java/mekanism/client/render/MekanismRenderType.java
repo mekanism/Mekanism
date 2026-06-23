@@ -1,8 +1,11 @@
 package mekanism.client.render;
 
 import java.util.function.Function;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 
 public class MekanismRenderType {
@@ -20,6 +23,13 @@ public static final RenderType MEK_LIGHTNING = RenderTypes.lightning();/*RenderT
                 .setTransparencyState(RenderType.LIGHTNING_TRANSPARENCY)
                 .createCompositeState(false)
     );*/
+
+    //TODO - 26.2: Re-evaluate this
+    public static final RenderType GUI_SPRITES = RenderType.create("mekanism_gui_sprite", RenderSetup.builder(RenderPipelines.GUI_TEXTURED)
+          .withTexture("Sampler0", AtlasIds.GUI.withPrefix("textures/atlas/").withSuffix(".png"))
+          .sortOnUpload()
+          .createRenderSetup()
+    );
 
     public static final Function<Identifier, RenderType> STANDARD = RenderTypes::entityCutout;/*Util.memoize(resourceLocation ->
           createStandard("mek_standard", resourceLocation, UnaryOperator.identity(), false));*/

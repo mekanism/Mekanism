@@ -16,7 +16,6 @@ import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.Sprint
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
@@ -43,7 +42,7 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
           () -> BOOST_ENERGY_MULTIPLIER * MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get(),
           MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation
     );
-    private static final Identifier icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "gravitational_modulation_unit.png");
+    private static final Identifier icon = Mekanism.rl("hud/gravitational_modulation_unit");
     private static final Vec3 BOOST_VEC = new Vec3(0, 0, 1);
     public static final Identifier SPEED_BOOST = Mekanism.rl("speed_boost");
 

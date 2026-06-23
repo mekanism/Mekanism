@@ -96,6 +96,7 @@ import mekanism.client.particle.JetpackSmokeParticle;
 import mekanism.client.particle.LaserParticle;
 import mekanism.client.particle.RadiationParticle;
 import mekanism.client.particle.ScubaBubbleParticle;
+import mekanism.client.pip.CompassPiP;
 import mekanism.client.pip.RobitSkinPreviewPiP;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.client.render.RenderPropertiesProvider.MekCustomArmorRenderProperties;
@@ -242,6 +243,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerPiPs(RegisterPictureInPictureRenderersEvent event) {
+        event.register(CompassPiP.State.class, CompassPiP::new);
         event.register(RobitSkinPreviewPiP.State.class, RobitSkinPreviewPiP::new);
     }
 
