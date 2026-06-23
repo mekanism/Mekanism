@@ -136,7 +136,11 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     /// @apiNote x and y are based on the values set in the tile, as the GUI then shifts the slots by one to account for the border. This method is mostly meant as a
     /// helper to make keeping track of the positioning numbers easier.
     protected GuiSlot addSlot(SlotType type, int x, int y) {
-        return addElement(new GuiSlot(type, this, x - 1, y - 1));
+        return addSlot(type, x, y, SlotType.SLOT_SIZE, SlotType.SLOT_SIZE);
+    }
+
+    protected GuiSlot addSlot(SlotType type, int x, int y, int width, int height) {
+        return addElement(new GuiSlot(type, this, x - 1, y - 1, width, height));
     }
 
     protected GuiProgress addSimpleProgress(ProgressType type, int x, int y) {

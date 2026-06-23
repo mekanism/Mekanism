@@ -31,7 +31,7 @@ public class GuiPrecisionSawmill extends GuiConfigurableTile<TileEntityPrecision
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getActive));
         //Note: We just draw the wide slot on top of the normal slots so that it looks a bit better
-        addRenderableWidget(new GuiSlot(SlotType.OUTPUT_WIDE, this, 111, 30))
+        addRenderableWidget(new GuiSlot(SlotType.OUTPUT, this, 111, 30, 42, 26))
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE))
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(TileEntityPrecisionSawmill.NOT_ENOUGH_SPACE_SECONDARY_OUTPUT_ERROR));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 78, 38).recipeViewerCategory(tile))

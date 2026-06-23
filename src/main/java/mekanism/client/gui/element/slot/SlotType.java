@@ -1,56 +1,30 @@
 package mekanism.client.gui.element.slot;
 
+import mekanism.common.Mekanism;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.resources.Identifier;
 
 public enum SlotType {
-    NORMAL("normal.png", 18, 18),
-    DIGITAL("digital.png", 18, 18),
-    POWER("power.png", 18, 18),
-    EXTRA("extra.png", 18, 18),
-    INPUT("input.png", 18, 18),
-    INPUT_2("input_2.png", 18, 18),
-    OUTPUT("output.png", 18, 18),
-    OUTPUT_2("output_2.png", 18, 18),
-    OUTPUT_WIDE("output_wide.png", 42, 26),
-    OUTPUT_LARGE("output_large.png", 36, 54),
-    ORE("ore.png", 18, 18),
-    INNER_HOLDER_SLOT("inner_holder_slot.png", 18, 18);
+    NORMAL("normal"),
+    DARK("dark"),
+    POWER("power"),
+    EXTRA("extra"),
+    INPUT("input"),
+    INPUT_2("input_2"),
+    OUTPUT("output"),
+    OUTPUT_2("output_2"),
+    INNER_HOLDER_SLOT("inner_holder_slot");
 
-    private static final Identifier WARNING = MekanismUtils.getResource(ResourceType.GUI_SLOT, "output_warning.png");
-    private static final Identifier WIDE_WARNING = MekanismUtils.getResource(ResourceType.GUI_SLOT, "output_wide_warning.png");
-    private static final Identifier LARGE_WARNING = MekanismUtils.getResource(ResourceType.GUI_SLOT, "output_large_warning.png");
+    public static final int SLOT_SIZE = 18;
 
     private final Identifier texture;
-    private final int width;
-    private final int height;
 
-    SlotType(String texture, int width, int height) {
-        this.texture = MekanismUtils.getResource(ResourceType.GUI_SLOT, texture);
-        this.width = width;
-        this.height = height;
-    }
-
-    public Identifier getWarningTexture() {
-        return switch (this) {
-            case OUTPUT_WIDE -> WIDE_WARNING;
-            case OUTPUT_LARGE -> LARGE_WARNING;
-            default -> WARNING;
-        };
+    SlotType(String texture) {
+        this.texture = Mekanism.rl("slot/" + texture);
     }
 
     public Identifier getTexture() {
         return texture;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
     }
 
     public static SlotType get(DataType type) {

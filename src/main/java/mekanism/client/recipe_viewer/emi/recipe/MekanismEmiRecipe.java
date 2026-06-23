@@ -209,7 +209,11 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
     }
 
     protected GuiSlot addSlot(WidgetHolder widgetHolder, SlotType type, int x, int y) {
-        return addElement(widgetHolder, new GuiSlot(type, this, x - 1, y - 1));
+        return addSlot(widgetHolder, type, x, y, SlotType.SLOT_SIZE, SlotType.SLOT_SIZE);
+    }
+
+    protected GuiSlot addSlot(WidgetHolder widgetHolder, SlotType type, int x, int y, int width, int height) {
+        return addElement(widgetHolder, new GuiSlot(type, this, x - 1, y - 1, width, height));
     }
 
     protected GuiProgress addConstantProgress(WidgetHolder widgetHolder, ProgressType type, int x, int y) {

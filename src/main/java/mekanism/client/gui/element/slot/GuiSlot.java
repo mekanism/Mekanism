@@ -10,10 +10,11 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -35,10 +36,12 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTarget, ISupportsWarning<GuiSlot> {
+public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, ISupportsWarning<GuiSlot> {
 
     private static final int INVALID_SLOT_COLOR = MekanismRenderer.getColorARGB(EnumColor.DARK_RED, 0.8F);
     public static final int DEFAULT_HOVER_COLOR = 0x80FFFFFF;
+    private static final Identifier WARNING = Mekanism.rl("slot/warning");
+    @Nullable
     private final SlotType slotType;
     @Nullable
     private Supplier<ItemStack> validityCheck;
@@ -66,8 +69,18 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     @Nullable
     private IGhostIngredientConsumer ghostHandler;
 
+    public GuiSlot(IGuiWrapper gui, int x, int y) {
+        super(gui, x, y, SlotType.SLOT_SIZE, SlotType.SLOT_SIZE);
+        this.slotType = null;
+        active = false;
+    }
+
     public GuiSlot(SlotType type, IGuiWrapper gui, int x, int y) {
-        super(type.getTexture(), gui, x, y, type.getWidth(), type.getHeight());
+        this(type, gui, x, y, SlotType.SLOT_SIZE, SlotType.SLOT_SIZE);
+    }
+
+    public GuiSlot(SlotType type, IGuiWrapper gui, int x, int y, int width, int height) {
+        super(gui, x, y, width, height);
         this.slotType = type;
         active = false;
     }
@@ -152,18 +165,20 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     }
 
     private void draw(GuiGraphicsExtractor guiGraphics) {
-        Identifier texture;
-        if (warningSupplier != null && warningSupplier.getAsBoolean()) {
-            texture = slotType.getWarningTexture();
-        } else {
-            texture = getResource();
+        if (slotType != null) {
+            Identifier texture;
+            if (warningSupplier != null && warningSupplier.getAsBoolean()) {
+                texture = WARNING;
+            } else {
+                texture = slotType.getTexture();
+            }
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, relativeX, relativeY, width, height);
         }
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, relativeX, relativeY, 0, 0, width, height, width, height);
         if (overlaySupplier != null) {
             overlay = overlaySupplier.get();
         }
         if (overlay != null) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, overlay.getTexture(), relativeX, relativeY, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, overlay.getTexture(), relativeX, relativeY, width, height);
         }
         drawContents(guiGraphics);
     }

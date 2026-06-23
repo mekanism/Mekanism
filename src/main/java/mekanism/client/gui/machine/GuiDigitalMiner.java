@@ -10,7 +10,6 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSlot;
-import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiVisualsTab;
 import mekanism.common.MekanismLang;
@@ -90,7 +89,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
                   return energyContainer.getEnergyPerTick() > energyContainer.getAmountAsLong();
               });
         addRenderableWidget(new GuiVisualsTab(this, tile));
-        addRenderableWidget(new GuiSlot(SlotType.DIGITAL, this, missingStackX, 21).setRenderAboveSlots().validity(() -> tile.missingStack)
+        addRenderableWidget(new GuiSlot(this, missingStackX, 21).setRenderAboveSlots().validity(() -> tile.missingStack)
               .with(() -> tile.missingStack.isEmpty() ? SlotOverlay.CHECK : null)
               .hover(element -> ((GuiDigitalMiner) element.gui()).tile.missingStack.isEmpty() ? List.of(MekanismLang.MINER_WELL.translate()) : List.of(MekanismLang.MINER_MISSING_BLOCK.translate())));
         addRenderableWidget(new GuiEnergyTab(this, () -> {

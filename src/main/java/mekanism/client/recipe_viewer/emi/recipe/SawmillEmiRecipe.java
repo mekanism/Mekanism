@@ -36,7 +36,7 @@ public class SawmillEmiRecipe extends MekanismEmiHolderRecipe<SawmillRecipe> {
         addElement(widgetHolder, new GuiUpArrow(this, 60, 38));
         addSlot(widgetHolder, SlotType.INPUT, 56, 17, input(0));
         addSlot(widgetHolder, SlotType.POWER, 56, 53).with(SlotOverlay.POWER);
-        GuiSlot output = addSlot(widgetHolder, SlotType.OUTPUT_WIDE, 112, 31);
+        GuiSlot output = addSlot(widgetHolder, SlotType.OUTPUT, 112, 31, 42, 26);
         initItem(widgetHolder, output.getX() + 4, output.getY() + 4, output(0)).recipeContext(this);
         initItem(widgetHolder, output.getX() + 20, output.getY() + 4, output(1)).recipeContext(this);
         addElement(widgetHolder, new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));

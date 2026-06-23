@@ -29,7 +29,7 @@ public class SawmillRecipeCategory extends HolderRecipeCategory<SawmillRecipe> {
         addElement(new GuiUpArrow(this, 60, 38));
         input = addSlot(SlotType.INPUT, 56, 17);
         addSlot(SlotType.POWER, 56, 53).with(SlotOverlay.POWER);
-        output = addSlot(SlotType.OUTPUT_WIDE, 112, 31);
+        output = addSlot(SlotType.OUTPUT, 112, 31, 42, 26);
         addElement(new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
         addSimpleProgress(ProgressType.BAR, 78, 38);
     }

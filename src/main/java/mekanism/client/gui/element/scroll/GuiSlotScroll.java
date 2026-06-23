@@ -9,12 +9,11 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -23,7 +22,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -31,9 +29,9 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredientHelper {
 
-    private static final Identifier SLOTS = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots.png");
-    private static final Identifier SLOTS_DARK = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots_dark.png");
     private static final Component ZERO = TextComponentUtil.build(ChatFormatting.YELLOW, 0);
+    private static final int SLOT_SIZE = SlotType.SLOT_SIZE;
+    private static final int INNER_SIZE = SLOT_SIZE - 2;
 
     private final GuiScrollBar scrollBar;
 
@@ -42,20 +40,21 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     private final ISlotClickHandler clickHandler;
 
     public GuiSlotScroll(IGuiWrapper gui, int x, int y, int xSlots, int ySlots, Supplier<List<IScrollableSlot>> slotList, ISlotClickHandler clickHandler) {
-        super(gui, x, y, xSlots * 18 + 18, ySlots * 18);
+        super(gui, x, y, SLOT_SIZE * xSlots + SLOT_SIZE, SLOT_SIZE * ySlots);
         this.xSlots = xSlots;
         this.ySlots = ySlots;
         this.slotList = slotList;
         this.clickHandler = clickHandler;
-        scrollBar = addChild(new GuiScrollBar(gui, relativeX + xSlots * 18 + 4, y, ySlots * 18, () -> Mth.ceil((double) getSlotList().size() / this.xSlots),
-              () -> this.ySlots));
+        scrollBar = addChild(new GuiScrollBar(gui, relativeX + SLOT_SIZE * xSlots + 4, y, SLOT_SIZE * ySlots,
+              () -> Mth.ceil((double) getSlotList().size() / this.xSlots), () -> this.ySlots));
     }
 
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         List<IScrollableSlot> list = getSlotList();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, list.isEmpty() ? SLOTS_DARK : SLOTS, relativeX, relativeY, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
+        SlotType slotType = list.isEmpty() ? SlotType.DARK : SlotType.NORMAL;
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, slotType.getTexture(), relativeX, relativeY, SLOT_SIZE * xSlots, SLOT_SIZE * ySlots);
         if (!list.isEmpty()) {
             int slotStart = scrollBar.getCurrentSelection() * xSlots, max = xSlots * ySlots;
             for (int i = 0; i < max; i++) {
@@ -64,7 +63,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
                 if (slot >= list.size()) {
                     break;
                 }
-                renderSlot(guiGraphics, list.get(slot), 18 * (i % xSlots), 18 * (i / xSlots));
+                renderSlot(guiGraphics, list.get(slot), SLOT_SIZE * (i % xSlots), SLOT_SIZE * (i / xSlots));
             }
         }
     }
@@ -73,11 +72,11 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         int xAxis = mouseX - getGuiLeft(), yAxis = mouseY - getGuiTop();
-        int slotX = (xAxis - relativeX) / 18, slotY = (yAxis - relativeY) / 18;
+        int slotX = (xAxis - relativeX) / SLOT_SIZE, slotY = (yAxis - relativeY) / SLOT_SIZE;
         if (slotX >= 0 && slotY >= 0 && slotX < xSlots && slotY < ySlots) {
-            int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;
-            if (xAxis >= slotStartX && xAxis < slotStartX + 16 && yAxis >= slotStartY && yAxis < slotStartY + 16 && checkWindows(mouseX, mouseY)) {
-                guiGraphics.fill(slotStartX, slotStartY, slotStartX + 16, slotStartY + 16, GuiSlot.DEFAULT_HOVER_COLOR);
+            int slotStartX = relativeX + slotX * SLOT_SIZE + 1, slotStartY = relativeY + slotY * SLOT_SIZE + 1;
+            if (xAxis >= slotStartX && xAxis < slotStartX + INNER_SIZE && yAxis >= slotStartY && yAxis < slotStartY + INNER_SIZE && checkWindows(mouseX, mouseY)) {
+                guiGraphics.fill(slotStartX, slotStartY, slotStartX + INNER_SIZE, slotStartY + INNER_SIZE, GuiSlot.DEFAULT_HOVER_COLOR);
             }
         }
     }
@@ -114,10 +113,10 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         if (list.isEmpty()) {
             return null;
         }
-        int slotX = (int) ((mouseX - getX()) / 18), slotY = (int) ((mouseY - getY()) / 18);
+        int slotX = (int) ((mouseX - getX()) / SLOT_SIZE), slotY = (int) ((mouseY - getY()) / SLOT_SIZE);
         // terminate if we clicked the border of a slot
-        int slotStartX = getX() + slotX * 18 + 1, slotStartY = getY() + slotY * 18 + 1;
-        if (mouseX < slotStartX || mouseX >= slotStartX + 16 || mouseY < slotStartY || mouseY >= slotStartY + 16) {
+        int slotStartX = getX() + slotX * SLOT_SIZE + 1, slotStartY = getY() + slotY * SLOT_SIZE + 1;
+        if (mouseX < slotStartX || mouseX >= slotStartX + INNER_SIZE || mouseY < slotStartY || mouseY >= slotStartY + INNER_SIZE) {
             return null;
         }
         // terminate if we aren't looking at a slot on-screen
@@ -176,7 +175,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     private void renderSlotText(GuiGraphicsExtractor guiGraphics, Component text, int x, int y) {
         float scale = 0.6F;
         float scaledWidth = font().width(text) * scale;
-        if (scaledWidth >= 16) {
+        if (scaledWidth >= INNER_SIZE) {
             //If we need a lower scale slightly due to having a lot of text, calculate it
             //Note: If it would still overflow, then we just let the scrolling text handle it
             scale = 0.5F;
@@ -185,7 +184,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         //PoseStack pose = guiGraphics.pose();
         //pose.pushPose();
         //pose.translate(0, 0, 200);
-        drawScaledScrollingString(guiGraphics, text, x, y + 9, TextAlignment.RIGHT, CommonColors.WHITE, 16, 0, true, scale);
+        drawScaledScrollingString(guiGraphics, text, x, y + 9, TextAlignment.RIGHT, CommonColors.WHITE, INNER_SIZE, 0, true, scale);
         //pose.popPose();
     }
 
@@ -203,10 +202,10 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     public Rect2i getIngredientBounds(double mouseX, double mouseY) {
         List<IScrollableSlot> list = getSlotList();
         if (!list.isEmpty()) {
-            int slotX = (int) ((mouseX - getX()) / 18), slotY = (int) ((mouseY - getY()) / 18);
-            int slotStartX = getX() + slotX * 18 + 1, slotStartY = getY() + slotY * 18 + 1;
-            if (mouseX >= slotStartX && mouseX < slotStartX + 16 && mouseY >= slotStartY && mouseY < slotStartY + 16) {
-                return new Rect2i(slotStartX + 1, slotStartY + 1, 16, 16);
+            int slotX = (int) ((mouseX - getX()) / SLOT_SIZE), slotY = (int) ((mouseY - getY()) / SLOT_SIZE);
+            int slotStartX = getX() + slotX * SLOT_SIZE + 1, slotStartY = getY() + slotY * SLOT_SIZE + 1;
+            if (mouseX >= slotStartX && mouseX < slotStartX + INNER_SIZE && mouseY >= slotStartY && mouseY < slotStartY + INNER_SIZE) {
+                return new Rect2i(slotStartX + 1, slotStartY + 1, INNER_SIZE, INNER_SIZE);
             }
         }
         //Note: This should never be the case as we validated we had an ingredient but if it is just return the entire gui portion
