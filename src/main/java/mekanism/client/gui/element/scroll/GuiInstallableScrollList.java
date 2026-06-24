@@ -3,6 +3,7 @@ package mekanism.client.gui.element.scroll;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -14,20 +15,20 @@ import org.jspecify.annotations.Nullable;
 
 public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
 
-    private final Identifier texture;
-    private final int textureWidth;
-    private final int textureHeight;
+    public static final Identifier BASE = Mekanism.rl("list/base");
+    public static final Identifier HOVERED = Mekanism.rl("list/hovered");
+    public static final Identifier SELECTED = Mekanism.rl("list/selected");
+    private static final Identifier BASE_SLOT = Mekanism.rl("list/slot");
+    private static final Identifier HOVERED_SLOT = Mekanism.rl("list/slot_hovered");
+    private static final Identifier SELECTED_SLOT = Mekanism.rl("list/slot_selected");
+
     @Nullable
     protected TYPE selectedType;
     @Nullable
     protected ScreenRectangle cachedTooltipRect;
 
-    protected GuiInstallableScrollList(IGuiWrapper gui, int x, int y, int height, Identifier background,
-          Identifier texture, int textureWidth, int textureHeight) {
-        super(gui, x, y, textureWidth + 8, height, textureHeight / 3, background);
-        this.texture = texture;
-        this.textureWidth = textureWidth;
-        this.textureHeight = textureHeight;
+    protected GuiInstallableScrollList(IGuiWrapper gui, int x, int y, int width, int height, Identifier background) {
+        super(gui, x, y, width, height, 12, background);
     }
 
     protected abstract List<TYPE> getCurrentInstalled();
@@ -103,15 +104,24 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
             TYPE type = currentInstalled.get(currentSelection + i);
             int multipliedElement = i * elementHeight;
             int shiftedY = getY() + 1 + multipliedElement;
-            int j = 1;
+            Identifier texture;
+            Identifier slotTexture;
             if (type == getSelection()) {
-                j = 2;
+                texture = SELECTED;
+                slotTexture = SELECTED_SLOT;
             } else if (mouseX >= getX() + 1 && mouseX < getX() + barXShift - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
-                j = 0;
+                texture = HOVERED;
+                slotTexture = HOVERED_SLOT;
+            } else {
+                texture = BASE;
+                slotTexture = BASE_SLOT;
             }
             EnumColor color = getColor(type);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, relativeX + 1, relativeY + 1 + multipliedElement, 0, elementHeight * j, textureWidth,
-                  elementHeight, textureWidth, textureHeight, color == null ? CommonColors.WHITE : color.getPackedColor());
+            int argb = color == null ? CommonColors.WHITE : color.getPackedColor();
+            int targetX = relativeX + 1;
+            int targetY = relativeY + 1 + multipliedElement;
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, targetX, targetY, width - 8, elementHeight, argb);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, slotTexture, targetX + 1, targetY + 1, 10, 10, argb);
         }
         //Note: This needs to be in its own loop as rendering the items is likely to cause the texture manager to be bound to a different texture
         // and thus would make the selection area background get all screwed up

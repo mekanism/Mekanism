@@ -17,20 +17,15 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>> {
-
-    private static final Identifier MODULE_SELECTION = MekanismUtils.getResource(ResourceType.GUI, "module_selection.png");
 
     private final Consumer<@Nullable Module<?>> callback;
     private final List<ModuleData<?>> currentList = new ArrayList<>();
@@ -45,7 +40,7 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
     private Tooltip lastTooltip;
 
     public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int height, Supplier<ItemResource> itemSupplier, Consumer<@Nullable Module<?>> callback) {
-        super(gui, x, y, height, GuiElementHolder.HOLDER, MODULE_SELECTION, 112, 36);
+        super(gui, x, y, 120, height, GuiElementHolder.HOLDER);
         this.itemSupplier = itemSupplier;
         this.callback = callback;
         updateItemAndList(itemSupplier.get());

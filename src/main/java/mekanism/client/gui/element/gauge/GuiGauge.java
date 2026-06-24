@@ -99,6 +99,7 @@ public abstract class GuiGauge<T extends @Nullable Object> extends GuiElement im
                 //If we have a warning and the gauge is entirely filled (or almost completely filled, > 95%), draw a warning vertically next to it
                 int halfWidth = (width - 2) / 2;
                 //Note: We also start the drawing after half the width so that we are sure it will properly line up with the background
+                //TODO - 26.2: Should this be using MekanismRenderPipelines.WARNING_PIPELINE?
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WARNING_TEXTURE, relativeX + 1 + halfWidth, relativeY + 1, halfWidth, 0, halfWidth, height - 2, 256, 256);
             }
         }
