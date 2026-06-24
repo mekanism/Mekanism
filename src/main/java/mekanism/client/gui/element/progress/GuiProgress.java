@@ -62,6 +62,10 @@ public class GuiProgress extends GuiTexturedElement implements ISupportsWarning<
             boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
             Identifier texture = type.texture(warning);
             float progress = warning ? 1 : getProgress();
+            if (progress == 0) {
+                //Skip drawing if there is no progress
+                return;
+            }
             if (type.isVertical()) {
                 int progressHeight = calculateProgressSize(progress, height);
                 int innerOffsetY = 0;
