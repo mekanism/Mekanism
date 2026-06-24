@@ -14,6 +14,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.FilterManager;
 import mekanism.common.content.filter.IFilter;
@@ -25,8 +26,6 @@ import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
@@ -38,9 +37,8 @@ import org.jspecify.annotations.Nullable;
 
 public class FilterButton extends MekanismButton {
 
-    private static final Identifier TEXTURE = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "filter_holder.png");
-    protected static final int TEXTURE_WIDTH = 156;
-    protected static final int TEXTURE_HEIGHT = 58;
+    private static final Identifier BASE = Mekanism.rl("list/filter/base");
+    private static final Identifier HOVERED = Mekanism.rl("list/filter/hovered");
 
     protected final FilterManager<?> filterManager;
     private final GuiSequencedSlotDisplay slotDisplay;
@@ -122,7 +120,8 @@ public class FilterButton extends MekanismButton {
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getButtonX(), getButtonY(), 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, getButtonWidth(), getButtonHeight(), TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        Identifier texture = isMouseOverCheckWindows(mouseX, mouseY) ? HOVERED : BASE;
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
     }
 
     @Override

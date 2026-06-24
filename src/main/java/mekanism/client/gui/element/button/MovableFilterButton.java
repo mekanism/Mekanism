@@ -34,7 +34,7 @@ public class MovableFilterButton extends FilterButton {
 
     public MovableFilterButton(IGuiWrapper gui, int x, int y, int index, IntSupplier filterIndex, FilterManager<?> filterManager, ObjIntConsumer<MouseButtonEvent> upButtonPress,
           ObjIntConsumer<MouseButtonEvent> downButtonPress, ObjIntConsumer<@Nullable IFilter<?>> onPress, IntConsumer toggleButtonPress, Function<@Nullable IFilter<?>, List<ItemStack>> renderStackSupplier) {
-        this(gui, x, y, TEXTURE_WIDTH, TEXTURE_HEIGHT / 2, index, filterIndex, filterManager, upButtonPress, downButtonPress, onPress, toggleButtonPress, renderStackSupplier);
+        this(gui, x, y, 156, 29, index, filterIndex, filterManager, upButtonPress, downButtonPress, onPress, toggleButtonPress, renderStackSupplier);
     }
 
     public MovableFilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, FilterManager<?> filterManager,
