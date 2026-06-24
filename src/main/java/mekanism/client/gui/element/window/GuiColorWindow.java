@@ -20,8 +20,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -44,7 +42,7 @@ import org.jspecify.annotations.Nullable;
 public class GuiColorWindow extends GuiWindow {
 
     public static final Identifier TRANSPARENCY_GRID = Mekanism.rl("transparency_grid");
-    private static final Identifier HUE_PICKER = MekanismUtils.getResource(ResourceType.GUI, "color_picker.png");
+    private static final Identifier HUE_PICKER = Mekanism.rl("slider/color_picker");
     private static final int S_TILES = 10, V_TILES = 10;
 
     private final GuiTextField textField;
@@ -361,7 +359,7 @@ public class GuiColorWindow extends GuiWindow {
             drawColorBar(guiGraphics, relativeX, relativeY, width, height);
             //Draw selector
             int posX = Math.round((GuiColorWindow.this.hue / 360F) * (width - 3));
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUE_PICKER, relativeX - 2 + posX, relativeY - 2, 0, 0, 7, 12, 12, 12);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, HUE_PICKER, relativeX - 2 + posX, relativeY - 2, 7, 12);
             //Note: This is needed as we want to draw same color in all three pixels instead of each having their own
             GuiUtils.fill(guiGraphics, relativeX + posX, relativeY, 3, 8, Color.hsv(GuiColorWindow.this.hue, 1, 1).argb());
         }
@@ -401,7 +399,7 @@ public class GuiColorWindow extends GuiWindow {
             drawAlphaBar(guiGraphics, relativeX, relativeY, width, height);
             //Draw selector
             int posX = Math.round(GuiColorWindow.this.alpha * (width - 3));
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUE_PICKER, relativeX - 2 + posX, relativeY - 2, 0, 0, 7, 12, 12, 12);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, HUE_PICKER, relativeX - 2 + posX, relativeY - 2, 7, 12);
             //Note: This is needed as we want to draw same color in all three pixels instead of each having their own
             //Draw transparency checkerboard on the selector
             drawTransparencyGrid(guiGraphics, relativeX + posX, relativeY, 3, 8);

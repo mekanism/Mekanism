@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 class BooleanToggle extends MiniElement<Boolean> {
 
@@ -27,17 +28,18 @@ class BooleanToggle extends MiniElement<Boolean> {
 
     @Override
     protected void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        drawRadio(guiGraphics, mouseX, mouseY, data.get(), 4, 11, 0);
-        drawRadio(guiGraphics, mouseX, mouseY, !data.get(), 50, 11, RADIO_SIZE);
+        drawRadio(guiGraphics, mouseX, mouseY, data.get(), 4, 11, RadioButton.SELECTED);
+        drawRadio(guiGraphics, mouseX, mouseY, !data.get(), 50, 11, RadioButton.NO_SELECTED);
     }
 
-    private void drawRadio(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean selected, int relativeX, int relativeY, int selectedU) {
+    private void drawRadio(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean selected, int relativeX, int relativeY, Identifier selectedTexture) {
+        Identifier texture;
         if (selected) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RadioButton.RADIO, getRelativeX() + relativeX, getRelativeY() + relativeY, selectedU, RADIO_SIZE, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
+            texture = selectedTexture;
         } else {
-            boolean hovered = mouseOver(mouseX, mouseY, relativeX, relativeY, RADIO_SIZE, RADIO_SIZE);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RadioButton.RADIO, getRelativeX() + relativeX, getRelativeY() + relativeY, hovered ? RADIO_SIZE : 0, 0, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
+            texture = mouseOver(mouseX, mouseY, relativeX, relativeY, RADIO_SIZE, RADIO_SIZE) ? RadioButton.HOVERED : RadioButton.BASE;
         }
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, getRelativeX() + relativeX, getRelativeY() + relativeY, RADIO_SIZE, RADIO_SIZE);
     }
 
     @Override

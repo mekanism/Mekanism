@@ -7,9 +7,8 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.scroll.GuiScrollList;
 import mekanism.client.render.IFancyFontRenderer.TextAlignment;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -19,21 +18,22 @@ import net.minecraft.util.Mth;
 
 class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElement<TYPE> {
 
-    private static final Identifier SLIDER = MekanismUtils.getResource(ResourceType.GUI, "slider.png");
+    private static final Identifier ARROW = Mekanism.rl("slider/arrow");
+    private static final Identifier BAR = Mekanism.rl("slider/bar");
     private static final float TEXT_SCALE = 0.7F;
     private static final int BAR_START = 10;
 
     private final List<TYPE> enumConstants;
-    private final int BAR_LENGTH;
+    private final int barLength;
     private final int optionDistance;
     private final boolean usesIcons;
     boolean dragging = false;
 
     EnumToggle(GuiModuleScreen parent, ModuleEnumConfig<TYPE> data, Component description, int xPos, int yPos) {
         super(parent, data, description, xPos, yPos);
-        BAR_LENGTH = this.parent.getScreenWidth() - 24;
+        barLength = this.parent.getScreenWidth() - 24;
         enumConstants = data.getEnumConstants();
-        this.optionDistance = BAR_LENGTH / (enumConstants.size() - 1);
+        this.optionDistance = barLength / (enumConstants.size() - 1);
         this.usesIcons = !enumConstants.isEmpty() && enumConstants.getFirst() instanceof IHasModeIcon;
     }
 
@@ -45,8 +45,8 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
     @Override
     protected void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         int center = optionDistance * data.get().ordinal();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLIDER, getRelativeX() + BAR_START + center - 2, getRelativeY() + 11, 0, 0, 5, 6, 8, 8);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLIDER, getRelativeX() + BAR_START, getRelativeY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ARROW, getRelativeX() + BAR_START + center - 2, getRelativeY() + 11, 5, 6);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR, getRelativeX() + BAR_START, getRelativeY() + 17, barLength, 2);
     }
 
     @Override
@@ -99,7 +99,7 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
             int center = optionDistance * data.get().ordinal();
             if (mouseOver(mouseX, mouseY, BAR_START + center - 2, 11, 5, 6)) {
                 dragging = true;
-            } else if (mouseOver(mouseX, mouseY, BAR_START, 10, BAR_LENGTH, 12)) {
+            } else if (mouseOver(mouseX, mouseY, BAR_START, 10, barLength, 12)) {
                 setDataFromPosition(mouseX);
             }
         }
@@ -115,7 +115,7 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
     private void setDataFromPosition(double mouseX) {
         List<TYPE> options = enumConstants;
         int size = options.size() - 1;
-        int cur = (int) Math.round(((mouseX - getX() - BAR_START) / BAR_LENGTH) * size);
+        int cur = (int) Math.round(((mouseX - getX() - BAR_START) / barLength) * size);
         cur = Math.clamp(cur, 0, size);
         if (cur != data.get().ordinal()) {
             setData(options.get(cur));

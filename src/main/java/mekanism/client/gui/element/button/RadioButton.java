@@ -3,9 +3,8 @@ package mekanism.client.gui.element.button;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.tooltip.TooltipUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismSounds;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -16,7 +15,10 @@ import org.jspecify.annotations.Nullable;
 
 public class RadioButton extends MekanismButton {
 
-    public static final Identifier RADIO = MekanismUtils.getResource(ResourceType.GUI, "radio_button.png");
+    public static final Identifier BASE = Mekanism.rl("button/radio/base");
+    public static final Identifier HOVERED = Mekanism.rl("button/radio/hovered");
+    public static final Identifier NO_SELECTED = Mekanism.rl("button/radio/no_selected");
+    public static final Identifier SELECTED = Mekanism.rl("button/radio/selected");
     public static final int RADIO_SIZE = 8;
 
     @Nullable
@@ -38,10 +40,10 @@ public class RadioButton extends MekanismButton {
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (toggled.getAsBoolean()) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RADIO, getButtonX(), getButtonY(), 0, RADIO_SIZE, getButtonWidth(), getButtonHeight(), 2 * RADIO_SIZE, 2 * RADIO_SIZE);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SELECTED, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         } else {
-            int uOffset = checkWindows(mouseX, mouseY, isHoveredOrFocused()) ? RADIO_SIZE : 0;
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RADIO, getButtonX(), getButtonY(), uOffset, 0, getButtonWidth(), getButtonHeight(), 2 * RADIO_SIZE, 2 * RADIO_SIZE);
+            Identifier sprite = checkWindows(mouseX, mouseY, isHoveredOrFocused()) ? HOVERED : BASE;
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         }
     }
 

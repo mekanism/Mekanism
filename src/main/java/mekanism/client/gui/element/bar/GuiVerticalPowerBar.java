@@ -3,9 +3,8 @@ package mekanism.client.gui.element.bar;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -14,8 +13,7 @@ import net.minecraft.resources.Identifier;
 
 public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
 
-    private static final Identifier ENERGY_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "vertical_power.png");
-    private static final int texWidth = 4;
+    private static final Identifier ENERGY_BAR = Mekanism.rl("bar/vertical_power");
     private static final int texHeight = 52;
 
     private final double heightScale;
@@ -43,7 +41,7 @@ public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
     }
 
     public GuiVerticalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y, int desiredHeight) {
-        super(gui, handler, x, y, texWidth, desiredHeight, false);
+        super(gui, handler, x, y, 4, desiredHeight, false);
         heightScale = desiredHeight / (double) texHeight;
     }
 
@@ -52,7 +50,7 @@ public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
         int displayInt = (int) (handlerLevel * texHeight);
         if (displayInt > 0) {
             int scaled = calculateScaled(heightScale, displayInt);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, ENERGY_BAR, relativeX + 1, relativeY + height - 1 - scaled, 0, 0, texWidth, scaled, texWidth, displayInt, texWidth, texHeight);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENERGY_BAR, relativeX + 1, relativeY + height - 1 - scaled, width - 2, scaled);
         }
     }
 }

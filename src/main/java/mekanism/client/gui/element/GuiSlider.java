@@ -3,8 +3,7 @@ package mekanism.client.gui.element;
 import java.util.function.DoubleConsumer;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
@@ -15,7 +14,7 @@ import net.minecraft.util.Mth;
 
 public class GuiSlider extends GuiElement {
 
-    private static final Identifier SLIDER = MekanismUtils.getResource(ResourceType.GUI, "smooth_slider.png");
+    private static final Identifier SLIDER = Mekanism.rl("slider/smooth");
 
     private final DoubleConsumer callback;
 
@@ -39,7 +38,7 @@ public class GuiSlider extends GuiElement {
         super.renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
         GuiUtils.fill(guiGraphics, relativeX + 2, relativeY + 3, width - 4, 6, 0xFF555555);
         int posX = (int) (value * (width - 6));
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLIDER, relativeX + posX, relativeY, 0, 0, 7, 12, 12, 12);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLIDER, relativeX + posX, relativeY, 7, height);
     }
 
     @Override
