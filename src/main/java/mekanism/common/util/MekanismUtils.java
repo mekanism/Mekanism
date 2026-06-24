@@ -718,8 +718,6 @@ public final class MekanismUtils {
         GUI("gui"),
         GUI_BUTTON("gui/button"),
         GUI_BAR("gui/bar"),
-        GUI_PROGRESS("gui/progress"),
-        GUI_SLOT("gui/slot"),
         RENDER("render");
 
         private final String prefix;

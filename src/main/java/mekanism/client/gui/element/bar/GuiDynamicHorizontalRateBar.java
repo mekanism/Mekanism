@@ -2,6 +2,7 @@ package mekanism.client.gui.element.bar;
 
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
+import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -21,8 +22,12 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
         this(gui, handler, x, y, width, ColorFunction.HEAT);
     }
 
+    public GuiDynamicHorizontalRateBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y, int width, Color from, Color to) {
+        this(gui, handler, x, y, width, ColorFunction.scale(from, to));
+    }
+
     public GuiDynamicHorizontalRateBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y, int width, ColorFunction colorFunction) {
-        super(gui, handler, x, y, width, texHeight, true);
+        super(gui, handler, x, y, width, 8, true);
         this.colorFunction = colorFunction;
     }
 

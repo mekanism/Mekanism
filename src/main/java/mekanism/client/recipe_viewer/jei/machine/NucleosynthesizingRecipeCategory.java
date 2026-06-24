@@ -18,7 +18,6 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.lib.Color;
-import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -49,7 +48,7 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
         chemicalInput = addElement(GuiChemicalGauge.getDummy(type, this, 5, 18));
         addElement(new GuiEnergyGauge(IEnergyInfoHandler.ALWAYS_FULL, GaugeType.SMALL_MED, this, 172, 18));
         rateBar = addElement(new GuiDynamicHorizontalRateBar(this, getBarProgressTimer(), 5, 88, 183,
-              ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
+              Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170)));
     }
 
     @Override

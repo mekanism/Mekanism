@@ -16,7 +16,6 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
-import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.util.text.EnergyDisplay;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.ICodecHelper;
@@ -46,7 +45,7 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSRecipeViewerRecipe>
         input = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 6, 13));
         output = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 150, 13));
         addElement(new GuiDynamicHorizontalRateBar(this, getBarProgressTimer(), 6, 75, 160,
-              ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
+              Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170)));
     }
 
     @Override

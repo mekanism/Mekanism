@@ -13,7 +13,6 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.lib.Color;
-import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -39,6 +38,6 @@ public class NucleosynthesizingEmiRecipe extends MekanismEmiHolderRecipe<Nucleos
         initTank(widgetHolder, GuiChemicalGauge.getDummy(type, this, 5, 18), input(1));
         addElement(widgetHolder, new GuiEnergyGauge(IEnergyInfoHandler.ALWAYS_FULL, GaugeType.SMALL_MED, this, 172, 18));
         addElement(widgetHolder, new GuiDynamicHorizontalRateBar(this, RecipeViewerUtils.barProgressHandler(recipe.getDuration()),
-              5, 88, 183, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
+              5, 88, 183, Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170)));
     }
 }

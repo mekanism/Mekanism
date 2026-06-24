@@ -2,15 +2,15 @@ package mekanism.client.gui.element;
 
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
 public class GuiBigLight extends GuiTexturedElement {
 
-    private static final Identifier LIGHTS = MekanismUtils.getResource(ResourceType.GUI, "big_lights.png");
+    private static final Identifier ENABLED = Mekanism.rl("light/big/enabled");
+    private static final Identifier DISABLED = Mekanism.rl("light/big/disabled");
     private final BooleanSupplier lightSupplier;
 
     public GuiBigLight(IGuiWrapper gui, int x, int y, BooleanSupplier lightSupplier) {
@@ -21,6 +21,6 @@ public class GuiBigLight extends GuiTexturedElement {
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LIGHTS, relativeX + 1, relativeY + 1, lightSupplier.getAsBoolean() ? 0 : 12, 0, width - 2, height - 2, 24, 12);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, lightSupplier.getAsBoolean() ? ENABLED : DISABLED, relativeX + 1, relativeY + 1, width - 2, height - 2);
     }
 }

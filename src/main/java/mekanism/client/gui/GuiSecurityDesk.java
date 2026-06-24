@@ -5,6 +5,7 @@ import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiSecurityLight;
+import mekanism.client.gui.element.GuiSecurityLight.SecurityLight;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -71,10 +72,10 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         addRenderableWidget(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
         addRenderableWidget(new GuiSecurityLight(this, 144, 77, () -> {
             SecurityFrequency frequency = tile.getFreq();
-            if (!isOwner(frequency)) {
-                return 2;
+            if (isOwner(frequency)) {
+                return frequency.isOverridden() ? SecurityLight.ENABLED : SecurityLight.DISABLED;
             }
-            return frequency.isOverridden() ? 0 : 1;
+            return SecurityLight.NOT_APPLICABLE;
         }));
         addRenderableWidget(GuiTexturedElement.textureOnly(PUBLIC, this, 145, 32, 18, 18));
         addRenderableWidget(GuiTexturedElement.textureOnly(PRIVATE, this, 145, 111, 18, 18));

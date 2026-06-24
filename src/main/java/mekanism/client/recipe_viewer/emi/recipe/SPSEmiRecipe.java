@@ -14,7 +14,6 @@ import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
-import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
@@ -41,6 +40,6 @@ public class SPSEmiRecipe extends MekanismEmiRecipe<SPSRecipeViewerRecipe> {
         initTank(widgetHolder, GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 6, 13), input(0));
         initTank(widgetHolder, GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 150, 13), output(0)).recipeContext(this);
         addElement(widgetHolder, new GuiDynamicHorizontalRateBar(this, RecipeViewerUtils.barProgressHandler(SharedConstants.TICKS_PER_SECOND), 6, 75, 160,
-              ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
+              Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170)));
     }
 }

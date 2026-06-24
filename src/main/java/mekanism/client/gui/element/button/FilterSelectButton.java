@@ -1,8 +1,7 @@
 package mekanism.client.gui.element.button;
 
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
@@ -10,28 +9,26 @@ import net.minecraft.resources.Identifier;
 
 public class FilterSelectButton extends MekanismButton {
 
-    private static final Identifier ARROWS = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "filter_arrows.png");
-    private static final int TEXTURE_WIDTH = 22;
-    private static final int TEXTURE_HEIGHT = 14;
+    private static final Identifier UP_ARROW = Mekanism.rl("button/filter_arrow/up");
+    private static final Identifier UP_ARROW_HOVERED = Mekanism.rl("button/filter_arrow/up_hovered");
+    private static final Identifier DOWN_ARROW = Mekanism.rl("button/filter_arrow/down");
+    private static final Identifier DOWN_ARROW_HOVERED = Mekanism.rl("button/filter_arrow/down_hovered");
 
+    private final Identifier texture;
+    private final Identifier hoveredTexture;
     private final boolean down;
 
     public FilterSelectButton(IGuiWrapper gui, int x, int y, boolean down, IClickable onPress) {
         super(gui, x, y, 11, 7, CommonComponents.EMPTY, onPress);
         this.down = down;
+        this.texture = this.down ? DOWN_ARROW : UP_ARROW;
+        this.hoveredTexture = this.down ? DOWN_ARROW_HOVERED : UP_ARROW_HOVERED;
     }
 
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        //TODO - 26.2 Gui blend
-        //RenderSystem.enableBlend();
-        //RenderSystem.defaultBlendFunc();
-        //RenderSystem.enableDepthTest();
-        int width = getButtonWidth();
-        int height = getButtonHeight();
-        int x = getButtonX();
-        int y = getButtonY();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, ARROWS, x, y, isMouseOverCheckWindows(mouseX, mouseY) ? width : 0, down ? 7 : 0, width, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        Identifier sprite = isMouseOverCheckWindows(mouseX, mouseY) ? hoveredTexture : texture;
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
     }
 
     @Override

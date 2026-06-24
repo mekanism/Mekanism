@@ -250,6 +250,7 @@ public class Color {
         return "[Color: " + r + ", " + g + ", " + b + ", " + a + "]";
     }
 
+    @FunctionalInterface
     public interface ColorFunction {
 
         ColorFunction HEAT = level -> rgbai((int) Math.min(200, 400 * level), (int) Math.max(0, 200 - Math.max(0, -200 + 400 * level)), 0, 0xFF);

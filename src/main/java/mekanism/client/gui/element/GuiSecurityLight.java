@@ -1,19 +1,17 @@
 package mekanism.client.gui.element;
 
-import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
 public class GuiSecurityLight extends GuiTexturedElement {
 
-    private static final Identifier LIGHTS = MekanismUtils.getResource(ResourceType.GUI, "security_lights.png");
-    private final IntSupplier lightSupplier;
+    private final Supplier<SecurityLight> lightSupplier;
 
-    public GuiSecurityLight(IGuiWrapper gui, int x, int y, IntSupplier lightSupplier) {
+    public GuiSecurityLight(IGuiWrapper gui, int x, int y, Supplier<SecurityLight> lightSupplier) {
         super(GuiInnerScreen.SCREEN, gui, x, y, 8, 8);
         this.lightSupplier = lightSupplier;
     }
@@ -21,6 +19,22 @@ public class GuiSecurityLight extends GuiTexturedElement {
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LIGHTS, relativeX + 1, relativeY + 1, 6 * lightSupplier.getAsInt(), 0, width - 2, height - 2, 18, 6);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, lightSupplier.get().texture(), relativeX + 1, relativeY + 1, width - 2, height - 2);
+    }
+
+    public enum SecurityLight {
+        ENABLED("enabled"),
+        DISABLED("disabled"),
+        NOT_APPLICABLE("not_applicable");
+
+        private final Identifier texture;
+
+        SecurityLight(String texture) {
+            this.texture = Mekanism.rl("light/security/" + texture);
+        }
+
+        public Identifier texture() {
+            return texture;
+        }
     }
 }

@@ -96,14 +96,14 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
 
         TYPE current = curType.get();
         if (current.getIcon() != null) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, current.getIcon(), relativeX + width - ICON_OFFSET, relativeY + 3, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, current.getIcon(), relativeX + width - ICON_OFFSET, relativeY + 3, ICON_SIZE, ICON_SIZE);
         }
 
         if (isOpen) {
             for (int i = 0; i < options.length; i++) {
                 Identifier icon = options[i].getIcon();
                 if (icon != null) {
-                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, icon, relativeX + width - ICON_OFFSET, relativeY + ELEMENT_HEIGHT + 2 + 10 * i, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
+                    guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, relativeX + width - ICON_OFFSET, relativeY + ELEMENT_HEIGHT + 2 + 10 * i, ICON_SIZE, ICON_SIZE);
                 }
             }
         }
