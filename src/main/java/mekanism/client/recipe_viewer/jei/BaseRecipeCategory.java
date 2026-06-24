@@ -22,7 +22,6 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.ITickTimer;
@@ -46,6 +45,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
@@ -69,8 +69,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
             if (icon == null) {
                 throw new IllegalStateException("Expected recipe type to have either an icon stack or an icon location");
             }
-            //TODO: Calculate the texture size from the gui sprite
-            return helper.drawableBuilder(MekanismUtils.toLegacyResource(icon), 0, 0, 18, 18).setTextureSize(18, 18).build();
+            return helper.createDrawableSprite(Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI), icon);
         }
         return helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, stack);
     }
@@ -266,16 +265,10 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         GaugeOverlay overlay = gauge.getGaugeOverlay();
         IDrawable drawable = overlayLookup.get(overlay);
         if (drawable == null) {
-            drawable = createDrawable(guiHelper, overlay);
+            drawable = guiHelper.createDrawableSprite(Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI), overlay.getBarOverlay());
             overlayLookup.put(overlay, drawable);
         }
         return drawable;
-    }
-
-    private IDrawable createDrawable(IGuiHelper helper, GaugeOverlay gaugeOverlay) {
-        return helper.drawableBuilder(MekanismUtils.toLegacyResource(gaugeOverlay.getBarOverlay()), 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight())
-              .setTextureSize(gaugeOverlay.getWidth(), gaugeOverlay.getHeight())
-              .build();
     }
 
     protected ChemicalStack getDisplayedChemicalStack(IRecipeSlotView recipeSlot) {
