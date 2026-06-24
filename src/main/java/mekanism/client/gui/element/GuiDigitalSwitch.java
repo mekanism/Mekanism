@@ -2,27 +2,29 @@ package mekanism.client.gui.element;
 
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
-public class GuiDigitalSwitch extends GuiTexturedElement {
+public class GuiDigitalSwitch extends GuiElement {
 
-    public static final Identifier SWITCH = MekanismUtils.getResource(ResourceType.GUI, "switch/switch.png");
+    public static final Identifier SELECTED = Mekanism.rl("switch/selected");
+    public static final Identifier UNSELECTED = Mekanism.rl("switch/unselected");
     public static final int BUTTON_SIZE_X = 15, BUTTON_SIZE_Y = 8;
 
     private final SwitchType type;
+    @Nullable
     private final Identifier icon;
     private final BooleanSupplier stateSupplier;
     private final IClickable onToggle;
 
-    public GuiDigitalSwitch(IGuiWrapper gui, int x, int y, Identifier icon, BooleanSupplier stateSupplier, IClickable onToggle, SwitchType type) {
-        super(SWITCH, gui, x, y, type.width, type.height);
+    public GuiDigitalSwitch(IGuiWrapper gui, int x, int y, @Nullable Identifier icon, BooleanSupplier stateSupplier, IClickable onToggle, SwitchType type) {
+        super(gui, x, y, type.width, type.height);
         this.type = type;
         this.icon = icon;
         this.stateSupplier = stateSupplier;
@@ -35,9 +37,11 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         boolean state = stateSupplier.getAsBoolean();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + type.switchX, relativeY + type.switchY, 0, state ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + type.switchX, relativeY + type.switchY + BUTTON_SIZE_Y + 1, 0, state ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, icon, relativeX + type.iconX, relativeY + type.iconY, 0, 0, 5, 5, 5, 5);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, state ? SELECTED : UNSELECTED, relativeX + type.switchX, relativeY + type.switchY, BUTTON_SIZE_X, BUTTON_SIZE_Y);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, state ? UNSELECTED : SELECTED, relativeX + type.switchX, relativeY + type.switchY + BUTTON_SIZE_Y + 1, BUTTON_SIZE_X, BUTTON_SIZE_Y);
+        if (icon != null) {
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, relativeX + type.iconX, relativeY + type.iconY, 5, 5);
+        }
     }
 
     @Override

@@ -1,56 +1,26 @@
 package mekanism.client.gui.element;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.MekanismLang;
-import mekanism.common.registries.MekanismSounds;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
+import mekanism.client.gui.element.GuiDigitalSwitch.SwitchType;
 import net.minecraft.network.chat.Component;
 
 public class GuiScreenSwitch extends GuiInnerScreen {
 
-    private final BooleanSupplier stateSupplier;
-    private final IClickable onToggle;
+    private final GuiDigitalSwitch digitalSwitch;
 
     public GuiScreenSwitch(IGuiWrapper gui, int x, int y, int width, Component buttonName, BooleanSupplier stateSupplier, IClickable onToggle) {
-        super(gui, x, y, width, GuiDigitalSwitch.BUTTON_SIZE_Y * 2 + 6, () -> Collections.singletonList(buttonName));
-        this.stateSupplier = stateSupplier;
-        this.onToggle = onToggle;
+        List<Component> text = Collections.singletonList(buttonName);
+        super(gui, x, y, width, GuiDigitalSwitch.BUTTON_SIZE_Y * 2 + 6, () -> text);
         this.active = true;
-        this.clickSound = () -> this.stateSupplier.getAsBoolean() ? MekanismSounds.BEEP_OFF.get() : MekanismSounds.BEEP_ON.get();
-        this.clickVolume = 1.0F;
         padding(4);
-    }
-
-    @Override
-    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        int buttonSizeX = GuiDigitalSwitch.BUTTON_SIZE_X;
-        int buttonSizeY = GuiDigitalSwitch.BUTTON_SIZE_Y;
-        int buttonXOffset = width - 2 - buttonSizeX;
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, GuiDigitalSwitch.SWITCH, relativeX + buttonXOffset, relativeY + 2, 0, stateSupplier.getAsBoolean() ? 0 : buttonSizeY, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, GuiDigitalSwitch.SWITCH, relativeX + buttonXOffset, relativeY + 2 + buttonSizeY + 1, 0, stateSupplier.getAsBoolean() ? buttonSizeY : 0, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
-    }
-
-    @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
-        int buttonSizeX = GuiDigitalSwitch.BUTTON_SIZE_X;
-        int buttonXOffset = width - 2 - buttonSizeX;
-        drawScaledScrollingString(guiGraphics, MekanismLang.ON.translate(), buttonXOffset, 2, TextAlignment.CENTER, 0xFF101010, buttonSizeX, 1, false, 0.6F);
-        drawScaledScrollingString(guiGraphics, MekanismLang.OFF.translate(), buttonXOffset, 11, TextAlignment.CENTER, 0xFF101010, buttonSizeX, 1, false, 0.6F);
-    }
-
-    @Override
-    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
-        onToggle.onClick(this, event, isDoubleClick);
+        digitalSwitch = addChild(new GuiDigitalSwitch(gui, x + this.width - 2 - GuiDigitalSwitch.BUTTON_SIZE_X, y + 2, null, stateSupplier, onToggle, SwitchType.LOWER_ICON));
     }
 
     @Override
     protected int getMaxTextWidth(int row) {
-        return super.getMaxTextWidth(row) - 2 - GuiDigitalSwitch.BUTTON_SIZE_X;
+        return super.getMaxTextWidth(row) - 2 - digitalSwitch.getWidth();
     }
 }

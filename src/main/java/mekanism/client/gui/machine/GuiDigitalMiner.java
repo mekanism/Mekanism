@@ -12,6 +12,7 @@ import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiVisualsTab;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MinerEnergyContainer;
 import mekanism.common.content.miner.MinerFilter;
@@ -25,8 +26,6 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.network.to_server.button.PacketTileButtonPress;
 import mekanism.common.network.to_server.button.PacketTileButtonPress.ClickedTileButton;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -36,9 +35,9 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, MekanismTileContainer<TileEntityDigitalMiner>> {
 
-    private static final Identifier EJECT = MekanismUtils.getResource(ResourceType.GUI, "switch/eject.png");
-    private static final Identifier INPUT = MekanismUtils.getResource(ResourceType.GUI, "switch/input.png");
-    private static final Identifier SILK = MekanismUtils.getResource(ResourceType.GUI, "switch/silk.png");
+    private static final Identifier EJECT = Mekanism.rl("switch/eject");
+    private static final Identifier INPUT = Mekanism.rl("switch/input");
+    private static final Identifier SILK = Mekanism.rl("switch/silk");
 
     public GuiDigitalMiner(MekanismTileContainer<TileEntityDigitalMiner> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 76);

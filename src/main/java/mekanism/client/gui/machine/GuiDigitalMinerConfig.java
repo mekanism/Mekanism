@@ -39,8 +39,6 @@ import mekanism.common.network.to_server.PacketTileGuiInteractItem.GuiInteractio
 import mekanism.common.network.to_server.button.PacketTileButtonPress;
 import mekanism.common.network.to_server.button.PacketTileButtonPress.ClickedTileButton;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -58,7 +56,7 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileEntityDigitalMiner, MekanismTileContainer<TileEntityDigitalMiner>> {
 
-    private static final Identifier INVERSE = MekanismUtils.getResource(ResourceType.GUI, "switch/inverse.png");
+    private static final Identifier INVERSE = Mekanism.rl("switch/inverse");
 
     private final int maxHeightLength;
 
