@@ -124,6 +124,7 @@ import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
+import mekanism.client.render.outline.MekanismOutlineFeatureRender;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderDimensionalStabilizer;
@@ -190,6 +191,7 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterConditionalItemModelPropertyEvent;
+import net.neoforged.neoforge.client.event.RegisterFeatureRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
@@ -234,6 +236,11 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void onRegisterConditionalItemModelProperties(RegisterConditionalItemModelPropertyEvent event) {
         event.register(Mekanism.rl("config_card"), ConfigCardEncoded.CODEC);
+    }
+
+    @SubscribeEvent
+    public static void registerFeatures(RegisterFeatureRenderersEvent event) {
+        event.register(MekanismOutlineFeatureRender.TYPE, new MekanismOutlineFeatureRender());
     }
 
     @SubscribeEvent
