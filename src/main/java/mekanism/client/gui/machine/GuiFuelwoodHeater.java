@@ -3,8 +3,9 @@ package mekanism.client.gui.machine;
 import java.util.List;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.progress.GuiFlame;
+import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.common.MekanismLang;
@@ -31,7 +32,7 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)),
               MekanismLang.FUEL.translate(tile.burnTime)
         )));
-        addRenderableWidget(new GuiFlame(new IProgressInfoHandler() {
+        addRenderableWidget(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public float getProgress() {
                 return tile.burnTime / (float) tile.maxBurnTime;
@@ -41,7 +42,7 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
             public boolean isActive() {
                 return tile.burnTime > 0;
             }
-        }, this, 144, 31));
+        }, ProgressType.FLAME, this, 144, 31));
         addRenderableWidget(new GuiHeatTab(this, () -> {
             Component temp = MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true);
             Component transfer = MekanismUtils.getTemperatureDisplay(tile.getLastTransferLoss(), TemperatureUnit.KELVIN, false);

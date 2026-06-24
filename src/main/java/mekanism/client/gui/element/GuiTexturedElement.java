@@ -7,7 +7,7 @@ import net.minecraft.resources.Identifier;
 
 public abstract class GuiTexturedElement extends GuiElement {
 
-    protected final Identifier resource;
+    private final Identifier resource;
 
     public GuiTexturedElement(Identifier resource, IGuiWrapper gui, int x, int y, int width, int height) {
         super(gui, x, y, width, height);

@@ -16,9 +16,11 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
+import net.minecraft.util.Mth;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fc;
 import org.jspecify.annotations.Nullable;
@@ -38,7 +40,7 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
     }
 
     public GuiProgress(IProgressInfoHandler handler, ProgressType type, IGuiWrapper gui, int x, int y) {
-        super(type.getTexture(), gui, x, y, type.getWidth(), type.getHeight());
+        super(type.emptyTexture(), gui, x, y, type.getWidth(), type.getHeight());
         this.type = type;
         this.handler = handler;
     }
@@ -57,33 +59,32 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
         if (handler.isActive()) {
-            Identifier resource = getResource();
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, relativeX, relativeY, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
+            Identifier texture = type.texture(warning);
             float progress = warning ? 1 : getProgress();
             if (type.isVertical()) {
-                int displayInt = (int) (progress * height);
-                if (displayInt > 0) {
-                    int innerOffsetY = 0;
-                    if (type.isReverse()) {
-                        innerOffsetY += type.getTextureHeight() - displayInt;
-                    }
-                    blit(guiGraphics, resource, relativeX, relativeY + innerOffsetY, type.getOverlayX(warning), type.getOverlayY(warning) + innerOffsetY,
-                          width, displayInt, progress, warning);
+                int progressHeight = calculateProgressSize(progress, height);
+                int innerOffsetY = 0;
+                if (type.isReverse()) {
+                    innerOffsetY += type.getHeight() - progressHeight;
                 }
+                blit(guiGraphics, texture, relativeX, relativeY + innerOffsetY, 0, innerOffsetY, width, progressHeight, progress, warning);
             } else {
                 int innerOffsetX = type == ProgressType.BAR ? 1 : 0;
-                int displayInt = (int) (progress * (width - 2 * innerOffsetX));
-                if (displayInt > 0) {
-                    if (type.isReverse()) {
-                        innerOffsetX += type.getTextureWidth() - displayInt;
-                    }
-                    blit(guiGraphics, resource, relativeX + innerOffsetX, relativeY, type.getOverlayX(warning) + innerOffsetX, type.getOverlayY(warning),
-                          displayInt, height, progress, warning);
+                int progressWidth = calculateProgressSize(progress, width - 2 * innerOffsetX);
+                if (type.isReverse()) {
+                    innerOffsetX += type.getWidth() - progressWidth;
                 }
+                blit(guiGraphics, texture, relativeX + innerOffsetX, relativeY, innerOffsetX, 0, progressWidth, height, progress, warning);
             }
         }
+    }
+
+    private int calculateProgressSize(float progress, int size) {
+        //Based on how AbstractFurnaceScreen calculates the flame progress height to always have at least 1 pixel showing if it is active
+        return Mth.ceil(progress * (size - 1)) + 1;
     }
 
     protected float getProgress() {
@@ -111,36 +112,32 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
         return recipeCategories;
     }
 
-    private void blit(GuiGraphicsExtractor guiGraphics, Identifier resource, int x, int y, float uOffset, float vOffset, int width, int height, float progress,
-          boolean warning) {
-        if (warning || colorDetails == null) {
-            //If we are drawing a warning or don't have any color details just draw it normally
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, x, y, uOffset, vOffset, width, height, type.getTextureWidth(), type.getTextureHeight());
-            return;
-        }
-        int colorFrom = colorDetails.getColorFrom();
-        int colorTo = colorDetails.getColorTo();
-        if (colorFrom == CommonColors.WHITE && colorTo == CommonColors.WHITE) {
-            //No coloring needed, just use the normal blit method
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, x, y, uOffset, vOffset, width, height, type.getTextureWidth(), type.getTextureHeight());
-            return;
-        }
-        //Merge of blit and fillGradient
-        int to, from;
-        if (type.isReverse()) {
-            from = colorTo;
-            to = ARGB.srgbLerp(progress, colorTo, colorFrom);
-        } else {
-            from = colorFrom;
-            to = ARGB.srgbLerp(progress, colorFrom, colorTo);
-        }
-        float u0 = uOffset / type.getTextureWidth();
-        float u1 = (uOffset + width) / type.getTextureWidth();
-        float v0 = vOffset / type.getTextureHeight();
-        float v1 = (vOffset + height) / type.getTextureHeight();
-        guiGraphics.submitGuiElementRenderState(new ProgressRenderState(x, y, x + width, y + height, u0, u1, v0, v1, from, to, type.isVertical(),
-              new Matrix3x2f(guiGraphics.pose()), minecraft.getTextureManager().getTexture(resource), guiGraphics.peekScissorStack()));
-
+    private void blit(GuiGraphicsExtractor guiGraphics, Identifier texture, int x, int y, int uOffset, int vOffset, int width, int height, float progress, boolean warning) {
+        if (!warning && colorDetails != null) {
+            int colorFrom = colorDetails.getColorFrom();
+            int colorTo = colorDetails.getColorTo();
+            if (colorFrom != CommonColors.WHITE || colorTo != CommonColors.WHITE) {
+                //Merge of blit and fillGradient
+                int to, from;
+                if (type.isReverse()) {
+                    from = colorTo;
+                    to = ARGB.srgbLerp(progress, colorTo, colorFrom);
+                } else {
+                    from = colorFrom;
+                    to = ARGB.srgbLerp(progress, colorFrom, colorTo);
+                }
+                //Note: For some reason guiGraphics.getSprite(SpriteId) crashes in JEI, so we just get the sprite the same way the extractor would
+                TextureAtlasSprite sprite = guiGraphics.guiSprites.getSprite(texture);
+                float u0 = sprite.getU((float) uOffset / type.getWidth());
+                float u1 = sprite.getU((float) (uOffset + width) / type.getWidth());
+                float v0 = sprite.getV((float) vOffset / type.getHeight());
+                float v1 = sprite.getV((float) (vOffset + height) / type.getHeight());
+                guiGraphics.submitGuiElementRenderState(new ProgressRenderState(x, y, x + width, y + height, u0, u1, v0, v1, from, to, type.isVertical(),
+                      new Matrix3x2f(guiGraphics.pose()), minecraft.getTextureManager().getTexture(sprite.atlasLocation()), guiGraphics.peekScissorStack()));
+                return;
+            }//No coloring needed, just use the normal blit method
+        }//If we are drawing a warning or don't have any color details just draw it normally
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, type.getWidth(), type.getHeight(), uOffset, vOffset, x, y, width, height);
     }
 
     public interface ColorDetails {
