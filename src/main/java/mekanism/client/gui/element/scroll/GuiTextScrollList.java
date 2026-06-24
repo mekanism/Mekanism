@@ -80,8 +80,7 @@ public class GuiTextScrollList extends GuiScrollList {
         //Draw Selected
         int scrollIndex = getCurrentSelection();
         if (selected != -1 && selected >= scrollIndex && selected <= scrollIndex + getFocusedElements() - 1) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SCROLL_LIST, relativeX + 1, relativeY + 1 + (selected - scrollIndex) * elementHeight,
-                  4, 2, barXShift - 2, elementHeight, 2, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SELECTION, relativeX + 1, relativeY + 1 + (selected - scrollIndex) * elementHeight, barXShift - 2, elementHeight);
         }
     }
 

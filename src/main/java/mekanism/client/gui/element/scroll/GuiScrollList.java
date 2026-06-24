@@ -1,8 +1,7 @@
 package mekanism.client.gui.element.scroll;
 
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -10,15 +9,14 @@ import net.minecraft.resources.Identifier;
 
 public abstract class GuiScrollList extends GuiScrollableElement {
 
-    public static final Identifier SCROLL_LIST = MekanismUtils.getResource(ResourceType.GUI, "scroll_list.png");
+    protected static final Identifier SELECTION = Mekanism.rl("scroll/list_selection");
     public static final int TEXTURE_WIDTH = 6;
-    public static final int TEXTURE_HEIGHT = 6;
 
     private final Identifier background;
     protected final int elementHeight;
 
     protected GuiScrollList(IGuiWrapper gui, int x, int y, int width, int height, int elementHeight, Identifier background) {
-        super(SCROLL_LIST, gui, x, y, width, height, width - 6, 2, 4, 4, height - 4);
+        super(gui, x, y, width, height, width - 6, 2, 4, 4, height - 4);
         this.elementHeight = elementHeight;
         this.background = background;
     }
@@ -42,7 +40,7 @@ public abstract class GuiScrollList extends GuiScrollableElement {
         //Draw the background
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, background, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         //Draw Scroll
-        drawScrollBar(guiGraphics, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        drawScrollBar(guiGraphics);
         //Draw the elements
         renderElements(guiGraphics, mouseX, mouseY, partialTicks);
     }

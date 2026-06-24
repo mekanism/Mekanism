@@ -2,6 +2,7 @@ package mekanism.client.gui.element.scroll;
 
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -10,7 +11,9 @@ import net.minecraft.util.Mth;
 
 public abstract class GuiScrollableElement extends GuiElement {
 
-    private final Identifier texture;
+    private static final Identifier BORDER_TEXTURE = Mekanism.rl("scroll/list_border");
+    private static final Identifier BAR_TEXTURE = Mekanism.rl("scroll/list_bar");
+
     protected final int maxBarHeight;
     protected final int barWidth;
     protected final int barHeight;
@@ -20,10 +23,8 @@ public abstract class GuiScrollableElement extends GuiElement {
     protected int barX;
     protected int barY;
 
-    protected GuiScrollableElement(Identifier resource, IGuiWrapper gui, int x, int y, int width, int height, int barXShift, int barYShift, int barWidth,
-          int barHeight, int maxBarHeight) {
+    protected GuiScrollableElement(IGuiWrapper gui, int x, int y, int width, int height, int barXShift, int barYShift, int barWidth, int barHeight, int maxBarHeight) {
         super(gui, x, y, width, height);
-        this.texture = resource;
         this.barXShift = barXShift;
         this.barX = relativeX + barXShift;
         this.barY = relativeY + barYShift;
@@ -121,15 +122,10 @@ public abstract class GuiScrollableElement extends GuiElement {
         return false;
     }
 
-    protected void drawScrollBar(GuiGraphicsExtractor guiGraphics, int textureWidth, int textureHeight) {
-        //Top border
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, barX - 1, barY - 1, 0, 0, textureWidth, 1, textureWidth, textureHeight);
-        //Middle border
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, barX - 1, barY, 0, 1, textureWidth, maxBarHeight, textureWidth, 1, textureWidth, textureHeight);
-        //Bottom border
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, barX - 1, relativeY + maxBarHeight + 2, 0, 0, textureWidth, 1, textureWidth, textureHeight);
+    protected void drawScrollBar(GuiGraphicsExtractor guiGraphics) {
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BORDER_TEXTURE, barX - 1, barY - 1, 6, maxBarHeight + 2);
         //Scroll bar
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, barX, barY + getScroll(), 0, 2, barWidth, barHeight, textureWidth, textureHeight);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_TEXTURE, barX, barY + getScroll(), barWidth, barHeight);
     }
 
     @Override

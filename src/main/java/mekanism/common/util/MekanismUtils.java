@@ -716,7 +716,6 @@ public final class MekanismUtils {
 
     public enum ResourceType {
         GUI("gui"),
-        GUI_BUTTON("gui/button"),
         GUI_BAR("gui/bar"),
         RENDER("render");
 

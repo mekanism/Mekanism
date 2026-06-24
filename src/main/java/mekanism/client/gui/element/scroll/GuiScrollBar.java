@@ -17,7 +17,7 @@ public class GuiScrollBar extends GuiScrollableElement {
     private final IntSupplier focusedElements;
 
     public GuiScrollBar(IGuiWrapper gui, int x, int y, int height, IntSupplier maxElements, IntSupplier focusedElements) {
-        super(BAR, gui, x, y, 14, height, 1, 1, 12, 15, height - 2);
+        super(gui, x, y, 14, height, 1, 1, 12, 15, height - 2);
         this.maxElements = maxElements;
         this.focusedElements = focusedElements;
     }

@@ -49,7 +49,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     private GuiModuleScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemResource> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
-        super(GuiScrollList.SCROLL_LIST, gui, x, y, width, height, width - 6, 2, 4, 4, height - 4);
+        super(gui, x, y, width, height, width - 6, 2, 4, 4, height - 4);
         this.itemSupplier = itemSupplier;
         this.saveCallback = saveCallback;
         this.armorPreview = armorPreview;
@@ -191,7 +191,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mx, int my, float partialTicks) {
         super.drawBackground(guiGraphics, mx, my, partialTicks);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiInnerScreen.SCREEN, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
-        drawScrollBar(guiGraphics, GuiScrollList.TEXTURE_WIDTH, GuiScrollList.TEXTURE_HEIGHT);
+        drawScrollBar(guiGraphics);
         //Draw contents
         scissorScreen(guiGraphics, mx, my, (_, module, _) -> getStartY(module), MiniElement::renderBackground);
     }
