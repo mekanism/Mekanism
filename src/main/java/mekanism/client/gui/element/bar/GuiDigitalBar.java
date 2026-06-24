@@ -14,7 +14,7 @@ public class GuiDigitalBar extends GuiBar<IBarInfoHandler> {
     private static final int texWidth = 2, texHeight = 2;
 
     public GuiDigitalBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y, int width) {
-        super(DIGITAL_BAR, gui, handler, x, y, width - 2, 6, true);
+        super(gui, handler, x, y, width - 2, 6, true);
     }
 
     @Override

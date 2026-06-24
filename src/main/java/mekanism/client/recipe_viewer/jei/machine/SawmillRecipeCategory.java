@@ -1,7 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.recipes.SawmillRecipe;
-import mekanism.client.gui.element.GuiUpArrow;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -26,7 +26,7 @@ public class SawmillRecipeCategory extends HolderRecipeCategory<SawmillRecipe> {
 
     public SawmillRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<SawmillRecipe> recipeType) {
         super(helper, recipeType);
-        addElement(new GuiUpArrow(this, 60, 38));
+        addElement(GuiTexturedElement.upArrow(this, 60, 38));
         input = addSlot(SlotType.INPUT, 56, 17);
         addSlot(SlotType.POWER, 56, 53).with(SlotOverlay.POWER);
         output = addSlot(SlotType.OUTPUT, 112, 31, 42, 26);

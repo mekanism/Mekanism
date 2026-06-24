@@ -10,19 +10,20 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
-public class GuiElementHolder extends GuiScalableElement {
+public class GuiElementHolder extends GuiElement {
 
     public static final Identifier HOLDER = Mekanism.rl("element_holder");
     private static final int HOLDER_BORDER_SIZE = 1;
     private static int BACKGROUND_COLOR = 0xFF787878;
 
     public GuiElementHolder(IGuiWrapper gui, int x, int y, int width, int height) {
-        super(HOLDER, gui, x, y, width, height);
+        super(gui, x, y, width, height);
+        active = false;
     }
 
     @Override
     public void renderWidget(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, HOLDER, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
     }
 
     @Override

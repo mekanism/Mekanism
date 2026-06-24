@@ -29,7 +29,7 @@ public class GuiScrollBar extends GuiScrollableElement {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw background and border
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiElementHolder.HOLDER, relativeX, relativeY, barWidth + 2, height);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), barX, barY + getScroll(), needsScrollBars() ? 0 : barWidth, 0, barWidth, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BAR, barX, barY + getScroll(), needsScrollBars() ? 0 : barWidth, 0, barWidth, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
     @Override

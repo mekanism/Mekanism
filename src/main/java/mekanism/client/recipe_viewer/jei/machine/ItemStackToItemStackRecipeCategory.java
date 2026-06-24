@@ -1,7 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
-import mekanism.client.gui.element.GuiUpArrow;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -23,7 +23,7 @@ public class ItemStackToItemStackRecipeCategory extends HolderRecipeCategory<Ite
 
     public ItemStackToItemStackRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackToItemStackRecipe> recipeType) {
         super(helper, recipeType);
-        addElement(new GuiUpArrow(this, 68, 38));
+        addElement(GuiTexturedElement.upArrow(this, 68, 38));
         input = addSlot(SlotType.INPUT, 64, 17);
         output = addSlot(SlotType.OUTPUT, 116, 35);
         addSlot(SlotType.POWER, 64, 53).with(SlotOverlay.POWER);

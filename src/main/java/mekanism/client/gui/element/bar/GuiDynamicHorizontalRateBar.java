@@ -22,7 +22,7 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
     }
 
     public GuiDynamicHorizontalRateBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y, int width, ColorFunction colorFunction) {
-        super(RATE_BAR, gui, handler, x, y, width, texHeight, true);
+        super(gui, handler, x, y, width, texHeight, true);
         this.colorFunction = colorFunction;
     }
 
@@ -34,11 +34,11 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
                 float level = i / (float) (width - 2);
                 int color = colorFunction.getColor(level).argb();
                 if (i == 0) {
-                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, 0, 0, 1, texHeight, texWidth, texHeight, color);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RATE_BAR, relativeX + 1, relativeY + 1, 0, 0, 1, texHeight, texWidth, texHeight, color);
                 } else if (i == displayInt - 1) {
-                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1 + i, relativeY + 1, texWidth - 1, 0, 1, texHeight, texWidth, texHeight, color);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RATE_BAR, relativeX + 1 + i, relativeY + 1, texWidth - 1, 0, 1, texHeight, texWidth, texHeight, color);
                 } else {
-                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1 + i, relativeY + 1, 1, 0, 1, texHeight, texWidth, texHeight, color);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RATE_BAR, relativeX + 1 + i, relativeY + 1, 1, 0, 1, texHeight, texWidth, texHeight, color);
                 }
             }
         }

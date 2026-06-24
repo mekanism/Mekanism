@@ -14,14 +14,13 @@ public class GuiSecurityLight extends GuiTexturedElement {
     private final IntSupplier lightSupplier;
 
     public GuiSecurityLight(IGuiWrapper gui, int x, int y, IntSupplier lightSupplier) {
-        super(LIGHTS, gui, x, y, 8, 8);
+        super(GuiInnerScreen.SCREEN, gui, x, y, 8, 8);
         this.lightSupplier = lightSupplier;
     }
 
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiInnerScreen.SCREEN, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, 6 * lightSupplier.getAsInt(), 0, width - 2, height - 2, 18, 6);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LIGHTS, relativeX + 1, relativeY + 1, 6 * lightSupplier.getAsInt(), 0, width - 2, height - 2, 18, 6);
     }
 }

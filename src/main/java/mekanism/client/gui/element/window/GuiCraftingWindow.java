@@ -3,7 +3,7 @@ package mekanism.client.gui.element.window;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiRightArrow;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -40,7 +40,7 @@ public class GuiCraftingWindow extends GuiWindow {
                       this.container.getCraftingWindowSlot(this.index, row * 3 + column))));
             }
         }
-        addChild(new GuiRightArrow(gui, relativeX + 70, relativeY + 38).recipeViewerCrafting());
+        addChild(GuiTexturedElement.rightArrow(gui, relativeX + 70, relativeY + 38).recipeViewerCrafting());
         slots.add(addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 100, relativeY + 36,
               this.container.getCraftingWindowSlot(this.index, 9))));
         addChild(new MekanismImageButton(gui, relativeX + width - 20, relativeY + height - 20, 14, Mekanism.rl("button/clear_sides"),

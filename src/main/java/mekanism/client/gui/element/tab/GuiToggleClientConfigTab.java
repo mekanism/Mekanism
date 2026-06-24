@@ -3,10 +3,8 @@ package mekanism.client.gui.element.tab;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.tooltip.TooltipUtils;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -35,8 +33,8 @@ public class GuiToggleClientConfigTab extends GuiInsetToggleElement<IGuiWrapper>
     }
 
     @Override
-    protected int getTabColor(GuiGraphicsExtractor guiGraphics) {
-        return MekanismRenderer.color(SpecialColors.TAB_JEI_REJECTS_TARGET);
+    protected int getTabColor() {
+        return SpecialColors.TAB_JEI_REJECTS_TARGET.argb();
     }
 
     @Override

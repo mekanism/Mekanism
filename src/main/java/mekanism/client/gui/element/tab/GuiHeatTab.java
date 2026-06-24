@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import mekanism.api.IIncrementalEnum;
 import mekanism.client.gui.IGuiWrapper;
@@ -15,11 +16,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
@@ -27,26 +26,20 @@ import org.jspecify.annotations.Nullable;
 public class GuiHeatTab extends GuiTexturedElement {
 
     private static final Map<TemperatureUnit, Identifier> ICONS = new EnumMap<>(TemperatureUnit.class);
-    private final IInfoHandler infoHandler;
+    private final Supplier<List<Component>> infoHandler;
 
     private List<Component> lastInfo = Collections.emptyList();
     @Nullable
     private Tooltip lastTooltip;
 
-    public GuiHeatTab(IGuiWrapper gui, IInfoHandler handler) {
+    public GuiHeatTab(IGuiWrapper gui, Supplier<List<Component>> handler) {
         super(Mekanism.rl("tab/heat_info_k"), gui, -26, 109, 26, 26);
         infoHandler = handler;
     }
 
     @Override
-    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
-    }
-
-    @Override
     public void updateTooltip(int mouseX, int mouseY) {
-        List<Component> info = new ArrayList<>(infoHandler.getInfo());
+        List<Component> info = new ArrayList<>(infoHandler.get());
         info.add(MekanismLang.UNIT.translate(MekanismConfig.common.tempUnit.get()));
         if (!info.equals(lastInfo)) {
             lastInfo = info;

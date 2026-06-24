@@ -8,9 +8,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityTeleporter.TeleporterStatus;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
@@ -50,12 +48,6 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
             };
         }
         return NO_FREQUENCY;
-    }
-
-    @Override
-    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
     }
 
     @Override

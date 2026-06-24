@@ -3,8 +3,8 @@ package mekanism.client.gui.machine;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -48,7 +48,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
             }
             return list;
         }));
-        addRenderableWidget(new GuiDownArrow(this, 32, 39));
+        addRenderableWidget(GuiTexturedElement.downArrow(this, 32, 39));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
                   MachineEnergyContainer<TileEntityElectricPump> energyContainer = tile.energyContainer();

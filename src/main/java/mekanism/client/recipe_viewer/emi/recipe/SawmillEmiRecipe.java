@@ -5,7 +5,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.recipes.SawmillRecipe;
-import mekanism.client.gui.element.GuiUpArrow;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -33,7 +33,7 @@ public class SawmillEmiRecipe extends MekanismEmiHolderRecipe<SawmillRecipe> {
 
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
-        addElement(widgetHolder, new GuiUpArrow(this, 60, 38));
+        addElement(widgetHolder, GuiTexturedElement.upArrow(this, 60, 38));
         addSlot(widgetHolder, SlotType.INPUT, 56, 17, input(0));
         addSlot(widgetHolder, SlotType.POWER, 56, 53).with(SlotOverlay.POWER);
         GuiSlot output = addSlot(widgetHolder, SlotType.OUTPUT, 112, 31, 42, 26);

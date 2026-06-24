@@ -8,7 +8,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.warning.ISupportsWarning;
@@ -26,7 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-public abstract class GuiGauge<T extends @Nullable Object> extends GuiTexturedElement implements ISupportsWarning<GuiGauge<T>> {
+public abstract class GuiGauge<T extends @Nullable Object> extends GuiElement implements ISupportsWarning<GuiGauge<T>> {
 
     private final GaugeType gaugeType;
     protected boolean dummy;
@@ -43,7 +43,7 @@ public abstract class GuiGauge<T extends @Nullable Object> extends GuiTexturedEl
     }
 
     public GuiGauge(GaugeType gaugeType, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
-        super(gaugeType.getGaugeOverlay().getBarOverlay(), gui, x, y, sizeX, sizeY);
+        super(gui, x, y, sizeX, sizeY);
         this.gaugeType = gaugeType;
     }
 
@@ -78,8 +78,7 @@ public abstract class GuiGauge<T extends @Nullable Object> extends GuiTexturedEl
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        GaugeInfo color = getGaugeColor();
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, color.getResourceLocation(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getGaugeColor().getResourceLocation(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         if (!dummy) {
             renderContents(guiGraphics);
         }
@@ -108,7 +107,7 @@ public abstract class GuiGauge<T extends @Nullable Object> extends GuiTexturedEl
     }
 
     public void drawBarOverlay(GuiGraphicsExtractor guiGraphics) {
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, getButtonWidth() - 2, getButtonHeight() - 2);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, gaugeType.getGaugeOverlay().getBarOverlay(), relativeX + 1, relativeY + 1, getButtonWidth() - 2, getButtonHeight() - 2);
     }
 
     @Override

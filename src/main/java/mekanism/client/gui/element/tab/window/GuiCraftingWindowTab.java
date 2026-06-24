@@ -11,14 +11,12 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.GuiCraftingWindow;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.gui.tooltip.TooltipUtils;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.util.Util;
 import org.jspecify.annotations.Nullable;
@@ -49,8 +47,8 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<@Nullable Void, Gu
     }
 
     @Override
-    protected int getTabColor(GuiGraphicsExtractor guiGraphics) {
-        return MekanismRenderer.color(SpecialColors.TAB_CRAFTING_WINDOW.get());
+    protected int getTabColor() {
+        return SpecialColors.TAB_CRAFTING_WINDOW.argb();
     }
 
     @Override

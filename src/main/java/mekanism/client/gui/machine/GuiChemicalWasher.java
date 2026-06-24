@@ -3,8 +3,8 @@ package mekanism.client.gui.machine;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.GuiConfigurableTile;
-import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiSideHolder;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -32,7 +32,7 @@ public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWas
         //Add the side holder before the slots, as it holds a couple of the slots
         addRenderableWidget(GuiSideHolder.create(this, imageWidth, 66, 57, false, true, SpecialColors.TAB_CHEMICAL_WASHER));
         super.addGuiElements();
-        addRenderableWidget(new GuiDownArrow(this, imageWidth + 8, 91));
+        addRenderableWidget(GuiTexturedElement.downArrow(this, imageWidth + 8, 91));
         addRenderableWidget(new GuiHorizontalPowerBar(this, tile.energyContainer(), 115, 75))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY))
               .warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE));

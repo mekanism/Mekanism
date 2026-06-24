@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.tooltip.TooltipUtils;
-import mekanism.client.recipe_viewer.interfaces.IRecipeViewerRecipeArea;
-import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
@@ -15,7 +13,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jspecify.annotations.Nullable;
 
-public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerRecipeArea<GuiInnerScreen> {
+public class GuiInnerScreen extends GuiTexturedElement {
 
     public static final Identifier SCREEN = Mekanism.rl("inner_screen");
 
@@ -28,7 +26,6 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
     @Nullable
     private Supplier<List<Component>> tooltipStrings;
 
-    private IRecipeViewerRecipeType<?> @Nullable [] recipeCategories;
     private TextAlignment textAlignment = TextAlignment.LEFT;
     private VerticalPositioning verticalAlignment = VerticalPositioning.TOP;
     private int spacing;
@@ -37,6 +34,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
 
     public GuiInnerScreen(IGuiWrapper gui, int x, int y, int width, int height) {
         super(SCREEN, gui, x, y, width, height);
+        active = false;
     }
 
     public GuiInnerScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<List<Component>> renderStrings) {
@@ -152,17 +150,6 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
 
     protected int getMaxTextWidth(int row) {
         return getWidth();
-    }
-
-    @Override
-    public GuiInnerScreen recipeViewerCategories(IRecipeViewerRecipeType<?>... recipeCategories) {
-        this.recipeCategories = recipeCategories;
-        return this;
-    }
-
-    @Override
-    public IRecipeViewerRecipeType<?> @Nullable [] getRecipeCategories() {
-        return recipeCategories;
     }
 
     @Override

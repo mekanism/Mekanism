@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
-import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -49,8 +49,8 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
                   MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(multiblock.getTemperature(), TemperatureUnit.KELVIN, true)),
                   MekanismLang.FLUID_PRODUCTION.translate(Math.round(multiblock.lastGain * 100D) / 100D));
         }).padding(3).clearSpacing().recipeViewerCategories(RecipeViewerRecipeType.EVAPORATING));
-        addRenderableWidget(new GuiDownArrow(this, 32, 39));
-        addRenderableWidget(new GuiDownArrow(this, 156, 39));
+        addRenderableWidget(GuiTexturedElement.downArrow(this, 32, 39));
+        addRenderableWidget(GuiTexturedElement.downArrow(this, 156, 39));
         addRenderableWidget(new GuiHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
             public Component getTooltip() {

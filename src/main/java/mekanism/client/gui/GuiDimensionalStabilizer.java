@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.element.GuiUpArrow;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.BasicColorButton;
 import mekanism.client.gui.element.button.TooltipColorButton;
@@ -116,7 +116,7 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                 }
             }
         }
-        addRenderableWidget(new GuiUpArrow(this, 52, 28));
+        addRenderableWidget(GuiTexturedElement.upArrow(this, 52, 28));
     }
 
     private boolean hasAtRadius(int radius, boolean state) {

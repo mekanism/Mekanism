@@ -5,7 +5,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.tooltip.TooltipUtils;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -71,8 +70,8 @@ public class GuiResizeControls extends GuiSideHolder {
     }
 
     @Override
-    protected int getTabColor(GuiGraphicsExtractor guiGraphics) {
-        return MekanismRenderer.color(SpecialColors.TAB_RESIZE_CONTROLS);
+    protected int getTabColor() {
+        return SpecialColors.TAB_RESIZE_CONTROLS.argb();
     }
 
     private boolean handleResize(ResizeType type, boolean adjustMax) {

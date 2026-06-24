@@ -5,7 +5,7 @@ import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiSecurityLight;
-import mekanism.client.gui.element.GuiTextureOnlyElement;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TooltipToggleButton;
@@ -76,8 +76,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
             }
             return frequency.isOverridden() ? 0 : 1;
         }));
-        addRenderableWidget(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
-        addRenderableWidget(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));
+        addRenderableWidget(GuiTexturedElement.textureOnly(PUBLIC, this, 145, 32, 18, 18));
+        addRenderableWidget(GuiTexturedElement.textureOnly(PRIVATE, this, 145, 111, 18, 18));
         scrollList = addRenderableWidget(new GuiTextScrollList(this, 13, 13, 122, 42));
         removeButton = addRenderableWidget(new TranslationButton(this, 13, 81, 122, 20, MekanismLang.BUTTON_REMOVE, (_, _, _) -> {
             int selection = scrollList.getSelection();

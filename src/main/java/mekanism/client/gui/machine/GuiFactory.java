@@ -2,7 +2,7 @@ package mekanism.client.gui.machine;
 
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
-import mekanism.client.gui.element.GuiDumpButton;
+import mekanism.client.gui.element.button.GuiDumpButton;
 import mekanism.client.gui.element.bar.GuiChemicalBar;
 import mekanism.client.gui.element.bar.GuiTankBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -25,7 +25,7 @@ import org.jspecify.annotations.Nullable;
 public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, MekanismTileContainer<TileEntityFactory<?>>> {
 
     @Nullable
-    private GuiDumpButton<?> dumpButton;
+    private GuiDumpButton dumpButton;
 
     private static int calcHeight(MekanismTileContainer<TileEntityFactory<?>> container) {
         TileEntityFactory<?> tile = container.getTileEntity();
@@ -75,7 +75,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
                 addRenderableWidget(new GuiChemicalBar(this, GuiTankBar.getProvider(factory.getChemicalTank(), tile.getChemicalTanks()), 7, 76,
                       tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true))
                       .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT, 0));
-                dumpButton = addRenderableWidget(new GuiDumpButton<>(this, (TileEntityFactory<?> & IHasDumpButton) tile, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
+                dumpButton = addRenderableWidget(new GuiDumpButton(this, (TileEntityFactory<?> & IHasDumpButton) tile, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
             }
         }
 

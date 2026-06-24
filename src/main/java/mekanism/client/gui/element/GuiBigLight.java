@@ -14,14 +14,13 @@ public class GuiBigLight extends GuiTexturedElement {
     private final BooleanSupplier lightSupplier;
 
     public GuiBigLight(IGuiWrapper gui, int x, int y, BooleanSupplier lightSupplier) {
-        super(LIGHTS, gui, x, y, 14, 14);
+        super(GuiInnerScreen.SCREEN, gui, x, y, 14, 14);
         this.lightSupplier = lightSupplier;
     }
 
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiInnerScreen.SCREEN, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, lightSupplier.getAsBoolean() ? 0 : 12, 0, width - 2, height - 2, 24, 12);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LIGHTS, relativeX + 1, relativeY + 1, lightSupplier.getAsBoolean() ? 0 : 12, 0, width - 2, height - 2, 24, 12);
     }
 }

@@ -3,8 +3,8 @@ package mekanism.client.recipe_viewer.jei.machine;
 import java.util.List;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.recipes.FluidToFluidRecipe;
-import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -36,8 +36,8 @@ public class FluidToFluidRecipeCategory extends HolderRecipeCategory<FluidToFlui
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(HeatAPI.AMBIENT_TEMP, TemperatureUnit.KELVIN, true)),
               MekanismLang.FLUID_PRODUCTION.translate(0.0))
         ).padding(3).clearSpacing());
-        addElement(new GuiDownArrow(this, 32, 39));
-        addElement(new GuiDownArrow(this, 142, 39));
+        addElement(GuiTexturedElement.downArrow(this, 32, 39));
+        addElement(GuiTexturedElement.downArrow(this, 142, 39));
         addElement(new GuiHorizontalRateBar(this, RecipeViewerUtils.FULL_BAR, 51, 63));
         addSlot(SlotType.INPUT, 28, 20);
         addSlot(SlotType.OUTPUT, 28, 51);

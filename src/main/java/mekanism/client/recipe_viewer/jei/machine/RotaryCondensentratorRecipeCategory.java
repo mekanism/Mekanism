@@ -1,7 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.recipes.RotaryRecipe;
-import mekanism.client.gui.element.GuiDownArrow;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -29,7 +29,8 @@ public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<Ro
     public RotaryCondensentratorRecipeCategory(IGuiHelper helper, boolean condensentrating) {
         super(helper, condensentrating ? RecipeViewerRecipeType.CONDENSENTRATING : RecipeViewerRecipeType.DECONDENSENTRATING);
         this.condensentrating = condensentrating;
-        addElement(new GuiDownArrow(this, 159, 44));
+        addElement(GuiTexturedElement.downArrow(this, 9, 44));
+        addElement(GuiTexturedElement.downArrow(this, 159, 44));
         chemicalGauge = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 25, 13));
         fluidGauge = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 133, 13));
         addSlot(SlotType.INPUT, 5, 25).with(SlotOverlay.PLUS);

@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.button.GuiCloseButton;
 import mekanism.client.gui.element.button.GuiPinButton;
 import mekanism.client.render.MekanismRenderer;
@@ -26,7 +25,7 @@ import net.minecraft.util.Util;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jspecify.annotations.Nullable;
 
-public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
+public class GuiWindow extends GuiElement implements IGUIWindow {
 
     private static final Color OVERLAY_COLOR = Color.rgbai(60, 60, 60, 128);
 
@@ -66,7 +65,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         int targetY = calculateTarget(lastPosition.y(), gui.getGuiTop(), height, minecraft.getWindow().getGuiScaledHeight(), y);
         this.pinned = lastPosition.pinned();
         this.windowData = windowData;
-        super(GuiMekanism.BASE_BACKGROUND_SLICE, gui, targetX, targetY, width, height);
+        super(gui, targetX, targetY, width, height);
         isOverlay = true;
         active = true;
         msOpened = Util.getMillis();
@@ -147,7 +146,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
             //TODO - 26.2: check this vs the old. Looks rather strong on top of other windows
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiMekanism.SHADOW, relativeX - 3, relativeY - 3, width + 6, height + 6, ARGB.color(0.75F, CommonColors.WHITE));
         }
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiMekanism.BASE_BACKGROUND_SLICE, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
     }
 
     @Override

@@ -29,8 +29,8 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     @Nullable
     private Tooltip lastTooltip;
 
-    public GuiBar(Identifier resource, IGuiWrapper gui, INFO handler, int x, int y, int width, int height, boolean horizontal) {
-        super(resource, gui, x, y, width + 2, height + 2);
+    public GuiBar(IGuiWrapper gui, INFO handler, int x, int y, int width, int height, boolean horizontal) {
+        super(BAR, gui, x, y, width + 2, height + 2);
         this.handler = handler;
         this.horizontal = horizontal;
     }
@@ -48,7 +48,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
         if (warning) {
             //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency

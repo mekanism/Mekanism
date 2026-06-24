@@ -15,14 +15,14 @@ public class GuiHorizontalRateBar extends GuiBar<IBarInfoHandler> {
     private static final int texHeight = 8;
 
     public GuiHorizontalRateBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y) {
-        super(RATE_BAR, gui, handler, x, y, texWidth, texHeight, true);
+        super(gui, handler, x, y, texWidth, texHeight, true);
     }
 
     @Override
     protected void renderBarOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
         int displayInt = (int) (handlerLevel * texWidth);
         if (displayInt > 0) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, 0, 0, displayInt, texHeight, texWidth, texHeight);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RATE_BAR, relativeX + 1, relativeY + 1, 0, 0, displayInt, texHeight, texWidth, texHeight);
         }
     }
 }

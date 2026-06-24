@@ -1,6 +1,6 @@
 package mekanism.client.gui.robit;
 
-import mekanism.client.gui.element.GuiRightArrow;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -17,7 +17,7 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiRightArrow(this, 90, 35).recipeViewerCrafting());
+        addRenderableWidget(GuiTexturedElement.rightArrow(this, 90, 35).recipeViewerCrafting());
     }
 
     @Override

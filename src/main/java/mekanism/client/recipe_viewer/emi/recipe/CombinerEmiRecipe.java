@@ -2,7 +2,7 @@ package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
 import mekanism.api.recipes.CombinerRecipe;
-import mekanism.client.gui.element.GuiUpArrow;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
@@ -23,7 +23,7 @@ public class CombinerEmiRecipe extends MekanismEmiHolderRecipe<CombinerRecipe> {
 
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
-        addElement(widgetHolder, new GuiUpArrow(this, 68, 38));
+        addElement(widgetHolder, GuiTexturedElement.upArrow(this, 68, 38));
         addSlot(widgetHolder, SlotType.INPUT, 64, 17, input(0));
         addSlot(widgetHolder, SlotType.EXTRA, 64, 53, input(1));
         addSlot(widgetHolder, SlotType.OUTPUT, 116, 35, output(0)).recipeContext(this);

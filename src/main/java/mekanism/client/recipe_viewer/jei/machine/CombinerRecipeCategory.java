@@ -1,7 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.recipes.CombinerRecipe;
-import mekanism.client.gui.element.GuiUpArrow;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -25,7 +25,7 @@ public class CombinerRecipeCategory extends HolderRecipeCategory<CombinerRecipe>
 
     public CombinerRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<CombinerRecipe> recipeType) {
         super(helper, recipeType);
-        addElement(new GuiUpArrow(this, 68, 38));
+        addElement(GuiTexturedElement.upArrow(this, 68, 38));
         input = addSlot(SlotType.INPUT, 64, 17);
         extra = addSlot(SlotType.EXTRA, 64, 53);
         output = addSlot(SlotType.OUTPUT, 116, 35);

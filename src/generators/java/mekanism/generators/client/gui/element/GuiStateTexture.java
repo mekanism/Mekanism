@@ -25,7 +25,7 @@ public class GuiStateTexture extends GuiTexturedElement {
 
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         Identifier resource = onSupplier.getAsBoolean() ? onTexture : offTexture;
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resource, relativeX + 2, relativeY + 2, width - 4, height - 4);
     }

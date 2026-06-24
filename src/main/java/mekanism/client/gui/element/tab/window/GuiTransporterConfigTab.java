@@ -5,14 +5,12 @@ import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.GuiTransporterConfig;
 import mekanism.client.gui.element.window.GuiWindow;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class GuiTransporterConfigTab<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindowCreatorTab<TILE, GuiTransporterConfigTab<TILE>> {
 
@@ -24,8 +22,8 @@ public class GuiTransporterConfigTab<TILE extends TileEntityMekanism & ISideConf
     }
 
     @Override
-    protected int getTabColor(GuiGraphicsExtractor guiGraphics) {
-        return MekanismRenderer.color(SpecialColors.TAB_TRANSPORTER);
+    protected int getTabColor() {
+        return SpecialColors.TAB_TRANSPORTER.argb();
     }
 
     @Override

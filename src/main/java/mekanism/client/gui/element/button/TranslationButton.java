@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.render.MekanismRenderer;
+import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
 public class TranslationButton extends MekanismButton {
@@ -25,7 +25,8 @@ public class TranslationButton extends MekanismButton {
     @Override
     protected int getButtonBlitColor() {
         if (colorSupplier != null) {
-            return MekanismRenderer.color(colorSupplier.get());
+            EnumColor color = colorSupplier.get();
+            return color == null ? CommonColors.WHITE : color.getPackedColor();
         }
         return super.getButtonBlitColor();
     }

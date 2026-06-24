@@ -43,7 +43,7 @@ public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
     }
 
     public GuiVerticalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y, int desiredHeight) {
-        super(ENERGY_BAR, gui, handler, x, y, texWidth, desiredHeight, false);
+        super(gui, handler, x, y, texWidth, desiredHeight, false);
         heightScale = desiredHeight / (double) texHeight;
     }
 
@@ -52,7 +52,7 @@ public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
         int displayInt = (int) (handlerLevel * texHeight);
         if (displayInt > 0) {
             int scaled = calculateScaled(heightScale, displayInt);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + height - 1 - scaled, 0, 0, texWidth, scaled, texWidth, displayInt, texWidth, texHeight);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, ENERGY_BAR, relativeX + 1, relativeY + height - 1 - scaled, 0, 0, texWidth, scaled, texWidth, displayInt, texWidth, texHeight);
         }
     }
 }

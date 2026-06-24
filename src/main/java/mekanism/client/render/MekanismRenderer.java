@@ -14,7 +14,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.lib.ColorAtlas;
-import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.client.render.tileentity.RenderPigmentMixer;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.transmitter.RenderTransmitterBase;
@@ -44,7 +43,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 import net.neoforged.neoforge.client.fluid.FluidTintSource;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
@@ -118,52 +116,19 @@ public class MekanismRenderer {
     }
 
     //Color
-    @Deprecated(forRemoval = true)
-    public static void resetColor(GuiGraphicsExtractor guiGraphics) {
-        //TODO - 26.2: inline color reset / remove
-        //guiGraphics.setColor(1, 1, 1, 1);
-    }
-
     //TODO - 26.2: review usages to ensure it's actually used (all color() methods)
-    public static int color(int color, float alpha) {
-        return ARGB.color(alpha, color);
-    }
-
-    public static int color(ColorRegistryObject colorRO) {
-        return color(colorRO.get());
-    }
-
-    public static int color(Color color) {
-        return color.argb();
-    }
-
-    public static int color(FluidStack fluid) {
-        if (!fluid.isEmpty()) {
-            return getColorARGB(fluid);
-        }
-        return -1;
-    }
-
     public static int color(FluidResource fluid) {
         if (!fluid.isEmpty()) {
             return getColorARGB(fluid);
         }
-        return -1;
+        return CommonColors.WHITE;
     }
 
     public static int color(TypedInstance<Chemical> instance) {
         if (instance.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-            return -1;
+            return CommonColors.WHITE;
         }
         return instance.typeHolder().value().tint();
-    }
-
-    public static int color(@Nullable SupportsColorMap color) {
-        if (color != null) {
-            return color.getPackedColor();
-            //guiGraphics.setColor(color.getColor(0), color.getColor(1), color.getColor(2), 1.0F);
-        }
-        return -1;
     }
 
     public static int getColorARGB(SupportsColorMap color, float alpha) {

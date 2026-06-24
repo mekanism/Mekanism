@@ -6,10 +6,10 @@ import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.progress.IProgressInfoHandler.IBooleanProgressInfoHandler;
-import mekanism.client.recipe_viewer.interfaces.IRecipeViewerRecipeArea;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
+import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
@@ -25,11 +25,10 @@ import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fc;
 import org.jspecify.annotations.Nullable;
 
-public class GuiProgress extends GuiTexturedElement implements IRecipeViewerRecipeArea<GuiProgress>, ISupportsWarning<GuiProgress> {
+public class GuiProgress extends GuiTexturedElement implements ISupportsWarning<GuiProgress> {
 
     protected final IProgressInfoHandler handler;
     protected final ProgressType type;
-    private IRecipeViewerRecipeType<?> @Nullable [] recipeCategories;
     @Nullable
     private ColorDetails colorDetails;
     @Nullable
@@ -59,7 +58,6 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
         if (handler.isActive()) {
             boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
             Identifier texture = type.texture(warning);
@@ -103,13 +101,14 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
 
     @Override
     public GuiProgress recipeViewerCategories(IRecipeViewerRecipeType<?>... recipeCategories) {
-        this.recipeCategories = recipeCategories;
+        super.recipeViewerCategories(recipeCategories);
         return this;
     }
 
     @Override
-    public IRecipeViewerRecipeType<?> @Nullable [] getRecipeCategories() {
-        return recipeCategories;
+    public GuiProgress recipeViewerCategory(IRecipeLookupHandler<?> recipeLookup) {
+        super.recipeViewerCategory(recipeLookup);
+        return this;
     }
 
     private void blit(GuiGraphicsExtractor guiGraphics, Identifier texture, int x, int y, int uOffset, int vOffset, int width, int height, float progress, boolean warning) {

@@ -2,7 +2,7 @@ package mekanism.client.gui.machine;
 
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
-import mekanism.client.gui.element.GuiDumpButton;
+import mekanism.client.gui.element.button.GuiDumpButton;
 import mekanism.client.gui.element.bar.GuiChemicalBar;
 import mekanism.client.gui.element.bar.GuiTankBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -33,7 +33,7 @@ public class GuiMetallurgicInfuser extends GuiConfigurableTile<TileEntityMetallu
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
         addRenderableWidget(new GuiChemicalBar(this, GuiTankBar.getProvider(tile.infusionTank, tile.getChemicalTanks()), 7, 15, 4, 52, false))
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT));
-        addRenderableWidget(new GuiDumpButton<>(this, tile, 16, 59));
+        addRenderableWidget(new GuiDumpButton(this, tile, 16, 59));
     }
 
     @Override

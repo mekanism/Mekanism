@@ -3,10 +3,10 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.resource.IResourceContainer;
-import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSideHolder;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiMergedTankGauge;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -51,7 +51,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
             ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(capacity)));
             return ret;
         }).spacing(1));
-        addRenderableWidget(new GuiDownArrow(this, 150, 39));
+        addRenderableWidget(GuiTexturedElement.downArrow(this, 150, 39));
         addRenderableWidget(new GuiContainerEditModeTab<>(this, tile));
         addRenderableWidget(new GuiMergedTankGauge(() -> tile.getMultiblock().mergedTank, tile::getMultiblock, GaugeType.MEDIUM, this, 7, 16, 34, 56));
     }

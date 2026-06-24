@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.LongSupplier;
+import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.tooltip.TooltipUtils;
@@ -12,21 +13,19 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
 public class GuiEnergyTab extends GuiTexturedElement {
 
-    private final IInfoHandler infoHandler;
+    private final Supplier<List<Component>> infoHandler;
 
     private List<Component> lastInfo = Collections.emptyList();
     @Nullable
     private Tooltip lastTooltip;
 
-    public GuiEnergyTab(IGuiWrapper gui, IInfoHandler handler) {
+    public GuiEnergyTab(IGuiWrapper gui, Supplier<List<Component>> handler) {
         super(Mekanism.rl("tab/energy_info"), gui, -26, 137, 26, 26);
         infoHandler = handler;
     }
@@ -49,14 +48,8 @@ public class GuiEnergyTab extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
-    }
-
-    @Override
     public void updateTooltip(int mouseX, int mouseY) {
-        List<Component> info = new ArrayList<>(infoHandler.getInfo());
+        List<Component> info = new ArrayList<>(infoHandler.get());
         info.add(MekanismLang.UNIT.translate(MekanismLang.ENERGY_FORGE_SHORT));
         if (!info.equals(lastInfo)) {
             lastInfo = info;

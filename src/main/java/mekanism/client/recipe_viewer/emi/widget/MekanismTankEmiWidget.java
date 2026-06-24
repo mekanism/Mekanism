@@ -59,7 +59,7 @@ public class MekanismTankEmiWidget extends SlotWidget {
                 sprite = MekanismRenderer.getChemicalTexture(chemicalStack);
             } else if (stack.getKey() instanceof Fluid fluid) {
                 FluidStack fluidStack = new FluidStack(fluid.builtInRegistryHolder(), Ints.saturatedCast(ingredient.getAmount()), stack.getComponentChanges());
-                color = MekanismRenderer.color(fluidStack);
+                color = MekanismRenderer.getColorARGB(fluidStack);
                 sprite = MekanismRenderer.getFluidTexture(fluidStack, FluidTextureType.STILL);
             } else {
                 return;

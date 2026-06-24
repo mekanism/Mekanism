@@ -15,7 +15,7 @@ public class GuiVerticalRateBar extends GuiBar<IBarInfoHandler> {
     private static final int texHeight = 58;
 
     public GuiVerticalRateBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y) {
-        super(RATE_BAR, gui, handler, x, y, texWidth, texHeight, false);
+        super(gui, handler, x, y, texWidth, texHeight, false);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class GuiVerticalRateBar extends GuiBar<IBarInfoHandler> {
         int displayInt = (int) (handlerLevel * texHeight);
         if (displayInt > 0) {
             //TODO: Should textureX be texWidth + 2
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt, texWidth, texHeight);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RATE_BAR, relativeX + 1, relativeY + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt, texWidth, texHeight);
         }
     }
 }

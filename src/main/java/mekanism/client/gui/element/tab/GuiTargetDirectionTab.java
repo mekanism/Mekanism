@@ -3,11 +3,9 @@ package mekanism.client.gui.element.tab;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.tooltip.TooltipUtils;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import org.jspecify.annotations.Nullable;
@@ -30,8 +28,8 @@ public class GuiTargetDirectionTab extends GuiInsetToggleElement<QIOItemViewerCo
     }
 
     @Override
-    protected int getTabColor(GuiGraphicsExtractor guiGraphics) {
-        return MekanismRenderer.color(SpecialColors.TAB_TARGET_DIRECTION);
+    protected int getTabColor() {
+        return SpecialColors.TAB_TARGET_DIRECTION.argb();
     }
 
     @Override

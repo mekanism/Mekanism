@@ -2,27 +2,28 @@ package mekanism.client.gui.element.scroll;
 
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.GuiTexturedElement;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public abstract class GuiScrollableElement extends GuiTexturedElement {
+public abstract class GuiScrollableElement extends GuiElement {
 
-    protected double scroll;
-    private int dragOffset;
+    private final Identifier texture;
     protected final int maxBarHeight;
     protected final int barWidth;
     protected final int barHeight;
     protected final int barXShift;
+    protected double scroll;
+    private int dragOffset;
     protected int barX;
     protected int barY;
 
     protected GuiScrollableElement(Identifier resource, IGuiWrapper gui, int x, int y, int width, int height, int barXShift, int barYShift, int barWidth,
           int barHeight, int maxBarHeight) {
-        super(resource, gui, x, y, width, height);
+        super(gui, x, y, width, height);
+        this.texture = resource;
         this.barXShift = barXShift;
         this.barX = relativeX + barXShift;
         this.barY = relativeY + barYShift;
@@ -121,7 +122,6 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     }
 
     protected void drawScrollBar(GuiGraphicsExtractor guiGraphics, int textureWidth, int textureHeight) {
-        Identifier texture = getResource();
         //Top border
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, barX - 1, barY - 1, 0, 0, textureWidth, 1, textureWidth, textureHeight);
         //Middle border

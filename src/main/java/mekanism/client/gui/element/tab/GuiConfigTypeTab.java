@@ -8,9 +8,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.element.window.GuiSideConfiguration;
 import mekanism.client.gui.tooltip.TooltipUtils;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.transmitter.TransmissionType;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import org.jspecify.annotations.Nullable;
@@ -32,14 +30,14 @@ public class GuiConfigTypeTab extends GuiInsetElement<@Nullable Void> {
     }
 
     @Override
-    protected int getTabColor(GuiGraphicsExtractor guiGraphics) {
-        return MekanismRenderer.color(switch (transmission) {
+    protected int getTabColor() {
+        return (switch (transmission) {
             case ENERGY -> SpecialColors.TAB_ENERGY_CONFIG;
             case FLUID -> SpecialColors.TAB_FLUID_CONFIG;
             case CHEMICAL -> SpecialColors.TAB_CHEMICAL_CONFIG;
             case ITEM -> SpecialColors.TAB_ITEM_CONFIG;
             case HEAT -> SpecialColors.TAB_HEAT_CONFIG;
-        });
+        }).argb();
     }
 
     @Override

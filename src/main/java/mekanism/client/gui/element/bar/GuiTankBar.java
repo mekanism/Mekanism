@@ -25,7 +25,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -42,7 +41,7 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
     private Tooltip lastTooltip;
 
     public GuiTankBar(IGuiWrapper gui, ResourceTankInfoProvider<RESOURCE, CONTAINER> infoProvider, int x, int y, int width, int height, boolean horizontal) {
-        super(TextureAtlas.LOCATION_BLOCKS, gui, infoProvider, x, y, width, height, horizontal);
+        super(gui, infoProvider, x, y, width, height, horizontal);
     }
 
     protected abstract TankType getType();

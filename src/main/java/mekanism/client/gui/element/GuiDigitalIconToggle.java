@@ -30,8 +30,7 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        TYPE type = typeSupplier.get();
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, type.getIcon(), relativeX + 3, relativeY + 3, width - 6, height - 6);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, typeSupplier.get().getIcon(), relativeX + 3, relativeY + 3, width - 6, height - 6);
     }
 
     @Override

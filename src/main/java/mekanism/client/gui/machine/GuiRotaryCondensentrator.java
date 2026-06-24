@@ -3,7 +3,7 @@ package mekanism.client.gui.machine;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiConfigurableTile;
-import mekanism.client.gui.element.GuiDownArrow;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.button.ToggleButton;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -38,8 +38,8 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiDownArrow(this, 9, 44));
-        addRenderableWidget(new GuiDownArrow(this, 159, 44));
+        addRenderableWidget(GuiTexturedElement.downArrow(this, 9, 44));
+        addRenderableWidget(GuiTexturedElement.downArrow(this, 159, 44));
         addRenderableWidget(new GuiHorizontalPowerBar(this, tile.energyContainer(), ENERGY_BAR_X, 75))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY))
               .warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE));
