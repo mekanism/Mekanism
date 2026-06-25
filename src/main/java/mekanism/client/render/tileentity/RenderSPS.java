@@ -1,19 +1,22 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import mekanism.client.render.MekanismRenderType;
+import mekanism.client.render.lib.effect.BillboardingEffectFeatureRenderer;
+import mekanism.client.render.lib.effect.BillboardingEffectFeatureRenderer.BillboardingRenderState;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.tileentity.RenderSPS.SPSRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.content.sps.SPSMultiblockData.CoilData;
-import mekanism.common.lib.Color;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
-import mekanism.common.lib.effect.CustomEffect;
 import mekanism.common.lib.math.Plane;
 import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
 import mekanism.common.particle.SPSOrbitEffect;
@@ -24,25 +27,26 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.submit.RenderPhaseKeys;
 import org.jspecify.annotations.Nullable;
 
 public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, TileEntitySPSCasing, SPSRenderState> {
 
-    private static final CustomEffect CORE = Util.make(new CustomEffect(MekanismUtils.getResource(ResourceType.RENDER, "energy_effect.png")),
-          core -> core.setColor(Color.rgbai(0xFF, 0xFF, 0xFF, 0xF0)));
+    private static final RenderType CORE_RENDER_TYPE = MekanismRenderType.SPS.apply(MekanismUtils.getResource(ResourceType.RENDER, "energy_effect.png"));
     private static final Map<UUID, BoltRenderer> boltRendererMap = new HashMap<>();
-    private static final float MIN_SCALE = 0.1F, MAX_SCALE = 4F;
-    private static final RandomSource rand = RandomSource.create();
 
     public static void clearBoltRenderers() {
         boltRendererMap.clear();
     }
+
+    private final RandomSource random = RandomSource.create();
 
     public RenderSPS(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -65,7 +69,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
               .scale(0.5);
 
         BlockPos pos = state.blockPos;
-        BoltRenderer bolts = boltRendererMap.computeIfAbsent(multiblock.inventoryID, mb -> new BoltRenderer());
+        BoltRenderer bolts = boltRendererMap.computeIfAbsent(multiblock.inventoryID, _ -> new BoltRenderer());
 
         int targetEffectCount = 0;
         boolean tickingNormally = isTickingNormally(sps);
@@ -77,10 +81,10 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
                 }
             }
             if (multiblock.lastReceivedEnergy > 0) {
-                if (rand.nextDouble() < state.lerpEnergy(0.01F, 0.4F)) {
-                    CuboidSide side = Util.getRandom(CuboidSide.SIDES, rand);
+                if (random.nextDouble() < state.lerpEnergy(0.01F, 0.4F)) {
+                    CuboidSide side = Util.getRandom(CuboidSide.SIDES, random);
                     Plane plane = Plane.getInnerCuboidPlane(multiblock.getBounds(), side);
-                    Vec3 endPos = plane.getRandomPoint(rand).subtract(pos.getX(), pos.getY(), pos.getZ());
+                    Vec3 endPos = plane.getRandomPoint(random).subtract(pos.getX(), pos.getY(), pos.getZ());
                     BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, renderCenter, endPos, 15)
                           .size(0.01F * state.lerpEnergy(0.5F, 5))
                           .lifespan(8)
@@ -91,11 +95,27 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
             }
         }
 
+        if (state.processed > 0) {
+            state.coreState = new BillboardingRenderState();
+            state.coreState.color = 0xF0FFFFFF;
+            state.coreState.gridSize = 4;
+            state.coreState.scale = state.lerpEnergy(0.1F, 4F);
+            //TODO - 26.2: Re-evaluate this, ConduitBlockEntity#tickCount?
+            state.coreState.renderTick =  (int) sps.getGameTime();
+        }
+
         if (sps.orbitEffects.size() > targetEffectCount) {
             sps.orbitEffects.poll();
-        } else if (sps.orbitEffects.size() < targetEffectCount && rand.nextDouble() < 0.5) {
-            //TODO - 26.2: Do we want to just use the level's random instead?
-            sps.orbitEffects.add(new SPSOrbitEffect(multiblock, state.center));
+        } else if (sps.orbitEffects.size() < targetEffectCount && random.nextDouble() < 0.5) {
+            sps.orbitEffects.add(new SPSOrbitEffect(multiblock, random));
+        }
+        for (SPSOrbitEffect effect : sps.orbitEffects) {
+            BillboardingRenderState orbitState = new BillboardingRenderState();
+            orbitState.color = SPSOrbitEffect.COLOR;
+            orbitState.scale = effect.getScale();
+            orbitState.renderTick = effect.getTick();
+            effect.transformPos(orbitState.pos, partialTick);
+            state.orbitEffects.add(orbitState);
         }
     }
 
@@ -105,23 +125,28 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         // I think the billboarding effects might be able to use a model part, which then might let them be ordered properly in terms of transparency
         //bolts.render(partialTick, poseStack, renderer);
 
-        poseStack.pushPose();
-        //Because our center points are the center of the multiblock, we translate back to 0,0,0
-        //TODO - 26.2: Test this is the proper way to handle that we used to shift the billboarding effect renderer by the camera position
-        // when we were batching rendering of billboarding effects
-        poseStack.translate(-state.blockPos.getX(), -state.blockPos.getY(), -state.blockPos.getZ());
+        if (state.center != null) {
+            poseStack.pushPose();
+            //Render from the center position instead of from the block's position
+            poseStack.translate(state.center.x() - state.blockPos.getX(), state.center.y() - state.blockPos.getY(), state.center.z() - state.blockPos.getZ());
+            poseStack.mulPose(camera.orientation);
 
-        if (state.processed > 0 && state.center != null) {
-            //TODO - 26.2: ProfilerConstants.SPS_CORE ?
-            CORE.setPos(state.center);
-            CORE.setScale(state.lerpEnergy(MIN_SCALE, MAX_SCALE));
-            //BillboardingEffectRenderer.render(CORE, camera, renderer, poseStack, renderTick, partialTick);
+            if (state.coreState != null) {
+                submitBillboard(poseStack, nodeCollector, CORE_RENDER_TYPE, state.coreState);
+            }
+
+            for (BillboardingRenderState orbitEffect : state.orbitEffects) {
+                submitBillboard(poseStack, nodeCollector, SPSOrbitEffect.RENDER_TYPE, orbitEffect);
+            }
+            poseStack.popPose();
         }
+    }
 
-        //TODO - 26.2: ProfilerConstants.SPS_ORBIT ?
-        /*for (SPSOrbitEffect effect : sps.orbitEffects) {
-            BillboardingEffectRenderer.render(effect, camera, renderer, poseStack, renderTick, partialTick);
-        }*/
+    private void submitBillboard(PoseStack poseStack, SubmitNodeCollector nodeCollector, RenderType renderType, BillboardingRenderState state) {
+        poseStack.pushPose();
+        poseStack.translate(state.pos.x(), state.pos.y(), state.pos.z());
+        poseStack.scale(state.scale, state.scale, state.scale);
+        nodeCollector.submitSpecial(RenderPhaseKeys.AFTER_TERRAIN, new BillboardingEffectFeatureRenderer.Submit(poseStack.last().copy(), renderType, state));
         poseStack.popPose();
     }
 
@@ -146,10 +171,13 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
 
     public static class SPSRenderState extends BlockEntityRenderState {
 
+        public final List<BillboardingRenderState> orbitEffects = new ArrayList<>();
         @Nullable
         public Vec3 center;
         public double processed;
         public float energyScale;
+        @Nullable
+        public BillboardingRenderState coreState;
 
         public void setProcessed(double processed) {
             this.processed = processed;

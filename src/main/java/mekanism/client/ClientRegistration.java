@@ -124,6 +124,7 @@ import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
+import mekanism.client.render.lib.effect.BillboardingEffectFeatureRenderer;
 import mekanism.client.render.outline.MekanismOutlineFeatureRender;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
@@ -240,6 +241,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerFeatures(RegisterFeatureRenderersEvent event) {
+        event.register(BillboardingEffectFeatureRenderer.TYPE, new BillboardingEffectFeatureRenderer());
         event.register(MekanismOutlineFeatureRender.TYPE, new MekanismOutlineFeatureRender());
     }
 

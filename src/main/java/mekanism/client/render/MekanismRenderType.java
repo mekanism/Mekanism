@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 
 public class MekanismRenderType {
 //TODO - 26.2 render types
@@ -80,13 +81,9 @@ public static final RenderType MEK_LIGHTNING = RenderTypes.lightning();/*RenderT
                 .createCompositeState(true)
     );*/
 
-    public static final Function<Identifier, RenderType> SPS = null;/*Util.memoize(resourceLocation -> {
-        RenderType.CompositeState state = RenderType.CompositeState.builder()
-              .setShaderState(MekanismShaders.SPS.shard)
-              .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-              .setTransparencyState(RenderType.LIGHTNING_TRANSPARENCY)
-              .setOutputState(RenderType.TRANSLUCENT_TARGET)
-              .createCompositeState(false);
-        return RenderType.create("mek_sps", DefaultVertexFormat.POSITION_TEX_COLOR, Mode.QUADS, 1_536, false, true, state);
-    });*/
+    public static final Function<Identifier, RenderType> SPS = Util.memoize(resourceLocation -> RenderType.create("mekanism_sps", RenderSetup.builder(MekanismRenderPipelines.SPS)
+          .withTexture("Sampler0", resourceLocation)
+          .sortOnUpload()
+          .createRenderSetup()
+    ));
 }
