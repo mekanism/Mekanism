@@ -2,8 +2,8 @@ package mekanism.client.gui.element.graph;
 
 import java.util.Collection;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.graph.GuiGraph.GraphDataHandler;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.util.MekanismUtils;
@@ -18,7 +18,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
-public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends GraphDataHandler> extends GuiElement {
+public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends GraphDataHandler> extends GuiTexturedElement {
 
     private static final Identifier TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "graph.png");
     private static final int TEXTURE_WIDTH = 3;
@@ -37,16 +37,15 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
     protected boolean fixedScale = false;
 
     protected GuiGraph(IGuiWrapper gui, int x, int y, int width, int height, COLLECTION graphData, HANDLER handler) {
-        super(gui, x, y, width, height);
+        super(GuiInnerScreen.SCREEN, gui, x, y, width, height);
         this.graphData = graphData;
         this.dataHandler = handler;
     }
 
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw Black and border
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiInnerScreen.SCREEN, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw the graph
         int size = graphData.size();
         int x = relativeX + 1;

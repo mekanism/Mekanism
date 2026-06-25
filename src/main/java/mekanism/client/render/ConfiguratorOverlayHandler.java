@@ -1,9 +1,13 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.PoseStack.Pose;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.feature.CustomFeatureRenderer;
+import net.minecraft.client.renderer.feature.submit.SubmitNode;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
@@ -16,11 +20,13 @@ import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.CustomBlockOutlineRenderer;
+import net.neoforged.neoforge.client.submit.RenderPhaseKey;
+import net.neoforged.neoforge.client.submit.RenderPhaseKeys;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
+class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer, SubmitNodeCollector.CustomGeometryRenderer {
 
     private final BlockPos pos;
     private final TransmissionType type;
@@ -42,11 +48,9 @@ class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
     }
 
     @Override
-    public boolean render(BlockOutlineRenderState renderState, SubmitNodeCollector submitNodeCollector, PoseStack poseStack, LevelRenderState levelRenderState) {
-        //TODO - 26.2: Figure out if we need an equivalent to this
-        //if (renderState.isTranslucent() == translucentPass) {
-        Vec3 viewPosition = levelRenderState.cameraRenderState.pos;
+    public boolean render(BlockOutlineRenderState state, SubmitNodeCollector nodeCollector, PoseStack poseStack, LevelRenderState levelRenderState) {
         poseStack.pushPose();
+        Vec3 viewPosition = levelRenderState.cameraRenderState.pos;
         poseStack.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
 
         //if top/bottom face, try to rotate so the bottom is as close to screen bottom as we can get
@@ -57,32 +61,32 @@ class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
             }
         }
 
-        //TODO - 26.2: Is custom geometry the correct way to do this?
-        submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.eyes(TextureAtlas.LOCATION_BLOCKS), (pose, buffer) -> {
-            TextureAtlasSprite sprite = MekanismRenderer.overlays.get(type);
-            Vector3f normal = pose.transformNormal(face.getUnitVec3f(), new Vector3f());
-            Matrix4f matrix = pose.pose();
-            //face draw code donated by XFactHD
-            FaceInfo faceInfo = FaceInfo.fromFacing(face);
-            for (int vertex = 0; vertex < 4; vertex++) {
-                FaceInfo.VertexInfo vertInfo = faceInfo.getVertexInfo(vertex);
-                float x = vertInfo.xFace().select(0, 0, 0, 1, 1, 1) + face.getStepX() * 0.01F;
-                float y = vertInfo.yFace().select(0, 0, 0, 1, 1, 1) + face.getStepY() * 0.01F;
-                float z = vertInfo.zFace().select(0, 0, 0, 1, 1, 1) + face.getStepZ() * 0.01F;
-                float u = vertex < 2 ? 0 : 1;
-                float v = vertex == 0 || vertex == 3 ? 0 : 1;
-                buffer.addVertex(matrix, x, y, z)
-                      .setColor(transmissionColor)
-                      .setUv(sprite.getU(u), sprite.getV(v))
-                      .setOverlay(OverlayTexture.NO_OVERLAY)
-                      .setLight(LightCoordsUtil.FULL_BRIGHT)
-                      .setNormal(normal.x, normal.y, normal.z);
-            }
-        });
-
+        RenderPhaseKey<SubmitNode> phase = state.isTranslucent() ? RenderPhaseKeys.AFTER_TERRAIN : RenderPhaseKeys.SHAPE_OUTLINES;
+        nodeCollector.submitSpecial(phase, new CustomFeatureRenderer.Submit(poseStack.last().copy(), RenderTypes.eyes(TextureAtlas.LOCATION_BLOCKS), this));
         poseStack.popPose();
-        //}
-        return false;
+        return true;
     }
 
+    @Override
+    public void render(Pose pose, VertexConsumer buffer) {
+        TextureAtlasSprite sprite = MekanismRenderer.overlays.get(type);
+        Vector3f normal = pose.transformNormal(face.getUnitVec3f(), new Vector3f());
+        Matrix4f matrix = pose.pose();
+        //face draw code donated by XFactHD
+        FaceInfo faceInfo = FaceInfo.fromFacing(face);
+        for (int vertex = 0; vertex < 4; vertex++) {
+            FaceInfo.VertexInfo vertInfo = faceInfo.getVertexInfo(vertex);
+            float x = vertInfo.xFace().select(0, 0, 0, 1, 1, 1) + face.getStepX() * 0.01F;
+            float y = vertInfo.yFace().select(0, 0, 0, 1, 1, 1) + face.getStepY() * 0.01F;
+            float z = vertInfo.zFace().select(0, 0, 0, 1, 1, 1) + face.getStepZ() * 0.01F;
+            float u = vertex < 2 ? 0 : 1;
+            float v = vertex == 0 || vertex == 3 ? 0 : 1;
+            buffer.addVertex(matrix, x, y, z)
+                  .setColor(transmissionColor)
+                  .setUv(sprite.getU(u), sprite.getV(v))
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(LightCoordsUtil.FULL_BRIGHT)
+                  .setNormal(normal.x, normal.y, normal.z);
+        }
+    }
 }

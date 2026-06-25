@@ -10,6 +10,7 @@ import mekanism.client.render.armor.ISpecialGear;
 import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.hud.RadiationOverlay;
 import mekanism.client.render.lib.effect.BoltRenderer;
+import mekanism.client.render.outline.Outlines;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.item.ItemConfigurator;
@@ -339,6 +340,7 @@ public class RenderTickHandler {
                 return;
             }
         }
+        boolean showingConfiguratorOverlay = false;
         profiler.push(ProfilerConstants.CONFIGURABLE_MACHINE);
         ItemConfigurator.ConfiguratorMode state = ((ItemConfigurator) stack.getItem()).getMode(stack);
         if (state.isConfigurating()) {
@@ -354,12 +356,17 @@ public class RenderTickHandler {
                         if (configInfo.isSideEnabled(side)) {
                             int transmissionColor = MekanismRenderer.getColorARGB(configInfo.getDataType(side).getColor(), 0.6F);
                             event.addCustomRenderer(new ConfiguratorOverlayHandler(pos, type, face, transmissionColor));
+                            showingConfiguratorOverlay = true;
                         }
                     }
                 }
             }
         }
         profiler.pop();
+        if (!showingConfiguratorOverlay) {
+            //Only do normal outline rendering if we aren't displaying the configurator overlay
+            Outlines.onBlockHover(event, profiler);
+        }
     }
 
     private void renderJetpackSmoke(Level world, Vec3 pos, Vec3 motion) {

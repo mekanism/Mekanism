@@ -24,7 +24,6 @@ import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,9 +56,7 @@ public class Outlines {
         return lines;
     }
 
-    @SubscribeEvent
-    public static void onBlockHover(ExtractBlockOutlineRenderStateEvent event) {
-        ProfilerFiller profiler = Profiler.get();
+    public static void onBlockHover(ExtractBlockOutlineRenderStateEvent event, ProfilerFiller profiler) {
         profiler.push(ProfilerConstants.MEKANISM_OUTLINE);
         ClientLevel level = event.getLevel();
         BlockPos pos = event.getBlockPos();
