@@ -48,15 +48,10 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
     public void render(GuiGraphicsExtractor guiGraphics, ChemicalStack stack) {
         if (!stack.isEmpty()) {
             int desiredHeight = MathUtils.clampToInt(height * (double) stack.amount() / capacityMb);
-            if (desiredHeight < MIN_CHEMICAL_HEIGHT) {
-                desiredHeight = MIN_CHEMICAL_HEIGHT;
-            }
-            if (desiredHeight > height) {
-                desiredHeight = height;
-            }
+            desiredHeight = Math.clamp(desiredHeight, MIN_CHEMICAL_HEIGHT, height);
             //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
-            GuiUtils.drawTiledSprite(guiGraphics, 0, 0, height, width, desiredHeight, MekanismRenderer.getChemicalTexture(stack),
-                  TEXTURE_SIZE, TEXTURE_SIZE, 100, GuiUtils.TilingDirection.UP_RIGHT, MekanismRenderer.color(stack));
+            GuiUtils.drawTiledSprite(guiGraphics, 0, height - desiredHeight, width, desiredHeight, MekanismRenderer.getChemicalTexture(stack),
+                  GuiUtils.TilingDirection.UP_RIGHT, MekanismRenderer.color(stack));
         }
     }
 

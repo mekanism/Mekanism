@@ -10,6 +10,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -80,10 +81,10 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
             gui().renderItem(guiGraphics, stack, relativeX, relativeY);
         } else if (target instanceof FluidStack stack) {
             if (!stack.isEmpty()) {
-                drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getFluidTexture(stack, FluidTextureType.STILL), TilingDirection.DOWN_RIGHT, MekanismRenderer.getColorARGB(stack));
+                GuiUtils.drawTiledSprite(guiGraphics, relativeX, relativeY, width, height, MekanismRenderer.getFluidTexture(stack, FluidTextureType.STILL), TilingDirection.DOWN_RIGHT, MekanismRenderer.getColorARGB(stack));
             }
         } else if (target instanceof ChemicalStack stack) {
-            drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getChemicalTexture(stack), TilingDirection.DOWN_RIGHT, MekanismRenderer.color(stack));
+            GuiUtils.drawTiledSprite(guiGraphics, relativeX, relativeY, width, height, MekanismRenderer.getChemicalTexture(stack), TilingDirection.DOWN_RIGHT, MekanismRenderer.color(stack));
         }
     }
 

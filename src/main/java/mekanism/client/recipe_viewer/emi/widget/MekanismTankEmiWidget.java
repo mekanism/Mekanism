@@ -69,14 +69,9 @@ public class MekanismTankEmiWidget extends SlotWidget {
             int width = bounds.width() - 2;
             int height = bounds.height() - 2;
             int desiredHeight = MathUtils.clampToInt(height * (double) ingredient.getAmount() / capacity);
-            if (desiredHeight < 1) {
-                desiredHeight = 1;
-            }
-            if (desiredHeight > height) {
-                desiredHeight = height;
-            }
+            desiredHeight = Math.clamp(desiredHeight, 1, height);
             //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
-            GuiUtils.drawTiledSprite(graphics, x, y, height, width, desiredHeight, sprite, 16, 16, 0, TilingDirection.UP_RIGHT, color);
+            GuiUtils.drawTiledSprite(graphics, x, y, height, width, desiredHeight, sprite, TilingDirection.UP_RIGHT, color);
         }
         if (this.gauge != null) {
             Matrix3x2fStack matrix = graphics.pose();

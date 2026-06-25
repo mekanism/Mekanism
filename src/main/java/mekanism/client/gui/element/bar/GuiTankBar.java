@@ -8,6 +8,7 @@ import java.util.Optional;
 import mekanism.api.math.MathUtils;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiTankBar.ResourceTankInfoProvider;
@@ -83,9 +84,9 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
                 RESOURCE stored = container.resource();
                 TextureAtlasSprite icon = getIcon(stored);
                 if (horizontal) {
-                    drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, displayInt, height - 2, icon, TilingDirection.DOWN_RIGHT, getRenderColor(stored));
+                    GuiUtils.drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, displayInt, height - 2, icon, TilingDirection.DOWN_RIGHT, getRenderColor(stored));
                 } else {
-                    drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, width - 2, displayInt, icon, TilingDirection.DOWN_RIGHT, getRenderColor(stored));
+                    GuiUtils.drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, width - 2, displayInt, icon, TilingDirection.DOWN_RIGHT, getRenderColor(stored));
                 }
             }
         }

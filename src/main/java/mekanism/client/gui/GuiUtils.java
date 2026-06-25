@@ -59,15 +59,18 @@ public class GuiUtils {
         }
     }
 
-    //TODO - 26.2: Remove unused/redundant params
-    public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
-          int textureWidth, int textureHeight, int zLevel, TilingDirection tilingDirection, int color) {
+    public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight,
+          TextureAtlasSprite sprite, TilingDirection tilingDirection, int color) {
+        drawTiledSprite(guiGraphics, xPosition, yPosition + yOffset - desiredHeight, desiredWidth, desiredHeight, sprite, tilingDirection, color);
+    }
+
+    public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int xPosition, int yPosition, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
+          TilingDirection tilingDirection, int color) {
         if (desiredWidth == 0 || desiredHeight == 0) {
             return;
         }
         SpriteContents spriteContents = sprite.contents();
-        int yStart = yPosition + yOffset - desiredHeight;
-        guiGraphics.enableScissor(xPosition, yStart, xPosition + desiredWidth, yStart + desiredHeight);
+        guiGraphics.enableScissor(xPosition, yPosition, xPosition + desiredWidth, yPosition + desiredHeight);
         {
             int xShift = tilingDirection.getXShift(desiredWidth, spriteContents.width());
             int yShift = tilingDirection.getYShift(desiredHeight, spriteContents.height());
@@ -75,7 +78,7 @@ public class GuiUtils {
                   RenderPipelines.GUI_TEXTURED,
                   sprite,
                   xPosition - xShift,
-                  yStart - yShift,
+                  yPosition - yShift,
                   desiredWidth + xShift,
                   desiredHeight + yShift,
                   0,

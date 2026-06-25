@@ -29,8 +29,7 @@ public abstract sealed class LookingAtElement implements ILookingAtElement, IFan
         if (icon != null) {
             int scale = getScaledLevel(width - 2);
             if (scale > 0) {
-                GuiUtils.drawTiledSprite(guiGraphics, x + 1, y + 1, height - 2, scale, height - 2, icon,
-                      16, 16, 0, TilingDirection.DOWN_RIGHT, getRenderColor());
+                GuiUtils.drawTiledSprite(guiGraphics, x + 1, y + 1, scale, height - 2, icon, TilingDirection.DOWN_RIGHT, getRenderColor());
             }
         }
         drawScrollingString(guiGraphics, getText(), x, y + 3, TextAlignment.LEFT, textColor, 4, false);
