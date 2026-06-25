@@ -4,6 +4,7 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.BracketResolver;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.robit.RobitSkin;
@@ -27,7 +28,7 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_CHEMICAL)
     public static ICrTChemicalStack getChemicalStack(String tokens) {
-        return CrTChemical.makeStack(getValue(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY_NAME), 1);
+        return CrTChemical.makeStack(getValue(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismRegistries.Keys.CHEMICAL), 1);
     }
 
     /// Gets the [RobitSkin] based on registry name. Throws an error if it can't find the [RobitSkin].
@@ -38,7 +39,7 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_ROBIT_SKIN)
     public static RobitSkin getRobitSkin(String tokens) {
-        return getValue(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
+        return getValue(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismRegistries.Keys.ROBIT_SKINS);
     }
 
     /// Gets the [ModuleData] based on registry name. Throws an error if it can't find the [ModuleData].
@@ -49,7 +50,7 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_MODULE_DATA)
     public static ModuleData<?> getModuleData(String tokens) {
-        return getValue(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.MODULE_REGISTRY_NAME);
+        return getValue(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismRegistries.Keys.MODULES);
     }
 
     private static <V> V getValue(String bracket, String tokens, ResourceKey<? extends Registry<? extends V>> registryKey) {

@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.robit.RobitSkin;
@@ -29,7 +29,7 @@ public class CrTModExpansion {
     public static Collection<Chemical> getChemicals(Mod _this) {
         return getModSpecific(_this, CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
-              .lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME)
+              .lookupOrThrow(MekanismRegistries.Keys.CHEMICAL)
               .entrySet());
     }
 
@@ -39,7 +39,7 @@ public class CrTModExpansion {
     @ZenCodeType.Method
     @ZenCodeType.Getter("modules")
     public static Collection<ModuleData<?>> getModules(Mod _this) {
-        return getModSpecific(_this, MekanismAPI.MODULE_REGISTRY);
+        return getModSpecific(_this, MekanismRegistries.MODULES);
     }
 
     /// Gets the robit skins that are registered under this mod's ID.
@@ -50,7 +50,7 @@ public class CrTModExpansion {
     public static Collection<RobitSkin> getRobitSkins(Mod _this) {
         return getModSpecific(_this, CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
-              .lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME)
+              .lookupOrThrow(MekanismRegistries.Keys.ROBIT_SKINS)
               .entrySet());
     }
 

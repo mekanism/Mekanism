@@ -1,7 +1,7 @@
 package mekanism.common.network.to_server;
 
 import io.netty.handler.codec.DecoderException;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.common.Mekanism;
@@ -56,7 +56,7 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
 
     public record ModuleConfigTarget<C>(Holder<ModuleData<?>> moduleType, int installed, ModuleConfig<C> config) {
 
-        private static final StreamCodec<RegistryFriendlyByteBuf, Holder<ModuleData<?>>> REGISTRY_CODEC = ByteBufCodecs.holderRegistry(MekanismAPI.MODULE_REGISTRY_NAME);
+        private static final StreamCodec<RegistryFriendlyByteBuf, Holder<ModuleData<?>>> REGISTRY_CODEC = ByteBufCodecs.holderRegistry(MekanismRegistries.Keys.MODULES);
         public static final StreamCodec<RegistryFriendlyByteBuf, ModuleConfigTarget<?>> STREAM_CODEC = StreamCodec.ofMember(ModuleConfigTarget::encode, ModuleConfigTarget::decode);
 
         private static ModuleConfigTarget<?> decode(RegistryFriendlyByteBuf buffer) {

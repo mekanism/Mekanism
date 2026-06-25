@@ -2,7 +2,7 @@ package mekanism.common.registries;
 
 import java.util.List;
 import java.util.Optional;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
@@ -28,15 +28,15 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
     public static final DataMapTypeRegister REGISTER = new DataMapTypeRegister(Mekanism.MODID);
 
     private static final DataMapType<DamageType, MekaSuitAbsorption> MEKA_SUIT_ABSORPTION = REGISTER.registerSimple(MekaSuitAbsorption.ID, Registries.DAMAGE_TYPE, MekaSuitAbsorption.CODEC);
-    private static final DataMapType<Chemical, ChemicalSolidTag> CHEMICAL_SOLID_TAG = REGISTER.registerSynced(ChemicalSolidTag.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME,
+    private static final DataMapType<Chemical, ChemicalSolidTag> CHEMICAL_SOLID_TAG = REGISTER.registerSynced(ChemicalSolidTag.ID, MekanismRegistries.Keys.CHEMICAL,
           ChemicalSolidTag.CODEC, ChemicalSolidTag.SOLID_TAG_CODEC);
 
     //Chemical Attributes
-    private static final DataMapType<Chemical, ChemicalFuel> CHEMICAL_FUEL = REGISTER.registerSimpleSynced(ChemicalFuel.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME, ChemicalFuel.CODEC);
-    private static final DataMapType<Chemical, ChemicalRadioactivity> CHEMICAL_RADIOACTIVITY = REGISTER.registerSynced(ChemicalRadioactivity.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME,
+    private static final DataMapType<Chemical, ChemicalFuel> CHEMICAL_FUEL = REGISTER.registerSimpleSynced(ChemicalFuel.ID, MekanismRegistries.Keys.CHEMICAL, ChemicalFuel.CODEC);
+    private static final DataMapType<Chemical, ChemicalRadioactivity> CHEMICAL_RADIOACTIVITY = REGISTER.registerSynced(ChemicalRadioactivity.ID, MekanismRegistries.Keys.CHEMICAL,
           ChemicalRadioactivity.CODEC, ChemicalRadioactivity.RADIOACTIVITY_CODEC);
-    private static final DataMapType<Chemical, CooledCoolant> COOLED_CHEMICAL_COOLANT = REGISTER.registerSimpleSynced(CooledCoolant.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME, CooledCoolant.CODEC);
-    private static final DataMapType<Chemical, HeatedCoolant> HEATED_CHEMICAL_COOLANT = REGISTER.registerSimpleSynced(HeatedCoolant.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME, HeatedCoolant.CODEC);
+    private static final DataMapType<Chemical, CooledCoolant> COOLED_CHEMICAL_COOLANT = REGISTER.registerSimpleSynced(CooledCoolant.ID, MekanismRegistries.Keys.CHEMICAL, CooledCoolant.CODEC);
+    private static final DataMapType<Chemical, HeatedCoolant> HEATED_CHEMICAL_COOLANT = REGISTER.registerSimpleSynced(HeatedCoolant.ID, MekanismRegistries.Keys.CHEMICAL, HeatedCoolant.CODEC);
     //TODO - 26.2: Figure out how to make this extensible. Maybe just loop after the data map registry finishes being populated and do instance checks?
     private static final List<DataMapType<Chemical, ? extends IChemicalAttribute>> ATTRIBUTE_TYPES = List.of(
           CHEMICAL_RADIOACTIVITY,

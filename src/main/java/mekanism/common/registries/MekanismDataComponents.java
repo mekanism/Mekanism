@@ -2,7 +2,7 @@ package mekanism.common.registries;
 
 import java.util.UUID;
 import java.util.function.Consumer;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.robit.RobitSkin;
@@ -188,7 +188,7 @@ public class MekanismDataComponents {
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Component>> ROBIT_NAME = DATA_COMPONENTS.registerComponent("robit_name");
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<RobitSkin>>> ROBIT_SKIN = DATA_COMPONENTS.registerResourceKey("robit_skin", MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<RobitSkin>>> ROBIT_SKIN = DATA_COMPONENTS.registerResourceKey("robit_skin", MekanismRegistries.Keys.ROBIT_SKINS);
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<UUID>> PERSONAL_STORAGE_ID = DATA_COMPONENTS.registerUUID("storage_id");
 

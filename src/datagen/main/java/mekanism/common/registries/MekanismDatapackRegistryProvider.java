@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.BasicChemical;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.CleanDirtySlurryId;
@@ -154,7 +155,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                   context.register(damageType.key(), damageType.toVanilla());
               }
           })
-          .add(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, context -> {
+          .add(MekanismRegistries.Keys.ROBIT_SKINS, context -> {
               context.register(MekanismRobitSkins.BASE, makeRobitSkin(MekanismRobitSkins.BASE_SKIN_TEXTURE, 2));
               context.register(MekanismRobitSkins.ALLAY, new AdvancementBasedRobitSkin(
                     List.of(
@@ -169,7 +170,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                   context.register(key, makeRobitSkin(key.identifier(), entry.getKey().getColor().length));
               }
           })
-          .add(MekanismAPI.CHEMICAL_REGISTRY_NAME, context -> {
+          .add(MekanismRegistries.Keys.CHEMICAL, context -> {
               context.register(MekanismAPI.EMPTY_CHEMICAL_KEY, BasicChemical.defaultIcon(CommonColors.WHITE));
               //Infuse Types
               context.register(MekanismChemicals.BIO, new BasicChemical(Mekanism.rl("mek_chemical/infuse_type/bio"), 0xFF5A4630));

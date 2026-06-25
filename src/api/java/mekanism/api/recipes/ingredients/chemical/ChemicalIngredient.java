@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalSlotDisplay;
@@ -97,9 +96,7 @@ public abstract sealed class ChemicalIngredient implements Predicate<ChemicalRes
 
     /// {@return The type of this chemical ingredient.}
     ///
-    /// The type **must** be registered to the [MekanismAPI#CHEMICAL_INGREDIENT_TYPES].
-    ///
-    /// @see MekanismAPI#CHEMICAL_INGREDIENT_TYPES
+    /// The type **must** be registered to [mekanism.api.MekanismRegistries#CHEMICAL_INGREDIENT_TYPES].
     public abstract MapCodec<? extends ChemicalIngredient> codec();
 
     //Force overriding

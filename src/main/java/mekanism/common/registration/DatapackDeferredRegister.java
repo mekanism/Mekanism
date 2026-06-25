@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.robit.RobitSkin;
 import net.minecraft.core.Registry;
@@ -21,11 +21,11 @@ import org.jspecify.annotations.Nullable;
 public class DatapackDeferredRegister<T> extends DeferredMapCodecRegister<T> {
 
     public static DatapackDeferredRegister<Chemical> chemicals(String modid) {
-        return new DatapackDeferredRegister<>(modid, MekanismAPI.CHEMICAL_SERIALIZER_REGISTRY_NAME, MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        return new DatapackDeferredRegister<>(modid, MekanismRegistries.Keys.CHEMICAL_SERIALIZERS, MekanismRegistries.Keys.CHEMICAL);
     }
 
     public static DatapackDeferredRegister<RobitSkin> robitSkins(String modid) {
-        return new DatapackDeferredRegister<>(modid, MekanismAPI.ROBIT_SKIN_SERIALIZER_REGISTRY_NAME, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
+        return new DatapackDeferredRegister<>(modid, MekanismRegistries.Keys.ROBIT_SKIN_SERIALIZERS, MekanismRegistries.Keys.ROBIT_SKINS);
     }
 
     public static DatapackDeferredRegister<BiomeModifier> biomeModifiers(String modid) {

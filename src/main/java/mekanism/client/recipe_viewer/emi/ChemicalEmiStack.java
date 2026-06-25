@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.SizedChemicalInstance;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.SizedChemicalInstance;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
@@ -42,7 +43,7 @@ public class ChemicalEmiStack extends EmiStack {
         //TODO - 26.2: Re-evaluate usage and if we can just use the below, or what needs to happen
         // I am not sure if EmiRegistryAdapter even works with data pack registries in the first place,
         // so we might have to request a different entry point from Emi anyway
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
         this(optionalRegistry.orElseThrow().wrapAsHolder(chemical), amount);
     }
 

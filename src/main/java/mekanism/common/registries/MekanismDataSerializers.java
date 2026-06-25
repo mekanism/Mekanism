@@ -1,7 +1,7 @@
 package mekanism.common.registries;
 
 import java.util.UUID;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
@@ -15,7 +15,7 @@ public class MekanismDataSerializers {
 
     public static final DataSerializerDeferredRegister DATA_SERIALIZERS = new DataSerializerDeferredRegister(Mekanism.MODID);
 
-    public static final MekanismDeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<ResourceKey<RobitSkin>>> ROBIT_SKIN = DATA_SERIALIZERS.register("robit_skin", MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
+    public static final MekanismDeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<ResourceKey<RobitSkin>>> ROBIT_SKIN = DATA_SERIALIZERS.register("robit_skin", MekanismRegistries.Keys.ROBIT_SKINS);
     public static final MekanismDeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<SecurityMode>> SECURITY = DATA_SERIALIZERS.register("security", SecurityMode.STREAM_CODEC);
     public static final MekanismDeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<UUID>> UUID = DATA_SERIALIZERS.register("uuid", UUIDUtil.STREAM_CODEC);
 }

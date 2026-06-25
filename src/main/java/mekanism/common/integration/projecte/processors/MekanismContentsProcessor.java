@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.ToLongFunction;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.Upgrade;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
@@ -28,8 +28,8 @@ import moze_intel.projecte.api.components.IDataComponentProcessor;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 @DataComponentProcessor
 public class MekanismContentsProcessor implements IDataComponentProcessor {
@@ -116,7 +116,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
             }
         }
         moduleDataEmc = new Reference2LongOpenHashMap<>();
-        for (ModuleData<?> moduleData : MekanismAPI.MODULE_REGISTRY) {
+        for (ModuleData<?> moduleData : MekanismRegistries.MODULES) {
             long emc = emcLookup.applyAsLong(ItemInfo.fromItem(moduleData.getItemHolder()));
             if (emc > 0) {
                 moduleDataEmc.put(moduleData, emc);

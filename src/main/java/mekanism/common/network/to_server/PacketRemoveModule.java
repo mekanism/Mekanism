@@ -1,6 +1,6 @@
 package mekanism.common.network.to_server;
 
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.gear.ModuleData;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
@@ -20,7 +20,7 @@ public record PacketRemoveModule(BlockPos pos, Holder<ModuleData<?>> moduleType,
     public static final CustomPacketPayload.Type<PacketRemoveModule> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("remove_module"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketRemoveModule> STREAM_CODEC = StreamCodec.composite(
           BlockPos.STREAM_CODEC, PacketRemoveModule::pos,
-          ByteBufCodecs.holderRegistry(MekanismAPI.MODULE_REGISTRY_NAME), PacketRemoveModule::moduleType,
+          ByteBufCodecs.holderRegistry(MekanismRegistries.Keys.MODULES), PacketRemoveModule::moduleType,
           ByteBufCodecs.BOOL, PacketRemoveModule::removeAll,
           PacketRemoveModule::new
     );

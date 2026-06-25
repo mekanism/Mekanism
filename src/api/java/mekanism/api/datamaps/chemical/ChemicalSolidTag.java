@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
@@ -12,7 +13,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
-/// A [`chemical`][MekanismAPI#CHEMICAL_REGISTRY_NAME] data map that allows defining a solid tag for a chemical.
+/// A [`chemical`][MekanismRegistries.Keys#CHEMICAL] data map that allows defining a solid tag for a chemical.
 ///
 /// @param solidRepresentation the item tag that represents the ore or block that goes with a chemical.
 ///

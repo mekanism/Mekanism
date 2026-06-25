@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalInstance;
@@ -29,22 +29,22 @@ public class ChemicalIngredientCreator implements IChemicalIngredientCreator {
 
     public static final ChemicalIngredientCreator INSTANCE = new ChemicalIngredientCreator();
 
-    private static final Codec<HolderSet<Chemical>> HOLDER_SET_NO_EMPTY_CHEMICAL = HolderSetCodec.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, ChemicalInstance.CHEMICAL_HOLDER_CODEC, false);
+    private static final Codec<HolderSet<Chemical>> HOLDER_SET_NO_EMPTY_CHEMICAL = HolderSetCodec.create(MekanismRegistries.Keys.CHEMICAL, ChemicalInstance.CHEMICAL_HOLDER_CODEC, false);
 
     private static final Codec<SimpleChemicalIngredient> SIMPLE_CODEC = ExtraCodecs.nonEmptyHolderSet(HOLDER_SET_NO_EMPTY_CHEMICAL)
           .xmap(SimpleChemicalIngredient::new, SimpleChemicalIngredient::chemicalSet);
 
     @SuppressWarnings("RedundantTypeArguments")
     private static final Codec<ChemicalIngredient> CODEC = Codec.xor(
-          MekanismAPI.CHEMICAL_INGREDIENT_TYPES.byNameCodec().<ChemicalIngredient>dispatch(SerializationConstants.TYPE, ChemicalIngredient::codec, Function.identity()),
+          MekanismRegistries.CHEMICAL_INGREDIENT_TYPES.byNameCodec().<ChemicalIngredient>dispatch(SerializationConstants.TYPE, ChemicalIngredient::codec, Function.identity()),
           SIMPLE_CODEC
     ).xmap(either -> either.map(Function.identity(), Function.identity()), ingredient -> switch (ingredient) {
         case SimpleChemicalIngredient simple -> Either.right(simple);
         default -> Either.left(ingredient);
     });
-    private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalIngredient> STREAM_CODEC = ByteBufCodecs.holderSet(MekanismAPI.CHEMICAL_REGISTRY_NAME)
+    private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalIngredient> STREAM_CODEC = ByteBufCodecs.holderSet(MekanismRegistries.Keys.CHEMICAL)
           .map(SimpleChemicalIngredient::new, ChemicalIngredientCreator::valuesForSync);
-    private static final StreamCodec<RegistryFriendlyByteBuf, Optional<ChemicalIngredient>> OPTIONAL_STREAM_CODEC = ByteBufCodecs.holderSet(MekanismAPI.CHEMICAL_REGISTRY_NAME).map(
+    private static final StreamCodec<RegistryFriendlyByteBuf, Optional<ChemicalIngredient>> OPTIONAL_STREAM_CODEC = ByteBufCodecs.holderSet(MekanismRegistries.Keys.CHEMICAL).map(
           ingredient -> ingredient.size() == 0 ? Optional.empty() : Optional.of(INSTANCE.of(ingredient)),
           ingredient -> ingredient.map(ChemicalIngredientCreator::valuesForSync).orElse(HolderSet.empty())
     );

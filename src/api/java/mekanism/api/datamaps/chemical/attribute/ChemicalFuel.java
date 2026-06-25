@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.APILang;
@@ -15,7 +16,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 
-/// A [`chemical`][MekanismAPI#CHEMICAL_REGISTRY_NAME] data map that allows defining fuel values for a chemical.
+/// A [`chemical`][MekanismRegistries.Keys#CHEMICAL] data map that allows defining fuel values for a chemical.
 ///
 /// @param maxBurnPerTick how many mB per tick can be burnt (max amount burned when tank is full).
 /// @param energyPerTick  The energy produced per tick from one mB of fuel; must be greater than zero.

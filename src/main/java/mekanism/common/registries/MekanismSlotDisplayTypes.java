@@ -1,7 +1,7 @@
 package mekanism.common.registries;
 
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalSlotDisplay;
@@ -23,9 +23,9 @@ public class MekanismSlotDisplayTypes {
 
     public static final DeferredHolder<SlotDisplay.Type<?>, SlotDisplay.Type<ChemicalSlotDisplay>> CHEMICAL_SLOT_DISPLAY = SLOT_DISPLAY_TYPES.register("chemical",
           () -> new SlotDisplay.Type<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
-                RegistryFixedCodec.create(MekanismAPI.CHEMICAL_REGISTRY_NAME).fieldOf(SerializationConstants.CHEMICAL).forGetter(ChemicalSlotDisplay::chemical)
+                RegistryFixedCodec.create(MekanismRegistries.Keys.CHEMICAL).fieldOf(SerializationConstants.CHEMICAL).forGetter(ChemicalSlotDisplay::chemical)
           ).apply(instance, ChemicalSlotDisplay::new)), StreamCodec.composite(
-                ByteBufCodecs.holderRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME), ChemicalSlotDisplay::chemical, ChemicalSlotDisplay::new
+                ByteBufCodecs.holderRegistry(MekanismRegistries.Keys.CHEMICAL), ChemicalSlotDisplay::chemical, ChemicalSlotDisplay::new
           )));
     public static final DeferredHolder<SlotDisplay.Type<?>, SlotDisplay.Type<ChemicalStackSlotDisplay>> CHEMICAL_STACK_SLOT_DISPLAY = SLOT_DISPLAY_TYPES.register("chemical_stack",
           () -> new SlotDisplay.Type<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -35,8 +35,8 @@ public class MekanismSlotDisplayTypes {
           )));
     public static final DeferredHolder<SlotDisplay.Type<?>, SlotDisplay.Type<ChemicalTagSlotDisplay>> CHEMICAL_TAG_SLOT_DISPLAY = SLOT_DISPLAY_TYPES.register("chemical_tag",
           () -> new SlotDisplay.Type<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
-                TagKey.codec(MekanismAPI.CHEMICAL_REGISTRY_NAME).fieldOf(SerializationConstants.TAG).forGetter(ChemicalTagSlotDisplay::tag)
+                TagKey.codec(MekanismRegistries.Keys.CHEMICAL).fieldOf(SerializationConstants.TAG).forGetter(ChemicalTagSlotDisplay::tag)
           ).apply(instance, ChemicalTagSlotDisplay::new)), StreamCodec.composite(
-                TagKey.streamCodec(MekanismAPI.CHEMICAL_REGISTRY_NAME), ChemicalTagSlotDisplay::tag, ChemicalTagSlotDisplay::new
+                TagKey.streamCodec(MekanismRegistries.Keys.CHEMICAL), ChemicalTagSlotDisplay::tag, ChemicalTagSlotDisplay::new
           )));
 }

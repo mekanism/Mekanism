@@ -3,7 +3,7 @@ package mekanism.common.recipe;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.common.resource.PrimaryResource;
@@ -35,7 +35,7 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
     protected BaseRecipeProvider(RecipeOutput output, HolderLookup.Provider registries) {
         super(registries, output);
         this.fluids = this.registries.lookupOrThrow(Registries.FLUID);
-        this.chemicals = this.registries.lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        this.chemicals = this.registries.lookupOrThrow(MekanismRegistries.Keys.CHEMICAL);
     }
 
     @Override

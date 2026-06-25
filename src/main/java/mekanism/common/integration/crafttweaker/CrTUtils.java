@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Function;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
@@ -196,7 +196,7 @@ public class CrTUtils {
 
     /// Helper to get CraftTweaker's chemical tag manager.
     public static KnownTagManager<Chemical> chemicalTags() {
-        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismRegistries.Keys.CHEMICAL);
     }
 
     public record UnaryTypePair<TYPE>(TYPE a, TYPE b) {

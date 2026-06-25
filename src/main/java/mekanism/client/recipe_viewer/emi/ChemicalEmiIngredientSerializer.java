@@ -3,9 +3,9 @@ package mekanism.client.recipe_viewer.emi;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.serializer.EmiStackSerializer;
-import java.util.Collections;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.Mekanism;
@@ -18,7 +18,7 @@ public class ChemicalEmiIngredientSerializer implements EmiStackSerializer<Chemi
 
     @Override
     public EmiStack create(Identifier id, DataComponentPatch ignored, long amount) {
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
             Mekanism.logger.warn("Failed to find chemical registry while deserializing EMI chemical ingredient");
@@ -37,7 +37,7 @@ public class ChemicalEmiIngredientSerializer implements EmiStackSerializer<Chemi
     }
 
     void addEmiStacks(EmiRegistry emiRegistry) {
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
             Mekanism.logger.warn("Failed to find chemical registry while registering EMI ingredients");

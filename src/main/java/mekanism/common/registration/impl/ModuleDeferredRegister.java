@@ -3,7 +3,7 @@ package mekanism.common.registration.impl;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.gear.EnchantmentAwareModule;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -18,7 +18,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 public class ModuleDeferredRegister extends MekanismDeferredRegister<ModuleData<?>> {
 
     public ModuleDeferredRegister(String modid) {
-        super(MekanismAPI.MODULE_REGISTRY_NAME, modid, ModuleRegistryObject::new);
+        super(MekanismRegistries.Keys.MODULES, modid, ModuleRegistryObject::new);
     }
 
     public ModuleRegistryObject<?> registerMarker(String name, Supplier<Holder<Item>>  item) {

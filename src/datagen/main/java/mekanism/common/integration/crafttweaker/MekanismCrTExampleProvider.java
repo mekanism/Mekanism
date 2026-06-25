@@ -3,8 +3,8 @@ package mekanism.common.integration.crafttweaker;
 import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
-import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.CleanDirtySlurryId;
@@ -77,7 +77,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
 
     @Override
     protected void addExamples(HolderLookup.Provider registries) {
-        HolderGetter<Chemical> chemicals = registries.lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        HolderGetter<Chemical> chemicals = registries.lookupOrThrow(MekanismRegistries.Keys.CHEMICAL);
         //Recipes
         addRecipeExamples(registries);
         //JEITweaker integration
@@ -113,7 +113,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
     private void addRecipeExamples(HolderLookup.Provider registries) {
         HolderGetter<Item> items = registries.lookupOrThrow(Registries.ITEM);
         HolderGetter<Fluid> fluids = registries.lookupOrThrow(Registries.FLUID);
-        HolderGetter<Chemical> chemicals = registries.lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        HolderGetter<Chemical> chemicals = registries.lookupOrThrow(MekanismRegistries.Keys.CHEMICAL);
         exampleBuilder("mekanism/crystallizer")
               .comment("Adds two Crystallizing Recipes that do the following:",
                     "1) Adds a recipe that produces one Osmium Ingot out of 200 mB of Osmium.",

@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.gear.ModuleData;
@@ -59,10 +60,10 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -258,7 +259,7 @@ public class MekanismEmi implements EmiPlugin {
         registry.addRecipe(new EmiInfoRecipe(List.of(EmiStack.of(MekanismFluids.HEAVY_WATER.value())), List.of(
               MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get())
         ), Mekanism.rl("info/heavy_water")));
-        registry.addRecipe(new EmiInfoRecipe(MekanismAPI.MODULE_REGISTRY.stream()
+        registry.addRecipe(new EmiInfoRecipe(MekanismRegistries.MODULES.stream()
               .map(ModuleData::getItemHolder)
               .<EmiIngredient>map(item -> EmiStack.of(item.value()))
               .toList(), List.of(

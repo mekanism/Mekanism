@@ -2,13 +2,13 @@ package mekanism.api.robit;
 
 import com.mojang.serialization.MapCodec;
 import java.util.List;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.client.resources.model.ResolvableModel;
-import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import org.jspecify.annotations.Nullable;
@@ -20,7 +20,7 @@ public interface RobitSkin {
 
     /// @return the codec which serializes and deserializes this [RobitSkin].
     ///
-    /// @implNote The returned codec should be registered in the [robit skin serializer registry][MekanismAPI#ROBIT_SKIN_SERIALIZER_REGISTRY].
+    /// @implNote The returned codec should be registered in [robit skin serializer registry][MekanismRegistries#ROBIT_SKIN_SERIALIZERS].
     /// @since 10.4.0
     MapCodec<? extends RobitSkin> codec();
 

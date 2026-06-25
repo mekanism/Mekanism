@@ -1,7 +1,6 @@
 package mekanism.api.chemical;
 
 import com.mojang.serialization.MapCodec;
-import mekanism.api.MekanismAPI;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -13,7 +12,7 @@ public interface Chemical {
 
     /// @return the codec which serializes and deserializes this [Chemical].
     ///
-    /// @implNote The returned codec should be registered in the [chemical serializer registry][MekanismAPI#CHEMICAL_SERIALIZER_REGISTRY].
+    /// @implNote The returned codec should be registered in the [chemical serializer registry][mekanism.api.MekanismRegistries#CHEMICAL_SERIALIZERS].
     /// @since 10.8.0
     MapCodec<? extends Chemical> codec();
 

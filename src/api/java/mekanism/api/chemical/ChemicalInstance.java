@@ -3,6 +3,7 @@ package mekanism.api.chemical;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
@@ -31,7 +32,7 @@ public interface ChemicalInstance extends TypedInstance<Chemical>, IHasTranslati
     );
 
     /// A stream codec which can be used to encode and decode chemical holders over the network.
-    StreamCodec<RegistryFriendlyByteBuf, Holder<Chemical>> CHEMICAL_HOLDER_STREAM_CODEC = ByteBufCodecs.holderRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+    StreamCodec<RegistryFriendlyByteBuf, Holder<Chemical>> CHEMICAL_HOLDER_STREAM_CODEC = ByteBufCodecs.holderRegistry(MekanismRegistries.Keys.CHEMICAL);
 
     @Override
     default String getTranslationKey() {
@@ -84,6 +85,6 @@ public interface ChemicalInstance extends TypedInstance<Chemical>, IHasTranslati
 
     @Nullable
     default <DATA> DATA getData(@Nullable RegistryAccess registryAccess, DataMapType<Chemical, DATA> type) {
-        return IMekanismDataMapTypes.INSTANCE.getData(registryAccess, MekanismAPI.CHEMICAL_REGISTRY_NAME, typeHolder(), type);
+        return IMekanismDataMapTypes.INSTANCE.getData(registryAccess, MekanismRegistries.Keys.CHEMICAL, typeHolder(), type);
     }
 }

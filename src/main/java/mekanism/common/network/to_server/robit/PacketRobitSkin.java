@@ -1,7 +1,7 @@
 package mekanism.common.network.to_server.robit;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
@@ -19,7 +19,7 @@ public record PacketRobitSkin(int entityId, ResourceKey<RobitSkin> skin) impleme
     public static final CustomPacketPayload.Type<PacketRobitSkin> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("robit_skin"));
     public static final StreamCodec<ByteBuf, PacketRobitSkin> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.VAR_INT, PacketRobitSkin::entityId,
-          ResourceKey.streamCodec(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME), PacketRobitSkin::skin,
+          ResourceKey.streamCodec(MekanismRegistries.Keys.ROBIT_SKINS), PacketRobitSkin::skin,
           PacketRobitSkin::new
     );
 

@@ -1,7 +1,7 @@
 package mekanism.generators.common;
 
 import java.util.concurrent.CompletableFuture;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.BasicChemical;
 import mekanism.common.registration.impl.MekanismDamageType;
 import mekanism.common.registries.BaseDatapackRegistryProvider;
@@ -24,7 +24,7 @@ public class GeneratorsDatapackRegistryProvider extends BaseDatapackRegistryProv
                   context.register(damageType.key(), damageType.toVanilla());
               }
           })
-          .add(MekanismAPI.CHEMICAL_REGISTRY_NAME, context -> {
+          .add(MekanismRegistries.Keys.CHEMICAL, context -> {
               for (GeneratorsChemicalConstants constant : GeneratorsChemicalConstants.values()) {
                   registerConstant(context, MekanismGenerators.MODID, constant);
               }

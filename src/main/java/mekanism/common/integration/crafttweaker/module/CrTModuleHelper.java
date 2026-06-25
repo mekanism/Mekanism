@@ -4,7 +4,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -90,6 +90,6 @@ public class CrTModuleHelper {
 
     //TODO - 26.2: Re-evaluate this, and if we can get CrT to just add native support for holders
     private static Holder<ModuleData<?>> asHolder(ModuleData<?> data) {
-        return MekanismAPI.MODULE_REGISTRY.wrapAsHolder(data);
+        return MekanismRegistries.MODULES.wrapAsHolder(data);
     }
 }

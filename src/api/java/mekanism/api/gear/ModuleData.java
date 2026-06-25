@@ -17,7 +17,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.gear.config.ModuleBooleanConfig;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.text.IHasTextComponent;
@@ -183,7 +183,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
     @Override
     public final String getTranslationKey() {
         if (translationKey == null) {
-            translationKey = Util.makeDescriptionId("module", MekanismAPI.MODULE_REGISTRY.getKeyOrNull(this));
+            translationKey = Util.makeDescriptionId("module", MekanismRegistries.MODULES.getKeyOrNull(this));
         }
         return translationKey;
     }
@@ -196,14 +196,14 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
     /// Gets the translation key for the description of this module type.
     public final String getDescriptionTranslationKey() {
         if (descriptionTranslationKey == null) {
-            descriptionTranslationKey = Util.makeDescriptionId("description", MekanismAPI.MODULE_REGISTRY.getKeyOrNull(this));
+            descriptionTranslationKey = Util.makeDescriptionId("description", MekanismRegistries.MODULES.getKeyOrNull(this));
         }
         return descriptionTranslationKey;
     }
 
     @Override
     public final String toString() {
-        return Util.getRegisteredName(MekanismAPI.MODULE_REGISTRY, this);
+        return Util.getRegisteredName(MekanismRegistries.MODULES, this);
     }
 
     private record ConstructedConfigData(List<ModuleConfig<?>> configs, Codec<List<ModuleConfig<?>>> codec,

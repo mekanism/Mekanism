@@ -3,7 +3,7 @@ package mekanism.common.advancements.triggers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
@@ -30,7 +30,7 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<TriggerInstan
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                     EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(SerializationConstants.PLAYER).forGetter(TriggerInstance::player),
-                    ResourceKey.codec(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME).optionalFieldOf(SerializationConstants.SKIN).forGetter(TriggerInstance::skin)
+                    ResourceKey.codec(MekanismRegistries.Keys.ROBIT_SKINS).optionalFieldOf(SerializationConstants.SKIN).forGetter(TriggerInstance::skin)
               ).apply(instance, TriggerInstance::new)
         );
 

@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStackTemplate;
@@ -52,7 +52,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
     }
 
     public static List<FissionRecipeViewerRecipe> getFissionRecipes() {
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
             Mekanism.logger.warn("Failed to find chemical registry when generating fission recipes");

@@ -74,7 +74,7 @@ public class MekanismAPITags {
         }
 
         /// Tag that holds all chemicals that recipe viewers should not show to users.
-        public static final TagKey<Chemical> HIDDEN_FROM_RECIPE_VIEWERS = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, HIDDEN_RL);
+        public static final TagKey<Chemical> HIDDEN_FROM_RECIPE_VIEWERS = TagKey.create(MekanismRegistries.Keys.CHEMICAL, HIDDEN_RL);
 
         /// Chemicals in this tag that are radioactive will not decay inside a Radioactive Waste Barrel.
         public static final TagKey<Chemical> WASTE_BARREL_DECAY_BLACKLIST = tag("waste_barrel_decay_blacklist");
@@ -109,7 +109,7 @@ public class MekanismAPITags {
         public static final TagKey<Chemical> FRAMEDBLOCKS_BLACKLISTED = tag("framedblocks_blacklisted");
 
         private static TagKey<Chemical> tag(String name) {
-            return TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl(name));
+            return TagKey.create(MekanismRegistries.Keys.CHEMICAL, rl(name));
         }
     }
 

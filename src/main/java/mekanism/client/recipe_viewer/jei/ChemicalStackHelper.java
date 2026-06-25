@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.TextComponentUtil;
@@ -56,7 +57,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
         if (key.isPresent()) {
             return key.get().identifier();
         }
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
             Mekanism.logger.warn("Failed to find chemical registry when looking up ingredient id");
@@ -123,7 +124,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
             //One of the chemicals is there more than once, definitely not a tag
             return Optional.empty();
         }
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
             Mekanism.logger.warn("Failed to find chemical registry when calculating tag key equivalents");

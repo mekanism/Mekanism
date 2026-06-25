@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.event.MekanismTeleportEvent;
@@ -135,7 +135,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         return createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
     }
 
-    private static final Codec<ResourceKey<RobitSkin>> SKIN_KEY_CODEC = ResourceKey.codec(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
+    private static final Codec<ResourceKey<RobitSkin>> SKIN_KEY_CODEC = ResourceKey.codec(MekanismRegistries.Keys.ROBIT_SKINS);
 
     private static <T> EntityDataAccessor<T> define(EntityDataSerializer<T> dataSerializer) {
         return SynchedEntityData.defineId(EntityRobit.class, dataSerializer);
@@ -736,7 +736,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
 
     /// @apiNote Only call on the client.
     public Identifier getModelTexture() {
-        Registry<RobitSkin> robitSkins = level().registryAccess().lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
+        Registry<RobitSkin> robitSkins = level().registryAccess().lookupOrThrow(MekanismRegistries.Keys.ROBIT_SKINS);
         ResourceKey<RobitSkin> skinKey = getSkinId();
         Optional<Holder.Reference<RobitSkin>> optionalSkin = robitSkins.get(skinKey);
         Holder.Reference<RobitSkin> skin;

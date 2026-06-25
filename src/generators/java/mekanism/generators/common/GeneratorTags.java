@@ -1,6 +1,6 @@
 package mekanism.generators.common;
 
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
 import net.minecraft.resources.Identifier;
@@ -38,7 +38,7 @@ public class GeneratorTags {
         public static final TagKey<Chemical> FUSION_FUEL = tag("fusion_fuel");
 
         private static TagKey<Chemical> tag(String name) {
-            return TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, Mekanism.rl(name));
+            return TagKey.create(MekanismRegistries.Keys.CHEMICAL, Mekanism.rl(name));
         }
     }
 }

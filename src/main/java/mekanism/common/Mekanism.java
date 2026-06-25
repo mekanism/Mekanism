@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
@@ -249,10 +250,10 @@ public class Mekanism {
     }
 
     private void registerRegistries(NewRegistryEvent event) {
-        event.register(MekanismAPI.CHEMICAL_SERIALIZER_REGISTRY);
-        event.register(MekanismAPI.CHEMICAL_INGREDIENT_TYPES);
-        event.register(MekanismAPI.MODULE_REGISTRY);
-        event.register(MekanismAPI.ROBIT_SKIN_SERIALIZER_REGISTRY);
+        event.register(MekanismRegistries.CHEMICAL_SERIALIZERS);
+        event.register(MekanismRegistries.CHEMICAL_INGREDIENT_TYPES);
+        event.register(MekanismRegistries.MODULES);
+        event.register(MekanismRegistries.ROBIT_SKIN_SERIALIZERS);
     }
 
     public static Identifier rl(String path) {

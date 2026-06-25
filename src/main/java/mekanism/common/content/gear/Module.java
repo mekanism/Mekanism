@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
@@ -47,11 +47,11 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     private record InstalledData(Holder<ModuleData<?>> holder, int installed) {
 
         private static final Codec<InstalledData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              MekanismAPI.MODULE_REGISTRY.holderByNameCodec().fieldOf(SerializationConstants.TYPE).forGetter(InstalledData::holder),
+              MekanismRegistries.MODULES.holderByNameCodec().fieldOf(SerializationConstants.TYPE).forGetter(InstalledData::holder),
               ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.AMOUNT).forGetter(InstalledData::installed)
         ).apply(instance, InstalledData::new));
         private static final StreamCodec<RegistryFriendlyByteBuf, InstalledData> STREAM_CODEC = StreamCodec.composite(
-              ByteBufCodecs.holderRegistry(MekanismAPI.MODULE_REGISTRY_NAME), InstalledData::holder,
+              ByteBufCodecs.holderRegistry(MekanismRegistries.Keys.MODULES), InstalledData::holder,
               ByteBufCodecs.VAR_INT, InstalledData::installed,
               InstalledData::new
         );

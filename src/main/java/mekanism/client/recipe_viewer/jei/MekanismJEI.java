@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalSerializationHelper;
 import mekanism.api.chemical.ChemicalStack;
@@ -159,7 +160,7 @@ public class MekanismJEI implements IModPlugin {
     public void registerIngredients(IModIngredientRegistration registry) {
         //Note: We register the ingredient types regardless of if EMI is loaded so that we don't crash any addons that are trying to reference them
         List<ChemicalStack> types;
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
             Mekanism.logger.warn("Failed to find chemical registry while registering JEI ingredients");
@@ -283,7 +284,7 @@ public class MekanismJEI implements IModPlugin {
         //Note: Use a "full" bucket's worth of heavy water, so that JEI renders it as desired in the info page
         registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.asStack(FluidType.BUCKET_VOLUME), NeoForgeTypes.FLUID_STACK,
               MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get()));
-        registry.addIngredientInfo(MekanismAPI.MODULE_REGISTRY.stream().map(data -> new ItemStack(data.getItemHolder())).toList(),
+        registry.addIngredientInfo(MekanismRegistries.MODULES.stream().map(data -> new ItemStack(data.getItemHolder())).toList(),
               VanillaTypes.ITEM_STACK, MekanismLang.RECIPE_VIEWER_INFO_MODULE_INSTALLATION.translate());
     }
 

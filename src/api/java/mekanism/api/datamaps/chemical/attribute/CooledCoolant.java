@@ -3,13 +3,14 @@ package mekanism.api.datamaps.chemical.attribute;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 
-/// A [`chemical`][MekanismAPI#CHEMICAL_REGISTRY_NAME] data map that allows defining fuel values for a chemical.
+/// A [`chemical`][MekanismRegistries.Keys#CHEMICAL] data map that allows defining fuel values for a chemical.
 ///
 /// @param otherVariant    Chemical representing the heated variant of this cooled coolant.
 /// @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause reactors to require more of the chemical to stay cool. Must

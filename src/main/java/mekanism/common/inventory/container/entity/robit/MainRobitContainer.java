@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
@@ -33,7 +33,7 @@ public class MainRobitContainer extends RobitContainer implements ISpecificConta
         ISyncableData data;
         if (getLevel().isClientSide()) {
             //Client side sync handling
-            data = SyncableResourceKeyList.create(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, () -> unlockedSkins, this::setSkins);
+            data = SyncableResourceKeyList.create(MekanismRegistries.Keys.ROBIT_SKINS, () -> unlockedSkins, this::setSkins);
         } else {
             //Server side sync handling
             //Note: It is important these are in the same order as the client side trackers
@@ -41,8 +41,8 @@ public class MainRobitContainer extends RobitContainer implements ISpecificConta
             // from the skin and into the handler system
             //Note: We can cache a reference to the specific registry so that we don't have to lookup the robit skin registry each time
             Registry<RobitSkin> registry = getLevel().registryAccess()
-                  .lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
-            data = SyncableResourceKeyList.create(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, () -> registry.entrySet().stream()
+                  .lookupOrThrow(MekanismRegistries.Keys.ROBIT_SKINS);
+            data = SyncableResourceKeyList.create(MekanismRegistries.Keys.ROBIT_SKINS, () -> registry.entrySet().stream()
                         //Base skin is always unlocked so we don't have to sync it
                         .filter(entry -> !MekanismRobitSkins.BASE.equals(entry.getKey()) && entry.getValue().isUnlocked(inv.player))
                         .map(Entry::getKey)

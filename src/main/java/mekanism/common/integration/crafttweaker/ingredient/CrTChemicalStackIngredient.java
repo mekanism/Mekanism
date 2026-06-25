@@ -11,9 +11,9 @@ import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
@@ -23,7 +23,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -108,7 +107,7 @@ public class CrTChemicalStackIngredient {
         TagKey<Chemical> tag = CrTUtils.validateTagAndGet(chemicalTag);
         return IngredientCreatorAccess.chemicalStack().from(CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
-              .lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME), tag, amount);
+              .lookupOrThrow(MekanismRegistries.Keys.CHEMICAL), tag, amount);
     }
 
     /// Creates a [ChemicalStackIngredient] that matches a given chemical tag with amount.

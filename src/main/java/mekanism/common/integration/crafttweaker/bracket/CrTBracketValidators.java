@@ -4,7 +4,7 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.BracketValidator;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.Optional;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.core.Registry;
@@ -24,7 +24,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_CHEMICAL)
     public static boolean validateChemicalStack(String tokens) {
-        return validate(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        return validate(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismRegistries.Keys.CHEMICAL);
     }
 
     /// Validates if there is a [mekanism.api.robit.RobitSkin] with the given registry name.
@@ -35,7 +35,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_ROBIT_SKIN)
     public static boolean validateRobitSkin(String tokens) {
-        return validate(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
+        return validate(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismRegistries.Keys.ROBIT_SKINS);
     }
 
     /// Validates if there is a [mekanism.api.gear.ModuleData] with the given registry name.
@@ -46,7 +46,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_MODULE_DATA)
     public static boolean validateModuleData(String tokens) {
-        return validate(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.MODULE_REGISTRY_NAME);
+        return validate(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismRegistries.Keys.MODULES);
     }
 
     private static boolean validate(String bracket, String tokens, ResourceKey<? extends Registry<?>> registryKey) {

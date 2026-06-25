@@ -5,6 +5,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.APILang;
@@ -15,7 +16,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 
-/// A [`chemical`][MekanismAPI#CHEMICAL_REGISTRY_NAME] data map that allows defining radioactivity values for a chemical. If the radiation manager is enabled, this attribute
+/// A [`chemical`][MekanismRegistries.Keys#CHEMICAL] data map that allows defining radioactivity values for a chemical. If the radiation manager is enabled, this attribute
 /// *requires validation*, meaning chemical containers won't be able to accept chemicals with this attribute by default. Radioactivity is measured in Sv/h.
 ///
 /// @param radioactivity Radioactivity of the chemical measured in Sv/h, must be greater than [`baseline radiation`][IRadiationManager#baselineRadiation()].

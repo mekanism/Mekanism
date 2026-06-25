@@ -5,7 +5,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.game.Game;
 import com.blamejared.crafttweaker_annotations.annotations.TypedExpansion;
 import java.util.Collection;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.robit.RobitSkin;
@@ -21,7 +21,7 @@ public class CrTGameExpansion {
     public static Collection<Chemical> getChemicals(Game _this) {
         return CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
-              .lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME)
+              .lookupOrThrow(MekanismRegistries.Keys.CHEMICAL)
               .stream()
               .toList();
     }
@@ -30,7 +30,7 @@ public class CrTGameExpansion {
     @ZenCodeType.Method
     @ZenCodeType.Getter("modules")
     public static Collection<ModuleData<?>> getModules(Game _this) {
-        return MekanismAPI.MODULE_REGISTRY.stream().toList();
+        return MekanismRegistries.MODULES.stream().toList();
     }
 
     /// Gets all registered robit skins.
@@ -39,7 +39,7 @@ public class CrTGameExpansion {
     public static Collection<RobitSkin> getRobitSkins(Game _this) {
         return CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
-              .lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME)
+              .lookupOrThrow(MekanismRegistries.Keys.ROBIT_SKINS)
               .stream()
               .toList();
     }

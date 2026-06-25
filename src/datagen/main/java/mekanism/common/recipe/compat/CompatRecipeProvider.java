@@ -2,7 +2,7 @@ package mekanism.common.recipe.compat;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.common.recipe.impl.BaseSubRecipeProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -27,7 +27,7 @@ public abstract class CompatRecipeProvider extends BaseSubRecipeProvider {
     protected final ICondition allModsLoaded;
 
     protected CompatRecipeProvider(HolderLookup.Provider registries, String modid, String... secondaryMods) {
-        super(registries.lookupOrThrow(Registries.ITEM), registries.lookupOrThrow(Registries.FLUID), registries.lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME));
+        super(registries.lookupOrThrow(Registries.ITEM), registries.lookupOrThrow(Registries.FLUID), registries.lookupOrThrow(MekanismRegistries.Keys.CHEMICAL));
         this.registries = registries;
         this.modid = modid;
         this.modLoaded = new ModLoadedCondition(modid);

@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalResource.EmptyChemicalResource;
@@ -34,7 +35,7 @@ public class MekanismChemicals {
 
     public static final DeferredMapCodecHolder<Chemical, Chemical> BASIC_SERIALIZER = CHEMICALS.registerCodec("basic", () -> ChemicalSerializationHelper.NETWORK_CODEC);
 
-    //TODO - 26.2: Do we want to expose these ids to the api?
+    //TODO - 26.2: Do we want to expose these ids to the api? If we do, then we should also move MekanismAPI.EMPTY_CHEMICAL_KEY to the same class
     public static final ResourceKey<Chemical> BIO = CHEMICALS.dataKey("bio");
     public static final ResourceKey<Chemical> FUNGI = CHEMICALS.dataKey("fungi");
     public static final ResourceKey<Chemical> TIN = CHEMICALS.dataKey("tin");
@@ -94,7 +95,7 @@ public class MekanismChemicals {
 
     private static Registry<Chemical> getChemicalRegistry(RegistryAccess registryAccess) {
         //TODO - 26.2: Just do registryAccess#getOrThrow(key), as it can handle looking up the registry
-        return registryAccess.lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        return registryAccess.lookupOrThrow(MekanismRegistries.Keys.CHEMICAL);
     }
 
     public static Reference<Chemical> get(RegistryAccess registryAccess, ResourceKey<Chemical> key) {

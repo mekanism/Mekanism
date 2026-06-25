@@ -3,7 +3,7 @@ package mekanism.common.integration.crafttweaker.robit;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.resources.Identifier;
@@ -17,7 +17,7 @@ public class CrTRobitSkin {
     public static Identifier getRegistryName(RobitSkin _this) {
         Identifier skinName = CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
-              .lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME)
+              .lookupOrThrow(MekanismRegistries.Keys.ROBIT_SKINS)
               .getKeyOrNull(_this);
         if (skinName == null) {
             throw new IllegalArgumentException("Unregistered robit skin");

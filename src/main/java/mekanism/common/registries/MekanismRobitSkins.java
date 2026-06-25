@@ -5,7 +5,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.robit.AdvancementBasedRobitSkin;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.robit.RobitSkinSerializationHelper;
@@ -61,7 +61,7 @@ public class MekanismRobitSkins {
     }
 
     private static Registry<RobitSkin> getSkinRegistry(RegistryAccess registryAccess) {
-        return registryAccess.lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
+        return registryAccess.lookupOrThrow(MekanismRegistries.Keys.ROBIT_SKINS);
     }
 
     public static RobitSkin get(RegistryAccess registryAccess, ResourceKey<RobitSkin> key) {

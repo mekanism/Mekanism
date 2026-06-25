@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.core.Registry;
@@ -23,19 +23,19 @@ public class CrTBracketDumpers {
     /// Bracket dumper to get all registered [`chemicals`][Chemical] as a collection of their bracket representations.
     @BracketDumper(value = CrTConstants.BRACKET_CHEMICAL, subCommandName = "chemicals")
     public static Collection<String> getChemicalStackDump() {
-        return getDump(MekanismAPI.CHEMICAL_REGISTRY_NAME, CrTConstants.BRACKET_CHEMICAL);
+        return getDump(MekanismRegistries.Keys.CHEMICAL, CrTConstants.BRACKET_CHEMICAL);
     }
 
     /// Bracket dumper to get all registered [`robit skins`][mekanism.api.robit.RobitSkin] as a collection of their bracket representations.
     @BracketDumper(value = CrTConstants.BRACKET_ROBIT_SKIN, subCommandName = "robitSkins")
     public static Collection<String> getRobitSkinDump() {
-        return getDump(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, CrTConstants.BRACKET_ROBIT_SKIN);
+        return getDump(MekanismRegistries.Keys.ROBIT_SKINS, CrTConstants.BRACKET_ROBIT_SKIN);
     }
 
     /// Bracket dumper to get all registered [`modules`][mekanism.api.gear.ModuleData] as a collection of their bracket representations.
     @BracketDumper(value = CrTConstants.BRACKET_MODULE_DATA, subCommandName = "moduleData")
     public static Collection<String> getModuleDataDump() {
-        return getDump(MekanismAPI.MODULE_REGISTRY_NAME, CrTConstants.BRACKET_MODULE_DATA);
+        return getDump(MekanismRegistries.Keys.MODULES, CrTConstants.BRACKET_MODULE_DATA);
     }
 
     private static Collection<String> getDump(ResourceKey<? extends Registry<?>> registryKey, String bracket) {
