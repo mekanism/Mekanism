@@ -32,6 +32,7 @@ public class MekanismModelCache extends BaseModelCache {
     public final BlockStateModelPartHelper LIQUIFIER_BLADE = registerJSON("block/liquifier_blade");
     public final BlockStateModelPartHelper VIBRATOR_SHAFT = registerJSON("block/vibrator_shaft");
     public final BlockStateModelPartHelper PIGMENT_MIXER_SHAFT = registerJSON("block/pigment_mixer_shaft");
+    public final BlockStateModelPartHelper TRANSPORTER_BOX = registerJSON("block/transporter_box");
     public final BlockStateModelPartHelper[] QIO_DRIVES = new BlockStateModelPartHelper[EnumUtils.DRIVE_STATUSES.length];
 
     private MekanismModelCache() {

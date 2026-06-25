@@ -316,7 +316,6 @@ public class ClientRegistration {
         event.registerLayerDefinition(RenderIndustrialAlarm.LIGHT_BOX_LAYER, RenderIndustrialAlarm::createLightBoxLayer);
         event.registerLayerDefinition(ModelScubaMask.MASK_LAYER, ModelScubaMask::createLayerDefinition);
         event.registerLayerDefinition(ModelScubaTank.TANK_LAYER, ModelScubaTank::createLayerDefinition);
-        event.registerLayerDefinition(RenderLogisticalTransporter.BOX_LAYER, RenderLogisticalTransporter::createBoxLayer);
         event.registerLayerDefinition(RenderDiversionTransporter.OVERLAY_LAYER, RenderDiversionTransporter::createOverlayLayer);
 
         //Entity layer definitions

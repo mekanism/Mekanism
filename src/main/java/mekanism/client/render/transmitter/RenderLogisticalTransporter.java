@@ -7,31 +7,21 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
+import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.transmitter.TransmitterRenderState.TransporterRenderState;
 import mekanism.client.render.transmitter.TransmitterRenderState.TransporterRenderState.TransporterStackRenderState;
-import mekanism.common.Mekanism;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.Level;
@@ -43,27 +33,12 @@ import org.jspecify.annotations.Nullable;
 
 public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransporterBase, STATE extends TransporterRenderState> extends RenderTransmitterBase<TILE, STATE> {
 
-    public static final ModelLayerLocation BOX_LAYER = new ModelLayerLocation(Mekanism.rl("transporter_box"), "main");
-    private static final Identifier BOX_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "transporter_box.png");
-
-    public static LayerDefinition createBoxLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        root.addOrReplaceChild("box", CubeListBuilder.create().addBox(0F, 0F, 0F, 7, 7, 7),
-              //TODO: Do we need the offset, or can we just move the origin?
-              PartPose.offset(-3.5F, 0.5F, -3.5F)
-        );
-        return LayerDefinition.create(mesh, 64, 64);
-    }
-
     private final ItemModelResolver itemModelResolver;
     private final Supplier<STATE> stateCreator;
-    private final ModelPart modelBox;
 
     public RenderLogisticalTransporter(BlockEntityRendererProvider.Context context, Supplier<STATE> stateCreator) {
         super(context);
         this.stateCreator = stateCreator;
-        this.modelBox = context.bakeLayer(BOX_LAYER);
         this.itemModelResolver = context.itemModelResolver();
     }
 
@@ -107,16 +82,11 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
                 poseStack.pushPose();
                 poseStack.translate(stackRenderState.stackPos().x(), stackRenderState.stackPos().y(), stackRenderState.stackPos().z());
                 if (stackRenderState.color() != null) {
-                    nodeCollector.submitModelPart(
-                          this.modelBox,
-                          poseStack,
-                          RenderTypes.entityCutout(BOX_TEXTURE),
-                          LightCoordsUtil.FULL_BRIGHT,
-                          OverlayTexture.NO_OVERLAY,
-                          null,
-                          stackRenderState.color().getPackedColor(),
-                          null
-                    );
+                    poseStack.pushPose();
+                    poseStack.translate(-0.5F, -0.25F, -0.5F);
+                    nodeCollector.submitBlockModel(poseStack, Sheets.cutoutBlockItemSheet(), MekanismModelCache.INSTANCE.TRANSPORTER_BOX.getBakedModel(),
+                          new int[]{stackRenderState.color().getPackedColor()}, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+                    poseStack.popPose();
                 }
                 AABB bb = stackRenderState.item().getModelBoundingBox();
                 double maxDimension = Math.max(bb.getXsize(), Math.max(bb.getYsize(), bb.getZsize()));
