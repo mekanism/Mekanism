@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
@@ -26,7 +27,6 @@ import mekanism.common.content.miner.MinerItemStackFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
@@ -49,7 +49,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     private static final Holder<Item> ITEM_TO_REPLACE = MekanismItems.INFUSED_ALLOY;
     private static final Holder<Fluid> FLUID_TO_REPLACE = MekanismFluids.HYDROGEN;
-    private static final ResourceKey<Chemical> CHEMICAL_TO_REPLACE = MekanismChemicals.HYDROGEN;
+    private static final ResourceKey<Chemical> CHEMICAL_TO_REPLACE = ChemicalIds.HYDROGEN;
     public static final UnaryOperator<String> REPLACE_TO_INVALID_ITEM = replaceInvalid(ITEM_TO_REPLACE);
     public static final UnaryOperator<String> REPLACE_TO_INVALID_FLUID = replaceInvalid(FLUID_TO_REPLACE);
     public static final UnaryOperator<String> REPLACE_TO_INVALID_CHEMICAL = replaceInvalid(CHEMICAL_TO_REPLACE);

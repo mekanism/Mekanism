@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
@@ -25,7 +26,6 @@ import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
@@ -1625,44 +1625,44 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
         //plutonium
         ChemicalToChemicalRecipeBuilder.centrifuging(
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.NUCLEAR_WASTE, 10),
-              chemicalTemplate(MekanismChemicals.PLUTONIUM, 1)
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.NUCLEAR_WASTE, 10),
+              chemicalTemplate(ChemicalIds.PLUTONIUM, 1)
         ).save(output, Mekanism.rl(basePath + "plutonium"));
         //polonium
         ChemicalToChemicalRecipeBuilder.activating(
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.NUCLEAR_WASTE, 10),
-              chemicalTemplate(MekanismChemicals.POLONIUM, 1)
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.NUCLEAR_WASTE, 10),
+              chemicalTemplate(ChemicalIds.POLONIUM, 1)
         ).save(output, Mekanism.rl(basePath + "polonium"));
 
         //plutonium pellet
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_FLUORITE),
               IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 1_000),
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.PLUTONIUM, 1_000),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.PLUTONIUM, 1_000),
               100,
               MekanismItems.PLUTONIUM_PELLET.asTemplate(),
-              chemicalTemplate(MekanismChemicals.SPENT_NUCLEAR_WASTE, 1_000)
+              chemicalTemplate(ChemicalIds.SPENT_NUCLEAR_WASTE, 1_000)
         ).save(output, Mekanism.rl(basePath + "plutonium_pellet/from_reaction"));
         //polonium pellet
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_FLUORITE),
               IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 1_000),
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.POLONIUM, 1_000),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.POLONIUM, 1_000),
               100,
               MekanismItems.POLONIUM_PELLET.asTemplate(),
-              chemicalTemplate(MekanismChemicals.SPENT_NUCLEAR_WASTE, 1_000)
+              chemicalTemplate(ChemicalIds.SPENT_NUCLEAR_WASTE, 1_000)
         ).save(output, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
 
         //antimatter pellet
         ChemicalCrystallizerRecipeBuilder.crystallizing(
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.ANTIMATTER, 1_000),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 1_000),
               MekanismItems.ANTIMATTER_PELLET.asTemplate()
         ).save(output, Mekanism.rl(basePath + "antimatter_pellet/from_gas"));
 
         //back to antimatter
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PELLETS_ANTIMATTER),
-              chemicalTemplate(MekanismChemicals.ANTIMATTER, 1_000)
+              chemicalTemplate(ChemicalIds.ANTIMATTER, 1_000)
         ).save(output, Mekanism.rl(basePath + "antimatter/from_pellet"));
     }
 }

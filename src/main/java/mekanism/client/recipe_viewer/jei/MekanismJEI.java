@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalSerializationHelper;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.gui.GuiMekanism;
@@ -168,7 +168,7 @@ public class MekanismJEI implements IModPlugin {
         } else {
             types = optionalRegistry.get().listElements()
                   //Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
-                  .filter(chemical -> !chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY))
+                  .filter(chemical -> !chemical.is(ChemicalIds.EMPTY))
                   .map(chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME))
                   .toList();
         }

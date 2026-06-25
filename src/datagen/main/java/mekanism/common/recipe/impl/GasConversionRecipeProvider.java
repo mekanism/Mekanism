@@ -1,10 +1,10 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
@@ -27,27 +27,27 @@ class GasConversionRecipeProvider extends BaseSubRecipeProvider {
         //Flint -> oxygen
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
               IngredientCreatorAccess.item().from(this.items, ItemIds.FLINT),
-              chemicalTemplate(MekanismChemicals.OXYGEN, 10)
+              chemicalTemplate(ChemicalIds.OXYGEN, 10)
         ).save(consumer, Mekanism.rl(basePath + "flint_to_oxygen"));
         //Osmium block -> osmium
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM)),
-              chemicalTemplate(MekanismChemicals.OSMIUM, 1_800)
+              chemicalTemplate(ChemicalIds.OSMIUM, 1_800)
         ).save(consumer, Mekanism.rl(basePath + "osmium_from_block"));
         //Osmium ingot -> osmium
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM)),
-              chemicalTemplate(MekanismChemicals.OSMIUM, 200)
+              chemicalTemplate(ChemicalIds.OSMIUM, 200)
         ).save(consumer, Mekanism.rl(basePath + "osmium_from_ingot"));
         //Salt -> hydrogen chloride
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SALT),
-              chemicalTemplate(MekanismChemicals.HYDROGEN_CHLORIDE, 2)
+              chemicalTemplate(ChemicalIds.HYDROGEN_CHLORIDE, 2)
         ).save(consumer, Mekanism.rl(basePath + "salt_to_hydrogen_chloride"));
         //Sulfur -> sulfuric acid
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SULFUR),
-              chemicalTemplate(MekanismChemicals.SULFURIC_ACID, 2)
+              chemicalTemplate(ChemicalIds.SULFURIC_ACID, 2)
         ).save(consumer, Mekanism.rl(basePath + "sulfur_to_sulfuric_acid"));
     }
 }

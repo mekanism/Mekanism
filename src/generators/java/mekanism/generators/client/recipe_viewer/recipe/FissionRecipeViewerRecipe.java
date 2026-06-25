@@ -11,6 +11,7 @@ import java.util.Optional;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
@@ -20,7 +21,6 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.recipe_viewer.INamedRVRecipe;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.Mekanism;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -59,8 +59,8 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
             return Collections.emptyList();
         }
         Registry<Chemical> chemicals = optionalRegistry.get();
-        Optional<Reference<Chemical>> wasteReference = chemicals.get(MekanismChemicals.NUCLEAR_WASTE);
-        Optional<Reference<Chemical>> fuelReference = chemicals.get(MekanismChemicals.FISSILE_FUEL);
+        Optional<Reference<Chemical>> wasteReference = chemicals.get(ChemicalIds.NUCLEAR_WASTE);
+        Optional<Reference<Chemical>> fuelReference = chemicals.get(ChemicalIds.FISSILE_FUEL);
         if (wasteReference.isEmpty() || fuelReference.isEmpty()) {
             return Collections.emptyList();
         }
@@ -73,7 +73,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
         long energyPerFuel = MekanismGeneratorsConfig.generators.energyPerFissionFuel.get();
         //Special case water recipe
         int coolantAmount = Ints.saturatedCast(Math.round(energyPerFuel * HeatUtils.getSteamEnergyEfficiency() / HeatUtils.getWaterThermalEnthalpy()));
-        Optional<Reference<Chemical>> steamReference = chemicals.get(MekanismChemicals.STEAM);
+        Optional<Reference<Chemical>> steamReference = chemicals.get(ChemicalIds.STEAM);
         //noinspection OptionalIsPresent - Capturing lambda
         if (steamReference.isPresent()) {
             recipes.add(new FissionRecipeViewerRecipe(

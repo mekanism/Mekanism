@@ -2,7 +2,6 @@ package mekanism.api.chemical;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.ChemicalSolidTag;
@@ -28,7 +27,7 @@ public interface ChemicalInstance extends TypedInstance<Chemical>, IHasTranslati
 
     /// A standard codec for non-empty Chemical holders.
     Codec<Holder<Chemical>> CHEMICAL_HOLDER_CODEC = ChemicalSerializationHelper.REFERENCE_CODEC.validate(
-          chemical -> chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) ? DataResult.error(() -> "Chemical must not be mekanism:empty") : DataResult.success(chemical)
+          chemical -> chemical.is(ChemicalIds.EMPTY) ? DataResult.error(() -> "Chemical must not be " + ChemicalIds.EMPTY.identifier()) : DataResult.success(chemical)
     );
 
     /// A stream codec which can be used to encode and decode chemical holders over the network.

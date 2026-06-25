@@ -1,6 +1,7 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.Map;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -8,7 +9,6 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtils;
@@ -64,7 +64,7 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
         }
         if (productionRate > 0) {
             RegistryAccess registryAccess = player.level().registryAccess();
-            ChemicalResource hydrogen = ChemicalUtils.getResource(registryAccess, MekanismChemicals.HYDROGEN);
+            ChemicalResource hydrogen = ChemicalUtils.getResource(registryAccess, ChemicalIds.HYDROGEN);
             if (hydrogen.isEmpty()) {
                 return;
             }

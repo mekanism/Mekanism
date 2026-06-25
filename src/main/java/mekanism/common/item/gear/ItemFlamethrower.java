@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
@@ -24,7 +25,6 @@ import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
@@ -177,7 +177,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     }
 
     private ResourceKey<Chemical> getChemicalType() {
-        return MekanismChemicals.HYDROGEN;
+        return ChemicalIds.HYDROGEN;
     }
 
     @Override

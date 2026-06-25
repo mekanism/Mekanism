@@ -8,7 +8,6 @@ import io.netty.handler.codec.EncoderException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
@@ -189,7 +188,7 @@ public final class ChemicalStack implements SizedChemicalInstance {
     /// @return `true` if this stack is empty, `false` otherwise.
     public boolean isEmpty() {
         //Empty instance has the chemical being null
-        return chemical == null || chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) || this.amount <= 0;
+        return chemical == null || chemical.is(ChemicalIds.EMPTY) || this.amount <= 0;
     }
 
     /// Gets the size of this chemical stack.

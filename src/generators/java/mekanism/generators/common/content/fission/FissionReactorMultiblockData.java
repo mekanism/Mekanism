@@ -10,9 +10,10 @@ import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
@@ -39,7 +40,6 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismAttachmentTypes;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
@@ -162,11 +162,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
               VariableCapacityChemicalTank.input(this, () -> cooledCoolantCapacity, type -> type.getCooledCoolant(registryAccessSupplier.get()) != null, this)
         );
         fluidTanks.add(coolantTank.getFluidTank());
-        fuelTank = VariableCapacityChemicalTank.input(this, fuelCapacitySupplier, chemical -> chemical.is(MekanismChemicals.FISSILE_FUEL),
+        fuelTank = VariableCapacityChemicalTank.input(this, fuelCapacitySupplier, chemical -> chemical.is(ChemicalIds.FISSILE_FUEL),
               ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator());
         heatedCoolantTank = VariableCapacityChemicalTank.output(this, () -> heatedCoolantCapacity,
-              chemical -> chemical.is(MekanismChemicals.STEAM) || chemical.getHeatedCoolant(registryAccessSupplier.get()) != null, this);
-        wasteTank = VariableCapacityChemicalTank.output(this, fuelCapacitySupplier, chemical -> chemical.is(MekanismChemicals.NUCLEAR_WASTE),
+              chemical -> chemical.is(ChemicalIds.STEAM) || chemical.getHeatedCoolant(registryAccessSupplier.get()) != null, this);
+        wasteTank = VariableCapacityChemicalTank.output(this, fuelCapacitySupplier, chemical -> chemical.is(ChemicalIds.NUCLEAR_WASTE),
               ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         inputTanks = List.of(fuelTank, coolantTank.getChemicalTank());
         outputWasteTanks = List.of(wasteTank);
@@ -197,7 +197,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             RegistryAccess registryAccess = world.registryAccess();
             // burn reactor fuel, create energy
             if (isActive()) {
-                ChemicalResource waste = ChemicalUtils.getResource(registryAccess, MekanismChemicals.NUCLEAR_WASTE);
+                ChemicalResource waste = ChemicalUtils.getResource(registryAccess, ChemicalIds.NUCLEAR_WASTE);
                 if (!waste.isEmpty()) {
                     burnFuel(world, waste, transaction);
                 } else {
@@ -397,7 +397,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     private double getWasteTankRadioactivity(RegistryAccess registryAccess, @Nullable TransactionContext transaction) {
         ChemicalResource wasteType = wasteTank.resource();
         if (wasteType.isEmpty()) {
-            wasteType = ChemicalUtils.getResource(registryAccess, MekanismChemicals.NUCLEAR_WASTE);
+            wasteType = ChemicalUtils.getResource(registryAccess, ChemicalIds.NUCLEAR_WASTE);
             if (wasteType.isEmpty()) {
                 return 0;
             }
@@ -444,7 +444,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             coolantTank = this.coolantTank.getFluidTank();
             coolantConductivity = waterConductivity;
             coolantEnthalpy = HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
-            heatedCoolant = ChemicalUtils.getResource(registryAccess, MekanismChemicals.STEAM);
+            heatedCoolant = ChemicalUtils.getResource(registryAccess, ChemicalIds.STEAM);
             if (heatedCoolant.isEmpty()) {
                 lastBurnRate = 0;
                 return;

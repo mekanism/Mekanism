@@ -1,6 +1,7 @@
 package mekanism.generators.client;
 
 import java.util.Objects;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.generators.client.recipe_viewer.alias.GeneratorsAliases;
 import mekanism.generators.common.GeneratorTags;
@@ -10,7 +11,6 @@ import mekanism.generators.common.advancements.GeneratorsAdvancements;
 import mekanism.generators.common.config.GeneratorsConfigTranslations;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsDamageTypes;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
@@ -96,9 +96,9 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
     }
 
     private void addGases() {
-        addChemical(GeneratorsChemicals.DEUTERIUM, "Deuterium");
-        addChemical(GeneratorsChemicals.FUSION_FUEL, "D-T Fuel");
-        addChemical(GeneratorsChemicals.TRITIUM, "Tritium");
+        addChemical(ChemicalIds.DEUTERIUM, "Deuterium");
+        addChemical(ChemicalIds.FUSION_FUEL, "D-T Fuel");
+        addChemical(ChemicalIds.TRITIUM, "Tritium");
     }
 
     private void addDamageSources() {

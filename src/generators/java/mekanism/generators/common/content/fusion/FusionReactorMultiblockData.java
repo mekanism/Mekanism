@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -36,7 +37,6 @@ import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.EnergyUtils;
@@ -46,7 +46,6 @@ import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsDamageTypes;
 import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
@@ -166,7 +165,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
               chemical -> chemical.is(GeneratorTags.Chemicals.TRITIUM), this));
         chemicalTanks.add(fuelTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
               chemical -> chemical.is(GeneratorTags.Chemicals.FUSION_FUEL), createSaveAndComparator()));
-        chemicalTanks.add(steamTank = VariableCapacityChemicalTank.output(this, this::getMaxSteam, chemical -> chemical.is(MekanismChemicals.STEAM), this));
+        chemicalTanks.add(steamTank = VariableCapacityChemicalTank.output(this, this::getMaxSteam, chemical -> chemical.is(ChemicalIds.STEAM), this));
         fluidTanks.add(waterTank = VariableCapacityFluidTank.input(this, this::getMaxWater, fluid -> fluid.is(FluidTags.WATER), this));
         energyContainer = VariableCapacityEnergyContainer.output(MekanismGeneratorsConfig.generators.fusionEnergyCapacity, this);
         heatCapacitor = VariableHeatCapacitor.create(CASE_HEAT_CAPACITY, FusionReactorMultiblockData::getInverseConductionCoefficient, () -> INVERSE_INSULATION, () -> biomeAmbientTemp, this);
@@ -234,7 +233,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             RegistryAccess registryAccess = world.registryAccess();
             //Only thermal transfer happens unless we're hot enough to burn.
             if (getPlasmaTemp() >= BURN_TEMPERATURE) {
-                ChemicalResource fusionFuel = ChemicalUtils.getResource(registryAccess, GeneratorsChemicals.FUSION_FUEL);
+                ChemicalResource fusionFuel = ChemicalUtils.getResource(registryAccess, ChemicalIds.FUSION_FUEL);
                 if (!fusionFuel.isEmpty()) {
                     //If we're not burning, yet we need a hohlraum to ignite
                     if (!isBurning()) {
@@ -381,7 +380,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (heatCapacitor.getTemperature() - biomeAmbientTemp);
         double lostToWater = 0;
         if (!waterTank.isEmpty() && Math.abs(caseWaterHeat) > HeatAPI.EPSILON) {
-            ChemicalResource steam = ChemicalUtils.getResource(registryAccess, MekanismChemicals.STEAM);
+            ChemicalResource steam = ChemicalUtils.getResource(registryAccess, ChemicalIds.STEAM);
             if (!steam.isEmpty()) {
                 try (Transaction subTransaction = Transaction.open(transaction)) {
                     int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());

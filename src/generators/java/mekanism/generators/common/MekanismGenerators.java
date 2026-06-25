@@ -14,7 +14,6 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsBuilders.FissionReactorBuilder;
 import mekanism.generators.common.registries.GeneratorsBuilders.FusionReactorBuilder;
 import mekanism.generators.common.registries.GeneratorsBuilders.TurbineBuilder;
-import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.registries.GeneratorsCreativeTabs;
 import mekanism.generators.common.registries.GeneratorsDataComponents;
@@ -61,7 +60,6 @@ public class MekanismGenerators implements IModModule {
         GeneratorsSounds.SOUND_EVENTS.register(modEventBus);
         GeneratorsContainerTypes.CONTAINER_TYPES.register(modEventBus);
         GeneratorsTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
-        GeneratorsChemicals.CHEMICALS.register(modEventBus);
         GeneratorsModules.MODULES.register(modEventBus);
         MekanismGeneratorsMultiblocks.register(modEventBus);
         packetHandler = new GeneratorsPacketHandler(modEventBus, versionNumber);

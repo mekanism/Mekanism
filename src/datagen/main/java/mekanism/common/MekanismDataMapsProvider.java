@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
@@ -68,22 +69,22 @@ public class MekanismDataMapsProvider extends DataMapProvider {
         builder(IMekanismDataMapTypes.INSTANCE.chemicalFuel())
               //GENERAL_ENERGY_CONVERSION_HYDROGEN("general.energy_conversion.hydrogen", "Hydrogen Energy Density",
               //"How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas-Burning Generator energy capacity."),
-              .add(MekanismChemicals.HYDROGEN, new ChemicalFuel(10, ChemicalUtils.DEFAULT_HYDROGEN_ENERGY_DENSITY), false)
-              .add(MekanismChemicals.ETHENE, new ChemicalFuel(10, 8), false)
+              .add(ChemicalIds.HYDROGEN, new ChemicalFuel(10, ChemicalUtils.DEFAULT_HYDROGEN_ENERGY_DENSITY), false)
+              .add(ChemicalIds.ETHENE, new ChemicalFuel(10, 8), false)
         ;
 
         builder(IMekanismDataMapTypes.INSTANCE.chemicalRadioactivity())
-              .add(MekanismChemicals.NUCLEAR_WASTE, new ChemicalRadioactivity(0.01), false)
-              .add(MekanismChemicals.SPENT_NUCLEAR_WASTE, new ChemicalRadioactivity(0.01), false)
-              .add(MekanismChemicals.PLUTONIUM, new ChemicalRadioactivity(0.02), false)
-              .add(MekanismChemicals.POLONIUM, new ChemicalRadioactivity(0.05), false)
+              .add(ChemicalIds.NUCLEAR_WASTE, new ChemicalRadioactivity(0.01), false)
+              .add(ChemicalIds.SPENT_NUCLEAR_WASTE, new ChemicalRadioactivity(0.01), false)
+              .add(ChemicalIds.PLUTONIUM, new ChemicalRadioactivity(0.02), false)
+              .add(ChemicalIds.POLONIUM, new ChemicalRadioactivity(0.05), false)
         ;
 
         builder(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant())
-              .add(MekanismChemicals.SODIUM, new CooledCoolant(provider.getOrThrow(MekanismChemicals.SUPERHEATED_SODIUM), 5, 1), false)
+              .add(ChemicalIds.SODIUM, new CooledCoolant(provider.getOrThrow(ChemicalIds.SUPERHEATED_SODIUM), 5, 1), false)
         ;
         builder(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant())
-              .add(MekanismChemicals.SUPERHEATED_SODIUM, new HeatedCoolant(provider.getOrThrow(MekanismChemicals.SODIUM), 5), false)
+              .add(ChemicalIds.SUPERHEATED_SODIUM, new HeatedCoolant(provider.getOrThrow(ChemicalIds.SODIUM), 5), false)
         ;
     }
 }

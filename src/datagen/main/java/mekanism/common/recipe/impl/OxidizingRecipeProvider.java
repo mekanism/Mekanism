@@ -1,10 +1,10 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
@@ -24,17 +24,17 @@ class OxidizingRecipeProvider extends BaseSubRecipeProvider {
         //Brine
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SALT),
-              chemicalTemplate(MekanismChemicals.BRINE, 15)
+              chemicalTemplate(ChemicalIds.BRINE, 15)
         ).save(consumer, Mekanism.rl(basePath + "brine"));
         //Lithium
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_LITHIUM),
-              chemicalTemplate(MekanismChemicals.LITHIUM, 100)
+              chemicalTemplate(ChemicalIds.LITHIUM, 100)
         ).save(consumer, Mekanism.rl(basePath + "lithium"));
         //Sulfur dioxide
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SULFUR),
-              chemicalTemplate(MekanismChemicals.SULFUR_DIOXIDE, 100)
+              chemicalTemplate(ChemicalIds.SULFUR_DIOXIDE, 100)
         ).save(consumer, Mekanism.rl(basePath + "sulfur_dioxide"));
     }
 }

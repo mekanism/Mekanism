@@ -3,13 +3,13 @@ package mekanism.additions.common.recipe;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.EnumColorCollection;
 import mekanism.common.recipe.impl.BaseSubRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
-import mekanism.common.registries.MekanismChemicals;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -40,7 +40,7 @@ class PigmentExtractingPlasticRecipeProvider extends BaseSubRecipeProvider {
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "pigment_extracting/plastic/";
-        EnumColorCollection.zipApply(EnumColorCollection.VALUES, MekanismChemicals.SIMPLE_PIGMENTS, (color, pigment) -> {
+        EnumColorCollection.zipApply(EnumColorCollection.VALUES, ChemicalIds.SIMPLE_PIGMENTS, (color, pigment) -> {
             addExtractionRecipe(consumer, color, AdditionsBlocks.PLASTIC_BLOCKS, pigment, PLASTIC_BLOCK_RATE, basePath + "block/");
             addExtractionRecipe(consumer, color, AdditionsBlocks.SLICK_PLASTIC_BLOCKS, pigment, SLICK_PLASTIC_BLOCK_RATE, basePath + "slick/");
             addExtractionRecipe(consumer, color, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, pigment, PLASTIC_GLOW_BLOCK_RATE, basePath + "glow/");

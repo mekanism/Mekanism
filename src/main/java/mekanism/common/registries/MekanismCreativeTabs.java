@@ -1,8 +1,8 @@
 package mekanism.common.registries;
 
-import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.MekanismRegistries;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
@@ -63,7 +63,7 @@ public class MekanismCreativeTabs {
                 if (MekanismConfig.general.prefilledChemicalTanks.get()) {
                     parameters.holders().lookupOrThrow(MekanismRegistries.Keys.CHEMICAL)
                           .listElements()
-                          .filter(holder -> !holder.is(MekanismAPITags.Chemicals.HIDDEN_FROM_RECIPE_VIEWERS) && !holder.is(MekanismAPI.EMPTY_CHEMICAL_KEY))
+                          .filter(holder -> !holder.is(MekanismAPITags.Chemicals.HIDDEN_FROM_RECIPE_VIEWERS) && !holder.is(ChemicalIds.EMPTY))
                           .forEach(holder -> output.accept(ContainerType.CHEMICAL.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemHolder(), holder, null)));
                 }
             }

@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.BasicChemical;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.api.robit.AdvancementBasedRobitSkin;
 import mekanism.api.robit.BasicRobitSkin;
@@ -171,34 +171,34 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
               }
           })
           .add(MekanismRegistries.Keys.CHEMICAL, context -> {
-              context.register(MekanismAPI.EMPTY_CHEMICAL_KEY, BasicChemical.defaultIcon(CommonColors.WHITE));
+              context.register(ChemicalIds.EMPTY, BasicChemical.defaultIcon(CommonColors.WHITE));
               //Infuse Types
-              context.register(MekanismChemicals.BIO, new BasicChemical(Mekanism.rl("mek_chemical/infuse_type/bio"), 0xFF5A4630));
-              context.register(MekanismChemicals.FUNGI, new BasicChemical(Mekanism.rl("mek_chemical/infuse_type/fungi"), 0xFF74656A));
-              context.register(MekanismChemicals.TIN, BasicChemical.infuseType(0xFFCCCCD9));
-              context.register(MekanismChemicals.GOLD, BasicChemical.infuseType(0xFFF2CD67));
-              context.register(MekanismChemicals.REFINED_OBSIDIAN, BasicChemical.infuseType(0xFF7C00ED));
-              context.register(MekanismChemicals.DIAMOND, BasicChemical.infuseType(0xFF6CEDD8));
-              context.register(MekanismChemicals.REDSTONE, BasicChemical.infuseType(0xFFB30505));
-              context.register(MekanismChemicals.CARBON, BasicChemical.infuseType(0xFF2C2C2C));
+              context.register(ChemicalIds.BIO, new BasicChemical(Mekanism.rl("mek_chemical/infuse_type/bio"), 0xFF5A4630));
+              context.register(ChemicalIds.FUNGI, new BasicChemical(Mekanism.rl("mek_chemical/infuse_type/fungi"), 0xFF74656A));
+              context.register(ChemicalIds.TIN, BasicChemical.infuseType(0xFFCCCCD9));
+              context.register(ChemicalIds.GOLD, BasicChemical.infuseType(0xFFF2CD67));
+              context.register(ChemicalIds.REFINED_OBSIDIAN, BasicChemical.infuseType(0xFF7C00ED));
+              context.register(ChemicalIds.DIAMOND, BasicChemical.infuseType(0xFF6CEDD8));
+              context.register(ChemicalIds.REDSTONE, BasicChemical.infuseType(0xFFB30505));
+              context.register(ChemicalIds.CARBON, BasicChemical.infuseType(0xFF2C2C2C));
               //Chemicals
               for (ChemicalConstants constant : ChemicalConstants.values()) {
-                  registerConstant(context, Mekanism.MODID, constant);
+                  registerConstant(context, constant);
               }
               Chemical steam = new BasicChemical(Mekanism.rl("mek_liquid/steam"), CommonColors.WHITE);
-              context.register(MekanismChemicals.STEAM, steam);
-              context.register(MekanismChemicals.WATER_VAPOR, steam);
-              context.register(MekanismChemicals.BRINE, BasicChemical.defaultIcon(0xFFFEEF9C));
+              context.register(ChemicalIds.STEAM, steam);
+              context.register(ChemicalIds.WATER_VAPOR, steam);
+              context.register(ChemicalIds.BRINE, BasicChemical.defaultIcon(0xFFFEEF9C));
 
-              context.register(MekanismChemicals.OSMIUM, BasicChemical.defaultIcon(0xFF52BDCA));
-              context.register(MekanismChemicals.FISSILE_FUEL, BasicChemical.defaultIcon(0xFF2E332F));
-              context.register(MekanismChemicals.NUCLEAR_WASTE, BasicChemical.defaultIcon(0xFF4F412A));
-              context.register(MekanismChemicals.SPENT_NUCLEAR_WASTE, BasicChemical.defaultIcon(0xFF262015));
-              context.register(MekanismChemicals.PLUTONIUM, BasicChemical.defaultIcon(0xFF1F919C));
-              context.register(MekanismChemicals.POLONIUM, BasicChemical.defaultIcon(0xFF1B9E7B));
-              context.register(MekanismChemicals.ANTIMATTER, BasicChemical.defaultIcon(0xFFA464B3));
+              context.register(ChemicalIds.OSMIUM, BasicChemical.defaultIcon(0xFF52BDCA));
+              context.register(ChemicalIds.FISSILE_FUEL, BasicChemical.defaultIcon(0xFF2E332F));
+              context.register(ChemicalIds.NUCLEAR_WASTE, BasicChemical.defaultIcon(0xFF4F412A));
+              context.register(ChemicalIds.SPENT_NUCLEAR_WASTE, BasicChemical.defaultIcon(0xFF262015));
+              context.register(ChemicalIds.PLUTONIUM, BasicChemical.defaultIcon(0xFF1F919C));
+              context.register(ChemicalIds.POLONIUM, BasicChemical.defaultIcon(0xFF1B9E7B));
+              context.register(ChemicalIds.ANTIMATTER, BasicChemical.defaultIcon(0xFFA464B3));
               //Pigments
-              EnumColorCollection.zipApply(EnumColorCollection.VALUES, MekanismChemicals.SIMPLE_PIGMENTS, (color, pigment) ->
+              EnumColorCollection.zipApply(EnumColorCollection.VALUES, ChemicalIds.SIMPLE_PIGMENTS, (color, pigment) ->
                     context.register(pigment, BasicChemical.pigment(color.getPackedColor())));
               //Slurries
               for (Map.Entry<PrimaryResource, CleanDirtySlurryId> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {

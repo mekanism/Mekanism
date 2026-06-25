@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.SupportsColorMap;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.lib.ColorAtlas;
@@ -125,7 +125,7 @@ public class MekanismRenderer {
     }
 
     public static int color(TypedInstance<Chemical> instance) {
-        if (instance.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+        if (instance.is(ChemicalIds.EMPTY)) {
             return CommonColors.WHITE;
         }
         return instance.typeHolder().value().tint();
@@ -165,7 +165,7 @@ public class MekanismRenderer {
     }
 
     public static int getColorARGB(Holder<Chemical> chemical, float scale) {
-        if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+        if (chemical.is(ChemicalIds.EMPTY)) {
             return CommonColors.WHITE;
         } else if (chemical.is(MekanismAPITags.Chemicals.GASEOUS)) {
             return getColorARGB(getTint(chemical), Math.min(1, scale + 0.2F));

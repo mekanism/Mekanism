@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.IntSupplier;
 import mekanism.api.MekanismAPITags;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.IModule;
@@ -27,7 +28,6 @@ import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.radiation.PlayerExposure;
 import mekanism.common.lib.transaction.TransactionHelper;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
@@ -144,7 +144,7 @@ public class CommonPlayerTickHandler {
             final int max = player.getMaxAirSupply();
             ResourceHandler<ChemicalResource> chemicalHandler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(chest));
             if (chemicalHandler != null) {
-                ChemicalResource oxygen = ChemicalUtils.getResource(registryAccess, MekanismChemicals.OXYGEN);
+                ChemicalResource oxygen = ChemicalUtils.getResource(registryAccess, ChemicalIds.OXYGEN);
                 if (!oxygen.isEmpty()) {
                     try (Transaction transaction = Transaction.openRoot()) {
                         //TODO - 26.2: Re-evaluate this single usage on its own

@@ -2,6 +2,7 @@ package mekanism.generators.common;
 
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
@@ -16,13 +17,11 @@ import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.Holder;
@@ -69,17 +68,17 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Heavy water
         ElectrolysisRecipeBuilder.separating(
                     IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.HEAVY_WATER, 2),
-                    chemicalTemplate(GeneratorsChemicals.DEUTERIUM, 2),
-                    chemicalTemplate(MekanismChemicals.OXYGEN, 1)
+                    chemicalTemplate(ChemicalIds.DEUTERIUM, 2),
+                    chemicalTemplate(ChemicalIds.OXYGEN, 1)
               ).energyMultiplier(2)
               .save(output, MekanismGenerators.rl(basePath + "heavy_water"));
     }
 
     private void addRotaryCondensentratorRecipes() {
         String basePath = "rotary/";
-        addRotaryCondensentratorRecipe(basePath, GeneratorsChemicals.DEUTERIUM, GeneratorsFluids.DEUTERIUM, GeneratorTags.Fluids.DEUTERIUM, GeneratorTags.Chemicals.DEUTERIUM);
-        addRotaryCondensentratorRecipe(basePath, GeneratorsChemicals.FUSION_FUEL, GeneratorsFluids.FUSION_FUEL, GeneratorTags.Fluids.FUSION_FUEL, GeneratorTags.Chemicals.FUSION_FUEL);
-        addRotaryCondensentratorRecipe(basePath, GeneratorsChemicals.TRITIUM, GeneratorsFluids.TRITIUM, GeneratorTags.Fluids.TRITIUM, GeneratorTags.Chemicals.TRITIUM);
+        addRotaryCondensentratorRecipe(basePath, ChemicalIds.DEUTERIUM, GeneratorsFluids.DEUTERIUM, GeneratorTags.Fluids.DEUTERIUM, GeneratorTags.Chemicals.DEUTERIUM);
+        addRotaryCondensentratorRecipe(basePath, ChemicalIds.FUSION_FUEL, GeneratorsFluids.FUSION_FUEL, GeneratorTags.Fluids.FUSION_FUEL, GeneratorTags.Chemicals.FUSION_FUEL);
+        addRotaryCondensentratorRecipe(basePath, ChemicalIds.TRITIUM, GeneratorsFluids.TRITIUM, GeneratorTags.Fluids.TRITIUM, GeneratorTags.Chemicals.TRITIUM);
     }
 
     private void addRotaryCondensentratorRecipe(String basePath, ResourceKey<Chemical> chemicalOutput, Holder<Fluid> fluidOutput, TagKey<Fluid> fluidInput, TagKey<Chemical> chemicalInput) {
@@ -95,17 +94,17 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         String basePath = "chemical_infusing/";
         //DT Fuel
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
-              IngredientCreatorAccess.chemicalStack().from(chemicals, GeneratorsChemicals.DEUTERIUM, 1),
-              IngredientCreatorAccess.chemicalStack().from(chemicals, GeneratorsChemicals.TRITIUM, 1),
-              chemicalTemplate(GeneratorsChemicals.FUSION_FUEL, 2)
+              IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.DEUTERIUM, 1),
+              IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.TRITIUM, 1),
+              chemicalTemplate(ChemicalIds.FUSION_FUEL, 2)
         ).save(output, MekanismGenerators.rl(basePath + "fusion_fuel"));
     }
 
     private void addSolarNeutronActivatorRecipes() {
         String basePath = "activating/";
         ChemicalToChemicalRecipeBuilder.activating(
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismChemicals.LITHIUM, 1),
-              chemicalTemplate(GeneratorsChemicals.TRITIUM, 1)
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.LITHIUM, 1),
+              chemicalTemplate(ChemicalIds.TRITIUM, 1)
         ).save(output, MekanismGenerators.rl(basePath + "tritium"));
     }
 

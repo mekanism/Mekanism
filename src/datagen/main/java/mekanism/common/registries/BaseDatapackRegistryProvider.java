@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.booleans.Boolean2ObjectFunction;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.BasicChemical;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.base.IChemicalConstant;
@@ -70,7 +69,7 @@ public abstract class BaseDatapackRegistryProvider extends DatapackBuiltinEntrie
         return ResourceKey.create(NeoForgeRegistries.Keys.STRUCTURE_MODIFIERS, name);
     }
 
-    protected static void registerConstant(BootstrapContext<Chemical> context, String modid, IChemicalConstant constant) {
-        context.register(ResourceKey.create(MekanismRegistries.Keys.CHEMICAL, Identifier.fromNamespaceAndPath(modid, constant.getName())), BasicChemical.defaultIcon(constant.getColor()));
+    protected static void registerConstant(BootstrapContext<Chemical> context, IChemicalConstant constant) {
+        context.register(constant.key(), BasicChemical.defaultIcon(constant.getColor()));
     }
 }

@@ -5,9 +5,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 import java.util.List;
-import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalInstance;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.APILang;
@@ -59,7 +59,7 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
     ///
     /// @throws IllegalArgumentException If thermal enthalpy or conductivity are invalid values.
     static void validateCoolantParams(Holder<Chemical> otherVariant, double thermalEnthalpy, double conductivity) {
-        if (otherVariant.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+        if (otherVariant.is(ChemicalIds.EMPTY)) {
             throw new IllegalArgumentException("Coolants can not be made that point to the empty chemical");
         } else if (thermalEnthalpy <= 0) {
             throw new IllegalArgumentException("Coolant attributes must have a thermal enthalpy greater than zero! Thermal Enthalpy: " + thermalEnthalpy);

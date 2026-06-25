@@ -3,7 +3,6 @@ package mekanism.api.chemical;
 import com.mojang.serialization.Codec;
 import java.util.Objects;
 import java.util.Optional;
-import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismPreconditions;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -57,7 +56,7 @@ public class ChemicalResource implements RegisteredResource<Chemical>, ChemicalI
     /// @throws IllegalStateException If the backing registry is unavailable or not yet ready.
     /// @throws NullPointerException  If the underlying Holder has not been populated (the target object is not registered).
     public static ChemicalResource of(Holder<Chemical> chemical) {
-        if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+        if (chemical.is(ChemicalIds.EMPTY)) {
             return EMPTY;
         }
         return new ChemicalResource(chemical);
@@ -87,7 +86,7 @@ public class ChemicalResource implements RegisteredResource<Chemical>, ChemicalI
         return Objects.requireNonNull(chemicalType, "Chemical reference is null, this should not happen");
     }
 
-    /// Checks if this resource is empty. The resource will be empty if the chemical is [MekanismAPI#EMPTY_CHEMICAL_KEY].
+    /// Checks if this resource is empty. The resource will be empty if the chemical is [ChemicalIds#EMPTY].
     ///
     /// @return if this resource is empty
     @Override
@@ -158,7 +157,7 @@ public class ChemicalResource implements RegisteredResource<Chemical>, ChemicalI
     @Override
     public String toString() {
         if (this.chemicalType == null) {
-            return MekanismAPI.EMPTY_CHEMICAL_KEY.identifier().toString();
+            return ChemicalIds.EMPTY.identifier().toString();
         }
         return this.chemicalType.getRegisteredName();
     }
@@ -197,7 +196,7 @@ public class ChemicalResource implements RegisteredResource<Chemical>, ChemicalI
 
         @SubscribeEvent
         private void clientTagsLoaded(TagsUpdatedEvent.ClientPacketReceived event) {
-            emptyHolder = event.getRegistries().get(MekanismAPI.EMPTY_CHEMICAL_KEY).orElse(null);
+            emptyHolder = event.getRegistries().get(ChemicalIds.EMPTY).orElse(null);
         }
 
         @SubscribeEvent

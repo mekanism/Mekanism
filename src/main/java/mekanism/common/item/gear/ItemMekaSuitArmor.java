@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import mekanism.api.MekanismAPITags;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
@@ -44,7 +45,6 @@ import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismArmorMaterials;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtils;
@@ -124,7 +124,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     }
                     IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(itemType, MekanismModules.JETPACK_UNIT);
                     return module == null ? 0L : MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount();
-                }, chemical -> chemical.is(MekanismChemicals.HYDROGEN), itemType -> hasModule(itemType, MekanismModules.JETPACK_UNIT)));
+                }, chemical -> chemical.is(ChemicalIds.HYDROGEN), itemType -> hasModule(itemType, MekanismModules.JETPACK_UNIT)));
                 absorption = 0.4F;
                 laserDissipation = 0.3F;
                 laserRefraction = 0.4F;
@@ -331,7 +331,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (armorType == ArmorType.CHESTPLATE) {
             ItemResource armor = itemAccess.getResource();
             if (isModuleEnabled(armor, MekanismModules.JETPACK_UNIT)) {
-                return ChemicalUtils.hasChemicalOfType(itemAccess, MekanismChemicals.HYDROGEN);
+                return ChemicalUtils.hasChemicalOfType(itemAccess, ChemicalIds.HYDROGEN);
             }
             return getModules(armor).stream().anyMatch(module -> module.isEnabled() && module.getUntypedData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask()));
         }
@@ -352,7 +352,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         //Use the primary jetpack for calculating the thrust
         IModule<ModuleJetpackUnit> module = getEnabledModule(primaryInstance, MekanismModules.JETPACK_UNIT);
         if (module != null) {
-            ChemicalResource fuel = ChemicalUtils.getResource(registryAccess, MekanismChemicals.HYDROGEN);
+            ChemicalResource fuel = ChemicalUtils.getResource(registryAccess, ChemicalIds.HYDROGEN);
             if (fuel.isEmpty()) {
                 return 0;
             }

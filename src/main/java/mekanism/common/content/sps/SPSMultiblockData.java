@@ -7,9 +7,10 @@ import java.util.Map;
 import java.util.Optional;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.math.MathUtils;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
@@ -21,7 +22,6 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
@@ -83,10 +83,10 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     public SPSMultiblockData(TileEntitySPSCasing tile) {
         super(tile);
-        chemicalTanks.add(inputTank = VariableCapacityChemicalTank.input(this, this::getMaxInputGas, chemical -> chemical.is(MekanismChemicals.POLONIUM),
+        chemicalTanks.add(inputTank = VariableCapacityChemicalTank.input(this, this::getMaxInputGas, chemical -> chemical.is(ChemicalIds.POLONIUM),
               ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator()));
         chemicalTanks.add(outputTank = VariableCapacityChemicalTank.output(this, MekanismConfig.general.spsOutputTankCapacity,
-              chemical -> chemical.is(MekanismChemicals.ANTIMATTER), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
+              chemical -> chemical.is(ChemicalIds.ANTIMATTER), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
     }
 
     @Override
@@ -194,7 +194,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                 if (toAdd == 0) {
                     return 0;
                 }
-                ChemicalResource antimatter = ChemicalUtils.getResource(level.registryAccess(), MekanismChemicals.ANTIMATTER);
+                ChemicalResource antimatter = ChemicalUtils.getResource(level.registryAccess(), ChemicalIds.ANTIMATTER);
                 if (antimatter.isEmpty() || outputTank.insert(antimatter, toAdd, transaction, AutomationType.INTERNAL) < toAdd) {
                     return 0;
                 }

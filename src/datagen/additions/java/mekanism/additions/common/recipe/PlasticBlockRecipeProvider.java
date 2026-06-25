@@ -4,6 +4,7 @@ import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -17,7 +18,6 @@ import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -185,7 +185,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(recolorInput),
-              IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE / 4),
+              IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE / 4),
               new ItemStackTemplate(result.value()),
               false
         ).save(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
@@ -206,7 +206,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(recolorInput),
-              IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE / 8),
+              IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE / 8),
               new ItemStackTemplate(result.value()),
               false
         ).save(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));

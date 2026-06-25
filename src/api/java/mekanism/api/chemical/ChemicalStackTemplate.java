@@ -3,7 +3,6 @@ package mekanism.api.chemical;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import mekanism.api.MekanismAPI;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -38,7 +37,7 @@ public record ChemicalStackTemplate(Holder<Chemical> chemical, @Range(from = 1, 
           ChemicalStackTemplate::new);
 
     public ChemicalStackTemplate {
-        if (amount <= 0 || chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+        if (amount <= 0 || chemical.is(ChemicalIds.EMPTY)) {
             throw new IllegalStateException("Chemical must be non-empty");
         }
     }

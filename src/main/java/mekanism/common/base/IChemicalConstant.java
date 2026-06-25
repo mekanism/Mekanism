@@ -1,9 +1,16 @@
 package mekanism.common.base;
 
+import mekanism.api.chemical.Chemical;
+import net.minecraft.resources.ResourceKey;
+
 public interface IChemicalConstant {
 
     /// @return The name of the chemical
-    String getName();
+    default String getName() {
+        return key().identifier().getPath();
+    }
+
+    ResourceKey<Chemical> key();
 
     /// @return Visual color in ARGB format
     int getColor();

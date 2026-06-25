@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
@@ -33,7 +34,6 @@ import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.Structure;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntityBoilerValve;
 import mekanism.common.util.ChemicalUtils;
@@ -127,7 +127,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         waterTank = VariableCapacityFluidTank.input(this, () -> waterTankCapacity, fluid -> fluid.is(FluidTags.WATER),
               createSaveAndComparator());
         fluidTanks.add(waterTank);
-        steamTank = VariableCapacityChemicalTank.output(this, () -> steamTankCapacity, chemical -> chemical.is(MekanismChemicals.STEAM), this);
+        steamTank = VariableCapacityChemicalTank.output(this, () -> steamTankCapacity, chemical -> chemical.is(ChemicalIds.STEAM), this);
         cooledCoolantTank = VariableCapacityChemicalTank.output(this, () -> cooledCoolantCapacity, chemical -> chemical.getCooledCoolant(registryAccessSupplier.get()) != null, this);
         inputTanks = List.of(superheatedCoolantTank);
         outputSteamTanks = List.of(steamTank);
@@ -193,7 +193,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             double heatAvailable = getHeatAvailable();
             lastMaxBoil = Mth.floor(HeatUtils.getSteamEnergyEfficiency() * heatAvailable / HeatUtils.getWaterThermalEnthalpy());
             FluidResource water = waterTank.resource();
-            ChemicalResource steam = ChemicalUtils.getResource(world.registryAccess(), MekanismChemicals.STEAM);
+            ChemicalResource steam = ChemicalUtils.getResource(world.registryAccess(), ChemicalIds.STEAM);
             if (water.isEmpty() || steam.isEmpty()) {
                 lastBoilRate = 0;
             } else {

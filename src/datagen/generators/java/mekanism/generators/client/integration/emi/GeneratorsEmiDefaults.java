@@ -1,11 +1,11 @@
 package mekanism.generators.client.integration.emi;
 
 import java.util.concurrent.CompletableFuture;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.client.integration.emi.BaseEmiDefaults;
 import mekanism.common.util.RegistryUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -32,9 +32,9 @@ public class GeneratorsEmiDefaults extends BaseEmiDefaults {
     }
 
     private void addRotaryRecipes() {
-        addRotaryRecipe(GeneratorsChemicals.DEUTERIUM);
-        addRotaryRecipe(GeneratorsChemicals.FUSION_FUEL);
-        addRotaryRecipe(GeneratorsChemicals.TRITIUM);
+        addRotaryRecipe(ChemicalIds.DEUTERIUM);
+        addRotaryRecipe(ChemicalIds.FUSION_FUEL);
+        addRotaryRecipe(ChemicalIds.TRITIUM);
     }
 
     private void addElectrolyticSeparatorRecipes() {

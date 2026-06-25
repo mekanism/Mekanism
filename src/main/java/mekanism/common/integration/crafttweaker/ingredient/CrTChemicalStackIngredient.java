@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient;
@@ -64,7 +64,7 @@ public class CrTChemicalStackIngredient {
             throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from zero chemicals.");
         }
         for (Holder<Chemical> instance : chemicals) {
-            if (instance.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+            if (instance.is(ChemicalIds.EMPTY)) {
                 throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from an empty chemical.");
             }
         }

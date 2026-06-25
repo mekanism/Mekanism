@@ -1,12 +1,12 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
@@ -62,7 +62,7 @@ class PaintingRecipeProvider extends BaseSubRecipeProvider {
             if (dyeColor != null) {
                 ItemStackChemicalToItemStackRecipeBuilder.painting(
                       IngredientCreatorAccess.item().fromHolder(MekanismItems.DYE_BASE),
-                      IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismChemicals.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE),
+                      IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE),
                       new ItemStackTemplate(items.getOrThrow(ItemIds.DYE.pick(dyeColor))),
                       false
                 ).save(consumer, Mekanism.rl(basePath + dyeColor));
@@ -78,7 +78,7 @@ class PaintingRecipeProvider extends BaseSubRecipeProvider {
                 Holder<Item> result = items.getOrThrow(outputs.pick(dyeColor).item());
                 ItemStackChemicalToItemStackRecipeBuilder.painting(
                       IngredientCreatorAccess.item().from(BaseRecipeProvider.difference(inputTag, result)),
-                      IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismChemicals.SIMPLE_PIGMENTS.pick(color), rate),
+                      IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), rate),
                       new ItemStackTemplate(result),
                       false
                 ).save(consumer, Mekanism.rl(basePath + dyeColor));

@@ -3,13 +3,13 @@ package mekanism.generators.client.recipe_viewer.alias;
 import java.util.List;
 import java.util.Optional;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
 import mekanism.client.recipe_viewer.alias.MekanismAliases;
 import mekanism.client.recipe_viewer.alias.RVAliasHelper;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.Holder.Reference;
@@ -26,7 +26,7 @@ public class GeneratorsAliasMapping implements IAliasMapping {
     }
 
     private <ITEM, FLUID, CHEMICAL> void addChemicalAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
-        rv.addAliases(GeneratorsFluids.FUSION_FUEL, GeneratorsChemicals.FUSION_FUEL, GeneratorsAliases.FUSION_FUEL);
+        rv.addAliases(GeneratorsFluids.FUSION_FUEL, ChemicalIds.FUSION_FUEL, GeneratorsAliases.FUSION_FUEL);
     }
 
     private <ITEM, FLUID, CHEMICAL> void addMultiblockAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
@@ -47,7 +47,7 @@ public class GeneratorsAliasMapping implements IAliasMapping {
               GeneratorsBlocks.CONTROL_ROD_ASSEMBLY,
               GeneratorsBlocks.REACTOR_GLASS
         ), GeneratorsAliases.FISSION_COMPONENT);
-        Optional<Reference<Chemical>> fusionFuel = rv.registries().get(GeneratorsChemicals.FUSION_FUEL);
+        Optional<Reference<Chemical>> fusionFuel = rv.registries().get(ChemicalIds.FUSION_FUEL);
         rv.addItemAliases(List.of(
               new ItemStack(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER),
               new ItemStack(GeneratorsBlocks.FUSION_REACTOR_FRAME),

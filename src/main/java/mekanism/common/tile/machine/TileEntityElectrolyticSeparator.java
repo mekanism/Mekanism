@@ -5,6 +5,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
@@ -54,7 +55,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.FluidRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -219,11 +219,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     private static boolean isHydrogenElectrolysis(ElectrolysisRecipe recipe) {
         if (recipe instanceof BasicElectrolysisRecipe basicRecipe) {
-            return basicRecipe.getLeftChemicalOutput().is(MekanismChemicals.HYDROGEN) || basicRecipe.getRightChemicalOutput().is(MekanismChemicals.HYDROGEN);
+            return basicRecipe.getLeftChemicalOutput().is(ChemicalIds.HYDROGEN) || basicRecipe.getRightChemicalOutput().is(ChemicalIds.HYDROGEN);
         }
         //do it the slow way
         for (ElectrolysisRecipeOutput electrolysisRecipeOutput : recipe.getOutputDefinition()) {
-            if (electrolysisRecipeOutput.left().is(MekanismChemicals.HYDROGEN) || electrolysisRecipeOutput.right().is(MekanismChemicals.HYDROGEN)) {
+            if (electrolysisRecipeOutput.left().is(ChemicalIds.HYDROGEN) || electrolysisRecipeOutput.right().is(ChemicalIds.HYDROGEN)) {
                 return true;
             }
         }

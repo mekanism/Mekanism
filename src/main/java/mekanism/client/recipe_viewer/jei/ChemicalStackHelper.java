@@ -6,10 +6,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
@@ -61,10 +61,10 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
             Mekanism.logger.warn("Failed to find chemical registry when looking up ingredient id");
-            return MekanismAPI.EMPTY_CHEMICAL_KEY.identifier();
+            return ChemicalIds.EMPTY.identifier();
         }
         Identifier identifier = optionalRegistry.get().getKey(ingredient.getChemical());
-        return identifier == null ? MekanismAPI.EMPTY_CHEMICAL_KEY.identifier() : identifier;
+        return identifier == null ? ChemicalIds.EMPTY.identifier() : identifier;
     }
 
     @Override
@@ -149,8 +149,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
             ingredient = ChemicalStack.EMPTY;
         }
         ToStringHelper toStringHelper = MoreObjects.toStringHelper(ChemicalStack.class);
-        Holder<Chemical> chemical = ingredient.typeHolder();
-        toStringHelper.add("Chemical", chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) ? "none" : TextComponentUtil.build(chemical).getString());
+        toStringHelper.add("Chemical", ingredient.isEmpty() ? "none" : TextComponentUtil.build(ingredient).getString());
         if (!ingredient.isEmpty()) {
             toStringHelper.add("Amount", ingredient.amount());
         }

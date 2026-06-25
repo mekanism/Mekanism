@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.IModuleItem;
@@ -652,8 +653,8 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addChemicalTags() {
-        getBuilder(MekanismTags.Chemicals.WATER_VAPOR).add(MekanismChemicals.WATER_VAPOR, MekanismChemicals.STEAM);
-        getBuilder(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST).add(MekanismChemicals.PLUTONIUM, MekanismChemicals.POLONIUM);
+        getBuilder(MekanismTags.Chemicals.WATER_VAPOR).add(ChemicalIds.WATER_VAPOR, ChemicalIds.STEAM);
+        getBuilder(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST).add(ChemicalIds.PLUTONIUM, ChemicalIds.POLONIUM);
 
         // add dynamic slurry tags
         MekanismTagBuilder<Chemical> dirtyTagBuilder = getBuilder(MekanismAPITags.Chemicals.DIRTY);
@@ -664,26 +665,26 @@ public class MekanismTagProvider extends BaseTagProvider {
         }
 
         getBuilder(MekanismAPITags.Chemicals.GASEOUS).add(
-              MekanismChemicals.WATER_VAPOR,
-              MekanismChemicals.STEAM,
-              MekanismChemicals.BRINE,
-              MekanismChemicals.HYDROGEN,
-              MekanismChemicals.OXYGEN,
-              MekanismChemicals.SULFUR_DIOXIDE,
-              MekanismChemicals.SULFUR_TRIOXIDE,
-              MekanismChemicals.HYDROGEN_CHLORIDE,
-              MekanismChemicals.ETHENE,
-              MekanismChemicals.SUPERHEATED_SODIUM
+              ChemicalIds.WATER_VAPOR,
+              ChemicalIds.STEAM,
+              ChemicalIds.BRINE,
+              ChemicalIds.HYDROGEN,
+              ChemicalIds.OXYGEN,
+              ChemicalIds.SULFUR_DIOXIDE,
+              ChemicalIds.SULFUR_TRIOXIDE,
+              ChemicalIds.HYDROGEN_CHLORIDE,
+              ChemicalIds.ETHENE,
+              ChemicalIds.SUPERHEATED_SODIUM
         );
 
-        getBuilder(MekanismAPITags.Chemicals.CARBON).add(MekanismChemicals.CARBON);
-        getBuilder(MekanismAPITags.Chemicals.REDSTONE).add(MekanismChemicals.REDSTONE);
-        getBuilder(MekanismAPITags.Chemicals.DIAMOND).add(MekanismChemicals.DIAMOND);
-        getBuilder(MekanismAPITags.Chemicals.REFINED_OBSIDIAN).add(MekanismChemicals.REFINED_OBSIDIAN);
-        getBuilder(MekanismAPITags.Chemicals.GOLD).add(MekanismChemicals.GOLD);
-        getBuilder(MekanismAPITags.Chemicals.TIN).add(MekanismChemicals.TIN);
-        getBuilder(MekanismAPITags.Chemicals.FUNGI).add(MekanismChemicals.FUNGI);
-        getBuilder(MekanismAPITags.Chemicals.BIO).add(MekanismChemicals.BIO);
+        getBuilder(MekanismAPITags.Chemicals.CARBON).add(ChemicalIds.CARBON);
+        getBuilder(MekanismAPITags.Chemicals.REDSTONE).add(ChemicalIds.REDSTONE);
+        getBuilder(MekanismAPITags.Chemicals.DIAMOND).add(ChemicalIds.DIAMOND);
+        getBuilder(MekanismAPITags.Chemicals.REFINED_OBSIDIAN).add(ChemicalIds.REFINED_OBSIDIAN);
+        getBuilder(MekanismAPITags.Chemicals.GOLD).add(ChemicalIds.GOLD);
+        getBuilder(MekanismAPITags.Chemicals.TIN).add(ChemicalIds.TIN);
+        getBuilder(MekanismAPITags.Chemicals.FUNGI).add(ChemicalIds.FUNGI);
+        getBuilder(MekanismAPITags.Chemicals.BIO).add(ChemicalIds.BIO);
     }
 
     private void addHarvestRequirements() {

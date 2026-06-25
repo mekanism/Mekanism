@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.gear.IClientModuleHelper;
 import mekanism.api.gear.ICustomModule;
@@ -21,7 +22,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.TypedInstance;
@@ -57,7 +57,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
             if (chemicalHandler == null) {
                 hudElementAdder.accept(IClientModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), 1));
             } else {
-                long stored = StorageUtils.getContainedChemical(chemicalHandler, MekanismChemicals.HYDROGEN);
+                long stored = StorageUtils.getContainedChemical(chemicalHandler, ChemicalIds.HYDROGEN);
                 double ratio = MathUtils.divideToLevel(stored, chemicalHandler.getCapacityAsLong(0, chemicalHandler.getResource(0)));
                 hudElementAdder.accept(IClientModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), ratio));
             }

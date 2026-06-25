@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalTagSlotDisplay;
 import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
@@ -53,7 +54,7 @@ public non-sealed class SimpleChemicalIngredient extends ChemicalIngredient {
             values.unwrap().ifRight(list -> {
                 if (list.isEmpty()) {
                     throw new UnsupportedOperationException("Chemical ingredients can't be empty!");
-                } else if (list.stream().anyMatch(chemical -> chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY))) {
+                } else if (list.stream().anyMatch(chemical -> chemical.is(ChemicalIds.EMPTY))) {
                     throw new UnsupportedOperationException("Chemical ingredients can't contain the empty chemical");
                 }
             });

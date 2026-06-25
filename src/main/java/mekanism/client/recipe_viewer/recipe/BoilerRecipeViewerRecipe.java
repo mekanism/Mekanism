@@ -11,6 +11,7 @@ import java.util.Optional;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
@@ -22,7 +23,6 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder.Reference;
@@ -63,7 +63,7 @@ public record BoilerRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIng
             return Collections.emptyList();
         }
         Registry<Chemical> chemicals = optionalRegistry.get();
-        Optional<Reference<Chemical>> steamReference = chemicals.get(MekanismChemicals.STEAM);
+        Optional<Reference<Chemical>> steamReference = chemicals.get(ChemicalIds.STEAM);
         if (steamReference.isEmpty()) {
             return Collections.emptyList();
         }

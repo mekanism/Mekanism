@@ -3,9 +3,9 @@ package mekanism.generators.common;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.BasicChemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.common.registration.impl.MekanismDamageType;
 import mekanism.common.registries.BaseDatapackRegistryProvider;
-import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsDamageTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
@@ -26,10 +26,10 @@ public class GeneratorsDatapackRegistryProvider extends BaseDatapackRegistryProv
           })
           .add(MekanismRegistries.Keys.CHEMICAL, context -> {
               for (GeneratorsChemicalConstants constant : GeneratorsChemicalConstants.values()) {
-                  registerConstant(context, MekanismGenerators.MODID, constant);
+                  registerConstant(context, constant);
               }
-              context.register(GeneratorsChemicals.TRITIUM, BasicChemical.defaultIcon(0xFF64FF70));
-              context.register(GeneratorsChemicals.FUSION_FUEL, BasicChemical.defaultIcon(0xFF7E007D));
+              context.register(ChemicalIds.TRITIUM, BasicChemical.defaultIcon(0xFF64FF70));
+              context.register(ChemicalIds.FUSION_FUEL, BasicChemical.defaultIcon(0xFF7E007D));
           })
           ;
 }

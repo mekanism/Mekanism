@@ -2,12 +2,12 @@ package mekanism.generators.common.content.turbine;
 
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
-import mekanism.common.registries.MekanismChemicals;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 public class TurbineChemicalTank extends VariableCapacityChemicalTank {
 
@@ -15,7 +15,7 @@ public class TurbineChemicalTank extends VariableCapacityChemicalTank {
 
     public TurbineChemicalTank(TurbineMultiblockData multiblock, @Nullable IContentsListener listener) {
         super(multiblock::getSteamCapacity, multiblock.notExternalFormedBiPred(), multiblock.formedBiPred(),
-              chemical -> chemical.is(MekanismChemicals.STEAM), null, null, null, listener);
+              chemical -> chemical.is(ChemicalIds.STEAM), null, null, null, listener);
         this.multiblock = multiblock;
     }
 

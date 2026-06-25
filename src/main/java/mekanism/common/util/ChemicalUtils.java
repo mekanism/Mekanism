@@ -1,13 +1,13 @@
 package mekanism.common.util;
 
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
 import mekanism.client.MekanismClient;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -69,7 +69,7 @@ public class ChemicalUtils {
             }
             registryAccess = server.registryAccess();
         }
-        return getResource(registryAccess, MekanismChemicals.HYDROGEN).fuelEnergyDensity(registryAccess);
+        return getResource(registryAccess, ChemicalIds.HYDROGEN).fuelEnergyDensity(registryAccess);
     }
 
     public static void dump(IChemicalTank chemicalTank, GasMode dumpMode, long dumpingAmount) {

@@ -2,6 +2,7 @@ package mekanism.client.integration.emi;
 
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.Upgrade;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
@@ -10,7 +11,6 @@ import mekanism.common.block.basic.BlockResource;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
@@ -160,22 +160,22 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
     }
 
     private void addRotaryRecipes() {
-        addRotaryRecipe(MekanismChemicals.BRINE);
-        addRotaryRecipe(MekanismChemicals.CHLORINE);
-        addRotaryRecipe(MekanismChemicals.ETHENE);
-        addRotaryRecipe(MekanismChemicals.HYDROGEN);
-        addRotaryRecipe(MekanismChemicals.HYDROGEN_CHLORIDE);
-        addRotaryRecipe(MekanismChemicals.LITHIUM);
-        addRotaryRecipe(MekanismChemicals.OXYGEN);
-        addRotaryRecipe(MekanismChemicals.SODIUM);
-        addRotaryRecipe(MekanismChemicals.SUPERHEATED_SODIUM);
-        addRotaryRecipe(MekanismChemicals.STEAM);
-        addRotaryRecipe(MekanismChemicals.SULFUR_DIOXIDE);
-        addRotaryRecipe(MekanismChemicals.SULFUR_TRIOXIDE);
-        addRotaryRecipe(MekanismChemicals.SULFURIC_ACID);
-        addRotaryRecipe(MekanismChemicals.HYDROFLUORIC_ACID);
-        addRotaryRecipe(MekanismChemicals.URANIUM_OXIDE);
-        addRotaryRecipe(MekanismChemicals.URANIUM_HEXAFLUORIDE);
+        addRotaryRecipe(ChemicalIds.BRINE);
+        addRotaryRecipe(ChemicalIds.CHLORINE);
+        addRotaryRecipe(ChemicalIds.ETHENE);
+        addRotaryRecipe(ChemicalIds.HYDROGEN);
+        addRotaryRecipe(ChemicalIds.HYDROGEN_CHLORIDE);
+        addRotaryRecipe(ChemicalIds.LITHIUM);
+        addRotaryRecipe(ChemicalIds.OXYGEN);
+        addRotaryRecipe(ChemicalIds.SODIUM);
+        addRotaryRecipe(ChemicalIds.SUPERHEATED_SODIUM);
+        addRotaryRecipe(ChemicalIds.STEAM);
+        addRotaryRecipe(ChemicalIds.SULFUR_DIOXIDE);
+        addRotaryRecipe(ChemicalIds.SULFUR_TRIOXIDE);
+        addRotaryRecipe(ChemicalIds.SULFURIC_ACID);
+        addRotaryRecipe(ChemicalIds.HYDROFLUORIC_ACID);
+        addRotaryRecipe(ChemicalIds.URANIUM_OXIDE);
+        addRotaryRecipe(ChemicalIds.URANIUM_HEXAFLUORIDE);
     }
 
     private void addMiscRecipes() {

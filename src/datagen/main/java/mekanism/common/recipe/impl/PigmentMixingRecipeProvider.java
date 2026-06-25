@@ -1,11 +1,11 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.registries.MekanismChemicals;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -73,9 +73,9 @@ class PigmentMixingRecipeProvider extends BaseSubRecipeProvider {
     private void addMix(RecipeOutput consumer, EnumColor leftInput, int leftInputAmount, EnumColor rightInput, int rightInputAmount,
           EnumColor output, String basePath) {
         ChemicalChemicalToChemicalRecipeBuilder.pigmentMixing(
-              IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismChemicals.SIMPLE_PIGMENTS.pick(leftInput), leftInputAmount),
-              IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismChemicals.SIMPLE_PIGMENTS.pick(rightInput), rightInputAmount),
-              chemicalTemplate(MekanismChemicals.SIMPLE_PIGMENTS.pick(output), leftInputAmount + rightInputAmount)
+              IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(leftInput), leftInputAmount),
+              IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(rightInput), rightInputAmount),
+              chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.pick(output), leftInputAmount + rightInputAmount)
         ).save(consumer, Mekanism.rl(basePath + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix()));
     }
 }

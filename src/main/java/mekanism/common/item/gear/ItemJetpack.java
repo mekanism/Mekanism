@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -14,7 +15,6 @@ import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registries.MekanismArmorMaterials;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
@@ -48,7 +48,7 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
 
     @Override
     protected ResourceKey<Chemical> getChemicalType() {
-        return MekanismChemicals.HYDROGEN;
+        return ChemicalIds.HYDROGEN;
     }
 
     @Override

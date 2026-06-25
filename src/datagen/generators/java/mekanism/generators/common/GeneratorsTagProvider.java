@@ -3,11 +3,11 @@ package mekanism.generators.common;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsDamageTypes;
 import mekanism.generators.common.registries.GeneratorsDataComponents;
 import mekanism.generators.common.registries.GeneratorsFluids;
@@ -122,14 +122,14 @@ public class GeneratorsTagProvider extends BaseTagProvider {
     }
 
     private void addGases() {
-        getBuilder(GeneratorTags.Chemicals.DEUTERIUM).add(GeneratorsChemicals.DEUTERIUM);
-        getBuilder(GeneratorTags.Chemicals.TRITIUM).add(GeneratorsChemicals.TRITIUM);
-        getBuilder(GeneratorTags.Chemicals.FUSION_FUEL).add(GeneratorsChemicals.FUSION_FUEL);
+        getBuilder(GeneratorTags.Chemicals.DEUTERIUM).add(ChemicalIds.DEUTERIUM);
+        getBuilder(GeneratorTags.Chemicals.TRITIUM).add(ChemicalIds.TRITIUM);
+        getBuilder(GeneratorTags.Chemicals.FUSION_FUEL).add(ChemicalIds.FUSION_FUEL);
 
         getBuilder(MekanismAPITags.Chemicals.GASEOUS).add(
-              GeneratorsChemicals.DEUTERIUM,
-              GeneratorsChemicals.TRITIUM,
-              GeneratorsChemicals.FUSION_FUEL
+              ChemicalIds.DEUTERIUM,
+              ChemicalIds.TRITIUM,
+              ChemicalIds.FUSION_FUEL
         );
     }
 

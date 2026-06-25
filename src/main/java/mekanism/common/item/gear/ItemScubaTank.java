@@ -3,6 +3,7 @@ package mekanism.common.item.gear;
 import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -10,7 +11,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registries.MekanismArmorMaterials;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -39,7 +39,7 @@ public class ItemScubaTank extends ItemChemicalArmor implements IItemHUDProvider
 
     @Override
     protected ResourceKey<Chemical> getChemicalType() {
-        return MekanismChemicals.OXYGEN;
+        return ChemicalIds.OXYGEN;
     }
 
     @Override

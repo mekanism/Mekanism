@@ -1,6 +1,7 @@
 package mekanism.common.recipe.compat;
 
 import mekanism.api.MekanismAPITags;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
@@ -10,7 +11,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
@@ -93,7 +93,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         int flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     inputIngredient,
-                    chemicalTemplate(MekanismChemicals.SIMPLE_PIGMENTS.pick(color), large ? 2 * flowerRate : flowerRate)
+                    chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.pick(color), large ? 2 * flowerRate : flowerRate)
               ).addCondition(modLoaded)
               .addCondition(tagNotEmpty)
               .save(consumer, Mekanism.rl(basePath + "pigment_extracting/" + name));

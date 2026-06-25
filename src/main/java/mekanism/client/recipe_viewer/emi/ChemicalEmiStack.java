@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.SizedChemicalInstance;
 import mekanism.api.text.EnumColor;
@@ -87,7 +88,7 @@ public class ChemicalEmiStack extends EmiStack {
 
     @Override
     public boolean isEmpty() {
-        return amount <= 0 || chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY);
+        return amount <= 0 || chemical.is(ChemicalIds.EMPTY);
     }
 
     @Override
@@ -103,7 +104,7 @@ public class ChemicalEmiStack extends EmiStack {
     @Override
     public Identifier getId() {
         ResourceKey<Chemical> key = chemical.getKey();
-        return key == null ? MekanismAPI.EMPTY_CHEMICAL_KEY.identifier() : key.identifier();
+        return key == null ? ChemicalIds.EMPTY.identifier() : key.identifier();
     }
 
     @Override

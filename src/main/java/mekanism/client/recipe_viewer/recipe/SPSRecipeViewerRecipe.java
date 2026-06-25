@@ -8,6 +8,7 @@ import java.util.Optional;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -15,7 +16,6 @@ import mekanism.client.recipe_viewer.INamedRVRecipe;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.Registry;
@@ -38,13 +38,13 @@ public record SPSRecipeViewerRecipe(Identifier id, ChemicalStackIngredient input
             return Collections.emptyList();
         }
         Registry<Chemical> chemicals = optionalRegistry.get();
-        Optional<Reference<Chemical>> poloniumReference = chemicals.get(MekanismChemicals.POLONIUM);
-        Optional<Reference<Chemical>> antimatterReference = chemicals.get(MekanismChemicals.ANTIMATTER);
+        Optional<Reference<Chemical>> poloniumReference = chemicals.get(ChemicalIds.POLONIUM);
+        Optional<Reference<Chemical>> antimatterReference = chemicals.get(ChemicalIds.ANTIMATTER);
         if (poloniumReference.isEmpty() || antimatterReference.isEmpty()) {
             return Collections.emptyList();
         }
         return Collections.singletonList(new SPSRecipeViewerRecipe(
-              RegistryUtils.synthetic(MekanismChemicals.ANTIMATTER.identifier(), "sps"),
+              RegistryUtils.synthetic(ChemicalIds.ANTIMATTER.identifier(), "sps"),
               IngredientCreatorAccess.chemicalStack().fromHolder(poloniumReference.get(), MekanismConfig.general.spsInputPerAntimatter.get()),
               new ChemicalStackTemplate(antimatterReference.get(), 1)
         ));

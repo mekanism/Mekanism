@@ -2,6 +2,7 @@ package mekanism.client.recipe_viewer.alias;
 
 import java.util.List;
 import java.util.Map;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
 import mekanism.common.component.containers.type.ContainerType;
@@ -9,7 +10,6 @@ import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.IResource;
@@ -40,7 +40,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
     }
 
     private <ITEM, FLUID, CHEMICAL> void addChemicalAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
-        rv.addAliases(MekanismFluids.ETHENE, MekanismChemicals.ETHENE, MekanismAliases.ETHENE_ETHYLENE);
+        rv.addAliases(MekanismFluids.ETHENE, ChemicalIds.ETHENE, MekanismAliases.ETHENE_ETHYLENE);
     }
 
     private <ITEM, FLUID, CHEMICAL> void addUnitAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {

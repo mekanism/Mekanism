@@ -3,7 +3,9 @@ package mekanism.common.integration.projecte;
 import com.mojang.serialization.MapCodec;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalStack;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
@@ -48,7 +50,7 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
 
     /// Helper method to create an [NSSChemical] representing a chemical from a [Identifier]
     public static NSSChemical createChemical(Identifier chemicalId) {
-        if (chemicalId.equals(MekanismAPI.EMPTY_CHEMICAL_KEY.identifier())) {
+        if (chemicalId.equals(ChemicalIds.EMPTY.identifier())) {
             throw new IllegalArgumentException("Can't make NSSChemical with an empty chemical");
         }
         return new NSSChemical(chemicalId, false);
@@ -66,7 +68,7 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
 
     @Override
     protected Registry<Chemical> getRegistry() {
-        return MekanismAPI.CHEMICAL_REGISTRY;
+        return MekanismRegistries.CHEMICAL;
     }
 
     @Override

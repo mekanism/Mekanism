@@ -3,7 +3,6 @@ package mekanism.client.gui.element.custom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
@@ -69,7 +68,7 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
                 if (!chemical.equals(prevSlurry)) {
                     prevSlurry = chemical;
                     iterStacks.clear();
-                    if (!prevSlurry.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+                    if (!prevSlurry.isEmpty()) {
                         RegistryAccess registryAccess = gui().registryAccess();
                         ChemicalSolidTag tag = chemical.getSolidTag(registryAccess);
                         if (tag != null) {

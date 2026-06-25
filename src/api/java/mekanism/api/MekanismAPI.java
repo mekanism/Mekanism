@@ -3,9 +3,6 @@ package mekanism.api;
 import com.mojang.logging.LogUtils;
 import java.util.Iterator;
 import java.util.ServiceLoader;
-import mekanism.api.chemical.Chemical;
-import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.slf4j.Logger;
 
@@ -22,11 +19,6 @@ public class MekanismAPI {
     public static boolean debug = false;
     /// Logger for use in Mekanism's API classes
     public static final Logger logger = LogUtils.getLogger();
-
-    /// Constant location representing the name all empty chemicals will be registered under.
-    ///
-    /// @since 10.6.0
-    public static final ResourceKey<Chemical> EMPTY_CHEMICAL_KEY = ResourceKey.create(MekanismRegistries.Keys.CHEMICAL, Identifier.fromNamespaceAndPath(MEKANISM_MODID, "empty"));
 
     @Internal
     private static final ClassLoader SERVICE_CL = MekanismAPI.class.getClassLoader();
