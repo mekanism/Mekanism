@@ -123,22 +123,22 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
     }
 
     @Override
-    public int getGuiLeft() {
+    public int getLeftPos() {
         return xOffset;
     }
 
     @Override
-    public int getGuiTop() {
+    public int getTopPos() {
         return yOffset;
     }
 
     @Override
-    public int getXSize() {
+    public int getImageWidth() {
         return width;
     }
 
     @Override
-    public int getYSize() {
+    public int getImageHeight() {
         return height;
     }
 
@@ -169,12 +169,12 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
 
     @Override
     public int getDisplayWidth() {
-        return getXSize();
+        return getImageWidth();
     }
 
     @Override
     public int getDisplayHeight() {
-        return getYSize();
+        return getImageHeight();
     }
 
     @Nullable

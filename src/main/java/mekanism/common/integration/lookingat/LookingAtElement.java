@@ -41,7 +41,7 @@ public abstract sealed class LookingAtElement implements ILookingAtElement, IFan
     }
 
     @Override
-    public int getXSize() {
+    public int getImageWidth() {
         return getWidth();
     }
 

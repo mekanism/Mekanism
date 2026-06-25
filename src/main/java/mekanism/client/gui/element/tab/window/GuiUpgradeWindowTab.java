@@ -16,7 +16,7 @@ public class GuiUpgradeWindowTab extends GuiWindowCreatorTab<TileEntityMekanism,
     private static final SelectedWindowData WINDOW_DATA = new SelectedWindowData(WindowType.UPGRADE);
 
     public GuiUpgradeWindowTab(IGuiWrapper gui, TileEntityMekanism tile, Supplier<GuiUpgradeWindowTab> elementSupplier) {
-        super(Mekanism.rl("button/upgrade"), gui, tile, gui.getXSize(), 6, 26, 18, false, elementSupplier);
+        super(Mekanism.rl("button/upgrade"), gui, tile, gui.getImageWidth(), 6, 26, 18, false, elementSupplier);
         setTooltip(MekanismLang.UPGRADES);
     }
 

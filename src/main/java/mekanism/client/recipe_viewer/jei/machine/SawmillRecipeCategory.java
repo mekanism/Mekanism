@@ -41,7 +41,7 @@ public class SawmillRecipeCategory extends HolderRecipeCategory<SawmillRecipe> {
         if (secondaryChance > 0) {
             builder.addText(TextUtils.getPercent(secondaryChance), output.getWidth() - 2, font().lineHeight)
                   //Perform the same translations as super does
-                  .setPosition(getGuiLeft() + output.getRelativeX() + 1, getGuiTop() + output.getRelativeBottom() + 1)
+                  .setPosition(getLeftPos() + output.getRelativeX() + 1, getTopPos() + output.getRelativeBottom() + 1)
                   .setTextAlignment(HorizontalAlignment.RIGHT)
                   .setColor(titleTextColor());
         }

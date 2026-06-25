@@ -13,11 +13,11 @@ import org.jspecify.annotations.Nullable;
 public class GuiMinerModIDFilter extends GuiModIDFilter<MinerModIDFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
 
     public static GuiMinerModIDFilter create(IGuiWrapper gui, TileEntityDigitalMiner tile) {
-        return new GuiMinerModIDFilter(gui, (gui.getXSize() - MINER_FILTER_WIDTH) / 2, 30, tile, null);
+        return new GuiMinerModIDFilter(gui, (gui.getImageWidth() - MINER_FILTER_WIDTH) / 2, 30, tile, null);
     }
 
     public static GuiMinerModIDFilter edit(IGuiWrapper gui, TileEntityDigitalMiner tile, MinerModIDFilter filter) {
-        return new GuiMinerModIDFilter(gui, (gui.getXSize() - MINER_FILTER_WIDTH) / 2, 30, tile, filter);
+        return new GuiMinerModIDFilter(gui, (gui.getImageWidth() - MINER_FILTER_WIDTH) / 2, 30, tile, filter);
     }
 
     private GuiMinerModIDFilter(IGuiWrapper gui, int x, int y, TileEntityDigitalMiner tile, @Nullable MinerModIDFilter origFilter) {

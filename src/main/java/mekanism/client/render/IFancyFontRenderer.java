@@ -21,7 +21,7 @@ import org.jspecify.annotations.Nullable;
 //TODO - 26.2 fixme
 public interface IFancyFontRenderer {
 
-    int getXSize();
+    int getImageWidth();
 
     default Font font() {
         return Minecraft.getInstance().font;
@@ -75,7 +75,7 @@ public interface IFancyFontRenderer {
     }
 
     default void drawScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int maxLengthPad, boolean shadow, long msVisible) {
-        drawScrollingString(graphics, text, x, y, alignment, color, getXSize(), maxLengthPad, shadow, msVisible);
+        drawScrollingString(graphics, text, x, y, alignment, color, getImageWidth(), maxLengthPad, shadow, msVisible);
     }
 
     default void drawScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad, boolean shadow) {
@@ -124,7 +124,7 @@ public interface IFancyFontRenderer {
 
     default void drawScaledScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int maxLengthPad, boolean shadow,
           float scale, long msVisible) {
-        drawScaledScrollingString(graphics, text, x, y, alignment, color, getXSize(), maxLengthPad, shadow, scale, msVisible);
+        drawScaledScrollingString(graphics, text, x, y, alignment, color, getImageWidth(), maxLengthPad, shadow, scale, msVisible);
     }
 
     default void drawScaledScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad,
@@ -306,7 +306,7 @@ public interface IFancyFontRenderer {
             return this;
         }
 
-        private record SimpleFancyFontRenderer(Font font, int getXSize) implements IFancyFontRenderer {
+        private record SimpleFancyFontRenderer(Font font, int getImageWidth) implements IFancyFontRenderer {
         }
     }
 }

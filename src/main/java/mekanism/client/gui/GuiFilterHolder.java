@@ -70,7 +70,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     protected void drawScreenText(GuiGraphicsExtractor guiGraphics, Component text, int x, int y) {
         //TODO: Do we want to make usages of this method eventually set the text to be rendered within the gui element for the screen?
         if (leftScreen != null) {//Validate it was properly set
-            leftScreen.drawScaledScrollingString(guiGraphics, text, x, y, TextAlignment.LEFT, screenTextColor(), leftScreen.getXSize() - x, 5, false, 0.8F);
+            leftScreen.drawScaledScrollingString(guiGraphics, text, x, y, TextAlignment.LEFT, screenTextColor(), leftScreen.getImageWidth() - x, 5, false, 0.8F);
         }
     }
 

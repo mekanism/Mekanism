@@ -28,7 +28,7 @@ public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidCon
     private final Map<ContainerEditMode, Tooltip> tooltips = new EnumMap<>(ContainerEditMode.class);
 
     public GuiContainerEditModeTab(IGuiWrapper gui, TILE tile) {
-        super(BOTH, gui, tile, gui.getXSize(), 138, 26, 18, false);
+        super(BOTH, gui, tile, gui.getImageWidth(), 138, 26, 18, false);
     }
 
     @Override

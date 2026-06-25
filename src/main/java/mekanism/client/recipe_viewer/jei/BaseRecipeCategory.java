@@ -120,7 +120,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
 
     @Override
     public ScreenRectangle getRectangle() {
-        return new ScreenRectangle(getGuiLeft(), getGuiTop(), getXSize(), getYSize());
+        return new ScreenRectangle(getLeftPos(), getTopPos(), this.getImageWidth(), getImageHeight());
     }
 
     @Override
@@ -151,12 +151,12 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     }
 
     @Override
-    public int getGuiLeft() {
+    public int getLeftPos() {
         return xOffset;
     }
 
     @Override
-    public int getGuiTop() {
+    public int getTopPos() {
         return yOffset;
     }
 
@@ -171,12 +171,12 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     }
 
     @Override
-    public int getXSize() {
+    public int getImageWidth() {
         return getWidth();
     }
 
     @Override
-    public int getYSize() {
+    public int getImageHeight() {
         return getHeight();
     }
 
@@ -197,7 +197,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         // If this ends up causing issues elsewhere we will need to look into it further
         Matrix3x2fStack matrix = guiGraphics.pose();
         matrix.pushMatrix();
-        matrix.translate(getGuiLeft(), getGuiTop());
+        matrix.translate(getLeftPos(), getTopPos());
         renderElements(recipe, recipeSlotsView, guiGraphics, (int) mouseX, (int) mouseY);
         matrix.popMatrix();
     }

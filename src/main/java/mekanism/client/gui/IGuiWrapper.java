@@ -32,14 +32,14 @@ public interface IGuiWrapper extends ContainerEventHandler, IFancyFontRenderer {
         return getLevel().registryAccess();
     }
 
-    int getGuiLeft();
+    int getLeftPos();
 
-    int getGuiTop();
+    int getTopPos();
 
     @Override
-    int getXSize();
+    int getImageWidth();
 
-    int getYSize();
+    int getImageHeight();
 
     default void addWindow(GuiWindow window) {
         Mekanism.logger.error("Tried to call 'addWindow' but unsupported in {}", getClass().getName());

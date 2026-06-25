@@ -81,15 +81,15 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
     default void renderSorterForeground(GuiGraphicsExtractor guiGraphics) {
         SorterFilter<?> filter = getFilter();
         int screenEnd = 30 + getScreenWidth();
-        drawScrollingString(guiGraphics, OnOff.of(filter.allowDefault).getTextComponent(), 159, 20, TextAlignment.LEFT, titleTextColor(), getXSize() - 161, 2, false);
+        drawScrollingString(guiGraphics, OnOff.of(filter.allowDefault).getTextComponent(), 159, 20, TextAlignment.LEFT, titleTextColor(), getImageWidth() - 161, 2, false);
         //Note: We add two to the length, as min and max have two spaces at the end given we aren't actually providing a parameter
         //TODO: Do we want to adjust this, and just have separate lang keys for them?
         drawScrollingString(guiGraphics, MekanismLang.MIN.translate(""), screenEnd, 32, TextAlignment.LEFT, titleTextColor(), 173 - screenEnd, 2, false);
         drawScrollingString(guiGraphics, MekanismLang.MAX.translate(""), screenEnd, 44, TextAlignment.LEFT, titleTextColor(), 173 - screenEnd, 2, false);
         if (isSingleItem() && filter.sizeMode) {
-            drawScrollingString(guiGraphics, MekanismLang.SORTER_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.ON), 159, 58, TextAlignment.LEFT, titleTextColor(), getXSize() - 159, 2, false);
+            drawScrollingString(guiGraphics, MekanismLang.SORTER_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.ON), 159, 58, TextAlignment.LEFT, titleTextColor(), getImageWidth() - 159, 2, false);
         } else {
-            drawScrollingString(guiGraphics, OnOff.of(filter.sizeMode).getTextComponent(), 159, 58, TextAlignment.LEFT, titleTextColor(), getXSize() - 161, 2, false);
+            drawScrollingString(guiGraphics, OnOff.of(filter.sizeMode).getTextComponent(), 159, 58, TextAlignment.LEFT, titleTextColor(), getImageWidth() - 161, 2, false);
         }
     }
 }

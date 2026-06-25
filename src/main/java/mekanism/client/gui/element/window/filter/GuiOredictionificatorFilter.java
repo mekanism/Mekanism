@@ -26,11 +26,11 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     private static final int WIDTH = 162;
 
     public static GuiOredictionificatorFilter create(IGuiWrapper gui, TileEntityOredictionificator tile) {
-        return new GuiOredictionificatorFilter(gui, (gui.getXSize() - WIDTH) / 2, 15, tile, null);
+        return new GuiOredictionificatorFilter(gui, (gui.getImageWidth() - WIDTH) / 2, 15, tile, null);
     }
 
     public static GuiOredictionificatorFilter edit(IGuiWrapper gui, TileEntityOredictionificator tile, OredictionificatorItemFilter filter) {
-        return new GuiOredictionificatorFilter(gui, (gui.getXSize() - WIDTH) / 2, 15, tile, filter);
+        return new GuiOredictionificatorFilter(gui, (gui.getImageWidth() - WIDTH) / 2, 15, tile, filter);
     }
 
     private GuiOredictionificatorFilter(IGuiWrapper gui, int x, int y, TileEntityOredictionificator tile, @Nullable OredictionificatorItemFilter origFilter) {

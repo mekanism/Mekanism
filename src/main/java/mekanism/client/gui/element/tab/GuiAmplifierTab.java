@@ -28,7 +28,7 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
     private final Map<RedstoneOutput, Tooltip> tooltips = new EnumMap<>(RedstoneOutput.class);
 
     public GuiAmplifierTab(IGuiWrapper gui, TileEntityLaserAmplifier tile) {
-        super(OFF, gui, tile, gui.getXSize(), 109, 26, 18, false);
+        super(OFF, gui, tile, gui.getImageWidth(), 109, 26, 18, false);
     }
 
     @Override

@@ -82,7 +82,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height, Component text) {
-        super(gui.getGuiLeft() + x, gui.getGuiTop() + y, width, height, text);
+        super(gui.getLeftPos() + x, gui.getTopPos() + y, width, height, text);
         this.relativeX = x;
         this.relativeY = y;
         this.guiObj = gui;
@@ -166,19 +166,19 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     public final int getGuiLeft() {
-        return guiObj.getGuiLeft();
+        return guiObj.getLeftPos();
     }
 
     public final int getGuiTop() {
-        return guiObj.getGuiTop();
+        return guiObj.getTopPos();
     }
 
     public final int getGuiWidth() {
-        return guiObj.getXSize();
+        return guiObj.getImageWidth();
     }
 
     public final int getGuiHeight() {
-        return guiObj.getYSize();
+        return guiObj.getImageHeight();
     }
 
     @Override
@@ -472,7 +472,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public final int getXSize() {
+    public final int getImageWidth() {
         return getWidth();
     }
 

@@ -32,7 +32,7 @@ public class GuiConfirmationDialog extends GuiWindow {
         int width = 140;
         ReplaceableWrappedTextRenderer renderer = new ReplaceableWrappedTextRenderer(gui, width, title);
         int height = 33 + renderer.getRequiredHeight(width - 2 * PADDING);
-        gui.addWindow(new GuiConfirmationDialog(gui, (gui.getXSize() - width) / 2, (gui.getYSize() - height) / 2, width, height, renderer, onConfirm, type));
+        gui.addWindow(new GuiConfirmationDialog(gui, (gui.getImageWidth() - width) / 2, (gui.getImageHeight() - height) / 2, width, height, renderer, onConfirm, type));
     }
 
     @Override

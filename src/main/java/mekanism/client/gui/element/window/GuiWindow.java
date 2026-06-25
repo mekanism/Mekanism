@@ -61,8 +61,8 @@ public class GuiWindow extends GuiElement implements IGUIWindow {
 
     public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height, SelectedWindowData windowData) {
         WindowPosition lastPosition = windowData.getLastPosition();
-        int targetX = calculateTarget(lastPosition.x(), gui.getGuiLeft(), width, minecraft.getWindow().getGuiScaledWidth(), x);
-        int targetY = calculateTarget(lastPosition.y(), gui.getGuiTop(), height, minecraft.getWindow().getGuiScaledHeight(), y);
+        int targetX = calculateTarget(lastPosition.x(), gui.getLeftPos(), width, minecraft.getWindow().getGuiScaledWidth(), x);
+        int targetY = calculateTarget(lastPosition.y(), gui.getTopPos(), height, minecraft.getWindow().getGuiScaledHeight(), y);
         this.pinned = lastPosition.pinned();
         this.windowData = windowData;
         super(gui, targetX, targetY, width, height);
@@ -220,7 +220,7 @@ public class GuiWindow extends GuiElement implements IGUIWindow {
             super.drawTitleText(guiGraphics, text, y);
         } else {
             //Adjust spacing for close button and any other buttons like side config's auto eject
-            drawTitleTextTextWithOffset(guiGraphics, text, getTitlePadStart(), y, getXSize() - getTitlePadEnd());
+            drawTitleTextTextWithOffset(guiGraphics, text, getTitlePadStart(), y, getImageWidth() - getTitlePadEnd());
         }
     }
 

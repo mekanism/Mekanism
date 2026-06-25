@@ -26,7 +26,7 @@ public class GuiWarningTab extends GuiTexturedElement {
     private Tooltip lastTooltip;
 
     public GuiWarningTab(IGuiWrapper gui, IWarningTracker warningTracker, boolean left) {
-        super(left ? WARNING_LEFT : WARNING_RIGHT, gui, left ? -26 : gui.getXSize(), 109, 26, 26);
+        super(left ? WARNING_LEFT : WARNING_RIGHT, gui, left ? -26 : gui.getImageWidth(), 109, 26, 26);
         this.warningTracker = warningTracker;
         updateVisibility();
     }

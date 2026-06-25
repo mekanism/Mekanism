@@ -21,7 +21,7 @@ public class GuiToggleClientConfigTab extends GuiInsetToggleElement<IGuiWrapper>
 
     public GuiToggleClientConfigTab(IGuiWrapper gui, int y, boolean left, Identifier overlay, Identifier flipped, CachedBooleanValue config,
           Component trueTooltip, Component falseTooltip) {
-        super(gui, gui, left ? -26 : gui.getXSize(), y, 26, 18, left, overlay, flipped, config);
+        super(gui, gui, left ? -26 : gui.getImageWidth(), y, 26, 18, left, overlay, flipped, config);
         this.config = config;
         this.falseTooltip = TooltipUtils.create(falseTooltip);
         this.trueTooltip = TooltipUtils.create(trueTooltip);
