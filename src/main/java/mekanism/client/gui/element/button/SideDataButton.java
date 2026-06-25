@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
@@ -83,7 +82,10 @@ public class SideDataButton extends BasicColorButton {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
         if (!otherBlockItem.isEmpty()) {
-            GuiUtils.renderItem(guiGraphics, otherBlockItem, this.getRelativeX() + 3, this.getRelativeY() + 3, 1, font(), null, true);
+            int itemX = getRelativeX() + 3;
+            int itemY = getRelativeY() + 3;
+            guiGraphics.item(otherBlockItem, itemX, itemY);
+            guiGraphics.itemDecorations(font(), otherBlockItem, itemX, itemY);
         }
     }
 

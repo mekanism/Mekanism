@@ -122,11 +122,6 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
             int targetY = relativeY + 1 + multipliedElement;
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, targetX, targetY, width - 8, elementHeight, argb);
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, slotTexture, targetX + 1, targetY + 1, 10, 10, argb);
-        }
-        //Note: This needs to be in its own loop as rendering the items is likely to cause the texture manager to be bound to a different texture
-        // and thus would make the selection area background get all screwed up
-        for (int i = 0; i < max; i++) {
-            TYPE type = currentInstalled.get(currentSelection + i);
             gui().renderItem(guiGraphics, getRenderStack(type), relativeX + 3, relativeY + 3 + i * elementHeight, 0.5F);
         }
     }

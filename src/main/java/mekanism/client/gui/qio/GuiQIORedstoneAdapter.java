@@ -101,7 +101,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
-        renderItem(guiGraphics, tile.getItemType().toStack(), 8, 31);
+        guiGraphics.item(tile.getItemType().toStack(), 8, 31);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

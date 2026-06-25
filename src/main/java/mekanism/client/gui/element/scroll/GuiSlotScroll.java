@@ -136,7 +136,10 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         if (stack.isEmpty()) {//Sanity check
             return;
         }
-        gui().renderItemWithOverlay(guiGraphics, stack, relativeX + slotX + 1, relativeY + slotY + 1, 1, "");
+        int itemX = relativeX + slotX + 1;
+        int itemY = relativeY + slotY + 1;
+        guiGraphics.item(stack, itemX, itemY);
+        guiGraphics.itemDecorations(font(), stack, itemX, itemY, "");
         long count = slot.count();
         Component text = null;
         if (count == 0) {

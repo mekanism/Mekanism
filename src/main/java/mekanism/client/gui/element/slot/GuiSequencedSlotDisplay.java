@@ -50,7 +50,7 @@ public class GuiSequencedSlotDisplay extends GuiElement {
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        gui().renderItem(guiGraphics, renderStack, relativeX, relativeY);
+        guiGraphics.item(renderStack, relativeX, relativeY);
     }
 
     public void updateStackList() {

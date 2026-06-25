@@ -55,7 +55,8 @@ public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHe
                 if (virtualSlot.shouldDrawOverlay()) {
                     guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
                 }
-                gui().renderItemWithOverlay(guiGraphics, stack, xPos, yPos, 1, virtualSlot.getTooltipOverride());
+                guiGraphics.item(stack, xPos, yPos);
+                guiGraphics.itemDecorations(font(), stack, xPos, yPos, virtualSlot.getTooltipOverride());
             }
         }
     }

@@ -78,7 +78,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (target instanceof ItemStack stack) {
-            gui().renderItem(guiGraphics, stack, relativeX, relativeY);
+            guiGraphics.item(stack, relativeX, relativeY);
         } else if (target instanceof FluidStack stack) {
             if (!stack.isEmpty()) {
                 GuiUtils.drawTiledSprite(guiGraphics, relativeX, relativeY, width, height, MekanismRenderer.getFluidTexture(stack, FluidTextureType.STILL), TilingDirection.DOWN_RIGHT, MekanismRenderer.getColorARGB(stack));

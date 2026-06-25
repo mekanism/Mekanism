@@ -16,6 +16,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 
 public interface IGuiWrapper extends ContainerEventHandler, IFancyFontRenderer {
@@ -63,12 +64,15 @@ public interface IGuiWrapper extends ContainerEventHandler, IFancyFontRenderer {
         return warningSupplier;
     }
 
-    default void renderItem(GuiGraphicsExtractor guiGraphics, ItemStack stack, int xAxis, int yAxis) {
-        renderItem(guiGraphics, stack, xAxis, yAxis, 1);
-    }
-
-    default void renderItem(GuiGraphicsExtractor guiGraphics, ItemStack stack, int xAxis, int yAxis, float scale) {
-        GuiUtils.renderItem(guiGraphics, stack, xAxis, yAxis, scale, font(), null, false);
+    default void renderItem(GuiGraphicsExtractor guiGraphics, ItemStack stack, int x, int y, float scale) {
+        if (!stack.isEmpty()) {
+            Matrix3x2fStack pose = guiGraphics.pose();
+            pose.pushMatrix();
+            pose.translate(x, y);
+            pose.scale(scale, scale);
+            guiGraphics.item(stack, 0, 0);
+            pose.popMatrix();
+        }
     }
 
     default void renderItemTooltipWithExtra(GuiGraphicsExtractor guiGraphics, ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
@@ -79,10 +83,6 @@ public interface IGuiWrapper extends ContainerEventHandler, IFancyFontRenderer {
             tooltip.addAll(toAppend);
             guiGraphics.setTooltipForNextFrame(font(), tooltip, stack.getTooltipImage(), stack, xAxis, yAxis);
         }
-    }
-
-    default void renderItemWithOverlay(GuiGraphicsExtractor guiGraphics, ItemStack stack, int xAxis, int yAxis, float scale, @Nullable String text) {
-        GuiUtils.renderItem(guiGraphics, stack, xAxis, yAxis, scale, font(), text, true);
     }
 
     default void setSelectedWindow(SelectedWindowData selectedWindow) {

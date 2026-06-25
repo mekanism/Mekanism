@@ -80,7 +80,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                     fluidFrequencies.mergeInt(fluidType, 1, Integer::sum);
                 }
             } else {
-                blockList.add(new BlockInfo<>(state, stack, this::renderItem));
+                blockList.add(new BlockInfo<>(state, stack, GuiGraphicsExtractor::item));
                 FluidState fluid = state.getFluidState();
                 if (!fluid.isEmpty()) {//Take the fluid into account for frequency count
                     //TODO: Do we want to render the fact that it is fluid logged in some way?

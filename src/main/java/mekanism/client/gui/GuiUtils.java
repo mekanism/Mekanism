@@ -3,9 +3,7 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import java.util.List;
 import java.util.function.Predicate;
-import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.CharacterEvent;
@@ -15,8 +13,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ARGB;
-import net.minecraft.world.item.ItemStack;
-import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 
 public class GuiUtils {
@@ -175,43 +171,10 @@ public class GuiUtils {
         boolean test(ELEMENT element, KeyEvent event);
     }
 
+    @FunctionalInterface
     public interface CharTypedPredicate<ELEMENT> {
 
         boolean test(ELEMENT element, CharacterEvent event);
-    }
-
-    public static void renderItem(GuiGraphicsExtractor guiGraphics, ItemStack stack, int xAxis, int yAxis, float scale, Font font, @Nullable String text, boolean overlay) {
-        if (!stack.isEmpty()) {
-            try {
-                Matrix3x2fStack pose = guiGraphics.pose();
-                pose.pushMatrix();
-                if (scale != 1) {
-                    //Translate before scaling, and then set xAxis and yAxis to zero so that we don't translate a second time
-                    pose.translate(xAxis, yAxis);
-                    pose.scale(scale, scale);
-                    xAxis = 0;
-                    yAxis = 0;
-                }
-                guiGraphics.item(stack, xAxis, yAxis);
-                if (overlay) {
-                    //When we render items ourselves in virtual slots or scroll slots we want to compress the z scale
-                    // for rendering the stored count so that it doesn't clip with later windows
-                    //TODO - 26.2 check this - pose.translate(0, 0, -25);
-                    guiGraphics.itemDecorations(font, stack, xAxis, yAxis, text);
-                }
-
-                pose.popMatrix();
-            } catch (Exception e) {
-                Mekanism.logger.error("Failed to render stack into gui: {}", stack, e);
-            }
-        }
-    }
-
-    public static void renderBorder(GuiGraphicsExtractor guiGraphics, int x, int y, int boxWidth, int boxHeight, int color) {
-        guiGraphics.horizontalLine(x, x + boxWidth, y, color);
-        guiGraphics.horizontalLine(x, x + boxWidth, y + boxHeight, color);
-        guiGraphics.verticalLine(x, y, y + boxHeight, color);
-        guiGraphics.verticalLine(x + boxWidth, y, y + boxHeight, color);
     }
 
     /// Represents which direction our tiling is done when extending past the max size.

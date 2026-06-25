@@ -190,12 +190,12 @@ public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, ISu
                 int xPos = relativeX + 1;
                 int yPos = relativeY + 1;
                 guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, INVALID_SLOT_COLOR);
-                gui().renderItem(guiGraphics, invalid, xPos, yPos);
+                guiGraphics.item(invalid, xPos, yPos);
             }
         } else if (storedStackSupplier != null) {
             ItemStack stored = storedStackSupplier.get();
             if (!stored.isEmpty()) {
-                gui().renderItem(guiGraphics, stored, relativeX + 1, relativeY + 1);
+                guiGraphics.item(stored, relativeX + 1, relativeY + 1);
             }
         }
     }
