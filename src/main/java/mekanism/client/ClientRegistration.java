@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import com.google.common.reflect.TypeToken;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.gear.IModuleHelper;
@@ -125,6 +126,7 @@ import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.lib.effect.BillboardingEffectFeatureRenderer;
+import mekanism.client.render.lib.effect.BoltFeatureRenderer;
 import mekanism.client.render.outline.MekanismOutlineFeatureRender;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
@@ -174,6 +176,7 @@ import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
@@ -205,6 +208,7 @@ import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 @EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT)
@@ -242,6 +246,7 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerFeatures(RegisterFeatureRenderersEvent event) {
         event.register(BillboardingEffectFeatureRenderer.TYPE, new BillboardingEffectFeatureRenderer());
+        event.register(BoltFeatureRenderer.TYPE, new BoltFeatureRenderer());
         event.register(MekanismOutlineFeatureRender.TYPE, new MekanismOutlineFeatureRender());
     }
 
@@ -304,6 +309,12 @@ public class ClientRegistration {
               MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE, MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE, MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE);
         ClientRegistrationUtil.bindTileEntityRenderer(event, RenderThermodynamicConductor::new, MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR,
               MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR, MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR, MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
+    }
+
+    @SubscribeEvent
+    public static void registerRenderStateModifiers(RegisterRenderStateModifiersEvent event) {
+        event.registerEntityModifier(new TypeToken<LivingEntityRenderer<? extends LivingEntity, LivingEntityRenderState, ?>>() {
+        }, (entity, renderState) -> renderState.setRenderData(MekaSuitArmor.UUID_CONTEXT, entity.getUUID()));
     }
 
     @SubscribeEvent

@@ -16,18 +16,24 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.joml.Vector3fc;
 
-public record PacketLightningRender(LightningPreset preset, int renderer, Vec3 start, Vec3 end, int segments) implements IMekanismPacket {
+public record PacketLightningRender(LightningPreset preset, int renderer, Vector3fc start, Vector3fc end, int segments) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketLightningRender> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("render_bolt"));
     public static final StreamCodec<ByteBuf, PacketLightningRender> STREAM_CODEC = StreamCodec.composite(
           LightningPreset.STREAM_CODEC, PacketLightningRender::preset,
           ByteBufCodecs.VAR_INT, PacketLightningRender::renderer,
-          Vec3.STREAM_CODEC, PacketLightningRender::start,
-          Vec3.STREAM_CODEC, PacketLightningRender::end,
+          ByteBufCodecs.VECTOR3F, PacketLightningRender::start,
+          ByteBufCodecs.VECTOR3F, PacketLightningRender::end,
           ByteBufCodecs.VAR_INT, PacketLightningRender::segments,
           PacketLightningRender::new
     );
+
+    //TODO - 26.2: Re-evaluate this constructor
+    public PacketLightningRender(LightningPreset preset, int renderer, Vec3 start, Vec3 end, int segments) {
+        this(preset, renderer, start.toVector3f(), end.toVector3f(), segments);
+    }
 
     @Override
     public CustomPacketPayload.Type<PacketLightningRender> type() {
@@ -44,7 +50,7 @@ public record PacketLightningRender(LightningPreset preset, int renderer, Vec3 s
     @FunctionalInterface
     public interface BoltCreator {
 
-        BoltEffect create(Vec3 start, Vec3 end, int segments);
+        BoltEffect create(Vector3fc start, Vector3fc end, int segments);
     }
 
     public enum LightningPreset {

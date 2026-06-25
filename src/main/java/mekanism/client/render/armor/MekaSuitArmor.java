@@ -34,12 +34,17 @@ import mekanism.client.model.BaseModelCache.OBJModelData;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuickHash;
+import mekanism.client.render.lib.effect.BoltFeatureRenderer;
+import mekanism.client.render.lib.effect.BoltFeatureRenderer.BoltRenderState;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemMekaTool;
 import mekanism.common.lib.Color;
+import mekanism.common.lib.effect.BoltEffect;
+import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
+import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
@@ -51,13 +56,16 @@ import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.ElytraAnimationState;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
+import net.neoforged.neoforge.client.submit.RenderPhaseKeys;
 import org.jetbrains.annotations.ApiStatus.Internal;
+import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
 public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
@@ -77,6 +85,11 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     private static final Table<EquipmentSlot, Holder<ModuleData<?>>, ModuleModelSpec> moduleModelSpec = HashBasedTable.create();
 
     private static final Map<UUID, BoltRenderer> boltRenderMap = new Object2ObjectOpenHashMap<>();
+    private static final BoltEffect LEFT_GRAV_BOLT = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vector3f(-0.01F, 0.35F, 0.37F),
+          new Vector3f(-0.01F, 0.15F, 0.37F), 10).size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
+    private static final BoltEffect RIGHT_GRAV_BOLT = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vector3f(0.025F, 0.35F, 0.37F),
+          new Vector3f(0.025F, 0.15F, 0.37F), 10).size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
+    public static final ContextKey<UUID> UUID_CONTEXT = new ContextKey<>(Mekanism.rl("uuid"));
 
     private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(-1, 0.5F, 0));
 
@@ -146,22 +159,27 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         render(baseModel, nodeCollector, poseStack, lightCoords, color, state, armorQuads.opaqueQuads(), false);
 
         if (type == EquipmentSlot.CHEST) {
-            //TODO - 26.2 models
-            /*BoltRenderer boltRenderer = boltRenderMap.computeIfAbsent(entity.getUUID(), id -> new BoltRenderer());
-            if (IModuleHelper.INSTANCE.isEnabled(state.chestEquipment, MekanismModules.GRAVITATIONAL_MODULATING_UNIT)) {
-                BoltEffect leftBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3(-0.01, 0.35, 0.37), new Vec3(-0.01, 0.15, 0.37), 10)
-                      .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
-                BoltEffect rightBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3(0.025, 0.35, 0.37), new Vec3(0.025, 0.15, 0.37), 10)
-                      .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
-                boltRenderer.update(0, leftBolt, state.partialTick);
-                boltRenderer.update(1, rightBolt, state.partialTick);
-            }*/
-            //Adjust the poseStack so that we render the lightning in the correct spot if the player is crouching
-            poseStack.pushPose();
-            ModelPos.BODY.translate(baseModel, poseStack, state);
-            //TODO - 26.2 models
-            //boltRenderer.render(gameTime, state.partialTick, poseStack, renderer);
-            poseStack.popPose();
+            UUID entityUUID = state.getRenderData(UUID_CONTEXT);
+            if (entityUUID != null) {
+                long gameTime = Minecraft.getInstance().level == null ? 0L : Minecraft.getInstance().level.getGameTime();
+                BoltRenderer boltRenderer = boltRenderMap.computeIfAbsent(entityUUID, _ -> new BoltRenderer());
+                if (IModuleHelper.INSTANCE.isEnabled(state.chestEquipment, MekanismModules.GRAVITATIONAL_MODULATING_UNIT)) {
+                    boltRenderer.update(0, LEFT_GRAV_BOLT, gameTime, state.partialTick);
+                    boltRenderer.update(1, RIGHT_GRAV_BOLT, gameTime, state.partialTick);
+                }
+                List<BoltRenderState> boltRenderStates = boltRenderer.collectBoltStates(gameTime, state.partialTick);
+                if (!boltRenderStates.isEmpty()) {
+                    //Adjust the poseStack so that we render the lightning in the correct spot if the player is crouching
+                    poseStack.pushPose();
+                    ModelPos.BODY.translate(baseModel, poseStack, state);
+                    PoseStack.Pose pose = poseStack.last().copy();
+                    for (BoltRenderState boltState : boltRenderStates) {
+                        //TODO - 26.2: Figure out the render phase to target
+                        nodeCollector.submitSpecial(RenderPhaseKeys.AFTER_TERRAIN, new BoltFeatureRenderer.Submit(pose, boltState));
+                    }
+                    poseStack.popPose();
+                }
+            }
         }
 
         //Pass white as the color because we don't want to tint transparent quads

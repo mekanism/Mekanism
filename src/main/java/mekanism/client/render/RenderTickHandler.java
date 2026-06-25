@@ -1,7 +1,9 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import java.util.List;
 import java.util.Objects;
 import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
@@ -9,6 +11,8 @@ import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.hud.RadiationOverlay;
+import mekanism.client.render.lib.effect.BoltFeatureRenderer;
+import mekanism.client.render.lib.effect.BoltFeatureRenderer.BoltRenderState;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.outline.Outlines;
 import mekanism.common.Mekanism;
@@ -33,8 +37,10 @@ import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -52,17 +58,16 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import net.neoforged.neoforge.client.event.RenderArmEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import org.joml.Matrix3x2fStack;
+import net.neoforged.neoforge.client.submit.RenderPhaseKeys;
 import org.jspecify.annotations.Nullable;
 
 public class RenderTickHandler {
@@ -107,14 +112,15 @@ public class RenderTickHandler {
         return newScreen != null && IS_EMI_SCREEN.computeIfAbsent(newScreen.getClass(), (Class<?> cl) -> cl.getName().startsWith("dev.emi.emi"));
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    //TODO - 26.2: Figure out if we need this any more
+    /*@SubscribeEvent(priority = EventPriority.HIGHEST)
     public void renderPostHighest(ScreenEvent.Render.Post event) {
         if (event.getScreen() instanceof GuiMekanism) {
             //Translate forward how far we go, so that things like recipe viewers draw far enough forward
             // Note: We will pop this in a listener at the lowest priority
             Matrix3x2fStack pose = event.getGuiGraphics().pose();
             pose.pushMatrix();
-            pose.translate(0, 0/* TODO - 26.2: , GuiMekanism.maxZOffset*/);
+            pose.translate(0, 0, GuiMekanism.maxZOffset);
         }
     }
 
@@ -124,16 +130,27 @@ public class RenderTickHandler {
             //Matching pop to the push we did in renderPostHighest
             event.getGuiGraphics().pose().popMatrix();
         }
-    }
+    }*/
 
-    @SubscribeEvent//TODO - 26.2 is this a correct replacement?
-    public void renderWorldAfterParticles(RenderLevelStageEvent.AfterTranslucentParticles event) {
+    @SubscribeEvent
+    public void submitCustomGeometry(SubmitCustomGeometryEvent event) {
         if (boltRenderer.hasBoltsToRender()) {
-            //TODO - 26.2: Figure out if this is still valid as the buffer
-            /*MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
             LevelRenderState levelState = event.getLevelRenderState();
-            boltRenderer.render(levelState.gameTime, MekanismRenderer.getPartialTick(), event.getPoseStack(), renderer, levelState.cameraRenderState.pos);
-            renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);*/
+            List<BoltRenderState> boltRenderStates = boltRenderer.collectBoltStates(levelState.gameTime, MekanismRenderer.getPartialTick());
+            if (!boltRenderStates.isEmpty()) {
+
+                PoseStack poseStack = event.getPoseStack();
+                SubmitNodeCollector nodeCollector = event.getSubmitNodeCollector();
+                poseStack.pushPose();
+                Vec3 cameraPos = levelState.cameraRenderState.pos;
+                poseStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+
+                PoseStack.Pose pose = poseStack.last().copy();
+                for (BoltRenderState state : boltRenderStates) {
+                    nodeCollector.submitSpecial(RenderPhaseKeys.AFTER_TERRAIN, new BoltFeatureRenderer.Submit(pose, state));
+                }
+                poseStack.popPose();
+            }
         }
     }
 

@@ -1,23 +1,18 @@
 package mekanism.client.render.lib.effect;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import mekanism.client.render.MekanismRenderType;
+import mekanism.client.render.lib.effect.BoltFeatureRenderer.BoltRenderState;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltQuads;
 import mekanism.common.lib.effect.BoltEffect.FadeFunction.RenderBounds;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
 import org.jspecify.annotations.Nullable;
 
 public class BoltRenderer {
@@ -30,7 +25,6 @@ public class BoltRenderer {
     private Timestamp refreshTimestamp = new Timestamp();
 
     private final RandomSource random = RandomSource.create();
-    private final Minecraft minecraft = Minecraft.getInstance();
 
     private final Map<Object, BoltOwnerData> boltOwners = new Object2ObjectOpenHashMap<>();
 
@@ -40,17 +34,8 @@ public class BoltRenderer {
         }
     }
 
-    public void render(long gameTime, float partialTicks, PoseStack matrixStack, SubmitNodeCollector nodeCollector) {
-        render(gameTime, partialTicks, matrixStack, nodeCollector, null);
-    }
-
-    public void render(long gameTime, float partialTicks, PoseStack matrixStack, SubmitNodeCollector nodeCollector, @Nullable Vec3 cameraPos) {
-        //TODO - 26.2: Make non-capturing?
-        nodeCollector.submitCustomGeometry(matrixStack, MekanismRenderType.MEK_LIGHTNING, (pose, buffer) -> render(gameTime, partialTicks, pose, buffer, cameraPos));
-    }
-
-    private void render(long gameTime, float partialTicks, PoseStack.Pose pose, VertexConsumer buffer, @Nullable Vec3 cameraPos) {
-        Matrix4f matrix = pose.pose();
+    public List<BoltRenderState> collectBoltStates(long gameTime, float partialTicks) {
+        List<BoltRenderState> renderStates = new ArrayList<>();
         Timestamp timestamp = new Timestamp(gameTime, partialTicks);
         boolean refresh = timestamp.isPassed(refreshTimestamp, 1 / REFRESH_TIME);
         if (refresh) {
@@ -68,7 +53,7 @@ public class BoltRenderer {
                     data.addBolt(new BoltInstance(data.lastBolt, timestamp), timestamp, random);
                 }
                 for (BoltInstance bolt : data.bolts) {
-                    bolt.render(matrix, buffer, timestamp, cameraPos);
+                    renderStates.add(bolt.renderState(timestamp));
                 }
 
                 if (data.bolts.isEmpty() && timestamp.isPassed(data.lastUpdateTimestamp, MAX_OWNER_TRACK_TIME)) {
@@ -76,6 +61,7 @@ public class BoltRenderer {
                 }
             }
         }
+        return renderStates;
     }
 
     private static void tickAndRemove(BoltOwnerData data, Timestamp timestamp) {
@@ -88,17 +74,9 @@ public class BoltRenderer {
         }
     }
 
-    @Deprecated//TODO - 26.2: Try to replace all usages of this with one that gets the game time from a render state
-    public void update(Object owner, BoltEffect newBoltData, float partialTicks) {
-        if (minecraft.level == null) {
-            return;
-        }
-        update(owner, newBoltData, minecraft.level.getGameTime(), partialTicks);
-    }
-
     public void update(Object owner, BoltEffect newBoltData, long gameTime, float partialTicks) {
         synchronized (boltOwners) {
-            BoltOwnerData data = boltOwners.computeIfAbsent(owner, o -> new BoltOwnerData());
+            BoltOwnerData data = boltOwners.computeIfAbsent(owner, _ -> new BoltOwnerData());
             data.lastBolt = newBoltData;
             Timestamp timestamp = new Timestamp(gameTime, partialTicks);
             if ((!data.lastBolt.getSpawnFunction().isConsecutive() || data.bolts.isEmpty()) && timestamp.isPassed(data.lastBoltTimestamp, data.lastBoltDelay)) {
@@ -136,20 +114,19 @@ public class BoltRenderer {
             this.createdTimestamp = timestamp;
         }
 
-        public void render(Matrix4f matrix, VertexConsumer buffer, Timestamp timestamp, @Nullable Vec3 cameraPos) {
+        public boolean tick(Timestamp timestamp) {
+            return timestamp.isPassed(createdTimestamp, bolt.getLifespan());
+        }
+
+        public BoltRenderState renderState(Timestamp timestamp) {
+            BoltRenderState state = new BoltRenderState();
+            state.color = bolt.getColor().argb();
             float lifeScale = timestamp.subtract(createdTimestamp).value() / bolt.getLifespan();
             RenderBounds bounds = bolt.getFadeFunction().getRenderBounds(renderQuads.size(), lifeScale);
             for (int i = bounds.start(); i < bounds.end(); i++) {
-                for (Vec3 v : renderQuads.get(i).getVecs()) {
-                    Vec3 shiftedVertex = cameraPos == null ? v : v.subtract(cameraPos);
-                    buffer.addVertex(matrix, (float) shiftedVertex.x, (float) shiftedVertex.y, (float) shiftedVertex.z)
-                          .setColor(bolt.getColor().argb());
-                }
+                state.vertices.addAll(renderQuads.get(i).getVecs());
             }
-        }
-
-        public boolean tick(Timestamp timestamp) {
-            return timestamp.isPassed(createdTimestamp, bolt.getLifespan());
+            return state;
         }
     }
 

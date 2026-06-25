@@ -1,7 +1,9 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,8 @@ import java.util.UUID;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.lib.effect.BillboardingEffectFeatureRenderer;
 import mekanism.client.render.lib.effect.BillboardingEffectFeatureRenderer.BillboardingRenderState;
+import mekanism.client.render.lib.effect.BoltFeatureRenderer;
+import mekanism.client.render.lib.effect.BoltFeatureRenderer.BoltRenderState;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.tileentity.RenderSPS.SPSRenderState;
 import mekanism.common.base.ProfilerConstants;
@@ -35,6 +39,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.submit.RenderPhaseKeys;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, TileEntitySPSCasing, SPSRenderState> {
@@ -72,24 +78,25 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         BoltRenderer bolts = boltRendererMap.computeIfAbsent(multiblock.inventoryID, _ -> new BoltRenderer());
 
         int targetEffectCount = 0;
+        long gameTime = sps.getGameTime();
         boolean tickingNormally = isTickingNormally(sps);
         if (tickingNormally) {
-            Vec3 renderCenter = state.center.subtract(pos.getX(), pos.getY(), pos.getZ());
+            Vector3fc renderCenter = new Vector3f((float) (state.center.x() - pos.getX()), (float) (state.center.y() - pos.getY()), (float) (state.center.z() - pos.getZ()));
             for (CoilData data : multiblock.coilData.coilMap.values()) {
                 if (data.prevLevel > 0) {
-                    bolts.update(data.coilPos.hashCode(), getBoltFromData(data, pos, renderCenter), partialTick);
+                    bolts.update(data.coilPos.hashCode(), getBoltFromData(data, pos, renderCenter), gameTime, partialTick);
                 }
             }
             if (multiblock.lastReceivedEnergy > 0) {
                 if (random.nextDouble() < state.lerpEnergy(0.01F, 0.4F)) {
                     CuboidSide side = Util.getRandom(CuboidSide.SIDES, random);
                     Plane plane = Plane.getInnerCuboidPlane(multiblock.getBounds(), side);
-                    Vec3 endPos = plane.getRandomPoint(random).subtract(pos.getX(), pos.getY(), pos.getZ());
+                    Vector3fc endPos = plane.getRandomPoint(random).sub(pos.getX(), pos.getY(), pos.getZ());
                     BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, renderCenter, endPos, 15)
                           .size(0.01F * state.lerpEnergy(0.5F, 5))
                           .lifespan(8)
                           .spawn(SpawnFunction.NO_DELAY);
-                    bolts.update(31 * side.hashCode() + endPos.hashCode(), bolt, partialTick);
+                    bolts.update(31 * side.hashCode() + endPos.hashCode(), bolt, gameTime, partialTick);
                 }
                 targetEffectCount = (int) state.lerpEnergy(10, 120);
             }
@@ -101,7 +108,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
             state.coreState.gridSize = 4;
             state.coreState.scale = state.lerpEnergy(0.1F, 4F);
             //TODO - 26.2: Re-evaluate this, ConduitBlockEntity#tickCount?
-            state.coreState.renderTick =  (int) sps.getGameTime();
+            state.coreState.renderTick =  (int) gameTime;
         }
 
         if (sps.orbitEffects.size() > targetEffectCount) {
@@ -117,14 +124,11 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
             effect.transformPos(orbitState.pos, partialTick);
             state.orbitEffects.add(orbitState);
         }
+        state.boltRenderStates = bolts.collectBoltStates(gameTime, partialTick);
     }
 
     @Override
     public void submit(SPSRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        //TODO - 26.2: Figure out how to render these things, should they potentially use the CustomGeometryRenderer thing?
-        // I think the billboarding effects might be able to use a model part, which then might let them be ordered properly in terms of transparency
-        //bolts.render(partialTick, poseStack, renderer);
-
         if (state.center != null) {
             poseStack.pushPose();
             //Render from the center position instead of from the block's position
@@ -140,6 +144,13 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
             }
             poseStack.popPose();
         }
+
+        if (!state.boltRenderStates.isEmpty()) {
+            Pose pose = poseStack.last().copy();
+            for (BoltRenderState boltRenderState : state.boltRenderStates) {
+                nodeCollector.submitSpecial(RenderPhaseKeys.AFTER_TERRAIN, new BoltFeatureRenderer.Submit(pose, boltRenderState));
+            }
+        }
     }
 
     private void submitBillboard(PoseStack poseStack, SubmitNodeCollector nodeCollector, RenderType renderType, BillboardingRenderState state) {
@@ -150,13 +161,15 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         poseStack.popPose();
     }
 
-    private static BoltEffect getBoltFromData(CoilData data, BlockPos pos, Vec3 center) {
-        Vec3 start = Vec3.atCenterOf(data.coilPos.relative(data.side));
-        start = start.add(Vec3.atLowerCornerOf(data.side.getUnitVec3i()).scale(0.5));
+    private static BoltEffect getBoltFromData(CoilData data, BlockPos pos, Vector3fc center) {
+        BlockPos coilPos = data.coilPos.relative(data.side);
+        Vector3fc unitVec3f = data.side.getUnitVec3f();
+        Vector3fc start = new Vector3f(coilPos.getX() + 0.5F, coilPos.getY() + 0.5F, coilPos.getZ() + 0.5F)
+              .add(0.5F * unitVec3f.x(), 0.5F * unitVec3f.y(), 0.5F * unitVec3f.z())
+              .sub(pos.getX(), pos.getY(), pos.getZ());
         int count = 1 + (data.prevLevel - 1) / 2;
         float size = 0.01F * data.prevLevel;
-        return new BoltEffect(BoltRenderInfo.ELECTRICITY, start.subtract(pos.getX(), pos.getY(), pos.getZ()), center, 15)
-              .count(count).size(size).lifespan(8).spawn(SpawnFunction.delay(4));
+        return new BoltEffect(BoltRenderInfo.ELECTRICITY, start, center, 15).count(count).size(size).lifespan(8).spawn(SpawnFunction.delay(4));
     }
 
     @Override
@@ -178,6 +191,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         public float energyScale;
         @Nullable
         public BillboardingRenderState coreState;
+        public List<BoltRenderState> boltRenderStates = Collections.emptyList();
 
         public void setProcessed(double processed) {
             this.processed = processed;

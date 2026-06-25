@@ -11,16 +11,12 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.util.CommonColors;
 import org.joml.Vector3f;
 
-//TODO - 26.2: Re-evaluate this
 public class BillboardingEffectFeatureRenderer extends RenderTypeFeatureRenderer<BillboardingEffectFeatureRenderer.Submit> {
 
     public static final FeatureRendererType<BillboardingEffectFeatureRenderer.Submit> TYPE = FeatureRendererType.create("Mekanism Billboard");
 
     @Override
     protected void buildGroup(FeatureFrameContext context, List<BillboardingEffectFeatureRenderer.Submit> submits) {
-        //VertexConsumer builder = getVertexBuilder(RenderTypes.entityCutoutCull(TextureAtlas.LOCATION_BLOCKS));
-        //TextureAtlasSprite fire1 = context.atlasManager().get(ModelBakery.FIRE_0);
-        //public static final SpriteId FIRE_0 = Sheets.BLOCKS_MAPPER.defaultNamespaceApply("fire_0");
         for (BillboardingEffectFeatureRenderer.Submit submit : submits) {
             VertexConsumer builder = getVertexBuilder(submit.renderType);
             render(submit.pose, builder, submit.state);

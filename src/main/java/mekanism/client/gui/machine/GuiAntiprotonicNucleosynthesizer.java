@@ -1,5 +1,7 @@
 package mekanism.client.gui.machine;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -12,6 +14,8 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.lib.effect.BoltFeatureRenderer.BoltRenderState;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -24,19 +28,32 @@ import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix3x2f;
+import org.joml.Matrix3x2fc;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
 public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEntityAntiprotonicNucleosynthesizer,
       MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> {
 
-    private static final Vec3 from = new Vec3(47, 50, 0), to = new Vec3(147, 50, 0);
-    private static final BoltRenderInfo boltRenderInfo = new BoltRenderInfo().color(Color.rgbad(0.45F, 0.45F, 0.5F, 1));
+    private static final int SCREEN_X = 45;
+    private static final int SCREEN_Y = 18;
+    private static final int SCREEN_WIDTH = 104;
+    private static final int SCREEN_HEIGHT = 68;
+    private static final Vector3fc FROM = new Vector3f(SCREEN_X + 2, SCREEN_Y + (SCREEN_HEIGHT - 4) / 2F, 0);
+    private static final Vector3fc TO = FROM.add(SCREEN_WIDTH - 4, 0, 0, new Vector3f());
+    private static final BoltRenderInfo BOLT_RENDER_INFO = new BoltRenderInfo().color(Color.rgbad(0.45F, 0.45F, 0.5F, 1));
 
     private final BoltRenderer bolt = new BoltRenderer();
-    private final Supplier<BoltEffect> boltSupplier = () -> new BoltEffect(boltRenderInfo, from, to, 15)
+    private final Supplier<BoltEffect> boltSupplier = () -> new BoltEffect(BOLT_RENDER_INFO, FROM, TO, 15)
           .count(Math.min(Mth.ceil(tile.getProcessRate() / 8F), 20))
           .size(1)
           .lifespan(1)
@@ -52,7 +69,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiInnerScreen(this, 45, 18, 104, 68))
+        addRenderableWidget(new GuiInnerScreen(this, SCREEN_X, SCREEN_Y, SCREEN_WIDTH, SCREEN_HEIGHT))
               .text(() -> List.of(MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate()))))
               .alignment(TextAlignment.CENTER)
               .verticalAlignment(VerticalPositioning.BOTTOM)
@@ -82,17 +99,43 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
-        //TODO - 26.2: gui rendering
-        //PoseStack pose = guiGraphics.pose();
-        //pose.pushPose();
-        //pose.translate(0, 0, 100);
-        ////TODO - 26.2: I think it is this?
-        ////guiGraphics.submitGuiElementRenderState();
-        //MultiBufferSource.BufferSource renderer = guiGraphics.bufferSource();
-        //float partialTicks = MekanismRenderer.getPartialTick();
-        //bolt.update(this, boltSupplier.get(), partialTicks);
-        //bolt.render(gameTime, partialTicks, pose, renderer);
-        //renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
-        //pose.popPose();
+        long gameTime = tile.getGameTime();
+        float partialTicks = MekanismRenderer.getPartialTick();
+        bolt.update(this, boltSupplier.get(), gameTime, partialTicks);
+        List<BoltRenderState> boltRenderStates = bolt.collectBoltStates(gameTime, partialTicks);
+        if (!boltRenderStates.isEmpty()) {
+            guiGraphics.submitGuiElementRenderState(new BoltElementRenderState(guiGraphics, boltRenderStates, Mth.floor(FROM.x()), SCREEN_Y, Mth.ceil(TO.x()), SCREEN_Y + SCREEN_HEIGHT - 4));
+        }
+    }
+
+    private record BoltElementRenderState(int x0, int y0, int x1, int y1, Matrix3x2fc pose, @Nullable ScreenRectangle scissorArea, @Nullable ScreenRectangle bounds,
+                                   List<BoltRenderState> boltRenderStates
+    ) implements GuiElementRenderState {
+
+        public BoltElementRenderState(GuiGraphicsExtractor guiGraphics, List<BoltRenderState> boltRenderStates, int x0, int y0, int x1, int y1) {
+            Matrix3x2fc pose = new Matrix3x2f(guiGraphics.pose());
+            ScreenRectangle scissorArea = guiGraphics.peekScissorStack();
+            ScreenRectangle bounds = new ScreenRectangle(x0, y0, x1 - x0, y1 - y0).transformMaxBounds(pose);
+            this(x0, y0, x1, y1, pose, scissorArea, scissorArea == null ? bounds : scissorArea.intersection(bounds), boltRenderStates);
+        }
+
+        @Override
+        public void buildVertices(VertexConsumer vertexConsumer) {
+            for (BoltRenderState state : boltRenderStates) {
+                for (Vector3fc vertex : state.vertices) {
+                    vertexConsumer.addVertexWith2DPose(pose, vertex.x(), vertex.y()).setColor(state.color);
+                }
+            }
+        }
+
+        @Override
+        public RenderPipeline pipeline() {
+            return RenderPipelines.LIGHTNING;
+        }
+
+        @Override
+        public TextureSetup textureSetup() {
+            return TextureSetup.noTexture();
+        }
     }
 }
