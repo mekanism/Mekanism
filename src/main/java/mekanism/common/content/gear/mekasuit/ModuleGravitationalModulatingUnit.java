@@ -1,11 +1,11 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.function.Consumer;
+import mekanism.api.gear.IClientModuleHelper;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
-import mekanism.api.gear.IModuleHelper;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -53,7 +53,7 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
     @Override
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDElements(IModule<ModuleGravitationalModulatingUnit> module, IModuleContainer moduleContainer,
           ITEM instance, Player player, Consumer<IHUDElement> hudElementAdder) {
-        hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementEnabled(icon, module.isEnabled()));
+        hudElementAdder.accept(IClientModuleHelper.INSTANCE.hudElementEnabled(icon, module.isEnabled()));
     }
 
     @Override

@@ -6,11 +6,11 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.gear.IClientModuleHelper;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
-import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.MathUtils;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
@@ -55,11 +55,11 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
         if (module.isEnabled()) {
             ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
             if (chemicalHandler == null) {
-                hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), 1));
+                hudElementAdder.accept(IClientModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), 1));
             } else {
                 long stored = StorageUtils.getContainedChemical(chemicalHandler, MekanismChemicals.HYDROGEN);
                 double ratio = MathUtils.divideToLevel(stored, chemicalHandler.getCapacityAsLong(0, chemicalHandler.getResource(0)));
-                hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), ratio));
+                hudElementAdder.accept(IClientModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), ratio));
             }
         }
     }

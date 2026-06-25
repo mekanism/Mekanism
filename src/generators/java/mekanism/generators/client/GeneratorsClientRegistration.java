@@ -1,6 +1,6 @@
 package mekanism.generators.client;
 
-import mekanism.api.gear.IModuleHelper;
+import mekanism.api.gear.IClientModuleHelper;
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.generators.client.gui.GuiBioGenerator;
@@ -62,7 +62,7 @@ public class GeneratorsClientRegistration {
         //ClientRegistration.addCustomModel(GeneratorsBlocks.FISSION_FUEL_ASSEMBLY, (orig, evt) -> new FuelAssemblyBakedModel(orig, 0.75));
         //ClientRegistration.addCustomModel(GeneratorsBlocks.CONTROL_ROD_ASSEMBLY, (orig, evt) -> new FuelAssemblyBakedModel(orig, 0.375));
 
-        IModuleHelper moduleHelper = IModuleHelper.INSTANCE;
+        IClientModuleHelper moduleHelper = IClientModuleHelper.INSTANCE;
         moduleHelper.addMekaSuitModuleModels(MekanismGenerators.rl("models/entity/mekasuit_modules.obj"));
         moduleHelper.addMekaSuitModuleModelSpec("solar_helmet", GeneratorsModules.SOLAR_RECHARGING_UNIT, EquipmentSlot.HEAD);
     }

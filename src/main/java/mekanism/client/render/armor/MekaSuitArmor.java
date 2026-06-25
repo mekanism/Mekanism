@@ -60,9 +60,9 @@ import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.ElytraAnimationState;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
+import net.neoforged.neoforge.client.model.obj.ObjGeometry;
 import net.neoforged.neoforge.client.submit.RenderPhaseKeys;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.joml.Vector3f;
@@ -348,13 +348,15 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     }
 
     private static void processMekaTool(OBJModelData mekaToolModel, Set<String> ignored) {
-        //TODO - 26.2 models
-        /*for (String name : mekaToolModel.getModel().getRootComponentNames()) {
-            if (name.contains(OVERRIDDEN_TAG)) {
-                //Note: We just ignore the pieces here as the override will be rendered as part of the item's model
-                ignored.add(processOverrideName(name, "mekatool"));
+        ObjGeometry geometry = mekaToolModel.getGeometry();
+        if (geometry != null) {
+            for (String name : geometry.getRootComponentNames()) {
+                if (name.contains(OVERRIDDEN_TAG)) {
+                    //Note: We just ignore the pieces here as the override will be rendered as part of the item's model
+                    ignored.add(processOverrideName(name, "mekatool"));
+                }
             }
-        }*/
+        }
     }
 
     private record OverrideData(MekanismModelData modelData, String name) {
@@ -370,7 +372,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         if (!modules.isEmpty()) {
             Map<MekanismModelData, Set<String>> allMatchedParts = new Object2ObjectOpenHashMap<>();
             for (ModuleOBJModelData modelData : MekanismModelCache.INSTANCE.MEKASUIT_MODULES) {
-                Set<String> matchedParts = allMatchedParts.computeIfAbsent(modelData, d -> new HashSet<>());
+                Set<String> matchedParts = allMatchedParts.computeIfAbsent(modelData, _ -> new HashSet<>());
                 for (ObjectIterator<Object2BooleanMap.Entry<ModuleModelSpec>> iterator = Object2BooleanMaps.fastIterator(modules); iterator.hasNext(); ) {
                     Object2BooleanMap.Entry<ModuleModelSpec> entry = iterator.next();
                     ModuleModelSpec spec = entry.getKey();
@@ -391,8 +393,8 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                 Set<String> matchedParts = entry.getValue();
                 if (!matchedParts.isEmpty()) {
                     MekanismModelData modelData = entry.getKey();
-                    Map<ModelPos, Set<String>> quadsToRender = specialQuadsToRender.computeIfAbsent(modelData, d -> new EnumMap<>(ModelPos.class));
-                    Map<ModelPos, Set<String>> ledQuadsToRender = specialLEDQuadsToRender.computeIfAbsent(modelData, d -> new EnumMap<>(ModelPos.class));
+                    Map<ModelPos, Set<String>> quadsToRender = specialQuadsToRender.computeIfAbsent(modelData, _ -> new EnumMap<>(ModelPos.class));
+                    Map<ModelPos, Set<String>> ledQuadsToRender = specialLEDQuadsToRender.computeIfAbsent(modelData, _ -> new EnumMap<>(ModelPos.class));
                     //For all the parts we matched, go through and try adding them, while respecting any overrides we might have
                     for (String name : matchedParts) {
                         ModelPos pos = ModelPos.get(name);
@@ -421,27 +423,29 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
         Map<ModelPos, Set<String>> armorQuadsToRender = new EnumMap<>(ModelPos.class);
         Map<ModelPos, Set<String>> armorLEDQuadsToRender = new EnumMap<>(ModelPos.class);
-        //TODO - 26.2 models
-        /*for (String name : MekanismModelCache.INSTANCE.MEKASUIT.getModel().getRootComponentNames()) {
-            if (!checkEquipment(type, name)) {
-                // skip if it's the wrong equipment type
-                continue;
-            } else if (name.startsWith(EXCLUSIVE_TAG)) {
-                if (wornParts.contains(adjacentType)) {
-                    // skip if the part is exclusive and the adjacent part is present
+        ObjGeometry geometry = MekanismModelCache.INSTANCE.MEKASUIT.getGeometry();
+        if (geometry != null) {
+            for (String name : geometry.getRootComponentNames()) {
+                if (!checkEquipment(type, name)) {
+                    // skip if it's the wrong equipment type
+                    continue;
+                } else if (name.startsWith(EXCLUSIVE_TAG)) {
+                    if (wornParts.contains(adjacentType)) {
+                        // skip if the part is exclusive and the adjacent part is present
+                        continue;
+                    }
+                } else if (name.startsWith(SHARED_TAG) && wornParts.contains(adjacentType) && adjacentType.ordinal() > type.ordinal()) {
+                    // skip if the part is shared and the shared part already rendered
                     continue;
                 }
-            } else if (name.startsWith(SHARED_TAG) && wornParts.contains(adjacentType) && adjacentType.ordinal() > type.ordinal()) {
-                // skip if the part is shared and the shared part already rendered
-                continue;
+                ModelPos pos = ModelPos.get(name);
+                if (pos == null) {
+                    Mekanism.logger.warn("MekaSuit part '{}' is invalid. Ignoring.", name);
+                } else if (!ignored.contains(name)) {
+                    addQuadsToRender(pos, name, overrides, armorQuadsToRender, armorLEDQuadsToRender, specialQuadsToRender, specialLEDQuadsToRender);
+                }
             }
-            ModelPos pos = ModelPos.get(name);
-            if (pos == null) {
-                Mekanism.logger.warn("MekaSuit part '{}' is invalid. Ignoring.", name);
-            } else if (!ignored.contains(name)) {
-                addQuadsToRender(pos, name, overrides, armorQuadsToRender, armorLEDQuadsToRender, specialQuadsToRender, specialLEDQuadsToRender);
-            }
-        }*/
+        }
 
         Map<ModelPos, List<BakedQuad>> opaqueMap = new EnumMap<>(ModelPos.class);
         Map<ModelPos, List<BakedQuad>> transparentMap = new EnumMap<>(ModelPos.class);
@@ -525,16 +529,15 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         }
     }
 
-    //TODO - 26.2 models - predicate needs to be RenderState based?
-    private record ModuleModelSpec(ModuleData<?> module, EquipmentSlot slotType, String name, Predicate<LivingEntity> isActive) {
+    private record ModuleModelSpec(ModuleData<?> module, EquipmentSlot slotType, String name, Predicate<HumanoidRenderState> isActive) {
 
         /// Score closest to zero is considered best, negative one for no match at all.
         public int score(String name) {
             return name.indexOf(this.name + "_");
         }
 
-        public boolean isActive(LivingEntity entity) {
-            return isActive.test(entity);
+        public boolean isActive(HumanoidRenderState state) {
+            return isActive.test(state);
         }
 
         public String processOverrideName(String part) {
@@ -546,9 +549,9 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         return part.replaceFirst(OVERRIDDEN_TAG, "").replaceFirst(name + "_", "");
     }
 
-    /// Call via [IModuleHelper#addMekaSuitModuleModelSpec(String, Holder, EquipmentSlot, Predicate)].
+    /// Call via [mekanism.api.gear.IClientModuleHelper#addMekaSuitModuleModelSpec(String, Holder, EquipmentSlot, Predicate)].
     @Internal
-    public static void registerModule(String name, Holder<ModuleData<?>> moduleData, EquipmentSlot slotType, Predicate<LivingEntity> isActive) {
+    public static void registerModule(String name, Holder<ModuleData<?>> moduleData, EquipmentSlot slotType, Predicate<HumanoidRenderState> isActive) {
         moduleModelSpec.put(slotType, moduleData, new ModuleModelSpec(moduleData.value(), slotType, name, isActive));
     }
 
@@ -576,8 +579,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                     for (Entry<Holder<ModuleData<?>>, ModuleModelSpec> entry : moduleModelSpec.row(slotType).entrySet()) {
                         if (container.hasEnabled(entry.getKey())) {
                             ModuleModelSpec spec = entry.getValue();
-                            //TODO - 26.2 models - only have state here
-                            modules.put(spec, /*spec.isActive(state)*/true);
+                            modules.put(spec, spec.isActive(state));
                         }
                     }
                 }
@@ -610,29 +612,31 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         protected void reload(BakingCompleted evt) {
             super.reload(evt);
             Collection<ModuleModelSpec> modules = moduleModelSpec.values();
-            //TODO - 26.2 models
-            /*for (String name : getModel().getRootComponentNames()) {
-                //Find the "best" spec by checking all the specs and finding out which one is listed first
-                // this way if we are overriding another module, then we just put the module that is overriding
-                // the other one first in the name so that it gets the spec matched to it
-                ModuleModelSpec matchingSpec = null;
-                int bestScore = -1;
-                for (ModuleModelSpec spec : modules) {
-                    int score = spec.score(name);
-                    if (score != -1 && (bestScore == -1 || score < bestScore)) {
-                        bestScore = score;
-                        matchingSpec = spec;
+            ObjGeometry geometry = getGeometry();
+            if (geometry != null) {
+                for (String name : geometry.getRootComponentNames()) {
+                    //Find the "best" spec by checking all the specs and finding out which one is listed first
+                    // this way if we are overriding another module, then we just put the module that is overriding
+                    // the other one first in the name so that it gets the spec matched to it
+                    ModuleModelSpec matchingSpec = null;
+                    int bestScore = -1;
+                    for (ModuleModelSpec spec : modules) {
+                        int score = spec.score(name);
+                        if (score != -1 && (bestScore == -1 || score < bestScore)) {
+                            bestScore = score;
+                            matchingSpec = spec;
+                        }
+                    }
+                    if (matchingSpec != null) {
+                        SpecData specData = specParts.computeIfAbsent(matchingSpec, _ -> new SpecData(new HashSet<>(), new HashSet<>()));
+                        if (name.contains(INACTIVE_TAG + matchingSpec.name + "_")) {
+                            specData.inactive().add(name);
+                        } else {
+                            specData.active().add(name);
+                        }
                     }
                 }
-                if (matchingSpec != null) {
-                    SpecData specData = specParts.computeIfAbsent(matchingSpec, spec -> new SpecData(new HashSet<>(), new HashSet<>()));
-                    if (name.contains(INACTIVE_TAG + matchingSpec.name + "_")) {
-                        specData.inactive().add(name);
-                    } else {
-                        specData.active().add(name);
-                    }
-                }
-            }*/
+            }
             //Update entries to reclaim some memory for empty sets
             for (Map.Entry<ModuleModelSpec, SpecData> entry : specParts.entrySet()) {
                 SpecData specData = entry.getValue();

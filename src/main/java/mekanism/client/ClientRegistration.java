@@ -3,7 +3,7 @@ package mekanism.client;
 import com.google.common.reflect.TypeToken;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.gear.IModuleHelper;
+import mekanism.api.gear.IClientModuleHelper;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalTank;
@@ -222,11 +222,11 @@ public class ClientRegistration {
         if (Mekanism.hooks.recipeViewerCompatEnabled()) {
             NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, RenderTickHandler::guiOpening);
         }
-        IModuleHelper moduleHelper = IModuleHelper.INSTANCE;
+        IClientModuleHelper moduleHelper = IClientModuleHelper.INSTANCE;
         moduleHelper.addMekaSuitModuleModels(Mekanism.rl("models/entity/mekasuit_modules.obj"));
         moduleHelper.addMekaSuitModuleModelSpec("jetpack", MekanismModules.JETPACK_UNIT, EquipmentSlot.CHEST);
         moduleHelper.addMekaSuitModuleModelSpec("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlot.CHEST);
-        moduleHelper.addMekaSuitModuleModelSpec("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, LivingEntity::isFallFlying);
+        moduleHelper.addMekaSuitModuleModelSpec("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, state -> state.isFallFlying);
 
         //TODO - 26.2: this shouldn't need extra - just a fix on the item model itself
         addLitModel(MekanismItems.MEKA_TOOL);

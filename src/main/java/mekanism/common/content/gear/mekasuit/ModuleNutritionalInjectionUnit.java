@@ -1,11 +1,11 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.function.Consumer;
+import mekanism.api.gear.IClientModuleHelper;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
-import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
@@ -84,7 +84,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
                 }
                 ratio = MathUtils.divideToLevel(stored, max);
             }
-            hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(icon, ratio));
+            hudElementAdder.accept(IClientModuleHelper.INSTANCE.hudElementPercent(icon, ratio));
         }
     }
 }

@@ -1,12 +1,12 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.function.Consumer;
+import mekanism.api.gear.IClientModuleHelper;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
-import mekanism.api.gear.IModuleHelper;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -44,7 +44,7 @@ public class ModuleDosimeterUnit implements ICustomModule<ModuleDosimeterUnit> {
             } else {
                 color = radiation < 0.1 ? HUDColor.WARNING : HUDColor.DANGER;
             }
-            hudElementAdder.accept(IModuleHelper.INSTANCE.hudElement(icon, text, color));
+            hudElementAdder.accept(IClientModuleHelper.INSTANCE.hudElement(icon, text, color));
         }
     }
 }

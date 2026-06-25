@@ -3,7 +3,6 @@ package mekanism.client.model;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import mekanism.api.gear.IModuleHelper;
 import mekanism.client.render.armor.MekaSuitArmor.ModuleOBJModelData;
 import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
@@ -55,7 +54,7 @@ public class MekanismModelCache extends BaseModelCache {
         callbacks.add(callback);
     }
 
-    /// Call via [IModuleHelper#addMekaSuitModuleModels(Identifier)].
+    /// Call via [mekanism.api.gear.IClientModuleHelper#addMekaSuitModuleModels(Identifier)].
     public ModuleOBJModelData registerMekaSuitModuleModel(Identifier rl) {
         ModuleOBJModelData data = register(rl, ModuleOBJModelData::new);
         mekaSuitModules.add(data);

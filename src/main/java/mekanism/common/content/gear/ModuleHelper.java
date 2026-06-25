@@ -183,29 +183,4 @@ public class ModuleHelper implements IModuleHelper {//TODO - 26.2: Evaluate movi
     public boolean isModuleContainer(Item item) {
         return moduleContainers.contains(item);
     }
-
-    @Override
-    public IHUDElement hudElementEnabled(Identifier icon, boolean enabled) {
-        return hudElement(icon, OnOff.caps(enabled, false).getTextComponent(), enabled ? HUDColor.REGULAR : HUDColor.FADED);
-    }
-
-    @Override
-    public IHUDElement hudElementPercent(Identifier icon, double ratio) {
-        return hudElement(icon, TextUtils.getPercent(ratio), ratio > 0.2 ? HUDColor.REGULAR : (ratio > 0.1 ? HUDColor.WARNING : HUDColor.DANGER));
-    }
-
-    @Override
-    public IHUDElement hudElement(Identifier icon, Component text, HUDColor color) {
-        return HUDElement.of(icon, text, HUDElement.HUDColor.from(color));
-    }
-
-    @Override
-    public synchronized void addMekaSuitModuleModels(Identifier location) {
-        MekanismModelCache.INSTANCE.registerMekaSuitModuleModel(location);
-    }
-
-    @Override
-    public synchronized void addMekaSuitModuleModelSpec(String name, Holder<ModuleData<?>> moduleData, EquipmentSlot slotType, Predicate<LivingEntity> isActive) {
-        MekaSuitArmor.registerModule(name, moduleData, slotType, isActive);
-    }
 }

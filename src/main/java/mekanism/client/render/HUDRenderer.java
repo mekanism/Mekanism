@@ -1,6 +1,7 @@
 package mekanism.client.render;
 
 import java.util.function.Predicate;
+import mekanism.api.gear.IClientModuleHelper;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
@@ -116,7 +117,7 @@ public class HUDRenderer {
     private int renderEnergyIcon(Player player, Font font, GuiGraphicsExtractor guiGraphics, int posX, Identifier icon, EquipmentSlot slot, Predicate<Item> showPercent) {
         ItemStack stack = player.getItemBySlot(slot);
         if (showPercent.test(stack.getItem())) {
-            renderHUDElement(font, guiGraphics, posX, 0, IModuleHelper.INSTANCE.hudElementPercent(icon, StorageUtils.getEnergyRatio(stack)), false);
+            renderHUDElement(font, guiGraphics, posX, 0, IClientModuleHelper.INSTANCE.hudElementPercent(icon, StorageUtils.getEnergyRatio(stack)), false);
             return 48;
         }
         return 0;

@@ -5,9 +5,9 @@ import net.minecraft.resources.Identifier;
 
 /// Interface representing the needed information for rendering elements on the MekaSuit HUD. It is recommended to use one of the following helper methods to build this,
 /// though it is possible to implement HUD Elements manually.
-/// - [IModuleHelper#hudElement(Identifier, Component, HUDColor)]
-/// - [IModuleHelper#hudElementEnabled(Identifier, boolean)]
-/// - [IModuleHelper#hudElementPercent(Identifier, double)]
+/// - [IClientModuleHelper#hudElement(Identifier, Component, HUDColor)]
+/// - [IClientModuleHelper#hudElementEnabled(Identifier, boolean)]
+/// - [IClientModuleHelper#hudElementPercent(Identifier, double)]
 public interface IHUDElement {
 
     /// Gets the path to the texture/icon to render for this [IHUDElement].

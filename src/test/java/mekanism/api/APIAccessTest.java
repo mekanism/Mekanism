@@ -1,6 +1,7 @@
 package mekanism.api;
 
 import mekanism.api.datamaps.IMekanismDataMapTypes;
+import mekanism.api.gear.IClientModuleHelper;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radiation.IRadiationManager;
@@ -10,6 +11,7 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.ITooltipHelper;
 import mekanism.api.transaction.ITransactionHelper;
+import mekanism.client.ClientModuleHelper;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.lib.radial.data.RadialDataHelper;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -41,9 +43,10 @@ class APIAccessTest {
     }
 
     @Test
-    @DisplayName("Test getting Module Helper")
+    @DisplayName("Test getting the Module Helpers")
     void testGetModuleHelper() {
         Assertions.assertInstanceOf(ModuleHelper.class, IModuleHelper.INSTANCE);
+        Assertions.assertInstanceOf(ClientModuleHelper.class, IClientModuleHelper.INSTANCE);
     }
 
     @Test

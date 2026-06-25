@@ -9,8 +9,11 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.model.obj.ObjGeometry;
+import net.neoforged.neoforge.client.model.obj.ObjLoader;
 import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
+import org.jspecify.annotations.Nullable;
 
 public class BaseModelCache {
 
@@ -105,6 +108,9 @@ public class BaseModelCache {
 
     public static class OBJModelData extends MekanismModelData {
 
+        @Nullable
+        private ObjGeometry geometry;
+
         protected OBJModelData(Identifier rl) {
             super(rl);
         }
@@ -112,13 +118,13 @@ public class BaseModelCache {
         @Override
         protected void reload(ModelEvent.BakingCompleted evt) {
             super.reload(evt);
-            //model = ObjLoader.INSTANCE.loadModel(new ModelSettings(rl, true, useDiffuseLighting(), true, true, null));
+            geometry = ObjLoader.INSTANCE.loadGeometry(new ObjGeometry.Settings(rl, true, useDiffuseLighting(), true, true, null));
         }
 
-        /*@Override
-        public ObjModel getModel() {
-            return (ObjModel) super.getModel();
-        }*/
+        @Nullable//TODO - 26.2: Should we be using the ObjGeometry here?
+        public ObjGeometry getGeometry() {
+            return geometry;
+        }
 
         protected boolean useDiffuseLighting() {
             return true;
