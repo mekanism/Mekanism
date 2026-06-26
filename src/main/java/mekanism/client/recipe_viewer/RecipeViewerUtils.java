@@ -188,11 +188,11 @@ public class RecipeViewerUtils {
     }
 
     public static <E> Optional<Registry<E>> getRegistry(ResourceKey<? extends Registry<? extends E>> registryKey) {
-        Level level = MekanismClient.tryGetClientWorld();
-        if (level == null) {
+        RegistryAccess registryAccess = getRegistryAccess();
+        if (registryAccess == null) {
             return Optional.empty();
         }
-        return level.registryAccess().lookup(registryKey);
+        return registryAccess.lookup(registryKey);
     }
 
     @Nullable

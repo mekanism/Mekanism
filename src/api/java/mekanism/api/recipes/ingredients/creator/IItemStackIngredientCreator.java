@@ -280,8 +280,8 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
     /// @throws NullPointerException  if the given registries or item id are null.
     /// @throws IllegalStateException if the item does not exist.
     /// @since 10.6.7
-    default ItemStackIngredient from(HolderLookup.Provider registries, Identifier itemId) {//TODO - 26.2: re-evaluate
-        return fromHolder(registries.lookupOrThrow(Registries.ITEM).getOrThrow(ResourceKey.create(Registries.ITEM, itemId)));
+    default ItemStackIngredient from(HolderLookup.Provider registries, Identifier itemId) {
+        return fromHolder(registries.getOrThrow(ResourceKey.create(Registries.ITEM, itemId)));
     }
 
     @Override

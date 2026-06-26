@@ -3,7 +3,6 @@ package mekanism.api.recipes.ingredients.chemical.display;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
-import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -39,8 +38,7 @@ public record ChemicalTagSlotDisplay(TagKey<Chemical> tag) implements SlotDispla
         if (factory instanceof ForChemicalStacks<T> chemicals) {
             HolderLookup.Provider registries = context.getOptional(SlotDisplayContext.REGISTRIES);
             if (registries != null) {
-                return registries.lookupOrThrow(MekanismRegistries.Keys.CHEMICAL)
-                      .get(this.tag)
+                return registries.get(this.tag)
                       .map(tag -> tag.stream().map(chemicals::forStack))
                       .stream()
                       .flatMap(Function.identity());

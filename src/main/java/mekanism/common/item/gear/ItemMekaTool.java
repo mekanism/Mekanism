@@ -48,7 +48,6 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -99,7 +98,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     public ItemMekaTool(Properties properties) {//TODO - 26.2 add WEAPON component, so net.minecraft.world.item.ItemStack.hurtEnemy works properly?
         super(IModuleHelper.INSTANCE.applyModuleContainerProperties(properties.fireResistant().rarity(Rarity.EPIC).setNoCombineRepair().stacksTo(1)
               .delayedComponent(DataComponents.TOOL, context -> new Tool(List.of(
-                    Tool.Rule.deniesDrops(context.lookupOrThrow(Registries.BLOCK).getOrThrow(MekanismTags.Blocks.INCORRECT_FOR_MEKA_TOOL)),
+                    Tool.Rule.deniesDrops(context.getOrThrow(MekanismTags.Blocks.INCORRECT_FOR_MEKA_TOOL)),
                     new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK), Optional.empty(), Optional.of(true))
               ), 1, 0, true))
         ));

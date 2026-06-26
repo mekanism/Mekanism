@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -45,7 +44,7 @@ public class MinerRegionCache implements CollisionGetter {
 
     public MinerRegionCache(ServerLevel level, BlockPos centerPos, BlockPos offsetPos, boolean hasAnchor) {
         this.level = level;
-        this.plains = Suppliers.memoize(() -> level.registryAccess().lookupOrThrow(Registries.BIOME).getOrThrow(Biomes.PLAINS));
+        this.plains = Suppliers.memoize(() -> level.registryAccess().getOrThrow(Biomes.PLAINS));
         this.centerX = SectionPos.blockToSectionCoord(centerPos.getX());
         this.centerZ = SectionPos.blockToSectionCoord(centerPos.getZ());
         int i = SectionPos.blockToSectionCoord(offsetPos.getX());

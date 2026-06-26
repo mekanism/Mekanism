@@ -49,7 +49,6 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -104,7 +103,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         super(properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1)
               .component(MekanismDataComponents.DISASSEMBLER_MODE, DisassemblerMode.NORMAL)
               .delayedComponent(DataComponents.TOOL, context -> new Tool(List.of(
-                    Tool.Rule.deniesDrops(context.lookupOrThrow(Registries.BLOCK).getOrThrow(MekanismTags.Blocks.INCORRECT_FOR_DISASSEMBLER)),
+                    Tool.Rule.deniesDrops(context.getOrThrow(MekanismTags.Blocks.INCORRECT_FOR_DISASSEMBLER)),
                     new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK), Optional.empty(), Optional.of(true))
               ), 1, 0, true))
         );
