@@ -203,6 +203,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
                             //If the insert succeeded, remove the inserted count and try again in another 10 ticks
                             transaction.commit();
                             delay = MekanismUtils.TICKS_PER_HALF_SECOND;
+                            //If we managed to pull, reset our backoff
+                            delayCount = 0;
                         } else {
                             //Either the insertion or extraction failed; increment the backoff and calculate delay. Note that we cap retries
                             // at a max of 40 ticks (2 seconds), which would be 4 consecutive retries
