@@ -1,28 +1,21 @@
 package mekanism.client.gui.element.graph;
 
 import java.util.Collection;
+import mekanism.client.SpecialColors;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.graph.GuiGraph.GraphDataHandler;
 import mekanism.client.gui.tooltip.TooltipUtils;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
 public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends GraphDataHandler> extends GuiTexturedElement {
-
-    private static final Identifier TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "graph.png");
-    private static final int TEXTURE_WIDTH = 3;
-    private static final int TEXTURE_HEIGHT = 2;
 
     protected final COLLECTION graphData;
     protected final HANDLER dataHandler;
@@ -51,23 +44,18 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
         int x = relativeX + 1;
         int y = relativeY + 1;
         int height = this.height - 2;
+        int hoverIndex = mouseX - getX();
         for (int i = 0; i < size; i++) {
             int relativeHeight = getRelativeHeight(i, height);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + i, y + height - relativeHeight, 0, 0, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            int xStart = x + i;
+            int yStart = y + height - relativeHeight;
+            GuiUtils.fill(guiGraphics, xStart, yStart, 1, 1, SpecialColors.GRAPH_GRAPHED_VALUE.argb());
+            GuiUtils.fill(guiGraphics, xStart, yStart, 1, relativeHeight, ARGB.color(0.2F + 0.8F * i / size, SpecialColors.GRAPH_INTEGRAL.argb()));
 
-            //TODO - 26.2: rendering
-            //RenderSystem.enableBlend();
-            //RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + i, y + height - relativeHeight, 1, 0, 1, relativeHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT, ARGB.color(0.2F + 0.8F * i / size, CommonColors.WHITE));
-
-            int hoverIndex = mouseX - getX();
             if (hoverIndex == i && mouseY >= getY() && mouseY < getY() + height) {
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + i, y, 2, 0, 1, height, TEXTURE_WIDTH, TEXTURE_HEIGHT, ARGB.color(0.5F, CommonColors.WHITE));
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + i, y + height - relativeHeight, 0, 1, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+                GuiUtils.fill(guiGraphics, xStart, y, 1, height, ARGB.color(0.5F, SpecialColors.GRAPH_HOVERED_COLUMN.argb()));
+                GuiUtils.fill(guiGraphics, xStart, yStart, 1, 1, SpecialColors.GRAPH_HOVERED_VALUE.argb());
             }
-
-            //RenderSystem.disableBlend();
         }
     }
 
