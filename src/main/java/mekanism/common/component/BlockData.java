@@ -3,6 +3,7 @@ package mekanism.common.component;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.SerializationConstants;
@@ -13,6 +14,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -28,14 +30,19 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.Bees;
+import net.minecraft.world.item.component.BlockItemStateProperties;
 import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.SpawnData;
+import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.DecoratedPotBlock;
 import net.minecraft.world.level.block.SpawnerBlock;
 import net.minecraft.world.level.block.TrialSpawnerBlock;
+import net.minecraft.world.level.block.entity.BeehiveBlockEntity.Occupant;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity;
 import net.minecraft.world.level.block.entity.PotDecorations;
@@ -116,26 +123,26 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
     }
 
     @Override
+    @SuppressWarnings("OptionalIsPresent")//Capturing lambdas
     public void addToTooltip(TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag flag, DataComponentGetter componentGetter) {
         Block block = blockState.getBlock();
         tooltipAdder.accept(MekanismLang.BLOCK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, block));
-        //TODO - 26.2: Test this and figure out if there is a reason/way to support the tooltip display stuff for proxied components
+        //TODO: Try to come up with a better way to proxy components from the stored block's BE
         if (blockEntityTag != null) {
             tooltipAdder.accept(MekanismLang.BLOCK_ENTITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY,
                   RegistryUtils.getHolderById(blockEntityTag, BuiltInRegistries.BLOCK_ENTITY_TYPE)
-                        .<Object>map(RegistryUtils::getName)
+                        .<Object>map(Holder::getRegisteredName)
                         .orElse(UNKNOWN)
             ));
+            //Note: Currently unused by any of the addToTooltip methods we proxy
+            DataComponentGetter boxedComponentsGetter = DataComponentMap.EMPTY;
             if (block instanceof SpawnerBlock || block instanceof TrialSpawnerBlock) {
                 String key = block instanceof SpawnerBlock ? BaseSpawner.SPAWN_DATA_TAG : TrialSpawnerStateData.TAG_SPAWN_DATA;
-                CompoundTag spawnData = blockEntityTag.getCompoundOrEmpty(key);
-                CompoundTag entityTag = spawnData.getCompoundOrEmpty(Entity.TAG_ID);
-                Optional<EntityType<?>> entityType = entityTag.read(Entity.TAG_ID, EntityType.CODEC);
+                Optional<EntityType<?>> entityType = blockEntityTag.read(key, SpawnData.CODEC)
+                      .map(SpawnData::getEntityToSpawn)
+                      .flatMap(entity -> entity.read(Entity.TAG_ID, EntityType.CODEC));
                 if (entityType.isPresent()) {
-                    tooltipAdder.accept(MekanismLang.BLOCK_ENTITY_SPAWN_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY,
-                          entityType
-                                .get().getDescription()
-                    ));
+                    tooltipAdder.accept(MekanismLang.BLOCK_ENTITY_SPAWN_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, entityType.get().getDescription()));
                 }
             } else if (block instanceof DecoratedPotBlock) {
                 //Based off ItemStack#addToTooltip, but using the values we already have
@@ -151,7 +158,18 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
                             tooltipAdder.accept(MekanismLang.GENERIC_LIST.translateColored(EnumColor.INDIGO, EnumColor.GRAY, decoration));
                         }
                     };
-                    decorations.addToTooltip(context, tooltipListAdder, flag, /*unused*/DataComponentMap.EMPTY);
+                    decorations.addToTooltip(context, tooltipListAdder, flag, boxedComponentsGetter);
+                }
+            } else if (block instanceof BeehiveBlock) {
+                //BeehiveBlockEntity#BEES
+                Optional<Bees> bees = blockEntityTag.read("bees", Occupant.LIST_CODEC).map(Bees::new);
+                if (bees.isPresent()) {
+                    bees.get().addToTooltip(context, tooltipAdder, flag, boxedComponentsGetter);
+                }
+                Optional<BlockItemStateProperties> properties = blockState.getOptionalValue(BeehiveBlock.HONEY_LEVEL)
+                      .map(honey -> new BlockItemStateProperties(Map.of(BeehiveBlock.HONEY_LEVEL.getName(), Integer.toString(honey))));
+                if (properties.isPresent()) {
+                    properties.get().addToTooltip(context, tooltipAdder, flag, boxedComponentsGetter);
                 }
             }
         }
