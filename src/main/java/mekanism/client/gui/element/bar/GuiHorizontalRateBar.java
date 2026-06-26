@@ -2,15 +2,15 @@ package mekanism.client.gui.element.bar;
 
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 
 public class GuiHorizontalRateBar extends GuiBar<IBarInfoHandler> {
 
-    private static final Identifier RATE_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "horizontal_rate.png");
+    private static final Identifier RATE_BAR = Mekanism.rl("bar/horizontal_rate");
     private static final int texWidth = 78;
     private static final int texHeight = 8;
 
@@ -20,9 +20,8 @@ public class GuiHorizontalRateBar extends GuiBar<IBarInfoHandler> {
 
     @Override
     protected void renderBarOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
-        int displayInt = (int) (handlerLevel * texWidth);
-        if (displayInt > 0) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RATE_BAR, relativeX + 1, relativeY + 1, 0, 0, displayInt, texHeight, texWidth, texHeight);
-        }
+        //Based on how AbstractFurnaceScreen calculates the flame progress height to always have at least 1 pixel showing if it is active
+        int progressWidth = Mth.ceil(handlerLevel * (texWidth - 1)) + 1;
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, RATE_BAR, texWidth, texHeight, 0, 0, relativeX + 1, relativeY + 1, progressWidth, texHeight);
     }
 }
