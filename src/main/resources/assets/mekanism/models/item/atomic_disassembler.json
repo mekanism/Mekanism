@@ -24,6 +24,9 @@
       "translation": [ 0, -4, 4 ],
       "scale": [ 0.56, 0.56, 0.56 ]
     },
+    "head": {
+      "translation": [ 1, 5, 3 ]
+    },
     "gui": {
       "rotation": [ 280, 142, 90 ],
       "translation": [ -0.3, -4.4, 0 ],
@@ -34,8 +37,8 @@
       "scale": [ 0.5, 0.5, 0.5 ]
     },
     "fixed": {
-      "rotation": [ 270, 138, 270 ],
-      "translation": [ 7, 0, 0 ],
+      "rotation": [ 270, 318, 270 ],
+      "translation": [ -7, 0, 0 ],
       "scale": [ 0.7, 0.7, 0.7 ]
     }
   }
