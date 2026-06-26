@@ -15,10 +15,23 @@ public class MekanismAPI {
     public static final String API_VERSION = "10.8.0";
     /// Mekanism's Mod ID
     public static final String MEKANISM_MODID = "mekanism";
-    /// Mekanism debug mode
-    public static boolean debug = false;
+    /// Mekanism Additions' Mod ID
+    ///
+    /// @since 10.8.0
+    public static final String ADDITIONS_MODID = "mekanismadditions";
+    /// Mekanism Generators' Mod ID
+    ///
+    /// @since 10.8.0
+    public static final String GENERATORS_MODID = "mekanismgenerators";
+    /// Mekanism Tools' Mod ID
+    ///
+    /// @since 10.8.0
+    public static final String TOOLS_MODID = "mekanismtools";
     /// Logger for use in Mekanism's API classes
     public static final Logger logger = LogUtils.getLogger();
+
+    /// Mekanism debug mode
+    public static boolean debug = false;
 
     @Internal
     private static final ClassLoader SERVICE_CL = MekanismAPI.class.getClassLoader();

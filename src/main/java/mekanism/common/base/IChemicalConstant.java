@@ -6,10 +6,6 @@ import net.minecraft.resources.ResourceKey;
 public interface IChemicalConstant {
 
     /// @return The name of the chemical
-    default String getName() {
-        return key().identifier().getPath();
-    }
-
     ResourceKey<Chemical> key();
 
     /// @return Visual color in ARGB format

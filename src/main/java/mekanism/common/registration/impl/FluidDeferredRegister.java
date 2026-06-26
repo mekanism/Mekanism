@@ -87,7 +87,7 @@ public class FluidDeferredRegister {
 
     public FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, BucketItem> registerLiquidChemical(IChemicalConstant constants) {
         int density = Math.round(constants.getDensity());
-        return register(constants.getName(), properties -> properties
+        return register(constants.key().identifier().getPath(), properties -> properties
               .temperature(Math.round(constants.getTemperature()))
               .density(density)
               .viscosity(density)

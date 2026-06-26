@@ -1,6 +1,7 @@
 package mekanism.generators.common;
 
 import java.util.Objects;
+import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
@@ -33,7 +34,7 @@ import org.jspecify.annotations.Nullable;
 @Mod(MekanismGenerators.MODID)
 public class MekanismGenerators implements IModModule {
 
-    public static final String MODID = "mekanismgenerators";
+    public static final String MODID = MekanismAPI.GENERATORS_MODID;
 
     @Nullable
     public static MekanismGenerators instance;

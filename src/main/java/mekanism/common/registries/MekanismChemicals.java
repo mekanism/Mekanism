@@ -12,7 +12,6 @@ import mekanism.api.chemical.ChemicalResource.EmptyChemicalResource;
 import mekanism.api.chemical.ChemicalSerializationHelper;
 import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IChemicalConstant;
 import mekanism.common.registration.DatapackDeferredRegister;
 import mekanism.common.registration.DeferredMapCodecHolder;
 import mekanism.common.resource.PrimaryResource;
@@ -42,10 +41,6 @@ public class MekanismChemicals {
         }
         return Collections.unmodifiableMap(slurries);
     });
-
-    private static ResourceKey<Chemical> dataKey(IChemicalConstant constant) {
-        return CHEMICALS.dataKey(constant.getName());
-    }
 
     public static void createAndRegisterDatapack(IEventBus modEventBus) {
         CHEMICALS.createAndRegisterDatapack(modEventBus, ChemicalSerializationHelper.DIRECT_CODEC, ChemicalSerializationHelper.NETWORK_CODEC.codec(),

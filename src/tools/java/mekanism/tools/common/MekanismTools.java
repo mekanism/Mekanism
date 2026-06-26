@@ -1,5 +1,6 @@
 package mekanism.tools.common;
 
+import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.lib.Version;
@@ -18,7 +19,7 @@ import org.jspecify.annotations.Nullable;
 @Mod(MekanismTools.MODID)
 public class MekanismTools implements IModModule {
 
-    public static final String MODID = "mekanismtools";
+    public static final String MODID = MekanismAPI.TOOLS_MODID;
 
     @Nullable
     public static MekanismTools instance;

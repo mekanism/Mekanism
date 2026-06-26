@@ -14,6 +14,7 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.additions.common.registries.AdditionsStructureModifierSerializers;
 import mekanism.additions.common.voice.VoiceServerManager;
+import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.lib.Version;
@@ -40,7 +41,7 @@ import org.jspecify.annotations.Nullable;
 @Mod(MekanismAdditions.MODID)
 public class MekanismAdditions implements IModModule {
 
-    public static final String MODID = "mekanismadditions";
+    public static final String MODID = MekanismAPI.ADDITIONS_MODID;
 
     @Nullable
     public static MekanismAdditions instance;

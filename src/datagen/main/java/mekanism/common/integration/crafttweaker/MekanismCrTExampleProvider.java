@@ -8,7 +8,6 @@ import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
@@ -44,7 +43,6 @@ import mekanism.common.integration.crafttweaker.recipe.manager.RotaryRecipeManag
 import mekanism.common.integration.crafttweaker.recipe.manager.SawmillRecipeManager;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
@@ -99,7 +97,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .addComponent(imports -> new JEIHidingComponent(imports, chemicals, ChemicalIds.BRINE, CrTChemicalStack::new))
               .addComponent(imports -> new JEIHidingComponent(imports, chemicals, ChemicalIds.BIO, CrTChemicalStack::new))
               .addComponent(imports -> new JEIHidingComponent(imports, chemicals, ChemicalIds.SIMPLE_PIGMENTS.darkRed(), CrTChemicalStack::new))
-              .addComponent(imports -> new JEIHidingComponent(imports, chemicals, MekanismChemicals.PROCESSED_RESOURCES.get(PrimaryResource.GOLD).clean(), CrTChemicalStack::new))
+              .addComponent(imports -> new JEIHidingComponent(imports, chemicals, ChemicalIds.GOLD_SLURRY.clean(), CrTChemicalStack::new))
               .blankLine()
               .comment("Adds a description to the passed in chemical. This example adds some basic text to JEI's information tab when looking at Hydrogen.")
               .blankLine()
@@ -199,7 +197,6 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .removeRecipes(ElectrolysisRecipeManager.INSTANCE, Mekanism.rl("separator/brine"))
         ;
-        CleanDirtySlurryId uraniumSlurry = MekanismChemicals.PROCESSED_RESOURCES.get(PrimaryResource.URANIUM);
         exampleBuilder("mekanism/washing")
               .comment("Removes the Washing Recipe for cleaning Dirty Uranium Slurry.")
               .blankLine()
@@ -208,7 +205,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .recipe(ChemicalWasherRecipeManager.INSTANCE)
               .addExample("cleaning_uranium_slurry", IngredientCreatorAccess.fluid().from(fluids, FluidTags.WATER, 10),
-                    IngredientCreatorAccess.chemicalStack().from(chemicals, uraniumSlurry.dirty(), 1), RecipeProviderUtil.chemicalTemplate(chemicals, uraniumSlurry.clean(), 1))
+                    IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.URANIUM_SLURRY.dirty(), 1), RecipeProviderUtil.chemicalTemplate(chemicals, ChemicalIds.URANIUM_SLURRY.clean(), 1))
               .end()
         ;
         exampleBuilder("mekanism/evaporating")

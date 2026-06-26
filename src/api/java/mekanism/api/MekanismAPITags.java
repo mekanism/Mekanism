@@ -49,7 +49,7 @@ public class MekanismAPITags {
         public static final TagKey<Biome> BLACKLIST_BABY_WITHER_SKELETONS = additionsTag("blacklist/baby_wither_skeleton");
 
         private static TagKey<Biome> additionsTag(String name) {
-            return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath("mekanismadditions", name));
+            return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(MekanismAPI.ADDITIONS_MODID, name));
         }
     }
 
@@ -214,7 +214,7 @@ public class MekanismAPITags {
         public static final TagKey<Structure> BLACKLIST_BABY_WITHER_SKELETONS = additionsTag("blacklist/baby_wither_skeleton");
 
         private static TagKey<Structure> additionsTag(String name) {
-            return TagKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath("mekanismadditions", name));
+            return TagKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath(MekanismAPI.ADDITIONS_MODID, name));
         }
     }
 }
