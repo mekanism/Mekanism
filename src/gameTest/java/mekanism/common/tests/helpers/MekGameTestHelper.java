@@ -40,6 +40,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 public class MekGameTestHelper extends ExtendedGameTestHelper {
@@ -80,6 +81,19 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
 
     public BlockState getBlockState(int x, int y, int z) {
         return getBlockState(new BlockPos(x, y, z));
+    }
+
+    public void insertIntoContainer(int x, int y, int z, Item item) {
+        insertIntoContainer(x, y, z, item, 1);
+    }
+
+    public void insertIntoContainer(int x, int y, int z, Item item, int amount) {
+        ResourceHandler<ItemResource> handler = requireCapability(Capabilities.ITEM.block(), new BlockPos(x, y, z), null);
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = handler.insert(ItemResource.of(item), amount, transaction);
+            assertValueEqual(inserted, amount, "Unable to insert all items");
+            transaction.commit();
+        }
     }
 
     public boolean isChunkLoaded(ChunkPos relativePos) {

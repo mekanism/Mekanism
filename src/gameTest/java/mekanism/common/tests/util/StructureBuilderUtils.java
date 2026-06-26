@@ -19,7 +19,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -29,18 +28,6 @@ import org.jspecify.annotations.Nullable;
 public class StructureBuilderUtils {
 
     private StructureBuilderUtils() {
-    }
-
-    public static CompoundTag containing(Item item) {
-        return containing(new ItemStack(item));
-    }
-
-    public static CompoundTag containing(Item item, int amount) {
-        return containing(new ItemStack(item, amount));
-    }
-
-    public static CompoundTag containing(ItemStack... stacks) {
-        return containing(NonNullList.of(ItemStack.EMPTY, stacks));
     }
 
     public static CompoundTag containing(ItemStack stack, int slots) {

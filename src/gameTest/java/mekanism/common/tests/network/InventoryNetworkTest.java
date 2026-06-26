@@ -39,7 +39,7 @@ public class InventoryNetworkTest {
     @RegisterStructureTemplate(UPGRADEABLE)
     public static final Supplier<StructureTemplate> UPGRADEABLE_TEMPLATE = StructureTemplateBuilder.lazy(10, 1, 3, builder -> builder
           //Start barrel
-          .set(3, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 20))
+          .set(3, 0, 0, Blocks.BARREL.defaultBlockState())
           //End barrels
           .set(2, 0, 0, Blocks.BARREL.defaultBlockState())
           .set(8, 0, 0, Blocks.BARREL.defaultBlockState())
@@ -56,7 +56,7 @@ public class InventoryNetworkTest {
     @RegisterStructureTemplate(SIMPLE_PATH)
     public static final Supplier<StructureTemplate> SIMPLE_PATH_TEMPLATE = StructureTemplateBuilder.lazy(1, 1, 6, builder -> builder
           //Start barrel
-          .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
+          .set(0, 0, 0, Blocks.BARREL.defaultBlockState())
           //End barrel
           .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
 
@@ -68,6 +68,8 @@ public class InventoryNetworkTest {
     @TestHolder(description = "Tests that items will properly be sent back and inserted into their home if the destination is removed while the stacks are en-route.")
     public static void sendsBackToHome(final TransmitterTestHelper helper) {
         helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
               //Wait a second for it to pull the item out, and remove the destination
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 0, 5, Blocks.AIR))
               //Make sure the start container is empty
@@ -82,6 +84,8 @@ public class InventoryNetworkTest {
                               + "due to side changes while the stacks are en-route.")
     public static void sendsBackToHomeDisabled(final TransmitterTestHelper helper) {
         helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
               //Wait a second for it to pull the item out, and disable the path to the destination
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 0, 4, Direction.SOUTH, 3))
               //Make sure the start container is empty
@@ -91,17 +95,19 @@ public class InventoryNetworkTest {
               .thenSucceed();
     }
 
-    @GameTest(template = SIMPLE_PATH)
+    @GameTest(template = SIMPLE_PATH, timeoutTicks = 10 * SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that items will properly be sent back and inserted into their home if the destination becomes inaccessible "
                               + "due to a transporter color change while the stacks are en-route.")
     public static void sendsBackToHomeColorChanged(final TransmitterTestHelper helper) {
         helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
               //Wait a second for it to pull the item out, and then color the path to the destination
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 0, 4, Direction.UP))
               //Make sure the start container is empty
               .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
               //And then after a few seconds that the item has transferred back into the destination it was pulled from
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 0, Items.STONE))
+              .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 0, Items.STONE))
               .thenSucceed();
     }
 
@@ -110,7 +116,7 @@ public class InventoryNetworkTest {
     public static void colorChangesStillValid(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(1, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState())
               //End barrel
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
 
@@ -118,15 +124,16 @@ public class InventoryNetworkTest {
               .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
         );
 
-        test.onGameTest(TransmitterTestHelper.class, helper ->
-              helper.startSequence()
-                    //Wait a second for it to pull the item out, and then color the path to the destination
-                    .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 0, 4, Direction.UP))
-                    //And then after a few seconds that the item has transferred to the destination
-                    .thenExecuteAfter(3 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE))
-                    //And make sure the start container is empty
-                    .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
-                    .thenSucceed()
+        test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
+              //Wait a second for it to pull the item out, and then color the path to the destination
+              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 0, 4, Direction.UP))
+              //And then after a few seconds that the item has transferred to the destination
+              .thenExecuteAfter(3 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE))
+              //And make sure the start container is empty
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
+              .thenSucceed()
         );
     }
 
@@ -136,7 +143,7 @@ public class InventoryNetworkTest {
     public static void sendsBackToHomeWhileFilled(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(1, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState())
               //End barrel
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.OAK_LOG.getDefaultInstance(), 26))
 
@@ -145,6 +152,8 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
               .thenMap(() -> helper.getBlockEntity(0, 0, 5, BarrelBlockEntity.class))
               //Wait a second for it to pull the item out, and fill the last slot of the barrel
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, barrel -> barrel.setItem(26, Items.OAK_LOG.getDefaultInstance()))
@@ -166,7 +175,7 @@ public class InventoryNetworkTest {
     public static void sendsBackHomeDiversionDisabled(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(1, 2, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState())
               //End barrel
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
 
@@ -177,15 +186,16 @@ public class InventoryNetworkTest {
               .set(0, 1, 4, Blocks.LEVER.defaultBlockState())
         );
 
-        test.onGameTest(TransmitterTestHelper.class, helper ->
-              helper.startSequence()
-                    //Wait a second for it to pull the item out, and then pull the lever that is controlling the diversion transporter
-                    .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.pullLever(0, 1, 4))
-                    //Make sure the start container is empty
-                    .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
-                    //And then after a few seconds that the item has transferred back into the destination it was pulled from
-                    .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 0, Items.STONE))
-                    .thenSucceed()
+        test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
+              //Wait a second for it to pull the item out, and then pull the lever that is controlling the diversion transporter
+              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.pullLever(0, 1, 4))
+              //Make sure the start container is empty
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
+              //And then after a few seconds that the item has transferred back into the destination it was pulled from
+              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 0, Items.STONE))
+              .thenSucceed()
         );
     }
 
@@ -194,7 +204,7 @@ public class InventoryNetworkTest {
     public static void pathDisabledButStillHasPath(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState())
               //End barrels
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
 
@@ -204,6 +214,8 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
               //Wait a second for it to pull the item out, and disable the base path to the destination
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 0, 4, Direction.SOUTH, 3))
               //Make sure the start container is empty
@@ -219,6 +231,8 @@ public class InventoryNetworkTest {
                               + "and then later a new destination is added.")
     public static void findPathFromIdle(final TransmitterTestHelper helper) {
         helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
               //Wait a second for it to pull the item out, and remove the destination
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 0, 5, Blocks.AIR))
               .thenExecute(() -> helper.setBlock(0, 0, 0, Blocks.AIR))
@@ -234,7 +248,7 @@ public class InventoryNetworkTest {
     public static void shorterDestinationRemoved(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 20))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState())
               //End barrels
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
               .set(2, 0, 2, Blocks.BARREL.defaultBlockState())
@@ -245,8 +259,10 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE, 20))
               //Wait a few seconds for it to pull some items out, and remove the transporter to the shorter destination
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(1, 0, 2, Blocks.AIR.defaultBlockState()))
+              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(1, 0, 2, Blocks.AIR))
               //Validate original destination has expected count
               .thenExecute(() -> helper.assertContainerContains(2, 0, 2, Items.STONE, 2))
               //Validate that two items were dropped when the transporter was broken
@@ -265,7 +281,7 @@ public class InventoryNetworkTest {
     public static void shorterNewDestination(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 20))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState())
               //End barrels
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
               .set(2, 0, 2, Blocks.BARREL.defaultBlockState())
@@ -275,6 +291,8 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE, 20))
               //Wait a few seconds for it to pull some items out, and add a transporter to create a shorter destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(1, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState()))
               //Validate original destination has expected count
@@ -293,7 +311,7 @@ public class InventoryNetworkTest {
     public static void shorterEnabledPath(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 20))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState())
               //End barrels
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
               .set(2, 0, 2, Blocks.BARREL.defaultBlockState())
@@ -306,6 +324,8 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE, 20))
               //Wait a few seconds for it to pull some items out, re-enable a disabled path to make there be a shorter destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(1, 0, 2, Direction.WEST))
               //Validate original destination has expected count
@@ -323,7 +343,7 @@ public class InventoryNetworkTest {
     public static void colorlessIntoColor(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(2, 1, 2)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState())
               //End barrel
               .set(1, 0, 0, Blocks.BARREL.defaultBlockState())
               .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(Direction.NORTH))
@@ -332,6 +352,8 @@ public class InventoryNetworkTest {
 
         //Note: We initialize the starting inventory above
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
               //Wait a little to validate nothing is happening
               //Validate original destination has the starting amount
               .thenExecuteAfter(2 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 0, Items.STONE))
@@ -346,7 +368,7 @@ public class InventoryNetworkTest {
     public static void colorMatches(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 1, 4)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 2))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState())
               //End barrels
               .set(2, 0, 2, Blocks.BARREL.defaultBlockState())
               .set(2, 0, 3, Blocks.BARREL.defaultBlockState())
@@ -358,6 +380,8 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE, 2))
               //Wait a few seconds for transferring to happen then validate stuff
               //Validate colored destination has expected count
               .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(2, 0, 3, Items.STONE, 2))
@@ -375,7 +399,7 @@ public class InventoryNetworkTest {
     public static void colorIsNotPriority(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(2, 1, 4)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 2))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState())
               //End barrels
               .set(1, 0, 2, Blocks.BARREL.defaultBlockState())
               .set(1, 0, 3, Blocks.BARREL.defaultBlockState())
@@ -386,6 +410,8 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE, 2))
               //Wait a few seconds for transferring to happen then validate stuff
               //Validate colored destination has expected count
               .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(1, 0, 2, Items.STONE, 2))
@@ -402,7 +428,7 @@ public class InventoryNetworkTest {
     public static void restrictiveIsLowPriority(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(2, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState())
               //End barrels
               .set(1, 0, 0, Blocks.BARREL.defaultBlockState())
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
@@ -414,6 +440,8 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
               //Wait a few seconds for transferring to happen then validate stuff
               .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE))
               .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
@@ -427,6 +455,8 @@ public class InventoryNetworkTest {
                               + "but any items that were already en-route will continue to the destination they had already calculated.")
     public static void upgradeFurtherPath(final TransmitterTestHelper helper) {
         helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(3, 0, 0, Items.STONE, 20))
               //Wait a few seconds for it to pull some items out, and upgrade the transporter to the further destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.applyAlloyUpgrade(new BlockPos(9, 0, 0), AlloyTier.INFUSED))
               //Wait a few seconds for transferring to happen then validate stuff
@@ -445,6 +475,8 @@ public class InventoryNetworkTest {
                               + "already calculated as the new destination is slightly \"closer\".")
     public static void upgradeFurtherOverlapping(final TransmitterTestHelper helper) {
         helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(3, 0, 0, Items.STONE, 20))
               //Wait a few seconds for it to pull some items out, and upgrade the transporter to the further destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.applyAlloyUpgrade(new BlockPos(6, 0, 2), AlloyTier.INFUSED))
               //Wait a few seconds for transferring to happen then validate stuff
@@ -461,6 +493,8 @@ public class InventoryNetworkTest {
     @TestHolder(description = "Tests that all items pre- and post-upgrade will go to the original destination.")
     public static void upgradeExisting(final TransmitterTestHelper helper) {
         helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(3, 0, 0, Items.STONE, 20))
               //Wait a few seconds for it to pull some items out, and upgrade the transporter to the further destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.applyAlloyUpgrade(new BlockPos(3, 0, 2), AlloyTier.INFUSED))
               //Wait a few seconds for transferring to happen then validate stuff
@@ -478,7 +512,7 @@ public class InventoryNetworkTest {
     public static void diversionSwitchPaths(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 2, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 20))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState())
               //End barrels
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
               .set(2, 0, 2, Blocks.BARREL.defaultBlockState())
@@ -499,6 +533,8 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
+              //Insert the items so that we only start processing once this test is started
+              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE, 20))
               //Wait a few seconds for it to pull some items out, and remove the transporter to the shorter destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.pullLever(0, 1, 2))
               //Validate original destination has expected count
