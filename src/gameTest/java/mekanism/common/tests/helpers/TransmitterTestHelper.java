@@ -2,6 +2,7 @@ package mekanism.common.tests.helpers;
 
 import mekanism.api.tier.AlloyTier;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestInfo;
@@ -38,5 +39,9 @@ public class TransmitterTestHelper extends MekGameTestHelper {
             case REINFORCED -> MekanismItems.REINFORCED_ALLOY;
             case ATOMIC -> MekanismItems.ATOMIC_ALLOY;
         }).asStack(), makeMockPlayer(), Direction.UP);
+    }
+
+    public void resetTransporterDelay(int x, int y, int z) {
+        getBlockEntity(x, y, z, TileEntityLogisticalTransporterBase.class).getTransmitter().resetDelay();
     }
 }

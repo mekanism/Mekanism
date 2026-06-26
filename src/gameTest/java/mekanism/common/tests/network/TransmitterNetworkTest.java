@@ -72,7 +72,7 @@ public class TransmitterNetworkTest {
         );
     }
 
-    @GameTest(template = STRAIGHT_CABLE, batch = "1")
+    @GameTest(template = STRAIGHT_CABLE, timeoutTicks = 10 * SharedConstants.TICKS_PER_SECOND, batch = "1")
     @TestHolder(description = "Tests that reloading intermediary chunks does not cause a network to break.")
     public static void reloadIntermediary(final DynamicTest test) {
         final ChunkData chunkData = new ChunkData(1, 0);

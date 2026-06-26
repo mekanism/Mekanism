@@ -60,8 +60,9 @@ import net.neoforged.neoforge.transfer.transaction.RootCommitJournal;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
 public abstract class LogisticalTransporterBase extends Transmitter<ResourceHandler<ItemResource>, InventoryNetwork, LogisticalTransporterBase> {
 
@@ -137,6 +138,11 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
             }
         }
         return false;
+    }
+
+    @VisibleForTesting
+    public void resetDelay() {
+        delay = 0;
     }
 
     public void onUpdateClient() {

@@ -64,12 +64,16 @@ public class InventoryNetworkTest {
           .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
     );
 
-    @GameTest(template = SIMPLE_PATH, timeoutTicks = 10 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(template = SIMPLE_PATH, timeoutTicks = 10 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that items will properly be sent back and inserted into their home if the destination is removed while the stacks are en-route.")
     public static void sendsBackToHome(final TransmitterTestHelper helper) {
         helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a second for it to pull the item out, and remove the destination
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 0, 5, Blocks.AIR))
               //Make sure the start container is empty
@@ -79,13 +83,17 @@ public class InventoryNetworkTest {
               .thenSucceed();
     }
 
-    @GameTest(template = SIMPLE_PATH, timeoutTicks = 10 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(template = SIMPLE_PATH, timeoutTicks = 10 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that items will properly be sent back and inserted into their home if the destination becomes inaccessible "
                               + "due to side changes while the stacks are en-route.")
     public static void sendsBackToHomeDisabled(final TransmitterTestHelper helper) {
         helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a second for it to pull the item out, and disable the path to the destination
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 0, 4, Direction.SOUTH, 3))
               //Make sure the start container is empty
@@ -95,13 +103,17 @@ public class InventoryNetworkTest {
               .thenSucceed();
     }
 
-    @GameTest(template = SIMPLE_PATH, timeoutTicks = 10 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(template = SIMPLE_PATH, timeoutTicks = 10 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that items will properly be sent back and inserted into their home if the destination becomes inaccessible "
                               + "due to a transporter color change while the stacks are en-route.")
     public static void sendsBackToHomeColorChanged(final TransmitterTestHelper helper) {
         helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a second for it to pull the item out, and then color the path to the destination
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 0, 4, Direction.UP))
               //Make sure the start container is empty
@@ -111,7 +123,7 @@ public class InventoryNetworkTest {
               .thenSucceed();
     }
 
-    @GameTest
+    @GameTest(setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that items will be able to continue to their destination if the color changes but is still valid for the en-route stack.")
     public static void colorChangesStillValid(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(1, 1, 6)
@@ -125,8 +137,12 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a second for it to pull the item out, and then color the path to the destination
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 0, 4, Direction.UP))
               //And then after a few seconds that the item has transferred to the destination
@@ -137,7 +153,7 @@ public class InventoryNetworkTest {
         );
     }
 
-    @GameTest(timeoutTicks = 15 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(timeoutTicks = 15 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that items will properly be sent back and inserted into their home if the destination fills up while the stacks are en-route. "
                               + "And then will be sent to the inventory when there is room again.")
     public static void sendsBackToHomeWhileFilled(final DynamicTest test) {
@@ -152,8 +168,12 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               .thenMap(() -> helper.getBlockEntity(0, 0, 5, BarrelBlockEntity.class))
               //Wait a second for it to pull the item out, and fill the last slot of the barrel
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, barrel -> barrel.setItem(26, Items.OAK_LOG.getDefaultInstance()))
@@ -169,7 +189,7 @@ public class InventoryNetworkTest {
         );
     }
 
-    @GameTest(timeoutTicks = 10 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(timeoutTicks = 10 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that items will properly be sent back and inserted into their home if the destination becomes inaccessible "
                               + "due to a diversion transporter's power level changing while the stacks are en-route.")
     public static void sendsBackHomeDiversionDisabled(final DynamicTest test) {
@@ -187,8 +207,12 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a second for it to pull the item out, and then pull the lever that is controlling the diversion transporter
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.pullLever(0, 1, 4))
               //Make sure the start container is empty
@@ -199,7 +223,7 @@ public class InventoryNetworkTest {
         );
     }
 
-    @GameTest(timeoutTicks = 8 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(timeoutTicks = 8 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that items will properly get to their destination, even if one of the paths to them is disabled, but another exists.")
     public static void pathDisabledButStillHasPath(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 1, 6)
@@ -214,8 +238,12 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a second for it to pull the item out, and disable the base path to the destination
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 0, 4, Direction.SOUTH, 3))
               //Make sure the start container is empty
@@ -226,13 +254,17 @@ public class InventoryNetworkTest {
         );
     }
 
-    @GameTest(template = SIMPLE_PATH, timeoutTicks = 16 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(template = SIMPLE_PATH, timeoutTicks = 16 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that idling items will properly find a destination if both the destination and source are removed "
                               + "and then later a new destination is added.")
     public static void findPathFromIdle(final TransmitterTestHelper helper) {
         helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a second for it to pull the item out, and remove the destination
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 0, 5, Blocks.AIR))
               .thenExecute(() -> helper.setBlock(0, 0, 0, Blocks.AIR))
@@ -242,7 +274,7 @@ public class InventoryNetworkTest {
               .thenSucceed();
     }
 
-    @GameTest(timeoutTicks = 16 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(timeoutTicks = 16 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that any items that are currently en-route to a closer destination will recalculate their paths "
                               + "if the shorter destination is removed.")
     public static void shorterDestinationRemoved(final DynamicTest test) {
@@ -259,14 +291,18 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE, 20))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE, 20);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a few seconds for it to pull some items out, and remove the transporter to the shorter destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(1, 0, 2, Blocks.AIR))
               //Validate original destination has expected count
-              .thenExecute(() -> helper.assertContainerContains(2, 0, 2, Items.STONE, 2))
+              .thenExecute(() -> helper.assertContainerContains(2, 0, 2, Items.STONE, 3))
               //Validate that two items were dropped when the transporter was broken
-              .thenExecute(() -> helper.assertItemEntityCountIs(Items.STONE, new BlockPos(1, 0, 2), 1, 2))
+              .thenExecute(() -> helper.assertItemEntityCountIs(Items.STONE, new BlockPos(1, 0, 2), 1, 1))
               //Validate new destination has expected count after we give some time for the items to transfer
               .thenExecuteAfter(11 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE, 16))
               //Validate start is also empty
@@ -275,7 +311,7 @@ public class InventoryNetworkTest {
         );
     }
 
-    @GameTest(timeoutTicks = 15 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(timeoutTicks = 15 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that newly pulled items will go to the new destination that has a shorter path, "
                               + "but any items that were already en-route will continue to the destination they had already calculated.")
     public static void shorterNewDestination(final DynamicTest test) {
@@ -291,8 +327,12 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE, 20))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE, 20);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a few seconds for it to pull some items out, and add a transporter to create a shorter destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(1, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState()))
               //Validate original destination has expected count
@@ -305,7 +345,7 @@ public class InventoryNetworkTest {
         );
     }
 
-    @GameTest(timeoutTicks = 15 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(timeoutTicks = 15 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that newly pulled items will go to the new destination that has a shorter path now that it has been re-enabled, "
                               + "but any items that were already en-route will continue to the destination they had already calculated.")
     public static void shorterEnabledPath(final DynamicTest test) {
@@ -324,8 +364,12 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE, 20))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE, 20);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a few seconds for it to pull some items out, re-enable a disabled path to make there be a shorter destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(1, 0, 2, Direction.WEST))
               //Validate original destination has expected count
@@ -338,7 +382,7 @@ public class InventoryNetworkTest {
         );
     }
 
-    @GameTest
+    @GameTest(setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that nothing changes as colorless transporter stacks cannot enter a colored transporter.")
     public static void colorlessIntoColor(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(2, 1, 2)
@@ -352,8 +396,12 @@ public class InventoryNetworkTest {
 
         //Note: We initialize the starting inventory above
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a little to validate nothing is happening
               //Validate original destination has the starting amount
               .thenExecuteAfter(2 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 0, Items.STONE))
@@ -363,7 +411,7 @@ public class InventoryNetworkTest {
         );
     }
 
-    @GameTest
+    @GameTest(setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that the stack moves to the further chest as the closer one has the color not matching.")
     public static void colorMatches(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 1, 4)
@@ -380,8 +428,12 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE, 2))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE, 2);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a few seconds for transferring to happen then validate stuff
               //Validate colored destination has expected count
               .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(2, 0, 3, Items.STONE, 2))
@@ -393,7 +445,7 @@ public class InventoryNetworkTest {
         );
     }
 
-    @GameTest
+    @GameTest(setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that the stack moves to the closer destination as even though it is colorless and the further one has the original color, "
                               + "it is further away.")
     public static void colorIsNotPriority(final DynamicTest test) {
@@ -410,8 +462,12 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE, 2))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE, 2);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a few seconds for transferring to happen then validate stuff
               //Validate colored destination has expected count
               .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(1, 0, 2, Items.STONE, 2))
@@ -423,7 +479,7 @@ public class InventoryNetworkTest {
         );
     }
 
-    @GameTest
+    @GameTest(setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that restrictive transporters are properly treated as lower priority.")
     public static void restrictiveIsLowPriority(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(2, 1, 6)
@@ -440,8 +496,12 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a few seconds for transferring to happen then validate stuff
               .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE))
               .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
@@ -450,13 +510,17 @@ public class InventoryNetworkTest {
         );
     }
 
-    @GameTest(template = UPGRADEABLE, timeoutTicks = 20 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(template = UPGRADEABLE, timeoutTicks = 20 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that newly pulled items will go to the destination that had its path upgraded, "
                               + "but any items that were already en-route will continue to the destination they had already calculated.")
     public static void upgradeFurtherPath(final TransmitterTestHelper helper) {
         helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(3, 0, 0, Items.STONE, 20))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(3, 0, 0, Items.STONE, 20);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(3, 0, 1);
+              })
               //Wait a few seconds for it to pull some items out, and upgrade the transporter to the further destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.applyAlloyUpgrade(new BlockPos(9, 0, 0), AlloyTier.INFUSED))
               //Wait a few seconds for transferring to happen then validate stuff
@@ -469,14 +533,18 @@ public class InventoryNetworkTest {
               .thenSucceed();
     }
 
-    @GameTest(template = UPGRADEABLE, timeoutTicks = 20 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(template = UPGRADEABLE, timeoutTicks = 20 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that newly pulled items will go to the destination that had its path upgraded, "
                               + "but any items that were already en-route will continue to the destination they had "
                               + "already calculated as the new destination is slightly \"closer\".")
     public static void upgradeFurtherOverlapping(final TransmitterTestHelper helper) {
         helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(3, 0, 0, Items.STONE, 20))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(3, 0, 0, Items.STONE, 20);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(3, 0, 1);
+              })
               //Wait a few seconds for it to pull some items out, and upgrade the transporter to the further destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.applyAlloyUpgrade(new BlockPos(6, 0, 2), AlloyTier.INFUSED))
               //Wait a few seconds for transferring to happen then validate stuff
@@ -489,12 +557,16 @@ public class InventoryNetworkTest {
               .thenSucceed();
     }
 
-    @GameTest(template = UPGRADEABLE, timeoutTicks = 12 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(template = UPGRADEABLE, timeoutTicks = 12 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that all items pre- and post-upgrade will go to the original destination.")
     public static void upgradeExisting(final TransmitterTestHelper helper) {
         helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(3, 0, 0, Items.STONE, 20))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(3, 0, 0, Items.STONE, 20);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(3, 0, 1);
+              })
               //Wait a few seconds for it to pull some items out, and upgrade the transporter to the further destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.applyAlloyUpgrade(new BlockPos(3, 0, 2), AlloyTier.INFUSED))
               //Wait a few seconds for transferring to happen then validate stuff
@@ -507,7 +579,7 @@ public class InventoryNetworkTest {
               .thenSucceed();
     }
 
-    @GameTest(timeoutTicks = 20 * SharedConstants.TICKS_PER_SECOND)
+    @GameTest(timeoutTicks = 20 * SharedConstants.TICKS_PER_SECOND, setupTicks = SharedConstants.TICKS_PER_SECOND)
     @TestHolder(description = "Tests that diversion transporters can have the paths get switched.")
     public static void diversionSwitchPaths(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 2, 6)
@@ -533,8 +605,12 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              //Insert the items so that we only start processing once this test is started
-              .thenExecute(() -> helper.insertIntoContainer(0, 0, 0, Items.STONE, 20))
+              .thenExecute(() -> {
+                  //Insert the items so that we only start processing once this test is started
+                  helper.insertIntoContainer(0, 0, 0, Items.STONE, 20);
+                  //And reset the delay that might be present based on what tick we started ticking
+                  helper.resetTransporterDelay(0, 0, 1);
+              })
               //Wait a few seconds for it to pull some items out, and remove the transporter to the shorter destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.pullLever(0, 1, 2))
               //Validate original destination has expected count
