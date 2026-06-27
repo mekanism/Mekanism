@@ -17,7 +17,7 @@ public class ToolsSpriteSourceProvider extends BaseSpriteSourceProvider {
     protected void gather() {
         SourceList atlas = atlas(AtlasIds.SHIELD_PATTERNS);
         for (ShieldTextures textures : ShieldTextures.values()) {
-            addFiles(atlas, textures.getBase().texture());
+            addFiles(atlas, textures.getTexture().withPrefix("entity/shield/"));
         }
     }
 }

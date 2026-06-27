@@ -43,12 +43,12 @@ public class ToolsModelProvider extends BaseModelProvider {
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         //Shields
-        addShieldModel(itemModels, ToolsItems.BRONZE_SHIELD, Mekanism.rl("block/block_bronze"));
-        addShieldModel(itemModels, ToolsItems.LAPIS_LAZULI_SHIELD, mcLocation("block/lapis_block"));
-        addShieldModel(itemModels, ToolsItems.OSMIUM_SHIELD, Mekanism.rl("block/block_osmium"));
-        addShieldModel(itemModels, ToolsItems.REFINED_GLOWSTONE_SHIELD, Mekanism.rl("block/block_refined_glowstone"));
-        addShieldModel(itemModels, ToolsItems.REFINED_OBSIDIAN_SHIELD, Mekanism.rl("block/block_refined_obsidian"));
-        addShieldModel(itemModels, ToolsItems.STEEL_SHIELD, Mekanism.rl("block/block_steel"));
+        addShieldModel(itemModels, ToolsItems.BRONZE_SHIELD, Mekanism.rl("block/block_bronze"), ShieldTextures.BRONZE);
+        addShieldModel(itemModels, ToolsItems.LAPIS_LAZULI_SHIELD, mcLocation("block/lapis_block"), ShieldTextures.LAPIS_LAZULI);
+        addShieldModel(itemModels, ToolsItems.OSMIUM_SHIELD, Mekanism.rl("block/block_osmium"), ShieldTextures.OSMIUM);
+        addShieldModel(itemModels, ToolsItems.REFINED_GLOWSTONE_SHIELD, Mekanism.rl("block/block_refined_glowstone"), ShieldTextures.REFINED_GLOWSTONE);
+        addShieldModel(itemModels, ToolsItems.REFINED_OBSIDIAN_SHIELD, Mekanism.rl("block/block_refined_obsidian"), ShieldTextures.REFINED_OBSIDIAN);
+        addShieldModel(itemModels, ToolsItems.STEEL_SHIELD, Mekanism.rl("block/block_steel"), ShieldTextures.STEEL);
         //Armor items are generated textures, all other tools module items are handheld
         for (Holder<Item> holder : ToolsItems.ITEMS.getEntries()) {
             if (holder.value() instanceof ItemMekanismShield) {
@@ -129,11 +129,12 @@ public class ToolsModelProvider extends BaseModelProvider {
     private static final ModelTemplate SHIELD_BLOCKING = new ModelTemplate(Optional.of(Identifier.withDefaultNamespace("item/shield_blocking")), Optional.of("_blocking"), TextureSlot.PARTICLE);
 
     /// Inlined and adapted from [ItemModelGenerators#generateShield(Item)] to use our renderer and vanilla's base model
-    private void addShieldModel(ItemModelGenerators itemModels, Holder<Item> shield, Identifier particle) {
+    private void addShieldModel(ItemModelGenerators itemModels, Holder<Item> shield, Identifier particle, ShieldTextures texture) {
         Item item = shield.value();
         TextureMapping textureMapping = TextureMapping.particle(new Material(particle));
-        ItemModel.Unbaked normal = ItemModelUtils.specialModel(SHIELD.create(item, textureMapping, itemModels.modelOutput), RenderMekanismShieldItem.UnbakedShield.INSTANCE);
-        ItemModel.Unbaked blocking = ItemModelUtils.specialModel(SHIELD_BLOCKING.create(item, textureMapping, itemModels.modelOutput), RenderMekanismShieldItem.UnbakedShield.INSTANCE);
+        RenderMekanismShieldItem.UnbakedShield unbaked = new RenderMekanismShieldItem.UnbakedShield(texture.getTexture());
+        ItemModel.Unbaked normal = ItemModelUtils.specialModel(SHIELD.create(item, textureMapping, itemModels.modelOutput), unbaked);
+        ItemModel.Unbaked blocking = ItemModelUtils.specialModel(SHIELD_BLOCKING.create(item, textureMapping, itemModels.modelOutput), unbaked);
         itemModels.itemModelOutput.accept(
               item,
               ItemModelUtils.conditional(

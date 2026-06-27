@@ -5,14 +5,16 @@
       "type": "minecraft:special",
       "base": "mekanismtools:item/steel_shield",
       "model": {
-        "type": "mekanismtools:shield"
+        "type": "mekanismtools:shield",
+        "texture": "mekanismtools:steel"
       }
     },
     "on_true": {
       "type": "minecraft:special",
       "base": "mekanismtools:item/steel_shield_blocking",
       "model": {
-        "type": "mekanismtools:shield"
+        "type": "mekanismtools:shield",
+        "texture": "mekanismtools:steel"
       }
     },
     "property": "minecraft:using_item",

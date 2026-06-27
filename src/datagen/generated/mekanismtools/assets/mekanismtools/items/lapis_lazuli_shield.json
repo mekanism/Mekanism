@@ -5,14 +5,16 @@
       "type": "minecraft:special",
       "base": "mekanismtools:item/lapis_lazuli_shield",
       "model": {
-        "type": "mekanismtools:shield"
+        "type": "mekanismtools:shield",
+        "texture": "mekanismtools:lapis_lazuli"
       }
     },
     "on_true": {
       "type": "minecraft:special",
       "base": "mekanismtools:item/lapis_lazuli_shield_blocking",
       "model": {
-        "type": "mekanismtools:shield"
+        "type": "mekanismtools:shield",
+        "texture": "mekanismtools:lapis_lazuli"
       }
     },
     "property": "minecraft:using_item",
