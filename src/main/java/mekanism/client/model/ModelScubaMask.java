@@ -5,7 +5,6 @@ import java.util.List;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -22,7 +21,7 @@ import net.minecraft.util.LightCoordsUtil;
 public class ModelScubaMask extends MekanismJavaModel.NoState {
 
     public static final ModelLayerLocation MASK_LAYER = new ModelLayerLocation(Mekanism.rl("scuba_mask"), "main");
-    private static final Identifier MASK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
+    private static final Identifier MASK_TEXTURE = MekanismUtils.getRenderResource("scuba_set.png");
 
     private static final ModelPartData HELMET_FEED = new ModelPartData("helmetFeed", CubeListBuilder.create()
           .texOffs(88, 43)

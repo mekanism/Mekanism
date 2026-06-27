@@ -2,7 +2,6 @@ package mekanism.client.model;
 
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -17,7 +16,7 @@ import net.minecraft.util.Unit;
 public class ModelScubaTank extends Model<Unit> {
 
     public static final ModelLayerLocation TANK_LAYER = new ModelLayerLocation(Mekanism.rl("scuba_tank"), "main");
-    private static final Identifier TANK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
+    private static final Identifier TANK_TEXTURE = MekanismUtils.getRenderResource("scuba_set.png");
 
     private static final ModelPartData TANK_L = new ModelPartData("tankL", CubeListBuilder.create()
           .texOffs(23, 54)

@@ -14,6 +14,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import org.jspecify.annotations.Nullable;
 
 public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedElement implements ISupportsWarning<GuiBar<INFO>> {
@@ -30,7 +31,11 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     private Tooltip lastTooltip;
 
     public GuiBar(IGuiWrapper gui, INFO handler, int x, int y, int width, int height, boolean horizontal) {
-        super(BAR, gui, x, y, width + 2, height + 2);
+        this(BAR, gui, handler, x, y, width, height, horizontal);
+    }
+
+    public GuiBar(Identifier resource, IGuiWrapper gui, INFO handler, int x, int y, int width, int height, boolean horizontal) {
+        super(resource, gui, x, y, width + 2, height + 2);
         this.handler = handler;
         this.horizontal = horizontal;
     }
@@ -51,34 +56,37 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
         if (warning) {
-            //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency
-            // we may as well show the background)
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WARNING_BACKGROUND_TEXTURE, relativeX + 1, relativeY + 1, 0, 0, width - 2, height - 2, 256, 256);
+            //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency we may as well show the background)
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, WARNING_BACKGROUND_TEXTURE, relativeX + 1, relativeY + 1, width - 2, height - 2);
         }
-        //Render Contents
-        drawContentsChecked(guiGraphics, mouseX, mouseY, partialTicks, handler.getLevel(), warning);
-    }
-
-    void drawContentsChecked(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
+        double handlerLevel = handler.getLevel();
         //If there are any contents render them
         if (handlerLevel > 0) {
-            renderBarOverlay(guiGraphics, mouseX, mouseY, partialTicks, handlerLevel);
+            renderBarContents(guiGraphics, mouseX, mouseY, partialTicks, handlerLevel);
             if (warning && handlerLevel >= 0.98) {
                 //Greater than 98% filled, render secondary piece anyway just to make it more visible
-                //Note: We also start the drawing after half the dimension so that we are sure it will properly line up with
+                int x0 = relativeX + 1;
+                int y0 = relativeY + 1;
+                int targetWidth = width - 2;
+                int targetHeight = height - 2;
+                //Note: We also scissor the drawing to start after half the dimension so that we are sure it will properly line up with
                 // the one drawn to the background if the contents of things are translucent
                 if (horizontal) {
-                    int halfHeight = (height - 2) / 2;
-                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WARNING_TEXTURE, relativeX + 1, relativeY + 1 + halfHeight, 0, halfHeight, width - 2, halfHeight, 256, 256);
+                    targetHeight /= 2;
+                    y0 += targetHeight;
                 } else {//vertical
-                    int halfWidth = (width - 2) / 2;
-                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WARNING_TEXTURE, relativeX + 1 + halfWidth, relativeY + 1, halfWidth, 0, halfWidth, height - 2, 256, 256);
+                    targetWidth /= 2;
+                    x0 += targetWidth;
                 }
+                guiGraphics.enableScissor(x0, y0, x0 + targetWidth, y0 + targetHeight);
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, WARNING_TEXTURE, relativeX + 1, relativeY + 1, width - 2, height - 2);
+                guiGraphics.disableScissor();
             }
         }
     }
 
-    protected abstract void renderBarOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel);
+    protected void renderBarContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    }
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
@@ -90,15 +98,9 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         setTooltip(lastTooltip);
     }
 
-    protected static int calculateScaled(double scale, int value) {
-        if (scale == 1) {
-            return value;
-        } else if (scale < 1) {
-            //Round down
-            return (int) (scale * value);
-        }//else > 1
-        //Allow rounding up
-        return (int) Math.round(scale * value);
+    protected static int calculateSize(double progress, int size) {
+        //Based on how AbstractFurnaceScreen calculates the flame progress height to always have at least 1 pixel showing if it is active
+        return Mth.ceil(progress * (size - 1)) + 1;
     }
 
     public interface IBarInfoHandler {

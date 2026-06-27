@@ -14,8 +14,6 @@ import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.common.Mekanism;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
@@ -49,8 +47,8 @@ import org.jspecify.annotations.Nullable;
 //Note: We don't just extend AbstractContainerWidget as we want to be able to reference default implementations of AbstractWidget
 public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer, ContainerEventHandler {
 
-    public static final Identifier WARNING_BACKGROUND_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning_background.png");
-    public static final Identifier WARNING_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning.png");
+    public static final Identifier WARNING_BACKGROUND_TEXTURE = Mekanism.rl("warning_background");
+    public static final Identifier WARNING_TEXTURE = Mekanism.rl("warning");
     protected static Supplier<SoundEvent> BUTTON_CLICK_SOUND = SoundEvents.UI_BUTTON_CLICK::value;
 
     public static final Minecraft minecraft = Minecraft.getInstance();

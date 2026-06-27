@@ -2,7 +2,6 @@ package mekanism.client.model;
 
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -17,7 +16,7 @@ import net.minecraft.util.Unit;
 public class ModelFlamethrower extends Model<Unit> {
 
     public static final ModelLayerLocation FLAMETHROWER_LAYER = new ModelLayerLocation(Mekanism.rl("flamethrower"), "main");
-    private static final Identifier FLAMETHROWER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "flamethrower.png");
+    private static final Identifier FLAMETHROWER_TEXTURE = MekanismUtils.getRenderResource("flamethrower.png");
 
     private static final ModelPartData RING_BOTTOM = new ModelPartData("RingBottom", CubeListBuilder.create()
           .texOffs(19, 14)

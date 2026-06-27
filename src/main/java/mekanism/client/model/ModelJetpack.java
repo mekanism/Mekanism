@@ -5,7 +5,6 @@ import java.util.List;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -21,7 +20,7 @@ import net.minecraft.util.LightCoordsUtil;
 public class ModelJetpack extends MekanismJavaModel.NoState {
 
     public static final ModelLayerLocation JETPACK_LAYER = new ModelLayerLocation(Mekanism.rl("jetpack"), "main");
-    private static final Identifier JETPACK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png");
+    private static final Identifier JETPACK_TEXTURE = MekanismUtils.getRenderResource("jetpack.png");
 
     protected static final ModelPartData PACK_TOP = new ModelPartData("packTop", CubeListBuilder.create()
           .texOffs(92, 28)

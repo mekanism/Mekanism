@@ -26,7 +26,6 @@ import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
 import mekanism.common.particle.SPSOrbitEffect;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
@@ -45,7 +44,7 @@ import org.jspecify.annotations.Nullable;
 
 public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, TileEntitySPSCasing, SPSRenderState> {
 
-    private static final RenderType CORE_RENDER_TYPE = MekanismRenderType.SPS.apply(MekanismUtils.getResource(ResourceType.RENDER, "energy_effect.png"));
+    private static final RenderType CORE_RENDER_TYPE = MekanismRenderType.SPS.apply(MekanismUtils.getRenderResource("energy_effect.png"));
     private static final Map<UUID, BoltRenderer> boltRendererMap = new HashMap<>();
 
     public static void clearBoltRenderers() {

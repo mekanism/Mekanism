@@ -14,13 +14,9 @@ import net.minecraft.resources.Identifier;
 public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
 
     public static final Identifier ENERGY_BAR = Mekanism.rl("bar/horizontal_power");
-    private static final int texWidth = 52;
-    private static final int texHeight = 4;
-
-    private final double widthScale;
 
     public GuiHorizontalPowerBar(IGuiWrapper gui, IEnergyContainer container, int x, int y) {
-        this(gui, container, x, y, texWidth);
+        this(gui, container, x, y, 52);
     }
 
     public GuiHorizontalPowerBar(IGuiWrapper gui, IEnergyContainer container, int x, int y, int desiredWidth) {
@@ -38,19 +34,15 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
     }
 
     public GuiHorizontalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y) {
-        this(gui, handler, x, y, texWidth);
+        this(gui, handler, x, y, 52);
     }
 
     public GuiHorizontalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y, int desiredWidth) {
-        super(gui, handler, x, y, desiredWidth, texHeight, true);
-        widthScale = desiredWidth / (double) texWidth;
+        super(gui, handler, x, y, desiredWidth, 4, true);
     }
 
     @Override
-    protected void renderBarOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
-        int displayInt = (int) (handlerLevel * texWidth);
-        if (displayInt > 0) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENERGY_BAR, relativeX + 1, relativeY + 1, calculateScaled(widthScale, displayInt), texHeight);
-        }
+    protected void renderBarContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENERGY_BAR, relativeX + 1, relativeY + 1, calculateSize(handlerLevel, width - 2), height - 2);
     }
 }

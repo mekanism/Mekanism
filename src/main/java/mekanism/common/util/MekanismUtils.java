@@ -371,18 +371,13 @@ public final class MekanismUtils {
         return MathUtils.clampToLong(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), energyUpgrades / (double) Upgrade.ENERGY.getMax()));
     }
 
-    /// Gets a ResourceLocation with a defined resource type and name.
+    /// Gets a ResourceLocation that is in the render folder.
     ///
-    /// @param type type of resource to retrieve
     /// @param name simple name of file to retrieve as a ResourceLocation
     ///
     /// @return the corresponding ResourceLocation
-    public static Identifier getResource(ResourceType type, String name) {
-        return Mekanism.rl(type.getPrefix() + name);
-    }
-
-    public static Identifier toLegacyResource(Identifier identifier) {
-        return identifier.withPrefix("textures/gui/sprites/").withSuffix(".png");
+    public static Identifier getRenderResource(String name) {
+        return Mekanism.rl("render/" + name);
     }
 
     public static boolean lighterThanAirGas(FluidResource resource) {
@@ -711,22 +706,6 @@ public final class MekanismUtils {
                     subTransaction.commit();
                 }
             }
-        }
-    }
-
-    public enum ResourceType {
-        GUI("gui"),
-        GUI_BAR("gui/bar"),
-        RENDER("render");
-
-        private final String prefix;
-
-        ResourceType(String s) {
-            prefix = s;
-        }
-
-        public String getPrefix() {
-            return prefix + "/";
         }
     }
 

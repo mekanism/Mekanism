@@ -5,7 +5,6 @@ import java.util.List;
 import mekanism.client.model.ModelFreeRunners.FreeRunnerRenderState;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -21,7 +20,7 @@ import net.minecraft.util.CommonColors;
 public class ModelFreeRunners extends MekanismJavaModel<FreeRunnerRenderState> {
 
     public static final ModelLayerLocation FREE_RUNNER_LAYER = new ModelLayerLocation(Mekanism.rl("free_runners"), "main");
-    private static final Identifier FREE_RUNNER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "free_runners.png");
+    private static final Identifier FREE_RUNNER_TEXTURE = MekanismUtils.getRenderResource("free_runners.png");
 
     protected static final ModelPartData SPRING_L = new ModelPartData("SpringL", CubeListBuilder.create()
           .texOffs(8, 0)

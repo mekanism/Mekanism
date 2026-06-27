@@ -4,7 +4,6 @@ import mekanism.client.model.ModelIndustrialAlarm.IndustrialAlarmRenderState;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -20,7 +19,7 @@ import net.minecraft.util.Mth;
 public class ModelIndustrialAlarm extends Model<IndustrialAlarmRenderState> {
 
     public static final ModelLayerLocation ALARM_LAYER = new ModelLayerLocation(Mekanism.rl("industrial_alarm"), "main");
-    private static final Identifier TEXTURE_ACTIVE = MekanismUtils.getResource(ResourceType.RENDER, "industrial_alarm_active.png");
+    private static final Identifier TEXTURE_ACTIVE = MekanismUtils.getRenderResource("industrial_alarm_active.png");
 
     private static final ModelPartData BULB = new ModelPartData("bulb", CubeListBuilder.create()
           .texOffs(16, 0)

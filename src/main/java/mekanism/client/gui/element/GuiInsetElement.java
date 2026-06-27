@@ -75,7 +75,7 @@ public abstract class GuiInsetElement<DATA_SOURCE extends @Nullable Object> exte
         if (warning) {
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
             //Draw the warning overlay (multiply-blended)
-            guiGraphics.blit(MekanismRenderPipelines.WARNING_PIPELINE, WARNING_TEXTURE, relativeX, relativeY, 0, 0, width, height, 256, 256);
+            guiGraphics.blitSprite(MekanismRenderPipelines.WARNING_PIPELINE, WARNING_TEXTURE, relativeX, relativeY, width, height);
         } else {
             super.draw(guiGraphics);
         }

@@ -5,7 +5,6 @@ import mekanism.api.tier.BaseTier;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -15,7 +14,7 @@ import net.minecraft.util.ARGB;
 //TODO - 26.2: Remove this in favor of just rendering a model part? (or block model - this is a simple cube)
 public class ModelEnergyCore extends MekanismJavaModel<Integer> {
 
-    private static final Identifier CORE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png");
+    private static final Identifier CORE_TEXTURE = MekanismUtils.getRenderResource("energy_core.png");
 
     public static final RenderType BATCHED_RENDER_TYPE = MekanismRenderType.STANDARD_TRANSLUCENT_TARGET.apply(CORE_TEXTURE);
     public static final RenderType RENDER_TYPE = MekanismRenderType.STANDARD.apply(CORE_TEXTURE);

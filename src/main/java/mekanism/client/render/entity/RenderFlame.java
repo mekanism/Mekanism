@@ -6,7 +6,6 @@ import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.entity.RenderFlame.FlameRenderState;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -19,7 +18,7 @@ import net.minecraft.util.ARGB;
 
 public class RenderFlame extends EntityRenderer<EntityFlame, FlameRenderState> {
 
-    private static final Identifier TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "flame.png");
+    private static final Identifier TEXTURE = MekanismUtils.getRenderResource("flame.png");
 
     private final FlameModel model;
 

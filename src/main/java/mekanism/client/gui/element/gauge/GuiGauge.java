@@ -88,9 +88,8 @@ public abstract class GuiGauge<T extends @Nullable Object> extends GuiElement im
     public void renderContents(GuiGraphicsExtractor guiGraphics) {
         boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
         if (warning) {
-            //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency
-            // we may as well show the background)
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WARNING_BACKGROUND_TEXTURE, relativeX + 1, relativeY + 1, 0, 0, width - 2, height - 2, 256, 256);
+            //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency we may as well show the background)
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, WARNING_BACKGROUND_TEXTURE, relativeX + 1, relativeY + 1, width - 2, height - 2);
         }
         int scale = getScaledLevel();
         TextureAtlasSprite icon = getIcon();
@@ -99,9 +98,13 @@ public abstract class GuiGauge<T extends @Nullable Object> extends GuiElement im
             if (warning && (scale / (double) (height - 2)) > 0.98) {
                 //If we have a warning and the gauge is entirely filled (or almost completely filled, > 95%), draw a warning vertically next to it
                 int halfWidth = (width - 2) / 2;
-                //Note: We also start the drawing after half the width so that we are sure it will properly line up with the background
+                int x0 = relativeX + 1 + halfWidth;
+                int y0 = relativeY + 1;
+                //Note: We also scissor the drawing to start after half the dimension so that we are sure it will properly line up with the background
+                guiGraphics.enableScissor(x0, y0, x0 + halfWidth, y0 + height - 2);
                 //TODO - 26.2: Should this be using MekanismRenderPipelines.WARNING_PIPELINE?
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WARNING_TEXTURE, relativeX + 1 + halfWidth, relativeY + 1, halfWidth, 0, halfWidth, height - 2, 256, 256);
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, WARNING_TEXTURE, relativeX + 1, relativeY + 1, width - 2, height - 2);
+                guiGraphics.disableScissor();
             }
         }
         //Draw the bar overlay

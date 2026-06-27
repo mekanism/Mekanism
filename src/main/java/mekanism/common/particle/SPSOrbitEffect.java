@@ -3,7 +3,6 @@ package mekanism.common.particle;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.util.RandomSource;
 import org.joml.Quaternionf;
@@ -11,7 +10,7 @@ import org.joml.Vector3f;
 
 public class SPSOrbitEffect {
 
-    public static final RenderType RENDER_TYPE = MekanismRenderType.SPS.apply(MekanismUtils.getResource(ResourceType.RENDER, "sps_orbit_effect.png"));
+    public static final RenderType RENDER_TYPE = MekanismRenderType.SPS.apply(MekanismUtils.getRenderResource("sps_orbit_effect.png"));
     public static final int COLOR = 0xF066D7ED;
 
     private final Quaternionf rotation = new Quaternionf();
