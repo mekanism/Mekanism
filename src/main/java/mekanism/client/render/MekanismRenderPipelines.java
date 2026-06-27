@@ -36,6 +36,21 @@ public class MekanismRenderPipelines {
           .withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP)
           .build();
 
+    public static final RenderPipeline MEKASUIT = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_LIGHT_DIR_SNIPPET)
+          .withLocation(Mekanism.rl("pipeline/mekasuit"))
+          .withVertexShader(Mekanism.rl("core/mekasuit"))
+          .withFragmentShader(Mekanism.rl("core/mekasuit"))
+          .withBindGroupLayout(BindGroupLayouts.SAMPLER0_SAMPLER2)
+          .withVertexBinding(0, DefaultVertexFormat.ENTITY)
+          .withPrimitiveTopology(PrimitiveTopology.QUADS)
+          .withDepthStencilState(DepthStencilState.DEFAULT)
+          //The above is from ENTITY_SNIPPET, the below is from ENTITY_CUTOUT
+          .withShaderDefine("ALPHA_CUTOUT", 0.1F)
+          .withShaderDefine("PER_FACE_LIGHTING")
+          .withBindGroupLayout(BindGroupLayouts.SAMPLER1)
+          .withCull(false)
+          .build();
+
     //Pipeline is from lightning
     public static final RenderPipeline SPS = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
           .withLocation(Mekanism.rl("pipeline/sps"))
@@ -54,6 +69,7 @@ public class MekanismRenderPipelines {
         event.registerPipeline(GUI_DST_COLOR);
         event.registerPipeline(GUI_TEXTURED_DST_COLOR);
         event.registerPipeline(GUI_TRIANGLE_STRIP);
+        event.registerPipeline(MEKASUIT);
         event.registerPipeline(SPS);
     }
 }

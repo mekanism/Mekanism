@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
@@ -71,14 +72,14 @@ public class MekanismRenderType {
                 .createCompositeState(false)
     );*/
 
-    public static final RenderType MEKASUIT = null;/*RenderType.create("mekasuit", DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 131_072, true, false,
-          RenderType.CompositeState.builder()
-                .setShaderState(MekanismShaders.MEKASUIT.shard)
-                .setTextureState(RenderType.BLOCK_SHEET)
-                .setLightmapState(RenderType.LIGHTMAP)
-                .setOverlayState(RenderType.OVERLAY)
-                .createCompositeState(true)
-    );*/
+    public static final RenderType MEKASUIT = RenderType.create("mekanism_mekasuit", RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT)
+          .withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)//TODO - 26.2: Is this the correct atlas?
+          .useLightmap()
+          .useOverlay()//TODO - 26.2: I don't think we want the overlay?
+          .affectsCrumbling()
+          .setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE)//TODO - 26.2?: affectsOutline ? RenderSetup.OutlineProperty.AFFECTS_OUTLINE : RenderSetup.OutlineProperty.NONE)
+          .createRenderSetup()
+    );
 
     public static final Function<Identifier, RenderType> SPS = Util.memoize(resourceLocation -> RenderType.create("mekanism_sps", RenderSetup.builder(MekanismRenderPipelines.SPS)
           .withTexture("Sampler0", resourceLocation)
