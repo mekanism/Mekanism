@@ -18,15 +18,22 @@ import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 @EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT)
 public class MekanismRenderPipelines {
 
+    private static final BlendFunction DST_FUNCTION = new BlendFunction(BlendFactor.DST_COLOR, BlendFactor.ZERO);
+
+    public static final RenderPipeline GUI_DST_COLOR = RenderPipeline.builder(RenderPipelines.GUI_SNIPPET)
+          .withLocation(Mekanism.rl("pipeline/gui_dst_color"))
+          .withColorTargetState(new ColorTargetState(DST_FUNCTION))
+          .build();
+
+    public static final RenderPipeline GUI_TEXTURED_DST_COLOR = RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET)
+          .withLocation(Mekanism.rl("pipeline/gui_textured_dst_color"))
+          .withColorTargetState(new ColorTargetState(DST_FUNCTION))
+          .build();
+
     /// Like [RenderPipelines#GUI] but with TriangleStrip topology
     public static final RenderPipeline GUI_TRIANGLE_STRIP = RenderPipeline.builder(RenderPipelines.GUI_SNIPPET)
           .withLocation(Mekanism.rl("pipeline/gui_triangle_strip"))
           .withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP)
-          .build();
-
-    public static final RenderPipeline WARNING_PIPELINE = RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET)
-          .withLocation(Mekanism.rl("pipeline/gui_textured_dst_color"))
-          .withColorTargetState(new ColorTargetState(new BlendFunction(BlendFactor.DST_COLOR, BlendFactor.ZERO)))
           .build();
 
     //Pipeline is from lightning
@@ -44,8 +51,9 @@ public class MekanismRenderPipelines {
 
     @SubscribeEvent
     public static void registerPipelines(RegisterRenderPipelinesEvent event) {
+        event.registerPipeline(GUI_DST_COLOR);
+        event.registerPipeline(GUI_TEXTURED_DST_COLOR);
         event.registerPipeline(GUI_TRIANGLE_STRIP);
         event.registerPipeline(SPS);
-        event.registerPipeline(WARNING_PIPELINE);
     }
 }

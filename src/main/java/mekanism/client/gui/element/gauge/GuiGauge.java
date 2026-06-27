@@ -102,7 +102,7 @@ public abstract class GuiGauge<T extends @Nullable Object> extends GuiElement im
                 int y0 = relativeY + 1;
                 //Note: We also scissor the drawing to start after half the dimension so that we are sure it will properly line up with the background
                 guiGraphics.enableScissor(x0, y0, x0 + halfWidth, y0 + height - 2);
-                //TODO - 26.2: Should this be using MekanismRenderPipelines.WARNING_PIPELINE?
+                //TODO - 26.2: Should this be using MekanismRenderPipelines.GUI_TEXTURED_DST_COLOR?
                 guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, WARNING_TEXTURE, relativeX + 1, relativeY + 1, width - 2, height - 2);
                 guiGraphics.disableScissor();
             }
