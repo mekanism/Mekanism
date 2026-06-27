@@ -13,7 +13,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.integration.curios.CuriosIntegration;
+import mekanism.common.integration.curios.ICuriosHelper;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.TypedInstance;
@@ -128,8 +128,8 @@ public interface IJetpackItem {
         ItemAccess chest = ItemAccessUtils.forEntitySlot(entity, EquipmentSlot.CHEST);
         if (matcher.test(chest)) {
             return chest;
-        } else if (Mekanism.hooks.curios.isLoaded()) {
-            return CuriosIntegration.findFirstCurio(entity, matcher);
+        } else if (Mekanism.hooks.curios.isLoaded() && ICuriosHelper.INSTANCE != null) {
+            return ICuriosHelper.INSTANCE.findFirstCurio(entity, matcher);
         }
         return null;
     }

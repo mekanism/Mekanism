@@ -349,7 +349,7 @@ public class ClientTickHandler {
             entityModel.head.visible = showModel;
             entityModel.hat.visible = showModel;
             if (state instanceof AvatarRenderState playerState) {
-                //TODO -1.21.11: Figure this out?
+                //TODO - 26.2: Figure this out?
                 playerState.showExtraEars = showModel;
             }
         }

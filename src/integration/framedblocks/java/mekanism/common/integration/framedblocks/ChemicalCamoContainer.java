@@ -47,7 +47,7 @@ final class ChemicalCamoContainer extends ResourceCamoContainer<ChemicalResource
 
     @Override
     public CamoContainerFactory<ChemicalCamoContainer> getFactory() {
-        return FramedBlocksIntegration.CHEMICAL_FACTORY.get();
+        return MekanismFramedBlocks.CHEMICAL_FACTORY.get();
     }
 
     @Override

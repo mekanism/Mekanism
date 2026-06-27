@@ -9,7 +9,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.curios.CuriosIntegration;
+import mekanism.common.integration.curios.ICuriosHelper;
+import mekanism.common.integration.curios.ICuriosHelper.CuriosSlotTarget;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.item.interfaces.IChemicalItem;
 import mekanism.common.item.interfaces.IModeItem;
@@ -25,8 +26,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.KeyModifier;
-import top.theillusivec4.curios.api.SlotContext;
-import top.theillusivec4.curios.api.SlotResult;
 
 public class MekanismKeyHandler {
 
@@ -84,15 +83,15 @@ public class MekanismKeyHandler {
             if (IModeItem.isModeItem(player, slot)) {
                 PacketUtils.sendToServer(new PacketModeChange(slot, player.isShiftKeyDown()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC);
-            } else if (Mekanism.hooks.curios.isLoaded()) {
-                Optional<SlotResult> curiosResult = CuriosIntegration.findFirstCurioAsResult(player, stack -> {
+            } else if (Mekanism.hooks.curios.isLoaded() && ICuriosHelper.INSTANCE != null) {
+                Optional<CuriosSlotTarget> curiosResult = ICuriosHelper.INSTANCE.findFirstCurioSlotTarget(player, stack -> {
                     if (stack.canEquip(slot, player) && IModeItem.isModeItem(stack, slot)) {
                         return !(stack.getItem() instanceof IChemicalItem item) || item.hasChemical(stack);
                     }
                     return false;
                 });
                 if (curiosResult.isPresent()) {
-                    SlotContext slotContext = curiosResult.get().slotContext();
+                    CuriosSlotTarget slotContext = curiosResult.get();
                     PacketUtils.sendToServer(new PacketModeChangeCurios(slotContext.identifier(), slotContext.index(), player.isShiftKeyDown()));
                     SoundHandler.playSound(MekanismSounds.HYDRAULIC);
                 }

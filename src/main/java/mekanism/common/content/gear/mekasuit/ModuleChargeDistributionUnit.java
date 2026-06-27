@@ -11,7 +11,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
 import mekanism.common.content.network.distribution.EnergySaveTarget.SaveHandler;
-import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.EnergyUtils;
 import net.minecraft.resources.Identifier;
@@ -100,10 +99,10 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
             availableEnergy -= EnergyUtils.chargeContents(energyHandler, playerInv.getHandSlots(), availableEnergy, transaction);
             if (availableEnergy > 0) {
                 availableEnergy -= EnergyUtils.chargeContents(energyHandler, playerInv.getMainSlots(), availableEnergy, transaction, selectedSlot);
-                if (availableEnergy > 0 && Mekanism.hooks.curios.isLoaded()) {
-                    ResourceHandler<ItemResource> handler = CuriosIntegration.getCuriosInventory(player);
-                    if (handler != null) {
-                        EnergyUtils.chargeContents(energyHandler, handler, availableEnergy, transaction);
+                if (availableEnergy > 0) {
+                    ResourceHandler<ItemResource> curiosInventory = Mekanism.hooks.getCuriosInventory(player);
+                    if (curiosInventory != null) {
+                        EnergyUtils.chargeContents(energyHandler, curiosInventory, availableEnergy, transaction);
                     }
                 }
             }

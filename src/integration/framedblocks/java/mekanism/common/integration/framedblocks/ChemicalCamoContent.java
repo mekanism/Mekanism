@@ -5,6 +5,7 @@ import io.github.xfacthd.framedblocks.api.camo.CamoContentClientHandler;
 import io.github.xfacthd.framedblocks.api.camo.resource.ResourceCamoContent;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.client.integration.framedblocks.ChemicalCamoClientHandler;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,7 +24,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.MapColor;
 import org.jspecify.annotations.Nullable;
 
-final class ChemicalCamoContent extends ResourceCamoContent<ChemicalResource, ChemicalCamoContent> {
+public final class ChemicalCamoContent extends ResourceCamoContent<ChemicalResource, ChemicalCamoContent> {
 
     private final MapColor mapColor;
 

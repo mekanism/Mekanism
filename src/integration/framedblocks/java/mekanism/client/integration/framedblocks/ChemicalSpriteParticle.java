@@ -1,7 +1,8 @@
-package mekanism.common.integration.framedblocks;
+package mekanism.client.integration.framedblocks;
 
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.integration.framedblocks.ChemicalParticleOptions;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;

@@ -18,7 +18,6 @@ import mekanism.client.integration.emi.EmiAliasProvider;
 import mekanism.client.integration.emi.MekanismEmiDefaults;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
 import mekanism.client.recipe_viewer.alias.MekanismAliasMapping;
-import mekanism.common.integration.projecte.MekanismCustomConversions;
 import mekanism.common.lib.FieldReflectionHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
@@ -59,13 +58,14 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
             fakeProviders.add("EMI Default Recipe Provider: mekanism");
         }
         if (Mekanism.hooks.projecte.isLoaded()) {
-            gen.addProvider(true, new MekanismCustomConversions(output, lookupProvider));
+            throw new UnsupportedOperationException("Re-enable ProjectE Custom Conversion Provider");
+            //gen.addProvider(true, new MekanismCustomConversions(output, lookupProvider));
         } else {
             pathsToSkip.add("pe_custom_conversions");
             fakeProviders.add("Custom EMC Conversions: mekanism");
         }
         if (Mekanism.hooks.craftTweaker.isLoaded()) {
-            throw new UnsupportedOperationException("uncomment me, then");
+            throw new UnsupportedOperationException("Re-enable CrT Example Provider");
             //gen.addProvider(true, new MekanismCrTExampleProvider(output, serverResources, lookupProvider));
         } else {
             pathsToSkip.add("scripts");

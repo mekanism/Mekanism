@@ -1,7 +1,7 @@
 package mekanism.common.network.to_server;
 
 import mekanism.common.Mekanism;
-import mekanism.common.integration.curios.CuriosIntegration;
+import mekanism.common.integration.curios.ICuriosHelper;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IModeItem.DisplayChange;
 import mekanism.common.network.IMekanismPacket;
@@ -41,9 +41,9 @@ public record PacketModeChangeCurios(String slotType, int slot, int shift, boole
 
     @Override
     public void handle(IPayloadContext context) {
-        if (Mekanism.hooks.curios.isLoaded()) {
+        if (Mekanism.hooks.curios.isLoaded() && ICuriosHelper.INSTANCE != null) {
             Player player = context.player();
-            ItemStack stack = CuriosIntegration.getCurioStack(player, slotType, slot);
+            ItemStack stack = ICuriosHelper.INSTANCE.getCurioStack(player, slotType, slot);
             if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     modeItem.changeMode(player, ItemAccess.forStack(stack), shift, displayChangeMessage ? DisplayChange.OTHER : DisplayChange.NONE, transaction);

@@ -5,24 +5,27 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.common.integration.computer.FactoryRegistry;
 import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
-import mekanism.common.integration.curios.CuriosIntegration;
-import mekanism.common.integration.framedblocks.FramedBlocksIntegration;
 import mekanism.common.integration.gender.MekanismGenderArmor;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.resources.Identifier;
-import net.neoforged.bus.api.IEventBus;
+import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
+import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 
 /// Hooks for Mekanism. Use to grab items or blocks out of different mods.
 public final class MekanismHooks {
 
     //Note: These have to be static for use in CraftTweaker/Mod entrypoint annotations
-    public static final String CRAFT_TWEAKER_MOD_ID = "crafttweaker";
+    public static final String CURIOS_MOD_ID = "curios";
+    public static final String FRAMED_BLOCKS_MOD_ID = "framedblocks";
     public static final String JEITWEAKER_MOD_ID = "jeitweaker";
     public static final String PROJECTE_MOD_ID = "projecte";
     public static final String TOP_MOD_ID = "theoneprobe";
@@ -61,13 +64,15 @@ public final class MekanismHooks {
     public final IntegrationInfo recipeStages;
     public final IntegrationInfo theOneProbe;
 
+    private final EntityCapability<ResourceHandler<ItemResource>, @Nullable Void> curiosItemHandler;
+
     public MekanismHooks() {
         ModList modList = ModList.get();
         //Note: The modlist is null when running tests
-        Predicate<String> loadedCheck = modList == null ? modid -> false : modList::isLoaded;
+        Predicate<String> loadedCheck = modList == null ? _ -> false : modList::isLoaded;
         computerCraft = new IntegrationInfo("computercraft", loadedCheck);
-        craftTweaker = new IntegrationInfo(CRAFT_TWEAKER_MOD_ID, loadedCheck);
-        curios = new IntegrationInfo("curios", loadedCheck);
+        craftTweaker = new IntegrationInfo("crafttweaker", loadedCheck);
+        curios = new IntegrationInfo(CURIOS_MOD_ID, loadedCheck);
         darkModeEverywhere = new IntegrationInfo("darkmodeeverywhere", loadedCheck);
         jei = new IntegrationInfo("jei", loadedCheck);
         emi = new IntegrationInfo("emi", loadedCheck);
@@ -76,21 +81,13 @@ public final class MekanismHooks {
         recipeStages = new IntegrationInfo("recipestages", loadedCheck);
         theOneProbe = new IntegrationInfo("TOP_MOD_ID", loadedCheck);
         genderMod = new IntegrationInfo("wildfire_gender", loadedCheck);
-        framedBlocks = new IntegrationInfo("framedblocks", loadedCheck);
+        framedBlocks = new IntegrationInfo(FRAMED_BLOCKS_MOD_ID, loadedCheck);
+        curiosItemHandler = EntityCapability.createVoid(curios.rl("item_handler"), ResourceHandler.asClass());
     }
 
-    public void hookConstructor(final IEventBus modEventBus) {
-        //TODO: Evaluate if we want to move any of these into their own class and just have them in a constructor as another entrypoint
-        if (curios.isLoaded()) {
-            CuriosIntegration.addListeners(modEventBus);
-        }
-        //TODO - 26.2: projectE
-        //if (projecte.isLoaded()) {
-        //    MekanismNormalizedSimpleStacks.NSS_SERIALIZERS.register(modEventBus);
-        //}
-        if (framedBlocks.isLoaded()) {
-            FramedBlocksIntegration.init(modEventBus);
-        }
+    @Nullable
+    public ResourceHandler<ItemResource> getCuriosInventory(LivingEntity entity) {
+        return entity.getCapability(curiosItemHandler);
     }
 
     public void hookCapabilityRegistration(RegisterCapabilitiesEvent event) {

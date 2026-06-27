@@ -8,7 +8,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
-record ChemicalParticleOptions(ChemicalResource chemical) implements ParticleOptions {
+public record ChemicalParticleOptions(ChemicalResource chemical) implements ParticleOptions {
 
     private static final MapCodec<ChemicalParticleOptions> CODEC = ChemicalResource.OPTIONAL_CODEC.xmap(
           ChemicalParticleOptions::new,
@@ -21,10 +21,10 @@ record ChemicalParticleOptions(ChemicalResource chemical) implements ParticleOpt
 
     @Override
     public ParticleType<?> getType() {
-        return FramedBlocksIntegration.CHEMICAL_PARTICLE.value();
+        return MekanismFramedBlocks.CHEMICAL_PARTICLE.value();
     }
 
-    static final class Type extends ParticleType<ChemicalParticleOptions> {
+    public static final class Type extends ParticleType<ChemicalParticleOptions> {
 
         Type() {
             super(false);

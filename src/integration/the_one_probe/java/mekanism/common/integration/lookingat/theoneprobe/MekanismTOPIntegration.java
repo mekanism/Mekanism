@@ -10,6 +10,6 @@ import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 public class MekanismTOPIntegration {
 
     public MekanismTOPIntegration(IEventBus modEventBus) {
-        modEventBus.addListener(InterModEnqueueEvent.class, event -> Mekanism.hooks.theOneProbe.sendImc("getTheOneProbe", TOPProvider::new));
+        modEventBus.addListener(InterModEnqueueEvent.class, _ -> Mekanism.hooks.theOneProbe.sendImc("getTheOneProbe", TOPProvider::new));
     }
 }

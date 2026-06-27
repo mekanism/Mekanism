@@ -1,4 +1,4 @@
-package mekanism.client.render;
+package mekanism.client.integration.curios;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.render.armor.ICustomArmor;

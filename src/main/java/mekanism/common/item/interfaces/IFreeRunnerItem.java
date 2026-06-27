@@ -12,7 +12,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.curios.CuriosIntegration;
+import mekanism.common.integration.curios.ICuriosHelper;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
@@ -115,8 +115,8 @@ public interface IFreeRunnerItem {
         ItemAccess feet = ItemAccessUtils.forEntitySlot(entity, EquipmentSlot.FEET);
         if (matcher.test(feet)) {
             return feet;
-        } else if (Mekanism.hooks.curios.isLoaded()) {
-            return CuriosIntegration.findFirstCurio(entity, matcher);
+        } else if (Mekanism.hooks.curios.isLoaded() && ICuriosHelper.INSTANCE != null) {
+            return ICuriosHelper.INSTANCE.findFirstCurio(entity, matcher);
         }
         return null;
     }

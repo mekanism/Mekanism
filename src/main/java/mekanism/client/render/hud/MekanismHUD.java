@@ -8,7 +8,6 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.client.render.HUDRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.client.DeltaTracker;
@@ -72,16 +71,14 @@ public class MekanismHUD implements GuiLayer {
                     count += makeComponent(hudProvider, player, stack, slotType, renderStrings, IItemHUDProvider::addHUDStrings);
                 }
             }
-            if (Mekanism.hooks.curios.isLoaded()) {
-                ResourceHandler<ItemResource> inv = CuriosIntegration.getCuriosInventory(player);
-                if (inv != null) {
-                    for (int i = 0, slots = inv.size(); i < slots; i++) {
-                        ItemResource stack = inv.getResource(i);
-                        IItemHUDProvider hudProvider = getHudProvider(stack);
-                        if (hudProvider != null) {
-                            count += makeComponent(hudProvider, player, stack.toStack(), null, renderStrings,
-                                  (provider, l, plyr, s, _) -> provider.addCurioHUDStrings(l, plyr, s));
-                        }
+            ResourceHandler<ItemResource> curiosInventory = Mekanism.hooks.getCuriosInventory(player);
+            if (curiosInventory != null) {
+                for (int i = 0, slots = curiosInventory.size(); i < slots; i++) {
+                    ItemResource stack = curiosInventory.getResource(i);
+                    IItemHUDProvider hudProvider = getHudProvider(stack);
+                    if (hudProvider != null) {
+                        count += makeComponent(hudProvider, player, stack.toStack(), null, renderStrings,
+                              (provider, l, plyr, s, _) -> provider.addCurioHUDStrings(l, plyr, s));
                     }
                 }
             }
