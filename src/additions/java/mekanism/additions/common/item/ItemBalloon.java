@@ -4,7 +4,6 @@ import java.util.List;
 import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.lib.math.Pos3D;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -12,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -45,7 +45,8 @@ public class ItemBalloon extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide()) {
             boolean rightHand = MekanismUtils.isRightArm(player, hand);
-            Vec3 pos = new Pos3D(rightHand ? -0.4 : 0.4, 0, 0.3).yRot(player.yBodyRot).translate(new Pos3D(player));
+            Vec3 shift = new Vec3(rightHand ? -0.4 : 0.4, 0, 0.3).yRot(-player.yBodyRot * Mth.DEG_TO_RAD);
+            Vec3 pos = player.position().add(shift);
             EntityBalloon balloon = EntityBalloon.create(world, pos.x - 0.5, pos.y - 1.25, pos.z - 0.5, color);
             if (balloon == null) {
                 return InteractionResult.FAIL;

@@ -8,13 +8,13 @@ import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.block.attribute.Attributes;
-import mekanism.common.lib.math.Pos3D;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.phys.Vec3;
 
 public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE> {
 
@@ -22,8 +22,8 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE
         super(tileEntityRegistrar, description);
         // add default particle effects
         add(new AttributeParticleFX()
-              .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, 0.52))
-              .add(DustParticleOptions.REDSTONE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, 0.52)));
+              .add(ParticleTypes.SMOKE, rand -> new Vec3(rand.nextDouble() * 0.6 - 0.3, rand.nextDouble() * 6.0 / 16.0, 0.52))
+              .add(DustParticleOptions.REDSTONE, rand -> new Vec3(rand.nextDouble() * 0.6 - 0.3, rand.nextDouble() * 6.0 / 16.0, 0.52)));
         add(Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), Attributes.INVENTORY, Attributes.SECURITY, Attributes.REDSTONE, Attributes.COMPARATOR,
               AttributeUpgradeSupport.DEFAULT_MACHINE_UPGRADES);
     }

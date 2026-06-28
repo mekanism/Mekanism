@@ -2,7 +2,6 @@ package mekanism.client.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import mekanism.common.lib.math.Pos3D;
 import mekanism.common.particle.LaserParticleData;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -157,8 +156,8 @@ public class LaserParticle extends SingleQuadParticle {
 
         @Override
         public LaserParticle createParticle(LaserParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
-            Pos3D start = new Pos3D(x, y, z);
-            Pos3D end = start.translate(data.direction(), data.distance());
+            Vec3 start = new Vec3(x, y, z);
+            Vec3 end = start.relative(data.direction(), data.distance());
             return new LaserParticle(world, start, end, data.direction(), data.energyScale(), spriteSet.get(random));
         }
     }

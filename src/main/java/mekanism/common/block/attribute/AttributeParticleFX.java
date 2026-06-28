@@ -3,9 +3,9 @@ package mekanism.common.block.attribute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import mekanism.common.lib.math.Pos3D;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec3;
 
 public class AttributeParticleFX implements Attribute {
 
@@ -15,7 +15,7 @@ public class AttributeParticleFX implements Attribute {
         return particleFunctions;
     }
 
-    public AttributeParticleFX addDense(ParticleOptions type, int density, Function<RandomSource, Pos3D> posSupplier) {
+    public AttributeParticleFX addDense(ParticleOptions type, int density, Function<RandomSource, Vec3> posSupplier) {
         Function<RandomSource, Particle> particleFunction = random -> new Particle(type, posSupplier.apply(random));
         for (int i = 0; i < density; i++) {
             particleFunctions.add(particleFunction);
@@ -23,7 +23,7 @@ public class AttributeParticleFX implements Attribute {
         return this;
     }
 
-    public AttributeParticleFX add(ParticleOptions type, Function<RandomSource, Pos3D> posSupplier) {
+    public AttributeParticleFX add(ParticleOptions type, Function<RandomSource, Vec3> posSupplier) {
         particleFunctions.add(random -> new Particle(type, posSupplier.apply(random)));
         return this;
     }
@@ -31,9 +31,9 @@ public class AttributeParticleFX implements Attribute {
     public static class Particle {
 
         private final ParticleOptions type;
-        private final Pos3D pos;
+        private final Vec3 pos;
 
-        protected Particle(ParticleOptions type, Pos3D pos) {
+        protected Particle(ParticleOptions type, Vec3 pos) {
             this.type = type;
             this.pos = pos;
         }
@@ -42,7 +42,7 @@ public class AttributeParticleFX implements Attribute {
             return type;
         }
 
-        public Pos3D getPos() {
+        public Vec3 getPos() {
             return pos;
         }
     }

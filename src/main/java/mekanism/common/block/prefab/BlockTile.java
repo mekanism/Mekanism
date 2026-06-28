@@ -15,6 +15,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -83,17 +84,18 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
             AttributeParticleFX particleFX = type.get(AttributeParticleFX.class);
             if (particleFX != null && Attribute.isActive(state)) {
                 Direction facing = Attribute.getFacing(state);
+                Vec3 center = Vec3.atCenterOf(pos);
                 for (Function<RandomSource, Particle> particleFunction : particleFX.getParticleFunctions()) {
                     Particle particle = particleFunction.apply(random);
                     Vec3 particlePos = particle.getPos();
                     if (facing == Direction.WEST) {
-                        particlePos = particlePos.yRot(90);
+                        particlePos = particlePos.yRot(Mth.HALF_PI);
                     } else if (facing == Direction.EAST) {
-                        particlePos = particlePos.yRot(270);
+                        particlePos = particlePos.yRot(-Mth.HALF_PI);
                     } else if (facing == Direction.NORTH) {
-                        particlePos = particlePos.yRot(180);
+                        particlePos = particlePos.yRot(Mth.PI);
                     }
-                    particlePos = particlePos.add(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+                    particlePos = particlePos.add(center);
                     world.addParticle(particle.getType(), particlePos.x, particlePos.y, particlePos.z, 0.0D, 0.0D, 0.0D);
                 }
             }

@@ -14,7 +14,6 @@ import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.lib.math.Pos3D;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
@@ -23,6 +22,7 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.phys.Vec3;
 
 public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<TILE> {
 
@@ -67,10 +67,10 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
                 case SMELTING, ENRICHING, CRUSHING, COMBINING, SAWING -> AttributeSideConfig.ELECTRIC_MACHINE;
                 case COMPRESSING, INJECTING, PURIFYING, INFUSING -> AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE;
             });
-            builder.replace(new AttributeParticleFX().addDense(ParticleTypes.SMOKE, 5, rand -> new Pos3D(
-                  rand.nextFloat() * 0.7F - 0.3F,
-                  rand.nextFloat() * 0.1F + 0.7F,
-                  rand.nextFloat() * 0.7F - 0.3F
+            builder.replace(new AttributeParticleFX().addDense(ParticleTypes.SMOKE, 5, rand -> new Vec3(
+                  rand.nextDouble() * 0.7 - 0.3,
+                  rand.nextDouble() * 0.1 + 0.7,
+                  rand.nextDouble() * 0.7 - 0.3
             )));
             return builder;
         }

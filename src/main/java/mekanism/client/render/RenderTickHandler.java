@@ -21,7 +21,6 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.effect.BoltEffect;
-import mekanism.common.lib.math.Pos3D;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -218,12 +217,12 @@ public class RenderTickHandler {
                             if (!(p.getItemInHand(usedHand).getItem() instanceof ItemFlamethrower)) {
                                 //If we the used item isn't a flamethrower, grab the other hand's item for checks
                                 // if it was an active flamethrower we just skip adding the idle particles
-                                tryAddIdleFlamethrowerParticles(minecraft, p, usedHand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
+                                tryAddIdleFlamethrowerParticles(minecraft, p, usedHand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND, partialTicks);
                             }
-                        } else if (!tryAddIdleFlamethrowerParticles(minecraft, p, InteractionHand.MAIN_HAND)) {
+                        } else if (!tryAddIdleFlamethrowerParticles(minecraft, p, InteractionHand.MAIN_HAND, partialTicks)) {
                             //If the player isn't using an item, try to first add particles for a flamethrower in the main hand
                             // and then add particles for a flamethrower in the offhand if we failed
-                            tryAddIdleFlamethrowerParticles(minecraft, p, InteractionHand.OFF_HAND);
+                            tryAddIdleFlamethrowerParticles(minecraft, p, InteractionHand.OFF_HAND, partialTicks);
                         }
                     }
                 }
@@ -232,63 +231,69 @@ public class RenderTickHandler {
     }
 
     private static void doScubaRender(Player p, Level world) {
-        Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(p.getViewVector(1)).translate(0, -0.2, 0);
-        Pos3D motion = vec.scale(0.2).translate(p.getDeltaMovement());
-        Pos3D v = new Pos3D(p).translate(0, p.getEyeHeight(), 0).translate(vec);
+        Vec3 vec = new Vec3(0.4, 0.4, 0.4).multiply(p.getViewVector(1)).add(0, -0.2, 0);
+        Vec3 motion = vec.scale(0.2).add(p.getDeltaMovement());
+        Vec3 v = p.getEyePosition().add(vec);
         world.addParticle(MekanismParticleTypes.SCUBA_BUBBLE.get(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
     }
 
     private void doJetpackRender(Player p, Level world, float partialTicks) {
-        Pos3D playerPos = new Pos3D(p).translate(0, p.getEyeHeight(), 0);
+        Vec3 playerPos = p.getEyePosition();
         //TODO - 1.21: Figure out why this is incorrect for other clients when they are hovering
         Vec3 playerMotion = p.getDeltaMovement();
         float random = (world.getRandom().nextFloat() - 0.5F) * 0.1F;
         //This positioning code is somewhat cursed, but it seems to be mostly working and entity pose code seems cursed in general
-        float xRot;
+        float xAngle;
+        float bodyYRot = -p.yBodyRot * Mth.DEG_TO_RAD;
         if (p.isCrouching()) {
-            xRot = 20;
-            playerPos = playerPos.translate(0, 0.125, 0);
+            xAngle = 20 * Mth.DEG_TO_RAD;
+            playerPos = playerPos.add(0, 0.125, 0);
         } else {
-            float f = p.getSwimAmount(partialTicks);
+            float swimAmount = p.getSwimAmount(partialTicks);
             if (p.isFallFlying()) {
-                float f1 = p.getFallFlyingTicks() + partialTicks;
-                float f2 = Math.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
-                xRot = f2 * (-90.0F - p.getXRot());
+                float fallFlyingTimeInTicks = p.getFallFlyingTicks() + partialTicks;
+                //AvatarRenderSate#fallFlyingScale
+                float fallFlyingScale = Math.clamp(fallFlyingTimeInTicks * fallFlyingTimeInTicks / 100.0F, 0.0F, 1.0F);
+                if (!p.isAutoSpinAttack()) {
+                    xAngle = fallFlyingScale * (-90.0F - p.getXRot()) * Mth.DEG_TO_RAD;
+                } else {
+                    xAngle = 0;
+                }
             } else {
-                float f3 = p.isInWater() ? -90.0F - p.getXRot() : -90.0F;
-                xRot = Mth.lerp(f, 0.0F, f3);
+                float targetXRot = p.isInWater() ? -90.0F - p.getXRot() : -90.0F;
+                xAngle = Mth.lerp(swimAmount, 0.0F, targetXRot) * Mth.DEG_TO_RAD;
             }
-            xRot = -xRot;
-            Pos3D eyeAdjustments;
+            Vec3 eyeAdjustments;
             if (p.isFallFlying() && (p != minecraft.player || !minecraft.options.getCameraType().isFirstPerson())) {
-                eyeAdjustments = new Pos3D(0, p.getEyeHeight(Pose.STANDING), 0).xRot(xRot).yRot(p.yBodyRot);
-            } else if (p.isVisuallySwimming()) {
-                eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot).translate(0, 0.5, 0);
+                eyeAdjustments = new Vec3(0, p.getEyeHeight(Pose.STANDING), 0).xRot(xAngle).yRot(bodyYRot).add(0, 0.5, 0);
             } else {
-                eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot);
+                eyeAdjustments = new Vec3(0, p.getEyeHeight(), 0).xRot(xAngle).yRot(bodyYRot);
+                if (p.isVisuallySwimming()) {
+                    eyeAdjustments = eyeAdjustments.add(0, 0.5, 0);
+                }
             }
-            playerPos = new Pos3D(p.getX() + eyeAdjustments.x, p.getY() + eyeAdjustments.y, p.getZ() + eyeAdjustments.z);
+            playerPos = p.position().add(eyeAdjustments);
         }
-        Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).xRot(xRot).yRot(p.yBodyRot);
-        renderJetpackSmoke(world, playerPos.translate(vLeft, playerMotion), vLeft.scale(0.2).translate(playerMotion, vLeft.scale(random)));
-        Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).xRot(xRot).yRot(p.yBodyRot);
-        renderJetpackSmoke(world, playerPos.translate(vRight, playerMotion), vRight.scale(0.2).translate(playerMotion, vRight.scale(random)));
-        Pos3D vCenter = new Pos3D((world.getRandom().nextFloat() - 0.5) * 0.4, -0.86, -0.30).xRot(xRot).yRot(p.yBodyRot);
-        renderJetpackSmoke(world, playerPos.translate(vCenter, playerMotion), vCenter.scale(0.2).translate(playerMotion));
+        Vec3 vLeft = new Vec3(-0.43, -0.55, -0.54).xRot(xAngle).yRot(bodyYRot);
+        renderJetpackSmoke(world, playerPos.add(vLeft).add(playerMotion), vLeft.scale(0.2).add(playerMotion).add(vLeft.scale(random)));
+        Vec3 vRight = new Vec3(0.43, -0.55, -0.54).xRot(xAngle).yRot(bodyYRot);
+        renderJetpackSmoke(world, playerPos.add(vRight).add(playerMotion), vRight.scale(0.2).add(playerMotion).add(vRight.scale(random)));
+        Vec3 vCenter = new Vec3((world.getRandom().nextFloat() - 0.5) * 0.4, -0.86, -0.30).xRot(xAngle).yRot(bodyYRot);
+        renderJetpackSmoke(world, playerPos.add(vCenter).add(playerMotion), vCenter.scale(0.2).add(playerMotion));
     }
 
-    private static boolean tryAddIdleFlamethrowerParticles(Minecraft minecraft, Player player, InteractionHand hand) {
+    private static boolean tryAddIdleFlamethrowerParticles(Minecraft minecraft, Player player, InteractionHand hand, float partialTick) {
         if (!ItemFlamethrower.isIdleFlamethrower(player, hand)) {
             return false;
         }
-        Pos3D flameVec;
+        Vec3 flameVec;
         Entity vehicle = player.getVehicle();
         boolean rightHanded = MekanismUtils.isRightArm(player, hand);
         if (minecraft.player == player && minecraft.options.getCameraType().isFirstPerson()) {
-            flameVec = new Pos3D(1, 1, 1)
-                  .multiply(player.getViewVector(MekanismRenderer.getPartialTick()))
-                  .yRot(rightHanded ? 15 : -15)
-                  .translate(0, player.getEyeHeight() - 0.1, 0);
+            float angle = 15 * Mth.DEG_TO_RAD;
+            flameVec = player.getViewVector(partialTick)
+                  .yRot(rightHanded ? -angle : angle)
+                  .add(0, player.getEyeHeight() - 0.1, 0);
         } else {
             double flameXCoord = rightHanded ? -0.2 : 0.2;
             double flameYCoord = 1;
@@ -302,7 +307,7 @@ public class RenderTickHandler {
                 flameYCoord -= attachmentPoint.y + 0.1;
                 flameZCoord -= attachmentPoint.z;
             }
-            flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).yRot(player.yBodyRot);
+            flameVec = new Vec3(flameXCoord, flameYCoord, flameZCoord).yRot(-player.yBodyRot * Mth.DEG_TO_RAD);
         }
         Vec3 motion = vehicle == null ? player.getDeltaMovement() : vehicle.getDeltaMovement();
         Vec3 flameMotion = new Vec3(motion.x(), player.onGround() || vehicle != null ? 0 : motion.y(), motion.z());

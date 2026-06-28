@@ -17,7 +17,6 @@ import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.item.gear.ItemAtomicDisassembler;
-import mekanism.common.lib.math.Pos3D;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketHitBlockEffect;
 import mekanism.common.particle.LaserParticleData;
@@ -26,6 +25,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponents;
@@ -126,11 +126,12 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
     private void fireLaser(ServerLevel level, int firing, TransactionContext transaction) {
         Direction direction = getDirection();
-        Pos3D from = Pos3D.create(this).centre().translate(direction, 0.501);
-        Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
+        Axis axis = direction.getAxis();
+        Vec3 from = Vec3.atCenterOf(worldPosition).relative(direction, 0.501);
+        Vec3 to = from.relative(direction, MekanismConfig.general.laserRange.get() - 0.002);
         BlockHitResult result = level.clip(new ClipContext(from, to, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CollisionContext.empty()));
         if (result.getType() != Type.MISS) {
-            to = new Pos3D(result.getLocation());
+            to = result.getLocation();
         }
 
         float laserEnergyScale = getEnergyScale(firing);
@@ -141,7 +142,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         } else {
             setEmittingRedstone(true);
             //Sort the entities in order of which one is closest to the laser
-            Pos3D finalFrom = from;
+            Vec3 finalFrom = from;
             hitEntities.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(finalFrom)));
             int energyPerDamage = MekanismConfig.general.laserEnergyPerDamage.get();
             AABB adjustedAABB = null;
@@ -154,7 +155,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     //The entity can absorb all the energy because they are immune to the damage
                     remainingEnergy = 0;
                     //Update the position that the laser is going to
-                    to = from.adjustPosition(direction, entity);
+                    to = from.with(axis, entity.position().get(axis));
                     break;
                 } else if (entity instanceof ItemEntity item && handleHitItem(item, transaction)) {
                     //TODO: Allow the tractor beam to have an energy cost for pulling items?
@@ -180,7 +181,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         remainingEnergy -= MathUtils.clampToInt(energyPerDamage * damageBlocked);
                         if (remainingEnergy == 0) {
                             //If we absorbed it all then update the position the laser is going to and break
-                            to = from.adjustPosition(direction, entity);
+                            to = from.with(axis, entity.position().get(axis));
                             break;
                         }
                         updateDamage = true;
@@ -211,7 +212,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         remainingEnergy = (int) (remainingEnergy * (1 - dissipationPercent));
                         if (remainingEnergy == 0) {
                             //If we dissipated it all then update the position the laser is going to and break
-                            to = from.adjustPosition(direction, entity);
+                            to = from.with(axis, entity.position().get(axis));
                             break;
                         }
                         updateDamage = true;
@@ -267,7 +268,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         remainingEnergy -= MathUtils.clampToInt(energyPerDamage * damage);
                         if (remainingEnergy == 0) {
                             //Update the position that the laser is going to
-                            to = from.adjustPosition(direction, entity);
+                            to = from.with(axis, entity.position().get(axis));
                             break;
                         }
                         //If we have any energy left over after damaging the entity, mark that we are going to need to update the energy scale
@@ -278,8 +279,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     float energyScale = getEnergyScale(remainingEnergy);
                     if (laserEnergyScale - energyScale > 0.01) {
                         //Otherwise, send the laser between the two positions and update the energy scale
-                        Pos3D entityPos = from.adjustPosition(direction, entity);
-                        sendLaserDataToPlayers(level, new LaserParticleData(direction, entityPos.distance(from), laserEnergyScale), from);
+                        Vec3 entityPos = from.with(axis, entity.position().get(axis));
+                        sendLaserDataToPlayers(level, new LaserParticleData(direction, entityPos.distanceTo(from), laserEnergyScale), from);
                         laserEnergyScale = energyScale;
                         //Update the from position to be where the entity is
                         from = entityPos;
@@ -291,7 +292,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             }
         }
         //Tell the clients to render the laser
-        sendLaserDataToPlayers(level, new LaserParticleData(direction, to.distance(from), laserEnergyScale), from);
+        sendLaserDataToPlayers(level, new LaserParticleData(direction, to.distanceTo(from), laserEnergyScale), from);
 
         if (remainingEnergy == 0 || result.getType() == Type.MISS) {
             //If all the energy was spent on damaging entities or if we aren't actively digging a block,
@@ -374,7 +375,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     /// @return The amount of damage that was blocked
     ///
     /// @implNote most logic copied from [net.minecraft.world.entity.LivingEntity#applyItemBlocking]
-    private float damageShield(Level level, LivingEntity livingEntity, Pos3D from, float damage) {
+    private float damageShield(Level level, LivingEntity livingEntity, Vec3 from, float damage) {
         DamageSource source = MekanismDamageTypes.LASER.source(level, from);
         //Absorb part of the damage based on the given absorption ratio
         DamageContainer damageContainer = new DamageContainer(source, damage);
@@ -413,7 +414,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return damageBlocked;
     }
 
-    private static double getAngle(LivingEntity livingEntity, Pos3D from) {
+    private static double getAngle(LivingEntity livingEntity, Vec3 from) {
         Vec3 viewVector = livingEntity.calculateViewVector(0.0F, livingEntity.getYHeadRot());
         Vec3 vectorTo = from.subtract(livingEntity.position());
         vectorTo = new Vec3(vectorTo.x, 0.0, vectorTo.z).normalize();

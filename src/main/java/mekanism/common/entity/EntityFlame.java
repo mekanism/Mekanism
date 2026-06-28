@@ -3,7 +3,6 @@ package mekanism.common.entity;
 import java.util.Optional;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
-import mekanism.common.lib.math.Pos3D;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismDamageTypes;
@@ -17,6 +16,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -70,17 +70,15 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         if (flame == null) {
             return null;
         }
-        Pos3D ownerPos = new Pos3D(owner.getX(), owner.getEyeY() - 0.1, owner.getZ());
-        Pos3D flameVec = new Pos3D(1, 1, 1);
+        Vec3 ownerPos = owner.getEyePosition().subtract(0, 0.1, 0);
 
         boolean rightHanded = MekanismUtils.isRightArm(owner, hand);
 
-        Vec3 lookVec = owner.getLookAngle();
-        flameVec = flameVec.multiply(lookVec)
-              .yRot(rightHanded ? 10 : -10);
-
+        float angle = 10 * Mth.DEG_TO_RAD;
+        Vec3 flameVec = owner.getLookAngle()
+              .yRot(rightHanded ? -angle : angle);
         Vec3 mergedVec = ownerPos.add(flameVec);
-        flame.setPos(mergedVec.x, mergedVec.y, mergedVec.z);
+        flame.setPos(mergedVec);
         flame.setOwner(owner);
         flame.setData(MekanismAttachmentTypes.FLAMETHROWER_MODE, mode);
         flame.shootFromRotation(owner, owner.getXRot(), owner.getYRot(), 0, 0.5F, 1);

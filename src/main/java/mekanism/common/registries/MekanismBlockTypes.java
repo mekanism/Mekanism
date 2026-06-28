@@ -45,7 +45,6 @@ import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.content.blocktype.Machine.MachineBuilder;
-import mekanism.common.lib.math.Pos3D;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
@@ -151,6 +150,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class MekanismBlockTypes {
@@ -413,7 +413,7 @@ public class MekanismBlockTypes {
           .withEnergyUsage(MekanismConfig.usage.chargePad)
           .withSound(MekanismSounds.CHARGEPAD)
           .with(Attributes.ACTIVE_LIGHT, new AttributeStateFacing())
-          .with(new AttributeParticleFX().add(DustParticleOptions.REDSTONE, rand -> new Pos3D(rand.nextDouble() - 0.5, -0.35, rand.nextDouble() - 0.5)))
+          .with(new AttributeParticleFX().add(DustParticleOptions.REDSTONE, rand -> new Vec3(rand.nextDouble() - 0.5, -0.35, rand.nextDouble() - 0.5)))
           .withCustomShape(BlockShapes.CHARGEPAD)
           .withComputerSupport("chargepad")
           .build();
@@ -488,8 +488,8 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.FUELWOOD_HEATER, MekanismLang.DESCRIPTION_FUELWOOD_HEATER)
           .withGui(() -> MekanismContainerTypes.FUELWOOD_HEATER)
           .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE_MELT_LIGHT, new AttributeStateFacing(), new AttributeParticleFX()
-                .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
-                .add(DustParticleOptions.REDSTONE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
+                .add(ParticleTypes.SMOKE, rand -> new Vec3(rand.nextDouble() * 0.6 - 0.3, rand.nextDouble() * 6.0 / 16.0, -0.52))
+                .add(DustParticleOptions.REDSTONE, rand -> new Vec3(rand.nextDouble() * 0.6 - 0.3, rand.nextDouble() * 6.0 / 16.0, -0.52)))
           .withComputerSupport("fuelwoodHeater")
           .build();
     // Oredictionificator

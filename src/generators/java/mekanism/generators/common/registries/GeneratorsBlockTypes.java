@@ -12,7 +12,6 @@ import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.blocktype.BlockTypeTile.BlockTileBuilder;
-import mekanism.common.lib.math.Pos3D;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
@@ -48,6 +47,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class GeneratorsBlockTypes {
@@ -66,8 +66,8 @@ public class GeneratorsBlockTypes {
           .withComputerSupport("heatGenerator")
           .replace(Attributes.ACTIVE_MELT_LIGHT)
           .with(new AttributeParticleFX()
-                .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
-                .add(ParticleTypes.FLAME, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
+                .add(ParticleTypes.SMOKE, rand -> new Vec3(rand.nextDouble() * 0.6 - 0.3, rand.nextDouble() * 6.0 / 16.0, -0.52))
+                .add(ParticleTypes.FLAME, rand -> new Vec3(rand.nextDouble() * 0.6 - 0.3, rand.nextDouble() * 6.0 / 16.0, -0.52)))
           .build();
     // Bio Generator
     public static final Generator<TileEntityBioGenerator> BIO_GENERATOR = GeneratorBuilder
@@ -80,7 +80,7 @@ public class GeneratorsBlockTypes {
           .withComputerSupport("bioGenerator")
           .replace(Attributes.ACTIVE_MELT_LIGHT)
           .with(new AttributeParticleFX()
-                .add(ParticleTypes.SMOKE, rand -> new Pos3D(0, 0.3, -0.25)))
+                .add(ParticleTypes.SMOKE, _ -> new Vec3(0, 0.3, -0.25)))
           .build();
     // Solar Generator
     public static final Generator<TileEntitySolarGenerator> SOLAR_GENERATOR = GeneratorBuilder
