@@ -202,6 +202,10 @@ def setupIntegrationSourceSet(String name, IntegrationSettings settings) {
             sourceSets.runData.compileClasspath += base.output
             sourceSets.runData.runtimeClasspath += base.runtimeClasspath
         }
+    } else {
+        //Note: We need to exclude the code or IntelliJ gets confused when rebuilding to try and hotswap
+        println("Disabling compilation of ${name} integration")
+        base.java.exclude('mekanism/')
     }
 }
 
