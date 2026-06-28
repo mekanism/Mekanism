@@ -3,6 +3,7 @@ package mekanism.common.content.matrix;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol.CasingType;
@@ -57,6 +58,11 @@ public class MatrixValidator extends CuboidStructureValidator<MatrixMultiblockDa
 
     @Override
     public FormationResult postcheck(MatrixMultiblockData structure, Long2ObjectMap<ChunkAccess> chunkMap) {
+        if (cells.isEmpty()) {
+            return FormationResult.fail(MekanismLang.MATRIX_NO_CELLS);
+        } else if (providers.isEmpty()) {
+            return FormationResult.fail(MekanismLang.MATRIX_NO_PROVIDERS);
+        }
         for (TileEntityInductionCell cell : cells) {
             structure.addCell(cell);
         }

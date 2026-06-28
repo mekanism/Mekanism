@@ -563,6 +563,8 @@ public enum MekanismLang implements ILangEntry {
     TELEPORTER_NEEDS_ENERGY("teleporter", "needs_energy"),
     //Matrix
     MATRIX("matrix", "induction_matrix"),
+    MATRIX_NO_CELLS("matrix", "invalid_cells"),
+    MATRIX_NO_PROVIDERS("matrix", "invalid_providers"),
     MATRIX_RECEIVING_RATE("matrix", "receiving_rate"),
     MATRIX_OUTPUT_AMOUNT("matrix", "output_amount"),
     MATRIX_OUTPUT_RATE("matrix", "output_rate"),

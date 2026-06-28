@@ -2566,6 +2566,8 @@
   "matrix.mekanism.induction_port.output_rate": "%s :ǝʇɐᴚ ʇndʇnO",
   "matrix.mekanism.input_amount": "%s :ʇnduI",
   "matrix.mekanism.input_rate": "ʇ/%s :ʇnduI",
+  "matrix.mekanism.invalid_cells": "˙punoɟ sꞁꞁǝƆ uoᴉʇɔnpuI ou 'ɯɹoɟ ʇ,upꞁnoƆ",
+  "matrix.mekanism.invalid_providers": "˙punoɟ sɹǝpᴉʌoɹԀ uoᴉʇɔnpuI ou 'ɯɹoɟ ʇ,upꞁnoƆ",
   "matrix.mekanism.output_amount": "%s :ʇndʇnO",
   "matrix.mekanism.output_rate": "ʇ/%s :ʇndʇnO",
   "matrix.mekanism.outputting_rate": "ʇ/%s :ᵷuᴉʇʇndʇnO",

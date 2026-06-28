@@ -2569,6 +2569,8 @@
   "matrix.mekanism.induction_port.output_rate": "Output Rate: %1$s",
   "matrix.mekanism.input_amount": "Input: %1$s",
   "matrix.mekanism.input_rate": "Input: %1$s/t",
+  "matrix.mekanism.invalid_cells": "Couldn't form, no Induction Cells found.",
+  "matrix.mekanism.invalid_providers": "Couldn't form, no Induction Providers found.",
   "matrix.mekanism.output_amount": "Output: %1$s",
   "matrix.mekanism.output_rate": "Output: %1$s/t",
   "matrix.mekanism.outputting_rate": "Outputting: %1$s/t",

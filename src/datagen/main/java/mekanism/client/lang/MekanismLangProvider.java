@@ -1464,6 +1464,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.TELEPORTER_NEEDS_ENERGY, "Needs energy");
         //Matrix
         add(MekanismLang.MATRIX, "Induction Matrix");
+        add(MekanismLang.MATRIX_NO_CELLS, "Couldn't form, no Induction Cells found.");
+        add(MekanismLang.MATRIX_NO_PROVIDERS, "Couldn't form, no Induction Providers found.");
         add(MekanismLang.MATRIX_RECEIVING_RATE, "Receiving: %1$s/t");
         add(MekanismLang.MATRIX_OUTPUT_AMOUNT, "Output: %1$s");
         add(MekanismLang.MATRIX_OUTPUT_RATE, "Output: %1$s/t");
