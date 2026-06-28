@@ -32,26 +32,18 @@ public class GeneratorsJEI implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registry) {
-        if (MekanismJEI.shouldLoad()) {
-            MekanismJEI.registerItemSubtypes(registry, GeneratorsItems.ITEMS.getEntries());
-            MekanismJEI.registerItemSubtypes(registry, GeneratorsBlocks.BLOCKS.getSecondaryEntries());
-        }
+        MekanismJEI.registerItemSubtypes(registry, GeneratorsItems.ITEMS.getEntries());
+        MekanismJEI.registerItemSubtypes(registry, GeneratorsBlocks.BLOCKS.getSecondaryEntries());
     }
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {
-        if (!MekanismJEI.shouldLoad()) {
-            return;
-        }
         IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
         registry.addRecipeCategories(new FissionReactorRecipeCategory(guiHelper, GeneratorsRVRecipeType.FISSION));
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
-        if (!MekanismJEI.shouldLoad()) {
-            return;
-        }
         CatalystRegistryHelper.register(registry, GeneratorsRVRecipeType.FISSION);
     }
 
@@ -62,9 +54,6 @@ public class GeneratorsJEI implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
-        if (!MekanismJEI.shouldLoad()) {
-            return;
-        }
         RecipeRegistryHelper.register(registry, GeneratorsRVRecipeType.FISSION, FissionRecipeViewerRecipe.getFissionRecipes());
     }
 }

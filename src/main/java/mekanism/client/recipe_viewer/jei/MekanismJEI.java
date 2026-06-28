@@ -96,11 +96,6 @@ public class MekanismJEI implements IModPlugin {
     private static final ISubtypeInterpreter<ItemStack> MEKANISM_DATA_INTERPRETER = new MekanismSubtypeInterpreter();
     private static final Map<IRecipeViewerRecipeType<?>, IRecipeType<?>> recipeTypeInstanceCache = new HashMap<>();
 
-    public static boolean shouldLoad() {
-        //Skip handling if both EMI and JEI are loaded as otherwise some things behave strangely
-        return !Mekanism.hooks.emi.isLoaded();
-    }
-
     public static IRecipeType<?> genericRecipeType(IRecipeViewerRecipeType<?> recipeType) {
         return recipeTypeInstanceCache.computeIfAbsent(recipeType, r -> {
             if (r.requiresHolder()) {
@@ -149,10 +144,8 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registry) {
-        if (shouldLoad()) {
-            registerItemSubtypes(registry, MekanismItems.ITEMS.getEntries());
-            registerItemSubtypes(registry, MekanismBlocks.BLOCKS.getSecondaryEntries());
-        }
+        registerItemSubtypes(registry, MekanismItems.ITEMS.getEntries());
+        registerItemSubtypes(registry, MekanismBlocks.BLOCKS.getSecondaryEntries());
     }
 
     @Override
@@ -180,9 +173,6 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {
-        if (!shouldLoad()) {
-            return;
-        }
         IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
 
         registry.addRecipeCategories(new ChemicalCrystallizerRecipeCategory(guiHelper, RecipeViewerRecipeType.CRYSTALLIZING));
@@ -232,9 +222,6 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {
-        if (!shouldLoad()) {
-            return;
-        }
         registry.addRecipeClickArea(GuiRobitRepair.class, 102, 48, 22, 15, RecipeTypes.ANVIL);
         registry.addGenericGuiContainerHandler(GuiMekanism.class, new JeiGuiElementHandler(registry.getJeiHelpers().getIngredientManager()));
         registry.addGhostIngredientHandler(GuiMekanism.class, new JeiGhostIngredientHandler<>());
@@ -247,9 +234,6 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
-        if (!shouldLoad()) {
-            return;
-        }
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.SMELTING, MekanismRecipeType.SMELTING);
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.ENRICHING, MekanismRecipeType.ENRICHING);
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.CRUSHING, MekanismRecipeType.CRUSHING);
@@ -288,9 +272,6 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
-        if (!shouldLoad()) {
-            return;
-        }
         //TODO: Eventually we may want to look into trying to make output definitions be invisibly added to categories, and then
         // have the output get calculated in draw, except it would also need to override getTooltip related stuff which won't be
         // super straightforward.
@@ -311,9 +292,6 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
-        if (!shouldLoad()) {
-            return;
-        }
         IRecipeTransferHandlerHelper transferHelper = registry.getTransferHelper();
         IStackHelper stackHelper = registry.getJeiHelpers().getStackHelper();
         registry.addRecipeTransferHandler(CraftingRobitContainer.class, MekanismContainerTypes.CRAFTING_ROBIT.get(), RecipeTypes.CRAFTING, 1, 9, 10, 36);
