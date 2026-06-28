@@ -6,7 +6,7 @@
   },
   "display": {
     "announce_to_chat": false,
-    "background": "mekanism:textures/block/block_osmium.png",
+    "background": "mekanism:block/block_osmium",
     "description": {
       "translate": "advancements.mekanism.root.description"
     },

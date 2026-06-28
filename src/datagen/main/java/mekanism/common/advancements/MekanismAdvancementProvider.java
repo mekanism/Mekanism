@@ -60,7 +60,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         HolderGetter<Item> items = registries.lookupOrThrow(Registries.ITEM);
 
         advancement(MekanismAdvancements.ROOT)
-              .display(MekanismItems.ATOMIC_DISASSEMBLER, Mekanism.rl("textures/block/block_osmium.png"), AdvancementType.GOAL, false, false, false)
+              .display(MekanismItems.ATOMIC_DISASSEMBLER, Mekanism.rl("block/block_osmium"), AdvancementType.GOAL, false, false, false)
               .addCriterion("automatic", MekanismCriteriaTriggers.LOGGED_IN.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty())))
               .save(consumer);
         advancement(MekanismAdvancements.MATERIALS)
