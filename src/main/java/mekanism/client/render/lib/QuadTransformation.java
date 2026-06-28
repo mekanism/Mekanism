@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.common.lib.Color;
-import mekanism.common.lib.math.Quaternion;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.util.Mth;
+import org.joml.Quaternionf;
+import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
@@ -67,15 +68,15 @@ public interface QuadTransformation {
         };
     }
 
-    static QuadTransformation rotateY(double degrees) {
+    static QuadTransformation rotateY(float degrees) {
         return rotate(0, degrees, 0);
     }
 
-    static QuadTransformation rotate(double rotationX, double rotationY, double rotationZ) {
-        return rotate(new Quaternion(rotationX, rotationY, rotationZ, true));
+    static QuadTransformation rotate(float rotationX, float rotationY, float rotationZ) {
+        return rotate(new Quaternionf().rotationXYZ(rotationX * Mth.DEG_TO_RAD, rotationY * Mth.DEG_TO_RAD, rotationZ * Mth.DEG_TO_RAD));
     }
 
-    static QuadTransformation rotate(Quaternion quat) {
+    static QuadTransformation rotate(Quaternionfc quat) {
         return new RotationTransformation(quat);
     }
 
@@ -239,25 +240,26 @@ public interface QuadTransformation {
     class RotationTransformation implements QuadTransformation {
 
         // quaternion math isn't exact- we round to nearest ten-thousandth
-        private static final double EPSILON = 10_000;
+        private static final float EPSILON = 10_000;
 
-        private final Quaternion quaternion;
+        private final Quaternionfc quaternion;
 
-        protected RotationTransformation(Quaternion quaternion) {
+        //TODO - 26.2: If this entire class doesn't end up going away make sure the transition from our custom Quaternion class to the joml version works properly
+        protected RotationTransformation(Quaternionfc quaternion) {
             this.quaternion = quaternion;
         }
 
         @Override
         public boolean transform(Quad quad) {
             for (Vertex v : quad.getVertices()) {
-                v.pos(round(quaternion.rotate(v.getPosD().subtract(0.5, 0.5, 0.5)).add(0.5, 0.5, 0.5)));
-                v.normal(round(quaternion.rotate(v.getNormalD()).normalize()));
+                v.pos(round(v.getPos().sub(0.5F, 0.5F, 0.5F).rotate(quaternion).add(0.5F, 0.5F, 0.5F)));
+                v.normal(round(v.getNormal().rotate(quaternion).normalize()));
             }
             return true;
         }
 
-        private static Vec3 round(Vec3 vec) {
-            return new Vec3(Math.round(vec.x * EPSILON) / EPSILON, Math.round(vec.y * EPSILON) / EPSILON, Math.round(vec.z * EPSILON) / EPSILON);
+        private static Vector3f round(Vector3f vec) {
+            return new Vector3f(Math.round(vec.x * EPSILON) / EPSILON, Math.round(vec.y * EPSILON) / EPSILON, Math.round(vec.z * EPSILON) / EPSILON);
         }
 
         @Override

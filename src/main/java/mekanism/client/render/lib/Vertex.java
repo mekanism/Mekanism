@@ -8,7 +8,6 @@ import java.util.Map;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 public class Vertex {
@@ -77,16 +76,8 @@ public class Vertex {
         return pos;
     }
 
-    public Vec3 getPosD() {
-        return new Vec3(pos);
-    }
-
     public Vector3f getNormal() {
         return normal;
-    }
-
-    public Vec3 getNormalD() {
-        return new Vec3(getNormal());
     }
 
     public float getTexU() {
@@ -127,10 +118,6 @@ public class Vertex {
         return this;
     }
 
-    public Vertex pos(Vec3 pos) {
-        return pos(pos.toVector3f());
-    }
-
     public Vertex normal(float x, float y, float z) {
         return normal(new Vector3f(x, y, z));
     }
@@ -138,10 +125,6 @@ public class Vertex {
     public Vertex normal(Vector3f normal) {
         this.normal = normal;
         return this;
-    }
-
-    public Vertex normal(Vec3 normal) {
-        return normal(normal.toVector3f());
     }
 
     public Vertex texRaw(float u, float v) {
