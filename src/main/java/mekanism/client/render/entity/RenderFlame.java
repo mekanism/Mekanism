@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 
 public class RenderFlame extends EntityRenderer<EntityFlame, FlameRenderState> {
 
@@ -80,7 +81,7 @@ public class RenderFlame extends EntityRenderer<EntityFlame, FlameRenderState> {
 
         public float xRot;
         public float yRot;
-        public int tintColor = -1;
+        public int tintColor = CommonColors.WHITE;
         public float scale = 1;
     }
 }

@@ -71,7 +71,7 @@ public class GuiMergedTankGauge extends GuiGauge<@Nullable Void> implements IRec
         if (currentGauge != null) {
             return currentGauge.getRenderColor();
         }
-        return -1;
+        return super.getRenderColor();
     }
 
     @Override

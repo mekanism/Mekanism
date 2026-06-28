@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
 
 public class ModelJetpack extends MekanismJavaModel.NoState {
@@ -120,8 +121,8 @@ public class ModelJetpack extends MekanismJavaModel.NoState {
     @Override
     public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight) {
         setupAnim();
-        collectParts(parts, poseStack, frameRenderType, collector, light, overlayLight, -1, null);
-        collectParts(litParts, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null);
+        collectParts(parts, poseStack, frameRenderType, collector, light, overlayLight, CommonColors.WHITE, null);
+        collectParts(litParts, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null);
         collectParts(wingParts, poseStack, wingRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0x33FFFFFF, null);
     }
 

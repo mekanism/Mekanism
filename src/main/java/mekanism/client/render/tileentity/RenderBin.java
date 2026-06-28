@@ -76,7 +76,6 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
                 state.lightCoords = LightCoordsUtil.getLightCoords(level, coverPos);
                 //Copy from how the campfire renderer calculates the seed
                 int seed = (int) state.blockPos.asLong();
-                //TODO - 26.2: Is this going to try and display a stack of items, or will it display a single one? If a stack we need to return a single sized item
                 this.itemModelResolver.updateForTopItem(state.item, binSlot.getBinItemType().toStack(), ItemDisplayContext.GUI, level, null, seed);
                 if (bin.getTier() == BinTier.CREATIVE) {
                     state.displayCount = MekanismLang.INFINITE.translateColored(EnumColor.WHITE);

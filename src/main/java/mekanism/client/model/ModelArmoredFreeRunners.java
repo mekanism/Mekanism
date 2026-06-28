@@ -10,6 +10,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
 
 public class ModelArmoredFreeRunners extends ModelFreeRunners {
@@ -92,9 +93,9 @@ public class ModelArmoredFreeRunners extends ModelFreeRunners {
     public void collect(FreeRunnerRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight) {
         super.collect(state, poseStack, submitNodeCollector, light, overlayLight);
         if (state.leftVisible()) {
-            collectParts(litLeftParts, poseStack, getRenderType(), submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null);
+            collectParts(litLeftParts, poseStack, getRenderType(), submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null);
         } else {
-            collectParts(litRightParts, poseStack, getRenderType(), submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null);
+            collectParts(litRightParts, poseStack, getRenderType(), submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null);
         }
     }
 

@@ -5,6 +5,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class QIOBlockTintSource implements BlockTintSource {
@@ -13,7 +14,7 @@ public class QIOBlockTintSource implements BlockTintSource {
 
     @Override
     public int color(BlockState state) {
-        return -1;
+        return CommonColors.WHITE;
     }
 
     @Override
@@ -21,8 +22,10 @@ public class QIOBlockTintSource implements BlockTintSource {
         TileEntityQIOComponent tile = WorldUtils.getTileEntity(TileEntityQIOComponent.class, level, pos);
         if (tile != null) {
             EnumColor color = tile.getColor();
-            return color == null ? -1 : color.getPackedColor();
+            if (color != null) {
+                return color.getPackedColor();
+            }
         }
-        return -1;
+        return CommonColors.WHITE;
     }
 }

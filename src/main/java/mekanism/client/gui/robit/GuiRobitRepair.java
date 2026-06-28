@@ -11,6 +11,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundRenameItemPacket;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -47,8 +48,8 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
         super.addGuiElements();
         name = addRenderableWidget(new GuiTextField(this, ITEM_NAME_X, 21, ITEM_NAME_WIDTH, 12, Component.translatable("container.repair")))
               .setCanLoseFocus(false)
-              .setTextColor(-1)
-              .setTextColorUneditable(-1)
+              .setTextColor(CommonColors.WHITE)
+              .setTextColorUneditable(CommonColors.WHITE)
               .setBackground(BackgroundType.NONE)
               .setMaxLength(AnvilMenu.MAX_NAME_LENGTH)
               .setResponder(this::onNameChanged)

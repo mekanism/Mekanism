@@ -24,6 +24,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
@@ -73,7 +74,7 @@ public abstract class GuiGauge<T extends @Nullable Object> extends GuiElement im
     }
 
     protected int getRenderColor() {
-        return -1;
+        return CommonColors.WHITE;
     }
 
     @Override

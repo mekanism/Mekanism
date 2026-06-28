@@ -47,7 +47,7 @@
 			"from": [14, 10, 15.008],
 			"to": [15, 13, 16.008],
 			"faces": {
-				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "cullface": "south", "tintindex": 1}
+				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "cullface": "south", "tintindex": 0}
 			},
 			"light_emission": 15
 		},
@@ -56,7 +56,7 @@
 			"from": [1, 10, 15.008],
 			"to": [2, 13, 16.008],
 			"faces": {
-				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "cullface": "south", "tintindex": 1}
+				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "cullface": "south", "tintindex": 0}
 			},
 			"light_emission": 15
 		},

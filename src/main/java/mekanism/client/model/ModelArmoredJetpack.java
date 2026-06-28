@@ -10,6 +10,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
 
 public class ModelArmoredJetpack extends ModelJetpack {
@@ -79,8 +80,8 @@ public class ModelArmoredJetpack extends ModelJetpack {
         super.collect(poseStack, collector, light, overlayLight);
         poseStack.pushPose();
         poseStack.translate(0, 0, -0.0625);
-        collectParts(armoredParts, poseStack, frameRenderType, collector, light, overlayLight, -1, null);
-        collectParts(armoredLights, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null);
+        collectParts(armoredParts, poseStack, frameRenderType, collector, light, overlayLight, CommonColors.WHITE, null);
+        collectParts(armoredLights, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null);
         poseStack.popPose();
     }
 

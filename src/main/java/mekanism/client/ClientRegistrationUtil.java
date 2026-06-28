@@ -36,6 +36,7 @@ import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.ItemLike;
@@ -61,7 +62,7 @@ public class ClientRegistrationUtil {
         if (block instanceof IColoredBlock coloredBlock) {
             return coloredBlock.getColor().getPackedColor();
         }
-        return -1;
+        return CommonColors.WHITE;
     });
     //TODO - 26.2 item models
     /*
@@ -75,7 +76,7 @@ public class ClientRegistrationUtil {
             int[] rgbCode = color.getRgbCode();
             return ARGB.color(0xFF, rgbCode[0], rgbCode[1], rgbCode[2]);
         }
-        return -1;
+        return CommonColors.WHITE;
     };*/
     //private static final ItemColor BUCKET_ITEM_COLOR = new DynamicFluidContainerModel.Colors();
 

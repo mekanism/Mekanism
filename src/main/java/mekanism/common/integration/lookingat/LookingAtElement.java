@@ -6,6 +6,7 @@ import mekanism.client.render.IFancyFontRenderer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
 public abstract sealed class LookingAtElement implements ILookingAtElement, IFancyFontRenderer permits EnergyElement, ResourceElement {
@@ -56,6 +57,6 @@ public abstract sealed class LookingAtElement implements ILookingAtElement, IFan
     public abstract Component getText();
 
     protected int getRenderColor() {
-        return -1;
+        return CommonColors.WHITE;
     }
 }

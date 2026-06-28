@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.joml.Vector3f;
@@ -223,7 +224,7 @@ public class Quad {
         private float minU, minV, maxU, maxV;
         private int lightU, lightV;
 
-        private int tintIndex = -1;
+        private int tintIndex = CommonColors.WHITE;
         private boolean shade;
         private boolean hasAmbientOcclusion = true;
         private boolean contractUVs = true;

@@ -5,6 +5,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class LogisticalTransporterBlockTintSource implements BlockTintSource {
@@ -13,7 +14,7 @@ public class LogisticalTransporterBlockTintSource implements BlockTintSource {
 
     @Override
     public int color(BlockState state) {
-        return -1;
+        return CommonColors.WHITE;
     }
 
     @Override
@@ -25,6 +26,6 @@ public class LogisticalTransporterBlockTintSource implements BlockTintSource {
                 return renderColor.getPackedColor();
             }
         }
-        return -1;
+        return CommonColors.WHITE;
     }
 }
