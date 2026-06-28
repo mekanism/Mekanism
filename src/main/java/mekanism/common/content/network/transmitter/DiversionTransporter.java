@@ -149,6 +149,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
                     }
                 }
             }
+            transmitterTile.markForSave();
             refreshConnections();
             notifyTileChange();
             transmitterTile.sendUpdatePacket();

@@ -54,7 +54,10 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
         if (network != null) {//Should not be null, but double check
             PathfinderCache.onChanged(network);
         }
-        getTransmitterTile().sendUpdatePacket();
+        TileEntityTransmitter tile = getTransmitterTile();
+        tile.markForSave();
+        notifyTileChange();
+        tile.sendUpdatePacket();
         EnumColor color = getColor();
         player.sendOverlayMessage(MekanismLang.TOGGLE_COLOR.translateColored(EnumColor.GRAY, color == null ? MekanismLang.NONE.translateColored(EnumColor.WHITE) : color.getColoredName()));
         return InteractionResult.SUCCESS;
