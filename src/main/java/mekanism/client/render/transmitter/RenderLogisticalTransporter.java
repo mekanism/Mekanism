@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.transmitter.TransmitterRenderState.TransporterRenderState;
@@ -31,24 +30,22 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
-public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransporterBase, STATE extends TransporterRenderState> extends RenderTransmitterBase<TILE, STATE> {
+public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransporterBase> extends RenderTransmitterBase<TILE, TransporterRenderState> {
 
     private final ItemModelResolver itemModelResolver;
-    private final Supplier<STATE> stateCreator;
 
-    public RenderLogisticalTransporter(BlockEntityRendererProvider.Context context, Supplier<STATE> stateCreator) {
+    public RenderLogisticalTransporter(BlockEntityRendererProvider.Context context) {
         super(context);
-        this.stateCreator = stateCreator;
         this.itemModelResolver = context.itemModelResolver();
     }
 
     @Override
-    public STATE createRenderState() {
-        return stateCreator.get();
+    public TransporterRenderState createRenderState() {
+        return new TransporterRenderState();
     }
 
     @Override
-    public void extractRenderState(TILE transporter, STATE state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+    public void extractRenderState(TILE transporter, TransporterRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(transporter, state, partialTick, cameraPosition, breakProgress);
         LogisticalTransporterBase transmitter = transporter.getTransmitter();
         Collection<TransporterStack> inTransit = transmitter.getTransit();
@@ -76,7 +73,7 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
     }
 
     @Override
-    public void submit(STATE state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+    public void submit(TransporterRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (!state.stacks.isEmpty()) {
             for (TransporterStackRenderState stackRenderState : state.stacks) {
                 poseStack.pushPose();

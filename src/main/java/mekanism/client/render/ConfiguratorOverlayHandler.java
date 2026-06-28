@@ -12,10 +12,10 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -29,9 +29,10 @@ import org.joml.Vector3f;
 class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer, SubmitNodeCollector.CustomGeometryRenderer {
 
     private final BlockPos pos;
-    private final TransmissionType type;
+    private final TextureAtlasSprite sprite;
     private final Direction face;
     private final int transmissionColor;
+    private boolean isDiversion;
     //Must be in same order as Direction
     private static final Quaternionf[] V_ROT = {
           new Quaternionf().setAngleAxis(180 * Mth.DEG_TO_RAD, 0, 1, 0),//south
@@ -39,12 +40,22 @@ class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer, SubmitNo
           new Quaternionf().setAngleAxis(270 * Mth.DEG_TO_RAD, 0, 1, 0)//east
     };
     private static final int V_ROT_OFFSET = Direction.SOUTH.ordinal();
+    private static final int DIVERSION_OVERLAY_ARGB = ARGB.white(0.8F);
 
     public ConfiguratorOverlayHandler(BlockPos pos, TransmissionType type, Direction face, int transmissionColor) {
+        this(pos, MekanismRenderer.overlays.get(type), face, transmissionColor, false);
+    }
+
+    public ConfiguratorOverlayHandler(BlockPos pos, TextureAtlasSprite sprite, Direction face) {
+        this(pos, sprite, face, DIVERSION_OVERLAY_ARGB, true);
+    }
+
+    private ConfiguratorOverlayHandler(BlockPos pos, TextureAtlasSprite sprite, Direction face, int transmissionColor, boolean isDiversion) {
         this.pos = pos;
-        this.type = type;
+        this.sprite = sprite;
         this.face = face;
         this.transmissionColor = transmissionColor;
+        this.isDiversion = isDiversion;
     }
 
     @Override
@@ -61,15 +72,18 @@ class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer, SubmitNo
             }
         }
 
+        if (isDiversion) {
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+            poseStack.translate(0.5, 0.5, 0.5);
+        }
         RenderPhaseKey<SubmitNode> phase = state.isTranslucent() ? RenderPhaseKeys.AFTER_TERRAIN : RenderPhaseKeys.SHAPE_OUTLINES;
-        nodeCollector.submitSpecial(phase, new CustomFeatureRenderer.Submit(poseStack.last().copy(), RenderTypes.eyes(TextureAtlas.LOCATION_BLOCKS), this));
+        nodeCollector.submitSpecial(phase, new CustomFeatureRenderer.Submit(poseStack.last().copy(), RenderTypes.eyes(sprite.atlasLocation()), this));
         poseStack.popPose();
-        return true;
+        return !isDiversion;
     }
 
     @Override
     public void render(Pose pose, VertexConsumer buffer) {
-        TextureAtlasSprite sprite = MekanismRenderer.overlays.get(type);
         Vector3f normal = pose.transformNormal(face.getUnitVec3f(), new Vector3f());
         Matrix4f matrix = pose.pose();
         //face draw code donated by XFactHD

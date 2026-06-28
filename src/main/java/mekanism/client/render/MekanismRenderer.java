@@ -53,6 +53,13 @@ public class MekanismRenderer {
     // effect block light for the glow rather than having it actually become full light
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
+    @Nullable
+    public static TextureAtlasSprite REDSTONE_TORCH_OFF_SPRITE;
+    @Nullable
+    public static TextureAtlasSprite REDSTONE_TORCH_SPRITE;
+    @Nullable
+    public static TextureAtlasSprite GUNPOWDER_SPRITE;
+
     //TODO - 26.2: all usages of this likely do NOT need to use RenderResizableCuboid in its current form, as tiling a blank texture is... questionable
     public static RenderResizableCuboid.TexturePicker WHITE_ICON_GETTER;
     public static RenderResizableCuboid.TexturePicker teleporterPortal;
@@ -232,33 +239,36 @@ public class MekanismRenderer {
     @SubscribeEvent
     public static void onStitch(TextureAtlasStitchedEvent event) {
         TextureAtlas map = event.getAtlas();
-        if (!map.location().equals(TextureAtlas.LOCATION_BLOCKS)) {
-            return;
+        if (map.location().equals(TextureAtlas.LOCATION_ITEMS)) {
+            GUNPOWDER_SPRITE = map.getSprite(Identifier.withDefaultNamespace("item/gunpowder"));
+        } else if (map.location().equals(TextureAtlas.LOCATION_BLOCKS)) {
+            for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
+                overlays.put(type, map.getSprite(Mekanism.rl("block/overlay/" + type.getTransmission() + "_overlay")));
+            }
+
+            WHITE_ICON_GETTER = new SingleTexturePicker(map.getSprite(Mekanism.rl("block/overlay/overlay_white")));
+            energyIcon = map.getSprite(Mekanism.rl("mek_liquid/energy"));
+            heatIcon = map.getSprite(Mekanism.rl("mek_liquid/heat"));
+            REDSTONE_TORCH_OFF_SPRITE = map.getSprite(Identifier.withDefaultNamespace("block/redstone_torch_off"));
+            REDSTONE_TORCH_SPRITE = map.getSprite(Identifier.withDefaultNamespace("block/redstone_torch"));
+            teleporterPortal = new SingleTexturePicker(map.getSprite(Mekanism.rl("block/teleporter_portal")));
+
+            //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
+            RenderTransmitterBase.onStitch();
+
+            //Reset any cached models now that the atlases are built
+            //TODO - 26.2: Move model cache clearing to the baking complete event?
+            RenderPigmentMixer.resetCached();
+            RenderSeismicVibrator.resetCached();
+            SINGLE_TEXTURE_PICKERS.clear();
+            VALVE_FLUID_TEX_CACHE.clear();
+
+            parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"), EnumUtils.COLORS);
+            parseColorAtlas(Mekanism.rl("textures/colormap/tiers.png"), EnumUtils.TIERS);
+            SpecialColors.GUI_OBJECTS.parse(Mekanism.rl("textures/colormap/gui_objects.png"));
+            SpecialColors.GUI_TEXT.parse(Mekanism.rl("textures/colormap/gui_text.png"));
+            GuiElementHolder.updateBackgroundColor();
         }
-        for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
-            overlays.put(type, map.getSprite(Mekanism.rl("block/overlay/" + type.getTransmission() + "_overlay")));
-        }
-
-        WHITE_ICON_GETTER = new SingleTexturePicker(map.getSprite(Mekanism.rl("block/overlay/overlay_white")));
-        energyIcon = map.getSprite(Mekanism.rl("mek_liquid/energy"));
-        heatIcon = map.getSprite(Mekanism.rl("mek_liquid/heat"));
-        teleporterPortal = new SingleTexturePicker(map.getSprite(Mekanism.rl("block/teleporter_portal")));
-
-        //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
-        RenderTransmitterBase.onStitch();
-
-        //Reset any cached models now that the atlases are built
-        //TODO - 26.2: Move model cache clearing to the baking complete event?
-        RenderPigmentMixer.resetCached();
-        RenderSeismicVibrator.resetCached();
-        SINGLE_TEXTURE_PICKERS.clear();
-        VALVE_FLUID_TEX_CACHE.clear();
-
-        parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"), EnumUtils.COLORS);
-        parseColorAtlas(Mekanism.rl("textures/colormap/tiers.png"), EnumUtils.TIERS);
-        SpecialColors.GUI_OBJECTS.parse(Mekanism.rl("textures/colormap/gui_objects.png"));
-        SpecialColors.GUI_TEXT.parse(Mekanism.rl("textures/colormap/gui_text.png"));
-        GuiElementHolder.updateBackgroundColor();
     }
 
     public static ValveTextureGetter getValveTexture(TypedInstance<Fluid> fluidType) {

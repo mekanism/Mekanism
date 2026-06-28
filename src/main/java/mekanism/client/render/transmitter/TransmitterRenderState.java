@@ -9,10 +9,9 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
 //TODO - 26.2: Do we want to override fillCrashReportCategory to add more details to it?
 public class TransmitterRenderState extends BlockEntityRenderState {
@@ -47,13 +46,6 @@ public class TransmitterRenderState extends BlockEntityRenderState {
     public static class TransporterRenderState extends TransmitterRenderState {
 
         public List<TransporterStackRenderState> stacks = Collections.emptyList();
-
-
-        public static class DiversionTransporterRenderState extends TransporterRenderState {
-
-            @Nullable
-            public SpriteId overlay;
-        }
 
         public record TransporterStackRenderState(Vector3f stackPos, ItemStackRenderState item, @Nullable EnumColor color) {
 

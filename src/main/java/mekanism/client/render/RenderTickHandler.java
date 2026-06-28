@@ -22,10 +22,12 @@ import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mezz.jei.api.runtime.IRecipesGui;
@@ -40,6 +42,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -365,7 +368,20 @@ public class RenderTickHandler {
         boolean showingConfiguratorOverlay = false;
         profiler.push(ProfilerConstants.CONFIGURABLE_MACHINE);
         ItemConfigurator.ConfiguratorMode state = ((ItemConfigurator) stack.getItem()).getMode(stack);
-        if (state.isConfigurating()) {
+        if (blockState.is(MekanismBlocks.DIVERSION_TRANSPORTER)) {
+            TileEntityDiversionTransporter transporter = WorldUtils.getTileEntity(TileEntityDiversionTransporter.class, world, pos);
+            if (transporter != null) {
+                Direction face = transporter.getSideLookingAt(player, rayTraceResult.getDirection());
+                TextureAtlasSprite sprite = switch (transporter.getTransmitter().modes[face.ordinal()]) {
+                    case DISABLED -> MekanismRenderer.GUNPOWDER_SPRITE;
+                    case HIGH -> MekanismRenderer.REDSTONE_TORCH_SPRITE;
+                    case LOW -> MekanismRenderer.REDSTONE_TORCH_OFF_SPRITE;
+                };
+                if (sprite != null) {
+                    event.addCustomRenderer(new ConfiguratorOverlayHandler(pos, sprite, face));
+                }
+            }
+        } else if (state.isConfigurating()) {
             TransmissionType type = Objects.requireNonNull(state.getTransmission(), "Configurating state requires transmission type");
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile instanceof ISideConfiguration configurable) {

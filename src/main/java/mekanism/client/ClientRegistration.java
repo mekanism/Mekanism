@@ -142,13 +142,11 @@ import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.tileentity.RenderThermalEvaporationPlant;
 import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
-import mekanism.client.render.transmitter.RenderDiversionTransporter;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.client.render.transmitter.RenderPressurizedTube;
 import mekanism.client.render.transmitter.RenderThermodynamicConductor;
 import mekanism.client.render.transmitter.RenderUniversalCable;
-import mekanism.client.render.transmitter.TransmitterRenderState.TransporterRenderState;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
@@ -296,10 +294,9 @@ public class ClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(event, RenderFluidTank::new, MekanismTileEntityTypes.BASIC_FLUID_TANK, MekanismTileEntityTypes.ADVANCED_FLUID_TANK,
               MekanismTileEntityTypes.ELITE_FLUID_TANK, MekanismTileEntityTypes.ULTIMATE_FLUID_TANK, MekanismTileEntityTypes.CREATIVE_FLUID_TANK);
         //Transmitters
-        ClientRegistrationUtil.bindTileEntityRenderer(event, context -> new RenderLogisticalTransporter<>(context, TransporterRenderState::new), MekanismTileEntityTypes.RESTRICTIVE_TRANSPORTER,
+        ClientRegistrationUtil.bindTileEntityRenderer(event, RenderLogisticalTransporter::new, MekanismTileEntityTypes.RESTRICTIVE_TRANSPORTER,
               MekanismTileEntityTypes.DIVERSION_TRANSPORTER, MekanismTileEntityTypes.BASIC_LOGISTICAL_TRANSPORTER, MekanismTileEntityTypes.ADVANCED_LOGISTICAL_TRANSPORTER,
               MekanismTileEntityTypes.ELITE_LOGISTICAL_TRANSPORTER, MekanismTileEntityTypes.ULTIMATE_LOGISTICAL_TRANSPORTER);
-        ClientRegistrationUtil.bindTileEntityRenderer(event, RenderDiversionTransporter::new, MekanismTileEntityTypes.DIVERSION_TRANSPORTER);
         ClientRegistrationUtil.bindTileEntityRenderer(event, RenderMechanicalPipe::new, MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE,
               MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE, MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE, MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE);
         ClientRegistrationUtil.bindTileEntityRenderer(event, RenderPressurizedTube::new, MekanismTileEntityTypes.BASIC_PRESSURIZED_TUBE,
@@ -328,7 +325,6 @@ public class ClientRegistration {
         event.registerLayerDefinition(RenderIndustrialAlarm.LIGHT_BOX_LAYER, RenderIndustrialAlarm::createLightBoxLayer);
         event.registerLayerDefinition(ModelScubaMask.MASK_LAYER, ModelScubaMask::createLayerDefinition);
         event.registerLayerDefinition(ModelScubaTank.TANK_LAYER, ModelScubaTank::createLayerDefinition);
-        event.registerLayerDefinition(RenderDiversionTransporter.OVERLAY_LAYER, RenderDiversionTransporter::createOverlayLayer);
 
         //Entity layer definitions
         event.registerLayerDefinition(FlameModel.FLAME_LAYER, FlameModel::createLayerDefinition);
