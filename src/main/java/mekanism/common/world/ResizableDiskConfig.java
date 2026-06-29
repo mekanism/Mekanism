@@ -12,8 +12,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.DiskConfigurati
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.SimpleStateProvider;
 
-public record ResizableDiskConfig(SimpleStateProvider stateProvider, BlockPredicate target, IntProvider radius,
-                                  IntSupplier halfHeight) implements FeatureConfiguration {
+public record ResizableDiskConfig(SimpleStateProvider stateProvider, BlockPredicate target, IntProvider radius, IntSupplier halfHeight) implements FeatureConfiguration {
 
     public static final Codec<ResizableDiskConfig> CODEC = RecordCodecBuilder.create(builder -> builder.group(
           SimpleStateProvider.CODEC.fieldOf(SerializationConstants.STATE_PROVIDER).forGetter(ResizableDiskConfig::stateProvider),

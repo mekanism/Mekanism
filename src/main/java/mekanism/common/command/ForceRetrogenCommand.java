@@ -4,17 +4,17 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.MekanismPermissions;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.world.QueuedRegenLevelData;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.arguments.coordinates.ColumnPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -58,12 +58,12 @@ public class ForceRetrogenCommand {
         int chunkZStart = SectionPos.blockToSectionCoord(zStart);
         int chunkZEnd = SectionPos.blockToSectionCoord(zEnd);
         ServerLevel world = source.getLevel();
-        ResourceKey<Level> registryKey = world.dimension();
+        QueuedRegenLevelData regenData = world.getData(MekanismAttachmentTypes.QUEUED_REGEN_LEVEL_DATA);
         int chunks = 0;
         for (int chunkX = chunkXStart; chunkX <= chunkXEnd; chunkX++) {
             for (int chunkZ = chunkZStart; chunkZ <= chunkZEnd; chunkZ++) {
                 if (world.hasChunk(chunkX, chunkZ)) {
-                    Mekanism.worldTickHandler.addRegenChunk(registryKey, new ChunkPos(chunkX, chunkZ));
+                    regenData.addRegenChunk(new ChunkPos(chunkX, chunkZ));
                     int finalChunkX = chunkX, finalChunkZ = chunkZ;
                     source.sendSuccess(() -> MekanismLang.COMMAND_RETROGEN_CHUNK_QUEUED.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                           MekanismLang.GENERIC_WITH_COMMA.translate(finalChunkX, finalChunkZ), EnumColor.INDIGO, world), true);

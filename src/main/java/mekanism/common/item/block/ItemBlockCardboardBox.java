@@ -3,11 +3,11 @@ package mekanism.common.item.block;
 import java.util.function.Consumer;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
-import mekanism.common.CommonWorldTickHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.BlockData;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.component.BlockData;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tags.MekanismTags;
@@ -97,9 +97,9 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     //Mark that we are monitoring item drops that might have been created due to using the cardboard box
                     // and then replace the block with the cardboard box, which will cause items to drop and then get
                     // cancelled by our listener in CommonWorldTickHandler
-                    CommonWorldTickHandler.monitoringCardboardBox = true;
+                    Mekanism.worldTickHandler.monitoringCardboardBox = true;
                     world.setBlock(pos, getBlock().defaultBlockState().setValue(BlockStateHelper.storageProperty, true), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
-                    CommonWorldTickHandler.monitoringCardboardBox = false;
+                    Mekanism.worldTickHandler.monitoringCardboardBox = false;
                     TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
                     if (box != null) {
                         box.setComponents(DataComponentMap.builder()

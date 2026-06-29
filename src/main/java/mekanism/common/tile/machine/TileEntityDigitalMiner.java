@@ -28,7 +28,6 @@ import mekanism.api.Upgrade;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IMekanismResourceHandler;
-import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.block.BlockBounding;
@@ -504,7 +503,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                                 //If we can, then validate we can fit the drops and try to see if we can replace it properly as well
                                 List<ItemStack> drops = getDrops(level, state, pos, subTransaction);
                                 if (tryInsert(drops, subTransaction)) {
-                                    CommonWorldTickHandler.fallbackItemCollector = overflowCollector;
+                                    Mekanism.worldTickHandler.fallbackItemCollector = overflowCollector;
                                     //Validate if we can replace the block with the replace stack that we will extract
                                     if (setReplace(level, state, pos, matchingFilter, subTransaction)) {
                                         //Try to add any drops that might have been caused by breaking the block but didn't show up in the loot table.
@@ -528,7 +527,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                                         }
                                     }
                                     //Reset the global fallback collector to null as we are done collecting for this miner and block
-                                    CommonWorldTickHandler.fallbackItemCollector = null;
+                                    Mekanism.worldTickHandler.fallbackItemCollector = null;
                                 }
                             }
                             //Exit out. We either mined the block or don't have room so there is no reason to continue checking

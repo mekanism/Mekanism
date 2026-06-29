@@ -6,7 +6,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IMekanismResourceHandler;
-import mekanism.common.CommonWorldTickHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
@@ -62,9 +62,9 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
         //Collect any extra drops that might have happened due to say breaking the top part of a door or flower and try to add them
         //Note: Technically we should just always return true rather than relying on the return result of the add method,
         // but as array lists always will return true as they are modified we don't have to worry about that
-        CommonWorldTickHandler.fallbackItemCollector = drops::add;
+        Mekanism.worldTickHandler.fallbackItemCollector = drops::add;
         breakBlock(state, level, hitPos, tool);
-        CommonWorldTickHandler.fallbackItemCollector = null;
+        Mekanism.worldTickHandler.fallbackItemCollector = null;
         if (!drops.isEmpty()) {
             BlockPos dropPos = null;
             Direction opposite = null;

@@ -9,7 +9,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
@@ -29,11 +28,10 @@ public class MeltdownLevelData implements ValueIOSerializable {
 
     @SubscribeEvent
     public static void tickWorld(LevelTickEvent.Post event) {
-        Level level = event.getLevel();
-        if (level instanceof ServerLevel serverLevel) {
+        if (event.getLevel() instanceof ServerLevel level) {
             MeltdownLevelData existingData = level.getExistingDataOrNull(MekanismAttachmentTypes.MELTDOWN_DATA);
             if (existingData != null) {
-                existingData.tick(serverLevel);
+                existingData.tick(level);
             }
         }
     }

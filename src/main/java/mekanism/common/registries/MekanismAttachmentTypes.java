@@ -7,6 +7,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.lib.radiation.MeltdownLevelData;
 import mekanism.common.lib.radiation.RadiationLevelData;
+import mekanism.common.world.QueuedRegenLevelData;
+import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -35,4 +37,13 @@ public class MekanismAttachmentTypes {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<MeltdownLevelData>> MELTDOWN_DATA = ATTACHMENT_TYPES.register("meltdown_data", () -> AttachmentType.serializable(MeltdownLevelData::new).build());
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<RadiationLevelData>> RADIATION_LEVEL_DATA = ATTACHMENT_TYPES.register("radiation_data", () -> AttachmentType.serializable(RadiationLevelData::new).build());
+
+
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<QueuedRegenLevelData>> QUEUED_REGEN_LEVEL_DATA = ATTACHMENT_TYPES.register("queued_regen_chunks", () -> AttachmentType.builder(QueuedRegenLevelData::new).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> CHUNK_VERSION = ATTACHMENT_TYPES.register("chunk_version",
+          () -> AttachmentType.builder(() -> 0)
+                .serialize(ExtraCodecs.NON_NEGATIVE_INT.fieldOf(SerializationConstants.VERSION), version -> version > 0)
+                .copyHandler((version, _, _) -> version > 0 ? version : null)
+                .build()
+    );
 }

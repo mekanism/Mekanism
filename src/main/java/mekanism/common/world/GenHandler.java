@@ -8,6 +8,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.ore.OreType.OreVeinType;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.CrashReport;
+import net.minecraft.ReportedException;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -54,26 +56,26 @@ public class GenHandler {
         boolean generated = false;
         if (!SharedConstants.debugVoidTerrain(chunkPos)) {
             SectionPos sectionPos = SectionPos.of(chunkPos, world.getMinSectionY());
-            BlockPos blockPos = sectionPos.origin();
+            BlockPos origin = sectionPos.origin();
             ChunkGenerator chunkGenerator = world.getChunkSource().getGenerator();
             WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(RandomSupport.generateUniqueSeed()));
-            long decorationSeed = random.setDecorationSeed(world.getSeed(), blockPos.getX(), blockPos.getZ());
+            long decorationSeed = random.setDecorationSeed(world.getSeed(), origin.getX(), origin.getZ());
             int decorationStep = GenerationStep.Decoration.UNDERGROUND_ORES.ordinal() - 1;
             ToIntFunction<PlacedFeature> featureIndex;
-            List<FeatureSorter.StepFeatureData> list = chunkGenerator.featuresPerStep.get();
-            if (decorationStep < list.size()) {
+            List<FeatureSorter.StepFeatureData> featureList = chunkGenerator.featuresPerStep.get();
+            if (decorationStep < featureList.size()) {
                 //Use the feature index lookup mapping. We can skip a lot of vanilla's logic here that is needed
                 // for purposes of getting all the features we want to be doing, as we know which features we want
                 // to generate and only lookup those. We also don't need to worry about if the biome can actually
                 // support our feature as that is validated via the placement context and allows us to drastically
                 // cut down on calculating it here
-                featureIndex = list.get(decorationStep).indexMapping();
+                featureIndex = featureList.get(decorationStep).indexMapping();
             } else {
-                featureIndex = feature -> -1;
+                featureIndex = _ -> -1;
             }
             List<MekFeature> features = getMekanismFeatures(world.registryAccess());
             for (MekFeature feature : features) {
-                generated |= place(world, chunkGenerator, blockPos, random, decorationSeed, decorationStep, featureIndex, feature);
+                generated |= place(world, chunkGenerator, origin, random, decorationSeed, decorationStep, featureIndex, feature);
             }
             world.setCurrentlyGenerating(null);
         }
@@ -86,9 +88,15 @@ public class GenHandler {
         //Check the index of the source feature instead of the retrogen feature
         random.setFeatureSeed(decorationSeed, featureIndex.applyAsInt(baseFeature), decorationStep);
         world.setCurrentlyGenerating(feature::retrogenKey);
-        //Note: We call placeWithContext directly to allow for doing a placeWithBiomeCheck, except by having the context pretend
-        // it is the non retrogen feature which actually is added to the various biomes
-        return feature.retrogen().value().placeWithContext(new PlacementContext(world, chunkGenerator, Optional.of(baseFeature)), random, blockPos);
+        try {
+            //Note: We call placeWithContext directly to allow for doing a placeWithBiomeCheck, except by having the context pretend
+            // it is the non retrogen feature which actually is added to the various biomes
+            return feature.retrogen().value().placeWithContext(new PlacementContext(world, chunkGenerator, Optional.of(baseFeature)), random, blockPos);
+        } catch (Exception e) {
+            CrashReport report = CrashReport.forThrowable(e, "Mekanism Retrogen Feature placement");
+            report.addCategory("Feature").setDetail("Description", feature.retrogenKey());
+            throw new ReportedException(report);
+        }
     }
 
     private static List<MekFeature> getMekanismFeatures(RegistryAccess registryAccess) {

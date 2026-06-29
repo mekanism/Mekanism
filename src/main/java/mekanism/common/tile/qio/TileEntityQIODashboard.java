@@ -3,7 +3,7 @@ package mekanism.common.tile.qio;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.CommonWorldTickHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
@@ -60,7 +60,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     @Override
     protected boolean onUpdateServer(ServerLevel level, @Nullable QIOFrequency frequency) {
         boolean needsUpdate = super.onUpdateServer(level, frequency);
-        if (CommonWorldTickHandler.flushTagAndRecipeCaches || !recipesChecked) {
+        if (Mekanism.worldTickHandler.flushTagAndRecipeCaches || !recipesChecked) {
             //If we need to update the recipes because of a reload or if we just haven't checked the recipes yet
             // after loading, as there was no world set yet, refresh the recipes
             recipesChecked = true;

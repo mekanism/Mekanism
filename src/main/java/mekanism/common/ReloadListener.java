@@ -8,7 +8,7 @@ public class ReloadListener implements ResourceManagerReloadListener {
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
-        CommonWorldTickHandler.flushTagAndRecipeCaches = true;
+        Mekanism.worldTickHandler.flushTagAndRecipeCaches = true;
         MekanismRecipeType.clearCache();
     }
 }

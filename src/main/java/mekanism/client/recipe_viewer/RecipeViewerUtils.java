@@ -40,6 +40,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.TimeUtil;
+import net.minecraft.util.Util;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.TooltipContext;
@@ -60,7 +61,7 @@ public class RecipeViewerUtils {
     public static IProgressInfoHandler progressHandler(int processTime) {
         int time = SharedConstants.MILLIS_PER_TICK * processTime;
         return () -> {
-            float subTime = System.currentTimeMillis() % time;
+            float subTime = Util.getMillis() % time;
             return subTime / time;
         };
     }
@@ -76,7 +77,7 @@ public class RecipeViewerUtils {
 
             @Override
             public double getLevel() {
-                double subTime = System.currentTimeMillis() % time;
+                double subTime = Util.getMillis() % time;
                 return subTime / time;
             }
         };
@@ -87,7 +88,7 @@ public class RecipeViewerUtils {
     }
 
     public static int getIndex(List<?> elements) {
-        return (int) (System.currentTimeMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.size());
+        return (int) (Util.getMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.size());
     }
 
     public static long getCurrent(int[] elements) {
@@ -95,7 +96,7 @@ public class RecipeViewerUtils {
     }
 
     public static int getIndex(int[] elements) {
-        return (int) (System.currentTimeMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.length);
+        return (int) (Util.getMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.length);
     }
 
     public static List<ItemStack> getStacksFor(ChemicalStackIngredient ingredient, boolean displayConversions) {

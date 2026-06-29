@@ -302,7 +302,6 @@ public class Mekanism {
         //Clear all cache data, wait until server stopper though so that we make sure saving can use any data it needs
         playerState.clear(false);
         activeVibrators.clear();
-        worldTickHandler.resetChunkData();
         BoilerMultiblockData.hotMap.clear();
 
         //Reset consistent managers

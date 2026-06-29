@@ -7,7 +7,7 @@ import java.util.Map;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.CommonWorldTickHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.config.MekanismConfig;
@@ -74,7 +74,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     @Override
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
-        if (CommonWorldTickHandler.flushTagAndRecipeCaches) {
+        if (Mekanism.worldTickHandler.flushTagAndRecipeCaches) {
             for (OredictionificatorFilter<?, ?, ?> filter : filterManager.getFilters()) {
                 filter.flushCachedTag();
             }

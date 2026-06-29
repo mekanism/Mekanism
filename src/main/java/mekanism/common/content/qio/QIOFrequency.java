@@ -31,7 +31,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.qio.IQIOFrequency;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
-import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
@@ -504,7 +503,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             saveItemsToDrives = false;
         }
 
-        if (CommonWorldTickHandler.flushTagAndRecipeCaches) {
+        if (Mekanism.worldTickHandler.flushTagAndRecipeCaches) {
             //Note: We only need to clear tags here as the modids cannot change just because a reload happened
             tagLookupMap.clear();
             tagWildcardCache.clear();

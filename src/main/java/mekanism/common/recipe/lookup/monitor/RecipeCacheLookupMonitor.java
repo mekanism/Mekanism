@@ -7,7 +7,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
-import mekanism.common.CommonWorldTickHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import org.jspecify.annotations.Nullable;
 
@@ -115,7 +115,7 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?>> implemen
 
     @Override
     public boolean invalidateCache() {
-        return CommonWorldTickHandler.flushTagAndRecipeCaches;
+        return Mekanism.worldTickHandler.flushTagAndRecipeCaches;
     }
 
     @Override

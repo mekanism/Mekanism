@@ -19,7 +19,6 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IMekanismResourceHandler;
-import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
@@ -217,7 +216,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @Override
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
-        if (CommonWorldTickHandler.flushTagAndRecipeCaches) {
+        if (Mekanism.worldTickHandler.flushTagAndRecipeCaches) {
             //Invalidate the cached recipe and recalculate
             cachedRecipe = null;
             recalculateRecipe();

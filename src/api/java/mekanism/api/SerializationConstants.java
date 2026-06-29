@@ -307,5 +307,4 @@ public final class SerializationConstants {
     public static final String VALUE = "value";
     public static final String VALUES = "values";
     public static final String VERSION = "version";
-    public static final String WORLD_GEN_VERSION = "mek_world_gen_version";
 }
