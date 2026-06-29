@@ -1,10 +1,6 @@
 {
   "sources": [
     {
-      "type": "minecraft:single",
-      "resource": "mekanism:icon/redstone_control_pulse"
-    },
-    {
       "type": "minecraft:directory",
       "prefix": "mek_liquid/",
       "source": "mek_liquid"
