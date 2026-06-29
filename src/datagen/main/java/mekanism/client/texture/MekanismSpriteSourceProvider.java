@@ -19,8 +19,6 @@ public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
         SourceList blockAtlas = atlas(AtlasIds.BLOCKS);
         SourceList itemAtlas = atlas(AtlasIds.ITEMS);
 
-        addFiles(blockAtlas, Mekanism.rl("icon/redstone_control_pulse"));
-
         //MekaSuit
         addFiles(itemAtlas,
               Mekanism.rl("entity/armor/blank"),

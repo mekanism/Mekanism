@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import mekanism.client.render.armor.MekaSuitArmor.ModuleOBJModelData;
-import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import mekanism.common.util.EnumUtils;
@@ -22,12 +21,6 @@ public class MekanismModelCache extends BaseModelCache {
     private final Set<ModuleOBJModelData> mekaSuitModules = new HashSet<>();
     public final Set<ModuleOBJModelData> MEKASUIT_MODULES = Collections.unmodifiableSet(mekaSuitModules);
 
-    public final OBJModelData TRANSMITTER_CONTENTS = register(RenderTransmitterBase.MODEL_LOCATION, rl -> new OBJModelData(rl) {
-        @Override
-        protected boolean useDiffuseLighting() {
-            return false;
-        }
-    });
     public final BlockStateModelPartHelper LIQUIFIER_BLADE = registerJSON("block/liquifier_blade");
     public final BlockStateModelPartHelper VIBRATOR_SHAFT = registerJSON("block/vibrator_shaft");
     public final BlockStateModelPartHelper PIGMENT_MIXER_SHAFT = registerJSON("block/pigment_mixer_shaft");

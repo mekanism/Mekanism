@@ -5,12 +5,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.AtlasManager.AtlasConfig;
 import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterTextureAtlasesEvent;
 
 public class RobitSpriteUploader {
@@ -29,17 +27,7 @@ public class RobitSpriteUploader {
         return new SpriteId(ATLAS_ID, texture);
     }
 
-    @SubscribeEvent
-    public static void bakingCompleted(ModelEvent.BakingCompleted event) {
-
-    }
-
     public static TextureAtlas getAtlas() {
         return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(ATLAS_ID);
     }
-
-    public static TextureAtlasSprite getSprite(Identifier location) {
-        return getAtlas().getSprite(location);
-    }
-
 }

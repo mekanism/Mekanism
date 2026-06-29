@@ -30,7 +30,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
-public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransporterBase> extends RenderTransmitterBase<TILE, TransporterRenderState> {
+public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporterBase, TransporterRenderState> {
 
     private final ItemModelResolver itemModelResolver;
 
@@ -45,7 +45,8 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
     }
 
     @Override
-    public void extractRenderState(TILE transporter, TransporterRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+    public void extractRenderState(TileEntityLogisticalTransporterBase transporter, TransporterRenderState state, float partialTick, Vec3 cameraPosition,
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(transporter, state, partialTick, cameraPosition, breakProgress);
         LogisticalTransporterBase transmitter = transporter.getTransmitter();
         Collection<TransporterStack> inTransit = transmitter.getTransit();
@@ -74,6 +75,8 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
 
     @Override
     public void submit(TransporterRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        //Note: We expect this to not actually render anything, but call it just in case for consistency
+        super.submit(state, poseStack, nodeCollector, camera);
         if (!state.stacks.isEmpty()) {
             for (TransporterStackRenderState stackRenderState : state.stacks) {
                 poseStack.pushPose();

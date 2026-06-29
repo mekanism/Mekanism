@@ -65,7 +65,7 @@ public class ChemicalEmiStack extends EmiStack {
     @Override
     public void render(GuiGraphicsExtractor graphics, int x, int y, float delta, int flags) {
         if ((flags & RENDER_ICON) != 0) {
-            int color = MekanismRenderer.getTint(chemical);
+            int color = chemical.value().tint();
             TextureAtlasSprite sprite = MekanismRenderer.getChemicalTexture(chemical);
             float red = ARGB.redFloat(color);
             float green = ARGB.greenFloat(color);

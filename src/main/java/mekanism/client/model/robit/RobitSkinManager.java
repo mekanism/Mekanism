@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -164,8 +165,9 @@ public class RobitSkinManager {
 
         @Override
         public Material.@Nullable Baked bake(Material material) {
-            TextureAtlasSprite sprite = RobitSpriteUploader.getSprite(material.sprite());
-            if (sprite == RobitSpriteUploader.getAtlas().missingSprite()) {
+            TextureAtlas atlas = RobitSpriteUploader.getAtlas();
+            TextureAtlasSprite sprite = atlas.getSprite(material.sprite());
+            if (sprite == atlas.missingSprite()) {
                 Mekanism.logger.error("Missing sprite: {}", material.sprite());
                 return replacementForMissingMaterial(material);
             }

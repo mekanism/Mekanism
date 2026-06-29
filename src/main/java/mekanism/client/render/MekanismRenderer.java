@@ -16,7 +16,6 @@ import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.tileentity.RenderPigmentMixer;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
-import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -51,8 +50,8 @@ public class MekanismRenderer {
 
     //TODO: Replace various usages of LightTexture.FULL_BRIGHT with the getter for calculating glow light, at least if we end up making it only
     // effect block light for the glow rather than having it actually become full light
+    public static final Identifier ENERGY_ICON_LOCATION = Mekanism.rl("mek_liquid/energy");
     public static TextureAtlasSprite energyIcon;
-    public static TextureAtlasSprite heatIcon;
     @Nullable
     public static TextureAtlasSprite REDSTONE_TORCH_OFF_SPRITE;
     @Nullable
@@ -163,21 +162,15 @@ public class MekanismRenderer {
         return color;
     }
 
-    public static int getColorARGB(TypedInstance<Chemical> stack, float scale) {
-        return getColorARGB(stack.typeHolder(), scale);
-    }
-
-    public static int getTint(Holder<Chemical> chemical) {
-        return chemical.value().tint();
-    }
-
-    public static int getColorARGB(Holder<Chemical> chemical, float scale) {
-        if (chemical.is(ChemicalIds.EMPTY)) {
+    public static int getColorARGB(TypedInstance<Chemical> instance, float scale) {
+        if (instance.is(ChemicalIds.EMPTY)) {
             return CommonColors.WHITE;
-        } else if (chemical.is(MekanismAPITags.Chemicals.GASEOUS)) {
-            return getColorARGB(getTint(chemical), Math.min(1, scale + 0.2F));
         }
-        return ARGB.opaque(getTint(chemical));
+        int tint = instance.typeHolder().value().tint();
+        if (instance.is(MekanismAPITags.Chemicals.GASEOUS)) {
+            return getColorARGB(tint, Math.min(1, scale + 0.2F));
+        }
+        return ARGB.opaque(tint);
     }
 
     public static int getColorARGB(int argb, float alpha) {
@@ -247,15 +240,12 @@ public class MekanismRenderer {
             }
 
             WHITE_ICON_GETTER = new SingleTexturePicker(map.getSprite(Mekanism.rl("block/overlay/overlay_white")));
-            energyIcon = map.getSprite(Mekanism.rl("mek_liquid/energy"));
-            heatIcon = map.getSprite(Mekanism.rl("mek_liquid/heat"));
+            energyIcon = map.getSprite(ENERGY_ICON_LOCATION);
             REDSTONE_TORCH_OFF_SPRITE = map.getSprite(Identifier.withDefaultNamespace("block/redstone_torch_off"));
             REDSTONE_TORCH_SPRITE = map.getSprite(Identifier.withDefaultNamespace("block/redstone_torch"));
             teleporterPortal = new SingleTexturePicker(map.getSprite(Mekanism.rl("block/teleporter_portal")));
 
             //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
-            RenderTransmitterBase.onStitch();
-
             //Reset any cached models now that the atlases are built
             //TODO - 26.2: Move model cache clearing to the baking complete event?
             RenderPigmentMixer.resetCached();

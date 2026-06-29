@@ -7,6 +7,7 @@ import java.util.UUID;
 import mekanism.client.model.robit.RobitSkinManager;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.tileentity.RenderSPS;
+import mekanism.client.render.transmitter.TransmitterContentsManager;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
@@ -47,6 +48,7 @@ public class MekanismClient {
 
     public MekanismClient(ModContainer container, IEventBus modEventBus) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        modEventBus.register(TransmitterContentsManager.class);
         modEventBus.register(RobitSpriteUploader.class);
         modEventBus.register(RobitSkinManager.class);
     }

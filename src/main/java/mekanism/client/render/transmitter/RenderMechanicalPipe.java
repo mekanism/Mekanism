@@ -1,10 +1,7 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.ModelRenderer;
@@ -23,6 +20,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
@@ -57,17 +55,17 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         if (fluidType.isEmpty()) {
             return;//Shouldn't be the case but validate it
         }
-        state.currentScale = network.currentScale;
-        state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidType, FluidTextureType.STILL));
-        state.fluidTint = MekanismRenderer.getColorARGB(fluidType, state.currentScale);
+        TextureAtlasSprite texture = MekanismRenderer.getFluidTexture(fluidType, FluidTextureType.STILL);
+        state.fluidTexture = MekanismRenderer.getSinglePicker(texture);
+        state.fluidTint = MekanismRenderer.getColorARGB(fluidType, network.currentScale);
+        state.modelTint = new int[]{state.fluidTint};
 
-        int stage = Math.max(3, ModelRenderer.getStage(fluidType, STAGES, state.currentScale));
+        int stage = Math.max(3, ModelRenderer.getStage(fluidType, STAGES, network.currentScale));
         state.stage = stage;
         //TODO - 26.2: Should we overwrite lightCoords with glow?
         state.glow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluidType);
 
-
-        List<String> connectionContents = new ArrayList<>();
+        ConnectionType[] connectionContents = new ConnectionType[EnumUtils.DIRECTIONS.length];
         boolean[] renderSides = new boolean[6];
         boolean hasHorizontalSide = false;
         int verticalSides = 0;
@@ -75,7 +73,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             ConnectionType connectionType = transmitter.getConnectionType(side);
             //If it is normal we need to render it manually so to have it be the correct dimensions instead of too narrow
             if (connectionType == ConnectionType.PUSH || connectionType == ConnectionType.PULL) {
-                connectionContents.add(side.getSerializedName() + connectionType.getSerializedName().toUpperCase(Locale.ROOT));
+                connectionContents[side.ordinal()] = connectionType;
             }
             renderSides[side.ordinal()] = connectionType != ConnectionType.NORMAL;
             if (connectionType != ConnectionType.NONE) {
@@ -86,7 +84,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 }
             }
         }
-        state.connectionContents = connectionContents;
+        state.contentsModel = TransmitterContentsManager.get().getBaked(connectionContents, texture.contents().name());
         //Render the base part if there is a horizontal connection, or we only have one vertical connection
         boolean renderBase = hasHorizontalSide || verticalSides < 2;
         state.renderBase = renderBase;
@@ -112,6 +110,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
     @Override
     public void submit(PipeRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        super.submit(state, poseStack, nodeCollector, camera);
         if (state.fluidTexture == null) {
             return;
         }
@@ -183,19 +182,10 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 min = 0.5F - stageRatio / 2;
                 max = 0.5F + stageRatio / 2;
             }
+            //TODO - 26.2: Something about this seems to be rendering the texture wrong, and only taking a couple pixels of it?
             RenderResizableCuboid.renderCube(state.coreSideRender, min, 0.25F + OFFSET, min, max, 0.25F + OFFSET + stageRatio, max, poseStack,
                   Sheets.translucentItemSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
                   camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
-        }
-
-        //TODO - 26.2: rendering
-        if (state.connectionContents != null && !state.connectionContents.isEmpty()) {
-            /*poseStack.pushPose();
-            poseStack.translate(0.5, 0.5, 0.5);
-            renderModel(state, poseStack, buffer, ARGB.redFloat(state.fluidTint), ARGB.greenFloat(state.fluidTint), ARGB.blueFloat(state.fluidTint),
-                  ARGB.alphaFloat(state.fluidTint), state.glow, OverlayTexture.NO_OVERLAY,
-                  state.fluidTexture, state.connectionContents);
-            poseStack.popPose();*/
         }
     }
 

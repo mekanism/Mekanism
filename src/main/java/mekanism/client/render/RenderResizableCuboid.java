@@ -147,7 +147,8 @@ public class RenderResizableCuboid {
         return (sidesToRender & SideRender.DIRECTION_TO_FACE[direction.ordinal()]) != 0;
     }
 
-    private static void renderSideZAxis(VertexConsumer buffer, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta, TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal, int northColor, int southColor) {
+    private static void renderSideZAxis(VertexConsumer buffer, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta,
+          @Nullable TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal, int northColor, int southColor) {
 
         TextureAtlasSprite northSprite = sprites[Direction.NORTH.ordinal()];
         TextureAtlasSprite southSprite = sprites[Direction.SOUTH.ordinal()];
@@ -241,7 +242,7 @@ public class RenderResizableCuboid {
     }
 
     private static void renderSideXAxis(VertexConsumer buffer, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta,
-          TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal, int westColor, int eastColor) {
+          @Nullable TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal, int westColor, int eastColor) {
         TextureAtlasSprite westSprite = sprites[Direction.WEST.ordinal()];
         TextureAtlasSprite eastSprite = sprites[Direction.EAST.ordinal()];
         boolean hasWest = westSprite != null;
@@ -328,7 +329,8 @@ public class RenderResizableCuboid {
         }
     }
 
-    private static void renderSideYAxis(VertexConsumer buffer, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta, TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal, int downColor, int upColor) {
+    private static void renderSideYAxis(VertexConsumer buffer, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta,
+          @Nullable TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal, int downColor, int upColor) {
         TextureAtlasSprite upSprite = sprites[Direction.UP.ordinal()];
         TextureAtlasSprite downSprite = sprites[Direction.DOWN.ordinal()];
         boolean hasUp = upSprite != null;
@@ -669,6 +671,7 @@ public class RenderResizableCuboid {
 
     public sealed interface TexturePicker permits MekanismRenderer.SingleTexturePicker, MekanismRenderer.ValveTextureGetter {
 
+        @Nullable
         TextureAtlasSprite apply(Direction direction);
     }
 }
