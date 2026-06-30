@@ -198,6 +198,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
               context.register(ChemicalIds.POLONIUM, BasicChemical.defaultIcon(0xFF1B9E7B));
               context.register(ChemicalIds.ANTIMATTER, BasicChemical.defaultIcon(0xFFA464B3));
               //Pigments
+              //TODO - 26.2: Replace this packed color with a custom chemical impl and serializer that then queries the color map?
               EnumColorCollection.zipApply(EnumColorCollection.VALUES, ChemicalIds.SIMPLE_PIGMENTS, (color, pigment) ->
                     context.register(pigment, BasicChemical.pigment(color.getPackedColor())));
               //Slurries

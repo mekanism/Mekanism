@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 /// Adapted from Mantle's FluidRenderer and Tinker's SmelteryTankRenderer
 public class RenderResizableCuboid {
 
+    //TODO - 26.2: Replace this normal hack with something like ConfiguratorOverlay's thing?
     private static final Vector3f NORMAL = new Vector3f(1, 1, 1).normalize();
     private static final int X_AXIS_MASK = 1 << Axis.X.ordinal();
     private static final int Y_AXIS_MASK = 1 << Axis.Y.ordinal();

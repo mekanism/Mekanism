@@ -28,23 +28,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix3f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
 public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRenderState> {
-
-    private static final Matrix3f FAKE_NORMALS = Util.make(() -> {
-        Vector3f NORMAL = new Vector3f(1, 1, 1);
-        NORMAL.normalize();
-        return new Matrix3f().set(new Quaternionf().setAngleAxis(0, NORMAL.x, NORMAL.y, NORMAL.z));
-    });
 
     private final ItemModelResolver itemModelResolver;
     private final Font font;
@@ -77,10 +67,9 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
                 //Copy from how the campfire renderer calculates the seed
                 int seed = (int) state.blockPos.asLong();
                 this.itemModelResolver.updateForTopItem(state.item, binSlot.getBinItemType().toStack(), ItemDisplayContext.GUI, level, null, seed);
-                if (bin.getTier() == BinTier.CREATIVE) {
-                    state.displayCount = MekanismLang.INFINITE.translateColored(EnumColor.WHITE);
-                } else {
-                    state.displayCount = TextComponentUtil.build(binSlot.isLocked() ? EnumColor.AQUA : EnumColor.WHITE, binSlot.amountAsInt());
+                state.displayCount = bin.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate() : TextComponentUtil.build(binSlot.amountAsInt());
+                if (binSlot.isLocked()) {
+                    state.displayColor = EnumColor.AQUA.getPackedColor();
                 }
             } else {
                 //TODO - 26.2: Re-evaluate how we want to do this. This just makes it so that we don't actually submit any rendering,
@@ -113,10 +102,6 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
             poseStack.scale(0.025F, 0.025F, 0.0001F);
             poseStack.translate(8, -8, 8);
             poseStack.scale(16, 16, 16);
-            //TODO: Come up with a better way to do this hack? Basically we adjust the normals so that the lighting
-            // isn't screwy when it tries to apply the diffuse lighting as we aren't able to disable diffuse lighting
-            // ourselves so need to trick it
-            poseStack.last().normal().set(FAKE_NORMALS);
             state.item.submit(poseStack, nodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();
             if (state.displayCount != null) {
@@ -168,13 +153,11 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
                       false,
                       DisplayMode.POLYGON_OFFSET,
                       state.lightCoords,
-                      CommonColors.WHITE,//TODO - 26.2: What color do we want to be using?
+                      state.displayColor,
                       0,
                       0
-
                 );
                 poseStack.popPose();
-
             }
         }
     }
@@ -189,6 +172,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
         public final ItemStackRenderState item = new ItemStackRenderState();
         @Nullable
         public Component displayCount;
+        public int displayColor = CommonColors.WHITE;
         @Nullable
         public Direction facing;
     }
