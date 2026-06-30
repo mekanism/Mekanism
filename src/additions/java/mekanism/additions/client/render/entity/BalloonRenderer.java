@@ -16,9 +16,10 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -66,9 +67,14 @@ public class BalloonRenderer extends EntityRenderer<EntityBalloon, BalloonRender
             poseStack.translate(state.latchedAdjustment);
         }
 
-        nodeCollector.submitBlockModel(poseStack, RENDER_TYPE, state.model, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, state.outlineColor);
+        nodeCollector.submitBlockModel(poseStack, RENDER_TYPE, state.model, state.tint, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
         poseStack.popPose();
         super.submit(state, poseStack, nodeCollector, camera);
+    }
+
+    @Override
+    protected int getBlockLightLevel(EntityBalloon entity, BlockPos blockPos) {
+        return Level.MAX_BRIGHTNESS;
     }
 
     @Override
