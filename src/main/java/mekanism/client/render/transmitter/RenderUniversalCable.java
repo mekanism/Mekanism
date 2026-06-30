@@ -26,10 +26,8 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
     public void extractRenderState(TileEntityUniversalCable cable, TransmitterRenderState state, float partialTick, Vec3 cameraPosition,
           ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(cable, state, partialTick, cameraPosition, breakProgress);
-        EnergyNetwork network = cable.getTransmitter().getTransmitterNetwork();
-        if (network == null) {//TODO - 26.2: Does this race condition still exist?
-            return;//race conditions, yay
-        }
+        //Note: We validated in shouldRender(Transmitter) that the cable has a network, which is two lines above the call to this method
+        EnergyNetwork network = cable.getTransmitter().getTransmitterNetworkNN();
         //TODO - 26.2: What threshold do we want to cut this off at?
         setContentsModel(cable, state, MekanismRenderer.ENERGY_ICON_LOCATION, ARGB.white(network.currentScale));
     }

@@ -47,10 +47,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     public void extractRenderState(TileEntityMechanicalPipe pipe, PipeRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(pipe, state, partialTick, cameraPosition, breakProgress);
         MechanicalPipe transmitter = pipe.getTransmitter();
-        FluidNetwork network = transmitter.getTransmitterNetwork();
-        if (network == null) {//TODO - 26.2: Does this race condition still exist?
-            return;//race conditions, yay
-        }
+        //Note: We validated in shouldRender(Transmitter) that the pipe has a network, which is two lines above the call to this method
+        FluidNetwork network = transmitter.getTransmitterNetworkNN();
         FluidResource fluidType = network.getLastType();
         if (fluidType.isEmpty()) {
             return;//Shouldn't be the case but validate it

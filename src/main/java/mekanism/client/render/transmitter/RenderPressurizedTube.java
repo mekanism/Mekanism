@@ -25,10 +25,8 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
     @Override
     public void extractRenderState(TileEntityPressurizedTube tube, TransmitterRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(tube, state, partialTick, cameraPosition, breakProgress);
-        ChemicalNetwork network = tube.getTransmitter().getTransmitterNetwork();
-        if (network == null) {//TODO - 26.2: Does this race condition still exist?
-            return;//race conditions, yay
-        }
+        //Note: We validated in shouldRender(Transmitter) that the tube has a network, which is two lines above the call to this method
+        ChemicalNetwork network = tube.getTransmitter().getTransmitterNetworkNN();
         ChemicalResource chemical = network.getLastType();
         float currentScale = Math.max(0.2F, network.currentScale);
         //TODO - 26.2: Figure out the tint better
