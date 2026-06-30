@@ -3,7 +3,6 @@ package mekanism.generators.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mekanism.api.text.EnumColor;
-import mekanism.client.model.ModelEnergyCore;
 import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.generators.client.render.RenderFusionReactor.FusionRenderState;
@@ -63,8 +62,6 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
         renderPart(state, poseStack, nodeCollector, EnumColor.ORANGE, scale, 5, -3, -35, 106);
 
         poseStack.popPose();
-        //TODO - 26.2: We used to force end and draw the buffer, I am guessing that is no longer something that we want to be doing
-        //endIfNeeded(renderer, ModelEnergyCore.RENDER_TYPE);
     }
 
     private static float sinDegrees(float degrees) {
@@ -85,12 +82,10 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
         nodeCollector.submitModelPart(
               this.energyCore,
               poseStack,
-              //TODO - 26.2: Figure out the render type
-              ModelEnergyCore.RENDER_TYPE,
-              //TODO - 26.2: Do we want to be using the state's light level instead?
+              RenderEnergyCube.RENDER_TYPE,
               LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
-              null,//TODO - 26.2: Do we need to specify the texture or is doing so in the render type good enough?
+              null,
               color.getPackedColor(),
               null//No break overlay for the core
         );

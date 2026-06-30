@@ -2,7 +2,7 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import mekanism.client.model.ModelEnergyCore;
+import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.tileentity.RenderEnergyCube.EnergyCubeRenderState;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ProfilerConstants;
@@ -19,17 +19,21 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
 public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnergyCube, EnergyCubeRenderState> {
 
+    private static final Identifier CORE_TEXTURE = MekanismUtils.getRenderResource("energy_core.png");
+    public static final RenderType RENDER_TYPE = MekanismRenderType.STANDARD_TRANSLUCENT_TARGET.apply(CORE_TEXTURE);
     public static final ModelLayerLocation CORE_LAYER = new ModelLayerLocation(Mekanism.rl("energy_core"), "main");
     public static final Axis coreVec = Axis.of(new Vector3f(0.0F, MekanismUtils.ONE_OVER_ROOT_TWO, MekanismUtils.ONE_OVER_ROOT_TWO));
 
@@ -75,7 +79,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
         nodeCollector.submitModelPart(
               this.energyCore,
               poseStack,
-              ModelEnergyCore.BATCHED_RENDER_TYPE,
+              RENDER_TYPE,
               LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
               null,

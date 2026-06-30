@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
 import mekanism.client.ModelUtil;
-import mekanism.client.model.ModelEnergyCore;
 import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
@@ -23,27 +22,30 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
-import org.jspecify.annotations.Nullable;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
 public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCubeItem.CubeState> {
     
-    private final ModelEnergyCore core;
+    private final ModelPart energyCore;
     private final Lazy<Vector3fc[]> extents = Lazy.of(() -> ModelUtil.computeExtents(MekanismBlocks.CREATIVE_ENERGY_CUBE));
 
     public RenderEnergyCubeItem(EntityModelSet entityModels) {
-        core = new ModelEnergyCore(entityModels);
+        this.energyCore = entityModels.bakeLayer(RenderEnergyCube.CORE_LAYER);
     }
 
     @Override
@@ -52,7 +54,7 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
             return;
         }
         state.blockRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
-        if (state.coreState != null) {
+        if (state.coreTint != null) {
             float scaledTicks = 4 * state.ticks();
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
@@ -60,7 +62,16 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
             poseStack.translate(0, Math.sin(Math.toRadians(3 * state.ticks())) / 7, 0);
             poseStack.mulPose(Axis.YP.rotationDegrees(scaledTicks));
             poseStack.mulPose(RenderEnergyCube.coreVec.rotationDegrees(36F + scaledTicks));
-            core.collect(state.coreState, poseStack, submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayCoords);
+            submitNodeCollector.submitModelPart(
+                  this.energyCore,
+                  poseStack,
+                  RenderEnergyCube.RENDER_TYPE,
+                  LightCoordsUtil.FULL_BRIGHT,
+                  OverlayTexture.NO_OVERLAY,
+                  null,
+                  state.coreTint,
+                  null//No break overlay for the core
+            );
             poseStack.popPose();
         }
     }
@@ -105,7 +116,7 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
         float energyRatio = (float) StorageUtils.getEnergyRatio(stack);
 
         return new CubeState(
-              energyRatio > 0 ? ModelEnergyCore.getState(tier.getBaseTier(), energyRatio) : null,
+              energyRatio > 0 ? tier.getBaseTier().getPackedColor(ARGB.as8BitChannel(energyRatio)) : null,
               ticks,
               modelRenderState
         );
@@ -119,7 +130,7 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
         return Minecraft.getInstance();
     }
 
-    public record CubeState(@Nullable Integer coreState, float ticks, BlockModelRenderState blockRenderState) {}
+    public record CubeState(@Nullable Integer coreTint, float ticks, BlockModelRenderState blockRenderState) {}
 
     public static class Unbaked implements SpecialModelRenderer.Unbaked<CubeState> {
 

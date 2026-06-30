@@ -78,7 +78,7 @@ public class BaseModelCache {
 
         @Override
         public String debugName() {
-            return rl.toString();
+            return rl.toDebugFileName();
         }
 
         protected void reload(ModelEvent.BakingCompleted evt) {
@@ -118,16 +118,12 @@ public class BaseModelCache {
         @Override
         protected void reload(ModelEvent.BakingCompleted evt) {
             super.reload(evt);
-            geometry = ObjLoader.INSTANCE.loadGeometry(new ObjGeometry.Settings(rl, true, useDiffuseLighting(), true, true, null));
+            geometry = ObjLoader.INSTANCE.loadGeometry(new ObjGeometry.Settings(rl, true, true, true, true, null));
         }
 
         @Nullable//TODO - 26.2: Should we be using the ObjGeometry here?
         public ObjGeometry getGeometry() {
             return geometry;
-        }
-
-        protected boolean useDiffuseLighting() {
-            return true;
         }
     }
 
