@@ -58,7 +58,7 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
         if (state.height > 0 && !water.isEmpty()) {
             state.waterTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(water, MekanismRenderer.FluidTextureType.STILL));
             state.valveTexture = MekanismRenderer.getValveTexture(water);
-            state.waterGlow = MekanismRenderer.calculateGlowLight(LightCoordsUtil.FULL_SKY, water);
+            state.waterGlow = LightCoordsUtil.withBlock(LightCoordsUtil.FULL_SKY, water.getFluidType().getLightLevel());
             state.waterColor = MekanismRenderer.getColorARGB(water, multiblock.prevWaterScale);
             state.waterMaxY = ModelRenderer.getMaxY(state.height, multiblock.prevWaterScale, MekanismUtils.lighterThanAirGas(water));
             state.valves.clear();

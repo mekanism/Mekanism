@@ -182,15 +182,6 @@ public class MekanismRenderer {
         return ARGB.color(alpha, argb);
     }
 
-    public static int calculateGlowLight(int combinedLight, FluidResource fluidType) {
-        return fluidType.isEmpty() ? combinedLight : calculateGlowLight(combinedLight, fluidType.getFluidType().getLightLevel());
-    }
-
-    public static int calculateGlowLight(int combinedLight, int glow) {
-        //Only factor the glow into the block light portion
-        return (combinedLight & 0xFFFF0000) | Math.max(Math.min(glow, 15) << 4, combinedLight & 0xFFFF);
-    }
-
     public static void renderColorOverlay(GuiGraphicsExtractor guiGraphics, int x, int y, int color) {
         //TODO - 26.2: Go through all our GUIs and make sure that our things that previously used gui overlay render as expected
         guiGraphics.fill(x, y, guiGraphics.guiWidth(), guiGraphics.guiHeight(), color);

@@ -6,6 +6,7 @@ import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.AttributeStateFacing.FacePlacementType;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockType.BlockTypeBuilder;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class AdditionsBlockTypes {
@@ -18,6 +19,6 @@ public class AdditionsBlockTypes {
           .createBlock(AdditionsLang.DESCRIPTION_GLOW_PANEL)
           .withCustomShape(BlockShapes.GLOW_PANEL)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE))
-          .withLight(15)
+          .withLight(Level.MAX_BRIGHTNESS)
           .build();
 }

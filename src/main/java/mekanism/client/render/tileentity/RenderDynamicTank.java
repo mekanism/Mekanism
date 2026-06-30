@@ -56,7 +56,7 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
             case FLUID -> {
                 FluidResource fluid = multiblock.getFluidTank().resource();
                 state.tankTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
-                state.tankGlow = MekanismRenderer.calculateGlowLight(LightCoordsUtil.FULL_SKY, fluid);
+                state.tankGlow = LightCoordsUtil.withBlock(LightCoordsUtil.FULL_SKY, fluid.getFluidType().getLightLevel());
                 state.tankColor = MekanismRenderer.getColorARGB(fluid, scale);
                 state.tankMaxY = ModelRenderer.getMaxY(state.height, scale, MekanismUtils.lighterThanAirGas(fluid));
                 state.valveTexture = MekanismRenderer.getValveTexture(fluid);

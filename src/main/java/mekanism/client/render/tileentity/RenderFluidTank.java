@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.CommonColors;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
@@ -46,7 +47,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
         FluidResource fluid = tank.fluidTank.resource();
         state.fluidTint = MekanismRenderer.getColorARGB(fluid, state.fluidScale);
-        state.fluidGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluid);
+        state.fluidGlow = fluid.isEmpty() ? state.lightCoords : LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, fluid.getFluidType().getLightLevel());
         state.fluidScale = fluid.isEmpty() ? 0 : tank.prevScale;
         boolean gaseous = MekanismUtils.lighterThanAirGas(fluid);
         state.contentsMaxY = state.fluidScale > 0 ? contentsMaxY(state.fluidScale, gaseous) : 0;
@@ -57,7 +58,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         if (!valveFluid.isEmpty() && !gaseous) {
             state.valveMinY = valveMinY(state.fluidScale);
             state.valveTint = MekanismRenderer.getColorARGB(valveFluid);
-            state.valveGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, valveFluid);
+            state.valveGlow = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, valveFluid.getFluidType().getLightLevel());
             state.valveFluidTexture = MekanismRenderer.getValveTexture(valveFluid);
         } else {
             state.valveFluidTexture = null;

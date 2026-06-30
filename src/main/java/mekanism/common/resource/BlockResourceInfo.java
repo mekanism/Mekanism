@@ -1,5 +1,6 @@
 package mekanism.common.resource;
 
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
@@ -21,7 +22,7 @@ public enum BlockResourceInfo implements IResource {
     //Note: Deepslate is closer to steel than stone or metal
     STEEL("steel", 5, 9, MapColor.DEEPSLATE),
     REFINED_OBSIDIAN("refined_obsidian", 50, 2_400, MapColor.COLOR_PURPLE, NoteBlockInstrument.BASEDRUM, 8, false, true, PushReaction.BLOCK),
-    REFINED_GLOWSTONE("refined_glowstone", 5, 6, MapColor.COLOR_YELLOW, NoteBlockInstrument.BASEDRUM, 15);
+    REFINED_GLOWSTONE("refined_glowstone", 5, 6, MapColor.COLOR_YELLOW, NoteBlockInstrument.BASEDRUM, Level.MAX_BRIGHTNESS);
 
     private final String registrySuffix;
     private final MapColor mapColor;

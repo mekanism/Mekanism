@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
@@ -27,7 +28,7 @@ public class Attributes {
     //12 is the minimum light level required to be able to melt ice that is directly adjacent to the block,
     // we need to go slightly higher so that we can melt blocks that are also a distance of one away
     public static final Attribute ACTIVE_MELT_LIGHT = new AttributeStateActive(13);
-    public static final Attribute ACTIVE_FULL_LIGHT = new AttributeStateActive(15);
+    public static final Attribute ACTIVE_FULL_LIGHT = new AttributeStateActive(Level.MAX_BRIGHTNESS);
     public static final Attribute COMPARATOR = new AttributeComparator();
     public static final Attribute INVENTORY = new AttributeInventory<>();
     public static final Attribute REDSTONE = new AttributeRedstone();

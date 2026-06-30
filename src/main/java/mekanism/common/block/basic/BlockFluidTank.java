@@ -32,7 +32,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
     @Override
     public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
         int ambientLight = super.getLightEmission(state, world, pos);
-        if (ambientLight == 15) {
+        if (ambientLight == Level.MAX_BRIGHTNESS) {
             //If we are already at the max light value don't bother looking up the tile to see if it has a fluid that gives off light
             return ambientLight;
         }

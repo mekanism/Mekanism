@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
@@ -60,8 +61,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
         int stage = Math.max(3, ModelRenderer.getStage(fluidType, STAGES, network.currentScale));
         state.stage = stage;
-        //TODO - 26.2: Should we overwrite lightCoords with glow?
-        state.glow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluidType);
+        state.glow = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, fluidType.getFluidType().getLightLevel());
 
         ConnectionType[] connectionContents = new ConnectionType[EnumUtils.DIRECTIONS.length];
         boolean[] renderSides = new boolean[6];

@@ -50,7 +50,7 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
 
         state.fluidTexture = fluid.isEmpty() ? null : MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
         state.valveTexture = fluid.isEmpty() ? null : MekanismRenderer.getValveTexture(fluid);
-        state.tankGlow = MekanismRenderer.calculateGlowLight(LightCoordsUtil.FULL_SKY, fluid);
+        state.tankGlow = fluid.isEmpty() ? LightCoordsUtil.FULL_SKY : LightCoordsUtil.withBlock(LightCoordsUtil.FULL_SKY, fluid.getFluidType().getLightLevel());
         state.tankColor = MekanismRenderer.getColorARGB(fluid, scale);
         state.tankMaxY = ModelRenderer.getMaxY(state.height, scale, MekanismUtils.lighterThanAirGas(fluid));
         state.valves.clear();

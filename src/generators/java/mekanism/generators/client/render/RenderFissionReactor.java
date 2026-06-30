@@ -62,7 +62,7 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
             FluidResource coolant = multiblock.coolantTank.getFluidTank().resource();
             state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(coolant, MekanismRenderer.FluidTextureType.STILL));
             isGaseous = MekanismUtils.lighterThanAirGas(coolant);
-            state.coolantGlow = MekanismRenderer.calculateGlowLight(LightCoordsUtil.FULL_SKY, coolant);
+            state.coolantGlow = LightCoordsUtil.withBlock(LightCoordsUtil.FULL_SKY, coolant.getFluidType().getLightLevel());
             state.coolantColor = MekanismRenderer.getColorARGB(coolant, coolantScale);
             //TODO - 26.2: Do we want to add support for valve rendering?
         } else if (multiblock.coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
