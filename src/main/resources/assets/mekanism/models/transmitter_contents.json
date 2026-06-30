@@ -1,0 +1,7 @@
+{
+  "loader": "neoforge:obj",
+  "model": "mekanism:models/transmitter_contents.obj",
+  "shade_quads": false,
+  "flip_v": true,
+  "ambientocclusion": false
+}
