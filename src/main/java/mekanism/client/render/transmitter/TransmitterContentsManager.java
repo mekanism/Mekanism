@@ -2,6 +2,7 @@ package mekanism.client.render.transmitter;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +69,9 @@ public class TransmitterContentsManager {
     }
 
     public List<BlockStateModelPart> getBaked(@Nullable ConnectionType[] connectionTypes, Identifier texture) {
+        if (Arrays.stream(connectionTypes).allMatch(Objects::isNull)) {
+            return Collections.emptyList();
+        }
         List<BlockStateModelPart> cached = bakedCache.get(texture, connectionTypes);
         if (cached == null) {
             Map<String, Boolean> connections = new HashMap<>(EnumUtils.DIRECTIONS.length);
