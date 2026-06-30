@@ -114,6 +114,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
 
         float stageRatio = (state.stage / (float) STAGES) * HEIGHT;
+        Vec3 lowerCorner = Vec3.atLowerCornerOf(state.blockPos);
 
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (!state.renderSideModel[side.ordinal()]) {
@@ -167,7 +168,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 }
             }
             RenderResizableCuboid.renderCube(sideRenderCheck, minX, minY, minZ, maxX, maxY, maxZ, poseStack, Sheets.translucentBlockItemSheet(), nodeCollector,
-                  state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
+                  state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, lowerCorner, state.fluidTexture);
         }
 
         {//render core cube
@@ -180,10 +181,9 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 min = 0.5F - stageRatio / 2;
                 max = 0.5F + stageRatio / 2;
             }
-            //TODO - 26.2: Something about this seems to be rendering the texture wrong, and only taking a couple pixels of it?
             RenderResizableCuboid.renderCube(state.coreSideRender, min, 0.25F + OFFSET, min, max, 0.25F + OFFSET + stageRatio, max, poseStack,
-                  Sheets.translucentItemSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
-                  camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
+                  Sheets.translucentBlockItemSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
+                  camera.pos, lowerCorner, state.fluidTexture);
         }
     }
 
