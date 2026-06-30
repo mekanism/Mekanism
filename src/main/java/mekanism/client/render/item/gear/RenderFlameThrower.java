@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import mekanism.client.model.ModelFlamethrower;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.util.Unit;
@@ -27,7 +28,7 @@ public class RenderFlameThrower implements NoDataSpecialModelRenderer {
         poseStack.translate(0.5, 0.5, 0.5);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180));
         //TODO - 26.2: Figure out foil
-        nodeCollector.submitModel(flamethrower, Unit.INSTANCE, poseStack, flamethrower.RENDER_TYPE, lightCoords, overlayCoords, 0, null);
+        nodeCollector.submitModel(flamethrower, Unit.INSTANCE, poseStack, flamethrower.RENDER_TYPE, lightCoords, overlayCoords, EntityRenderState.NO_OUTLINE, null);
         poseStack.popPose();
     }
 

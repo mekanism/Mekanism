@@ -12,6 +12,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
@@ -38,7 +39,7 @@ public class CompassPiP extends PictureInPictureRenderer<CompassPiP.State> {
         poseStack.pushPose();
         poseStack.scale(0.7F, 0.7F, 0.7F);
         nodeCollector.submitText(poseStack, -font.width(state.coords()) / 2F, -4, state.coords(), false, Font.DisplayMode.NORMAL, LightCoordsUtil.FULL_BRIGHT,
-              color, 0, 0);
+              color, 0, EntityRenderState.NO_OUTLINE);
         poseStack.popPose();
 
         poseStack.mulPose(Axis.XN.rotation(ONE_THIRD_PI));
@@ -67,7 +68,7 @@ public class CompassPiP extends PictureInPictureRenderer<CompassPiP.State> {
         pose.translate(0, -50, 0);
         pose.mulPose(Axis.ZN.rotation(rotation + shift));
         nodeCollector.submitText(pose, -2.5F, -4, langEntry.translate().getVisualOrderText(), false, Font.DisplayMode.NORMAL, LightCoordsUtil.FULL_BRIGHT,
-              color, 0, 0);
+              color, 0, EntityRenderState.NO_OUTLINE);
         pose.popPose();
     }
 

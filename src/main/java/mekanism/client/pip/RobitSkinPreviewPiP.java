@@ -9,6 +9,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.LightCoordsUtil;
@@ -23,7 +24,7 @@ public class RobitSkinPreviewPiP extends PictureInPictureRenderer<RobitSkinPrevi
         poseStack.mulPose(Axis.ZP.rotationDegrees(180));
         poseStack.rotateAround(state.rotation, 0.5F, 0.0F, 0.5F);
         BakeResult model = state.model();
-        nodeCollector.submitBlockModel(poseStack, model.renderType(), model.model(), BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+        nodeCollector.submitBlockModel(poseStack, model.renderType(), model.model(), BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
     }
 
     @Override

@@ -10,6 +10,7 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
@@ -38,7 +39,7 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
         if (!state.contentsModel.isEmpty()) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
-            nodeCollector.submitBlockModel(poseStack, Sheets.translucentBlockItemSheet(), state.contentsModel, state.modelTint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+            nodeCollector.submitBlockModel(poseStack, Sheets.translucentBlockItemSheet(), state.contentsModel, state.modelTint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
             poseStack.popPose();
         }
     }

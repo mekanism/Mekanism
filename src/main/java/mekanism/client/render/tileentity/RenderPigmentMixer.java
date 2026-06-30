@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
@@ -78,7 +79,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
               BlockModelRenderState.EMPTY_TINTS,
               state.lightCoords,
               OverlayTexture.NO_OVERLAY,
-              0
+              EntityRenderState.NO_OUTLINE
         );
         poseStack.popPose();
     }

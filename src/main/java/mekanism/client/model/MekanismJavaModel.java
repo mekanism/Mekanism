@@ -14,6 +14,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import org.joml.Matrix4f;
@@ -58,7 +59,7 @@ public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extend
     protected static void collectParts(List<ModelPart> parts, PoseStack poseStack, RenderType renderType, SubmitNodeCollector collector, int light, int overlayLight, int argb, @Nullable TextureAtlasSprite sprite) {
         for (ModelPart part : parts) {
             //TODO - 26.2: Figure out how foil rendering works now as it no longer is passed to this
-            collector.submitModelPart(part, poseStack, renderType, light, overlayLight, sprite, argb, null, 0);
+            collector.submitModelPart(part, poseStack, renderType, light, overlayLight, sprite, argb, null, EntityRenderState.NO_OUTLINE);
         }
     }
 

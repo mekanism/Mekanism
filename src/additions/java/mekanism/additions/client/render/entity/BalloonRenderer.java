@@ -66,7 +66,7 @@ public class BalloonRenderer extends EntityRenderer<EntityBalloon, BalloonRender
             poseStack.translate(state.latchedAdjustment);
         }
 
-        nodeCollector.submitBlockModel(poseStack, RENDER_TYPE, state.model, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+        nodeCollector.submitBlockModel(poseStack, RENDER_TYPE, state.model, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, state.outlineColor);
         poseStack.popPose();
         super.submit(state, poseStack, nodeCollector, camera);
     }

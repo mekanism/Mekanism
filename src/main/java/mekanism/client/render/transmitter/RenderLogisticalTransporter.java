@@ -17,6 +17,7 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -85,7 +86,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     poseStack.pushPose();
                     poseStack.translate(-0.5F, -0.25F, -0.5F);
                     nodeCollector.submitBlockModel(poseStack, Sheets.cutoutBlockItemSheet(), MekanismModelCache.INSTANCE.TRANSPORTER_BOX.getBakedModel(),
-                          new int[]{stackRenderState.color().getPackedColor()}, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+                          new int[]{stackRenderState.color().getPackedColor()}, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
                     poseStack.popPose();
                 }
                 AABB bb = stackRenderState.item().getModelBoundingBox();

@@ -19,6 +19,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -95,7 +96,7 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
                 poseStack.mulPose(Axis.ZP.rotationDegrees(90));
             }
         }
-        nodeCollector.submitModel(this.model, state.modelState, poseStack, this.model.getRenderType(), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0, state.breakProgress);
+        nodeCollector.submitModel(this.model, state.modelState, poseStack, this.model.getRenderType(), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, state.breakProgress);
         RenderType renderType = this.model.getRenderType();
         nodeCollector.submitModelPart(
               this.lightBox,

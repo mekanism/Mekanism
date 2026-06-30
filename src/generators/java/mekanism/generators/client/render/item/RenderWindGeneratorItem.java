@@ -11,6 +11,7 @@ import mekanism.generators.client.model.ModelWindGenerator.WindGeneratorRotation
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3fc;
@@ -70,7 +71,7 @@ public class RenderWindGeneratorItem implements SpecialModelRenderer<WindGenerat
         matrix.pushPose();
         matrix.translate(0.5, 0.5, 0.5);
         matrix.mulPose(Axis.ZP.rotationDegrees(180));
-        submitNodeCollector.submitModel(windGenerator, argument, matrix, ModelWindGenerator.RENDER_TYPE, lightCoords, overlayCoords, 0, null);
+        submitNodeCollector.submitModel(windGenerator, argument, matrix, ModelWindGenerator.RENDER_TYPE, lightCoords, overlayCoords, EntityRenderState.NO_OUTLINE, null);
         matrix.popPose();
     }
 

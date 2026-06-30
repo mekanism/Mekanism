@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -110,7 +111,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                   BlockModelRenderState.EMPTY_TINTS,
                   state.lightCoords,
                   OverlayTexture.NO_OVERLAY,
-                  0//No outline
+                  EntityRenderState.NO_OUTLINE
             );
             poseStack.popPose();
         }

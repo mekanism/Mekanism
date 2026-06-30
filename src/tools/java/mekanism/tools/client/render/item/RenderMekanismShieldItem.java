@@ -12,6 +12,7 @@ import net.minecraft.client.model.object.equipment.ShieldModel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BannerRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
@@ -64,7 +65,7 @@ public class RenderMekanismShieldItem implements SpecialModelRenderer<MekShieldS
 
         if (hasFoil) {
             submitNodeCollector.submitModel(this.model, Unit.INSTANCE, poseStack, RenderTypes.entityGlint(), lightCoords, overlayCoords, CommonColors.WHITE,
-                  this.sprites.get(this.sprite), 0, null);
+                  this.sprites.get(this.sprite), EntityRenderState.NO_OUTLINE, null);
         }
     }
 

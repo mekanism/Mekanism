@@ -16,6 +16,7 @@ import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
@@ -60,7 +61,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
             MekanismRenderer.rotate(poseStack, state.direction, 0, 180, 90, 270);
             poseStack.mulPose(Axis.ZP.rotationDegrees(180));
             //TODO - 26.2: Do we need to do something for the light level similar to what double chests do of calculating the max of all the positions?
-            nodeCollector.submitModel(this.model, state.rotation, poseStack, ModelWindGenerator.RENDER_TYPE, state.lightCoords, OverlayTexture.NO_OVERLAY, 0, state.breakProgress);
+            nodeCollector.submitModel(this.model, state.rotation, poseStack, ModelWindGenerator.RENDER_TYPE, state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, state.breakProgress);
             poseStack.popPose();
         }
     }
