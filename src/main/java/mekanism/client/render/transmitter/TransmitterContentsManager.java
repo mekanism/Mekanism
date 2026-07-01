@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
@@ -26,7 +26,6 @@ import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Unit;
 import net.minecraft.util.context.ContextKeySet;
 import net.minecraft.util.context.ContextMap;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -42,6 +41,7 @@ public class TransmitterContentsManager {
     private static final Identifier MODEL_LOCATION = Mekanism.rl("transmitter_contents");
     @Nullable
     private static TransmitterContentsManager INSTANCE = null;
+    private static final StandaloneModelKey<TransmitterContentsManager> STANDALONE_MODEL_KEY = new StandaloneModelKey<>(MODEL_LOCATION::toDebugFileName);
 
     public static TransmitterContentsManager get() {
         return Objects.requireNonNull(INSTANCE, "Not initialized");
@@ -49,12 +49,12 @@ public class TransmitterContentsManager {
 
     @SubscribeEvent
     private static void bakingDone(ModelEvent.BakingCompleted e) {
-        INSTANCE = new TransmitterContentsManager(e.getModelBakery(), e.getBakingResult().missingModels());
+        INSTANCE = e.getBakingResult().standaloneModels().get(STANDALONE_MODEL_KEY);
     }
 
     @SubscribeEvent
-    private static void registerFakeStandalone(ModelEvent.RegisterStandalone event) {
-        event.register(new StandaloneModelKey<>(MODEL_LOCATION::toDebugFileName), new SimpleUnbakedStandaloneModel<>(MODEL_LOCATION, (_, _, _) -> Unit.INSTANCE));
+    private static void registerStandalone(ModelEvent.RegisterStandalone event) {
+        event.register(STANDALONE_MODEL_KEY, new SimpleUnbakedStandaloneModel<>(MODEL_LOCATION, TransmitterContentsManager::new));
     }
 
     private final Table<Identifier, Integer, List<BlockStateModelPart>> bakedCache = HashBasedTable.create();
@@ -63,11 +63,12 @@ public class TransmitterContentsManager {
     private final ResolvedModel resolved;
     private final ModelBaker modelBaker;
 
-    private TransmitterContentsManager(ModelBakery bakery, ModelBakery.MissingModels missingModels) {
-        this.resolved = Objects.requireNonNull(bakery.resolvedModels.get(MODEL_LOCATION));
-        this.missingModelPart = missingModels.blockPart();
-        this.bakedMissingModel = Collections.singletonList(missingModelPart);
-        this.modelBaker = bakery.new ModelBakerImpl(new TransmitterLateMaterialBaker(), new ModelBakery.InternerImpl(), missingModels);
+    //todo - 26.2: can we hold onto the baker like this? or do we need bakery.new ModelBakerImpl(new TransmitterLateMaterialBaker(), new ModelBakery.InternerImpl(), missingModels)?
+    private TransmitterContentsManager(ResolvedModel resolvedModel, ModelBaker modelBaker, ModelDebugName unused) {
+        this.resolved = Objects.requireNonNull(resolvedModel);
+        this.missingModelPart = modelBaker.missingBlockModelPart();
+        this.bakedMissingModel = Collections.singletonList(this.missingModelPart);
+        this.modelBaker = modelBaker;
     }
 
     public List<BlockStateModelPart> getBaked(@Nullable ConnectionType[] connectionTypes, Identifier texture) {
