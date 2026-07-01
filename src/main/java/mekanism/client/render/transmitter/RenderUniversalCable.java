@@ -8,6 +8,7 @@ import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -30,6 +31,8 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
         EnergyNetwork network = cable.getTransmitter().getTransmitterNetworkNN();
         //TODO - 26.2: What threshold do we want to cut this off at?
         setContentsModel(cable, state, MekanismRenderer.ENERGY_ICON_LOCATION, ARGB.white(network.currentScale));
+        //TODO - 26.2: What do we want to use for the light level
+        state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
     }
 
     @Override

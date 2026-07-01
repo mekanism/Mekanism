@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Util;
+import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 public interface Chemical {
@@ -29,6 +30,11 @@ public interface Chemical {
     ///
     /// @since 10.8.0
     int tint();//TODO - 26.2: Should we try to move the icon and tint to a model/separate file that can be specified/overridden by a resource pack?
+
+    //TODO - 26.2: Implement this and make chemicals not be full bright by default
+    default int lightLevel() {
+        return Level.MAX_BRIGHTNESS;
+    }
 
     /// Get the color representation used for displaying in things like durability bars of chemical tanks.
     ///

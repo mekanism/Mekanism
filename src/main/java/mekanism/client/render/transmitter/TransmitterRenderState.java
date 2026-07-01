@@ -24,7 +24,6 @@ public class TransmitterRenderState extends BlockEntityRenderState {
 
         public RenderResizableCuboid.@Nullable TexturePicker fluidTexture;
         public int fluidTint = CommonColors.WHITE;
-        public int glow;
         public int stage;
         public boolean[] renderSideModel = new boolean[EnumUtils.DIRECTIONS.length];
         @SideRenderFlags

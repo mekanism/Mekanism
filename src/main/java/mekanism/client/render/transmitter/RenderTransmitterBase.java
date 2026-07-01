@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 
 public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransmitter, STATE extends TransmitterRenderState> extends MekanismTileEntityRenderer<TRANSMITTER, STATE> {
@@ -39,7 +38,7 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
         if (!state.contentsModel.isEmpty()) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
-            nodeCollector.submitBlockModel(poseStack, Sheets.translucentBlockItemSheet(), state.contentsModel, state.modelTint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+            nodeCollector.submitBlockModel(poseStack, Sheets.translucentBlockItemSheet(), state.contentsModel, state.modelTint, state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
             poseStack.popPose();
         }
     }

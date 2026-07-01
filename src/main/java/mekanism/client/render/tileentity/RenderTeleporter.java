@@ -115,7 +115,6 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
 
     @Override
     public void submit(TeleporterRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        //TODO - 26.2: Validate this render sheet
         RenderResizableCuboid.renderCube(state.renderAxis, state.minX, state.minY, state.minZ, state.maxX, state.maxY, state.maxZ, poseStack, Sheets.translucentBlockItemSheet(),
               nodeCollector, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), MekanismRenderer.teleporterPortal);
     }

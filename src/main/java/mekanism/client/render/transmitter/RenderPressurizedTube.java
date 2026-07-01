@@ -8,6 +8,7 @@ import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -31,6 +32,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
         float currentScale = Math.max(0.2F, network.currentScale);
         //TODO - 26.2: Figure out the tint better
         setContentsModel(tube, state, chemical.value().icon(), ARGB.color(currentScale, chemical.value().tint()));
+        state.lightCoords = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, chemical.value().lightLevel());
     }
 
     @Override

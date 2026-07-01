@@ -3,6 +3,7 @@ package mekanism.generators.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.MultiblockContentsRenderState;
 import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.generators.client.render.RenderFusionReactor.FusionRenderState;
@@ -13,7 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -39,10 +39,8 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
     }
 
     @Override
-    public void extractRenderState(TileEntityFusionReactorController controller, FusionRenderState state, float partialTick, Vec3 cameraPosition,
-          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
-        super.extractRenderState(controller, state, partialTick, cameraPosition, breakProgress);
-        FusionReactorMultiblockData multiblock = controller.getMultiblock();
+    public void extractRenderState(TileEntityFusionReactorController controller, FusionReactorMultiblockData multiblock, FusionRenderState state, float partialTick,
+          Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         state.scaledTemp = Math.round(multiblock.getLastPlasmaTemp() / SCALE);
         //TODO - 26.2: Is this what we should be using in BERs or should we use the game time?
         state.ticks = Minecraft.getInstance().gameRenderer.gameRenderState().levelRenderState.gameTime + partialTick;
@@ -94,10 +92,10 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
 
     @Override
     protected boolean shouldRender(TileEntityFusionReactorController tile, FusionReactorMultiblockData multiblock, Vec3 camera) {
-        return multiblock.isBurning();
+        return super.shouldRender(tile, multiblock, camera) && multiblock.isBurning();
     }
 
-    public static class FusionRenderState extends BlockEntityRenderState {
+    public static class FusionRenderState extends MultiblockContentsRenderState {
 
         public long scaledTemp;
         public float ticks;

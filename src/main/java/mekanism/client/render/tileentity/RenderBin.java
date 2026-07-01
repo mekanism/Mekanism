@@ -63,8 +63,9 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
             //if the bin has an item stack and the face isn't covered by a solid side
             Optional<BlockState> blockState = WorldUtils.getBlockState(level, coverPos);
             if (blockState.isEmpty() || !blockState.get().canOcclude() || !blockState.get().isFaceSturdy(level, coverPos, state.facing.getOpposite())) {
-                //Calculate lighting based on the light at the block the bin is facing
-                state.lightCoords = LightCoordsUtil.getLightCoords(level, coverPos);
+                //Calculate lighting based on the light at the block the bin is facing, but using our own block state
+                // similar to how BrushableBlockRenderer calculates the light coords
+                state.lightCoords = LightCoordsUtil.getLightCoords(LightCoordsUtil.BrightnessGetter.DEFAULT, level, bin.getBlockState(), coverPos);
                 //Copy from how the campfire renderer calculates the seed
                 int seed = (int) state.blockPos.asLong();
                 this.itemModelResolver.updateForTopItem(state.item, binSlot.getBinItemType().toStack(), ItemDisplayContext.GUI, level, null, seed);

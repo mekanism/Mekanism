@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -96,16 +95,9 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
                 poseStack.mulPose(Axis.ZP.rotationDegrees(90));
             }
         }
-        nodeCollector.submitModel(this.model, state.modelState, poseStack, this.model.getRenderType(), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, state.breakProgress);
+        nodeCollector.submitModel(this.model, state.modelState, poseStack, this.model.getRenderType(), state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, state.breakProgress);
         RenderType renderType = this.model.getRenderType();
-        nodeCollector.submitModelPart(
-              this.lightBox,
-              poseStack,
-              renderType,
-              LightCoordsUtil.FULL_BRIGHT,
-              OverlayTexture.NO_OVERLAY,
-              null
-        );
+        nodeCollector.submitModelPart(this.lightBox, poseStack, renderType, state.lightCoords, OverlayTexture.NO_OVERLAY, null);
         poseStack.popPose();
     }
 

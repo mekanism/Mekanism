@@ -42,23 +42,22 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
     }
 
     @Override
-    public void extractRenderState(TileEntityBoilerCasing boiler, BoilerRenderState state, float partialTick, Vec3 cameraPosition,
+    public void extractRenderState(TileEntityBoilerCasing boiler, BoilerMultiblockData multiblock, BoilerRenderState state, float partialTick, Vec3 cameraPosition,
           ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
-        super.extractRenderState(boiler, state, partialTick, cameraPosition, breakProgress);
-        BoilerMultiblockData multiblock = boiler.getMultiblock();
-        state.gather(multiblock);
-
         FluidResource water = multiblock.waterTank.resource();
         ChemicalResource steam = multiblock.steamTank.resource();
-        if (water.isEmpty() && steam.isEmpty() || multiblock.renderLocation == null || multiblock.upperRenderLocation == null) {
+        if (water.isEmpty() && steam.isEmpty() || multiblock.upperRenderLocation == null) {
+            //Should not be empty due to the checks for shouldRender
             return;
         }
+        state.calculateLightCoords(boiler.getLevel(), multiblock);
 
-        state.height = multiblock.upperRenderLocation.getY() - 1 - multiblock.renderLocation.getY();
+        state.steamHeight = state.renderLocation.getY() + state.height - multiblock.upperRenderLocation.getY();
+        state.height = multiblock.upperRenderLocation.getY() - 1 - state.renderLocation.getY();
         if (state.height > 0 && !water.isEmpty()) {
             state.waterTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(water, MekanismRenderer.FluidTextureType.STILL));
             state.valveTexture = MekanismRenderer.getValveTexture(water);
-            state.waterGlow = LightCoordsUtil.withBlock(LightCoordsUtil.FULL_SKY, water.getFluidType().getLightLevel());
+            state.waterGlow = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, water.getFluidType().getLightLevel());
             state.waterColor = MekanismRenderer.getColorARGB(water, multiblock.prevWaterScale);
             state.waterMaxY = ModelRenderer.getMaxY(state.height, multiblock.prevWaterScale, MekanismUtils.lighterThanAirGas(water));
             state.valves.clear();
@@ -67,19 +66,13 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
                     state.valves.add(ValveRenderData.get(entry.getValue(), entry.getKey(), state.waterMaxY - 0.01F, state.renderLocation, state.height));
                 }
             }
-        } else {
-            state.waterTexture = null;
-            state.valveTexture = null;
         }
-
-        state.steamHeight = multiblock.renderLocation.getY() + multiblock.height() - 2 - multiblock.upperRenderLocation.getY();
         if (state.steamHeight > 0 && !steam.isEmpty()) {
             state.upperRenderLocation = multiblock.upperRenderLocation.offset(1, 0, 1);
             state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(steam));
+            state.steamGlow = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, steam.value().lightLevel());
             state.steamColor = MekanismRenderer.getColorARGB(steam, multiblock.prevSteamScale);
             state.steamMaxY = ModelRenderer.getMaxY(state.steamHeight, multiblock.prevSteamScale, steam.is(MekanismAPITags.Chemicals.GASEOUS));
-        } else {
-            state.steamTexture = null;
         }
     }
 
@@ -98,7 +91,7 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
         if (state.steamTexture != null) {
             RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
                   0.01F, 0.01F, 0.01F, state.length - 0.02F, state.steamMaxY, state.width - 0.02F, state.steamTexture,
-                  OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.steamColor, state.blockPos, state.upperRenderLocation, state.length, state.width);
+                  OverlayTexture.NO_OVERLAY, state.steamGlow, state.steamColor, state.blockPos, state.upperRenderLocation, state.length, state.width);
         }
     }
 
@@ -109,7 +102,10 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
 
     @Override
     protected boolean shouldRender(TileEntityBoilerCasing tile, BoilerMultiblockData multiblock, Vec3 camera) {
-        return super.shouldRender(tile, multiblock, camera) && multiblock.upperRenderLocation != null;
+        if (super.shouldRender(tile, multiblock, camera) && multiblock.upperRenderLocation != null) {
+            return !multiblock.waterTank.isEmpty() || !multiblock.steamTank.isEmpty();
+        }
+        return false;
     }
 
     public static class BoilerRenderState extends MultiblockContentsRenderState {
@@ -124,6 +120,7 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
         public RenderResizableCuboid.@Nullable TexturePicker steamTexture;
         public float steamMaxY;
         public int steamColor;
+        public int steamGlow;
         public int steamHeight;
 
         public List<ValveRenderData> valves = new ArrayList<>();

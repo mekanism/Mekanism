@@ -47,7 +47,9 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
         FluidResource fluid = tank.fluidTank.resource();
         state.fluidTint = MekanismRenderer.getColorARGB(fluid, state.fluidScale);
-        state.fluidGlow = fluid.isEmpty() ? state.lightCoords : LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, fluid.getFluidType().getLightLevel());
+        if (!fluid.isEmpty()) {
+            state.lightCoords = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, fluid.getFluidType().getLightLevel());
+        }
         state.fluidScale = fluid.isEmpty() ? 0 : tank.prevScale;
         boolean gaseous = MekanismUtils.lighterThanAirGas(fluid);
         state.contentsMaxY = state.fluidScale > 0 ? contentsMaxY(state.fluidScale, gaseous) : 0;
@@ -57,8 +59,6 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         //If it is lighter than air we don't need to render the valve
         if (!valveFluid.isEmpty() && !gaseous) {
             state.valveMinY = valveMinY(state.fluidScale);
-            state.valveTint = MekanismRenderer.getColorARGB(valveFluid);
-            state.valveGlow = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, valveFluid.getFluidType().getLightLevel());
             state.valveFluidTexture = MekanismRenderer.getValveTexture(valveFluid);
         } else {
             state.valveFluidTexture = null;
@@ -70,12 +70,12 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         RenderType renderType = Sheets.translucentBlockItemSheet();
         if (state.fluidScale > 0 && state.fluidTexture != null) {
             RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.NOT_DOWN, CONTENTS_MIN_XZ, CONTENTS_MIN_Y, CONTENTS_MIN_XZ, CONTENTS_MAX_XZ, state.contentsMaxY,
-                  CONTENTS_MAX_XZ, poseStack, renderType, nodeCollector, state.fluidTint, state.fluidGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
+                  CONTENTS_MAX_XZ, poseStack, renderType, nodeCollector, state.fluidTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
                   camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
         if (state.valveFluidTexture != null) {
             RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.HORIZONTAL, VALVE_MIN_XZ, state.valveMinY, VALVE_MIN_XZ, VALVE_MAX_XZ, VALVE_MAX_Y, VALVE_MAX_XZ,
-                  poseStack, renderType, nodeCollector, state.valveTint, state.valveGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos,
+                  poseStack, renderType, nodeCollector, state.fluidTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos,
                   Vec3.atLowerCornerOf(state.blockPos), state.valveFluidTexture);
         }
     }
@@ -100,11 +100,8 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
 
         public float contentsMaxY;
         public int fluidTint = CommonColors.WHITE;
-        public int fluidGlow;
         public float fluidScale;
         public float valveMinY;
-        public int valveTint = CommonColors.WHITE;
-        public int valveGlow;
         public RenderResizableCuboid.@Nullable TexturePicker fluidTexture;
         public MekanismRenderer.@Nullable ValveTextureGetter valveFluidTexture;
 

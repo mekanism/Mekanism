@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
@@ -42,21 +41,14 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
     }
 
     @Override
-    public void extractRenderState(TileEntityDynamicTank tank, DynamicTankRenderState state, float partialTick, Vec3 cameraPosition,
+    public void extractRenderState(TileEntityDynamicTank tank, TankMultiblockData multiblock, DynamicTankRenderState state, float partialTick, Vec3 cameraPosition,
           ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
-        super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
-        TankMultiblockData multiblock = tank.getMultiblock();
-        state.gather(multiblock);
-
         float scale = multiblock.prevScale;
-        state.valves.clear();
-        state.valveTexture = null;
-
         switch (multiblock.mergedTank.getCurrentType()) {
             case FLUID -> {
                 FluidResource fluid = multiblock.getFluidTank().resource();
+                state.calculateLightCoords(tank.getLevel(), multiblock, fluid.getFluidType().getLightLevel());
                 state.tankTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
-                state.tankGlow = LightCoordsUtil.withBlock(LightCoordsUtil.FULL_SKY, fluid.getFluidType().getLightLevel());
                 state.tankColor = MekanismRenderer.getColorARGB(fluid, scale);
                 state.tankMaxY = ModelRenderer.getMaxY(state.height, scale, MekanismUtils.lighterThanAirGas(fluid));
                 state.valveTexture = MekanismRenderer.getValveTexture(fluid);
@@ -66,12 +58,11 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
             }
             case CHEMICAL -> {
                 ChemicalResource chemical = multiblock.getChemicalTank().resource();
+                state.calculateLightCoords(tank.getLevel(), multiblock, chemical.value().lightLevel());
                 state.tankTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemical));
-                state.tankGlow = LightCoordsUtil.FULL_SKY;
                 state.tankColor = MekanismRenderer.getColorARGB(chemical, scale);
                 state.tankMaxY = ModelRenderer.getMaxY(state.height, scale, chemical.is(MekanismAPITags.Chemicals.GASEOUS));
             }
-            case EMPTY -> state.tankTexture = null;
         }
     }
 
@@ -83,10 +74,10 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         RenderType renderType = Sheets.translucentBlockItemSheet();
         RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
               0.01F, 0.01F, 0.01F, state.length - 0.02F, state.tankMaxY, state.width - 0.02F, state.tankTexture,
-              OverlayTexture.NO_OVERLAY, state.tankGlow, state.tankColor, state.blockPos, state.renderLocation, state.length, state.width);
+              OverlayTexture.NO_OVERLAY, state.lightCoords, state.tankColor, state.blockPos, state.renderLocation, state.length, state.width);
         if (!state.valves.isEmpty() && state.valveTexture != null) {//redundant, but saves some stack space
             RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture,
-                  state.blockPos, state.renderLocation, state.length, state.width, state.height, state.tankColor, state.tankGlow, state.tankMaxY - 0.01F);
+                  state.blockPos, state.renderLocation, state.length, state.width, state.height, state.tankColor, state.lightCoords, state.tankMaxY - 0.01F);
         }
     }
 
@@ -104,7 +95,6 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
 
         public RenderResizableCuboid.@Nullable TexturePicker tankTexture;
         public int tankColor;
-        public int tankGlow;
         public float tankMaxY;
 
         public List<ValveRenderData> valves = new ArrayList<>();

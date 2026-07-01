@@ -82,6 +82,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         }
         state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL));
         state.tint = MekanismRenderer.getColorARGB(fluid, fluidScale);
+        state.lightCoords = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, fluid.getFluidType().getLightLevel());
         //noinspection MagicConstant
         state.renderCheck = (byte) (SideRender.FACE_UP | SideRender.of(generator.getDirection().getOpposite()));
     }
@@ -93,9 +94,8 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     @Override
     public void submit(BioGeneratorRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (state.fluidTexture != null) {
-            //TODO - 26.2: Do we want to use the block light? (Also check other full bright usages and see if they should be switched over)
             RenderResizableCuboid.renderCube(state.renderCheck, state.minX, MODEL_MIN_Y_PAD, state.minZ, state.maxX, state.maxY, state.maxZ, poseStack,
-                  Sheets.translucentBlockItemSheet(), nodeCollector, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
+                  Sheets.translucentBlockItemSheet(), nodeCollector, state.tint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
                   camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
     }

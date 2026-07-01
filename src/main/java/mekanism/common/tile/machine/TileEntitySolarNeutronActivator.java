@@ -5,10 +5,10 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
@@ -43,7 +43,7 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.WorldUtils;
+import mekanism.common.util.LightLevelUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -172,7 +172,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
 
     @ComputerMethod
     boolean canSeeSun() {
-        return WorldUtils.canSeeSun(level, worldPosition.above());
+        return LightLevelUtils.canSeeSun(level, worldPosition.above());
     }
 
     @Override
@@ -187,7 +187,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
             return 0;
         }
         //Get the brightness of the sun; including rain penalty
-        float brightness = WorldUtils.getSunBrightness(level, this.worldPosition);
+        float brightness = LightLevelUtils.getSunBrightness(level, this.worldPosition);
         //Production is a function of the peak possible output in this biome and sun's current brightness
         return peakProductionRate * brightness;
     }

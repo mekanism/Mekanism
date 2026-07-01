@@ -85,6 +85,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 if (stackRenderState.color() != null) {
                     poseStack.pushPose();
                     poseStack.translate(-0.5F, -0.25F, -0.5F);
+                    //TODO - 26.2: Do we want this to be based on the light coords? Maybe with like a base emissive level of 5
                     nodeCollector.submitBlockModel(poseStack, Sheets.cutoutBlockItemSheet(), MekanismModelCache.INSTANCE.TRANSPORTER_BOX.getBakedModel(),
                           new int[]{stackRenderState.color().getPackedColor()}, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
                     poseStack.popPose();

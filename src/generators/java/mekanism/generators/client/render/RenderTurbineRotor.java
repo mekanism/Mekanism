@@ -43,13 +43,14 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
           ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(rotor, state, partialTick, cameraPosition, breakProgress);
         state.housedBlades = rotor.getHousedBlades();
-        if (state.housedBlades == 0) {
+        if (state.housedBlades == 0) {//Sanity check
             return;
         }
         UUID multiblockUUID = rotor.getMultiblockUUID();
         if (multiblockUUID != null) {
             //We are rendering inside the multiblock, use full-bright for the textures
             //TODO - 26.2: Validate that this works
+            //TODO - 26.2: Should this calculate the light coords like MultiblockContentsRenderState
             state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
         }
 
@@ -109,9 +110,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
 
     @Override
     public boolean shouldRender(TileEntityTurbineRotor tile, Vec3 camera) {
-        //TODO - 26.2: See if this renders fine, we used to only use this for when there was no multiblock and had the multiblock render
-        // delegate to this renderer with a full bright for when it is formed
-        return /*tile.getMultiblockUUID() == null &&*/ tile.getHousedBlades() > 0 && super.shouldRender(tile, camera);
+        return tile.getHousedBlades() > 0 && super.shouldRender(tile, camera);
     }
 
     @Override

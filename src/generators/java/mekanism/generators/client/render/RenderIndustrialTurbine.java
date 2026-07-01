@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -34,21 +33,15 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
     }
 
     @Override
-    public void extractRenderState(TileEntityTurbineCasing turbine, TurbineRenderState state, float partialTick, Vec3 cameraPosition,
+    public void extractRenderState(TileEntityTurbineCasing turbine, TurbineMultiblockData multiblock, TurbineRenderState state, float partialTick, Vec3 cameraPosition,
           ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
-        super.extractRenderState(turbine, state, partialTick, cameraPosition, breakProgress);
-        TurbineMultiblockData multiblock = turbine.getMultiblock();
-        state.gather(multiblock);
-        state.steamTexture = null;
-        ChemicalResource steam = multiblock.chemicalTank.resource();
-        if (!steam.isEmpty() && multiblock.length() > 0) {
-            int height = multiblock.lowerVolume / (multiblock.length() * multiblock.width());
-            state.height = height;
-            if (height > 0) {
-                state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(steam));
-                state.steamMaxY = ModelRenderer.getMaxY(state.height, multiblock.prevSteamScale, steam.is(MekanismAPITags.Chemicals.GASEOUS));
-                state.steamColor = MekanismRenderer.getColorARGB(steam, multiblock.prevSteamScale);
-            }
+        state.height = multiblock.lowerVolume / ((state.length + 2) * (state.width + 2));
+        if (state.height > 0) {
+            ChemicalResource steam = multiblock.chemicalTank.resource();
+            state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(steam));
+            state.steamMaxY = ModelRenderer.getMaxY(state.height, multiblock.prevSteamScale, steam.is(MekanismAPITags.Chemicals.GASEOUS));
+            state.steamColor = MekanismRenderer.getColorARGB(steam, multiblock.prevSteamScale);
+            state.calculateLightCoords(turbine.getLevel(), multiblock, steam.value().lightLevel());
         }
     }
 
@@ -57,7 +50,7 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
         if (state.steamTexture != null) {
             RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockItemSheet(), nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
                   0.01F, 0.01F, 0.01F, state.length - 0.02F, state.steamMaxY, state.width - 0.02F, state.steamTexture,
-                  OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.steamColor, state.blockPos, state.renderLocation, state.length, state.width);
+                  OverlayTexture.NO_OVERLAY, state.lightCoords, state.steamColor, state.blockPos, state.renderLocation, state.length, state.width);
         }
     }
 
@@ -68,7 +61,7 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
 
     @Override
     protected boolean shouldRender(TileEntityTurbineCasing tile, TurbineMultiblockData multiblock, Vec3 camera) {
-        return super.shouldRender(tile, multiblock, camera) && multiblock.complex != null;
+        return super.shouldRender(tile, multiblock, camera) && !multiblock.chemicalTank.isEmpty();
     }
 
     public static class TurbineRenderState extends MultiblockContentsRenderState {

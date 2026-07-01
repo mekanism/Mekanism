@@ -47,39 +47,35 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
     }
 
     @Override
-    public void extractRenderState(TileEntityFissionReactorCasing reactor, FissionRenderState state, float partialTick, Vec3 cameraPosition,
-          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
-        super.extractRenderState(reactor, state, partialTick, cameraPosition, breakProgress);
-        FissionReactorMultiblockData multiblock = reactor.getMultiblock();
-        state.gather(multiblock);
+    public void extractRenderState(TileEntityFissionReactorCasing reactor, FissionReactorMultiblockData multiblock, FissionRenderState state, float partialTick,
+          Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        state.calculateLightCoords(reactor.getLevel(), multiblock);
         float heatedCoolantScale = multiblock.prevHeatedCoolantScale;
         float coolantScale = multiblock.prevCoolantScale;
-
-        state.coolantTexture = null;
-        state.heatedCoolantTexture = null;
         boolean isGaseous = false;
         if (multiblock.coolantTank.getCurrentType() == CurrentType.FLUID) {
             FluidResource coolant = multiblock.coolantTank.getFluidTank().resource();
             state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(coolant, MekanismRenderer.FluidTextureType.STILL));
             isGaseous = MekanismUtils.lighterThanAirGas(coolant);
-            state.coolantGlow = LightCoordsUtil.withBlock(LightCoordsUtil.FULL_SKY, coolant.getFluidType().getLightLevel());
+            state.coolantGlow = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, coolant.getFluidType().getLightLevel());
             state.coolantColor = MekanismRenderer.getColorARGB(coolant, coolantScale);
             //TODO - 26.2: Do we want to add support for valve rendering?
         } else if (multiblock.coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             ChemicalResource coolant = multiblock.coolantTank.getChemicalTank().resource();
             state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(coolant));
             isGaseous = coolant.is(MekanismAPITags.Chemicals.GASEOUS);
-            state.coolantGlow = LightCoordsUtil.FULL_SKY;//todo not fullbright chemicals?
+            state.coolantGlow = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, coolant.value().lightLevel());
             state.coolantColor = MekanismRenderer.getColorARGB(coolant, coolantScale);
         }
         if (state.coolantTexture != null) {
             state.coolantMaxY = ModelRenderer.getMaxY(state.height, coolantScale, isGaseous);
         }
         if (!multiblock.heatedCoolantTank.isEmpty()) {
-            ChemicalResource chemical = multiblock.heatedCoolantTank.resource();
-            state.heatedCoolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemical));
-            state.heatedCoolantMaxY = ModelRenderer.getMaxY(state.height, heatedCoolantScale, chemical.is(MekanismAPITags.Chemicals.GASEOUS));
-            state.heatedCoolantColor = MekanismRenderer.getColorARGB(chemical, heatedCoolantScale);
+            ChemicalResource heatedCoolant = multiblock.heatedCoolantTank.resource();
+            state.heatedCoolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(heatedCoolant));
+            state.heatedCoolantMaxY = ModelRenderer.getMaxY(state.height, heatedCoolantScale, heatedCoolant.is(MekanismAPITags.Chemicals.GASEOUS));
+            state.heatedCoolantColor = MekanismRenderer.getColorARGB(heatedCoolant, heatedCoolantScale);
+            state.heatedCoolantGlow = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, heatedCoolant.value().lightLevel());
         }
 
         if (multiblock.isBurning()) {
@@ -116,7 +112,7 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
             //uses a slightly shrunken version of the model to prevent z-fighting
             RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockItemSheet(), nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
                   0.02F, 0.02F, 0.02F, state.length - 0.03F, state.heatedCoolantMaxY, state.width - 0.03F, state.heatedCoolantTexture,
-                  OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.heatedCoolantColor, state.blockPos, state.renderLocation, state.length, state.width);
+                  OverlayTexture.NO_OVERLAY, state.heatedCoolantGlow, state.heatedCoolantColor, state.blockPos, state.renderLocation, state.length, state.width);
         }
     }
 
@@ -136,6 +132,7 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
 
         public RenderResizableCuboid.@Nullable TexturePicker heatedCoolantTexture;
         public float heatedCoolantMaxY;
+        public int heatedCoolantGlow;
         public int heatedCoolantColor;
     }
 }

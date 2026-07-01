@@ -21,7 +21,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
@@ -733,27 +732,6 @@ public class WorldUtils {
         if (isBlockLoaded(world, pos)) {
             world.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
         }
-    }
-
-    /// Gets the skylight factor, a percentage based on the time of day and weather. Vanilla max of 1
-    ///
-    /// @return percentage value of float type. Normal range of 0 - 1. CAN BE HIGHER
-    public static float getSunBrightness(Level level, BlockPos position) {
-        return Math.max(0, level.environmentAttributes().getValue(EnvironmentAttributes.SKY_LIGHT_FACTOR, position));
-    }
-
-    /// Checks to see if the block at the position can see the sky, and it is daytime.
-    ///
-    /// @param world World to check in.
-    /// @param pos   Position to check.
-    ///
-    /// @return `true` if it can.
-    @Contract("null, _ -> false")
-    public static boolean canSeeSun(@Nullable Level world, BlockPos pos) {
-        //Note: We manually handle the world#isDaytime check by just checking the subtracted skylight
-        // as vanilla returns false if the world's time is set to a fixed value even if that time
-        // would effectively be daytime
-        return world != null && world.dimensionType().hasSkyLight() && world.getSkyDarken() < 4 && world.canSeeSky(pos);
     }
 
     /// Converts a long representing a [ChunkPos] to a [BlockPos] without creating a temporary [ChunkPos] object.

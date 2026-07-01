@@ -33,6 +33,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.Material.Baked;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.util.CommonColors;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -74,6 +75,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             state.pasteTint = MekanismRenderer.getColorARGB(paste, fluidScale);
             state.stage = ModelRenderer.getStage(paste, stages, fluidScale);
             state.pasteTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(paste, FluidTextureType.STILL));
+            state.pasteGlow = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, paste.getFluidType().getLightLevel());
         } else {
             state.stage = 0;
         }
@@ -96,7 +98,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         if (state.stage > 0 && state.pasteTexture != null) {
             RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.NOT_DOWN, 0.001F, 0.313F, 0.001F, 0.999F,
                   0.313F + 0.624F * (state.stage / (float) stages), 0.999F, poseStack, Sheets.translucentBlockItemSheet(), nodeCollector,
-                  state.pasteTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.pasteTexture);
+                  state.pasteTint, state.pasteGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.pasteTexture);
         }
         if (state.active) {
             //Render the blade at the correct rotation if we are active
@@ -169,6 +171,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         public boolean active;
         public int pasteTint = CommonColors.WHITE;
         public RenderResizableCuboid.@Nullable TexturePicker pasteTexture;
+        public int pasteGlow;
         public int stage;
     }
 

@@ -10,21 +10,16 @@ import java.util.Objects;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.sprite.Material;
-import net.minecraft.client.resources.model.sprite.MaterialBaker;
 import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.core.Direction;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextKeySet;
 import net.minecraft.util.context.ContextMap;
@@ -63,7 +58,6 @@ public class TransmitterContentsManager {
     private final ResolvedModel resolved;
     private final ModelBaker modelBaker;
 
-    //todo - 26.2: can we hold onto the baker like this? or do we need bakery.new ModelBakerImpl(new TransmitterLateMaterialBaker(), new ModelBakery.InternerImpl(), missingModels)?
     private TransmitterContentsManager(ResolvedModel resolvedModel, ModelBaker modelBaker, ModelDebugName unused) {
         this.resolved = Objects.requireNonNull(resolvedModel);
         this.missingModelPart = modelBaker.missingBlockModelPart();
@@ -119,28 +113,6 @@ public class TransmitterContentsManager {
               .build()
         );
         return resolver.resolve(resolved);
-    }
-
-    private static class TransmitterLateMaterialBaker extends MaterialBaker {
-
-        private static TextureAtlas getAtlas() {
-            return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS);
-        }
-
-        public TransmitterLateMaterialBaker() {
-            super(getAtlas().missingSprite());
-        }
-
-        @Override
-        public Material.@Nullable Baked bake(Material material) {
-            TextureAtlas atlas = getAtlas();
-            TextureAtlasSprite sprite = atlas.getSprite(material.sprite());
-            if (sprite == atlas.missingSprite()) {
-                Mekanism.logger.error("Missing sprite: {}", material.sprite());
-                return replacementForMissingMaterial(material);
-            }
-            return new Material.Baked(sprite, material.forceTranslucent());
-        }
     }
 
     private static class CacheKey {

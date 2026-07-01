@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.client.render.MekanismRenderType;
+import mekanism.client.render.MultiblockContentsRenderState;
 import mekanism.client.render.lib.effect.BillboardingEffectFeatureRenderer;
 import mekanism.client.render.lib.effect.BillboardingEffectFeatureRenderer.BillboardingRenderState;
 import mekanism.client.render.lib.effect.BoltFeatureRenderer;
@@ -28,7 +29,6 @@ import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -63,9 +63,8 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
     }
 
     @Override
-    public void extractRenderState(TileEntitySPSCasing sps, SPSRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
-        super.extractRenderState(sps, state, partialTick, cameraPosition, breakProgress);
-        SPSMultiblockData multiblock = sps.getMultiblock();
+    public void extractRenderState(TileEntitySPSCasing sps, SPSMultiblockData multiblock, SPSRenderState state, float partialTick, Vec3 cameraPosition,
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         state.setProcessed(multiblock.lastProcessed);
 
         state.center = Vec3.atLowerCornerOf(multiblock.getMinPos())
@@ -176,12 +175,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         return ProfilerConstants.SPS;
     }
 
-    @Override
-    protected boolean shouldRender(TileEntitySPSCasing tile, SPSMultiblockData multiblock, Vec3 camera) {
-        return super.shouldRender(tile, multiblock, camera) && multiblock.getBounds() != null;
-    }
-
-    public static class SPSRenderState extends BlockEntityRenderState {
+    public static class SPSRenderState extends MultiblockContentsRenderState {
 
         public final List<BillboardingRenderState> orbitEffects = new ArrayList<>();
         @Nullable

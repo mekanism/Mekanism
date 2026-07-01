@@ -15,7 +15,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.util.WorldUtils;
+import mekanism.common.util.LightLevelUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
@@ -110,7 +110,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     protected float getBrightnessMultiplier(Level world) {
         //Get the brightness of the sun; including rain penalty
-        return WorldUtils.getSunBrightness(world, this.worldPosition);
+        return LightLevelUtils.getSunBrightness(world, this.worldPosition);
     }
 
     @Override
@@ -162,7 +162,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         }
 
         public void recheckCanSeeSun() {
-            canSeeSun = WorldUtils.canSeeSun(world, pos);
+            canSeeSun = LightLevelUtils.canSeeSun(world, pos);
         }
 
         public boolean canSeeSun() {

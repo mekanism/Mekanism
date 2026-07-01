@@ -4,7 +4,7 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.math.MathUtils;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.WorldUtils;
+import mekanism.common.util.LightLevelUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.biome.Biome;
@@ -23,7 +23,7 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
             //Use the position that is roughly where the solar panel is
             BlockPos pos = BlockPos.containing(player.getX(), player.getEyeY() + 0.2, player.getZ());
             //Based on how TileEntitySolarGenerator and the rest of our solar things do energy calculations
-            if (WorldUtils.canSeeSun(player.level(), pos)) {
+            if (LightLevelUtils.canSeeSun(player.level(), pos)) {
                 Biome b = player.level().getBiomeManager().getBiome(pos).value();
                 int seaLevel = player.level().getSeaLevel();
                 boolean needsRainCheck = b.getPrecipitationAt(pos, seaLevel) != Precipitation.NONE;
@@ -40,7 +40,7 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
                 double peakOutput = MekanismConfig.gear.mekaSuitSolarRechargingRate.get() * (1.0D + tempEff + humidityEff);
 
                 //Get the brightness of the sun; this includes rain penalty from Vanilla
-                float brightness = WorldUtils.getSunBrightness(player.level(), player.blockPosition());
+                float brightness = LightLevelUtils.getSunBrightness(player.level(), player.blockPosition());
 
                 //Production is a function of the peak possible output in this biome and sun's current brightness
                 double production = peakOutput * brightness;

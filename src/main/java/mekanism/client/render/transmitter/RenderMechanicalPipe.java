@@ -61,7 +61,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
         int stage = Math.max(3, ModelRenderer.getStage(fluidType, STAGES, network.currentScale));
         state.stage = stage;
-        state.glow = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, fluidType.getFluidType().getLightLevel());
+        state.lightCoords = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, fluidType.getFluidType().getLightLevel());
 
         ConnectionType[] connectionContents = new ConnectionType[EnumUtils.DIRECTIONS.length];
         boolean[] renderSides = new boolean[6];
@@ -168,7 +168,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 }
             }
             RenderResizableCuboid.renderCube(sideRenderCheck, minX, minY, minZ, maxX, maxY, maxZ, poseStack, Sheets.translucentBlockItemSheet(), nodeCollector,
-                  state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, lowerCorner, state.fluidTexture);
+                  state.fluidTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, lowerCorner, state.fluidTexture);
         }
 
         {//render core cube
@@ -182,7 +182,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 max = 0.5F + stageRatio / 2;
             }
             RenderResizableCuboid.renderCube(state.coreSideRender, min, 0.25F + OFFSET, min, max, 0.25F + OFFSET + stageRatio, max, poseStack,
-                  Sheets.translucentBlockItemSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
+                  Sheets.translucentBlockItemSheet(), nodeCollector, state.fluidTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
                   camera.pos, lowerCorner, state.fluidTexture);
         }
     }

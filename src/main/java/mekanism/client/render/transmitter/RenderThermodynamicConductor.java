@@ -8,6 +8,7 @@ import mekanism.common.util.HeatUtils;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -30,6 +31,8 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
         super.extractRenderState(conductor, state, partialTick, cameraPosition, breakProgress);
         ThermodynamicConductor transmitter = conductor.getTransmitter();
         setContentsModel(conductor, state, HEAT_ICON_LOCATION, HeatUtils.getColorFromTemp(transmitter.getTemperature(), transmitter.getBaseColor()).argb());
+        //TODO - 26.2: What do we want to use for the light level
+        state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
     }
 
     @Override

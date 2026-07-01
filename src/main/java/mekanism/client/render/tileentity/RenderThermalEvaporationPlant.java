@@ -23,7 +23,6 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
@@ -40,20 +39,15 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
     }
 
     @Override
-    public void extractRenderState(TileEntityThermalEvaporationController controller, TEPRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
-        super.extractRenderState(controller, state, partialTick, cameraPosition, breakProgress);
-        EvaporationMultiblockData multiblock = controller.getMultiblock();
-        state.gather(multiblock);
-
+    public void extractRenderState(TileEntityThermalEvaporationController controller, EvaporationMultiblockData multiblock, TEPRenderState state, float partialTick,
+          Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         float scale = Math.min(1, multiblock.prevScale);
         FluidResource fluid = multiblock.inputTank.resource();
-
-        state.fluidTexture = fluid.isEmpty() ? null : MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
-        state.valveTexture = fluid.isEmpty() ? null : MekanismRenderer.getValveTexture(fluid);
-        state.tankGlow = fluid.isEmpty() ? LightCoordsUtil.FULL_SKY : LightCoordsUtil.withBlock(LightCoordsUtil.FULL_SKY, fluid.getFluidType().getLightLevel());
+        state.calculateLightCoords(controller.getLevel(), multiblock, fluid.getFluidType().getLightLevel());
+        state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
+        state.valveTexture = MekanismRenderer.getValveTexture(fluid);
         state.tankColor = MekanismRenderer.getColorARGB(fluid, scale);
         state.tankMaxY = ModelRenderer.getMaxY(state.height, scale, MekanismUtils.lighterThanAirGas(fluid));
-        state.valves.clear();
         for (Map.Entry<BlockPos, IValveHandler.ValveData> entry : multiblock.valves.entrySet()) {//TODO - 26.2: are these always active? (when not empty) Should they be?
             state.valves.add(ValveRenderData.get(entry.getValue(), entry.getKey(), state.tankMaxY - 0.01F, state.renderLocation, state.height));
         }
@@ -65,10 +59,10 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
             RenderType renderType = Sheets.translucentBlockItemSheet();
             RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
                   0.01F, 0.01F, 0.01F, state.length - 0.02F, state.tankMaxY, state.width - 0.02F, state.fluidTexture,
-                  OverlayTexture.NO_OVERLAY, state.tankGlow, state.tankColor, state.blockPos, state.renderLocation, state.length, state.width);
+                  OverlayTexture.NO_OVERLAY, state.lightCoords, state.tankColor, state.blockPos, state.renderLocation, state.length, state.width);
             if (!state.valves.isEmpty() && state.valveTexture != null) {//Should never be null if the fluid texture is not null
                 RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture,
-                      state.blockPos, state.renderLocation, state.length, state.width, state.height, state.tankColor, state.tankGlow, state.tankMaxY - 0.01F);
+                      state.blockPos, state.renderLocation, state.length, state.width, state.height, state.tankColor, state.lightCoords, state.tankMaxY - 0.01F);
             }
         }
     }
@@ -86,7 +80,6 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
     public static class TEPRenderState extends MultiblockContentsRenderState {
 
         public int tankColor;
-        public int tankGlow;
         public float tankMaxY;
         public List<ValveRenderData> valves = new ArrayList<>();
         public RenderResizableCuboid.@Nullable TexturePicker fluidTexture;

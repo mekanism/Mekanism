@@ -70,8 +70,7 @@ public final class ChemicalCamoContent extends ResourceCamoContent<ChemicalResou
 
     @Override
     public int getLightEmission() {
-        // TODO: light level is currently not forwarded from ChemicalConstants to the registered Chemical
-        return 0;
+        return resource.getChemical().lightLevel();
     }
 
     @Override
