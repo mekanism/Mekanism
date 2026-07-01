@@ -73,28 +73,23 @@ public class TransmitterContentsManager {
 
     public List<BlockStateModelPart> getBaked(@Nullable ConnectionType[] connectionTypes, Identifier texture) {
         int key = CacheKey.pack(connectionTypes);
+        if (key == 0) {
+            return Collections.emptyList();
+        }
         List<BlockStateModelPart> cached = bakedCache.get(texture, key);
         if (cached == null) {
             Map<String, Boolean> connections = new HashMap<>(EnumUtils.DIRECTIONS.length);
-            boolean hasNonNull = false;
             for (Direction side : EnumUtils.DIRECTIONS) {
                 String sideName = side.getSerializedName();
                 ConnectionType connectionType = connectionTypes[side.ordinal()];
-                if (connectionType != null) {
-                    hasNonNull = true;
-                }
                 for (ConnectionType value : ConnectionType.values()) {
                     connections.put(sideName + value.name(), value == connectionType);
                 }
             }
-            if (hasNonNull) {
-                cached = bake(texture, new ContextMap.Builder()
-                      .withParameter(NeoForgeModelProperties.PART_VISIBILITY, connections)
-                      .create(ContextKeySet.EMPTY)
-                );
-            } else {
-                cached = Collections.emptyList();
-            }
+            cached = bake(texture, new ContextMap.Builder()
+                  .withParameter(NeoForgeModelProperties.PART_VISIBILITY, connections)
+                  .create(ContextKeySet.EMPTY)
+            );
             bakedCache.put(texture, key, cached);
         }
         return cached;
