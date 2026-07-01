@@ -17,6 +17,7 @@ import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.EnumColorCollection;
 import mekanism.common.ChemicalConstants;
 import mekanism.common.Mekanism;
+import mekanism.common.chemical.EnumColorPigment;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.WorldConfig.OreVeinConfig;
 import mekanism.common.entity.RobitPrideSkinData;
@@ -198,9 +199,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
               context.register(ChemicalIds.POLONIUM, BasicChemical.builder().tint(0xFF1B9E7B).build());
               context.register(ChemicalIds.ANTIMATTER, BasicChemical.builder().tint(0xFFA464B3).build());
               //Pigments
-              //TODO - 26.2: Replace this packed color with a custom chemical impl and serializer that then queries the color map?
-              EnumColorCollection.zipApply(EnumColorCollection.VALUES, ChemicalIds.SIMPLE_PIGMENTS, (color, pigment) ->
-                    context.register(pigment, BasicChemical.pigment().tint(color.getPackedColor()).build()));
+              EnumColorCollection.zipApply(ChemicalIds.SIMPLE_PIGMENTS, EnumColorCollection.VALUES, (pigment, color) -> context.register(pigment, new EnumColorPigment(color)));
               //Slurries
               for (Map.Entry<PrimaryResource, CleanDirtySlurryId> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
                   int tint = entry.getKey().getTint();

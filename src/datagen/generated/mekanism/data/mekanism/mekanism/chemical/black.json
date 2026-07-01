@@ -1,5 +1,4 @@
 {
-  "type": "mekanism:basic",
-  "icon": "mekanism:mek_chemical/pigment/base",
-  "tint": "#ff404040"
+  "type": "mekanism:enum_color_pigment",
+  "color": "black"
 }

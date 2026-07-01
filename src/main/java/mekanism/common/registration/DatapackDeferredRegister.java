@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import mekanism.api.MekanismRegistries;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.robit.RobitSkin;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
@@ -19,10 +18,6 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.jspecify.annotations.Nullable;
 
 public class DatapackDeferredRegister<T> extends DeferredMapCodecRegister<T> {
-
-    public static DatapackDeferredRegister<Chemical> chemicals(String modid) {
-        return new DatapackDeferredRegister<>(modid, MekanismRegistries.Keys.CHEMICAL_SERIALIZERS, MekanismRegistries.Keys.CHEMICAL);
-    }
 
     public static DatapackDeferredRegister<RobitSkin> robitSkins(String modid) {
         return new DatapackDeferredRegister<>(modid, MekanismRegistries.Keys.ROBIT_SKIN_SERIALIZERS, MekanismRegistries.Keys.ROBIT_SKINS);
@@ -47,13 +42,6 @@ public class DatapackDeferredRegister<T> extends DeferredMapCodecRegister<T> {
           ResourceKey<Registry<T>> datapackRegistryName, Function<ResourceKey<MapCodec<? extends T>>, ? extends DeferredMapCodecHolder<T, ? extends T>> holderCreator) {
         super(serializerRegistryName, modid, holderCreator);
         this.datapackRegistryName = datapackRegistryName;
-    }
-
-    /// Only call this from mekanism and for custom datapack registries
-    public void createAndRegisterDatapack(IEventBus bus, Codec<T> directCodec, @Nullable Codec<T> networkCodec) {
-        register(bus);
-        //Create a new datapack registry using the direct codec that is created based on the serializer's codec
-        bus.addListener((DataPackRegistryEvent.NewRegistry event) -> event.dataPackRegistry(datapackRegistryName, directCodec, networkCodec));
     }
 
     /// Only call this from mekanism and for custom datapack registries

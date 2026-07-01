@@ -8,10 +8,12 @@ import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalResource.EmptyChemicalResource;
 import mekanism.api.chemical.ChemicalSerializationHelper;
+import mekanism.api.chemical.ChemicalSerializer;
 import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.common.Mekanism;
-import mekanism.common.registration.DatapackDeferredRegister;
-import mekanism.common.registration.DeferredMapCodecHolder;
+import mekanism.common.chemical.EnumColorPigment;
+import mekanism.common.registration.AdvancedDatapackDeferredRegister;
+import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Util;
@@ -22,9 +24,10 @@ public class MekanismChemicals {
     private MekanismChemicals() {
     }
 
-    private static final DatapackDeferredRegister<Chemical> CHEMICALS = DatapackDeferredRegister.chemicals(Mekanism.MODID);
+    private static final AdvancedDatapackDeferredRegister<Chemical, ChemicalSerializer> CHEMICALS = AdvancedDatapackDeferredRegister.chemicals(Mekanism.MODID);
 
-    public static final DeferredMapCodecHolder<Chemical, Chemical> BASIC_SERIALIZER = CHEMICALS.registerCodec("basic", () -> ChemicalSerializationHelper.NETWORK_CODEC);
+    public static final MekanismDeferredHolder<ChemicalSerializer, ChemicalSerializer> BASIC_SERIALIZER = CHEMICALS.register("basic", () -> ChemicalSerializer.defaultNetwork(ChemicalSerializationHelper.DEFAULT_NETWORK_CODEC));
+    public static final MekanismDeferredHolder<ChemicalSerializer, ChemicalSerializer> ENUM_COLOR_PIGMENT = CHEMICALS.register("enum_color_pigment", () -> ChemicalSerializer.both(EnumColorPigment.CODEC));
 
     public static final Map<PrimaryResource, CleanDirtySlurryId> PROCESSED_RESOURCES = Util.make(() -> {
         Map<PrimaryResource, CleanDirtySlurryId> slurries = new EnumMap<>(PrimaryResource.class);
@@ -36,7 +39,7 @@ public class MekanismChemicals {
     });
 
     public static void createAndRegisterDatapack(IEventBus modEventBus) {
-        CHEMICALS.createAndRegisterDatapack(modEventBus, ChemicalSerializationHelper.DIRECT_CODEC, ChemicalSerializationHelper.NETWORK_CODEC.codec(),
+        CHEMICALS.createAndRegisterDatapack(modEventBus, ChemicalSerializationHelper.DIRECT_CODEC, ChemicalSerializationHelper.NETWORK_CODEC,
               registryBuilder -> registryBuilder
                     .defaultKey(ChemicalIds.EMPTY)
                     .onBake(registry -> ((EmptyChemicalResource) ChemicalResource.EMPTY).updateEmptyHolder(registry.getOrThrow(ChemicalIds.EMPTY)))

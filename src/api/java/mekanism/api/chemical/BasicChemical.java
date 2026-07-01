@@ -1,13 +1,14 @@
 package mekanism.api.chemical;
 
-import com.mojang.serialization.MapCodec;
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Range;
 
 /// Simple chemical implementation.
@@ -18,6 +19,9 @@ import org.jetbrains.annotations.Range;
 ///
 /// @since 10.8.0
 public record BasicChemical(Identifier icon, int tint, int colorRepresentation, @Range(from = 0, to = 15) int lightLevel) implements Chemical {
+
+    private static final DeferredHolder<ChemicalSerializer, ChemicalSerializer> SERIALIZER = DeferredHolder.create(MekanismRegistries.Keys.CHEMICAL_SERIALIZERS,
+          Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "basic"));
 
     public BasicChemical {
         Objects.requireNonNull(icon, "Icon cannot be null");
@@ -81,8 +85,8 @@ public record BasicChemical(Identifier icon, int tint, int colorRepresentation, 
     }
 
     @Override
-    public MapCodec<? extends Chemical> codec() {
-        return ChemicalSerializationHelper.NETWORK_CODEC;
+    public ChemicalSerializer serializer() {
+        return SERIALIZER.get();
     }
 
     public static class Builder {

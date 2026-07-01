@@ -2,6 +2,7 @@ package mekanism.api;
 
 import com.mojang.serialization.MapCodec;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalSerializer;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.robit.RobitSkin;
@@ -31,7 +32,7 @@ public class MekanismRegistries {
     /// Gets the Registry for [Chemical] serializers.
     ///
     /// @see Keys#CHEMICAL_SERIALIZERS
-    public static final Registry<MapCodec<? extends Chemical>> CHEMICAL_SERIALIZERS = new RegistryBuilder<>(Keys.CHEMICAL_SERIALIZERS).create();
+    public static final Registry<ChemicalSerializer> CHEMICAL_SERIALIZERS = new RegistryBuilder<>(Keys.CHEMICAL_SERIALIZERS).create();
 
     /// Gets the Registry for [ChemicalIngredient] type serializers.
     ///
@@ -57,7 +58,7 @@ public class MekanismRegistries {
         /// Gets the [ResourceKey] representing the name of the Registry for [`chemicals`][Chemical] serializers.
         ///
         /// @apiNote When registering [`chemicals`][Chemical] serializers using [DeferredRegister], use this field to get access to the [ResourceKey].
-        public static final ResourceKey<Registry<MapCodec<? extends Chemical>>> CHEMICAL_SERIALIZERS = key("chemical_serializer");
+        public static final ResourceKey<Registry<ChemicalSerializer>> CHEMICAL_SERIALIZERS = key("chemical_serializer");
 
         /// Gets the [ResourceKey] representing the name of the Registry for [ChemicalIngredient] ingredient type serializers.
         ///
