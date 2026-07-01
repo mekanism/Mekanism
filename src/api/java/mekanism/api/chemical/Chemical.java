@@ -6,7 +6,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Util;
-import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 public interface Chemical {
@@ -31,9 +30,14 @@ public interface Chemical {
     /// @since 10.8.0
     int tint();//TODO - 26.2: Should we try to move the icon and tint to a model/separate file that can be specified/overridden by a resource pack?
 
-    //TODO - 26.2: Implement this and make chemicals not be full bright by default
+    /// Returns the light level emitted by the chemical. As chemicals cannot be placed into the world, examples of use cases are: emissivity in multiblocks, or light
+    /// level from within a FramedBlock.
+    ///
+    /// @return A value between `[0, 15]` representing the light level emitted by the chemical.
+    ///
+    /// @since 10.8.0
     default int lightLevel() {
-        return Level.MAX_BRIGHTNESS;
+        return 0;
     }
 
     /// Get the color representation used for displaying in things like durability bars of chemical tanks.

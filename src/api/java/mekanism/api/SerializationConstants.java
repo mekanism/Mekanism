@@ -218,6 +218,8 @@ public final class SerializationConstants {
     public static final String LATCHED_ENTITY = "latched_entity";
     public static final String LEVEL = "level";
     /// @since 10.8.0
+    public static final String LIGHT_LEVEL = "light_level";
+    /// @since 10.8.0
     public static final String LOCK_TYPE = "lock_type";
     public static final String LOGIC_TYPE = "logic_type";
     public static final String MAGNITUDE = "magnitude";

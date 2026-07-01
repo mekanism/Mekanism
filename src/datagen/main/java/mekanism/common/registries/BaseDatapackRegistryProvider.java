@@ -70,6 +70,6 @@ public abstract class BaseDatapackRegistryProvider extends DatapackBuiltinEntrie
     }
 
     protected static void registerConstant(BootstrapContext<Chemical> context, IChemicalConstant constant) {
-        context.register(constant.key(), BasicChemical.defaultIcon(constant.getColor()));
+        context.register(constant.key(), BasicChemical.builder().tint(constant.getColor()).lightLevel(constant.getLightLevel()).build());
     }
 }

@@ -13,6 +13,7 @@ import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.level.Level;
 
 /// Helper class for dealing with [Chemical] (de)serialization.
 ///
@@ -42,6 +43,7 @@ public class ChemicalSerializationHelper {
                   return Optional.empty();
               }
               return Optional.of(chemical.colorRepresentation());
-          })
-    ).apply(builder, (icon, tint, colorRepresentation) -> new BasicChemical(icon, tint, colorRepresentation.orElse(tint))));
+          }),
+          ExtraCodecs.intRange(0, Level.MAX_BRIGHTNESS).optionalFieldOf(SerializationConstants.LIGHT_LEVEL, 0).forGetter(Chemical::lightLevel)
+    ).apply(builder, (icon, tint, colorRepresentation, lightLevel) -> new BasicChemical(icon, tint, colorRepresentation.orElse(tint), lightLevel)));
 }

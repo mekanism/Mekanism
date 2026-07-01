@@ -28,8 +28,8 @@ public class GeneratorsDatapackRegistryProvider extends BaseDatapackRegistryProv
               for (GeneratorsChemicalConstants constant : GeneratorsChemicalConstants.values()) {
                   registerConstant(context, constant);
               }
-              context.register(ChemicalIds.TRITIUM, BasicChemical.defaultIcon(0xFF64FF70));
-              context.register(ChemicalIds.FUSION_FUEL, BasicChemical.defaultIcon(0xFF7E007D));
+              context.register(ChemicalIds.TRITIUM, BasicChemical.builder().tint(0xFF64FF70).build());
+              context.register(ChemicalIds.FUSION_FUEL, BasicChemical.builder().tint(0xFF7E007D).build());
           })
           ;
 }

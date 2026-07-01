@@ -171,42 +171,42 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
               }
           })
           .add(MekanismRegistries.Keys.CHEMICAL, context -> {
-              context.register(ChemicalIds.EMPTY, BasicChemical.defaultIcon(CommonColors.WHITE));
+              context.register(ChemicalIds.EMPTY, BasicChemical.builder().tint(CommonColors.WHITE).build());
               //Infuse Types
-              context.register(ChemicalIds.BIO, new BasicChemical(Mekanism.rl("mek_chemical/infuse_type/bio"), 0xFF5A4630));
-              context.register(ChemicalIds.FUNGI, new BasicChemical(Mekanism.rl("mek_chemical/infuse_type/fungi"), 0xFF74656A));
-              context.register(ChemicalIds.TIN, BasicChemical.infuseType(0xFFCCCCD9));
-              context.register(ChemicalIds.GOLD, BasicChemical.infuseType(0xFFF2CD67));
-              context.register(ChemicalIds.REFINED_OBSIDIAN, BasicChemical.infuseType(0xFF7C00ED));
-              context.register(ChemicalIds.DIAMOND, BasicChemical.infuseType(0xFF6CEDD8));
-              context.register(ChemicalIds.REDSTONE, BasicChemical.infuseType(0xFFB30505));
-              context.register(ChemicalIds.CARBON, BasicChemical.infuseType(0xFF2C2C2C));
+              context.register(ChemicalIds.BIO, BasicChemical.builder(Mekanism.rl("mek_chemical/infuse_type/bio")).tint(0xFF5A4630).build());
+              context.register(ChemicalIds.FUNGI, BasicChemical.builder(Mekanism.rl("mek_chemical/infuse_type/fungi")).tint(0xFF74656A).build());
+              context.register(ChemicalIds.TIN, BasicChemical.infuseType().tint(0xFFCCCCD9).build());
+              context.register(ChemicalIds.GOLD, BasicChemical.infuseType().tint(0xFFF2CD67).build());
+              context.register(ChemicalIds.REFINED_OBSIDIAN, BasicChemical.infuseType().tint(0xFF7C00ED).build());
+              context.register(ChemicalIds.DIAMOND, BasicChemical.infuseType().tint(0xFF6CEDD8).build());
+              context.register(ChemicalIds.REDSTONE, BasicChemical.infuseType().tint(0xFFB30505).build());
+              context.register(ChemicalIds.CARBON, BasicChemical.infuseType().tint(0xFF2C2C2C).build());
               //Chemicals
               for (ChemicalConstants constant : ChemicalConstants.values()) {
                   registerConstant(context, constant);
               }
-              Chemical steam = new BasicChemical(Mekanism.rl("mek_liquid/steam"), CommonColors.WHITE);
+              Chemical steam = BasicChemical.builder(Mekanism.rl("mek_liquid/steam")).tint(CommonColors.WHITE).build();
               context.register(ChemicalIds.STEAM, steam);
               context.register(ChemicalIds.WATER_VAPOR, steam);
-              context.register(ChemicalIds.BRINE, BasicChemical.defaultIcon(0xFFFEEF9C));
+              context.register(ChemicalIds.BRINE, BasicChemical.builder().tint(0xFFFEEF9C).build());
 
-              context.register(ChemicalIds.OSMIUM, BasicChemical.defaultIcon(0xFF52BDCA));
-              context.register(ChemicalIds.FISSILE_FUEL, BasicChemical.defaultIcon(0xFF2E332F));
-              context.register(ChemicalIds.NUCLEAR_WASTE, BasicChemical.defaultIcon(0xFF4F412A));
-              context.register(ChemicalIds.SPENT_NUCLEAR_WASTE, BasicChemical.defaultIcon(0xFF262015));
-              context.register(ChemicalIds.PLUTONIUM, BasicChemical.defaultIcon(0xFF1F919C));
-              context.register(ChemicalIds.POLONIUM, BasicChemical.defaultIcon(0xFF1B9E7B));
-              context.register(ChemicalIds.ANTIMATTER, BasicChemical.defaultIcon(0xFFA464B3));
+              context.register(ChemicalIds.OSMIUM, BasicChemical.builder().tint(0xFF52BDCA).build());
+              context.register(ChemicalIds.FISSILE_FUEL, BasicChemical.builder().tint(0xFF2E332F).build());
+              context.register(ChemicalIds.NUCLEAR_WASTE, BasicChemical.builder().tint(0xFF4F412A).build());
+              context.register(ChemicalIds.SPENT_NUCLEAR_WASTE, BasicChemical.builder().tint(0xFF262015).build());
+              context.register(ChemicalIds.PLUTONIUM, BasicChemical.builder().tint(0xFF1F919C).build());
+              context.register(ChemicalIds.POLONIUM, BasicChemical.builder().tint(0xFF1B9E7B).build());
+              context.register(ChemicalIds.ANTIMATTER, BasicChemical.builder().tint(0xFFA464B3).build());
               //Pigments
               //TODO - 26.2: Replace this packed color with a custom chemical impl and serializer that then queries the color map?
               EnumColorCollection.zipApply(EnumColorCollection.VALUES, ChemicalIds.SIMPLE_PIGMENTS, (color, pigment) ->
-                    context.register(pigment, BasicChemical.pigment(color.getPackedColor())));
+                    context.register(pigment, BasicChemical.pigment().tint(color.getPackedColor()).build()));
               //Slurries
               for (Map.Entry<PrimaryResource, CleanDirtySlurryId> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
                   int tint = entry.getKey().getTint();
                   CleanDirtySlurryId slurryId = entry.getValue();
-                  context.register(slurryId.clean(), BasicChemical.slurry(true, tint));
-                  context.register(slurryId.dirty(), BasicChemical.slurry(false, tint));
+                  context.register(slurryId.clean(), BasicChemical.cleanSlurry().tint(tint).build());
+                  context.register(slurryId.dirty(), BasicChemical.dirtySlurry().tint(tint).build());
               }
           })
           ;
