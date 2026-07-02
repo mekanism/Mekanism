@@ -15,6 +15,7 @@ import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.additions.common.registries.AdditionsStructureModifierSerializers;
 import mekanism.additions.common.voice.VoiceServerManager;
 import mekanism.api.MekanismAPI;
+import mekanism.api.text.EnumColorCollection;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.lib.Version;
@@ -114,23 +115,7 @@ public class MekanismAdditions implements IModModule {
                     return super.execute(source, stack);
                 }
             });
-            DefaultDispenseItemBehavior balloonBehavior = new DefaultDispenseItemBehavior() {
-                @Override
-                protected ItemStack execute(BlockSource source, ItemStack stack) {
-                    ServerLevel level = source.level();
-                    Position position = DispenserBlock.getDispensePosition(source, 1, new Vec3(-0.5, -3.5, -0.5));
-                    EntityBalloon balloon = EntityBalloon.create(level, position.x(), position.y(), position.z(), ((ItemBalloon) stack.getItem()).getColor());
-                    if (balloon == null) {
-                        //Otherwise, if something went very wrong, eject it as a normal item
-                        return super.execute(source, stack);
-                    }
-                    stack.shrink(1);
-                    level.addFreshEntity(balloon);
-                    level.gameEvent(null, GameEvent.ENTITY_PLACE, new Vec3(position.x(), position.y(), position.z()));
-                    return stack;
-                }
-            };
-            AdditionsItems.BALLOONS.forEach(balloon -> DispenserBlock.registerBehavior(balloon, balloonBehavior));
+            EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsItems.BALLOONS, (color, balloon) -> DispenserBlock.registerBehavior(balloon, new ItemBalloon.DispenserBehavior(color)));
         });
         Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
     }

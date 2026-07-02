@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -33,7 +34,6 @@ public class ItemBalloon extends Item {
     public ItemBalloon(Item.Properties properties, EnumColor color) {
         super(properties);
         this.color = color;
-        DispenserBlock.registerBehavior(this, new DispenserBehavior(this.color));
     }
 
     public EnumColor getColor() {
@@ -97,7 +97,7 @@ public class ItemBalloon extends Item {
                         return InteractionResult.FAIL;
                     }
                     world.addFreshEntity(balloon);
-                    stack.shrink(1);
+                    stack.consume(1, player);
                     world.gameEvent(player, GameEvent.ENTITY_PLACE, pos);
                 }
                 return InteractionResult.SUCCESS;
@@ -125,7 +125,7 @@ public class ItemBalloon extends Item {
                     return InteractionResult.FAIL;
                 }
                 level.addFreshEntity(balloon);
-                stack.shrink(1);
+                stack.consume(1, player);
                 level.gameEvent(player, GameEvent.ENTITY_PLACE, balloon.position());
             }
             return InteractionResult.SUCCESS;
@@ -133,7 +133,7 @@ public class ItemBalloon extends Item {
         return InteractionResult.PASS;
     }
 
-    private static class DispenserBehavior extends DefaultDispenseItemBehavior {
+    public static class DispenserBehavior extends DefaultDispenseItemBehavior {
 
         private final EnumColor color;
 
@@ -146,15 +146,15 @@ public class ItemBalloon extends Item {
             Direction side = source.state().getValue(DispenserBlock.FACING);
             BlockPos sourcePos = source.pos();
             BlockPos offsetPos = sourcePos.relative(side);
-            List<LivingEntity> entities = source.level().getEntitiesOfClass(LivingEntity.class, new AABB(offsetPos));
+            ServerLevel level = source.level();
+            List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, new AABB(offsetPos));
             boolean latched = false;
 
             for (LivingEntity entity : entities) {
                 AABB bound = new AABB(entity.getX() - 0.2, entity.getY() - 0.5, entity.getZ() - 0.2,
                       entity.getX() + 0.2, entity.getY() + entity.getBbHeight() + 4, entity.getZ() + 0.2);
-                List<EntityBalloon> balloonsNear = source.level().getEntitiesOfClass(EntityBalloon.class, bound);
                 boolean hasBalloon = false;
-                for (EntityBalloon balloon : balloonsNear) {
+                for (EntityBalloon balloon : level.getEntitiesOfClass(EntityBalloon.class, bound)) {
                     if (balloon.isLatchedTo(entity)) {
                         hasBalloon = true;
                         break;
@@ -163,7 +163,7 @@ public class ItemBalloon extends Item {
                 if (!hasBalloon) {
                     EntityBalloon balloon = EntityBalloon.create(entity, color);
                     if (balloon != null) {
-                        source.level().addFreshEntity(balloon);
+                        level.addFreshEntity(balloon);
                     }
                     latched = true;
                 }
@@ -177,10 +177,11 @@ public class ItemBalloon extends Item {
                     case WEST -> pos = pos.add(-0.5, -1, 0);
                     case EAST -> pos = pos.add(0.5, -1, 0);
                 }
-                if (!source.level().isClientSide()) {
-                    EntityBalloon balloon = EntityBalloon.create(source.level(), pos.x, pos.y, pos.z, color);
+                if (!level.isClientSide()) {
+                    EntityBalloon balloon = EntityBalloon.create(level, pos.x(), pos.y(), pos.z(), color);
                     if (balloon != null) {
-                        source.level().addFreshEntity(balloon);
+                        level.addFreshEntity(balloon);
+                        level.gameEvent(null, GameEvent.ENTITY_PLACE, pos);
                     }
                 }
             }
