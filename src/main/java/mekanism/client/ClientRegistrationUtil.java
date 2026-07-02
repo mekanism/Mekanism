@@ -158,7 +158,7 @@ public class ClientRegistrationUtil {
         //TODO - 26.2: do this with the models themselves?
         if (event instanceof RegisterColorHandlersEvent.BlockTintSources blockEvent) {
             registerBlockColorHandler(blockEvent, COLORED_BLOCK_COLOR, blocks);
-        }//TODO - 26.2 item colours
+        }//TODO - 26.2 item colors
         /* else if (event instanceof RegisterColorHandlersEvent.ItemTintSources itemEvent) {
             registerItemColorHandler(itemEvent, COLORED_BLOCK_ITEM_COLOR, blocks);
         }*/

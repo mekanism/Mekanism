@@ -16,7 +16,6 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
-import net.minecraft.util.Util;
 import org.jspecify.annotations.Nullable;
 
 public record SelectedWindowData(WindowType type, byte extraData) {
@@ -154,7 +153,7 @@ public record SelectedWindowData(WindowType type, byte extraData) {
                     tooltip += ", and whether it was pinned";
                 }
                 return new ConfigSaveData(savePath, title, tooltip + ".", "Edit " + saveName + " Position",
-                      Util.makeDescriptionId("configuration", Mekanism.rl("client.last_window_positions." + savePath))
+                      Mekanism.rl("client.last_window_positions." + savePath).toLanguageKey("configuration")
                 );
             }
         }

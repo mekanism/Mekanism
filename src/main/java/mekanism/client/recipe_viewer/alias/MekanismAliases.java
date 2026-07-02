@@ -1,7 +1,6 @@
 package mekanism.client.recipe_viewer.alias;
 
 import mekanism.common.Mekanism;
-import net.minecraft.util.Util;
 
 public enum MekanismAliases implements IAliasedTranslation {
     BIN_DRAWER("bin.drawer", "Drawer"),
@@ -137,7 +136,7 @@ public enum MekanismAliases implements IAliasedTranslation {
     private final String alias;
 
     MekanismAliases(String path, String alias) {
-        this.key = Util.makeDescriptionId("alias", Mekanism.rl(path));
+        this.key = Mekanism.rl(path).toLanguageKey("alias");
         this.alias = alias;
     }
 

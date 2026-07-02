@@ -121,13 +121,12 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
             if (owner != null) {
                 AbstractPersonalStorageItemInventory storageItemInventory = PersonalStorageManager.getInventoryForUnchecked(input.get(MekanismDataComponents.PERSONAL_STORAGE_ID), owner);
                 if (storageItemInventory != null) {
-                    //TODO - 26.2: Re-evaluate how we interact with our tile's slots
                     List<IInventorySlot> inventorySlots = storageItemInventory.getContainers();
                     List<IInventorySlot> tileSlots = getInventorySlots();
-                    if (inventorySlots.size() == tileSlots.size()) {//TODO - 26.2: If they don't match how should we handle it?
-                        for (int i = 0, size = inventorySlots.size(); i < size; i++) {
-                            tileSlots.get(i).copyContents(inventorySlots.get(i), null);
-                        }
+                    //Best effort at copying if for some unknown reason the list sizes don't match
+                    int size = Math.min(tileSlots.size(), inventorySlots.size());
+                    for (int i = 0; i < size; i++) {
+                        tileSlots.get(i).copyContents(inventorySlots.get(i), null);
                     }
                 }
             }

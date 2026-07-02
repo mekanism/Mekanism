@@ -1204,6 +1204,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.NOW_OWN, "You now own this item.");
         add(MekanismLang.OWNER, "Owner: %1$s");
         add(MekanismLang.NO_OWNER, "No Owner");
+        //
+        add(MekanismLang.STORAGE_ACCESS_FAIL, "Couldn't access Personal Storage inventory. Please ask your server admin to check the logs.");
         //Tab
         add(MekanismLang.MAIN_TAB, "Main");
         //Evaporation

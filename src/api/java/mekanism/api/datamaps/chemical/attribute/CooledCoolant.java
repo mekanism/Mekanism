@@ -6,7 +6,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalResource;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 
@@ -33,10 +32,5 @@ public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
 
     public CooledCoolant {
         IChemicalCoolant.validateCoolantParams(otherVariant, thermalEnthalpy, conductivity);
-    }
-
-    /// {@return a chemical resource representing the type of the heated coolant}
-    public ChemicalResource heat() {
-        return ChemicalResource.of(otherVariant);
     }
 }

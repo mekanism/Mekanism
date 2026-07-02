@@ -3,7 +3,6 @@ package mekanism.generators.common.config;
 import mekanism.common.config.IConfigTranslation;
 import mekanism.common.config.TranslationPreset;
 import mekanism.generators.common.MekanismGenerators;
-import net.minecraft.util.Util;
 import org.jspecify.annotations.Nullable;
 
 public enum GeneratorsConfigTranslations implements IConfigTranslation {
@@ -146,7 +145,7 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
     }
 
     GeneratorsConfigTranslations(String path, String title, String tooltip, @Nullable String button) {
-        this.key = Util.makeDescriptionId("configuration", MekanismGenerators.rl(path));
+        this.key = MekanismGenerators.rl(path).toLanguageKey("configuration");
         this.title = title;
         this.tooltip = tooltip;
         this.button = button;

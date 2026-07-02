@@ -1,7 +1,6 @@
 package mekanism.additions.common;
 
 import mekanism.api.text.ILangEntry;
-import net.minecraft.util.Util;
 
 public enum AdditionsLang implements ILangEntry {
     MEKANISM_ADDITIONS("constants", "mod_name"),
@@ -16,7 +15,7 @@ public enum AdditionsLang implements ILangEntry {
     private final String key;
 
     AdditionsLang(String type, String path) {
-        this(Util.makeDescriptionId(type, MekanismAdditions.rl(path)));
+        this(MekanismAdditions.rl(path).toLanguageKey(type));
     }
 
     AdditionsLang(String key) {

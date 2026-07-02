@@ -43,6 +43,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -227,7 +228,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     @Override
     public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
-        output.putChild(SerializationConstants.FLUID, fluidTank);
+        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, fluidTank);
         if (!lastPasteItem.isEmpty()) {
             output.store(SerializationConstants.ITEM, ItemResource.CODEC, lastPasteItem);
         }
@@ -236,7 +237,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        input.readChild(SerializationConstants.FLUID, fluidTank);
+        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, fluidTank);
         lastPasteItem = input.read(SerializationConstants.ITEM, ItemResource.CODEC).orElse(ItemResource.EMPTY);
     }
 

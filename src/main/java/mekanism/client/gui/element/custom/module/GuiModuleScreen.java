@@ -25,10 +25,9 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 //TODO: Eventually try to add support for defining ways to render custom config types
 public class GuiModuleScreen extends GuiScrollableElement {
@@ -66,7 +65,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
                     //Skip options that are force disabled by the config
                     continue;
                 }
-                Component description = TextComponentUtil.translate(Util.makeDescriptionId("module", configItem.name()));
+                Component description = TextComponentUtil.translate(configItem.name().toLanguageKey("module"));
                 Identifier name = configItem.name();
                 MiniElement<?> element = switch (configItem) {
                     // Don't show the enabled option if this is enabled by default

@@ -16,7 +16,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.util.Util;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.ApiStatus.Internal;
@@ -83,7 +82,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
         this.englishName = englishName;
         this.dyeColor = dyeColor;
         this.registryPrefix = registryPrefix;
-        this.translationKey = Util.makeDescriptionId("color", Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, this.registryPrefix));
+        this.translationKey = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, this.registryPrefix).toLanguageKey("color");
         this.mapColor = mapColor;
         setColorFromAtlas(new int[]{ARGB.red(rgb), ARGB.green(rgb), ARGB.blue(rgb)});
     }

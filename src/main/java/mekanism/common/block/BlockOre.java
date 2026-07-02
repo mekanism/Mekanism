@@ -6,7 +6,6 @@ import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.resource.ore.OreType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
@@ -29,7 +28,7 @@ public class BlockOre extends Block implements IHasDescription {
 
     public String getDescriptionTranslationKey() {
         if (descriptionTranslationKey == null) {
-            descriptionTranslationKey = Util.makeDescriptionId("description", Mekanism.rl(ore.getResource().getRegistrySuffix() + "_ore"));
+            descriptionTranslationKey = Mekanism.rl(ore.getResource().getRegistrySuffix() + "_ore").toLanguageKey("description");
         }
         return descriptionTranslationKey;
     }

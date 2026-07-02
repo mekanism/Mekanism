@@ -8,7 +8,6 @@ import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import org.jspecify.annotations.Nullable;
@@ -77,7 +76,7 @@ public interface RobitSkin {
     ///
     /// @since 10.4.0
     static String getTranslationKey(ResourceKey<? extends RobitSkin> key) {
-        return Util.makeDescriptionId("robit_skin", key.identifier());
+        return key.identifier().toLanguageKey("robit_skin");
     }
 
     /// Helper to get a translation component representing the display name of a given [RobitSkin].

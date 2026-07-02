@@ -19,6 +19,8 @@ public interface Chemical {
     ///
     /// @return The resource location of the icon
     ///
+    /// @implSpec It is expected that this atlas will be added to the [block atlas][net.minecraft.data.AtlasIds#BLOCKS]. This must be done via a sprite source provider or
+    /// by placing the texture within one of the following textures subdirectories `mek_liquid/` or `mek_chemical/`
     /// @since 10.8.0
     Identifier icon();
 

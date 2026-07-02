@@ -2726,6 +2726,7 @@
   "owner.mekanism.format": "Owner: %1$s",
   "owner.mekanism.none": "No Owner",
   "owner.mekanism.now_own": "You now own this item.",
+  "personal_storage.mekanism.cannot_access": "Couldn't access Personal Storage inventory. Please ask your server admin to check the logs.",
   "qio.mekanism.compensate_tooltip": "What are you trying to compensate for?",
   "qio.mekanism.export_without_filter": "Export Without Filter:",
   "qio.mekanism.exporter.round_robin": "Round robin:",

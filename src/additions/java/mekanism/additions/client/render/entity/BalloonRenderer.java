@@ -25,7 +25,6 @@ import org.jspecify.annotations.Nullable;
 
 public class BalloonRenderer extends EntityRenderer<EntityBalloon, BalloonRenderState> {
 
-    //TODO - 26.2: Validate this render sheet
     private static final RenderType RENDER_TYPE = Sheets.translucentBlockItemSheet();
 
     public BalloonRenderer(EntityRendererProvider.Context context) {

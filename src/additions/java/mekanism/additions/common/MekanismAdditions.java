@@ -3,7 +3,6 @@ package mekanism.additions.common;
 import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.block.BlockObsidianTNT;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
-import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.registries.AdditionsBiomeModifierSerializers;
 import mekanism.additions.common.registries.AdditionsBlocks;
@@ -20,16 +19,16 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.lib.Version;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.BlockSource;
-import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
+import net.minecraft.core.dispenser.SulfurCubeBlockDispenseItemBehavior;
 import net.minecraft.network.Connection;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -102,17 +101,25 @@ public class MekanismAdditions implements IModModule {
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             //Dispenser behavior
-            DispenserBlock.registerBehavior(AdditionsBlocks.OBSIDIAN_TNT, new DefaultDispenseItemBehavior() {
+            DispenserBlock.registerBehavior(AdditionsBlocks.OBSIDIAN_TNT, new OptionalDispenseItemBehavior() {
                 @Override
-                protected ItemStack execute(BlockSource source, ItemStack stack) {
-                    BlockPos blockpos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
-                    if (BlockObsidianTNT.createAndAddEntity(source.level(), blockpos, null)) {
-                        source.level().gameEvent(null, GameEvent.ENTITY_PLACE, blockpos);
-                        stack.shrink(1);
-                        return stack;
+                protected ItemStack execute(BlockSource source, ItemStack dispensed) {
+                    //Based heavily on vanilla's tnt dispense behavior
+                    ServerLevel level = source.level();
+                    if (!level.getGameRules().get(GameRules.TNT_EXPLODES)) {
+                        setSuccess(false);
+                        return dispensed;
                     }
-                    //Otherwise, if something went very wrong, eject it as a normal item
-                    return super.execute(source, stack);
+                    BlockPos target = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
+                    if (SulfurCubeBlockDispenseItemBehavior.dispenseBlock(level, target, dispensed)) {
+                        return dispensed;
+                    }
+                    if (BlockObsidianTNT.createAndAddEntity(source.level(), target, null)) {
+                        level.gameEvent(null, GameEvent.ENTITY_PLACE, target);
+                        dispensed.shrink(1);
+                        setSuccess(true);
+                    }
+                    return dispensed;
                 }
             });
             EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsItems.BALLOONS, (color, balloon) -> DispenserBlock.registerBehavior(balloon, new ItemBalloon.DispenserBehavior(color)));

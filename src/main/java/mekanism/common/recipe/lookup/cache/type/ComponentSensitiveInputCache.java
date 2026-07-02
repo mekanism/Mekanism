@@ -3,10 +3,10 @@ package mekanism.common.recipe.lookup.cache.type;
 import com.google.common.collect.Iterables;
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.recipes.MekanismRecipe;
@@ -28,8 +28,7 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
       extends BaseInputCache<KEY, INPUT, INGREDIENT, RECIPE> {
 
     /// Map of ResourceKey to Map of components to lists.
-    //TODO - 26.2 can this use a Reference map now that it uses ResourceKey?
-    private final Map<ResourceKey<KEY>, Map<DataComponentMap, List<RECIPE>>> componentInputCache = new HashMap<>();
+    private final Map<ResourceKey<KEY>, Map<DataComponentMap, List<RECIPE>>> componentInputCache = new Reference2ObjectOpenHashMap<>();
 
     @Override
     public void clear() {

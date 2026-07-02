@@ -1,7 +1,6 @@
 package mekanism.tools.common;
 
 import mekanism.api.text.ILangEntry;
-import net.minecraft.util.Util;
 
 public enum ToolsLang implements ILangEntry {
     MEKANISM_TOOLS("constants", "mod_name"),
@@ -11,7 +10,7 @@ public enum ToolsLang implements ILangEntry {
     private final String key;
 
     ToolsLang(String type, String path) {
-        this(Util.makeDescriptionId(type, MekanismTools.rl(path)));
+        this(MekanismTools.rl(path).toLanguageKey(type));
     }
 
     ToolsLang(String key) {

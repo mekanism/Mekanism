@@ -150,7 +150,6 @@ import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.registration.INamedEntry;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
@@ -225,8 +224,8 @@ public class ClientRegistration {
         moduleHelper.addMekaSuitModuleModelSpec("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlot.CHEST);
         moduleHelper.addMekaSuitModuleModelSpec("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, state -> state.isFallFlying);
 
-        //TODO - 26.2: this shouldn't need extra - just a fix on the item model itself
-        addLitModel(MekanismItems.MEKA_TOOL);
+        //TODO - 26.2: this shouldn't need extra in code processing - just a fix on the item model itself
+        //addLitModel(MekanismItems.MEKA_TOOL);
     }
 
     @SubscribeEvent
@@ -575,48 +574,4 @@ public class ClientRegistration {
             }
         }
     }
-
-    //TODO - 26.2 baked models
-    /*public static void addCustomModel(INamedEntry provider, CustomModelRegistryObject object) {
-        customModels.put(provider.getId(), object);
-    }*/
-
-    public static void addLitModel(INamedEntry... entries) {
-        //TODO - 26.2 baked models
-        /*for (INamedEntry namedEntry : entries) {
-            addCustomModel(namedEntry, (orig, evt) -> lightBakedModel(orig));
-        }*/
-    }
-
-    //TODO - 26.2 baked models
-    /*private static final FieldReflectionHelper<SeparateTransformsModel.Baked, BakedModel> SEPARATE_PERSPECTIVE_BASE_MODEL =
-          new FieldReflectionHelper<>(SeparateTransformsModel.Baked.class, "baseModel", () -> null);
-    private static final FieldReflectionHelper<SeparateTransformsModel.Baked, ImmutableMap<ItemDisplayContext, BakedModel>> SEPARATE_PERSPECTIVE_PERSPECTIVES =
-          new FieldReflectionHelper<>(SeparateTransformsModel.Baked.class, "perspectives", ImmutableMap::of);
-    private static final Map<Identifier, CustomModelRegistryObject> customModels = new ConcurrentHashMap<>();
-
-     @SubscribeEvent
-    public static void onModelBake(ModelEvent.ModifyBakingResult event) {
-        event.getModels().replaceAll((rl, model) -> {
-            CustomModelRegistryObject obj = customModels.get(rl.id());
-            return obj == null ? model : obj.createModel(model, event);
-        });
-    }
-
-    private static BakedModel lightBakedModel(BakedModel orig) {
-        if (orig instanceof SeparateTransformsModel.Baked separatePerspectiveModel) {
-            //Transform inner components of the separate perspective model and then return the original model
-            SEPARATE_PERSPECTIVE_BASE_MODEL.transformValue(separatePerspectiveModel, Objects::nonNull, ClientRegistration::lightBakedModel);
-            SEPARATE_PERSPECTIVE_PERSPECTIVES.transformValue(separatePerspectiveModel, v -> !v.isEmpty(), org -> ImmutableMap.copyOf(Maps.transformValues(org,
-                  ClientRegistration::lightBakedModel)));
-            return orig;
-        }
-        return new LightedBakedModel(orig);
-    }
-
-    @FunctionalInterface
-    public interface CustomModelRegistryObject {
-
-        BakedModel createModel(BakedModel original, ModelEvent.ModifyBakingResult event);
-    }*/
 }

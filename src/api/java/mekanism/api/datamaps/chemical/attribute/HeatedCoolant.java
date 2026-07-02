@@ -7,7 +7,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
@@ -56,11 +55,6 @@ public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
         if (temperature <= 0 || temperature > MAX_COOLANT_TEMP) {
             throw new IllegalArgumentException("Coolant attributes must have a temperature greater than zero and at most " + MAX_COOLANT_TEMP + "! Temperature: " + temperature);
         }
-    }
-
-    /// {@return a chemical resource representing the type of the cooled coolant}
-    public ChemicalResource cool() {//TODO - 26.2: Update docs
-        return ChemicalResource.of(otherVariant);
     }
 
     @Override

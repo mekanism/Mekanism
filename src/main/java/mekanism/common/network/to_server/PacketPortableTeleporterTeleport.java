@@ -72,37 +72,33 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                         } else {
                             energyCost = 0;
                         }
-                        //TODO: Figure out what this try catch is meant to be catching as I don't see much of a reason for it to exist
-                        try {
-                            teleporter.didTeleport.add(player.getUUID());
-                            teleporter.teleDelay = 5;
-                            BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
-                            MekanismTeleportEvent.PortableTeleporter event = new MekanismTeleportEvent.PortableTeleporter(player, teleporterTargetPos, teleWorld, stack, energyCost);
-                            if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
-                                //Fail if the event was cancelled
-                                return;
-                            }
-                            //Commit the energy usage
-                            transaction.commit();
-                            player.connection.aboveGroundTickCount = 0;
-                            player.closeContainer();
-                            PacketUtils.sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level(), coords.pos());
-                            if (player.isPassenger()) {
-                                player.stopRiding();
-                            }
-                            double oldX = player.getX();
-                            double oldY = player.getY();
-                            double oldZ = player.getZ();
-                            Level oldWorld = player.level();
-                            TileEntityTeleporter.teleportEntityTo(player, teleWorld, teleporter, event, false, TeleportTransition.DO_NOTHING);
-                            if (player.level() != oldWorld || player.distanceToSqr(oldX, oldY, oldZ) >= 25) {
-                                //If the player teleported over 5 blocks, play the sound at both the destination and the source
-                                oldWorld.playSound(null, oldX, oldY, oldZ, SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
-                            }
-                            player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
-                            teleporter.sendTeleportParticles();
-                        } catch (Exception _) {//TODO - 26.2: What exception are we catching??
+                        teleporter.didTeleport.add(player.getUUID());
+                        teleporter.teleDelay = 5;
+                        BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
+                        MekanismTeleportEvent.PortableTeleporter event = new MekanismTeleportEvent.PortableTeleporter(player, teleporterTargetPos, teleWorld, stack, energyCost);
+                        if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
+                            //Fail if the event was cancelled
+                            return;
                         }
+                        //Commit the energy usage
+                        transaction.commit();
+                        player.connection.aboveGroundTickCount = 0;
+                        player.closeContainer();
+                        PacketUtils.sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level(), coords.pos());
+                        if (player.isPassenger()) {
+                            player.stopRiding();
+                        }
+                        double oldX = player.getX();
+                        double oldY = player.getY();
+                        double oldZ = player.getZ();
+                        Level oldWorld = player.level();
+                        TileEntityTeleporter.teleportEntityTo(player, teleWorld, teleporter, event, false, TeleportTransition.DO_NOTHING);
+                        if (player.level() != oldWorld || player.distanceToSqr(oldX, oldY, oldZ) >= 25) {
+                            //If the player teleported over 5 blocks, play the sound at both the destination and the source
+                            oldWorld.playSound(null, oldX, oldY, oldZ, SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
+                        }
+                        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
+                        teleporter.sendTeleportParticles();
                     }
                 }
             }

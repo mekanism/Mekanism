@@ -3,6 +3,8 @@ package mekanism.common.item.block;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.resource.LargeResourceStack;
+import mekanism.api.text.EnumColor;
+import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockPersonalStorage;
 import mekanism.common.inventory.container.item.PersonalStorageItemContainer;
 import mekanism.common.item.interfaces.IDroppableContents;
@@ -13,7 +15,6 @@ import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -46,8 +47,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     public InteractionResult use(Level world, Player player, InteractionHand hand) {
         return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h, itemAccess, transaction) -> {
             if (PersonalStorageManager.getInventoryFor(itemAccess, transaction) == null) {
-                //TODO - 26.2 make translated
-                p.sendOverlayMessage(Component.literal("Couldn't access Personal Storage inventory. Please ask your server admin to check the logs."));
+                p.sendOverlayMessage(MekanismLang.STORAGE_ACCESS_FAIL.translateColored(EnumColor.RED));
             }
             getContainerType().tryOpenGui(p, h, itemAccess);
             p.awardStat(Stats.CUSTOM.get(openStat));

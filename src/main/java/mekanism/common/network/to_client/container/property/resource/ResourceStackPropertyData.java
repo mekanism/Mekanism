@@ -53,7 +53,7 @@ public final class ResourceStackPropertyData extends PropertyData {
             return STREAM_CODEC.decode(buf).stackHelper.streamCodec().decode(buf);
         }
 
-        //TODO - 26.2: Re-evaluate this
+        @SuppressWarnings("unchecked")
         public static <RESOURCE extends Resource> void encode(RegistryFriendlyByteBuf buf, LargeResourceStack<RESOURCE> stack) {
             ResourceType type = switch (stack.resource()) {
                 case ItemResource _ -> ITEM;

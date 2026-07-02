@@ -18,7 +18,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
-import net.minecraft.util.Util;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.DispensibleContainerItem;
 import net.minecraft.world.item.Item;
@@ -116,7 +115,7 @@ public class FluidDeferredRegister {
           BiFunction<FluidType.Properties, FluidTypeRenderProperties, MekanismFluidType> fluidTypeCreator) {
         DeferredHolder<FluidType, MekanismFluidType> fluidType = fluidTypeRegister.register(name, rl -> {
             //Set the translation string to the same as the block (we rely on the implementation detail that we make our fluid type's name is the same as the block's)
-            properties.descriptionId(Util.makeDescriptionId("block", rl));
+            properties.descriptionId(rl.toLanguageKey("block"));
             return fluidTypeCreator.apply(properties, renderProperties);
         });
 

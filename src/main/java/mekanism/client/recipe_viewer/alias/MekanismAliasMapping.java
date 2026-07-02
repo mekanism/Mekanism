@@ -17,7 +17,6 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.Util;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -69,7 +68,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
     }
 
     private static IHasTranslationKey getTranslationKey(ResourceKey<Enchantment> enchantmentKey) {
-        return () -> Util.makeDescriptionId("enchantment", enchantmentKey.identifier());
+        return () -> enchantmentKey.identifier().toLanguageKey("enchantment");
     }
 
     private <ITEM, FLUID, CHEMICAL> void addFactoryAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
@@ -82,7 +81,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
                   MekanismBlocks.getFactory(FactoryTier.ULTIMATE, factoryType)
             ), factoryType.getBaseBlock());
             //Add the type as a way to look-up the base block
-            rv.addAliases(factoryType.getBaseBlock(), () -> Util.makeDescriptionId("alias", Mekanism.rl(factoryType.getRegistryNameComponent())));
+            rv.addAliases(factoryType.getBaseBlock(), () -> Mekanism.rl(factoryType.getRegistryNameComponent()).toLanguageKey("alias"));
         }
     }
 
@@ -254,7 +253,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
         rv.addAliases(MekanismBlocks.FLUORITE_BLOCK, MekanismAliases.BLOCK_FLUORITE);
         //Dynamic storage blocks
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            rv.addItemAliases(entry.getValue().getItemHolder(), () -> Util.makeDescriptionId("alias", Mekanism.rl(entry.getKey().getRegistrySuffix())));
+            rv.addItemAliases(entry.getValue().getItemHolder(), () -> Mekanism.rl(entry.getKey().getRegistrySuffix()).toLanguageKey("alias"));
         }
     }
 

@@ -460,7 +460,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             coolantTank = chemicalCoolantTank;
             coolantEnthalpy = coolantType.thermalEnthalpy();
             coolantConductivity = coolantType.conductivity();
-            heatedCoolant = coolantType.heat();
+            heatedCoolant = ChemicalResource.of(coolantType.otherVariant());
         }
         double caseCoolantHeat = heat * coolantConductivity;
         lastBoilRate = clampCoolantHeated(caseCoolantHeat / coolantEnthalpy, coolantTank.amountAsInt());

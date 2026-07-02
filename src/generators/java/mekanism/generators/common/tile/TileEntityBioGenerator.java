@@ -18,6 +18,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -108,14 +109,13 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     @Override
     public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
-        //TODO - 26.2: Do we want to further trim this and similar cases by skipping adding the fluid key if the tank is empty?
-        output.putChild(SerializationConstants.FLUID, bioFuelTank);
+        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, bioFuelTank);
     }
 
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        input.readChild(SerializationConstants.FLUID, bioFuelTank);
+        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, bioFuelTank);
     }
 
     @Override

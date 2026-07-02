@@ -1,7 +1,6 @@
 package mekanism.generators.common;
 
 import mekanism.api.text.ILangEntry;
-import net.minecraft.util.Util;
 
 public enum GeneratorsLang implements ILangEntry {
     MEKANISM_GENERATORS("constants", "mod_name"),
@@ -158,7 +157,7 @@ public enum GeneratorsLang implements ILangEntry {
     private final String key;
 
     GeneratorsLang(String type, String path) {
-        this(Util.makeDescriptionId(type, MekanismGenerators.rl(path)));
+        this(MekanismGenerators.rl(path).toLanguageKey(type));
     }
 
     GeneratorsLang(String key) {

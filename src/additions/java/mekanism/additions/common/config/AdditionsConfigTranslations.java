@@ -3,7 +3,6 @@ package mekanism.additions.common.config;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.common.config.IConfigTranslation;
-import net.minecraft.util.Util;
 import org.jspecify.annotations.Nullable;
 
 public enum AdditionsConfigTranslations implements IConfigTranslation {
@@ -40,7 +39,7 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
     }
 
     AdditionsConfigTranslations(String path, String title, String tooltip, @Nullable String button) {
-        this.key = Util.makeDescriptionId("configuration", MekanismAdditions.rl(path));
+        this.key = MekanismAdditions.rl(path).toLanguageKey("configuration");
         this.title = title;
         this.tooltip = tooltip;
         this.button = button;
@@ -82,7 +81,7 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
         }
 
         private static String getKey(String name, String path) {
-            return Util.makeDescriptionId("configuration", MekanismAdditions.rl("server.baby.spawning." + name + "." + path));
+            return MekanismAdditions.rl("server.baby.spawning." + name + "." + path).toLanguageKey("configuration");
         }
 
         public static BabySpawnTranslations create(BabyType babyType) {

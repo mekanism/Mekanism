@@ -28,7 +28,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.LanguageProvider;
@@ -94,7 +93,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     protected void add(IHasTranslationKey key, String value) {
         if (key instanceof BlockRegistryObject<?, ?> blockHolder) {
             if (Attribute.matches(blockHolder, AttributeGui.class, attribute -> !attribute.hasCustomName())) {
-                add(Util.makeDescriptionId("container", blockHolder.getId()), value);
+                add(blockHolder.getId().toLanguageKey("container"), value);
             }
         }
         add(key.getTranslationKey(), value);
@@ -102,7 +101,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 
     protected void add(BlockRegistryObject<?, ?> blockRO, String value, String containerName) {
         if (Attribute.matches(blockRO, AttributeGui.class, attribute -> !attribute.hasCustomName())) {
-            add(Util.makeDescriptionId("container", blockRO.getId()), containerName);
+            add(blockRO.getId().toLanguageKey("container"), containerName);
             add(blockRO.getTranslationKey(), value);
         } else {
             throw new IllegalArgumentException(blockRO + " does not have a container name set.");
@@ -172,7 +171,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     protected void addAlias(String path, String translation) {
-        add(Util.makeDescriptionId("alias", Identifier.fromNamespaceAndPath(modid, path)), translation);
+        add(Identifier.fromNamespaceAndPath(modid, path).toLanguageKey("alias"), translation);
     }
 
     @Override

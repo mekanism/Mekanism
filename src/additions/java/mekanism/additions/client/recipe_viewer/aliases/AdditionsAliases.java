@@ -2,7 +2,6 @@ package mekanism.additions.client.recipe_viewer.aliases;
 
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
-import net.minecraft.util.Util;
 
 public enum AdditionsAliases implements IAliasedTranslation {
     GLOW_PANEL_LIGHT_SOURCE("glow_panel.light_source", "Light Source"),
@@ -14,7 +13,7 @@ public enum AdditionsAliases implements IAliasedTranslation {
     private final String alias;
 
     AdditionsAliases(String path, String alias) {
-        this.key = Util.makeDescriptionId("alias", MekanismAdditions.rl(path));
+        this.key = MekanismAdditions.rl(path).toLanguageKey("alias");
         this.alias = alias;
     }
 

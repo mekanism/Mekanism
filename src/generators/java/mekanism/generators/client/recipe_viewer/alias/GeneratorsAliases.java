@@ -2,7 +2,6 @@ package mekanism.generators.client.recipe_viewer.alias;
 
 import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
 import mekanism.generators.common.MekanismGenerators;
-import net.minecraft.util.Util;
 
 public enum GeneratorsAliases implements IAliasedTranslation {
     FUSION_FUEL("fusion_fuel", "Fusion Fuel"),
@@ -18,7 +17,7 @@ public enum GeneratorsAliases implements IAliasedTranslation {
     private final String alias;
 
     GeneratorsAliases(String path, String alias) {
-        this.key = Util.makeDescriptionId("alias", MekanismGenerators.rl(path));
+        this.key = MekanismGenerators.rl(path).toLanguageKey("alias");
         this.alias = alias;
     }
 

@@ -18,7 +18,6 @@ import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.util.Util;
 import org.jspecify.annotations.Nullable;
 
 public enum MekanismConfigTranslations implements IConfigTranslation {
@@ -550,7 +549,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     }
 
     MekanismConfigTranslations(String path, String title, String tooltip, @Nullable String button) {
-        this.key = Util.makeDescriptionId("configuration", Mekanism.rl(path));
+        this.key = Mekanism.rl(path).toLanguageKey("configuration");
         this.title = title;
         this.tooltip = tooltip;
         this.button = button;
@@ -614,7 +613,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
         }
 
         private static String getKey(String type, String tier, String path) {
-            return Util.makeDescriptionId("configuration", Mekanism.rl("tier." + type + "." + tier + "." + path));
+            return Mekanism.rl("tier." + type + "." + tier + "." + path).toLanguageKey("configuration");
         }
 
         public static TierTranslations create(ITier tier, String type, @Nullable UnaryOperator<String> storageTooltip, @Nullable UnaryOperator<String> outputTooltip) {
@@ -710,7 +709,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
         }
 
         private static String getKey(String ore, String path) {
-            return Util.makeDescriptionId("configuration", Mekanism.rl("world." + ore + "." + path));
+            return Mekanism.rl("world." + ore + "." + path).toLanguageKey("configuration");
         }
 
         public static OreConfigTranslations create(String ore) {
@@ -734,7 +733,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
         }
 
         private static String getKey(String ore, String vein, String path) {
-            return Util.makeDescriptionId("configuration", Mekanism.rl("world." + ore + "." + vein + "." + path));
+            return Mekanism.rl("world." + ore + "." + vein + "." + path).toLanguageKey("configuration");
         }
 
         public static OreVeinConfigTranslations create(String ore, String vein) {

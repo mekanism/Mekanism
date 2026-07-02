@@ -3,8 +3,6 @@ package mekanism.additions.common.entity.baby;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.references.BlockItemIds;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityDimensions;
@@ -22,21 +20,10 @@ import org.jspecify.annotations.Nullable;
 
 public class EntityBabyStray extends Stray {
 
-    //Copy of stray spawn restrictions
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, ServerLevelAccessor world, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         //TODO - 26.2: Switch to using Stray's spawn restriction method https://github.com/neoforged/NeoForge/pull/3245
-        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ());
-        do {
-            mutable.move(Direction.UP);
-        } while (world.getBlockState(mutable).is(BlockItemIds.POWDER_SNOW.block()));
-        if (checkMonsterSpawnRules(type, world, reason, pos, random)) {
-            if (reason == EntitySpawnReason.SPAWNER) {
-                return true;
-            }
-            mutable.move(Direction.DOWN);
-            return world.canSeeSky(mutable);
-        }
-        return false;
+        return checkStraySpawnRules((EntityType) type, world, reason, pos, random);
     }
 
     public EntityBabyStray(EntityType<EntityBabyStray> type, Level world) {

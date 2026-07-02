@@ -3,7 +3,6 @@ package mekanism.tools.common.config;
 import mekanism.common.config.IConfigTranslation;
 import mekanism.common.util.text.TextUtils;
 import mekanism.tools.common.MekanismTools;
-import net.minecraft.util.Util;
 import org.jspecify.annotations.Nullable;
 
 public enum ToolsConfigTranslations implements IConfigTranslation {
@@ -41,7 +40,7 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
     }
 
     ToolsConfigTranslations(String path, String title, String tooltip, @Nullable String button) {
-        this.key = Util.makeDescriptionId("configuration", MekanismTools.rl(path));
+        this.key = MekanismTools.rl(path).toLanguageKey("configuration");
         this.title = title;
         this.tooltip = tooltip;
         this.button = button;
@@ -93,7 +92,7 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
         }
 
         private static String getKey(String name, String path) {
-            return Util.makeDescriptionId("configuration", MekanismTools.rl("server.gear_spawn_chance." + name + "." + path));
+            return MekanismTools.rl("server.gear_spawn_chance." + name + "." + path).toLanguageKey("configuration");
         }
 
         public static ArmorSpawnChanceTranslations create(String registryPrefix) {
@@ -140,7 +139,7 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
         }
 
         private static String getKey(String name, String path) {
-            return Util.makeDescriptionId("configuration", MekanismTools.rl("startup.materials." + name + "." + path));
+            return MekanismTools.rl("startup.materials." + name + "." + path).toLanguageKey("configuration");
         }
 
         public static VanillaPaxelMaterialTranslations create(String registryPrefix) {
@@ -197,7 +196,7 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
         }
 
         private static String getKey(String name, String path) {
-            return Util.makeDescriptionId("configuration", MekanismTools.rl("startup.materials." + name + "." + path));
+            return MekanismTools.rl("startup.materials." + name + "." + path).toLanguageKey("configuration");
         }
 
         public static MaterialTranslations create(String registryPrefix) {

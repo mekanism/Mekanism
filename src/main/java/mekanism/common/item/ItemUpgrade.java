@@ -61,7 +61,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
                     if (!world.isClientSide()) {
                         int added = upgradeTile.addUpgrades(type, stack.count());
                         if (added > 0) {
-                            stack.shrink(added);
+                            stack.consume(added, player);
                         }
                     }
                     return InteractionResult.SUCCESS_SERVER;

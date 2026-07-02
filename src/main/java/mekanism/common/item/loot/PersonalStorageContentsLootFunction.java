@@ -53,14 +53,13 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
                     } else {
                         destInv = Objects.requireNonNull(PersonalStorageManager.getInventoryFor(ItemAccess.forStack(stack), transaction), "Inventory not available?!");
                     }
-                    int size = tileSlots.size();
                     List<IInventorySlot> containers = destInv.getContainers();
-                    if (containers.size() == size) {//TODO - 26.2: If they don't match how should we handle it?
-                        for (int i = 0; i < size; i++) {
-                            IInventorySlot tileSlot = tileSlots.get(i);
-                            if (!tileSlot.isEmpty()) {
-                                containers.get(i).copyContents(tileSlot, transaction);
-                            }
+                    //Best effort at copying if for some unknown reason the list sizes don't match
+                    int size = Math.min(tileSlots.size(), containers.size());
+                    for (int i = 0; i < size; i++) {
+                        IInventorySlot tileSlot = tileSlots.get(i);
+                        if (!tileSlot.isEmpty()) {
+                            containers.get(i).copyContents(tileSlot, transaction);
                         }
                     }
                     transaction.commit();

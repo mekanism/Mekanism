@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import mekanism.api.text.ILangEntry;
-import net.minecraft.util.Util;
 
 public enum MekanismLang implements ILangEntry {
     //Vanilla lang strings we use, for purposes of not having to have them copy-pasted all over the place
@@ -315,6 +314,8 @@ public enum MekanismLang implements ILangEntry {
     NOW_OWN("owner", "now_own"),
     OWNER("owner", "format"),
     NO_OWNER("owner", "none"),
+    //Personal Storage
+    STORAGE_ACCESS_FAIL("personal_storage", "cannot_access"),
     //Tab
     MAIN_TAB("tab", "main"),
     //Evaporation
@@ -861,7 +862,7 @@ public enum MekanismLang implements ILangEntry {
     private final String key;
 
     MekanismLang(String type, String path) {
-        this(Util.makeDescriptionId(type, Mekanism.rl(path)));
+        this(Mekanism.rl(path).toLanguageKey(type));
     }
 
     MekanismLang(String key) {

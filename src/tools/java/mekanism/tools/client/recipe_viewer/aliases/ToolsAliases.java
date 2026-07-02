@@ -2,7 +2,6 @@ package mekanism.tools.client.recipe_viewer.aliases;
 
 import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
 import mekanism.tools.common.MekanismTools;
-import net.minecraft.util.Util;
 
 public enum ToolsAliases implements IAliasedTranslation {
     ;
@@ -11,7 +10,7 @@ public enum ToolsAliases implements IAliasedTranslation {
     private final String alias;
 
     ToolsAliases(String path, String alias) {
-        this.key = Util.makeDescriptionId("alias", MekanismTools.rl(path));
+        this.key = MekanismTools.rl(path).toLanguageKey("alias");
         this.alias = alias;
     }
 

@@ -1,7 +1,6 @@
 package mekanism.common.advancements;
 
 import mekanism.api.text.TextComponentUtil;
-import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
@@ -17,8 +16,8 @@ public record MekanismAdvancement(Identifier name, String title, String descript
     }
 
     public MekanismAdvancement {
-        title = Util.makeDescriptionId("advancements", name.withPath(title + ".title"));
-        description = Util.makeDescriptionId("advancements", name.withPath(description + ".description"));
+        title = name.toLanguageKey("advancements", "title");
+        description = name.toLanguageKey("advancements", "description");
     }
 
     public Component translateTitle() {
