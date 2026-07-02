@@ -1,5 +1,6 @@
 {
   "type": "mekanism:basic",
   "icon": "mekanism:mek_liquid/liquid",
+  "light_level": 2,
   "tint": "#ff1b9e7b"
 }

@@ -119,7 +119,6 @@ public record BasicChemical(Identifier icon, int tint, int colorRepresentation, 
         /// @param lightLevel A value between `[0, 15]` representing the light level emitted by the chemical. As chemicals cannot be placed into the world, examples of
         /// use cases are: emissivity in multiblocks, or light level from within a FramedBlock.
         public Builder lightLevel(@Range(from = 0, to = 15) int lightLevel) {
-            //TODO - 26.2: Define light levels for our various chemicals
             validateLightLevel(lightLevel);
             this.lightLevel = lightLevel;
             return this;

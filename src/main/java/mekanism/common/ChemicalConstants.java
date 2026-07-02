@@ -5,6 +5,7 @@ import mekanism.api.chemical.ChemicalIds;
 import mekanism.common.base.IChemicalConstant;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.CommonColors;
+import net.minecraft.world.level.Level;
 
 /// Contains various information about different chemicals.
 ///
@@ -23,11 +24,11 @@ public enum ChemicalConstants implements IChemicalConstant {
     ETHENE(ChemicalIds.ETHENE, 0xFFEACCF9, 0, 169.45F, 577),
     //Note: it is a solid at room temperature
     SODIUM(ChemicalIds.SODIUM, 0xFFE9FEF4, 0, 370.944F, 927),
-    SUPERHEATED_SODIUM(ChemicalIds.SUPERHEATED_SODIUM, 0xFFD19469, 0, 2_000.0F, 927),
+    SUPERHEATED_SODIUM(ChemicalIds.SUPERHEATED_SODIUM, 0xFFD19469, Level.MAX_BRIGHTNESS, 2_000.0F, 927),
     //Note: it is a solid at room temperature
     LITHIUM(ChemicalIds.LITHIUM, 0xFFEBA400, 0, 453.65F, 512),
     HYDROFLUORIC_ACID(ChemicalIds.HYDROFLUORIC_ACID, 0xFFC6C7BD, 0, 189.6F, 1_150),
-    URANIUM_OXIDE(ChemicalIds.URANIUM_OXIDE, 0xFFE1F573, 0, 3138.15F, 10_970),
+    URANIUM_OXIDE(ChemicalIds.URANIUM_OXIDE, 0xFFE1F573, Level.MAX_BRIGHTNESS, 3138.15F, 10_970),
     URANIUM_HEXAFLUORIDE(ChemicalIds.URANIUM_HEXAFLUORIDE, 0xFF809960, 0, 337.2F, 5_090);
 
     private final ResourceKey<Chemical> key;

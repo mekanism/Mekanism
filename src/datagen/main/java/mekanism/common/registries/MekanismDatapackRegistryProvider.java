@@ -46,7 +46,6 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.CommonColors;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -172,21 +171,21 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
               }
           })
           .add(MekanismRegistries.Keys.CHEMICAL, context -> {
-              context.register(ChemicalIds.EMPTY, BasicChemical.builder().tint(CommonColors.WHITE).build());
+              context.register(ChemicalIds.EMPTY, BasicChemical.builder().build());
               //Infuse Types
               context.register(ChemicalIds.BIO, BasicChemical.builder(Mekanism.rl("mek_chemical/infuse_type/bio")).tint(0xFF5A4630).build());
-              context.register(ChemicalIds.FUNGI, BasicChemical.builder(Mekanism.rl("mek_chemical/infuse_type/fungi")).tint(0xFF74656A).build());
+              context.register(ChemicalIds.FUNGI, BasicChemical.builder(Mekanism.rl("mek_chemical/infuse_type/fungi")).tint(0xFF74656A).lightLevel(1).build());
               context.register(ChemicalIds.TIN, BasicChemical.infuseType().tint(0xFFCCCCD9).build());
               context.register(ChemicalIds.GOLD, BasicChemical.infuseType().tint(0xFFF2CD67).build());
               context.register(ChemicalIds.REFINED_OBSIDIAN, BasicChemical.infuseType().tint(0xFF7C00ED).build());
-              context.register(ChemicalIds.DIAMOND, BasicChemical.infuseType().tint(0xFF6CEDD8).build());
-              context.register(ChemicalIds.REDSTONE, BasicChemical.infuseType().tint(0xFFB30505).build());
+              context.register(ChemicalIds.DIAMOND, BasicChemical.infuseType().tint(0xFF6CEDD8).lightLevel(4).build());
+              context.register(ChemicalIds.REDSTONE, BasicChemical.infuseType().tint(0xFFB30505).lightLevel(9).build());
               context.register(ChemicalIds.CARBON, BasicChemical.infuseType().tint(0xFF2C2C2C).build());
               //Chemicals
               for (ChemicalConstants constant : ChemicalConstants.values()) {
                   registerConstant(context, constant);
               }
-              Chemical steam = BasicChemical.builder(Mekanism.rl("mek_liquid/steam")).tint(CommonColors.WHITE).build();
+              Chemical steam = BasicChemical.builder(Mekanism.rl("mek_liquid/steam")).build();
               context.register(ChemicalIds.STEAM, steam);
               context.register(ChemicalIds.WATER_VAPOR, steam);
               context.register(ChemicalIds.BRINE, BasicChemical.builder().tint(0xFFFEEF9C).build());
@@ -195,9 +194,9 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
               context.register(ChemicalIds.FISSILE_FUEL, BasicChemical.builder().tint(0xFF2E332F).build());
               context.register(ChemicalIds.NUCLEAR_WASTE, BasicChemical.builder().tint(0xFF4F412A).build());
               context.register(ChemicalIds.SPENT_NUCLEAR_WASTE, BasicChemical.builder().tint(0xFF262015).build());
-              context.register(ChemicalIds.PLUTONIUM, BasicChemical.builder().tint(0xFF1F919C).build());
-              context.register(ChemicalIds.POLONIUM, BasicChemical.builder().tint(0xFF1B9E7B).build());
-              context.register(ChemicalIds.ANTIMATTER, BasicChemical.builder().tint(0xFFA464B3).build());
+              context.register(ChemicalIds.PLUTONIUM, BasicChemical.builder().tint(0xFF1F919C).lightLevel(2).build());
+              context.register(ChemicalIds.POLONIUM, BasicChemical.builder().tint(0xFF1B9E7B).lightLevel(2).build());
+              context.register(ChemicalIds.ANTIMATTER, BasicChemical.builder().tint(0xFFA464B3).lightLevel(11).build());
               //Pigments
               EnumColorCollection.zipApply(ChemicalIds.SIMPLE_PIGMENTS, EnumColorCollection.VALUES, (pigment, color) -> context.register(pigment, new EnumColorPigment(color)));
               //Slurries

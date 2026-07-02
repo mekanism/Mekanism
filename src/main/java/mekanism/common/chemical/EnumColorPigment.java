@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Range;
 public record EnumColorPigment(Identifier icon, EnumColor color, @Range(from = 0, to = 15) int lightLevel) implements Chemical {
 
     private static final Identifier PIGMENT_ICON = Mekanism.rl("mek_chemical/pigment/base");
-    //TODO - 26.2: Do we want pigments to be emissive by default?
     private static final int LIGHT_LEVEL = 0;
 
     public static final MapCodec<EnumColorPigment> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(

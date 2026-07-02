@@ -1,5 +1,6 @@
 {
   "type": "mekanism:basic",
   "icon": "mekanism:mek_chemical/infuse_type/base",
+  "light_level": 4,
   "tint": "#ff6cedd8"
 }
