@@ -808,15 +808,8 @@ tasks.withType(Javadoc).configureEach({
     ]
 })
 
-//TODO - 26.2: Handle the fact that gradle 9.1 deprecated the archives keyword here
-artifacts {
-    archives apiJar
-    archives jar
-    archives additionsJar
-    archives generatorsJar
-    archives toolsJar
-    archives allJar
-    archives sourcesJar
+tasks.named('assemble') {
+    dependsOn(apiJar, jar, additionsJar, generatorsJar, toolsJar, allJar, sourcesJar)
 }
 
 tasks.register('generatePackageInfos', GeneratePackageInfos) {
