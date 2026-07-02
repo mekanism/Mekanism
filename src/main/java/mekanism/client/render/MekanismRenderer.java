@@ -25,7 +25,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.block.FluidStateModelSet;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelManager;
@@ -111,14 +110,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getChemicalTexture(Holder<Chemical> chemical) {
-        return getSprite(chemical.value().icon());
-    }
-
-    public static TextureAtlasSprite getSprite(Identifier spriteLocation) {
-        if (spriteLocation == null) { // e.g. badly implemented fluids
-            spriteLocation = MissingTextureAtlasSprite.getLocation();
-        }
-        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(spriteLocation);
+        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(chemical.value().icon());
     }
 
     //Color

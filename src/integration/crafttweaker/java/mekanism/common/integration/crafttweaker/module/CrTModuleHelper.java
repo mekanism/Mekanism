@@ -88,7 +88,7 @@ public class CrTModuleHelper {
         return IModuleHelper.INSTANCE.getAllTypes(stack);
     }
 
-    //TODO - 26.2: Re-evaluate this, and if we can get CrT to just add native support for holders
+    //TODO - CrT: Re-evaluate this, and if we can get CrT to just add native support for holders
     private static Holder<ModuleData<?>> asHolder(ModuleData<?> data) {
         return MekanismRegistries.MODULES.wrapAsHolder(data);
     }

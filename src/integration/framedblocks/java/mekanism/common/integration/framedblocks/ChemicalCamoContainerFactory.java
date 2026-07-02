@@ -29,7 +29,7 @@ import org.jspecify.annotations.Nullable;
 final class ChemicalCamoContainerFactory extends ResourceCamoContainerFactory<ChemicalResource, ChemicalCamoContent, ChemicalCamoContainer> {
 
     private static final TagKey<Item> CRAFTING_BLOCKED_CONTAINERS = Utils.itemTag("crafting_blocked_chemical_containers");
-    private static final MapCodec<ChemicalCamoContainer> MAP_CODEC = ChemicalResource.CODEC.xmap(
+    private static final MapCodec<ChemicalCamoContainer> MAP_CODEC = ChemicalResource.OPTIONAL_CODEC.xmap(
           ChemicalCamoContainer::new,
           ChemicalCamoContainer::getChemicalType
     ).fieldOf(SerializationConstants.CHEMICAL);
@@ -51,8 +51,7 @@ final class ChemicalCamoContainerFactory extends ResourceCamoContainerFactory<Ch
 
     @Override
     protected ChemicalCamoContainer readFromNetwork(ValueInput input) {
-        //TODO - 26.2: Re-evaluate this throwing
-        return input.read(SerializationConstants.CHEMICAL, CODEC).orElseThrow();
+        return input.read(SerializationConstants.CHEMICAL, CODEC).orElseGet(() -> new ChemicalCamoContainer(ChemicalResource.EMPTY));
     }
 
     @Override

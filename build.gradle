@@ -16,7 +16,7 @@ import java.util.function.Consumer
 
 plugins {
     id('org.ajoberstar.grgit.service')//Version declared in buildSrc
-    id('net.darkhax.curseforgegradle').version('1.3.32')
+    id('net.darkhax.curseforgegradle').version('1.3.33')
     id('com.modrinth.minotaur').version('2.9.0')
     id('java')
     id('eclipse')
@@ -27,7 +27,7 @@ plugins {
 
 tasks.named('wrapper', Wrapper) {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '9.6.0'
+    gradleVersion = '9.6.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -604,11 +604,11 @@ dependencies {
         localRuntime(emi)
     } else {
         //We still need it to load in datagen regardless of if we are using emi or a different viewer so that we can access EMI related objects
-        //TODO - 26.2: Re-enable when it updates
+        //TODO: Re-enable when it updates
         //datagenMainRuntimeOnly(emi)
     }
 
-    //TODO - 26.2: Re-enable when it updates
+    //TODO: Re-enable when it updates
     //localRuntime("team.chisel.ctm:CTM:${major_minecraft_version}-${ctm_version}")
 
     integration_the_one_probeCompileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
@@ -619,9 +619,6 @@ dependencies {
     //integration_jadeCompileOnly("curse.maven:jade-api-324717:${jade_api_id}") - no longer on CF as such?
     //integration_jadeCompileOnly("curse.maven:jade-api-324717:${jade_id}")
     integration_jadeLocalRuntime("curse.maven:jade-324717:${jade_id}")
-    /// - Modrinth
-    //integration_jadeCompileOnly("maven.modrinth:jade:${jade_version_modrinth}") // - no sources, despite being uploaded as additional file
-    //integration_jadeLocalRuntime("maven.modrinth:jade:${jade_version_modrinth}")
     /// - Maven (gradle build with added publish block, upload)
     integration_jadeCompileOnly("snownee.jade:Jade:${jade_version}:api")
     //integration_jadeLocalRuntime("snownee.jade:Jade:${jade_version}")
@@ -648,23 +645,41 @@ dependencies {
     integration_framedblocksCompileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
 
     //Dependencies for data generators for mod compat reference
-    //TODO - 26.2: Switch back to datagenMainImplementation
-    datagenMainCompileOnly("org.appliedenergistics:appliedenergistics2:${ae2_version}")
+    def ae2 = "org.appliedenergistics:appliedenergistics2:${ae2_version}"
+    if (enable_ae2.toBoolean()) {
+        datagenMainImplementation(ae2)
+    } else {
+        datagenMainCompileOnly(ae2)
+    }
 
-    //datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${glitchcore_version}")//Biomes o plenty
-    //datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${terrablender_version}")//Biomes o plenty and Biomes we've gone
-    //TODO - 26.2: Switch back to datagenMainImplementation (and enable the two above lines)
-    datagenMainCompileOnly("com.github.glitchfiend:BiomesOPlenty-neoforge:${biomesoplenty_version}")
+    if (enable_biomes_o_plenty.toBoolean() || enable_biomes_weve_gone.toBoolean()) {
+        datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${terrablender_version}")
+    }
+    def bop = ("com.github.glitchfiend:BiomesOPlenty-neoforge:${biomesoplenty_version}")
+    if (enable_biomes_o_plenty.toBoolean()) {
+        datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${glitchcore_version}")
+        datagenMainImplementation(bop)
+    } else {
+        datagenMainCompileOnly(bop)
+    }
 
-    //datagenMainRuntimeOnly("curse.maven:corgilib-693313:${corgilib_id}")//Biomes we've gone
-    //datagenMainRuntimeOnly("curse.maven:geckolib-388172:${geckolib_id}")//Biomes we've gone
-    //datagenMainRuntimeOnly("curse.maven:oh-the-trees-youll-grow-962544:${ohthetreesyoullgrow_id}")//Biomes we've gone
-    //TODO - 26.2 change back to datagenMainImplementation
-    datagenMainCompileOnly("curse.maven:oh-the-biomes-weve-gone-1070751:${biomeswevegone_id}")
+    def bwg = "curse.maven:oh-the-biomes-weve-gone-1070751:${biomeswevegone_id}"
+    if (enable_biomes_weve_gone.toBoolean()) {
+        datagenMainRuntimeOnly("curse.maven:corgilib-693313:${corgilib_id}")
+        datagenMainRuntimeOnly("curse.maven:geckolib-388172:${geckolib_id}")
+        datagenMainRuntimeOnly("curse.maven:oh-the-trees-youll-grow-962544:${ohthetreesyoullgrow_id}")
+        datagenMainImplementation(bwg)
+    } else {
+        datagenMainCompileOnly(bwg)
+    }
 
-    //TODO - 26.2: Switch this back to datagenMainImplementation
-    datagenMainCompileOnly("curse.maven:farmers-delight-398521:${farmers_delight_id}")
-    //TODO - 26.2: Re-enable once this updates
+    def farmersDelight = "curse.maven:farmers-delight-398521:${farmers_delight_id}"
+    if (enable_farmers_delight.toBoolean()) {
+        datagenMainImplementation(farmersDelight)
+    } else {
+        datagenMainCompileOnly(farmersDelight)
+    }
+    //TODO: Re-enable once this updates
     //datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
 
     //Note: Even though yaml ops defines a FMLModType we have to pretend FML doesn't know how to handle it due to a lib yaml ops bundles not defining it
@@ -784,6 +799,7 @@ tasks.withType(JavaCompile).configureEach({
 })
 
 tasks.withType(Javadoc).configureEach({
+    options.addBooleanOption('-no-fonts', true)
     options.encoding = 'UTF-8'
     options.tags = [
             'apiNote:a:<em>API Note:</em>',
