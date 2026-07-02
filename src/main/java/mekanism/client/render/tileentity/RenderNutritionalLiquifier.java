@@ -106,15 +106,8 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             poseStack.translate(0.5, 0.5, 0.5);
             poseStack.mulPose(Axis.YP.rotationDegrees(state.bladeRotation));
             poseStack.translate(-0.5, -0.5, -0.5);
-            nodeCollector.submitBlockModel(
-                  poseStack,
-                  Sheets.cutoutBlockItemSheet(),
-                  MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getBakedModel(),
-                  BlockModelRenderState.EMPTY_TINTS,
-                  state.lightCoords,
-                  OverlayTexture.NO_OVERLAY,
-                  EntityRenderState.NO_OUTLINE
-            );
+            submitBreakableBlockModel(nodeCollector, poseStack, Sheets.cutoutBlockItemSheet(), MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getBakedModel(),
+                  BlockModelRenderState.EMPTY_TINTS, state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, state.breakProgress);
             poseStack.popPose();
         }
         //Render the item and particle

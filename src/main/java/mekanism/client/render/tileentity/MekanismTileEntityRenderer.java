@@ -1,12 +1,20 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.List;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jspecify.annotations.Nullable;
+
 //TODO - 26.2: Test all our renderers, and figure out if/how to get profiling per type working again
 public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity, STATE extends BlockEntityRenderState> implements BlockEntityRenderer<TILE, STATE> {
 
@@ -29,4 +37,11 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity, STATE
 
     protected abstract String getProfilerSection();
 
+    protected void submitBreakableBlockModel(SubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts, int[] tintLayers,
+          int lightCoords, int overlayCoords, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        nodeCollector.submitBlockModel(poseStack, renderType, parts, tintLayers, lightCoords, overlayCoords, outlineColor);
+        if (breakProgress != null) {
+            nodeCollector.submitBreakingBlockModel(poseStack, parts, breakProgress.progress());
+        }
+    }
 }

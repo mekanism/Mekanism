@@ -57,16 +57,8 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     public void submit(VibratorRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         poseStack.pushPose();
         poseStack.translate(0, 0.625 * state.piston, 0);
-        //TODO - 26.2: Test crumbling
-        nodeCollector.submitBlockModel(
-              poseStack,
-              Sheets.cutoutBlockItemSheet(),
-              MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel(),
-              BlockModelRenderState.EMPTY_TINTS,
-              state.lightCoords,
-              OverlayTexture.NO_OVERLAY,
-              EntityRenderState.NO_OUTLINE
-        );
+        submitBreakableBlockModel(nodeCollector, poseStack, Sheets.cutoutBlockItemSheet(), MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel(),
+              BlockModelRenderState.EMPTY_TINTS, state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, state.breakProgress);
         poseStack.popPose();
     }
 
