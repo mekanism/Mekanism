@@ -21,10 +21,10 @@ import mekanism.common.component.containers.type.ResourceContainerType;
 import mekanism.common.content.network.distribution.ResourceTransmitterSaveTarget;
 import mekanism.common.content.network.transmitter.BufferedResourceTransmitter;
 import mekanism.common.util.EmitUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -91,7 +91,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
                     containerType().clearContents(net.container, null);
                 }
             }
-            if (!Mth.equal(oldScale, currentScale)) {
+            if (MekanismUtils.scaleChanged(currentScale, oldScale)) {
                 //We want to make sure we update to the scale change
                 needsUpdate = true;
             }

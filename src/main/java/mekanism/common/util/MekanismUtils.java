@@ -254,8 +254,12 @@ public final class MekanismUtils {
 
     public static boolean scaleChanged(float scale, float prevScale) {
         if (Mth.equal(scale, prevScale)) {
+            //noinspection FloatingPointEquality - Identical, nothing to do/ignore the epsilon for
+            if (scale == prevScale) {
+                return false;
+            }
             //If we max out our scale bounds, force an update regardless
-            return scale != prevScale && scale == 0 || scale == 1 || prevScale == 1 || prevScale == 0;
+            return scale == 0 || scale == 1 || prevScale == 1 || prevScale == 0;
         }
         return true;
     }

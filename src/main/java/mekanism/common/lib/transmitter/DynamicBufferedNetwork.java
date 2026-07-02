@@ -10,9 +10,9 @@ import mekanism.api.IContentsListener;
 import mekanism.api.math.MathUtils;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.lib.math.Range3D;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -42,7 +42,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     public void onUpdate() {
         super.onUpdate();
         float scale = computeContentScale();
-        if (!Mth.equal(scale, currentScale)) {
+        if (MekanismUtils.scaleChanged(currentScale, scale)) {
             currentScale = scale;
             needsUpdate = true;
         }
