@@ -27,7 +27,7 @@ public record ColoredBlitRenderState(int x0, int y0, int x1, int y1, float u0, f
     }
 
     public ColoredBlitRenderState(GuiGraphicsExtractor graphics, Identifier texture, int x, int y, int uOffset, int vOffset, int width, int height,
-          int spriteHeight, int spriteWidth, int colorFrom, int colorTo, boolean vertical) {
+          int spriteWidth, int spriteHeight, int colorFrom, int colorTo, boolean vertical) {
         //Note: For some reason graphics.getSprite(SpriteId) crashes in JEI, so we just get the sprite the same way the extractor would
         TextureAtlasSprite sprite = graphics.guiSprites.getSprite(texture);
         float u0 = sprite.getU((float) uOffset / spriteWidth);
