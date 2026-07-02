@@ -150,6 +150,9 @@ import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.item.gear.ItemJetpack;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
+import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
@@ -170,6 +173,8 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -180,6 +185,7 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.PlayerModelType;
+import net.minecraft.world.item.Item;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -309,7 +315,37 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerRenderStateModifiers(RegisterRenderStateModifiersEvent event) {
         event.registerEntityModifier(new TypeToken<LivingEntityRenderer<? extends LivingEntity, LivingEntityRenderState, ?>>() {
-        }, (entity, renderState) -> renderState.setRenderData(MekaSuitArmor.UUID_CONTEXT, entity.getUUID()));
+        }, (entity, renderState) -> {
+            renderState.setRenderData(MekaSuitArmor.UUID_CONTEXT, entity.getUUID());
+            if (renderState instanceof HumanoidRenderState state && state.isFallFlying) {
+                renderState.setRenderData(MekaSuitArmor.DELTA_Y_CONTEXT, entity.getDeltaMovement().y);
+            }
+            if (renderState instanceof ArmorStandRenderState state) {
+                if (state.chestEquipment.getItem() instanceof ItemMekaSuitArmor) {
+                    state.showArms = false;
+                }
+            } else if (renderState instanceof AvatarRenderState state) {
+                if (state.headEquipment.getItem() instanceof ItemMekaSuitArmor) {
+                    state.showHat = false;
+                    state.showExtraEars = false;
+                }
+                Item chest = state.chestEquipment.getItem();
+                if (chest instanceof ItemMekaSuitArmor) {
+                    state.showCape = false;
+                    state.showJacket = false;
+                    state.showLeftSleeve = false;
+                    state.showRightSleeve = false;
+                } else if (chest instanceof ItemJetpack || chest instanceof ItemScubaTank) {
+                    //Hide the player's cape if they have a thick armor piece on that would clip with it
+                    //TODO - 26.2: Look into the translations that CapeLayer does if the chest equipment has the humanoid layer type
+                    state.showCape = false;
+                }
+                if (state.legsEquipment.getItem() instanceof ItemMekaSuitArmor) {
+                    state.showLeftPants = false;
+                    state.showRightPants = false;
+                }
+            }
+        });
     }
 
     @SubscribeEvent

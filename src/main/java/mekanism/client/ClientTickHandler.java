@@ -22,9 +22,7 @@ import mekanism.common.base.KeySync;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
-import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
-import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.item.interfaces.IModeItem;
@@ -44,8 +42,6 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.object.armorstand.ArmorStandModel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleTypes;
@@ -55,7 +51,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FogType;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -343,51 +338,29 @@ public class ClientTickHandler {
         }
     }
 
-    //TODO - 26.2: Do we need to even be calling this anymore in post? As we are adjusting the state now rather than just the model
+    //TODO - 26.2: Re-evaluate how necessary this still is. Some of what was done here previously is now done via ClientRegistration#registerRenderStateModifiers
     private static void setModelVisibility(HumanoidRenderState state, HumanoidModel<?> entityModel, boolean showModel) {
         if (state.headEquipment.getItem() instanceof ItemMekaSuitArmor) {
             entityModel.head.visible = showModel;
             entityModel.hat.visible = showModel;
-            if (state instanceof AvatarRenderState playerState) {
-                //TODO - 26.2: Figure this out?
-                playerState.showExtraEars = showModel;
-            }
         }
         if (state.chestEquipment.getItem() instanceof ItemMekaSuitArmor) {
             entityModel.body.visible = showModel;
-            if (!(state instanceof ArmorStandRenderState)) {
-                //Don't adjust arms for armor stands as the model will end up changing them anyway, and then we may incorrectly activate them
-                //TODO - 26.2: Is this still true? I am guessing we might be able to just disable them for the armor stand
-                entityModel.leftArm.visible = showModel;
-                entityModel.rightArm.visible = showModel;
-            }
-            if (state instanceof AvatarRenderState playerState) {
-                playerState.showCape = showModel;
-                playerState.showJacket = showModel;
-                playerState.showLeftSleeve = showModel;
-                playerState.showRightSleeve = showModel;
-            } else if (entityModel instanceof ArmorStandModel armorStandModel) {
+            if (entityModel instanceof ArmorStandModel armorStandModel) {
                 armorStandModel.rightBodyStick.visible = showModel;
                 armorStandModel.leftBodyStick.visible = showModel;
                 armorStandModel.shoulderStick.visible = showModel;
+            } else {
+                //Don't adjust arms for armor stands here the model will end up changing them anyway, and then we may incorrectly activate them,
+                // and we disable them explicitly via the modifying of the render state
+                entityModel.leftArm.visible = showModel;
+                entityModel.rightArm.visible = showModel;
             }
-        } else if (itemHidesCape(state.chestEquipment.getItem()) && state instanceof AvatarRenderState playerState) {
-            //Hide the player's cape if they have an HDPE elytra as it will be part of the elytra's layer and shouldn't be rendered
-            //TODO - 26.2: I think the cape layer now actually has something that we might be able to integrate with that sort of checks if there is a wings layer present
-            playerState.showCape = false;
         }
         if (state.legsEquipment.getItem() instanceof ItemMekaSuitArmor) {
             entityModel.leftLeg.visible = showModel;
             entityModel.rightLeg.visible = showModel;
-            if (state instanceof AvatarRenderState playerState) {
-                playerState.showLeftPants = showModel;
-                playerState.showRightPants = showModel;
-            }
         }
-    }
-
-    private static boolean itemHidesCape(Item item) {
-        return item instanceof ItemJetpack || item instanceof ItemScubaTank;
     }
 
     private record TeleportData(InteractionHand hand, FrequencyIdentity identity, long teleportTime) {

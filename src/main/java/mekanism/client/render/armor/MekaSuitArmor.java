@@ -90,6 +90,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     private static final BoltEffect RIGHT_GRAV_BOLT = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vector3f(0.025F, 0.35F, 0.37F),
           new Vector3f(0.025F, 0.15F, 0.37F), 10).size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
     public static final ContextKey<UUID> UUID_CONTEXT = new ContextKey<>(Mekanism.rl("uuid"));
+    public static final ContextKey<Double> DELTA_Y_CONTEXT = new ContextKey<>(Mekanism.rl("delta_y"));
 
     private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(-1, 0.5F, 0));
 
@@ -300,15 +301,16 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             if (state.isFallFlying && state.xRot < 45) {
                 float scale = 0;
                 // then we check if the entity is not pointing steeply into the sky
+                double deltaY = state.getRenderDataOrDefault(DELTA_Y_CONTEXT, 0D);
                 // if it isn't or if the entity has a lot of movement
-                if (state.xRot > -45 /* TODO - 26.2 || entity.getDeltaMovement().y > 1*/) {
+                if (state.xRot > -45 || deltaY > 1) {
                     // then we fully expand the wings
                     scale = 1;
-                } /* TODO - 26.2 else if (entity.getDeltaMovement().y > 0) {
+                } else if (deltaY > 0) {
                     // otherwise, if the entity is pointing steeply into the sky, and we have a small amount
                     // of movement (y movement between zero and one) then we partially expand the wings
-                    scale = (float) entity.getDeltaMovement().y;
-                }*/
+                    scale = (float) deltaY;
+                }
                 // if we don't have any upwards momentum, and we are pointing steeply into the sky then we just fold the wings
                 x = EXPANDED_WING_X * scale;
                 y = EXPANDED_WING_Y * scale;
@@ -316,19 +318,22 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                 yRot = EXPANDED_WING_Y_ROT * scale;
                 zRot = EXPANDED_WING_Z_ROT * scale;
             }
-            //TODO - 26.2: I think we should actually be updating the rotations in entity.elytraAnimationState rather than in the state?
+            //TODO - 26.2: I think we should actually be updating the rotations in entity.elytraAnimationState rather than in the state? Maybe we can do it in the update render state method?
+            // Also is there a reason to only be doing this for players?
             if (state instanceof AvatarRenderState playerState) {
                 //If the entity is a player, then transition the wings gradually to their target position
                 ElytraAnimationState elytraAnimationState;
                 //TODO - 26.2: What is the difference between playerState.flyingYRot and state.elytraRotY?
                 state.elytraRotX = 0;
-                yRot = state.elytraRotY = state.elytraRotY + (yRot - state.elytraRotY) * 0.01F;
+                state.elytraRotY = state.elytraRotY + (yRot - state.elytraRotY) * 0.01F;
                 //Base off of target values
                 float scale = state.elytraRotY / EXPANDED_WING_Y_ROT;
+                state.elytraRotZ = EXPANDED_WING_Z_ROT * scale;
                 x = EXPANDED_WING_X * scale;
                 y = EXPANDED_WING_Y * scale;
                 z = EXPANDED_WING_Z * scale;
-                zRot = state.elytraRotZ = EXPANDED_WING_Z_ROT * scale;
+                yRot = state.elytraRotY;
+                zRot = state.elytraRotZ;
             }
             if (this == RIGHT_WING) {
                 //Invert things that need to be inverted for the right wing to mirror it properly
