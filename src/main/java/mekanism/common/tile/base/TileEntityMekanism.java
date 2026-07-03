@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -15,7 +16,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -27,6 +27,8 @@ import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
@@ -107,7 +109,12 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
@@ -118,6 +125,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.Nameable;
@@ -603,7 +611,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         tile.frequencyComponent.tickServer(level, pos);
         if (tile.supportsUpgrades()) {
-            Objects.requireNonNull(tile.upgradeComponent).tickServer(null);
+            Objects.requireNonNull(tile.upgradeComponent).tickServer(level.registryAccess(), null);
         }
         if (tile.hasChunkloader) {
             ((IChunkLoader) tile).getChunkLoader().tickServer();
@@ -720,8 +728,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.read(input);
         }
-        if (supportsUpgrades()) {
-            recalculateUpgrades(Upgrade.SPEED);//force buffer to update
+        TileComponentUpgrade component = getComponent();
+        if (component != null) {
+            HolderLookup.Provider lookup = input.lookup();
+            Reference<Upgrade> upgrade = lookup.getOrThrow(UpgradeIds.SPEED);
+            //TODO - 26.2: Why do we force a buffer update? Theoretically reading the tile components should already have caused the upgrades to be recalculated
+            //force buffer to update
+            recalculateUpgrades(lookup, upgrade, getUpgrades(upgrade));
         }
         readSustainedData(input);
         for (IContainerType<?, ?> type : ContainerType.TYPES) {
@@ -796,10 +809,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.applyImplicitComponents(input);
         }
-        if (supportsUpgrades()) {
-            //Recalculate upgrades before setting types so that we don't clamp the stored energy
-            for (Upgrade upgrade : getSupportedUpgrade()) {
-                recalculateUpgrades(upgrade);
+        //Recalculate upgrades before setting types so that we don't clamp the stored energy
+        TagKey<Upgrade> supportedUpgrade = getSupportedUpgrade();
+        if (supportedUpgrade != null && level != null) {//The level should theoretically always be present here
+            RegistryAccess registryAccess = level.registryAccess();
+            Optional<Named<Upgrade>> tag = registryAccess.get(supportedUpgrade);
+            if (tag.isPresent()) {
+                for (Holder<Upgrade> upgrade : tag.get()) {
+                    recalculateUpgrades(registryAccess, upgrade, getUpgrades(upgrade));
+                }
             }
         }
 
@@ -1135,12 +1153,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End methods IComparatorSupport
 
     //Methods for implementing ITileUpgradable
+    @Nullable
     @Override
-    public Set<Upgrade> getSupportedUpgrade() {
+    public TagKey<Upgrade> getSupportedUpgrade() {
         if (supportsUpgrades()) {
             return Attribute.getOrThrow(getBlockHolder(), AttributeUpgradeSupport.class).supportedUpgrades();
         }
-        return Collections.emptySet();
+        return null;
     }
 
     @Nullable
@@ -1150,16 +1169,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        if (upgrade == Upgrade.SPEED) {
+    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
+        if (upgrade.is(UpgradeIds.SPEED)) {
             if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
-                machineEnergy.updateEnergyPerTick();
-                machineEnergy.updateMaxEnergy();
+                machineEnergy.updateEnergyPerTick(registries);
+                machineEnergy.updateMaxEnergy(registries);
             }
-        } else if (upgrade == Upgrade.ENERGY) {
+        } else if (upgrade.is(UpgradeIds.ENERGY)) {
             if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
-                machineEnergy.updateEnergyPerTick();
-                machineEnergy.updateMaxEnergy();
+                machineEnergy.updateEnergyPerTick(registries);
+                machineEnergy.updateMaxEnergy(registries);
             }
         }
     }
@@ -1391,8 +1410,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
             // If this machine isn't fully muffled, and we don't seem to be playing a sound for it, go ahead and
             // play it
-            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundManager().isActive(activeSound))) {
-                activeSound = SoundHandler.startTileSound(lastSoundEvent, getSoundCategory(), getInitialVolume(), level.getRandom(), getSoundPos());
+            if (!isFullyMuffled(level.registryAccess()) && (activeSound == null || !Minecraft.getInstance().getSoundManager().isActive(activeSound))) {
+                activeSound = SoundHandler.startTileSound(lastSoundEvent, getSoundCategory(), getInitialVolume(), level, getSoundPos());
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
             // we don't want to try again
@@ -1404,9 +1423,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    protected boolean isFullyMuffled() {
-        if (hasSound() && supportsUpgrade(Upgrade.MUFFLING)) {
-            return getUpgrades(Upgrade.MUFFLING) >= Upgrade.MUFFLING.getMax();
+    protected boolean isFullyMuffled(HolderGetter.Provider provider) {
+        if (hasSound()) {
+            Reference<Upgrade> mufflingUpgrade = provider.getOrThrow(UpgradeIds.MUFFLING);
+            if (supportsUpgrade(mufflingUpgrade)) {
+                return getUpgrades(mufflingUpgrade) >= mufflingUpgrade.value().max();
+            }
         }
         return false;
     }
@@ -1422,7 +1444,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return "";
     }
 
-    protected Level validateLevel() throws ComputerException {
+    public Level validateLevel() throws ComputerException {
         if (level == null) {
             throw new ComputerException("Tile's level is not set, how did you get here?");
         }

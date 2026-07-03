@@ -15,7 +15,11 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
     protected RecipeCategory category = RecipeCategory.MISC;
 
     protected BaseRecipeBuilder(Holder<Item> result, int count) {
-        this.result = new ItemStackTemplate(result, count);
+        this(new ItemStackTemplate(result, count));
+    }
+
+    protected BaseRecipeBuilder(ItemStackTemplate result) {
+        this.result = result;
     }
 
     @SuppressWarnings("unchecked")

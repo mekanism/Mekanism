@@ -1,7 +1,7 @@
 package mekanism.client.integration.emi;
 
 import java.util.concurrent.CompletableFuture;
-import mekanism.api.Upgrade;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
@@ -46,9 +46,7 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
         addTieredRecipes("energy_cube/");
         addTieredRecipes("fluid_tank/");
         addTieredRecipes("tier_installer/");
-        for (Upgrade upgrade : EnumUtils.UPGRADES) {
-            addRecipe("upgrade/" + upgrade.getSerializedName());
-        }
+        lookupProvider.lookupOrThrow(MekanismRegistries.Keys.UPGRADES).listElementIds().forEach(id -> addRecipe(id.identifier().withPrefix("upgrade/")));
         //Note: We intentionally skip basic circuits as they are considered a "base" material
         addRecipe("control_circuit/" + BaseTier.ADVANCED.getLowerName());
         addRecipe("control_circuit/" + BaseTier.ELITE.getLowerName());

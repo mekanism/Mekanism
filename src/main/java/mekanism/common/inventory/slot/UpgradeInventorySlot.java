@@ -1,30 +1,28 @@
 package mekanism.common.inventory.slot;
 
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.BiPredicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.Upgrade;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.common.component.UpgradeType;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
-import mekanism.common.item.interfaces.IUpgradeItem;
+import mekanism.common.registries.MekanismDataComponents;
+import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 public class UpgradeInventorySlot extends BasicInventorySlot {
 
-    public static UpgradeInventorySlot input(@Nullable IContentsListener listener, Set<Upgrade> supportedTypes) {
+    public static UpgradeInventorySlot input(@Nullable IContentsListener listener, TagKey<Upgrade> supportedTypes) {
         Objects.requireNonNull(supportedTypes, "Supported types cannot be null");
         return new UpgradeInventorySlot(ConstantPredicates.notExternal(), (itemType, _) -> {
-            if (itemType.getItem() instanceof IUpgradeItem upgradeItem) {
-                Upgrade upgradeType = upgradeItem.getUpgradeType();
-                return supportedTypes.contains(upgradeType);
-            }
-            return false;
+            UpgradeType upgradeType = itemType.get(MekanismDataComponents.UPGRADE_TYPE);
+            return upgradeType != null && upgradeType.is(supportedTypes);
         }, listener);
     }
 
@@ -33,7 +31,7 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
     }
 
     private UpgradeInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert, @Nullable IContentsListener listener) {
-        super(canExtract, canInsert, itemType -> itemType.getItem() instanceof IUpgradeItem, null, null, listener, 0, 0);
+        super(canExtract, canInsert, itemType -> itemType.has(MekanismDataComponents.UPGRADE_TYPE), null, null, listener, 0, 0);
         setSlotOverlay(SlotOverlay.UPGRADE);
     }
 

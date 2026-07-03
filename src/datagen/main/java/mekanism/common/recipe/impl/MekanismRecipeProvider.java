@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
@@ -141,7 +142,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               new ThermalEvaporationRecipeProvider(this.items, this.fluids, this.chemicals),
               new TierInstallerRecipeProvider(this.items, this.fluids, this.chemicals),
               new TransmitterRecipeProvider(this.items, this.fluids, this.chemicals),
-              new UpgradeRecipeProvider(this.items, this.fluids, this.chemicals)
+              new UpgradeRecipeProvider(this.items, this.fluids, this.chemicals, this.registries.lookupOrThrow(MekanismRegistries.Keys.UPGRADES))
         );
     }
 

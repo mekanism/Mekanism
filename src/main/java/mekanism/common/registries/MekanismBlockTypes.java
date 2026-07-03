@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.Objects;
 import java.util.function.Supplier;
-import mekanism.api.Upgrade;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.tier.ITier;
@@ -48,6 +47,7 @@ import mekanism.common.content.blocktype.Machine.MachineBuilder;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ChemicalTankTier;
@@ -330,7 +330,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.DIGITAL_MINER, MekanismLang.DESCRIPTION_DIGITAL_MINER)
           .withGui(() -> MekanismContainerTypes.DIGITAL_MINER)
           .withEnergyUsage(MekanismConfig.usage.digitalMiner)
-          .withSupportedUpgrades(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR, Upgrade.STONE_GENERATOR)
+          .with(new AttributeUpgradeSupport(MekanismTags.Upgrades.DIGITAL_MINER))
           .withCustomShape(BlockShapes.DIGITAL_MINER)
           .with(AttributeCustomSelectionBox.JSON)
           .withBounding(new HandleBoundingBlock() {
@@ -360,7 +360,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR, MekanismLang.DESCRIPTION_FORMULAIC_ASSEMBLICATOR)
           .withGui(() -> MekanismContainerTypes.FORMULAIC_ASSEMBLICATOR)
           .withEnergyUsage(MekanismConfig.usage.formulaicAssemblicator)
-          .with(AttributeUpgradeSupport.SPEED_ENERGY)
+          .with(AttributeUpgradeSupport.SIMPLE_MACHINE_UPGRADES)
           .withSideConfig(TransmissionType.ITEM, TransmissionType.ENERGY)
           .withComputerSupport("formulaicAssemblicator")
           .build();
@@ -369,7 +369,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.ELECTRIC_PUMP, MekanismLang.DESCRIPTION_ELECTRIC_PUMP)
           .withGui(() -> MekanismContainerTypes.ELECTRIC_PUMP)
           .withEnergyUsage(MekanismConfig.usage.electricPump)
-          .withSupportedUpgrades(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.FILTER)
+          .with(new AttributeUpgradeSupport(MekanismTags.Upgrades.ELECTRIC_PUMP))
           .withCustomShape(BlockShapes.ELECTRIC_PUMP)
           .withComputerSupport("electricPump")
           .replace(Attributes.ACTIVE)
@@ -379,7 +379,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.FLUIDIC_PLENISHER, MekanismLang.DESCRIPTION_FLUIDIC_PLENISHER)
           .withGui(() -> MekanismContainerTypes.FLUIDIC_PLENISHER)
           .withEnergyUsage(MekanismConfig.usage.fluidicPlenisher)
-          .with(AttributeUpgradeSupport.SPEED_ENERGY)
+          .with(AttributeUpgradeSupport.SIMPLE_MACHINE_UPGRADES)
           .withCustomShape(BlockShapes.FLUIDIC_PLENISHER)
           .withComputerSupport("fluidicPlenisher")
           .replace(Attributes.ACTIVE)
@@ -630,7 +630,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.DIMENSIONAL_STABILIZER)
           .without(AttributeStateFacing.class, AttributeParticleFX.class)
           .withEnergyUsage(MekanismConfig.usage.dimensionalStabilizer)
-          .with(AttributeUpgradeSupport.ENERGY_ONLY)
+          .with(new AttributeUpgradeSupport(MekanismTags.Upgrades.DIMENSIONAL_STABILIZER))
           .withComputerSupport("dimensionalStabilizer")
           .build();
 
@@ -656,7 +656,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.QIO_IMPORTER)
           .withCustomShape(BlockShapes.QIO_IMPORTER)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY, Attributes.REDSTONE, Attributes.ACTIVE)
-          .with(AttributeUpgradeSupport.SPEED_ONLY)
+          .with(AttributeUpgradeSupport.QIO_FILTER_HANDLER)
           .withComputerSupport("qioImporter")
           .build();
     // QIO Exporter
@@ -665,7 +665,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.QIO_EXPORTER)
           .withCustomShape(BlockShapes.QIO_EXPORTER)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY, Attributes.REDSTONE, Attributes.ACTIVE, Attributes.INVENTORY)
-          .with(AttributeUpgradeSupport.SPEED_ONLY)
+          .with(AttributeUpgradeSupport.QIO_FILTER_HANDLER)
           .withComputerSupport("qioExporter")
           .build();
     // QIO Redstone Adapter

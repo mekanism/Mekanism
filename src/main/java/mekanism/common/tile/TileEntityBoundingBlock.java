@@ -1,7 +1,7 @@
 package mekanism.common.tile;
 
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
@@ -12,6 +12,8 @@ import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.level.Level;
@@ -118,10 +120,10 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgradeType) {
+    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgradeType, int totalInstalled) {
         IBoundingBlock main = getMain();
         if (main != null && main.supportsUpgrades()) {
-            main.recalculateUpgrades(upgradeType);
+            main.recalculateUpgrades(registries, upgradeType, totalInstalled);
         }
     }
 

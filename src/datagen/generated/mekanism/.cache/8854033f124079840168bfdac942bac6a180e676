@@ -1,4 +1,4 @@
-// 26.2	2026-06-21T20:45:56.1953136	Model Definitions - mekanism
+// 26.2	2026-07-03T16:50:45.2418672	Model Definitions - mekanism
 2e09b81571bcad7a3e925d2b03b1ec1dd0f9b71f assets/mekanism/blockstates/advanced_energy_cube.json
 00c0d0e76b525301d8b7a1adc5dcb5d3807c4d38 assets/mekanism/blockstates/advanced_logistical_transporter.json
 84712d3beb4b5acb6a471b330f3bfa9dcf4de4fa assets/mekanism/blockstates/advanced_mechanical_pipe.json
@@ -437,13 +437,7 @@ ad7bb7b614225c3791e69767d0fb9859122323a4 assets/mekanism/items/ultimate_sawing_f
 1befcd1e155773440e0d9e567df2abf9678d7f87 assets/mekanism/items/ultimate_thermodynamic_conductor.json
 056e03a73b9c5b8bae3e76b40c7da015dd84d841 assets/mekanism/items/ultimate_tier_installer.json
 e6944c589cbd1030c64d248e7da9f9ad38552e59 assets/mekanism/items/ultimate_universal_cable.json
-0cf23b8c54c59216e07688d2c8181db709c05a84 assets/mekanism/items/upgrade_anchor.json
-9d561cddfabe024dcfd1a19fd9db367a2ed512be assets/mekanism/items/upgrade_chemical.json
-9676eca0d90b324315797da79dc8f2ac9a853619 assets/mekanism/items/upgrade_energy.json
-77e9d6e20f0eb25d5419068a2c5728b6916ce7a0 assets/mekanism/items/upgrade_filter.json
-8ce9281909f1334cba151be161844009544f986f assets/mekanism/items/upgrade_muffling.json
-d92824be2c4abe0d17dc8a1284ace7f4b8eccb72 assets/mekanism/items/upgrade_speed.json
-236268ab76ae6e2921ce3d4f50ea080e967cad5c assets/mekanism/items/upgrade_stone_generator.json
+08abbb5200eb5607087f1fb86d12e84e214e7049 assets/mekanism/items/upgrade.json
 9854e83dbce813b45eb81cbc25334e728a8034b3 assets/mekanism/items/uranium_hexafluoride_bucket.json
 e2a082a118887e44aec106e27a23918f70a864d1 assets/mekanism/items/uranium_ore.json
 18fded85443724b36fd55893208a13977e881d0a assets/mekanism/items/uranium_oxide_bucket.json

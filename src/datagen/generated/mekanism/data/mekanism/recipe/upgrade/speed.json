@@ -11,6 +11,9 @@
     " G "
   ],
   "result": {
-    "id": "mekanism:upgrade_speed"
+    "components": {
+      "mekanism:upgrade_type": "mekanism:speed"
+    },
+    "id": "mekanism:upgrade"
   }
 }

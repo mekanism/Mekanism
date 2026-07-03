@@ -157,6 +157,8 @@ public final class SerializationConstants {
     public static final String DISABLED = "disabled";
     /// @since 10.8.0
     public static final String DISPLAY = "display";
+    /// @since 10.8.0
+    public static final String DISPLAY_NAME = "display_name";
     public static final String DISTANCE = "distance";
     public static final String DRIVES = "drives";
     public static final String DUMP_LEFT = "dump_left";

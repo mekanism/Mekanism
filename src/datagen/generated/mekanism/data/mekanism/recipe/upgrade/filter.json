@@ -11,6 +11,9 @@
     " G "
   ],
   "result": {
-    "id": "mekanism:upgrade_filter"
+    "components": {
+      "mekanism:upgrade_type": "mekanism:filter"
+    },
+    "id": "mekanism:upgrade"
   }
 }

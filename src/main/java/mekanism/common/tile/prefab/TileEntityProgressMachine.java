@@ -2,9 +2,10 @@ package mekanism.common.tile.prefab;
 
 import java.util.List;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -12,6 +13,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -67,12 +69,12 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        if (upgrade == Upgrade.SPEED) {
-            ticksRequired = MekanismUtils.getTicks(this, baseTicksRequired);
-            operationsPerTick = MekanismUtils.getOperationsPerTick(this, baseTicksRequired, 1);
+    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
+        if (upgrade.is(UpgradeIds.SPEED)) {
+            ticksRequired = MekanismUtils.getTicks(baseTicksRequired, upgrade, totalInstalled);
+            operationsPerTick = MekanismUtils.getOperationsPerTick(baseTicksRequired, 1, upgrade, totalInstalled);
         }
-        super.recalculateUpgrades(upgrade);
+        super.recalculateUpgrades(registries, upgrade, totalInstalled);
     }
 
     public int getOperationsPerTick() {
@@ -80,7 +82,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
     }
 
     @Override
-    public List<Component> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(Holder<Upgrade> upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 

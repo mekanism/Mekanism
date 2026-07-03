@@ -24,10 +24,11 @@ import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IMekanismResourceHandler;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.block.BlockBounding;
@@ -78,7 +79,9 @@ import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentGetter;
@@ -629,7 +632,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
         //Then source from the upgrade if it is installed
         if (replaceTarget == Items.COBBLESTONE || replaceTarget == Items.STONE) {
-            if (getUpgrades(Upgrade.STONE_GENERATOR) > 0) {
+            if (getUpgrades(level.registryAccess(), UpgradeIds.STONE_GENERATOR) > 0) {
                 return new ItemStack(replaceTarget);
             }
         }
@@ -729,7 +732,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingPos();
             int diameter = getDiameter();
-            searcher.setChunkCache(new MinerRegionCache(level, startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter), getUpgrades(Upgrade.ANCHOR) > 0));
+            searcher.setChunkCache(new MinerRegionCache(level, startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter), getUpgrades(level.registryAccess(), UpgradeIds.ANCHOR) > 0));
             searcher.start();
         }
         running = true;
@@ -1037,15 +1040,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED) {
-            delayLength = MekanismUtils.getTicks(this, MekanismConfig.general.minerTicksPerMine.get());
+    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(registries, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED)) {
+            delayLength = MekanismUtils.getTicks(MekanismConfig.general.minerTicksPerMine.get(), upgrade, totalInstalled);
         }
     }
 
     @Override
-    public List<Component> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(Holder<Upgrade> upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 

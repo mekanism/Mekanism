@@ -18,8 +18,10 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.util.MekCodecs;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,7 +59,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     }
 
     public static String getHumanType(Class<?> clazz, Class<?>[] extraTypes) {
-        if (clazz == UUID.class || clazz == Identifier.class || clazz == Item.class || clazz.isEnum()) {
+        if (clazz == UUID.class || clazz == Identifier.class || clazz == ResourceKey.class || clazz == Item.class || clazz.isEnum() || Holder.class.isAssignableFrom(clazz)) {
             return "String (" + clazz.getSimpleName() + ")";
         }
         if (Frequency.class.isAssignableFrom(clazz) || clazz == GlobalPos.class || Vec3i.class.isAssignableFrom(clazz) || clazz == FluidStack.class ||

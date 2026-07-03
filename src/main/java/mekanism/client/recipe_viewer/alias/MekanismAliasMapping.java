@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.content.blocktype.FactoryType;
@@ -16,6 +17,8 @@ import mekanism.common.resource.IResource;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.UpgradeUtils;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
@@ -366,13 +369,13 @@ public final class MekanismAliasMapping implements IAliasMapping {
     }
 
     private <ITEM, FLUID, CHEMICAL> void addUpgradeAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
-        rv.addItemAliases(MekanismItems.SPEED_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.UPGRADE_OVERCLOCK);
-        rv.addItemAliases(MekanismItems.ENERGY_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.ENERGY_STORAGE);
-        rv.addItemAliases(MekanismItems.FILTER_UPGRADE, MekanismAliases.UPGRADE_AUGMENT);
-        rv.addItemAliases(MekanismItems.MUFFLING_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.UPGRADE_MUFFLER);
-        rv.addItemAliases(MekanismItems.CHEMICAL_UPGRADE, MekanismAliases.UPGRADE_AUGMENT);
-        rv.addItemAliases(MekanismItems.ANCHOR_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.CHUNK_LOADER);
-        rv.addItemAliases(MekanismItems.STONE_GENERATOR_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.UPGRADE_HOLE_FILLER);
+        Provider registries = rv.registries();
+        rv.addItemAliases(MekanismItems.UPGRADE, MekanismAliases.UPGRADE_AUGMENT);
+        rv.addAliases(UpgradeUtils.getStack(registries.getOrThrow(UpgradeIds.SPEED)), MekanismAliases.UPGRADE_OVERCLOCK);
+        rv.addAliases(UpgradeUtils.getStack(registries.getOrThrow(UpgradeIds.ENERGY)), MekanismAliases.ENERGY_STORAGE);
+        rv.addAliases(UpgradeUtils.getStack(registries.getOrThrow(UpgradeIds.MUFFLING)), MekanismAliases.UPGRADE_MUFFLER);
+        rv.addAliases(UpgradeUtils.getStack(registries.getOrThrow(UpgradeIds.ANCHOR)), MekanismAliases.CHUNK_LOADER);
+        rv.addAliases(UpgradeUtils.getStack(registries.getOrThrow(UpgradeIds.STONE_GENERATOR)), MekanismAliases.UPGRADE_HOLE_FILLER);
         rv.addItemHolderAliases(List.of(
               MekanismItems.BASIC_TIER_INSTALLER,
               MekanismItems.ADVANCED_TIER_INSTALLER,

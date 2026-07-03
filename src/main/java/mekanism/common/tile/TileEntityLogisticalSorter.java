@@ -183,8 +183,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     protected void onUpdateClient(Level level) {
         super.onUpdateClient(level);
         if (MekanismConfig.client.enableMachineSounds.get() && getActive() && soundEvent != null && level.getGameTime() >= nextSound) {
-            if (!isFullyMuffled()) {
-                SoundHandler.startTileSound(soundEvent.get(), getSoundCategory(), getInitialVolume(), level.getRandom(), getSoundPos(), false);
+            if (!isFullyMuffled(level.registryAccess())) {
+                SoundHandler.startTileSound(soundEvent.get(), getSoundCategory(), getInitialVolume(), level, getSoundPos(), false);
             }
             nextSound = level.getGameTime() + (long) SharedConstants.TICKS_PER_SECOND * level.getRandom().nextInt(5, 15);
         }

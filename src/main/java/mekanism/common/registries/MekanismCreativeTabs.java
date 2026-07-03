@@ -123,11 +123,9 @@ public class MekanismCreativeTabs {
                   MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.MEKA_TOOL, MekanismItems.SCUBA_MASK, MekanismItems.SCUBA_TANK, MekanismItems.FREE_RUNNERS,
                   MekanismItems.ARMORED_FREE_RUNNERS, MekanismItems.JETPACK, MekanismItems.ARMORED_JETPACK, MekanismItems.HDPE_REINFORCED_ELYTRA,
                   MekanismItems.HAZMAT_MASK, MekanismItems.HAZMAT_GOWN, MekanismItems.HAZMAT_PANTS, MekanismItems.HAZMAT_BOOTS, MekanismBlocks.CARDBOARD_BOX.getItemHolder(),
+                  MekanismItems.UPGRADE,
                   //Installers
-                  MekanismItems.BASIC_TIER_INSTALLER, MekanismItems.ADVANCED_TIER_INSTALLER, MekanismItems.ELITE_TIER_INSTALLER, MekanismItems.ULTIMATE_TIER_INSTALLER,
-                  //Upgrades
-                  MekanismItems.SPEED_UPGRADE, MekanismItems.ENERGY_UPGRADE, MekanismItems.FILTER_UPGRADE, MekanismItems.MUFFLING_UPGRADE, MekanismItems.CHEMICAL_UPGRADE,
-                  MekanismItems.ANCHOR_UPGRADE, MekanismItems.STONE_GENERATOR_UPGRADE
+                  MekanismItems.BASIC_TIER_INSTALLER, MekanismItems.ADVANCED_TIER_INSTALLER, MekanismItems.ELITE_TIER_INSTALLER, MekanismItems.ULTIMATE_TIER_INSTALLER
             );
             //Tanks
             CreativeTabDeferredRegister.addToDisplay(event,

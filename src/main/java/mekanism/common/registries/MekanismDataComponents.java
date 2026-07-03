@@ -17,6 +17,7 @@ import mekanism.common.component.LockData;
 import mekanism.common.component.OverflowAware;
 import mekanism.common.component.PasteBucketConsumption;
 import mekanism.common.component.StabilizedChunks;
+import mekanism.common.component.UpgradeType;
 import mekanism.common.component.component.AttachedEjector;
 import mekanism.common.component.component.AttachedSideConfig;
 import mekanism.common.component.component.UpgradeAware;
@@ -125,6 +126,12 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<RedstoneOutput>> REDSTONE_OUTPUT = DATA_COMPONENTS.simple("redstone_output",
           builder -> builder.persistent(RedstoneOutput.CODEC)
                 .networkSynchronized(RedstoneOutput.STREAM_CODEC)
+    );
+
+    //TODO - 26.2: Do we need to expose this component to the api?
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<UpgradeType>> UPGRADE_TYPE = DATA_COMPONENTS.simple("upgrade_type",
+          builder -> builder.persistent(UpgradeType.CODEC)
+                .networkSynchronized(UpgradeType.STREAM_CODEC)
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> DEFAULT_MANUALLY_SELECTED = DATA_COMPONENTS.registerBoolean("default_manually_selected");

@@ -1,18 +1,21 @@
 package mekanism.common.tile.interfaces;
 
 import java.util.List;
-import java.util.Set;
-import mekanism.api.Upgrade;
-import mekanism.api.Upgrade.IUpgradeInfoHandler;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.util.UpgradeUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
+import org.jspecify.annotations.Nullable;
 
-public interface ITileUpgradable extends IUpgradeTile, IUpgradeInfoHandler {
+public interface ITileUpgradable extends IUpgradeTile {
 
-    Set<Upgrade> getSupportedUpgrade();
+    @Nullable
+    TagKey<Upgrade> getSupportedUpgrade();
 
-    @Override
-    default List<Component> getInfo(Upgrade upgrade) {
-        return upgrade == Upgrade.SPEED ? UpgradeUtils.getExpScaledInfo(this, upgrade) : UpgradeUtils.getMultScaledInfo(this, upgrade);
+    default List<Component> getInfo(Holder<Upgrade> upgrade) {
+        //TODO - 26.2: Can this be offloaded to the upgrade
+        return upgrade.is(UpgradeIds.SPEED) ? UpgradeUtils.getExpScaledInfo(this, upgrade) : UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 }

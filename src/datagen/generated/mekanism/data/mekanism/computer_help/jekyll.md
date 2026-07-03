@@ -339,14 +339,6 @@ enums:
   - BACK
   - TOP
   - BOTTOM
-  mekanism.api.Upgrade:
-  - SPEED
-  - ENERGY
-  - FILTER
-  - CHEMICAL
-  - MUFFLING
-  - ANCHOR
-  - STONE_GENERATOR
   mekanism.api.security.SecurityMode:
   - PUBLIC
   - PRIVATE
@@ -3208,16 +3200,16 @@ methods:
   - methodName: getInstalledUpgrades
     returns:
       java_extra:
-      - mekanism.api.Upgrade
+      - net.minecraft.core.Holder
       - java.lang.Integer
       java_type: java.util.Map
-      type: Table (String (Upgrade) => Number (int))
+      type: Table (String (Holder) => Number (int))
   - methodName: getSupportedUpgrades
     returns:
       java_extra:
-      - mekanism.api.Upgrade
-      java_type: java.util.Set
-      type: List (String (Upgrade))
+      - net.minecraft.core.Holder
+      java_type: java.util.List
+      type: List (String (Holder))
   Metallurgic Infuser:
   - methodName: dumpInfuseType
     requires_public_security: true

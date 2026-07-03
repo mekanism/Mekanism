@@ -39,6 +39,7 @@ import mekanism.common.inventory.container.sync.SyncableRegistryEntry;
 import mekanism.common.inventory.container.sync.SyncableResource;
 import mekanism.common.inventory.container.sync.SyncableShort;
 import mekanism.common.inventory.container.sync.list.SyncableCollection;
+import mekanism.common.inventory.container.sync.map.SyncableMap;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.container.PacketUpdateContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
@@ -146,7 +147,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     public List<ISyncableData> startTracking(Object key, ISpecificContainerTracker tracker) {
-        List<ISyncableData> list = tracker.getSpecificSyncableData();
+        List<ISyncableData> list = tracker.getSpecificSyncableData(getLevel());
         for (ISyncableData data : list) {
             track(data);
         }
@@ -567,6 +568,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
             case SyncableByteArray syncable -> syncable.set(value);
             case SyncableFrequency<?> syncable -> syncable.set(getLevel().registryAccess(), value);
             case SyncableCollection<?, ?> syncable -> syncable.set(getLevel().registryAccess(), value);
+            case SyncableMap<?, ?, ?> syncable -> syncable.set(getLevel().registryAccess(), value);
             case null, default -> Mekanism.logger.error("Unknown byte value type: {}, please report", data == null ? null : data.getClass().getName());
         }
     }
@@ -620,8 +622,9 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
     //End container sync management
 
+    @FunctionalInterface
     public interface ISpecificContainerTracker {
 
-        List<ISyncableData> getSpecificSyncableData();
+        List<ISyncableData> getSpecificSyncableData(Level level);
     }
 }

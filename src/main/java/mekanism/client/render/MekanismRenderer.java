@@ -13,6 +13,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
+import mekanism.client.model.item.UpgradeItemModel;
 import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.tileentity.RenderPigmentMixer;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;

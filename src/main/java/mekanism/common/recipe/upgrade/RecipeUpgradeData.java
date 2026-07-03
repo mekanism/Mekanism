@@ -1,12 +1,12 @@
 package mekanism.common.recipe.upgrade;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.Upgrade;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
@@ -27,6 +27,7 @@ import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItem
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -133,7 +134,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case UPGRADE -> {
                 UpgradeAware upgradeAware = itemType.get(MekanismDataComponents.UPGRADES);
                 if (upgradeAware != null) {
-                    Map<Upgrade, Integer> upgrades = upgradeAware.upgrades();
+                    Object2IntMap<Holder<Upgrade>> upgrades = upgradeAware.upgrades();
                     List<LargeResourceStack<ItemResource>> slots = upgradeAware.slotContents();
                     if (!upgrades.isEmpty() || slots.stream().anyMatch(slot -> !slot.isEmpty())) {
                         yield new UpgradesRecipeData(upgrades, slots);

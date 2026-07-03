@@ -14,7 +14,10 @@ import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.api.robit.AdvancementBasedRobitSkin;
 import mekanism.api.robit.BasicRobitSkin;
 import mekanism.api.robit.RobitSkin;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.EnumColorCollection;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.ChemicalConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.chemical.EnumColorPigment;
@@ -206,6 +209,15 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                   context.register(slurryId.clean(), BasicChemical.cleanSlurry().tint(tint).build());
                   context.register(slurryId.dirty(), BasicChemical.dirtySlurry().tint(tint).build());
               }
+          })
+          .add(MekanismRegistries.Keys.UPGRADES, context -> {
+              context.register(UpgradeIds.ANCHOR, Upgrade.create(UpgradeIds.ANCHOR, EnumColor.DARK_GREEN));
+              context.register(UpgradeIds.CHEMICAL, Upgrade.create(UpgradeIds.CHEMICAL, EnumColor.YELLOW, 8));
+              context.register(UpgradeIds.ENERGY, Upgrade.create(UpgradeIds.ENERGY, EnumColor.BRIGHT_GREEN, 8));
+              context.register(UpgradeIds.FILTER, Upgrade.create(UpgradeIds.FILTER, EnumColor.DARK_AQUA));
+              context.register(UpgradeIds.MUFFLING, Upgrade.create(UpgradeIds.MUFFLING, EnumColor.INDIGO));
+              context.register(UpgradeIds.SPEED, Upgrade.create(UpgradeIds.SPEED, EnumColor.RED, 8));
+              context.register(UpgradeIds.STONE_GENERATOR, Upgrade.create(UpgradeIds.STONE_GENERATOR, EnumColor.ORANGE));
           })
           ;
 

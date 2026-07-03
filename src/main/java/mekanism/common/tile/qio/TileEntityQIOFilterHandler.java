@@ -1,7 +1,8 @@
 package mekanism.common.tile.qio;
 
 import java.util.Collection;
-import mekanism.api.Upgrade;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.integration.computer.ComputerException;
@@ -10,6 +11,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -33,14 +35,13 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED) {
-            int speedUpgrades = getUpgrades(Upgrade.SPEED);
+    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(registries, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED)) {
             // 64 to 320 items
-            maxTransitCount = 64 + 32 * speedUpgrades;
+            maxTransitCount = 64 + 32 * totalInstalled;
             // 1 to 5 types
-            maxTransitTypes = Math.round(1F + speedUpgrades / 2F);
+            maxTransitTypes = Math.round(1F + totalInstalled / 2F);
         }
     }
 

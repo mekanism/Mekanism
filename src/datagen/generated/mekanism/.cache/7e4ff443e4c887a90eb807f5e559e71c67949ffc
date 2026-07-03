@@ -1,4 +1,4 @@
-// 26.2	2026-07-02T09:57:56.8263107	Datapack registries: mekanism
+// 26.2	2026-07-03T16:50:45.2358679	Datapack registries: mekanism
 52821c8942920c69142705aae7c0b11038d53cdd data/mekanism/damage_type/flamethrower.json
 3569c860b35530ba451e7442db81f25f1491a9c9 data/mekanism/damage_type/laser.json
 3d56d26f6e58ced8680ed0cde116e2b4f3850aef data/mekanism/damage_type/radiation.json
@@ -81,6 +81,13 @@ a120117c2e52ef2078c50e69a1907ec277c61934 data/mekanism/mekanism/robit_skin/pan.j
 6db289e40f4c9cedfe86a72926b00ad8706bd986 data/mekanism/mekanism/robit_skin/pride.json
 35389c6c93776b88f9bce85a24c3fa3248b8cf42 data/mekanism/mekanism/robit_skin/robit.json
 21638cf606efe01420641470ef10c65606ab0a93 data/mekanism/mekanism/robit_skin/trans.json
+a94a08ff13820df9c76268caf96dce7a5c1f28d6 data/mekanism/mekanism/upgrade/anchor.json
+b9b2b2a501acc2e44ee8601136ca33b63894ccbb data/mekanism/mekanism/upgrade/chemical.json
+ed3276fdfddd740fec727d8e7ce1ed46f37cd6cb data/mekanism/mekanism/upgrade/energy.json
+4504e377ca08807c70cd239ff3359aefb3f4e77b data/mekanism/mekanism/upgrade/filter.json
+5c3ca7eb06697d57601bec644956a289df2c363a data/mekanism/mekanism/upgrade/muffling.json
+69e45f8ef7e994f410895e5b8b12f8731dd4bc5c data/mekanism/mekanism/upgrade/speed.json
+08ec00560448021ec962a3df3c2e6912865ebf9e data/mekanism/mekanism/upgrade/stone_generator.json
 4b5486b95ec20bf30a7181d57b88a7fe001d61b6 data/mekanism/neoforge/biome_modifier/fluorite.json
 03f4b3f12d317f18c3b6306766836593d91d0ca0 data/mekanism/neoforge/biome_modifier/lead.json
 6fda868e072a610b8a24cce473fe23e10deee556 data/mekanism/neoforge/biome_modifier/osmium.json

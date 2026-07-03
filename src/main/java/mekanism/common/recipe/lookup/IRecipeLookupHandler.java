@@ -6,6 +6,7 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
@@ -50,13 +51,15 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?>> extends 
 
     /// Called when the cached recipe changes at a given index before processing the new cached recipe.
     ///
+    /// @param registries   Registry lookup.
     /// @param cachedRecipe New cached recipe, or null if there is none due to the caches being invalidated.
     /// @param cacheIndex   The "recipe index" for which cache to interact with.
-    default void onCachedRecipeChanged(@Nullable CachedRecipe<RECIPE> cachedRecipe, int cacheIndex) {
+    default void onCachedRecipeChanged(HolderLookup.Provider registries, @Nullable CachedRecipe<RECIPE> cachedRecipe, int cacheIndex) {
         clearRecipeErrors(cacheIndex);
     }
 
-    /// Called by [#onCachedRecipeChanged(CachedRecipe, int)] when the list of cached errors should be reset due to the recipe not being valid any more.
+    /// Called by [#onCachedRecipeChanged(HolderLookup.Provider, CachedRecipe, int)] when the list of cached errors should be reset due to the recipe not being valid
+    /// anymore.
     ///
     /// @param cacheIndex The "recipe index" for which cache to interact with.
     default void clearRecipeErrors(int cacheIndex) {

@@ -1,16 +1,19 @@
 package mekanism.common.item.block;
 
-import java.util.Map.Entry;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.function.Consumer;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.Upgrade;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
@@ -25,6 +28,7 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.security.SecurityObject;
 import mekanism.common.component.IComponentAware;
 import mekanism.common.component.component.UpgradeAware;
+import mekanism.common.component.component.UpgradeAware.UpgradeAmount;
 import mekanism.common.component.containers.creator.IContainerCreator;
 import mekanism.common.component.containers.energy.ComponentBackedEnergyContainer;
 import mekanism.common.component.containers.energy.EnergyContainerBuilder;
@@ -38,6 +42,7 @@ import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextUtils;
 import mekanism.common.util.text.UpgradeDisplay;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -102,8 +107,9 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
             UpgradeAware upgradeAware = itemAccess.getResource().get(MekanismDataComponents.UPGRADES);
             if (upgradeAware != null) {
-                for (Entry<Upgrade, Integer> entry : upgradeAware.upgrades().entrySet()) {
-                    tooltipAdder.accept(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
+                for (ObjectIterator<Object2IntMap.Entry<Holder<Upgrade>>> iterator = Object2IntMaps.fastIterator(upgradeAware.upgrades()); iterator.hasNext(); ) {
+                    Object2IntMap.Entry<Holder<Upgrade>> entry = iterator.next();
+                    tooltipAdder.accept(UpgradeDisplay.of(entry.getKey().value(), entry.getIntValue()).getTextComponent());
                 }
             }
         }
@@ -158,7 +164,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         BLOCK block = getBlock();
         AttributeEnergy attributeEnergy = Attribute.getOrThrow(block, AttributeEnergy.class);
         LongSupplier maxEnergy = attributeEnergy::getStorage;
-        if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
+        if (Attribute.has(block, AttributeUpgradeSupport.class)) {
             return EnergyContainerBuilder.creator(attachedAccess -> {
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
                 LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedAccess, maxEnergy);
@@ -183,8 +189,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         if (Attribute.has(getBlock(), AttributeEnergy.class)) {
             //Only expose the capability the required configs are loaded and the item wants to
             IEventBus energyEventBus = exposesEnergyCap() ? eventBus : null;
-            ContainerType.ENERGY.addDefaultCreators(energyEventBus, this, this::getDefaultEnergyContainer,
-                  MekanismConfig.storage, MekanismConfig.usage);
+            ContainerType.ENERGY.addDefaultCreators(energyEventBus, this, this::getDefaultEnergyContainer, MekanismConfig.storage, MekanismConfig.usage);
         }
     }
 
@@ -194,13 +199,13 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         // for how much energy a machine can store changes
         private final LongSupplier baseStorage;
         private final ItemAccess attachedAccess;
-        private int lastInstalled;
+        private UpgradeAmount lastInstalled;
         private long value;
 
         private UpgradeBasedUnsignedLongCache(ItemAccess attachedAccess, LongSupplier baseStorage) {
             this.attachedAccess = attachedAccess;
             UpgradeAware upgradeAware = this.attachedAccess.getResource().getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
-            this.lastInstalled = upgradeAware.getUpgradeCount(Upgrade.ENERGY);
+            this.lastInstalled = upgradeAware.getUpgradeCount(UpgradeIds.ENERGY);
             this.baseStorage = baseStorage;
             this.value = MekanismUtils.getMaxEnergy(this.lastInstalled, this.baseStorage.getAsLong());
         }
@@ -208,8 +213,8 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         @Override
         public long getAsLong() {
             UpgradeAware upgradeAware = attachedAccess.getResource().getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
-            int installed = upgradeAware.getUpgradeCount(Upgrade.ENERGY);
-            if (installed != lastInstalled) {
+            UpgradeAmount installed = upgradeAware.getUpgradeCount(UpgradeIds.ENERGY);
+            if (!installed.equals(lastInstalled)) {
                 lastInstalled = installed;
                 value = MekanismUtils.getMaxEnergy(this.lastInstalled, baseStorage.getAsLong());
             }

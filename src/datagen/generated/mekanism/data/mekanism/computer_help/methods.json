@@ -4578,9 +4578,9 @@
     {
       "methodName": "getInstalledUpgrades",
       "returns": {
-        "type": "Table (String (Upgrade) => Number (int))",
+        "type": "Table (String (Holder) => Number (int))",
         "java_extra": [
-          "mekanism.api.Upgrade",
+          "net.minecraft.core.Holder",
           "java.lang.Integer"
         ],
         "java_type": "java.util.Map"
@@ -4589,11 +4589,11 @@
     {
       "methodName": "getSupportedUpgrades",
       "returns": {
-        "type": "List (String (Upgrade))",
+        "type": "List (String (Holder))",
         "java_extra": [
-          "mekanism.api.Upgrade"
+          "net.minecraft.core.Holder"
         ],
-        "java_type": "java.util.Set"
+        "java_type": "java.util.List"
       }
     }
   ],

@@ -43,6 +43,7 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -344,7 +345,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public List<ISyncableData> getSpecificSyncableData() {
+    public List<ISyncableData> getSpecificSyncableData(Level level) {
         List<ISyncableData> list = new ArrayList<>();
         for (TransmissionType transmission : getTransmissions()) {
             ConfigInfo info = configInfo.get(transmission);

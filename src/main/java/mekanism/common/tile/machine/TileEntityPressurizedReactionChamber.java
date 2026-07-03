@@ -2,12 +2,11 @@ package mekanism.common.tile.machine;
 
 import java.util.List;
 import mekanism.api.IContentsListener;
-import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
@@ -21,6 +20,8 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.ReactionRecipeInput;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.PRCEnergyContainer;
@@ -48,6 +49,8 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -164,8 +167,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     }
 
     @Override
-    public void onCachedRecipeChanged(@Nullable CachedRecipe<PressurizedReactionRecipe> cachedRecipe, int cacheIndex) {
-        super.onCachedRecipeChanged(cachedRecipe, cacheIndex);
+    public void onCachedRecipeChanged(HolderLookup.Provider registries, @Nullable CachedRecipe<PressurizedReactionRecipe> cachedRecipe, int cacheIndex) {
+        super.onCachedRecipeChanged(registries, cachedRecipe, cacheIndex);
         int recipeDuration;
         if (cachedRecipe == null) {
             recipeDuration = BASE_DURATION;
@@ -178,18 +181,19 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         boolean update = baseTicksRequired != recipeDuration;
         baseTicksRequired = recipeDuration;
         if (update) {
-            recalculateUpgrades(Upgrade.SPEED);
+            Reference<Upgrade> speedUpgrade = registries.getOrThrow(UpgradeIds.SPEED);
+            recalculateUpgrades(registries, speedUpgrade, getUpgrades(speedUpgrade));
         }
         //Ensure we take our recipe's energy per tick into account
-        energyContainer.updateEnergyPerTick();
-        energyContainer.updateMaxEnergy();
+        energyContainer.updateEnergyPerTick(registries);
+        energyContainer.updateMaxEnergy(registries);
     }
 
     @Override
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
-        recipeCacheLookupMonitor.updateAndProcess();
+        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
         return sendUpdatePacket;
     }
 

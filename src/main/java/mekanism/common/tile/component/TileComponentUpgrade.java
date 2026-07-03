@@ -1,30 +1,45 @@
 package mekanism.common.tile.component;
 
+import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
+import mekanism.common.component.UpgradeType;
 import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.map.SyncableUpgradeMap;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
-import mekanism.common.item.interfaces.IUpgradeItem;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -37,21 +52,28 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     /// How long it takes this machine to install an upgrade.
     private static final int UPGRADE_TICKS_REQUIRED = SharedConstants.TICKS_PER_SECOND;
-    /// How many upgrade ticks have progressed.
-    private int upgradeTicks;
+    //TODO - 26.2: Validate there are no cases where a zero value is stored in an upgrade map as our positive int will error for that
+    //TODO - 26.2: Make sure this is lenient so if there are invalid amounts or unknown upgrades then it skips them. Maybe just LenientUnboundedMapCodec ?
+    private static final Codec<Object2IntMap<Holder<Upgrade>>> UPGRADE_MAP_CODEC = Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.POSITIVE_INT).xmap(
+          Object2IntOpenHashMap::new,
+          Function.identity()
+    );
+
     /// TileEntity implementing this component.
     private final TileEntityMekanism tile;
-    @SyntheticComputerMethod(getter = "getInstalledUpgrades")
-    private final Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
-    private final Set<Upgrade> supported;
+    private final TagKey<Upgrade> supported;
     /// The inventory slot the upgrade slot of this component occupies.
     private final UpgradeInventorySlot upgradeSlot;
     private final UpgradeInventorySlot upgradeOutputSlot;
+
+    private Object2IntMap<Holder<Upgrade>> upgrades = new Object2IntOpenHashMap<>();
+    /// How many upgrade ticks have progressed.
+    private int upgradeTicks;
     private boolean canCheckUpgrades = true;
 
     public TileComponentUpgrade(TileEntityMekanism tile) {
         this.tile = tile;
-        supported = this.tile.getSupportedUpgrade();
+        supported = Objects.requireNonNull(this.tile.getSupportedUpgrade(), "Tile supports upgrades, but isn't returning a supported upgrade tag?");
         upgradeSlot = UpgradeInventorySlot.input(() -> {
             this.tile.onContentsChanged();
             canCheckUpgrades = true;
@@ -60,14 +82,15 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         this.tile.addComponent(this);
     }
 
-    public void tickServer(@Nullable TransactionContext transaction) {
+    public void tickServer(HolderLookup.Provider registries, @Nullable TransactionContext transaction) {
         if (canCheckUpgrades) {
             ItemResource itemType = upgradeSlot.resource();
-            if (!itemType.isEmpty() && itemType.getItem() instanceof IUpgradeItem upgradeItem) {
-                Upgrade type = upgradeItem.getUpgradeType();
-                if (supports(type)) {
+            if (!itemType.isEmpty()) {
+                UpgradeType upgradeType = itemType.get(MekanismDataComponents.UPGRADE_TYPE);
+                if (upgradeType != null && upgradeType.is(supported)) {
+                    Holder<Upgrade> type = upgradeType.type();
                     int upgrades = getUpgrades(type);
-                    if (upgrades < type.getMax()) {
+                    if (upgrades < type.value().max()) {
                         if (upgradeTicks < UPGRADE_TICKS_REQUIRED) {
                             upgradeTicks++;
                             return;
@@ -79,7 +102,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
                                     if (extracted > 0) {//Note: This will always be <= toAdd
                                         //If we added any upgrades (even if it was less than the amount we expected to be able to add)
                                         // increment how many upgrades added, and commit the transaction to actually consume them from the slot
-                                        setUpgrades(type, upgrades + extracted);
+                                        setUpgrades(registries, type, upgrades + extracted);
                                         subTransaction.commit();
                                     }
                                 }
@@ -106,7 +129,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         return upgradeTicks / (float) UPGRADE_TICKS_REQUIRED;
     }
 
-    public int getUpgrades(Upgrade upgrade) {
+    public int getUpgrades(Holder<Upgrade> upgrade) {
         return upgrades.getOrDefault(upgrade, 0);
     }
 
@@ -118,11 +141,11 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     /// @return Actual number of upgrades installed.
     ///
     /// @apiNote Call from the server
-    public int addUpgrades(Upgrade upgrade, int maxAvailable) {
+    public int addUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int maxAvailable) {
         int installed = getUpgrades(upgrade);
         int toAdd = getUpgradesToAdd(upgrade, installed, maxAvailable);
         if (toAdd > 0) {
-            setUpgrades(upgrade, installed + toAdd);
+            setUpgrades(registries, upgrade, installed + toAdd);
             //Note: We don't need to check if we can add upgrades if we get added to by interacting with the block
             // as if we couldn't add from the slot then we already caught it, otherwise it was likely a different type
             return toAdd;
@@ -130,38 +153,41 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         return 0;
     }
 
-    private void setUpgrades(Upgrade upgrade, int upgrades) {
+    private void setUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int upgrades) {
         this.upgrades.put(upgrade, upgrades);
-        tile.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.MUFFLING) {
+        tile.recalculateUpgrades(registries, upgrade, upgrades);
+        if (upgrade.is(UpgradeIds.MUFFLING)) {
             //Send an update packet to the client to update the number of muffling upgrades installed
             tile.sendUpdatePacket();
         }
         tile.markForSave();
     }
 
-    private int getUpgradesToAdd(Upgrade upgrade, int installed, int maxAvailable) {
-        if (installed < upgrade.getMax()) {
-            return Math.min(upgrade.getMax() - installed, maxAvailable);
+    private int getUpgradesToAdd(Holder<Upgrade> upgrade, int installed, int maxAvailable) {
+        int max = upgrade.value().max();
+        if (installed < max) {
+            return Math.min(max - installed, maxAvailable);
         }
         return 0;
     }
 
-    public void removeUpgrade(Upgrade upgrade, boolean removeAll) {
+    public void removeUpgrade(HolderLookup.Provider registries, Holder<Upgrade> upgrade, boolean removeAll) {
         int installed = getUpgrades(upgrade);
         if (installed > 0) {
             try (Transaction transaction = Transaction.openRoot()) {
                 int removed = upgradeOutputSlot.insert(UpgradeUtils.getResource(upgrade), removeAll ? installed : 1, transaction, AutomationType.INTERNAL);
                 if (removed > 0) {
                     //We can fit at least one in the output slot
-                    transaction.commit();
                     //Actually remove them and put them in the output slot
+                    transaction.commit();
                     if (installed == removed) {
-                        upgrades.remove(upgrade);
+                        upgrades.removeInt(upgrade);
+                        tile.recalculateUpgrades(registries, upgrade, 0);
                     } else {
-                        upgrades.put(upgrade, installed - removed);
+                        int totalInstalled = installed - removed;
+                        upgrades.put(upgrade, totalInstalled);
+                        tile.recalculateUpgrades(registries, upgrade, totalInstalled);
                     }
-                    tile.recalculateUpgrades(upgrade);
                     //If we have some upgrades in the input slot, mark that we should check if they can be transferred
                     canCheckUpgrades = !upgradeSlot.isEmpty();
                 }
@@ -169,16 +195,15 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         }
     }
 
-    public boolean supports(Upgrade upgrade) {
-        return supported.contains(upgrade);
+    public boolean supports(Holder<Upgrade> upgrade) {
+        return upgrade.is(getSupportedTypes());
     }
 
-    public Set<Upgrade> getInstalledTypes() {
+    public Set<Holder<Upgrade>> getInstalledTypes() {
         return upgrades.keySet();
     }
 
-    @ComputerMethod(nameOverride = "getSupportedUpgrades")
-    public Set<Upgrade> getSupportedTypes() {
+    public TagKey<Upgrade> getSupportedTypes() {
         return supported;
     }
 
@@ -205,15 +230,21 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     @Override
     public void collectImplicitComponents(DataComponentMap.Builder builder) {
         //Note: UpgradeAware will copy the stacks
-        builder.set(MekanismDataComponents.UPGRADES, new UpgradeAware(new EnumMap<>(upgrades), upgradeSlot.asStack(), upgradeOutputSlot.asStack()));
+        builder.set(MekanismDataComponents.UPGRADES, new UpgradeAware(new Object2IntOpenHashMap<>(upgrades), upgradeSlot.asStack(), upgradeOutputSlot.asStack()));
     }
 
     @Override
     public void deserialize(ValueInput upgradeInput) {
-        upgrades.clear();
-        upgrades.putAll(Upgrade.buildMap(upgradeInput));
-        for (Upgrade upgrade : getSupportedTypes()) {
-            tile.recalculateUpgrades(upgrade);
+        Optional<Object2IntMap<Holder<Upgrade>>> storedUpgrades = upgradeInput.read(SerializationConstants.UPGRADES, UPGRADE_MAP_CODEC);
+        if (storedUpgrades.isPresent()) {
+            upgrades = storedUpgrades.get();
+        } else if (!upgrades.isEmpty()) {
+            upgrades.clear();
+        }
+        HolderLookup.Provider lookup = upgradeInput.lookup();
+        for (ObjectIterator<Entry<Holder<Upgrade>>> iterator = Object2IntMaps.fastIterator(upgrades); iterator.hasNext(); ) {
+            Object2IntMap.Entry<Holder<Upgrade>> entry = iterator.next();
+            tile.recalculateUpgrades(lookup, entry.getKey(), entry.getIntValue());
         }
         //Load the inventory
         ContainerType.ITEM.readFrom(upgradeInput, getSlots());
@@ -222,7 +253,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     @Override
     public void serialize(ValueOutput upgradeOutput) {
         if (!upgrades.isEmpty()) {
-            Upgrade.saveMap(upgrades, upgradeOutput);
+            upgradeOutput.store(SerializationConstants.UPGRADES, UPGRADE_MAP_CODEC, upgrades);
         }
         //Save the inventory
         ContainerType.ITEM.saveTo(upgradeOutput, getSlots());
@@ -231,41 +262,45 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     @Override
     public void addToUpdateTag(ValueOutput output) {
         //Note: We only bother to sync how many muffling upgrades we have installed as that is the only thing the client cares about
-        if (supports(Upgrade.MUFFLING)) {
-            output.putInt(SerializationConstants.MUFFLING_COUNT, upgrades.getOrDefault(Upgrade.MUFFLING, 0));
+        for (ObjectIterator<Entry<Holder<Upgrade>>> iterator = Object2IntMaps.fastIterator(upgrades); iterator.hasNext(); ) {
+            Object2IntMap.Entry<Holder<Upgrade>> entry = iterator.next();
+            if (entry.getKey().is(UpgradeIds.MUFFLING)) {
+                output.putInt(SerializationConstants.MUFFLING_COUNT, entry.getIntValue());
+            }
         }
     }
 
     @Override
     public void readFromUpdateTag(ValueInput input) {
-        if (supports(Upgrade.MUFFLING)) {
-            input.getInt(SerializationConstants.MUFFLING_COUNT).ifPresent(amount -> {
-                if (amount == 0) {
-                    upgrades.remove(Upgrade.MUFFLING);
+        Level level = tile.getLevel();
+        if (level != null) {//Should never realistically be null here
+            Holder.Reference<Upgrade> mufflingUpgrade = level.registryAccess().getOrThrow(UpgradeIds.MUFFLING);
+            if (supports(mufflingUpgrade)) {
+                int mufflingCount = input.getIntOr(SerializationConstants.MUFFLING_COUNT, 0);
+                if (mufflingCount == 0) {
+                    upgrades.removeInt(mufflingUpgrade);
                 } else {
-                    upgrades.put(Upgrade.MUFFLING, amount);
+                    upgrades.put(mufflingUpgrade, mufflingCount);
                 }
-            });
+            }
         }
     }
 
     @Override
-    public List<ISyncableData> getSpecificSyncableData() {
+    public List<ISyncableData> getSpecificSyncableData(Level level) {
         List<ISyncableData> list = new ArrayList<>();
         list.add(SyncableInt.create(() -> upgradeTicks, value -> upgradeTicks = value));
-        //We want to make sure the client and server have the upgrades in the same order,
-        // so we just do it based on their ordinal
-        for (Upgrade upgrade : EnumUtils.UPGRADES) {
-            if (supports(upgrade)) {
-                list.add(SyncableInt.create(() -> getUpgrades(upgrade), value -> {
-                    if (value == 0) {
-                        upgrades.remove(upgrade);
-                    } else if (value > 0) {
-                        upgrades.put(upgrade, value);
-                    }
-                }));
-            }
-        }
+        list.add(new SyncableUpgradeMap(() -> upgrades, value -> upgrades = value));
         return list;
+    }
+
+    @ComputerMethod//Note: Not synthetic so that the computer help method can get the map result type
+    Map<Holder<Upgrade>, Integer> getInstalledUpgrades() {
+        return upgrades;
+    }
+
+    @ComputerMethod
+    List<Holder<Upgrade>> getSupportedUpgrades() throws ComputerException {
+        return tile.validateLevel().registryAccess().get(supported).stream().flatMap(HolderSet::stream).toList();
     }
 }

@@ -12,12 +12,13 @@ import java.util.Set;
 import java.util.stream.LongStream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -57,8 +58,8 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         this.forceTicks = forceTicks;
     }
 
-    public boolean canOperate() {
-        return MekanismConfig.general.allowChunkloading.get() && tile.supportsUpgrades() && tile.getUpgrades(Upgrade.ANCHOR) > 0;
+    public boolean canOperate(HolderLookup.Provider registries) {
+        return MekanismConfig.general.allowChunkloading.get() && tile.supportsUpgrades() && tile.getUpgrades(registries, UpgradeIds.ANCHOR) > 0;
     }
 
     private void releaseChunkTickets(ServerLevel world, BlockPos pos) {
@@ -113,7 +114,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     ///
     /// @apiNote Only call server side
     private void refreshChunkTickets(ServerLevel world, BlockPos pos, boolean ticketsChanged) {
-        boolean canOperate = canOperate();
+        boolean canOperate = canOperate(world.registryAccess());
         if (MekanismAPI.debug) {
             LOGGER.debug("refreshChunkTickets called for {}. Can operate = {}", pos, canOperate);
         }
@@ -304,7 +305,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                 BlockEntity tile = world.getBlockEntity(pos);
                 if (tile instanceof IChunkLoader) {
                     TileComponentChunkLoader<?> chunkLoader = ((IChunkLoader) tile).getChunkLoader();
-                    if (chunkLoader.canOperate()) {
+                    if (chunkLoader.canOperate(world.registryAccess())) {
                         if (!forcedChunks.equals(chunkLoader.chunkSet)) {
                             //If there is a mismatch between the chunkSet and actual chunks
                             // update the chunk set to trust what chunks the loader actually has registered

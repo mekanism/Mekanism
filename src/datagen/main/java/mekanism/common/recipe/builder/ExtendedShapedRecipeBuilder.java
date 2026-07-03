@@ -34,6 +34,10 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         super(result, count);
     }
 
+    protected ExtendedShapedRecipeBuilder(ItemStackTemplate result) {
+        super(result);
+    }
+
     public static ExtendedShapedRecipeBuilder shapedRecipe(BlockRegistryObject<?, ?> result) {
         return shapedRecipe(result, 1);
     }
@@ -56,6 +60,10 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
 
     public static ExtendedShapedRecipeBuilder shapedRecipe(Holder<Item> result, int count) {
         return new ExtendedShapedRecipeBuilder(result, count);
+    }
+
+    public static ExtendedShapedRecipeBuilder shapedRecipe(ItemStackTemplate result) {
+        return new ExtendedShapedRecipeBuilder(result);
     }
 
     public ExtendedShapedRecipeBuilder pattern(RecipePattern pattern) {

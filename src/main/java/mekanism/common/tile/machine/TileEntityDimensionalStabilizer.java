@@ -31,11 +31,13 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IHasVisualization;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
@@ -114,7 +116,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         if (x >= 0 && x < MAX_LOAD_DIAMETER && z >= 0 && z < MAX_LOAD_DIAMETER) {
             if (setChunkLoadingAt(x, z, !isChunkLoadingAt(x, z))) {
                 setChanged(false);
-                energyContainer.updateEnergyPerTick();
+                energyContainer.updateEnergyPerTick(null);
                 //Refresh the chunks that are loaded as it has changed
                 getChunkLoader().refreshChunkTickets();
             }
@@ -139,7 +141,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 // in theory from packet something will always change, but in case there is a desync or in case this
                 // is done via a computer mod on already set chunks, don't actually update anything
                 setChanged(false);
-                energyContainer.updateEnergyPerTick();
+                energyContainer.updateEnergyPerTick(null);
                 //Refresh the chunks that are loaded as it has changed
                 getChunkLoader().refreshChunkTickets();
             }
@@ -235,7 +237,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         if (changed) {
             if (chunksLoaded != lastChunksLoaded) {
                 //If the number of chunks loaded is different we need to update our energy to use
-                energyContainer.updateEnergyPerTick();
+                energyContainer.updateEnergyPerTick(null);
             }
             //Refresh the chunks that are loaded as it has changed
             getChunkLoader().refreshChunkTickets(level, worldPosition);
@@ -261,7 +263,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         if (changed) {
             if (chunksLoaded != lastChunksLoaded) {
                 //If the number of chunks loaded is different we need to update our energy to use
-                energyContainer.updateEnergyPerTick();
+                energyContainer.updateEnergyPerTick(null);
             }
             //Refresh the chunks that are loaded as it has changed
             getChunkLoader().refreshChunkTickets(level, worldPosition);
@@ -308,10 +310,11 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     @ComputerMethod(nameOverride = "setChunkLoadingAt", requiresPublicSecurity = true, methodDescription = "Set if the Dimensional Stabilizer is configured to load a the specified relative position (Stabilizer is at 0,0). True = load the chunk, false = don't load the chunk. " + COMPUTER_RANGE_STR)
     void computerSetChunkLoadingAt(int x, int z, boolean load) throws ComputerException {
         validateSecurityIsPublic();
+        Level level = validateLevel();
         if (setChunkLoadingAt(validateDimension(x, true), validateDimension(z, false), load)) {
             //If it changed we need to mark it as such and update various things
             setChanged(false);
-            energyContainer.updateEnergyPerTick();
+            energyContainer.updateEnergyPerTick(level.registryAccess());
             //Refresh the chunks that are loaded as it has changed
             getChunkLoader().refreshChunkTickets();
         }
@@ -345,7 +348,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         }
 
         @Override
-        public boolean canOperate() {
+        public boolean canOperate(HolderLookup.Provider registries) {
             return MekanismConfig.general.allowChunkloading.get() && getActive();
         }
     }

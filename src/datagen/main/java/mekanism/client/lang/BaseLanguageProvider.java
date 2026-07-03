@@ -9,6 +9,7 @@ import mekanism.api.gear.ModuleData;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.EnumColorCollection;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
 import mekanism.common.Mekanism;
@@ -126,6 +127,11 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 
     protected void addRobitSkin(ResourceKey<RobitSkin> id, String value) {
         add(RobitSkin.getTranslationKey(id), value);
+    }
+
+    protected void addUpgrade(ResourceKey<Upgrade> id, String value, String description) {
+        add(Upgrade.getDefaultTranslationKey(id), value);
+        add(Upgrade.getDefaultDescriptionKey(id), description);
     }
 
     protected void add(MekanismAdvancement advancement, String title, String description) {

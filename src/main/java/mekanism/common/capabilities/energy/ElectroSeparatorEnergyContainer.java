@@ -7,6 +7,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.functions.IntObjectToIntFunction;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityElectrolyticSeparator;
+import net.minecraft.core.HolderLookup;
 import org.jspecify.annotations.Nullable;
 
 public class ElectroSeparatorEnergyContainer extends MachineEnergyContainer<TileEntityElectrolyticSeparator> {
@@ -31,18 +32,18 @@ public class ElectroSeparatorEnergyContainer extends MachineEnergyContainer<Tile
     }
 
     @Override
-    public void updateEnergyPerTick() {
+    public void updateEnergyPerTick(HolderLookup.Provider registries) {
         if (tile.isMakingHydrogen()) {
             //Energy upgrades do nothing
             this.currentEnergyPerTick = getBaseEnergyPerTick();
         } else {
-            super.updateEnergyPerTick();
+            super.updateEnergyPerTick(registries);
         }
     }
 
     @Override
-    public void updateMaxEnergy() {
-        super.updateMaxEnergy();
+    public void updateMaxEnergy(HolderLookup.Provider registries) {
+        super.updateMaxEnergy(registries);
         if (tile.isMakingHydrogen()) {
             setMaxEnergy(getCapacityAsLong() * tile.getBaselineMaxOperations() * AttributeEnergy.STORAGE_MULTIPLIER);
         }

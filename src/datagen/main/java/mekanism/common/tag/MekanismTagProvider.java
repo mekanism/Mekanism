@@ -8,6 +8,7 @@ import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.CleanDirtySlurryId;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -88,6 +89,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addGameEvents();
         addChemicalTags();
         addPellets();
+        addUpgrades();
         addColorableItems();
         getBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
         getBuilder(MekanismTags.Blocks.INCORRECT_FOR_DISASSEMBLER);
@@ -507,6 +509,29 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismTags.Items.PELLETS_ANTIMATTER).add(MekanismItems.ANTIMATTER_PELLET);
         getBuilder(MekanismTags.Items.PELLETS_PLUTONIUM).add(MekanismItems.PLUTONIUM_PELLET);
         getBuilder(MekanismTags.Items.PELLETS_POLONIUM).add(MekanismItems.POLONIUM_PELLET);
+    }
+
+    private void addUpgrades() {
+        getBuilder(MekanismTags.Upgrades.SIMPLE_MACHINE_UPGRADES).add(UpgradeIds.ENERGY, UpgradeIds.SPEED);
+        getBuilder(MekanismTags.Upgrades.DEFAULT_MACHINE_UPGRADES)
+              .add(MekanismTags.Upgrades.SIMPLE_MACHINE_UPGRADES)
+              .add(UpgradeIds.MUFFLING);
+        getBuilder(MekanismTags.Upgrades.DEFAULT_ADVANCED_MACHINE_UPGRADES)
+              .add(MekanismTags.Upgrades.DEFAULT_MACHINE_UPGRADES)
+              .add(UpgradeIds.CHEMICAL);
+        getBuilder(MekanismTags.Upgrades.ANCHOR_ONLY).add(UpgradeIds.ANCHOR);
+        getBuilder(MekanismTags.Upgrades.MUFFLING_ONLY).add(UpgradeIds.MUFFLING);
+
+        getBuilder(MekanismTags.Upgrades.DIMENSIONAL_STABILIZER)
+              .add(UpgradeIds.ENERGY);
+        getBuilder(MekanismTags.Upgrades.QIO_FILTER_HANDLER)
+              .add(UpgradeIds.SPEED);
+        getBuilder(MekanismTags.Upgrades.ELECTRIC_PUMP)
+              .add(MekanismTags.Upgrades.SIMPLE_MACHINE_UPGRADES)
+              .add(UpgradeIds.FILTER);
+        getBuilder(MekanismTags.Upgrades.DIGITAL_MINER)
+              .add(MekanismTags.Upgrades.SIMPLE_MACHINE_UPGRADES)
+              .add(UpgradeIds.ANCHOR, UpgradeIds.STONE_GENERATOR);
     }
 
     private void addColorableItems() {

@@ -2,7 +2,6 @@ package mekanism.common.network.to_server;
 
 import io.netty.buffer.ByteBuf;
 import java.util.function.IntFunction;
-import mekanism.api.Upgrade;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
@@ -15,7 +14,6 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.interfaces.IHasGasMode;
@@ -228,23 +226,6 @@ public record PacketGuiInteract(GuiInteraction interaction, BlockPos tilePositio
         TOGGLE_FILTER_STATE((_, tile, _, extra) -> {
             if (tile instanceof ITileFilterHolder<?> filterHolder) {
                 filterHolder.getFilterManager().toggleState(extra);
-            }
-        }),
-
-        REMOVE_UPGRADE((_, tile, _, extra) -> {
-            if (tile.supportsUpgrades()) {
-                TileComponentUpgrade component = tile.getComponent();
-                if (component != null) {//Should never be null here
-                    component.removeUpgrade(Upgrade.BY_ID.apply(extra), false);
-                }
-            }
-        }),
-        REMOVE_ALL_UPGRADE((_, tile, _, extra) -> {
-            if (tile.supportsUpgrades()) {
-                TileComponentUpgrade component = tile.getComponent();
-                if (component != null) {//Should never be null here
-                    component.removeUpgrade(Upgrade.BY_ID.apply(extra), true);
-                }
             }
         }),
 

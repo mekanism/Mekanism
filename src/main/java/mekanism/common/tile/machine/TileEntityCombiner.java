@@ -118,7 +118,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
-        recipeCacheLookupMonitor.updateAndProcess();
+        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
         return sendUpdatePacket;
     }
 

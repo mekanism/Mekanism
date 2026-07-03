@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container.entity.robit;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 import mekanism.api.MekanismRegistries;
@@ -15,6 +14,7 @@ import mekanism.common.registries.MekanismRobitSkins;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.Level;
 
 public class MainRobitContainer extends RobitContainer implements ISpecificContainerTracker {
 
@@ -29,9 +29,9 @@ public class MainRobitContainer extends RobitContainer implements ISpecificConta
     }
 
     @Override
-    public List<ISyncableData> getSpecificSyncableData() {
+    public List<ISyncableData> getSpecificSyncableData(Level level) {
         ISyncableData data;
-        if (getLevel().isClientSide()) {
+        if (level.isClientSide()) {
             //Client side sync handling
             data = SyncableResourceKeyList.create(MekanismRegistries.Keys.ROBIT_SKINS, () -> unlockedSkins, this::setSkins);
         } else {
@@ -40,14 +40,12 @@ public class MainRobitContainer extends RobitContainer implements ISpecificConta
             //TODO: Improve how unlock handling is done to have some sort of per player cache and maybe move the unlocked check away
             // from the skin and into the handler system
             //Note: We can cache a reference to the specific registry so that we don't have to lookup the robit skin registry each time
-            Registry<RobitSkin> registry = getLevel().registryAccess()
+            Registry<RobitSkin> registry = level.registryAccess()
                   .lookupOrThrow(MekanismRegistries.Keys.ROBIT_SKINS);
-            data = SyncableResourceKeyList.create(MekanismRegistries.Keys.ROBIT_SKINS, () -> registry.entrySet().stream()
+            data = SyncableResourceKeyList.createSorted(MekanismRegistries.Keys.ROBIT_SKINS, () -> registry.entrySet().stream()
                         //Base skin is always unlocked so we don't have to sync it
                         .filter(entry -> !MekanismRobitSkins.BASE.equals(entry.getKey()) && entry.getValue().isUnlocked(inv.player))
-                        .map(Entry::getKey)
-                        .sorted(Comparator.comparing(ResourceKey::identifier))
-                        .toList(),
+                        .map(Entry::getKey),
                   this::setSkins
             );
         }

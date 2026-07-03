@@ -1,0 +1,10 @@
+{
+  "color": "lime",
+  "description": {
+    "translate": "upgrade.mekanism.energy.description"
+  },
+  "display_name": {
+    "translate": "upgrade.mekanism.energy"
+  },
+  "max": 8
+}

@@ -1,7 +1,6 @@
 package mekanism.common.util;
 
 import mekanism.api.RelativeSide;
-import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.content.blocktype.FactoryType;
@@ -97,9 +96,6 @@ public class EnumUtils {
 
     /// Cached value of [FactoryType#values()]. DO NOT MODIFY THIS LIST.
     public static final FactoryType[] FACTORY_TYPES = FactoryType.values();
-
-    /// Cached value of [Upgrade#values()]. DO NOT MODIFY THIS LIST.
-    public static final Upgrade[] UPGRADES = Upgrade.values();
 
     /// Cached value of [OreType#values()]. DO NOT MODIFY THIS LIST.
     public static final OreType[] ORE_TYPES = OreType.values();

@@ -14,6 +14,7 @@ import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
 import mekanism.client.model.blockstate.TransmitterBlockStateModel;
 import mekanism.client.model.data.TransmitterModelData.VisualConnectionStatus;
 import mekanism.client.model.item.QIODriveArrayItemModel;
+import mekanism.client.model.item.UpgradeItemModel;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
@@ -596,13 +597,7 @@ public class MekanismModelProvider extends BaseModelProvider {
         itemModels.declareCustomModelItem(MekanismItems.TELEPORTATION_CORE.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ULTIMATE_CONTROL_CIRCUIT.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ULTIMATE_TIER_INSTALLER.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.ANCHOR_UPGRADE.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.CHEMICAL_UPGRADE.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.ENERGY_UPGRADE.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.FILTER_UPGRADE.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.MUFFLING_UPGRADE.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.SPEED_UPGRADE.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.STONE_GENERATOR_UPGRADE.asItem());
+        itemModels.itemModelOutput.accept(MekanismItems.UPGRADE.asItem(), UpgradeItemModel.Unbaked.INSTANCE);
         itemModels.declareCustomModelItem(MekanismItems.YELLOW_CAKE_URANIUM.asItem());
         itemModels.declareCustomModelItem(MekanismItems.BRONZE_DUST.asItem());
         itemModels.declareCustomModelItem(MekanismItems.LAPIS_LAZULI_DUST.asItem());
@@ -632,7 +627,6 @@ public class MekanismModelProvider extends BaseModelProvider {
 
     private void markManualBlocks() {
         markManualBlockState(MekanismBlocks.ADVANCED_BIN);
-        //markManualBlockState(MekanismBlocks.ADVANCED_BOUNDING_BLOCK); todo: is this an old file?
         markManualBlockState(MekanismBlocks.ADVANCED_CHEMICAL_TANK);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ADVANCED, FactoryType.COMBINING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ADVANCED, FactoryType.COMPRESSING));

@@ -2,21 +2,24 @@ package mekanism.common.tests.helpers;
 
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntSortedMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
-import mekanism.api.Upgrade;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.component.FilterAware;
 import mekanism.common.component.FormulaComponent;
 import mekanism.common.component.OverflowAware;
+import mekanism.common.component.UpgradeType;
 import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.component.containers.resource.AttachedResources;
 import mekanism.common.component.qio.PortableDashboardContents;
@@ -30,6 +33,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
@@ -189,24 +193,34 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         return stack.amount() == amount && stack.resource().is(item);
     }
 
-    private Map<Upgrade, Integer> getUpgrades() {
-        return Map.of(
-              Upgrade.SPEED, 5,
-              Upgrade.ENERGY, 3
-        );
+    private Object2IntMap<Holder<Upgrade>> getUpgrades() {
+        Object2IntMap<Holder<Upgrade>> upgrades = new Object2IntOpenHashMap<>();
+        RegistryAccess registryAccess = getLevel().registryAccess();
+        upgrades.put(registryAccess.getOrThrow(UpgradeIds.SPEED), 5);
+        upgrades.put(registryAccess.getOrThrow(UpgradeIds.ENERGY), 3);
+        return upgrades;
     }
 
     private UpgradeAware makeUpgrades(boolean validFirstSlot, boolean validSecondSlot) {
+        RegistryAccess registryAccess = getLevel().registryAccess();
         return new UpgradeAware(getUpgrades(),
-              LargeResourceStack.ITEM_HELPER.createStack(validFirstSlot ? MekanismItems.SPEED_UPGRADE.asResource() : failureItemType(), 3),
-              LargeResourceStack.ITEM_HELPER.createStack(validSecondSlot ? MekanismItems.ENERGY_UPGRADE.asResource() : failureItemType(), 5)
+              LargeResourceStack.ITEM_HELPER.createStack(validFirstSlot ? UpgradeUtils.getResource(registryAccess, UpgradeIds.SPEED) : failureItemType(), 3),
+              LargeResourceStack.ITEM_HELPER.createStack(validSecondSlot ? UpgradeUtils.getResource(registryAccess, UpgradeIds.ENERGY) : failureItemType(), 5)
         );
+    }
+
+    private boolean upgradeMatches(ItemResource resource, ResourceKey<Upgrade> upgrade) {
+        if (MekanismItems.UPGRADE.is(resource)) {
+            UpgradeType upgradeType = resource.get(MekanismDataComponents.UPGRADE_TYPE);
+            return upgradeType != null && upgradeType.is(upgrade);
+        }
+        return false;
     }
 
     private boolean validateUpgrades(UpgradeAware upgradeAware, boolean validFirstSlot, boolean validSecondSlot) {
         if (upgradeAware.upgrades().equals(getUpgrades())) {
-            boolean firstSlot = validFirstSlot ? MekanismItems.SPEED_UPGRADE.is(upgradeAware.inputSlot().resource()) && upgradeAware.inputSlot().amount() == 3 : upgradeAware.inputSlot().isEmpty();
-            boolean secondSlot = validSecondSlot ? MekanismItems.ENERGY_UPGRADE.is(upgradeAware.outputSlot().resource()) && upgradeAware.outputSlot().amount() == 5 : upgradeAware.outputSlot().isEmpty();
+            boolean firstSlot = validFirstSlot ? upgradeMatches(upgradeAware.inputSlot().resource(), UpgradeIds.SPEED) && upgradeAware.inputSlot().amount() == 3 : upgradeAware.inputSlot().isEmpty();
+            boolean secondSlot = validSecondSlot ? upgradeMatches(upgradeAware.outputSlot().resource(), UpgradeIds.ENERGY) && upgradeAware.outputSlot().amount() == 5 : upgradeAware.outputSlot().isEmpty();
             return firstSlot && secondSlot;
         }
         return false;

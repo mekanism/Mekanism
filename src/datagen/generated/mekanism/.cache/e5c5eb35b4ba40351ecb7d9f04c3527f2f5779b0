@@ -1,4 +1,4 @@
-// 26.2	2026-06-28T15:33:39.8689255	Advancements
+// 26.2	2026-07-03T16:50:45.2623756	Advancements
 cc0f85f030befc152798d57b040f40fe7b1e67be data/mekanism/advancement/advanced_control_circuit.json
 e00a71a74d7c77c23cd21bbb6af2460c9035af75 data/mekanism/advancement/advanced_qio_drive.json
 c6b503463ec0aa67902a2d9e498b907d2d1702aa data/mekanism/advancement/alarm.json
@@ -84,10 +84,10 @@ b1946ab84aac65a9e35a3197873de5c19fa3dafa data/mekanism/advancement/sps.json
 59d07e67603846f51755db8f27e4e57bd77b0141 data/mekanism/advancement/sps_experiment_mooshroom.json
 5ba9ebff9f4d661be5c3f54b4ee0e973aff18ff8 data/mekanism/advancement/sps_experiment_pig.json
 dfbdf7a28acdaad33c95a35cd9ef1b78fcc9844e data/mekanism/advancement/sps_experiment_villager.json
-017f93a2daaed17f95ed7262fbee9d0cf50df0ad data/mekanism/advancement/stabilizing_chunks.json
+5d6ee481039638827ccc07ebf3c89f7855be5bc5 data/mekanism/advancement/stabilizing_chunks.json
 7719f78c21c79df7ec56a98d866f45f2e7e2477f data/mekanism/advancement/steel_casing.json
 65a866403e5faca8e161ac769b69a9161ee962a0 data/mekanism/advancement/steel_ingot.json
-725bcfde6986f49a3bac203828c8a16bb5089b2d data/mekanism/advancement/stone_generator.json
+fe277d63571d4b7b4f207c731310cd954e6474f2 data/mekanism/advancement/stone_generator.json
 9c230e20b0f8bb84dcd616c58ee97bf092a990e4 data/mekanism/advancement/stopping_lasers.json
 ca155bb56b537db494412d5d5c7a2517aeca8569 data/mekanism/advancement/teleportation_core.json
 d91ca14a8f6aaabaded80d402ed136fb87f0465f data/mekanism/advancement/teleporter.json

@@ -1,7 +1,11 @@
 package mekanism.common.tile.interfaces;
 
-import mekanism.api.Upgrade;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.ResourceKey;
 import org.jspecify.annotations.Nullable;
 
 public interface IUpgradeTile {
@@ -10,7 +14,7 @@ public interface IUpgradeTile {
         return true;
     }
 
-    default boolean supportsUpgrade(Upgrade upgradeType) {
+    default boolean supportsUpgrade(Holder<Upgrade> upgradeType) {
         if (supportsUpgrades()) {
             TileComponentUpgrade component = getComponent();
             //Note: This should never be null given supportsUpgrades is true, but if it is, handle it gracefully
@@ -19,18 +23,24 @@ public interface IUpgradeTile {
         return false;
     }
 
-    default int getUpgrades(Upgrade upgradeType) {
+    //TODO - 26.2: Evaluate callers and if we want to cache the upgrade holder once the level is set on the tile?
+    default int getUpgrades(HolderGetter.Provider registryAccess, ResourceKey<Upgrade> upgradeType) {
+        TileComponentUpgrade component = getComponent();
+        return component == null ? 0 : registryAccess.get(upgradeType).map(component::getUpgrades).orElse(0);
+    }
+
+    default int getUpgrades(Holder<Upgrade> upgradeType) {
         TileComponentUpgrade component = getComponent();
         return component == null ? 0 : component.getUpgrades(upgradeType);
     }
 
-    default int addUpgrades(Upgrade upgrade, int maxAvailable) {
+    default int addUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int maxAvailable) {
         TileComponentUpgrade component = getComponent();
-        return component == null ? 0 : component.addUpgrades(upgrade, maxAvailable);
+        return component == null ? 0 : component.addUpgrades(registries, upgrade, maxAvailable);
     }
 
     @Nullable
     TileComponentUpgrade getComponent();
 
-    void recalculateUpgrades(Upgrade upgradeType);
+    void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgradeType, int totalInstalled);
 }

@@ -11,10 +11,11 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -48,6 +49,8 @@ import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -190,7 +193,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     private boolean suck(ServerLevel level, TransactionContext transaction) {
-        boolean hasFilter = getUpgrades(Upgrade.FILTER) > 0;
+        boolean hasFilter = getUpgrades(level.registryAccess(), UpgradeIds.FILTER) > 0;
         //First see if there are any fluid blocks under the pump - if so, suck and adds the location to the recurring list
         if (suck(level, worldPosition.relative(Direction.DOWN), hasFilter, true, transaction)) {
             return true;
@@ -381,11 +384,11 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED) {
-            ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-            outputRate = BASE_OUTPUT_RATE * (1 + getUpgrades(Upgrade.SPEED));
+    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(registries, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED)) {
+            ticksRequired = MekanismUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
+            outputRate = BASE_OUTPUT_RATE * (totalInstalled + 1);
         }
     }
 
@@ -400,7 +403,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public List<Component> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(Holder<Upgrade> upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 

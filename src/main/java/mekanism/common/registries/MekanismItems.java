@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.Locale;
 import java.util.Objects;
-import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.EnumColor;
@@ -184,14 +183,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemModule> MODULE_FROST_WALKER = ITEMS.registerModule(MekanismModules.FROST_WALKER_UNIT, Rarity.RARE);
     public static final ItemRegistryObject<ItemModule> MODULE_SOUL_SURFER = ITEMS.registerModule(MekanismModules.SOUL_SURFER_UNIT, Rarity.RARE);
 
-    public static final ItemRegistryObject<ItemUpgrade> SPEED_UPGRADE = registerUpgrade(Upgrade.SPEED);
-    public static final ItemRegistryObject<ItemUpgrade> ENERGY_UPGRADE = registerUpgrade(Upgrade.ENERGY);
-    public static final ItemRegistryObject<ItemUpgrade> FILTER_UPGRADE = registerUpgrade(Upgrade.FILTER);
-    public static final ItemRegistryObject<ItemUpgrade> MUFFLING_UPGRADE = registerUpgrade(Upgrade.MUFFLING);
-    public static final ItemRegistryObject<ItemUpgrade> CHEMICAL_UPGRADE = registerUpgrade(Upgrade.CHEMICAL);
-
-    public static final ItemRegistryObject<ItemUpgrade> ANCHOR_UPGRADE = registerUpgrade(Upgrade.ANCHOR);
-    public static final ItemRegistryObject<ItemUpgrade> STONE_GENERATOR_UPGRADE = registerUpgrade(Upgrade.STONE_GENERATOR);
+    public static final ItemRegistryObject<ItemUpgrade> UPGRADE = ITEMS.registerItem("upgrade", ItemUpgrade::new);
 
     public static final ItemRegistryObject<ItemTierInstaller> BASIC_TIER_INSTALLER = registerInstaller(null, BaseTier.BASIC);
     public static final ItemRegistryObject<ItemTierInstaller> ADVANCED_TIER_INSTALLER = registerInstaller(BaseTier.BASIC, BaseTier.ADVANCED);
@@ -360,10 +352,6 @@ public class MekanismItems {
 
     private static ItemRegistryObject<ItemAlloy> registerAlloy(AlloyTier tier, Rarity rarity) {
         return ITEMS.registerItem("alloy_" + tier.getName(), properties -> new ItemAlloy(tier, properties.rarity(rarity)));
-    }
-
-    private static ItemRegistryObject<ItemUpgrade> registerUpgrade(Upgrade type) {
-        return ITEMS.registerItem("upgrade_" + type.getSerializedName(), properties -> new ItemUpgrade(type, properties));
     }
 
     private static ItemRegistryObject<ItemQIODrive> registerQIODrive(QIODriveTier tier) {

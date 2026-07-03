@@ -11,6 +11,9 @@
     " G "
   ],
   "result": {
-    "id": "mekanism:upgrade_energy"
+    "components": {
+      "mekanism:upgrade_type": "mekanism:energy"
+    },
+    "id": "mekanism:upgrade"
   }
 }

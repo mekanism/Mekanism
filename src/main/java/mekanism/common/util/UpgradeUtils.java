@@ -2,16 +2,21 @@ package mekanism.common.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.Upgrade;
-import mekanism.api.Upgrade.IUpgradeInfoHandler;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.MekanismLang;
+import mekanism.common.component.UpgradeType;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.tile.interfaces.ITileUpgradable;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
@@ -20,35 +25,36 @@ public class UpgradeUtils {
     private UpgradeUtils() {
     }
 
-    public static ItemStack getStack(Upgrade upgrade) {
-        return getStack(upgrade, 1);
+    public static ItemStackTemplate getTemplate(HolderGetter<Upgrade> upgrades, ResourceKey<Upgrade> upgrade, int amount) {
+        return getTemplate(upgrades.getOrThrow(upgrade), amount);
     }
 
-    public static ItemStack getStack(Upgrade upgrade, int count) {
-        return new ItemStack(getItem(upgrade), count);
+    public static ItemStackTemplate getTemplate(Holder<Upgrade> upgrade, int amount) {
+        return new ItemStackTemplate(MekanismItems.UPGRADE, amount, DataComponentPatch.builder()
+              .set(MekanismDataComponents.UPGRADE_TYPE.get(), new UpgradeType(upgrade))
+              .build()
+        );
     }
 
-    public static ItemResource getResource(Upgrade upgrade) {
-        return ItemResource.of(getItem(upgrade));
+    public static ItemStack getStack(Holder<Upgrade> upgrade) {
+        ItemStack stack = MekanismItems.UPGRADE.asStack();
+        stack.set(MekanismDataComponents.UPGRADE_TYPE, new UpgradeType(upgrade));
+        return stack;
     }
 
-    public static Holder<Item> getItem(Upgrade upgrade) {
-        return switch (upgrade) {
-            case SPEED -> MekanismItems.SPEED_UPGRADE;
-            case ENERGY -> MekanismItems.ENERGY_UPGRADE;
-            case FILTER -> MekanismItems.FILTER_UPGRADE;
-            case MUFFLING -> MekanismItems.MUFFLING_UPGRADE;
-            case CHEMICAL -> MekanismItems.CHEMICAL_UPGRADE;
-            case ANCHOR -> MekanismItems.ANCHOR_UPGRADE;
-            case STONE_GENERATOR -> MekanismItems.STONE_GENERATOR_UPGRADE;
-        };
+    public static ItemResource getResource(HolderGetter.Provider registries, ResourceKey<Upgrade> upgrade) {
+        return getResource(registries.getOrThrow(upgrade));
     }
 
-    public static List<Component> getInfo(BlockEntity tile, Upgrade upgrade) {
+    public static ItemResource getResource(Holder<Upgrade> upgrade) {
+        return MekanismItems.UPGRADE.asResource().with(MekanismDataComponents.UPGRADE_TYPE, new UpgradeType(upgrade));
+    }
+
+    public static List<Component> getInfo(BlockEntity tile, Holder<Upgrade> upgrade) {
         List<Component> ret = new ArrayList<>();
         if (tile instanceof IUpgradeTile upgradeTile) {
-            if (tile instanceof IUpgradeInfoHandler upgradeInfoHandler) {
-                return upgradeInfoHandler.getInfo(upgrade);
+            if (tile instanceof ITileUpgradable upgradable) {
+                return upgradable.getInfo(upgrade);
             } else {
                 ret = getMultScaledInfo(upgradeTile, upgrade);
             }
@@ -56,18 +62,18 @@ public class UpgradeUtils {
         return ret;
     }
 
-    public static List<Component> getMultScaledInfo(IUpgradeTile tile, Upgrade upgrade) {
+    public static List<Component> getMultScaledInfo(IUpgradeTile tile, Holder<Upgrade> upgrade) {
         List<Component> ret = new ArrayList<>();
-        if (tile.supportsUpgrades() && upgrade.getMax() > 1) {
-            double effect = Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), tile.getUpgrades(upgrade) / (float) upgrade.getMax());
+        if (tile.supportsUpgrades() && upgrade.value().supportsMultiple()) {
+            double effect = Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), tile.getUpgrades(upgrade) / (float) upgrade.value().max());
             ret.add(MekanismLang.UPGRADES_EFFECT.translate(Math.round(effect * 100) / 100F));
         }
         return ret;
     }
 
-    public static List<Component> getExpScaledInfo(IUpgradeTile tile, Upgrade upgrade) {
+    public static List<Component> getExpScaledInfo(IUpgradeTile tile, Holder<Upgrade> upgrade) {
         List<Component> ret = new ArrayList<>();
-        if (tile.supportsUpgrades() && upgrade.getMax() > 1) {
+        if (tile.supportsUpgrades() && upgrade.value().supportsMultiple()) {
             ret.add(MekanismLang.UPGRADES_EFFECT.translate(Math.pow(2, (float) tile.getUpgrades(upgrade))));
         }
         return ret;

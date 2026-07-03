@@ -522,8 +522,8 @@ Machine with Side Configuration Component,incrementMode,"type: String (Transmiss
 Machine with Side Configuration Component,isEjecting,type: String (TransmissionType),boolean,,false,
 Machine with Side Configuration Component,setEjecting,"type: String (TransmissionType), ejecting: boolean",,,true,
 Machine with Side Configuration Component,setMode,"type: String (TransmissionType), side: String (RelativeSide), mode: String (DataType)",,,true,
-Machine with Upgrade Component,getInstalledUpgrades,,Table (String (Upgrade) => Number (int)),,false,
-Machine with Upgrade Component,getSupportedUpgrades,,List (String (Upgrade)),,false,
+Machine with Upgrade Component,getInstalledUpgrades,,Table (String (Holder) => Number (int)),,false,
+Machine with Upgrade Component,getSupportedUpgrades,,List (String (Holder)),,false,
 Metallurgic Infuser,dumpInfuseType,,,,true,
 Metallurgic Infuser,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy slot.
 Metallurgic Infuser,getEnergyUsage,,Number (long),,false,Get the energy used in the last tick by the machine

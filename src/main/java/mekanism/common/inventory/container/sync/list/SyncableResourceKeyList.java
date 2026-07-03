@@ -1,14 +1,21 @@
 package mekanism.common.inventory.container.sync.list;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 
 /// Version of [net.minecraft.world.inventory.DataSlot] for handling registry entry based lists
 public class SyncableResourceKeyList<V> extends SyncableList<ResourceKey<V>> {
+
+    public static <V> SyncableResourceKeyList<V> createSorted(ResourceKey<? extends Registry<V>> registry, Supplier<Stream<ResourceKey<V>>> getter,
+          Consumer<List<ResourceKey<V>>> setter) {
+        return new SyncableResourceKeyList<>(registry, () -> getter.get().sorted(Comparator.comparing(ResourceKey::identifier)).toList(), setter);
+    }
 
     public static <V> SyncableResourceKeyList<V> create(ResourceKey<? extends Registry<V>> registry, Supplier<List<ResourceKey<V>>> getter,
           Consumer<List<ResourceKey<V>>> setter) {

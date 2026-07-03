@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
@@ -22,6 +22,7 @@ import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
@@ -277,13 +278,13 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED || upgrade == Upgrade.CHEMICAL && supportsUpgrade(Upgrade.CHEMICAL)) {
+    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(registries, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED) || upgrade.is(UpgradeIds.CHEMICAL) && supportsUpgrade(upgrade)) {
             if (useStatisticalMechanics()) {
-                chemicalPerTickMeanMultiplier = MekanismUtils.getGasPerTickMeanMultiplier(this);
+                chemicalPerTickMeanMultiplier = MekanismUtils.getGasPerTickMeanMultiplier(registries, this);
             } else {
-                baseTotalUsage = MekanismUtils.getBaseUsage(this, BASE_TICKS_REQUIRED);
+                baseTotalUsage = MekanismUtils.getBaseUsage(registries, this, BASE_TICKS_REQUIRED);
             }
         }
     }

@@ -7,6 +7,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.functions.IntObjectToIntFunction;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.core.HolderLookup;
 import org.jspecify.annotations.Nullable;
 
 public class FixedUsageEnergyContainer<TILE extends TileEntityMekanism> extends MachineEnergyContainer<TILE> {
@@ -31,7 +32,7 @@ public class FixedUsageEnergyContainer<TILE extends TileEntityMekanism> extends 
     }
 
     @Override
-    public void updateEnergyPerTick() {
+    public void updateEnergyPerTick(HolderLookup.@Nullable Provider registries) {
         //Energy upgrades only increase storage
         this.currentEnergyPerTick = getBaseEnergyPerTick();
     }

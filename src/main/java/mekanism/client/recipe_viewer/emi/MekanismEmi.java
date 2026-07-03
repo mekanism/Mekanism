@@ -181,6 +181,7 @@ public class MekanismEmi implements EmiPlugin {
 
         registerItemSubtypes(registry, MekanismItems.ITEMS.getEntries());
         registerItemSubtypes(registry, MekanismBlocks.BLOCKS.getSecondaryEntries());
+        //TODO - 26.2: Do we need to manually specify the different upgrade types?
     }
 
     public static void registerItemSubtypes(EmiRegistry registry, Collection<? extends Holder<Item>> items) {

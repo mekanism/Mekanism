@@ -9,6 +9,7 @@ import mekanism.api.recipes.cache.ICachedRecipeHolder;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
+import net.minecraft.core.HolderLookup;
 import org.jspecify.annotations.Nullable;
 
 public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?>> implements ICachedRecipeHolder<RECIPE>, IContentsListener {
@@ -49,12 +50,12 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?>> implemen
         shouldUnpause = true;
     }
 
-    /// Helper that wraps [#updateAndProcess()] inside of a brief check to calculate how much energy actually got used.
-    public int updateAndProcess(IEnergyContainer energyContainer) {
+    /// Helper that wraps [#updateAndProcess(HolderLookup.Provider)] inside of a brief check to calculate how much energy actually got used.
+    public int updateAndProcess(HolderLookup.Provider registries, IEnergyContainer energyContainer) {
         //Copy this so that if it changes we still have the original amount. Don't bother making it a constant though as this way
         // we can then use minusEqual instead of subtract to remove an extra copy call
         long prev = energyContainer.getAmountAsLong();
-        if (updateAndProcess()) {
+        if (updateAndProcess(registries)) {
             //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
             return Math.max(0, Ints.saturatedCast(prev - energyContainer.getAmountAsLong()));
         }
@@ -62,11 +63,11 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?>> implemen
         return 0;
     }
 
-    public boolean updateAndProcess() {
+    public boolean updateAndProcess(HolderLookup.Provider registries) {
         CachedRecipe<RECIPE> oldCache = cachedRecipe;
         cachedRecipe = getUpdatedCache(cacheIndex);
         if (cachedRecipe != oldCache) {
-            handler.onCachedRecipeChanged(cachedRecipe, cacheIndex);
+            handler.onCachedRecipeChanged(registries, cachedRecipe, cacheIndex);
         }
         if (cachedRecipe != null) {
             if (shouldUnpause) {

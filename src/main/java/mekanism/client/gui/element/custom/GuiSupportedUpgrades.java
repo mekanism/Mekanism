@@ -2,9 +2,10 @@ package mekanism.client.gui.element.custom;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import mekanism.api.Upgrade;
+import mekanism.api.MekanismRegistries;
+import mekanism.api.MekanismRegistries.Keys;
 import mekanism.api.text.EnumColor;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -12,13 +13,15 @@ import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import org.jspecify.annotations.Nullable;
 
 public class GuiSupportedUpgrades extends GuiElement {
@@ -37,9 +40,12 @@ public class GuiSupportedUpgrades extends GuiElement {
         return (PADDED_ELEMENT_WIDTH - firstRowStart) / ELEMENT_SIZE;
     }
 
-    public static int calculateNeededRows(IFancyFontRenderer fontRenderer) {
-        int count = EnumUtils.UPGRADES.length;
-        int firstRowRoom = getFirstRowRoom(getFirstRowStart(fontRenderer));
+    public static int calculateNeededRows(IGuiWrapper gui) {
+        int count = gui.registryAccess().lookupOrThrow(Keys.UPGRADES).size();
+        if (count == 0) {
+            return 1;
+        }
+        int firstRowRoom = getFirstRowRoom(getFirstRowStart(gui));
         if (count <= firstRowRoom) {
             return 1;
         }
@@ -47,7 +53,7 @@ public class GuiSupportedUpgrades extends GuiElement {
         return 2 + count / ROW_ROOM;
     }
 
-    private final Set<Upgrade> supportedUpgrades;
+    private final TagKey<Upgrade> supportedUpgrades;
     private final int firstRowRoom;
     private final int firstRowStart;
 
@@ -57,7 +63,7 @@ public class GuiSupportedUpgrades extends GuiElement {
     @Nullable
     private ScreenRectangle cachedTooltipRect;
 
-    public GuiSupportedUpgrades(IGuiWrapper gui, int x, int y, Set<Upgrade> supportedUpgrades) {
+    public GuiSupportedUpgrades(IGuiWrapper gui, int x, int y, TagKey<Upgrade> supportedUpgrades) {
         super(gui, x, y, ELEMENT_WIDTH, ELEMENT_SIZE * calculateNeededRows(gui) + 2);
         this.supportedUpgrades = supportedUpgrades;
         this.firstRowStart = getFirstRowStart(this);
@@ -70,15 +76,19 @@ public class GuiSupportedUpgrades extends GuiElement {
         //Draw the background
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiElementHolder.HOLDER, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         int backgroundColor = Color.argb(GuiElementHolder.getBackgroundColor()).alpha(0.5).argb();
-        for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
-            Upgrade upgrade = EnumUtils.UPGRADES[i];
-            UpgradePos pos = getUpgradePos(i);
-            int xPos = relativeX + 1 + pos.x;
-            int yPos = relativeY + 1 + pos.y;
-            gui().renderItem(guiGraphics, UpgradeUtils.getStack(upgrade), xPos, yPos, 0.75F);
-            if (!supportedUpgrades.contains(upgrade)) {
-                //Make the upgrade appear faded if it is not supported
-                guiGraphics.fill(xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
+        Registry<Upgrade> upgrades = gui().registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
+        for (int i = 0, size = upgrades.size(); i < size; i++) {
+            //TODO - 26.2: Figure out if there is a better way to do this than by id
+            Reference<Upgrade> upgrade = upgrades.get(i).orElse(null);
+            if (upgrade != null) {
+                UpgradePos pos = getUpgradePos(i);
+                int xPos = relativeX + 1 + pos.x;
+                int yPos = relativeY + 1 + pos.y;
+                gui().renderItem(guiGraphics, UpgradeUtils.getStack(upgrade), xPos, yPos, 0.75F);
+                if (!upgrade.is(supportedUpgrades)) {
+                    //Make the upgrade appear faded if it is not supported
+                    guiGraphics.fill(xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
+                }
             }
         }
     }
@@ -98,27 +108,32 @@ public class GuiSupportedUpgrades extends GuiElement {
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
-        for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
+        Registry<Upgrade> upgrades = gui().registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
+        for (int i = 0, size = upgrades.size(); i < size; i++) {
             UpgradePos pos = getUpgradePos(i);
             if (mouseX >= getX() + 1 + pos.x && mouseX < getX() + 1 + pos.x + ELEMENT_SIZE &&
                 mouseY >= getY() + 1 + pos.y && mouseY < getY() + 1 + pos.y + ELEMENT_SIZE) {
-                Upgrade upgrade = EnumUtils.UPGRADES[i];
-                Component upgradeName = MekanismLang.UPGRADE_TYPE.translateColored(EnumColor.YELLOW, upgrade);
-                List<Component> info;
-                if (supportedUpgrades.contains(upgrade)) {
-                    info = List.of(upgradeName, upgrade.getDescription());
-                } else {
-                    info = List.of(MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.getDescription());
+                //TODO - 26.2: Figure out if there is a better way to do this than by id
+                Reference<Upgrade> holder = upgrades.get(i).orElse(null);
+                if (holder != null) {
+                    Upgrade upgrade = holder.value();
+                    Component upgradeName = MekanismLang.UPGRADE_TYPE.translateColored(EnumColor.YELLOW, upgrade);
+                    List<Component> info;
+                    if (holder.is(supportedUpgrades)) {
+                        info = List.of(upgradeName, upgrade.description());
+                    } else {
+                        info = List.of(MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.description());
+                    }
+                    if (!info.equals(lastInfo)) {
+                        lastInfo = info;
+                        lastTooltip = TooltipUtils.create(info);
+                        //Note: We only have to update the tooltip rect if the tooltip changed as we know none of the elements share the same tooltips
+                        cachedTooltipRect = new ScreenRectangle(getX() + 1 + pos.x, getY() + 1 + pos.y, ELEMENT_SIZE, ELEMENT_SIZE);
+                    }
+                    setTooltip(lastTooltip);
+                    //We can break once we managed to find a tooltip to render
+                    return;
                 }
-                if (!info.equals(lastInfo)) {
-                    lastInfo = info;
-                    lastTooltip = TooltipUtils.create(info);
-                    //Note: We only have to update the tooltip rect if the tooltip changed as we know none of the elements share the same tooltips
-                    cachedTooltipRect = new ScreenRectangle(getX() + 1 + pos.x, getY() + 1 + pos.y, ELEMENT_SIZE, ELEMENT_SIZE);
-                }
-                setTooltip(lastTooltip);
-                //We can break once we managed to find a tooltip to render
-                return;
             }
         }
         lastInfo = Collections.emptyList();

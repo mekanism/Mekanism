@@ -3,13 +3,12 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
-import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
@@ -22,6 +21,8 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -51,6 +52,8 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -144,7 +147,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
         energySlot.fillContainerOrConvert(null);
         inputSlot.fillTankFromSlot(null);
         outputSlot.drainTankIntoSlot(null);
-        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
+        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(level.registryAccess(), energyContainer);
         return sendUpdatePacket;
     }
 
@@ -181,10 +184,10 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED) {
-            baselineMaxOperations = (int) Math.pow(2, getUpgrades(Upgrade.SPEED));
+    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(registries, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED)) {
+            baselineMaxOperations = (int) Math.pow(2, totalInstalled);
         }
     }
 

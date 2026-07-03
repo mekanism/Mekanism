@@ -1,0 +1,10 @@
+{
+  "color": "cyan",
+  "description": {
+    "translate": "upgrade.mekanism.filter.description"
+  },
+  "display_name": {
+    "translate": "upgrade.mekanism.filter"
+  },
+  "max": 1
+}

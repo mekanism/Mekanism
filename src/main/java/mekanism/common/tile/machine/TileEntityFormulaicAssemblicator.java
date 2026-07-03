@@ -14,11 +14,12 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IMekanismResourceHandler;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
@@ -57,6 +58,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -716,15 +719,15 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED) {
-            ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(registries, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED)) {
+            ticksRequired = MekanismUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
         }
     }
 
     @Override
-    public List<Component> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(Holder<Upgrade> upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 

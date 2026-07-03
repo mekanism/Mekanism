@@ -1,8 +1,8 @@
 package mekanism.common.util.text;
 
-import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.MekanismLang;
 import net.minecraft.network.chat.Component;
 
@@ -26,9 +26,9 @@ public class UpgradeDisplay implements IHasTextComponent {
 
     @Override
     public Component getTextComponent() {
-        if (upgrade.getMax() > 1 && level > 0) {
-            return MekanismLang.UPGRADE_DISPLAY_LEVEL.translateColored(upgrade.getColor(), upgrade, EnumColor.GRAY, level);
+        if (upgrade.supportsMultiple() && level > 0) {
+            return MekanismLang.UPGRADE_DISPLAY_LEVEL.translateColored(upgrade.color(), upgrade, EnumColor.GRAY, level);
         }
-        return MekanismLang.GENERIC_LIST.translateColored(upgrade.getColor(), upgrade);
+        return MekanismLang.GENERIC_LIST.translateColored(upgrade.color(), upgrade);
     }
 }
