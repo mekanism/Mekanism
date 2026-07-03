@@ -74,6 +74,19 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        //Remove the main block if a bounding block gets broken by being directly replaced
+        if (level != null && mainPos != null) {
+            BlockState mainState = level.getBlockState(mainPos);
+            if (!mainState.isAir()) {
+                //Set the main block to air, which will invalidate the rest of the bounding blocks
+                level.removeBlock(mainPos, false);
+            }
+        }
+        super.preRemoveSideEffects(pos, state);
+    }
+
+    @Override
     public boolean triggerEvent(int id, int param) {
         boolean handled = super.triggerEvent(id, param);
         IBoundingBlock main = getMain();
