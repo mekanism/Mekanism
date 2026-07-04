@@ -392,7 +392,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
     private <ITEM, FLUID, CHEMICAL> void addUpgrade(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv, HolderGetter<Upgrade> upgrades, ResourceKey<Upgrade> upgrade, IHasTranslationKey... aliases) {
         Optional<Reference<Upgrade>> upgradeReference = upgrades.get(upgrade);
         if (upgradeReference.isPresent()) {
-            rv.addAliases(IUpgradeHelper.INSTANCE.asStack(upgradeReference.get()), MekanismAliases.UPGRADE_OVERCLOCK);
+            rv.addAliases(IUpgradeHelper.INSTANCE.asStack(upgradeReference.get()), aliases);
         } else if (DatagenModLoader.isRunningDataGen()) {
             throw new IllegalStateException("Missing element " + upgrade);
         }

@@ -36,9 +36,9 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
     @Override
     public UpgradesRecipeData merge(UpgradesRecipeData other) {
         Object2IntMap<Holder<Upgrade>> smallerUpgrades = other.upgrades;
-        Object2IntMap<Holder<Upgrade>> largerUpgrades = upgrades;
+        Object2IntMap<Holder<Upgrade>> largerUpgrades = this.upgrades;
         if (largerUpgrades.size() < smallerUpgrades.size()) {
-            smallerUpgrades = upgrades;
+            smallerUpgrades = this.upgrades;
             largerUpgrades = other.upgrades;
         }
         //Always copy, so we can safely pass the map ownership to the new component
