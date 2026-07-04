@@ -3,6 +3,7 @@ package mekanism.common.integration.computer;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -61,39 +62,40 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     public static String getHumanType(Class<?> clazz, Class<?>[] extraTypes) {
         if (clazz == UUID.class || clazz == Identifier.class || clazz == ResourceKey.class || clazz == Item.class || clazz.isEnum() || Holder.class.isAssignableFrom(clazz)) {
             return "String (" + clazz.getSimpleName() + ")";
-        }
-        if (Frequency.class.isAssignableFrom(clazz) || clazz == GlobalPos.class || Vec3i.class.isAssignableFrom(clazz) || clazz == FluidStack.class ||
+        } else if (Frequency.class.isAssignableFrom(clazz) || clazz == GlobalPos.class || Vec3i.class.isAssignableFrom(clazz) || clazz == FluidStack.class ||
             clazz == ItemStack.class || clazz == BlockState.class || clazz == ChemicalStack.class || clazz == LargeResourceStack.class || Resource.class.isAssignableFrom(clazz) ||
             IFilter.class.isAssignableFrom(clazz)) {
             return "Table (" + clazz.getSimpleName() + ")";
-        }
-        if (clazz == int.class || clazz == long.class || clazz == float.class || clazz == double.class || Number.class.isAssignableFrom(clazz)) {
+        } else if (clazz == Byte.TYPE || clazz == Short.TYPE || clazz == Integer.TYPE || clazz == Long.TYPE || clazz == Float.TYPE || clazz == Double.TYPE || Number.class.isAssignableFrom(clazz)) {
             if (ClassUtils.isPrimitiveWrapper(clazz)) {
                 clazz = Objects.requireNonNull(ClassUtils.wrapperToPrimitive(clazz), clazz::getName);
             }
             return "Number (" + clazz.getSimpleName() + ")";
-        }
-        if (Collection.class.isAssignableFrom(clazz)) {
-            String humanType = "List";
+        } else if (Collection.class.isAssignableFrom(clazz)) {
             if (extraTypes.length > 0) {
-                humanType += " (" + getHumanType(extraTypes[0]) + ")";
+                return "List (" + getHumanType(extraTypes[0]) + ")";
             }
-            return humanType;
-        }
-        if (clazz == Convertable.class || clazz == Either.class) {
+            return "List";
+        } else if (clazz == Convertable.class || clazz == Either.class) {
             if (extraTypes.length > 0) {
                 return Arrays.stream(extraTypes).map(MethodHelpData::getHumanType).collect(Collectors.joining(" or "));
             }
             return "Varies";
-        }
-        if (Map.class.isAssignableFrom(clazz)) {
-            String humanType = "Table";
-            if (extraTypes.length == 2) {
-                humanType += " (" + getHumanType(extraTypes[0]) + " => " + getHumanType(extraTypes[1]) + ")";
+        } else if (Map.class.isAssignableFrom(clazz)) {
+            if (extraTypes.length == 1) {
+                if (Object2IntMap.class.isAssignableFrom(clazz)) {
+                    return getMapHumanType(extraTypes[0], Integer.TYPE);
+                }
+            } else if (extraTypes.length == 2) {
+                return getMapHumanType(extraTypes[0], extraTypes[1]);
             }
-            return humanType;
+            return "Table";
         }
         return clazz.getSimpleName();
+    }
+
+    private static String getMapHumanType(Class<?> keyType, Class<?> valueType) {
+        return "Table (" + getHumanType(keyType) + " => " + getHumanType(valueType) + ")";
     }
 
     @SuppressWarnings("unchecked")

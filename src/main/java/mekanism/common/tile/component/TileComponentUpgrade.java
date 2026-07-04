@@ -8,7 +8,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -23,6 +22,7 @@ import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -65,6 +65,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     private final UpgradeInventorySlot upgradeSlot;
     private final UpgradeInventorySlot upgradeOutputSlot;
 
+    @SyntheticComputerMethod(getter = "getInstalledUpgrades")
     private Object2IntMap<Holder<Upgrade>> upgrades = new Object2IntOpenHashMap<>();
     /// How many upgrade ticks have progressed.
     private int upgradeTicks;
@@ -287,12 +288,6 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         list.add(SyncableInt.create(() -> upgradeTicks, value -> upgradeTicks = value));
         list.add(SyncableStreamCodec.upgradeMap(() -> upgrades, value -> upgrades = value));
         return list;
-    }
-
-    @ComputerMethod
-    Map<Holder<Upgrade>, Integer> getInstalledUpgrades() {
-        //Note: Not synthetic so that the computer help method can get the map result type
-        return upgrades;
     }
 
     @ComputerMethod

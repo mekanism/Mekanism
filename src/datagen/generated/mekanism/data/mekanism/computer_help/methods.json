@@ -4580,10 +4580,9 @@
       "returns": {
         "type": "Table (String (Holder) => Number (int))",
         "java_extra": [
-          "net.minecraft.core.Holder",
-          "java.lang.Integer"
+          "net.minecraft.core.Holder"
         ],
-        "java_type": "java.util.Map"
+        "java_type": "it.unimi.dsi.fastutil.objects.Object2IntMap"
       }
     },
     {

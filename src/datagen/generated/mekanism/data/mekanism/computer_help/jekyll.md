@@ -3201,8 +3201,7 @@ methods:
     returns:
       java_extra:
       - net.minecraft.core.Holder
-      - java.lang.Integer
-      java_type: java.util.Map
+      java_type: it.unimi.dsi.fastutil.objects.Object2IntMap
       type: Table (String (Holder) => Number (int))
   - methodName: getSupportedUpgrades
     returns:
