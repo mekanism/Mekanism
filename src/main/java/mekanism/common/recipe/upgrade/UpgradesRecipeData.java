@@ -92,7 +92,7 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
             }
             ItemResource resource = slot.resource();
             long amount = slot.amount();
-            Holder<Upgrade> upgradeType = IUpgradeHelper.INSTANCE.fromInstance(resource);
+            Holder<Upgrade> upgradeType = resource.get(IUpgradeHelper.INSTANCE.dataComponent());
             if (upgradeType == null) {
                 //Not an upgrade
                 return false;

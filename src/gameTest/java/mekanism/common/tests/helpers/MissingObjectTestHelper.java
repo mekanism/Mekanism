@@ -212,7 +212,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     private boolean upgradeMatches(ItemResource resource, ResourceKey<Upgrade> upgrade) {
         if (MekanismItems.UPGRADE.is(resource)) {
-            Holder<Upgrade> upgradeType = IUpgradeHelper.INSTANCE.fromInstance(resource);
+            Holder<Upgrade> upgradeType = resource.get(IUpgradeHelper.INSTANCE.dataComponent());
             return upgradeType != null && upgradeType.is(upgrade);
         }
         return false;

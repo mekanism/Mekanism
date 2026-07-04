@@ -12,6 +12,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalSerializationHelper;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
@@ -53,7 +54,6 @@ import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.ItemAccessUtils;
@@ -153,7 +153,7 @@ public class MekanismJEI implements IModPlugin {
             @Nullable
             @Override
             public Object getSubtypeData(ItemStack ingredient, UidContext context) {
-                return ingredient.get(MekanismDataComponents.UPGRADE_TYPE);
+                return ingredient.get(IUpgradeHelper.INSTANCE.dataComponent());
             }
         });
     }

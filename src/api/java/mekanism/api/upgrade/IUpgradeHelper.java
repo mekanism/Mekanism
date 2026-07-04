@@ -4,14 +4,11 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModuleHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.TypedInstance;
-import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jspecify.annotations.Nullable;
 
 /// Helper class for interacting with upgrades.
 ///
@@ -40,6 +37,5 @@ public interface IUpgradeHelper {//TODO - 26.2: Docs
 
     ItemResource asResource(Holder<Upgrade> upgrade);
 
-    @Nullable
-    <ITEM extends TypedInstance<Item> & DataComponentGetter> Holder<Upgrade> fromInstance(ITEM instance);
+    DataComponentType<Holder<Upgrade>> dataComponent();
 }

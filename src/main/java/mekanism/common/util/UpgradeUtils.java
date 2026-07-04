@@ -5,35 +5,30 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
-import mekanism.common.component.UpgradeType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.TypedInstance;
-import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jspecify.annotations.Nullable;
 
 public class UpgradeUtils implements IUpgradeHelper {
 
-    @Nullable
     @Override
-    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Holder<Upgrade> fromInstance(ITEM instance) {
-        UpgradeType upgradeType = instance.get(MekanismDataComponents.UPGRADE_TYPE);
-        return upgradeType == null ? null : upgradeType.type();
+    public DataComponentType<Holder<Upgrade>> dataComponent() {
+        return MekanismDataComponents.UPGRADE_TYPE.get();
     }
 
     private DataComponentPatch getPatch(Holder<Upgrade> upgrade) {
         return DataComponentPatch.builder()
-              .set(MekanismDataComponents.UPGRADE_TYPE.get(), new UpgradeType(upgrade))
+              .set(dataComponent(), upgrade)
               .build();
     }
 

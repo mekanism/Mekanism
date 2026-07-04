@@ -8,6 +8,7 @@ import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.Mekanism;
 import mekanism.common.component.BlockData;
 import mekanism.common.component.FilterAware;
@@ -17,7 +18,6 @@ import mekanism.common.component.LockData;
 import mekanism.common.component.OverflowAware;
 import mekanism.common.component.PasteBucketConsumption;
 import mekanism.common.component.StabilizedChunks;
-import mekanism.common.component.UpgradeType;
 import mekanism.common.component.component.AttachedEjector;
 import mekanism.common.component.component.AttachedSideConfig;
 import mekanism.common.component.component.UpgradeAware;
@@ -44,6 +44,7 @@ import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier.RedstoneOutput;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -128,9 +129,9 @@ public class MekanismDataComponents {
                 .networkSynchronized(RedstoneOutput.STREAM_CODEC)
     );
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<UpgradeType>> UPGRADE_TYPE = DATA_COMPONENTS.simple("upgrade_type",
-          builder -> builder.persistent(UpgradeType.CODEC)
-                .networkSynchronized(UpgradeType.STREAM_CODEC)
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Holder<Upgrade>>> UPGRADE_TYPE = DATA_COMPONENTS.simple("upgrade_type",
+          builder -> builder.persistent(Upgrade.CODEC)
+                .networkSynchronized(Upgrade.STREAM_CODEC)
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> DEFAULT_MANUALLY_SELECTED = DATA_COMPONENTS.registerBoolean("default_manually_selected");

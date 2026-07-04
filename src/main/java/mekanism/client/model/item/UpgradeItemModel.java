@@ -53,7 +53,7 @@ public class UpgradeItemModel implements ItemModel {
     public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver modelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel level,
           @Nullable ItemOwner owner, int seed) {
         ItemModel model = context.missingItemModel();
-        Holder<Upgrade> upgradeType = IUpgradeHelper.INSTANCE.fromInstance(stack);
+        Holder<Upgrade> upgradeType = stack.get(IUpgradeHelper.INSTANCE.dataComponent());
         if (upgradeType != null) {
             Either<ResourceKey<Upgrade>, Upgrade> value = upgradeType.unwrap();
             Optional<ResourceKey<Upgrade>> upgradeResourceKey = value.left();

@@ -11,7 +11,6 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
-import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -22,7 +21,7 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
     public static UpgradeInventorySlot input(@Nullable IContentsListener listener, TagKey<Upgrade> supportedTypes) {
         Objects.requireNonNull(supportedTypes, "Supported types cannot be null");
         return new UpgradeInventorySlot(ConstantPredicates.notExternal(), (itemType, _) -> {
-            Holder<Upgrade> upgradeType = IUpgradeHelper.INSTANCE.fromInstance(itemType);
+            Holder<Upgrade> upgradeType = itemType.get(IUpgradeHelper.INSTANCE.dataComponent());
             return upgradeType != null && upgradeType.is(supportedTypes);
         }, listener);
     }
@@ -32,7 +31,7 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
     }
 
     private UpgradeInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert, @Nullable IContentsListener listener) {
-        super(canExtract, canInsert, itemType -> itemType.has(MekanismDataComponents.UPGRADE_TYPE), null, null, listener, 0, 0);
+        super(canExtract, canInsert, itemType -> itemType.has(IUpgradeHelper.INSTANCE.dataComponent()), null, null, listener, 0, 0);
         setSlotOverlay(SlotOverlay.UPGRADE);
     }
 

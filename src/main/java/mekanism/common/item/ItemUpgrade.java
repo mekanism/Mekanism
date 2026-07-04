@@ -2,13 +2,15 @@ package mekanism.common.item;
 
 import java.util.function.Consumer;
 import mekanism.api.MekanismRegistries;
+import mekanism.api.text.EnumColor;
 import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
+import mekanism.common.MekanismLang;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
-import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +34,15 @@ public class ItemUpgrade extends Item implements ICustomCreativeTabContents {
     @Deprecated
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        stack.addToTooltip(MekanismDataComponents.UPGRADE_TYPE.get(), context, tooltipDisplay, tooltipAdder, flag);
+        //TODO - 26.2: Switch this to https://github.com/neoforged/NeoForge/pull/3132
+        DataComponentType<Holder<Upgrade>> dataComponentType = IUpgradeHelper.INSTANCE.dataComponent();
+        Holder<Upgrade> upgradeType = stack.get(dataComponentType);
+        if (upgradeType != null && tooltipDisplay.shows(dataComponentType)) {
+            Upgrade upgrade = upgradeType.value();
+            tooltipAdder.accept(MekanismLang.TOOLTIP_UPGRADE_TYPE.translateColored(EnumColor.PURPLE, upgrade.color(), upgrade));
+            tooltipAdder.accept(MekanismLang.TOOLTIP_UPGRADE_MAX_INSTALLED.translateColored(EnumColor.GRAY, EnumColor.AQUA, upgrade.max()));
+            tooltipAdder.accept(upgrade.description());
+        }
     }
 
     @Override
@@ -43,7 +53,7 @@ public class ItemUpgrade extends Item implements ICustomCreativeTabContents {
             BlockEntity tile = WorldUtils.getTileEntity(world, context.getClickedPos());
             if (tile instanceof IUpgradeTile upgradeTile && upgradeTile.supportsUpgrades()) {
                 ItemStack stack = context.getItemInHand();
-                Holder<Upgrade> upgradeType = IUpgradeHelper.INSTANCE.fromInstance(stack);
+                Holder<Upgrade> upgradeType = stack.get(IUpgradeHelper.INSTANCE.dataComponent());
                 if (upgradeType != null && upgradeTile.supportsUpgrade(upgradeType)) {
                     if (!world.isClientSide()) {
                         int added = upgradeTile.addUpgrades(world.registryAccess(), upgradeType, stack.count());

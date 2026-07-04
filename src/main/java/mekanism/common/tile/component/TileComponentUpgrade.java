@@ -86,7 +86,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         if (canCheckUpgrades) {
             ItemResource itemType = upgradeSlot.resource();
             if (!itemType.isEmpty()) {
-                Holder<Upgrade> upgradeType = IUpgradeHelper.INSTANCE.fromInstance(itemType);
+                Holder<Upgrade> upgradeType = itemType.get(IUpgradeHelper.INSTANCE.dataComponent());
                 if (upgradeType != null && upgradeType.is(supported)) {
                     int upgrades = getUpgrades(upgradeType);
                     if (upgrades < upgradeType.value().max()) {
