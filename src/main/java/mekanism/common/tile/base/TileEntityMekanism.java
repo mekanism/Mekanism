@@ -97,7 +97,7 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
-import mekanism.common.tile.interfaces.ITileUpgradable;
+import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -148,7 +148,7 @@ import org.jspecify.annotations.Nullable;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
-      ITileRedstone, ISecurityTile, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, ITileHeatHandler, IComputerTile, ITileRadioactive, Nameable,
+      ITileRedstone, ISecurityTile, IUpgradeTile, ITierUpgradable, IComparatorSupport, ITrackableContainer, ITileHeatHandler, IComputerTile, ITileRadioactive, Nameable,
       IContentsListener {
 
     protected static final Set<RelativeSide> BACK_ONLY = Set.of(RelativeSide.BACK);

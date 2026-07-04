@@ -304,6 +304,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     }
 
     @Override
+    public boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
+        return upgrade.is(UpgradeIds.SPEED);
+    }
+
+    @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(this::getMode, value -> mode = value));

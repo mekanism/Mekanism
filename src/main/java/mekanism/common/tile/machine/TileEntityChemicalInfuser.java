@@ -218,6 +218,11 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalC
         }
     }
 
+    @Override
+    public boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
+        return upgrade.is(UpgradeIds.SPEED);
+    }
+
     public MachineEnergyContainer<TileEntityChemicalInfuser> energyContainer() {
         return energyContainer;
     }

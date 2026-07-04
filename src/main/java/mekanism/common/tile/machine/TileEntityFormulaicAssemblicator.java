@@ -61,7 +61,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
@@ -724,11 +723,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (upgrade.is(UpgradeIds.SPEED)) {
             ticksRequired = UpgradeUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
         }
-    }
-
-    @Override
-    public List<Component> getInfo(Holder<Upgrade> upgrade) {
-        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     public MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer() {

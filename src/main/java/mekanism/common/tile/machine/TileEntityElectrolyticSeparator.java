@@ -320,6 +320,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         }
     }
 
+    @Override
+    public boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
+        return upgrade.is(UpgradeIds.SPEED);
+    }
+
     public ElectroSeparatorEnergyContainer energyContainer() {
         return energyContainer;
     }

@@ -225,6 +225,11 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
         }
     }
 
+    @Override
+    public boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
+        return upgrade.is(UpgradeIds.SPEED);
+    }
+
     public MachineEnergyContainer<TileEntityPigmentMixer> energyContainer() {
         return energyContainer;
     }

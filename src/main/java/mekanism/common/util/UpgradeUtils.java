@@ -1,30 +1,24 @@
 package mekanism.common.util;
 
 import com.google.common.primitives.Ints;
-import java.util.ArrayList;
-import java.util.List;
 import mekanism.api.math.MathUtils;
 import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
-import mekanism.common.MekanismLang;
 import mekanism.common.component.UpgradeType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.tile.interfaces.ITileUpgradable;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
@@ -56,35 +50,6 @@ public class UpgradeUtils implements IUpgradeHelper {
     @Override
     public ItemResource asResource(Holder<Upgrade> upgrade) {
         return ItemResource.of((Holder<Item>) MekanismItems.UPGRADE, getPatch(upgrade));
-    }
-
-    public static List<Component> getInfo(BlockEntity tile, Holder<Upgrade> upgrade) {
-        List<Component> ret = new ArrayList<>();
-        if (tile instanceof IUpgradeTile upgradeTile) {
-            if (tile instanceof ITileUpgradable upgradable) {
-                return upgradable.getInfo(upgrade);
-            } else {
-                ret = getMultScaledInfo(upgradeTile, upgrade);
-            }
-        }
-        return ret;
-    }
-
-    public static List<Component> getMultScaledInfo(IUpgradeTile tile, Holder<Upgrade> upgrade) {
-        List<Component> ret = new ArrayList<>();
-        if (tile.supportsUpgrades() && upgrade.value().supportsMultiple()) {
-            double effect = Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), tile.getUpgrades(upgrade) / (float) upgrade.value().max());
-            ret.add(MekanismLang.UPGRADES_EFFECT.translate(Math.round(effect * 100) / 100F));
-        }
-        return ret;
-    }
-
-    public static List<Component> getExpScaledInfo(IUpgradeTile tile, Holder<Upgrade> upgrade) {
-        List<Component> ret = new ArrayList<>();
-        if (tile.supportsUpgrades() && upgrade.value().supportsMultiple()) {
-            ret.add(MekanismLang.UPGRADES_EFFECT.translate(Math.pow(2, (float) tile.getUpgrades(upgrade))));
-        }
-        return ret;
     }
 
     public static int getBaseUsage(HolderLookup.Provider registries, IUpgradeTile tile, int def) {

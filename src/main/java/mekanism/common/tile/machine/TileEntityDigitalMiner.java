@@ -87,7 +87,6 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -1045,11 +1044,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         if (upgrade.is(UpgradeIds.SPEED)) {
             delayLength = UpgradeUtils.getTicks(MekanismConfig.general.minerTicksPerMine.get(), upgrade, totalInstalled);
         }
-    }
-
-    @Override
-    public List<Component> getInfo(Holder<Upgrade> upgrade) {
-        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Nullable

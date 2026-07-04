@@ -13,7 +13,6 @@ import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -78,11 +77,6 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
 
     public int getOperationsPerTick() {
         return this.operationsPerTick;
-    }
-
-    @Override
-    public List<Component> getInfo(Holder<Upgrade> upgrade) {
-        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

@@ -50,7 +50,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -399,11 +398,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         return type == ContainerType.FLUID;
-    }
-
-    @Override
-    public List<Component> getInfo(Holder<Upgrade> upgrade) {
-        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     public MachineEnergyContainer<TileEntityElectricPump> energyContainer() {

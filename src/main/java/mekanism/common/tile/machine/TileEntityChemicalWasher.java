@@ -214,6 +214,11 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     }
 
     @Override
+    public boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
+        return upgrade.is(UpgradeIds.SPEED);
+    }
+
+    @Override
     public int getRedstoneLevel() {
         return ContainerType.CHEMICAL.getRedstoneSignalFromContainer(inputTank);
     }

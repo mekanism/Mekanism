@@ -191,6 +191,11 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
         }
     }
 
+    @Override
+    public boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
+        return upgrade.is(UpgradeIds.SPEED);
+    }
+
     public MachineEnergyContainer<TileEntityIsotopicCentrifuge> energyContainer() {
         return energyContainer;
     }

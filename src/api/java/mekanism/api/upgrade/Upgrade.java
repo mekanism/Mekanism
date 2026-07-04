@@ -70,6 +70,11 @@ public record Upgrade(Component displayName, Component description, EnumColor co
         return max() > 1;
     }
 
+    @Override
+    public Component getTextComponent() {
+        return displayName;
+    }
+
     /// Helper to get the default translation key path for a given [Upgrade].
     ///
     /// @param key [Upgrade] name.
@@ -82,10 +87,5 @@ public record Upgrade(Component displayName, Component description, EnumColor co
     /// @param key [Upgrade] name.
     public static String getDefaultDescriptionKey(ResourceKey<? extends Upgrade> key) {
         return key.identifier().toLanguageKey("upgrade", "description");
-    }
-
-    @Override
-    public Component getTextComponent() {
-        return displayName;
     }
 }

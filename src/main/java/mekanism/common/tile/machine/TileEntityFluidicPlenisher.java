@@ -3,7 +3,6 @@ package mekanism.common.tile.machine;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
@@ -44,7 +43,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -307,11 +305,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         if (upgrade.is(UpgradeIds.SPEED)) {
             ticksRequired = UpgradeUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
         }
-    }
-
-    @Override
-    public List<Component> getInfo(Holder<Upgrade> upgrade) {
-        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

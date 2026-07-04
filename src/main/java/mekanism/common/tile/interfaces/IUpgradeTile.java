@@ -1,11 +1,17 @@
 package mekanism.common.tile.interfaces;
 
+import java.util.Collections;
+import java.util.List;
 import mekanism.api.upgrade.Upgrade;
+import mekanism.common.MekanismLang;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import org.jspecify.annotations.Nullable;
 
 public interface IUpgradeTile {
@@ -13,6 +19,9 @@ public interface IUpgradeTile {
     default boolean supportsUpgrades() {
         return true;
     }
+
+    @Nullable
+    TagKey<Upgrade> getSupportedUpgrade();
 
     default boolean supportsUpgrade(Holder<Upgrade> upgradeType) {
         if (supportsUpgrades()) {
@@ -43,4 +52,20 @@ public interface IUpgradeTile {
     TileComponentUpgrade getComponent();
 
     void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgradeType, int totalInstalled);
+
+    default boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
+        return false;
+    }
+
+    default List<Component> getUpgradeWindowInfo(Holder<Upgrade> upgrade) {
+        if (supportsUpgrade(upgrade) && upgrade.value().supportsMultiple()) {
+            float installed = getUpgrades(upgrade);
+            if (upgradeInfoIsExponential(upgrade)) {
+                return Collections.singletonList(MekanismLang.UPGRADES_EFFECT.translate(Math.pow(2, installed)));
+            }
+            double effect = Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), installed / upgrade.value().max());
+            return Collections.singletonList(MekanismLang.UPGRADES_EFFECT.translate(Math.round(effect * 100) / 100F));
+        }
+        return Collections.emptyList();
+    }
 }

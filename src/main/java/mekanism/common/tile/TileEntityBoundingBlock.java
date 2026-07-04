@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import java.util.Collections;
+import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.common.Mekanism;
@@ -15,6 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -107,6 +110,22 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     public boolean supportsUpgrades() {
         IBoundingBlock main = getMain();
         return main != null && main.supportsUpgrades();
+    }
+
+    @Nullable
+    @Override
+    public TagKey<Upgrade> getSupportedUpgrade() {
+        IBoundingBlock main = getMain();
+        return main == null ? null : main.getSupportedUpgrade();
+    }
+
+    @Override
+    public List<Component> getUpgradeWindowInfo(Holder<Upgrade> upgrade) {
+        IBoundingBlock main = getMain();
+        if (main != null) {
+            return main.getUpgradeWindowInfo(upgrade);
+        }
+        return Collections.emptyList();
     }
 
     @Nullable

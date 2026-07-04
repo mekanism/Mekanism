@@ -64,7 +64,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.Block;
@@ -421,11 +420,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             ticksRequired = UpgradeUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
             operationsPerTick = UpgradeUtils.getOperationsPerTick(BASE_TICKS_REQUIRED, 1, upgrade, totalInstalled);
         }
-    }
-
-    @Override
-    public List<Component> getInfo(Holder<Upgrade> upgrade) {
-        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

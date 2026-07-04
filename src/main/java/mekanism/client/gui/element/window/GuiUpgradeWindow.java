@@ -26,7 +26,6 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.network.to_server.PacketRemoveUpgrade;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -100,7 +99,7 @@ public class GuiUpgradeWindow extends GuiWindow {
             int textY = 4 + 6 * lines;
             rightScreen.drawScaledScrollingString(guiGraphics, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.value().max()), 0, textY,  TextAlignment.LEFT,
                   screenTextColor(), screenWidth, 2, false, 0.6F, msSelected);
-            for (Component component : UpgradeUtils.getInfo(tile, selectedType)) {
+            for (Component component : tile.getUpgradeWindowInfo(selectedType)) {
                 //Note: We add the six here instead of after to account for the line above this for loop that draws the upgrade count
                 textY += 6;
                 rightScreen.drawScaledScrollingString(guiGraphics, component, 0, textY, TextAlignment.LEFT, screenTextColor(), screenWidth, 2,
