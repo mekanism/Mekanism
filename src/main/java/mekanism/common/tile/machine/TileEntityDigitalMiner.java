@@ -1043,7 +1043,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
         super.recalculateUpgrades(registries, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED)) {
-            delayLength = MekanismUtils.getTicks(MekanismConfig.general.minerTicksPerMine.get(), upgrade, totalInstalled);
+            delayLength = UpgradeUtils.getTicks(MekanismConfig.general.minerTicksPerMine.get(), upgrade, totalInstalled);
         }
     }
 

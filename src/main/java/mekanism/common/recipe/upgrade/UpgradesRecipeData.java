@@ -7,10 +7,10 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.resource.LargeResourceStack;
+import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
-import mekanism.common.component.UpgradeType;
 import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
@@ -92,7 +92,7 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
             }
             ItemResource resource = slot.resource();
             long amount = slot.amount();
-            UpgradeType upgradeType = resource.get(MekanismDataComponents.UPGRADE_TYPE);
+            Holder<Upgrade> upgradeType = IUpgradeHelper.INSTANCE.fromInstance(resource);
             if (upgradeType == null) {
                 //Not an upgrade
                 return false;

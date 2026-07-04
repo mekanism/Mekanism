@@ -2,8 +2,12 @@ package mekanism.client.recipe_viewer.alias;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.upgrade.IUpgradeHelper;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.component.containers.type.ContainerType;
@@ -17,14 +21,15 @@ import mekanism.common.resource.IResource;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.UpgradeUtils;
-import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.neoforged.neoforge.data.loading.DatagenModLoader;
 
 public final class MekanismAliasMapping implements IAliasMapping {
 
@@ -369,19 +374,28 @@ public final class MekanismAliasMapping implements IAliasMapping {
     }
 
     private <ITEM, FLUID, CHEMICAL> void addUpgradeAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
-        Provider registries = rv.registries();
+        HolderGetter<Upgrade> upgrades = rv.registries().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
         rv.addItemAliases(MekanismItems.UPGRADE, MekanismAliases.UPGRADE_AUGMENT);
-        rv.addAliases(UpgradeUtils.getStack(registries.getOrThrow(UpgradeIds.SPEED)), MekanismAliases.UPGRADE_OVERCLOCK);
-        rv.addAliases(UpgradeUtils.getStack(registries.getOrThrow(UpgradeIds.ENERGY)), MekanismAliases.ENERGY_STORAGE);
-        rv.addAliases(UpgradeUtils.getStack(registries.getOrThrow(UpgradeIds.MUFFLING)), MekanismAliases.UPGRADE_MUFFLER);
-        rv.addAliases(UpgradeUtils.getStack(registries.getOrThrow(UpgradeIds.ANCHOR)), MekanismAliases.CHUNK_LOADER);
-        rv.addAliases(UpgradeUtils.getStack(registries.getOrThrow(UpgradeIds.STONE_GENERATOR)), MekanismAliases.UPGRADE_HOLE_FILLER);
+        addUpgrade(rv, upgrades, UpgradeIds.SPEED, MekanismAliases.UPGRADE_OVERCLOCK);
+        addUpgrade(rv, upgrades, UpgradeIds.ENERGY, MekanismAliases.ENERGY_STORAGE);
+        addUpgrade(rv, upgrades, UpgradeIds.MUFFLING, MekanismAliases.UPGRADE_MUFFLER);
+        addUpgrade(rv, upgrades, UpgradeIds.ANCHOR, MekanismAliases.CHUNK_LOADER);
+        addUpgrade(rv, upgrades, UpgradeIds.STONE_GENERATOR, MekanismAliases.UPGRADE_HOLE_FILLER);
         rv.addItemHolderAliases(List.of(
               MekanismItems.BASIC_TIER_INSTALLER,
               MekanismItems.ADVANCED_TIER_INSTALLER,
               MekanismItems.ELITE_TIER_INSTALLER,
               MekanismItems.ULTIMATE_TIER_INSTALLER
         ), MekanismAliases.INSTALLER_FACTORY, MekanismAliases.INSTALLER_UPGRADE);
+    }
+
+    private <ITEM, FLUID, CHEMICAL> void addUpgrade(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv, HolderGetter<Upgrade> upgrades, ResourceKey<Upgrade> upgrade, IHasTranslationKey... aliases) {
+        Optional<Reference<Upgrade>> upgradeReference = upgrades.get(upgrade);
+        if (upgradeReference.isPresent()) {
+            rv.addAliases(IUpgradeHelper.INSTANCE.asStack(upgradeReference.get()), MekanismAliases.UPGRADE_OVERCLOCK);
+        } else if (DatagenModLoader.isRunningDataGen()) {
+            throw new IllegalStateException("Missing element " + upgrade);
+        }
     }
 
     private <ITEM, FLUID, CHEMICAL> void addMiscAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {

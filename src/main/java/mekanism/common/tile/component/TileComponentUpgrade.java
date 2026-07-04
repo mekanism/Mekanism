@@ -16,9 +16,9 @@ import java.util.function.Function;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
-import mekanism.common.component.UpgradeType;
 import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.integration.computer.ComputerException;
@@ -30,7 +30,6 @@ import mekanism.common.inventory.container.sync.map.SyncableUpgradeMap;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -86,23 +85,22 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         if (canCheckUpgrades) {
             ItemResource itemType = upgradeSlot.resource();
             if (!itemType.isEmpty()) {
-                UpgradeType upgradeType = itemType.get(MekanismDataComponents.UPGRADE_TYPE);
+                Holder<Upgrade> upgradeType = IUpgradeHelper.INSTANCE.fromInstance(itemType);
                 if (upgradeType != null && upgradeType.is(supported)) {
-                    Holder<Upgrade> type = upgradeType.type();
-                    int upgrades = getUpgrades(type);
-                    if (upgrades < type.value().max()) {
+                    int upgrades = getUpgrades(upgradeType);
+                    if (upgrades < upgradeType.value().max()) {
                         if (upgradeTicks < UPGRADE_TICKS_REQUIRED) {
                             upgradeTicks++;
                             return;
                         } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
-                            int toAdd = getUpgradesToAdd(type, upgrades, upgradeSlot.amountAsInt());
+                            int toAdd = getUpgradesToAdd(upgradeType, upgrades, upgradeSlot.amountAsInt());
                             if (toAdd > 0) {
                                 try (Transaction subTransaction = Transaction.open(transaction)) {
                                     int extracted = upgradeSlot.extract(itemType, toAdd, subTransaction, AutomationType.INTERNAL);
                                     if (extracted > 0) {//Note: This will always be <= toAdd
                                         //If we added any upgrades (even if it was less than the amount we expected to be able to add)
                                         // increment how many upgrades added, and commit the transaction to actually consume them from the slot
-                                        setUpgrades(registries, type, upgrades + extracted);
+                                        setUpgrades(registries, upgradeType, upgrades + extracted);
                                         subTransaction.commit();
                                     }
                                 }
@@ -175,7 +173,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         int installed = getUpgrades(upgrade);
         if (installed > 0) {
             try (Transaction transaction = Transaction.openRoot()) {
-                int removed = upgradeOutputSlot.insert(UpgradeUtils.getResource(upgrade), removeAll ? installed : 1, transaction, AutomationType.INTERNAL);
+                int removed = upgradeOutputSlot.insert(IUpgradeHelper.INSTANCE.asResource(upgrade), removeAll ? installed : 1, transaction, AutomationType.INTERNAL);
                 if (removed > 0) {
                     //We can fit at least one in the output slot
                     //Actually remove them and put them in the output slot
@@ -272,16 +270,13 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     @Override
     public void readFromUpdateTag(ValueInput input) {
-        Level level = tile.getLevel();
-        if (level != null) {//Should never realistically be null here
-            Holder.Reference<Upgrade> mufflingUpgrade = level.registryAccess().getOrThrow(UpgradeIds.MUFFLING);
-            if (supports(mufflingUpgrade)) {
-                int mufflingCount = input.getIntOr(SerializationConstants.MUFFLING_COUNT, 0);
-                if (mufflingCount == 0) {
-                    upgrades.removeInt(mufflingUpgrade);
-                } else {
-                    upgrades.put(mufflingUpgrade, mufflingCount);
-                }
+        Holder.Reference<Upgrade> mufflingUpgrade = input.lookup().get(UpgradeIds.MUFFLING).orElse(null);
+        if (mufflingUpgrade != null && supports(mufflingUpgrade)) {
+            int mufflingCount = input.getIntOr(SerializationConstants.MUFFLING_COUNT, 0);
+            if (mufflingCount == 0) {
+                upgrades.removeInt(mufflingUpgrade);
+            } else {
+                upgrades.put(mufflingUpgrade, mufflingCount);
             }
         }
     }
@@ -294,7 +289,8 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         return list;
     }
 
-    @ComputerMethod//Note: Not synthetic so that the computer help method can get the map result type
+    @ComputerMethod
+//Note: Not synthetic so that the computer help method can get the map result type
     Map<Holder<Upgrade>, Integer> getInstalledUpgrades() {
         return upgrades;
     }

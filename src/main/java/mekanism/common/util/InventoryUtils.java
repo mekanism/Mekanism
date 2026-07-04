@@ -1,11 +1,11 @@
 package mekanism.common.util;
 
 import com.google.common.primitives.Ints;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
 import mekanism.api.AutomationType;
@@ -16,6 +16,7 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
+import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.item.interfaces.IDroppableContents;
@@ -81,8 +82,8 @@ public final class InventoryUtils {
             UpgradeAware upgradeAware = itemType.get(MekanismDataComponents.UPGRADES);
             if (upgradeAware != null) {
                 dropItemContents(level, blockPos, List.of(upgradeAware.inputSlot(), upgradeAware.outputSlot()), scalar, dropper, LargeResourceStack::resource, LargeResourceStack::amount);
-                dropItemContents(level, blockPos, upgradeAware.upgrades().object2IntEntrySet(), scalar, dropper, entry -> UpgradeUtils.getResource(entry.getKey()),
-                      Map.Entry::getValue);
+                dropItemContents(level, blockPos, upgradeAware.upgrades().object2IntEntrySet(), scalar, dropper, entry -> IUpgradeHelper.INSTANCE.asResource(entry.getKey()),
+                      Object2IntMap.Entry::getIntValue);
             }
             IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(itemType);
             if (moduleContainer != null) {

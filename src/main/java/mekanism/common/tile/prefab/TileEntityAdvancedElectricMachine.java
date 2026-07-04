@@ -3,7 +3,6 @@ package mekanism.common.tile.prefab;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.upgrade.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -21,6 +20,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
@@ -45,6 +45,7 @@ import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLoo
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -202,9 +203,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         super.recalculateUpgrades(registries, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED) || (upgrade.is(UpgradeIds.CHEMICAL) && supportsUpgrade(upgrade))) {
             if (useStatisticalMechanics()) {
-                gasPerTickMeanMultiplier = MekanismUtils.getGasPerTickMeanMultiplier(registries, this);
+                gasPerTickMeanMultiplier = UpgradeUtils.getGasPerTickMeanMultiplier(registries, this);
             } else {
-                baseTotalUsage = MekanismUtils.getBaseUsage(registries, this, baseTicksRequired);
+                baseTotalUsage = UpgradeUtils.getBaseUsage(registries, this, baseTicksRequired);
             }
         }
     }

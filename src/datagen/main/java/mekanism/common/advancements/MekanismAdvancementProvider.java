@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.datagen.recipe.RecipeCriterion;
+import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
@@ -33,7 +34,6 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.util.UpgradeUtils;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.predicates.ItemPredicate;
@@ -317,7 +317,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .displayAndCriterion(MekanismItems.DICTIONARY, AdvancementType.TASK, false)
               .save(consumer);
         advancement(MekanismAdvancements.STONE_GENERATOR)
-              .display(UpgradeUtils.getTemplate(upgrades, UpgradeIds.STONE_GENERATOR, 1), AdvancementType.TASK, true)
+              .display(IUpgradeHelper.INSTANCE.asTemplate(upgrades, UpgradeIds.STONE_GENERATOR), AdvancementType.TASK, true)
               .addCriterion(UpgradeIds.STONE_GENERATOR.identifier().getPath(), hasUpgrade(UpgradeIds.STONE_GENERATOR))
               .save(consumer);
 

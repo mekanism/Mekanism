@@ -418,8 +418,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
         super.recalculateUpgrades(registries, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED)) {
-            ticksRequired = MekanismUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
-            operationsPerTick = MekanismUtils.getOperationsPerTick(BASE_TICKS_REQUIRED, 1, upgrade, totalInstalled);
+            ticksRequired = UpgradeUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
+            operationsPerTick = UpgradeUtils.getOperationsPerTick(BASE_TICKS_REQUIRED, 1, upgrade, totalInstalled);
         }
     }
 

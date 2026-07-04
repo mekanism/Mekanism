@@ -48,8 +48,8 @@ import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLoo
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -204,7 +204,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
         super.recalculateUpgrades(registries, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.CHEMICAL) || upgrade.is(UpgradeIds.SPEED)) {
-            injectUsage = MekanismUtils.getGasPerTickMeanMultiplier(registries, this);
+            injectUsage = UpgradeUtils.getGasPerTickMeanMultiplier(registries, this);
         }
     }
 

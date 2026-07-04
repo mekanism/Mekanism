@@ -6,7 +6,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 
 /// @since 10.8.0
-public class UpgradeIds {//TODO - 26.2: Docs that these are expected to always be present and we don't support removing them with datapacks
+public class UpgradeIds {
 
     private UpgradeIds() {
     }

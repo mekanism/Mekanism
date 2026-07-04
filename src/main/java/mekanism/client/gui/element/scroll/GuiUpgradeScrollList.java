@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.text.EnumColor;
+import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -56,7 +56,7 @@ public class GuiUpgradeScrollList extends GuiInstallableScrollList<Holder<Upgrad
 
     @Override
     protected ItemStack getRenderStack(Holder<Upgrade> upgrade) {
-        return UpgradeUtils.getStack(upgrade);
+        return IUpgradeHelper.INSTANCE.asStack(upgrade);
     }
 
     @Nullable

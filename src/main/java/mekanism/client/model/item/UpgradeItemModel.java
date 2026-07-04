@@ -7,9 +7,8 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.MekanismRegistries;
+import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
-import mekanism.common.component.UpgradeType;
-import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
@@ -22,6 +21,7 @@ import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.sprite.TextureSlots;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.ItemOwner;
@@ -49,9 +49,9 @@ public class UpgradeItemModel implements ItemModel {
     public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver modelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel level,
           @Nullable ItemOwner owner, int seed) {
         ItemModel model = context.missingItemModel();
-        UpgradeType upgradeType = stack.get(MekanismDataComponents.UPGRADE_TYPE);
+        Holder<Upgrade> upgradeType = IUpgradeHelper.INSTANCE.fromInstance(stack);
         if (upgradeType != null) {
-            Either<ResourceKey<Upgrade>, Upgrade> value = upgradeType.type().unwrap();
+            Either<ResourceKey<Upgrade>, Upgrade> value = upgradeType.unwrap();
             Optional<ResourceKey<Upgrade>> upgradeResourceKey = value.left();
             Optional<Upgrade> optionalUpgrade = value.right();
             if (optionalUpgrade.isPresent() && level != null) {

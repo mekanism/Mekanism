@@ -2,11 +2,11 @@ package mekanism.common.item;
 
 import java.util.function.Consumer;
 import mekanism.api.MekanismRegistries;
-import mekanism.common.component.UpgradeType;
+import mekanism.api.upgrade.IUpgradeHelper;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.interfaces.IUpgradeTile;
-import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -43,10 +43,10 @@ public class ItemUpgrade extends Item implements ICustomCreativeTabContents {
             BlockEntity tile = WorldUtils.getTileEntity(world, context.getClickedPos());
             if (tile instanceof IUpgradeTile upgradeTile && upgradeTile.supportsUpgrades()) {
                 ItemStack stack = context.getItemInHand();
-                UpgradeType upgradeType = stack.get(MekanismDataComponents.UPGRADE_TYPE);
-                if (upgradeType != null && upgradeTile.supportsUpgrade(upgradeType.type())) {
+                Holder<Upgrade> upgradeType = IUpgradeHelper.INSTANCE.fromInstance(stack);
+                if (upgradeType != null && upgradeTile.supportsUpgrade(upgradeType)) {
                     if (!world.isClientSide()) {
-                        int added = upgradeTile.addUpgrades(world.registryAccess(), upgradeType.type(), stack.count());
+                        int added = upgradeTile.addUpgrades(world.registryAccess(), upgradeType, stack.count());
                         if (added > 0) {
                             stack.consume(added, player);
                         }
@@ -62,7 +62,7 @@ public class ItemUpgrade extends Item implements ICustomCreativeTabContents {
     public void addItems(ItemDisplayParameters displayParameters, Holder<Item> item, Consumer<ItemStack> addToTab) {
         displayParameters.holders().lookupOrThrow(MekanismRegistries.Keys.UPGRADES)
               .listElements()
-              .map(UpgradeUtils::getStack)
+              .map(IUpgradeHelper.INSTANCE::asStack)
               .forEach(addToTab);
     }
 

@@ -207,7 +207,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
             UpgradeAware upgradeAware = this.attachedAccess.getResource().getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
             this.lastInstalled = upgradeAware.getUpgradeCount(UpgradeIds.ENERGY);
             this.baseStorage = baseStorage;
-            this.value = MekanismUtils.getMaxEnergy(this.lastInstalled, this.baseStorage.getAsLong());
+            this.value = this.lastInstalled.getMaxEnergy(this.baseStorage.getAsLong());
         }
 
         @Override
@@ -216,7 +216,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
             UpgradeAmount installed = upgradeAware.getUpgradeCount(UpgradeIds.ENERGY);
             if (!installed.equals(lastInstalled)) {
                 lastInstalled = installed;
-                value = MekanismUtils.getMaxEnergy(this.lastInstalled, baseStorage.getAsLong());
+                value = this.lastInstalled.getMaxEnergy(baseStorage.getAsLong());
             }
             return value;
         }

@@ -9,17 +9,18 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
+import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.component.FilterAware;
 import mekanism.common.component.FormulaComponent;
 import mekanism.common.component.OverflowAware;
-import mekanism.common.component.UpgradeType;
 import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.component.containers.resource.AttachedResources;
 import mekanism.common.component.qio.PortableDashboardContents;
@@ -33,8 +34,8 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentType;
@@ -195,23 +196,23 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     private Object2IntMap<Holder<Upgrade>> getUpgrades() {
         Object2IntMap<Holder<Upgrade>> upgrades = new Object2IntOpenHashMap<>();
-        RegistryAccess registryAccess = getLevel().registryAccess();
-        upgrades.put(registryAccess.getOrThrow(UpgradeIds.SPEED), 5);
-        upgrades.put(registryAccess.getOrThrow(UpgradeIds.ENERGY), 3);
+        HolderGetter<Upgrade> upgradeLookup = getLevel().registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
+        upgrades.put(upgradeLookup.getOrThrow(UpgradeIds.SPEED), 5);
+        upgrades.put(upgradeLookup.getOrThrow(UpgradeIds.ENERGY), 3);
         return upgrades;
     }
 
     private UpgradeAware makeUpgrades(boolean validFirstSlot, boolean validSecondSlot) {
-        RegistryAccess registryAccess = getLevel().registryAccess();
+        HolderGetter<Upgrade> upgrades = getLevel().registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
         return new UpgradeAware(getUpgrades(),
-              LargeResourceStack.ITEM_HELPER.createStack(validFirstSlot ? UpgradeUtils.getResource(registryAccess, UpgradeIds.SPEED) : failureItemType(), 3),
-              LargeResourceStack.ITEM_HELPER.createStack(validSecondSlot ? UpgradeUtils.getResource(registryAccess, UpgradeIds.ENERGY) : failureItemType(), 5)
+              LargeResourceStack.ITEM_HELPER.createStack(validFirstSlot ? IUpgradeHelper.INSTANCE.asResource(upgrades.getOrThrow(UpgradeIds.SPEED)) : failureItemType(), 3),
+              LargeResourceStack.ITEM_HELPER.createStack(validSecondSlot ? IUpgradeHelper.INSTANCE.asResource(upgrades.getOrThrow(UpgradeIds.ENERGY)) : failureItemType(), 5)
         );
     }
 
     private boolean upgradeMatches(ItemResource resource, ResourceKey<Upgrade> upgrade) {
         if (MekanismItems.UPGRADE.is(resource)) {
-            UpgradeType upgradeType = resource.get(MekanismDataComponents.UPGRADE_TYPE);
+            Holder<Upgrade> upgradeType = IUpgradeHelper.INSTANCE.fromInstance(resource);
             return upgradeType != null && upgradeType.is(upgrade);
         }
         return false;

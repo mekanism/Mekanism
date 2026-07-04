@@ -128,7 +128,6 @@ public class MekanismDataComponents {
                 .networkSynchronized(RedstoneOutput.STREAM_CODEC)
     );
 
-    //TODO - 26.2: Do we need to expose this component to the api?
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<UpgradeType>> UPGRADE_TYPE = DATA_COMPONENTS.simple("upgrade_type",
           builder -> builder.persistent(UpgradeType.CODEC)
                 .networkSynchronized(UpgradeType.STREAM_CODEC)

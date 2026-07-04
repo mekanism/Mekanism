@@ -10,8 +10,6 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipProvider;
@@ -23,21 +21,9 @@ public record UpgradeType(Holder<Upgrade> type) implements TooltipProvider {
 
     @Override
     public void addToTooltip(TooltipContext context, Consumer<Component> consumer, TooltipFlag flag, DataComponentGetter components) {
-        Upgrade upgrade = upgrade();
+        Upgrade upgrade = type.value();
         consumer.accept(MekanismLang.TOOLTIP_UPGRADE_TYPE.translateColored(EnumColor.PURPLE, upgrade.color(), upgrade));
         consumer.accept(MekanismLang.TOOLTIP_UPGRADE_MAX_INSTALLED.translateColored(EnumColor.GRAY, EnumColor.AQUA, upgrade.max()));
         consumer.accept(upgrade.description());
-    }
-
-    public Upgrade upgrade() {
-        return type.value();
-    }
-
-    public boolean is(TagKey<Upgrade> upgrade) {
-        return type.is(upgrade);
-    }
-
-    public boolean is(ResourceKey<Upgrade> upgrade) {
-        return type.is(upgrade);
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.MekanismRegistries.Keys;
 import mekanism.api.text.EnumColor;
+import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -13,7 +14,6 @@ import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
-import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -84,7 +84,7 @@ public class GuiSupportedUpgrades extends GuiElement {
                 UpgradePos pos = getUpgradePos(i);
                 int xPos = relativeX + 1 + pos.x;
                 int yPos = relativeY + 1 + pos.y;
-                gui().renderItem(guiGraphics, UpgradeUtils.getStack(upgrade), xPos, yPos, 0.75F);
+                gui().renderItem(guiGraphics, IUpgradeHelper.INSTANCE.asStack(upgrade), xPos, yPos, 0.75F);
                 if (!upgrade.is(supportedUpgrades)) {
                     //Make the upgrade appear faded if it is not supported
                     guiGraphics.fill(xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);

@@ -731,10 +731,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         TileComponentUpgrade component = getComponent();
         if (component != null) {
             HolderLookup.Provider lookup = input.lookup();
-            Reference<Upgrade> upgrade = lookup.getOrThrow(UpgradeIds.SPEED);
-            //TODO - 26.2: Why do we force a buffer update? Theoretically reading the tile components should already have caused the upgrades to be recalculated
-            //force buffer to update
-            recalculateUpgrades(lookup, upgrade, getUpgrades(upgrade));
+            Optional<Reference<Upgrade>> upgrade = lookup.get(UpgradeIds.SPEED);
+            //noinspection OptionalIsPresent - Capturing lambda
+            if (upgrade.isPresent()) {
+                //TODO - 26.2: Why do we force a buffer update? Theoretically reading the tile components should already have caused the upgrades to be recalculated
+                // It is because if there is no speed upgrades installed we want to update it. But maybe we should make TileComponentUpgrade call recalculate for all
+                // supported ones, even the ones that aren't stored?
+                Reference<Upgrade> speedUpgrade = upgrade.get();
+                //force buffer to update
+                recalculateUpgrades(lookup, speedUpgrade, getUpgrades(speedUpgrade));
+            }
         }
         readSustainedData(input);
         for (IContainerType<?, ?> type : ContainerType.TYPES) {
@@ -1425,8 +1431,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     protected boolean isFullyMuffled(HolderGetter.Provider provider) {
         if (hasSound()) {
-            Reference<Upgrade> mufflingUpgrade = provider.getOrThrow(UpgradeIds.MUFFLING);
-            if (supportsUpgrade(mufflingUpgrade)) {
+            Reference<Upgrade> mufflingUpgrade = provider.get(UpgradeIds.MUFFLING).orElse(null);
+            if (mufflingUpgrade != null && supportsUpgrade(mufflingUpgrade)) {
                 return getUpgrades(mufflingUpgrade) >= mufflingUpgrade.value().max();
             }
         }

@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.upgrade.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
@@ -22,6 +21,7 @@ import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
@@ -51,8 +51,8 @@ import mekanism.common.tile.machine.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -282,9 +282,9 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
         super.recalculateUpgrades(registries, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED) || upgrade.is(UpgradeIds.CHEMICAL) && supportsUpgrade(upgrade)) {
             if (useStatisticalMechanics()) {
-                chemicalPerTickMeanMultiplier = MekanismUtils.getGasPerTickMeanMultiplier(registries, this);
+                chemicalPerTickMeanMultiplier = UpgradeUtils.getGasPerTickMeanMultiplier(registries, this);
             } else {
-                baseTotalUsage = MekanismUtils.getBaseUsage(registries, this, BASE_TICKS_REQUIRED);
+                baseTotalUsage = UpgradeUtils.getBaseUsage(registries, this, BASE_TICKS_REQUIRED);
             }
         }
     }

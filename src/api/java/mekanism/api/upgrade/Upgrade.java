@@ -19,9 +19,12 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 
-
+/// @param displayName Translated display name of this upgrade.
+/// @param description Translated description of what this upgrade does.
 /// @param color       The color to use when rendering various information related to this upgrade.
 /// @param max         The max number of upgrades of this type that can be installed.
+///
+/// @since 10.8.0
 public record Upgrade(Component displayName, Component description, EnumColor color, int max) implements IHasTextComponent {//TODO - 26.2: Docs
 
     public static final Codec<Upgrade> DIRECT_CODEC = RecordCodecBuilder.create(builder -> builder.group(

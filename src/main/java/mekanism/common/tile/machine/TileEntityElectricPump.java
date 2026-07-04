@@ -43,7 +43,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
@@ -387,7 +386,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
         super.recalculateUpgrades(registries, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED)) {
-            ticksRequired = MekanismUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
+            ticksRequired = UpgradeUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
             outputRate = BASE_OUTPUT_RATE * (totalInstalled + 1);
         }
     }

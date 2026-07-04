@@ -31,7 +31,8 @@ public abstract class SyncableMap<KEY, VALUE, MAP extends Map<KEY, VALUE>> imple
         setter.accept(PacketUtils.read(registryAccess, rawData, streamCodec()::decode));
     }
 
-    protected abstract StreamCodec<RegistryFriendlyByteBuf, MAP> streamCodec();
+    //TODO - 26.2: Do we want to switch the syncable collections over to having stream codecs?
+    protected abstract StreamCodec<? super RegistryFriendlyByteBuf, MAP> streamCodec();
 
     @Override
     public ByteArrayPropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {

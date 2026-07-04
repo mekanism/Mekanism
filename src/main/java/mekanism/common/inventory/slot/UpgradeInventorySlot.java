@@ -5,13 +5,14 @@ import java.util.function.BiPredicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
-import mekanism.common.component.UpgradeType;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import mekanism.common.registries.MekanismDataComponents;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
@@ -21,7 +22,7 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
     public static UpgradeInventorySlot input(@Nullable IContentsListener listener, TagKey<Upgrade> supportedTypes) {
         Objects.requireNonNull(supportedTypes, "Supported types cannot be null");
         return new UpgradeInventorySlot(ConstantPredicates.notExternal(), (itemType, _) -> {
-            UpgradeType upgradeType = itemType.get(MekanismDataComponents.UPGRADE_TYPE);
+            Holder<Upgrade> upgradeType = IUpgradeHelper.INSTANCE.fromInstance(itemType);
             return upgradeType != null && upgradeType.is(supportedTypes);
         }, listener);
     }

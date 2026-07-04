@@ -10,8 +10,10 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.List;
 import java.util.function.Function;
 import mekanism.api.SerializationConstants;
+import mekanism.api.math.MathUtils;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.upgrade.Upgrade;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -62,5 +64,17 @@ public record UpgradeAware(Object2IntMap<Holder<Upgrade>> upgrades, LargeResourc
     public record UpgradeAmount(int stored, int max) {
 
         private static final UpgradeAmount EMPTY = new UpgradeAmount(0, 0);
+
+        /// Gets the maximum energy for a machine's item form via its upgrades.
+        ///
+        /// @param def original, default max energy
+        ///
+        /// @return max energy
+        public long getMaxEnergy(long def) {
+            if (max == 0) {
+                return def;
+            }
+            return MathUtils.clampToLong(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), stored / (double) max));
+        }
     }
 }

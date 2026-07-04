@@ -1,6 +1,7 @@
 package mekanism.common.tile.machine;
 
 import java.util.List;
+import java.util.Optional;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
@@ -181,8 +182,12 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         boolean update = baseTicksRequired != recipeDuration;
         baseTicksRequired = recipeDuration;
         if (update) {
-            Reference<Upgrade> speedUpgrade = registries.getOrThrow(UpgradeIds.SPEED);
-            recalculateUpgrades(registries, speedUpgrade, getUpgrades(speedUpgrade));
+            Optional<Reference<Upgrade>> upgrade = registries.get(UpgradeIds.SPEED);
+            //noinspection OptionalIsPresent - Capturing lambda
+            if (upgrade.isPresent()) {
+                Reference<Upgrade> speedUpgrade = upgrade.get();
+                recalculateUpgrades(registries, speedUpgrade, getUpgrades(speedUpgrade));
+            }
         }
         //Ensure we take our recipe's energy per tick into account
         energyContainer.updateEnergyPerTick(registries);

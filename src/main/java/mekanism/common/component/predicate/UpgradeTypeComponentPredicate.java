@@ -20,6 +20,6 @@ public record UpgradeTypeComponentPredicate(ResourceKey<Upgrade> upgradeType) im
 
     @Override
     public boolean matches(UpgradeType value) {
-        return value.is(upgradeType);
+        return value.type().is(upgradeType);
     }
 }
