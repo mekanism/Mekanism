@@ -1,0 +1,25 @@
+# NeoForge -> Fabric/shim class mapping table (TSV: old_fqcn, new_fqcn, [mode])
+# Rule: shim classes keep the NeoForge simple name so only import lines change.
+# Phase 1 "easy" mappings — extended as phases land.
+
+# --- loader / environment ---
+net.neoforged.fml.ModList	mekanism.fabric_shim.fml.ModList
+net.neoforged.fml.loading.FMLEnvironment	mekanism.fabric_shim.fml.FMLEnvironment
+net.neoforged.api.distmarker.Dist	mekanism.fabric_shim.distmarker.Dist
+net.neoforged.api.distmarker.OnlyIn	mekanism.fabric_shim.distmarker.OnlyIn
+
+# --- fake player (Fabric API ships one; shim adapts constructor surface) ---
+net.neoforged.neoforge.common.util.FakePlayer	mekanism.fabric_shim.util.FakePlayer
+
+# --- server lifecycle ---
+net.neoforged.neoforge.server.ServerLifecycleHooks	mekanism.fabric_shim.server.ServerLifecycleHooks
+
+# --- registries (Phase 1: shim reimplements over eager Registry.register) ---
+net.neoforged.neoforge.registries.DeferredRegister	mekanism.fabric_shim.registries.DeferredRegister
+net.neoforged.neoforge.registries.DeferredHolder	mekanism.fabric_shim.registries.DeferredHolder
+
+# --- config ---
+# NO remap needed: Forge Config API Port (Fabric) provides net.neoforged.neoforge.common.ModConfigSpec
+# and friends under their original package names. Only the registration call site changes
+# (ModContainer#registerConfig -> fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry),
+# which is a hand edit in the entry point, not a scripted transform.
