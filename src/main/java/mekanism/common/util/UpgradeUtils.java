@@ -88,7 +88,7 @@ public class UpgradeUtils implements IUpgradeHelper {
     ///
     /// @return required operating ticks
     public static double getTicksD(int def, Holder<Upgrade> speedUpgrade, int installedUpgrades) {
-        return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -(installedUpgrades / (double) speedUpgrade.value().max()));
+        return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(installedUpgrades, speedUpgrade));
     }
 
     /// Get the amount of operations per tick, accounting for bonus operations from non-default upgrade modifiers. Fractional operations are ignored
@@ -146,6 +146,10 @@ public class UpgradeUtils implements IUpgradeHelper {
     }
 
     private static double fractionUpgrades(IUpgradeTile tile, Holder<Upgrade> type) {
-        return tile.getUpgrades(type) / (double) type.value().max();
+        return fractionUpgrades(tile.getUpgrades(type), type);
+    }
+
+    private static double fractionUpgrades(int installed, Holder<Upgrade> type) {
+        return installed / (double) type.value().max();
     }
 }

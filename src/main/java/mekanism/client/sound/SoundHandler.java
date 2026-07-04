@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.api.upgrade.Upgrade;
-import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -27,10 +27,11 @@ import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -184,8 +185,9 @@ public class SoundHandler {
     }
 
     @Nullable
-    public static SoundInstance startTileSound(SoundEvent soundEvent, SoundSource category, float volume, Level level, BlockPos pos) {
-        return startTileSound(soundEvent, category, volume, level, pos, true);
+    public static SoundInstance startTileSound(SoundEvent soundEvent, SoundSource category, float volume, RandomSource random, BlockPos pos,
+          Supplier<@Nullable Holder<Upgrade>> mufflingReference) {
+        return startTileSound(soundEvent, category, volume, random, pos, mufflingReference, true);
     }
 
     @NullUnmarked//Note: This is NullUnmarked as get is not annotated as nullable: https://github.com/vigna/fastutil/pull/375
@@ -194,13 +196,14 @@ public class SoundHandler {
     }
 
     @Nullable
-    public static SoundInstance startTileSound(SoundEvent soundEvent, SoundSource category, float volume, Level level, BlockPos pos, boolean looping) {
+    public static SoundInstance startTileSound(SoundEvent soundEvent, SoundSource category, float volume, RandomSource random, BlockPos pos,
+          Supplier<@Nullable Holder<Upgrade>> mufflingReference, boolean looping) {
         // First, check to see if there's already a sound playing at the desired location
         SoundInstance s = getSound(pos.asLong());
         if (s == null || !Minecraft.getInstance().getSoundManager().isActive(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
             // The TileTickableSound will then periodically poll to see if the volume should be adjusted
-            s = new TileTickableSound(soundEvent, category, level, pos, volume, looping);
+            s = new TileTickableSound(soundEvent, category, random, pos, volume, mufflingReference, looping);
 
             if (!isClientPlayerInRange(s)) {
                 //If the player is not in range of the sound the tile would play,
@@ -297,6 +300,7 @@ public class SoundHandler {
 
     private static class TileTickableSound extends AbstractTickableSoundInstance {
 
+        private final Supplier<@Nullable Holder<Upgrade>> mufflingReference;
         private final float originalVolume;
 
         // Choose an interval between 20-40 ticks (1-2 seconds) to check for muffling changes. We do this
@@ -304,15 +308,17 @@ public class SoundHandler {
         // uneven spikes of CPU usage
         private final int checkInterval = SharedConstants.TICKS_PER_SECOND + ThreadLocalRandom.current().nextInt(SharedConstants.TICKS_PER_SECOND);
 
-        TileTickableSound(SoundEvent soundEvent, SoundSource category, Level level, BlockPos pos, float volume, boolean looping) {
-            super(soundEvent, category, level.getRandom());
+        TileTickableSound(SoundEvent soundEvent, SoundSource category, RandomSource random, BlockPos pos, float volume, Supplier<@Nullable Holder<Upgrade>> mufflingReference,
+              boolean looping) {
+            this.mufflingReference = mufflingReference;
+            super(soundEvent, category, random);
             //Keep track of our original volume
             this.originalVolume = volume * MekanismConfig.client.baseSoundVolume.get();
             this.x = pos.getX() + 0.5F;
             this.y = pos.getY() + 0.5F;
             this.z = pos.getZ() + 0.5F;
             //Hold off on setting volume until after we set the position
-            this.volume = this.originalVolume * getTileVolumeFactor(level);
+            this.volume = this.originalVolume * getTileVolumeFactor();
             this.looping = looping;
             this.delay = 0;
         }
@@ -346,25 +352,25 @@ public class SoundHandler {
 
                 if (s == this) {
                     // No filtering done, use the original sound's volume
-                    volume = originalVolume * getTileVolumeFactor(level);
+                    volume = originalVolume * getTileVolumeFactor();
                 } else if (s == null) {
                     // Full on mute; go ahead and shutdown
                     stop();
                 } else {
                     // Altered sound returned; adjust volume
-                    volume = s.getVolume() * getTileVolumeFactor(level);
+                    volume = s.getVolume() * getTileVolumeFactor();
                 }
             }
         }
 
-        private float getTileVolumeFactor(Level level) {
+        private float getTileVolumeFactor() {
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
-            BlockEntity tile = WorldUtils.getTileEntity(level, BlockPos.containing(getX(), getY(), getZ()));
+            BlockEntity tile = WorldUtils.getTileEntity(Minecraft.getInstance().level, BlockPos.containing(getX(), getY(), getZ()));
             float retVolume = 1.0F;
 
             if (tile instanceof IUpgradeTile upgradeTile) {
-                Reference<Upgrade> mufflingUpgrade = level.registryAccess().get(UpgradeIds.MUFFLING).orElse(null);
+                Holder<Upgrade> mufflingUpgrade = mufflingReference.get();
                 if (mufflingUpgrade != null && upgradeTile.supportsUpgrade(mufflingUpgrade)) {
                     int maxMufflingUpgrades = mufflingUpgrade.value().max();
                     int mufflerCount = Math.min(upgradeTile.getUpgrades(mufflingUpgrade), maxMufflingUpgrades);

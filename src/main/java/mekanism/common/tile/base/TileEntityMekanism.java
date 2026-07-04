@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismItemAbilities;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
@@ -110,10 +111,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -151,6 +152,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
       ITileRedstone, ISecurityTile, IUpgradeTile, ITierUpgradable, IComparatorSupport, ITrackableContainer, ITileHeatHandler, IComputerTile, ITileRadioactive, Nameable,
       IContentsListener {
 
+    private static final Supplier<@Nullable Holder<Upgrade>> ALWAYS_NULL = () -> null;
     protected static final Set<RelativeSide> BACK_ONLY = Set.of(RelativeSide.BACK);
 
     /// The players currently using this block.
@@ -209,6 +211,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //Variables for handling ITileUpgradable
     @Nullable
     private TileComponentUpgrade upgradeComponent;
+    @Nullable
+    protected Holder<Upgrade> anchorUpgrade;
     //End variables ITileUpgradable
 
     //Variables for handling IFrequencyHandler
@@ -251,7 +255,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Nullable
     protected final Supplier<SoundEvent> soundEvent;
     @Nullable
-    protected SoundEvent lastSoundEvent;
+    private SoundEvent lastSoundEvent;
+    @Nullable
+    private Holder<Upgrade> mufflingUpgrade;
+    protected final Supplier<@Nullable Holder<Upgrade>> mufflingReference;
 
     /// Only used on the client
     @Nullable
@@ -319,7 +326,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (hasSecurity()) {
             securityComponent = new TileComponentSecurity(this);
         }
-        soundEvent = hasSound() ? Attribute.getOrThrow(this.blockProvider, AttributeSound.class).getSound() : null;
+        if (hasSound()) {
+            soundEvent = Attribute.getOrThrow(this.blockProvider, AttributeSound.class).getSound();
+            mufflingReference = () -> mufflingUpgrade;
+        } else {
+            soundEvent = null;
+            mufflingReference = ALWAYS_NULL;
+        }
     }
 
     private void setSupportedTypes(Holder<Block> block) {
@@ -614,7 +627,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             Objects.requireNonNull(tile.upgradeComponent).tickServer(level.registryAccess(), null);
         }
         if (tile.hasChunkloader) {
-            ((IChunkLoader) tile).getChunkLoader().tickServer();
+            ((IChunkLoader) tile).getChunkLoader().tickServer(tile.anchorUpgrade);
         }
         if (tile.isActivatable()) {
             if (tile.updateDelay > 0) {
@@ -717,6 +730,26 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             //Note: The new direction should never be null as we validated that we are directional, double check it just to fix the warning though
             if (newDirection != null && cachedDirection != newDirection) {
                 invalidateDirectionCaches(newDirection);
+            }
+        }
+    }
+
+    @Override
+    public void setLevel(Level world) {
+        super.setLevel(world);
+        if (supportsUpgrades()) {
+            if (level == null) {//Can this actually be null?
+                anchorUpgrade = null;
+                mufflingUpgrade = null;
+            } else if (hasChunkloader || hasSound()) {
+                Registry<Upgrade> upgrades = level.registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
+                //Note: We don't have to reset this on tag reload, as datapack registries do not support being reloaded without the server restarting
+                if (hasChunkloader) {
+                    anchorUpgrade = upgrades.get(UpgradeIds.ANCHOR).orElse(null);
+                }
+                if (hasSound()) {
+                    mufflingUpgrade = upgrades.get(UpgradeIds.MUFFLING).orElse(null);
+                }
             }
         }
     }
@@ -1416,8 +1449,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
             // If this machine isn't fully muffled, and we don't seem to be playing a sound for it, go ahead and
             // play it
-            if (!isFullyMuffled(level.registryAccess()) && (activeSound == null || !Minecraft.getInstance().getSoundManager().isActive(activeSound))) {
-                activeSound = SoundHandler.startTileSound(lastSoundEvent, getSoundCategory(), getInitialVolume(), level, getSoundPos());
+            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundManager().isActive(activeSound))) {
+                activeSound = SoundHandler.startTileSound(lastSoundEvent, getSoundCategory(), getInitialVolume(), level.getRandom(), getSoundPos(), mufflingReference);
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
             // we don't want to try again
@@ -1429,12 +1462,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    protected boolean isFullyMuffled(HolderGetter.Provider provider) {
-        if (hasSound()) {
-            Reference<Upgrade> mufflingUpgrade = provider.get(UpgradeIds.MUFFLING).orElse(null);
-            if (mufflingUpgrade != null && supportsUpgrade(mufflingUpgrade)) {
-                return getUpgrades(mufflingUpgrade) >= mufflingUpgrade.value().max();
-            }
+    protected boolean isFullyMuffled() {
+        if (hasSound() && mufflingUpgrade != null && supportsUpgrade(mufflingUpgrade)) {
+            return getUpgrades(mufflingUpgrade) >= mufflingUpgrade.value().max();
         }
         return false;
     }

@@ -7,10 +7,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import org.jspecify.annotations.Nullable;
 
@@ -30,12 +28,6 @@ public interface IUpgradeTile {
             return component != null && component.supports(upgradeType);
         }
         return false;
-    }
-
-    //TODO - 26.2: Evaluate callers and if we want to cache the upgrade holder once the level is set on the tile?
-    default int getUpgrades(HolderGetter.Provider registryAccess, ResourceKey<Upgrade> upgradeType) {
-        TileComponentUpgrade component = getComponent();
-        return component == null ? 0 : registryAccess.get(upgradeType).map(component::getUpgrades).orElse(0);
     }
 
     default int getUpgrades(Holder<Upgrade> upgradeType) {

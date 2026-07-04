@@ -159,6 +159,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private boolean initCalc = false;
     private int numPowering;
     private boolean clientRendering;
+    @Nullable
+    private Holder<Upgrade> anchorUpgrade;
+    @Nullable
+    private Holder<Upgrade> stoneGeneratorUpgrade;
 
     private final TileComponentChunkLoader<TileEntityDigitalMiner> chunkLoaderComponent = new TileComponentChunkLoader<>(this);
     @Nullable
@@ -408,7 +412,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             if (level != null && !level.isClientSide()) {
                 energyContainer.updateMinerEnergyPerTick();
                 // If the radius changed, and we're on the server, go ahead and refresh the chunk set
-                getChunkLoader().refreshChunkTickets(level, worldPosition);
+                getChunkLoader().refreshChunkTickets(anchorUpgrade, level, worldPosition);
             }
         }
     }
@@ -631,7 +635,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
         //Then source from the upgrade if it is installed
         if (replaceTarget == Items.COBBLESTONE || replaceTarget == Items.STONE) {
-            if (getUpgrades(level.registryAccess(), UpgradeIds.STONE_GENERATOR) > 0) {
+            if (stoneGeneratorUpgrade != null && getUpgrades(stoneGeneratorUpgrade) > 0) {
                 return new ItemStack(replaceTarget);
             }
         }
@@ -731,7 +735,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingPos();
             int diameter = getDiameter();
-            searcher.setChunkCache(new MinerRegionCache(level, startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter), getUpgrades(level.registryAccess(), UpgradeIds.ANCHOR) > 0));
+            searcher.setChunkCache(new MinerRegionCache(level, startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter), anchorUpgrade != null && getUpgrades(anchorUpgrade) > 0));
             searcher.start();
         }
         running = true;
@@ -830,6 +834,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         super.setLevel(world);
         //Update miner energy as the world height is likely different compared to the old pre 1.18 values
         energyContainer.updateMinerEnergyPerTick();
+        if (level == null) {//Can this actually be null?
+            stoneGeneratorUpgrade = null;
+        } else {
+            //Note: We don't have to reset this on tag reload, as datapack registries do not support being reloaded without the server restarting
+            stoneGeneratorUpgrade = level.registryAccess().get(UpgradeIds.STONE_GENERATOR).orElse(null);
+        }
     }
 
     @Override
@@ -1112,7 +1122,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         if (!Objects.equals(targetChunk, target)) {
             //Only update the target if it has changed
             targetChunk = target;
-            getChunkLoader().refreshChunkTickets();
+            getChunkLoader().refreshChunkTickets(anchorUpgrade);
         }
     }
 

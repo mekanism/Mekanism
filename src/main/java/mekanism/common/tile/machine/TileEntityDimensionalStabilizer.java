@@ -10,6 +10,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.IntObjectToIntFunction;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.capabilities.energy.FixedUsageEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
@@ -31,7 +32,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IHasVisualization;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -44,6 +45,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, IHasVisualization {
 
@@ -118,7 +120,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 setChanged(false);
                 energyContainer.updateEnergyPerTick(null);
                 //Refresh the chunks that are loaded as it has changed
-                getChunkLoader().refreshChunkTickets();
+                getChunkLoader().refreshChunkTickets(anchorUpgrade);
             }
         }
     }
@@ -143,7 +145,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 setChanged(false);
                 energyContainer.updateEnergyPerTick(null);
                 //Refresh the chunks that are loaded as it has changed
-                getChunkLoader().refreshChunkTickets();
+                getChunkLoader().refreshChunkTickets(anchorUpgrade);
             }
         }
     }
@@ -240,7 +242,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 energyContainer.updateEnergyPerTick(null);
             }
             //Refresh the chunks that are loaded as it has changed
-            getChunkLoader().refreshChunkTickets(level, worldPosition);
+            getChunkLoader().refreshChunkTickets(anchorUpgrade, level, worldPosition);
         }
     }
 
@@ -266,7 +268,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 energyContainer.updateEnergyPerTick(null);
             }
             //Refresh the chunks that are loaded as it has changed
-            getChunkLoader().refreshChunkTickets(level, worldPosition);
+            getChunkLoader().refreshChunkTickets(anchorUpgrade, level, worldPosition);
         }
     }
 
@@ -280,7 +282,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     public void configurationDataSet() {
         super.configurationDataSet();
         //Refresh the chunk tickets as they may have changed
-        getChunkLoader().refreshChunkTickets();
+        getChunkLoader().refreshChunkTickets(anchorUpgrade);
     }
 
     public FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> energyContainer() {
@@ -316,7 +318,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
             setChanged(false);
             energyContainer.updateEnergyPerTick(level.registryAccess());
             //Refresh the chunks that are loaded as it has changed
-            getChunkLoader().refreshChunkTickets();
+            getChunkLoader().refreshChunkTickets(anchorUpgrade);
         }
     }
 
@@ -348,7 +350,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         }
 
         @Override
-        public boolean canOperate(HolderLookup.Provider registries) {
+        public boolean canOperate(@Nullable Holder<Upgrade> anchorUpgrade) {
             return MekanismConfig.general.allowChunkloading.get() && getActive();
         }
     }

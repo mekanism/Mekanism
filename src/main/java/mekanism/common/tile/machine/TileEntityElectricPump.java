@@ -99,6 +99,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     private final Set<BlockPos> recurringNodes = new ObjectOpenHashSet<>();
     @Nullable
     private BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction> fluidHandlerAbove;
+    @Nullable
+    private Holder<Upgrade> filterUpgrade;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityElectricPump> energyContainer;
@@ -184,6 +186,12 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.setLevel(world);
         //Invalidate the cache as if the level changed then it might no longer be valid
         fluidHandlerAbove = null;
+        if (level == null) {//Can this actually be null?
+            filterUpgrade = null;
+        } else {
+            //Note: We don't have to reset this on tag reload, as datapack registries do not support being reloaded without the server restarting
+            filterUpgrade = level.registryAccess().get(UpgradeIds.FILTER).orElse(null);
+        }
     }
 
     public int estimateIncrementAmount() {
@@ -191,7 +199,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     private boolean suck(ServerLevel level, TransactionContext transaction) {
-        boolean hasFilter = getUpgrades(level.registryAccess(), UpgradeIds.FILTER) > 0;
+        boolean hasFilter = getUpgrades(filterUpgrade) > 0;
         //First see if there are any fluid blocks under the pump - if so, suck and adds the location to the recurring list
         if (suck(level, worldPosition.relative(Direction.DOWN), hasFilter, true, transaction)) {
             return true;
