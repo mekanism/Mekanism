@@ -8,7 +8,7 @@ import mekanism.api.robit.RobitSkin;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
 import mekanism.common.inventory.container.sync.ISyncableData;
-import mekanism.common.inventory.container.sync.list.SyncableResourceKeyList;
+import mekanism.common.inventory.container.sync.SyncableStreamCodec;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismRobitSkins;
 import net.minecraft.core.Registry;
@@ -33,7 +33,7 @@ public class MainRobitContainer extends RobitContainer implements ISpecificConta
         ISyncableData data;
         if (level.isClientSide()) {
             //Client side sync handling
-            data = SyncableResourceKeyList.create(MekanismRegistries.Keys.ROBIT_SKINS, () -> unlockedSkins, this::setSkins);
+            data = SyncableStreamCodec.resourceKeyList(MekanismRegistries.Keys.ROBIT_SKINS, () -> unlockedSkins, this::setSkins);
         } else {
             //Server side sync handling
             //Note: It is important these are in the same order as the client side trackers
@@ -42,7 +42,7 @@ public class MainRobitContainer extends RobitContainer implements ISpecificConta
             //Note: We can cache a reference to the specific registry so that we don't have to lookup the robit skin registry each time
             Registry<RobitSkin> registry = level.registryAccess()
                   .lookupOrThrow(MekanismRegistries.Keys.ROBIT_SKINS);
-            data = SyncableResourceKeyList.createSorted(MekanismRegistries.Keys.ROBIT_SKINS, () -> registry.entrySet().stream()
+            data = SyncableStreamCodec.sortedResourceKeyList(MekanismRegistries.Keys.ROBIT_SKINS, () -> registry.entrySet().stream()
                         //Base skin is always unlocked so we don't have to sync it
                         .filter(entry -> !MekanismRobitSkins.BASE.equals(entry.getKey()) && entry.getValue().isUnlocked(inv.player))
                         .map(Entry::getKey),

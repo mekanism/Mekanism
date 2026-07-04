@@ -78,10 +78,6 @@ public class FrequencyType<FREQ extends Frequency> {
         return creationFunction.create(key, ownerUUID, securityMode);
     }
 
-    public FREQ create(RegistryFriendlyByteBuf buffer) {
-        return streamCodec.decode(buffer);
-    }
-
     public FrequencyController<FREQ> getController() {
         return FrequencyControllerManager.getController(this);
     }

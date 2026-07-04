@@ -26,7 +26,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.inventory.container.sync.map.SyncableUpgradeMap;
+import mekanism.common.inventory.container.sync.SyncableStreamCodec;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -285,13 +285,13 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     public List<ISyncableData> getSpecificSyncableData(Level level) {
         List<ISyncableData> list = new ArrayList<>();
         list.add(SyncableInt.create(() -> upgradeTicks, value -> upgradeTicks = value));
-        list.add(new SyncableUpgradeMap(() -> upgrades, value -> upgrades = value));
+        list.add(SyncableStreamCodec.upgradeMap(() -> upgrades, value -> upgrades = value));
         return list;
     }
 
     @ComputerMethod
-//Note: Not synthetic so that the computer help method can get the map result type
     Map<Holder<Upgrade>, Integer> getInstalledUpgrades() {
+        //Note: Not synthetic so that the computer help method can get the map result type
         return upgrades;
     }
 

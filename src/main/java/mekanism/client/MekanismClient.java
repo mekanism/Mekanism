@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import mekanism.client.model.item.UpgradeItemModel;
 import mekanism.client.model.robit.RobitSkinManager;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.tileentity.RenderSPS;

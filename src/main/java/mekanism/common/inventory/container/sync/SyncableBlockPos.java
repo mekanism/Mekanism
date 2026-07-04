@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container.sync;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.common.network.to_client.container.property.BlockPosPropertyData;
@@ -16,7 +17,8 @@ public class SyncableBlockPos implements ISyncableData {
 
     private final Supplier<@Nullable BlockPos> getter;
     private final Consumer<@Nullable BlockPos> setter;
-    private int lastKnownHashCode;
+    @Nullable
+    private BlockPos lastKnownValue;
 
     private SyncableBlockPos(Supplier<@Nullable BlockPos> getter, Consumer<@Nullable BlockPos> setter) {
         this.getter = getter;
@@ -35,12 +37,11 @@ public class SyncableBlockPos implements ISyncableData {
     @Override
     public DirtyType isDirty() {
         BlockPos value = get();
-        int valueHashCode = value == null ? 0 : value.hashCode();
-        if (lastKnownHashCode == valueHashCode) {
-            return DirtyType.CLEAN;
+        if (!Objects.equals(lastKnownValue, value)) {
+            lastKnownValue = value;
+            return DirtyType.DIRTY;
         }
-        lastKnownHashCode = valueHashCode;
-        return DirtyType.DIRTY;
+        return DirtyType.CLEAN;
     }
 
     @Override
