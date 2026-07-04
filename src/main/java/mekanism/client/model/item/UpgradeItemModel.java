@@ -17,10 +17,12 @@ import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.item.ModelRenderProperties;
-import net.minecraft.client.resources.model.ResolvedModel;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.resources.model.cuboid.ItemModelGenerator;
+import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.sprite.Material;
-import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -33,15 +35,17 @@ import org.jspecify.annotations.Nullable;
 /// Copied and adapted from [CuboidItemModelWrapper]
 public class UpgradeItemModel implements ItemModel {
 
+    private static final ModelDebugName DEBUG_NAME = () -> "MekanismUpgradeItemModel";
+
     private final Map<ResourceKey<Upgrade>, ItemModel> cache = new IdentityHashMap<>(); // contains all the baked models since they'll never change
 
-    private final ResolvedModel baseModel;
+    private final ItemTransforms itemTransforms;
     private final Matrix4fc transformation;
     private final BakingContext context;
 
     private UpgradeItemModel(BakingContext context, Matrix4fc transformation) {
         this.context = context;
-        this.baseModel = context.blockModelBaker().getModel(Unbaked.GENERATED_MODEL);
+        this.itemTransforms = context.blockModelBaker().getModel(Unbaked.GENERATED_MODEL).getTopTransforms();
         this.transformation = transformation;
     }
 
@@ -54,7 +58,7 @@ public class UpgradeItemModel implements ItemModel {
             Either<ResourceKey<Upgrade>, Upgrade> value = upgradeType.unwrap();
             Optional<ResourceKey<Upgrade>> upgradeResourceKey = value.left();
             Optional<Upgrade> optionalUpgrade = value.right();
-            if (optionalUpgrade.isPresent() && level != null) {
+            if (optionalUpgrade.isPresent() && level != null) {//Theoretically the other path is what will be taken the majority of times
                 upgradeResourceKey = level.registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES).getResourceKey(optionalUpgrade.get());
             }
             if (upgradeResourceKey.isPresent()) {
@@ -65,24 +69,12 @@ public class UpgradeItemModel implements ItemModel {
     }
 
     private ItemModel bakeModelForUpgrade(ResourceKey<Upgrade> upgrade) {
-        TextureSlots textureSlots = makeTextureSlots(upgrade.identifier().withPrefix("item/upgrade/"));
-        QuadCollection quads = baseModel.bakeTopGeometry(textureSlots, context.blockModelBaker(), BlockModelRotation.IDENTITY);
-        ModelRenderProperties properties = ModelRenderProperties.fromResolvedModel(context.blockModelBaker(), baseModel, textureSlots);
+        Identifier texture = upgrade.identifier().withPrefix("item/upgrade/");
+        ModelBaker modelBaker = context.blockModelBaker();
+        Material.Baked bakedMaterial = modelBaker.materials().get(new Material(texture), DEBUG_NAME);
+        ModelRenderProperties properties = new ModelRenderProperties(false, bakedMaterial, this.itemTransforms);
+        QuadCollection quads = modelBaker.compute(new ItemModelGenerator.ItemLayerKey(bakedMaterial, BlockModelRotation.IDENTITY, 0));
         return new CuboidItemModelWrapper(Collections.emptyList(), quads, properties, transformation);
-    }
-
-    /// from [ResolvedModel#findTopTextureSlots(ResolvedModel)]
-    private TextureSlots makeTextureSlots(Identifier texture) {
-        ResolvedModel current = baseModel;
-        TextureSlots.Resolver resolver;
-        for (resolver = new TextureSlots.Resolver(); current != null; current = current.parent()) {
-            resolver.addLast(current.wrapped().textureSlots());
-        }
-        resolver.addLast(new TextureSlots.Data.Builder()
-              .addTexture("layer0", new Material(texture))
-              .build()
-        );
-        return resolver.resolve(baseModel);
     }
 
     public record Unbaked() implements ItemModel.Unbaked {
