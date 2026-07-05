@@ -81,7 +81,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentGetter;
@@ -635,7 +635,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
         //Then source from the upgrade if it is installed
         if (replaceTarget == Items.COBBLESTONE || replaceTarget == Items.STONE) {
-            if (stoneGeneratorUpgrade != null && getUpgrades(stoneGeneratorUpgrade) > 0) {
+            if (getUpgrades(stoneGeneratorUpgrade) > 0) {
                 return new ItemStack(replaceTarget);
             }
         }
@@ -735,7 +735,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingPos();
             int diameter = getDiameter();
-            searcher.setChunkCache(new MinerRegionCache(level, startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter), anchorUpgrade != null && getUpgrades(anchorUpgrade) > 0));
+            searcher.setChunkCache(new MinerRegionCache(level, startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter), getUpgrades(anchorUpgrade) > 0));
             searcher.start();
         }
         running = true;
@@ -834,11 +834,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         super.setLevel(world);
         //Update miner energy as the world height is likely different compared to the old pre 1.18 values
         energyContainer.updateMinerEnergyPerTick();
-        if (level == null) {//Can this actually be null?
+        if (upgradesRegistry == null) {
             stoneGeneratorUpgrade = null;
         } else {
             //Note: We don't have to reset this on tag reload, as datapack registries do not support being reloaded without the server restarting
-            stoneGeneratorUpgrade = level.registryAccess().get(UpgradeIds.STONE_GENERATOR).orElse(null);
+            stoneGeneratorUpgrade = upgradesRegistry.get(UpgradeIds.STONE_GENERATOR).orElse(null);
         }
     }
 
@@ -1049,8 +1049,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(registries, upgrade, totalInstalled);
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED)) {
             delayLength = UpgradeUtils.getTicks(MekanismConfig.general.minerTicksPerMine.get(), upgrade, totalInstalled);
         }

@@ -10,7 +10,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.util.Mth;
@@ -47,15 +47,15 @@ public class UpgradeUtils implements IUpgradeHelper {
         return ItemResource.of((Holder<Item>) MekanismItems.UPGRADE, getPatch(upgrade));
     }
 
-    public static int getBaseUsage(HolderLookup.Provider registries, IUpgradeTile tile, int def) {
+    public static int getBaseUsage(HolderGetter<Upgrade> upgrades, IUpgradeTile tile, int def) {
         //getGasPerTickMean * required ticks (not rounded)
-        Holder.Reference<Upgrade> chemicalUpgrade = registries.get(UpgradeIds.CHEMICAL).orElse(null);
+        Holder.Reference<Upgrade> chemicalUpgrade = upgrades.get(UpgradeIds.CHEMICAL).orElse(null);
         if (chemicalUpgrade != null && tile.supportsUpgrade(chemicalUpgrade)) {
             // def * (upgradeMultiplier ^ ((2 * speed - gas) / 8)) * (upgradeMultiplier ^ (-speed / 8)) =
             // def * upgradeMultiplier ^ ((speed - gas) / 8)
             //TODO: We may want to validate this provides the numbers we desire if we ever end up with any machines
             // that use this that are not statistical and have gas upgrades so would go through this code path
-            Holder.Reference<Upgrade> speedUpgrade = registries.get(UpgradeIds.SPEED).orElse(null);
+            Holder.Reference<Upgrade> speedUpgrade = upgrades.get(UpgradeIds.SPEED).orElse(null);
             if (speedUpgrade != null) {
                 //TODO - 26.2: Re-evaluate this cast
                 return Ints.saturatedCast(Math.round(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(),
@@ -118,10 +118,10 @@ public class UpgradeUtils implements IUpgradeHelper {
     /// @param tile tile containing upgrades
     ///
     /// @return max secondary energy per tick
-    public static double getGasPerTickMeanMultiplier(HolderLookup.Provider registries, IUpgradeTile tile) {
-        Holder.Reference<Upgrade> speedUpgrade = registries.get(UpgradeIds.SPEED).orElse(null);
+    public static double getGasPerTickMeanMultiplier(HolderGetter<Upgrade> upgrades, IUpgradeTile tile) {
+        Holder.Reference<Upgrade> speedUpgrade = upgrades.get(UpgradeIds.SPEED).orElse(null);
         if (speedUpgrade != null) {
-            Holder.Reference<Upgrade> chemicalUpgrade = registries.get(UpgradeIds.CHEMICAL).orElse(null);
+            Holder.Reference<Upgrade> chemicalUpgrade = upgrades.get(UpgradeIds.CHEMICAL).orElse(null);
             if (chemicalUpgrade != null && tile.supportsUpgrade(chemicalUpgrade)) {
                 return Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, speedUpgrade) - fractionUpgrades(tile, chemicalUpgrade));
             }

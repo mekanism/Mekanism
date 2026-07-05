@@ -49,6 +49,7 @@ import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
@@ -199,13 +200,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     }
 
     @Override
-    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(registries, upgrade, totalInstalled);
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED) || (upgrade.is(UpgradeIds.CHEMICAL) && supportsUpgrade(upgrade))) {
             if (useStatisticalMechanics()) {
-                gasPerTickMeanMultiplier = UpgradeUtils.getGasPerTickMeanMultiplier(registries, this);
+                gasPerTickMeanMultiplier = UpgradeUtils.getGasPerTickMeanMultiplier(upgrades, this);
             } else {
-                baseTotalUsage = UpgradeUtils.getBaseUsage(registries, this, baseTicksRequired);
+                baseTotalUsage = UpgradeUtils.getBaseUsage(upgrades, this, baseTicksRequired);
             }
         }
     }

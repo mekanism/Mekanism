@@ -110,11 +110,11 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
@@ -256,6 +256,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private SoundEvent lastSoundEvent;
     @Nullable
     private Holder<Upgrade> mufflingUpgrade;
+    @Nullable
+    protected Registry<Upgrade> upgradesRegistry;
 
     /// Only used on the client
     @Nullable
@@ -730,16 +732,17 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         super.setLevel(world);
         if (supportsUpgrades()) {
             if (level == null) {//Can this actually be null?
+                upgradesRegistry = null;
                 anchorUpgrade = null;
                 mufflingUpgrade = null;
-            } else if (hasChunkloader || hasSound()) {
-                Registry<Upgrade> upgrades = level.registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
+            } else {
+                upgradesRegistry = level.registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
                 //Note: We don't have to reset this on tag reload, as datapack registries do not support being reloaded without the server restarting
                 if (hasChunkloader) {
-                    anchorUpgrade = upgrades.get(UpgradeIds.ANCHOR).orElse(null);
+                    anchorUpgrade = upgradesRegistry.get(UpgradeIds.ANCHOR).orElse(null);
                 }
                 if (hasSound()) {
-                    mufflingUpgrade = upgrades.get(UpgradeIds.MUFFLING).orElse(null);
+                    mufflingUpgrade = upgradesRegistry.get(UpgradeIds.MUFFLING).orElse(null);
                 }
             }
         }
@@ -827,12 +830,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         //Recalculate upgrades before setting types so that we don't clamp the stored energy
         TagKey<Upgrade> supportedUpgrade = getSupportedUpgrade();
-        if (supportedUpgrade != null && level != null) {//The level should theoretically always be present here
-            RegistryAccess registryAccess = level.registryAccess();
-            Optional<Named<Upgrade>> tag = registryAccess.get(supportedUpgrade);
+        if (supportedUpgrade != null && upgradesRegistry != null) {
+            //The level should theoretically always be present here (and thus the upgrades registry should be present)
+            Optional<Named<Upgrade>> tag = upgradesRegistry.get(supportedUpgrade);
             if (tag.isPresent()) {
                 for (Holder<Upgrade> upgrade : tag.get()) {
-                    recalculateUpgrades(registryAccess, upgrade, getUpgrades(upgrade));
+                    recalculateUpgrades(upgradesRegistry, upgrade, getUpgrades(upgrade));
                 }
             }
         }
@@ -1184,6 +1187,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return upgradeComponent;
     }
 
+    @Nullable
+    public Registry<Upgrade> getUpgradeRegistry() {
+        return upgradesRegistry;
+    }
+
+    public HolderGetter<Upgrade> getUpgradeLookup(HolderLookup.Provider registries) {
+        return upgradesRegistry == null ? registries.lookupOrThrow(MekanismRegistries.Keys.UPGRADES) : upgradesRegistry;
+    }
+
     @Override
     public float getVolumeFactor() {
         //Note: Muffling upgrade will only be non-null if we support sound
@@ -1196,16 +1208,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
         if (upgrade.is(UpgradeIds.SPEED)) {
             if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
-                machineEnergy.updateEnergyPerTick(registries);
-                machineEnergy.updateMaxEnergy(registries);
+                machineEnergy.updateEnergyPerTick(upgrades);
+                machineEnergy.updateMaxEnergy(upgrades);
             }
         } else if (upgrade.is(UpgradeIds.ENERGY)) {
             if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
-                machineEnergy.updateEnergyPerTick(registries);
-                machineEnergy.updateMaxEnergy(registries);
+                machineEnergy.updateEnergyPerTick(upgrades);
+                machineEnergy.updateMaxEnergy(upgrades);
             }
         }
     }

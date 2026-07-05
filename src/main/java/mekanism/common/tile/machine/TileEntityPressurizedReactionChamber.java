@@ -51,6 +51,7 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
@@ -181,17 +182,18 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         }
         boolean update = baseTicksRequired != recipeDuration;
         baseTicksRequired = recipeDuration;
+        HolderGetter<Upgrade> upgrades = getUpgradeLookup(registries);
         if (update) {
-            Optional<Reference<Upgrade>> upgrade = registries.get(UpgradeIds.SPEED);
+            Optional<Reference<Upgrade>> upgrade = upgrades.get(UpgradeIds.SPEED);
             //noinspection OptionalIsPresent - Capturing lambda
             if (upgrade.isPresent()) {
                 Reference<Upgrade> speedUpgrade = upgrade.get();
-                recalculateUpgrades(registries, speedUpgrade, getUpgrades(speedUpgrade));
+                recalculateUpgrades(upgrades, speedUpgrade, getUpgrades(speedUpgrade));
             }
         }
         //Ensure we take our recipe's energy per tick into account
-        energyContainer.updateEnergyPerTick(registries);
-        energyContainer.updateMaxEnergy(registries);
+        energyContainer.updateEnergyPerTick(upgrades);
+        energyContainer.updateMaxEnergy(upgrades);
     }
 
     @Override

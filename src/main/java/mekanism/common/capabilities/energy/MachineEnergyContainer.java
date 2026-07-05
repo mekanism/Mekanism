@@ -16,7 +16,7 @@ import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.Holder.Reference;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderGetter;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
@@ -87,9 +87,9 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
         this.currentEnergyPerTick = energyPerTick;
     }
 
-    public void updateMaxEnergy(HolderLookup.Provider registries) {
-        Reference<Upgrade> speedUpgrade = registries.get(UpgradeIds.SPEED).orElse(null);
-        Reference<Upgrade> energyUpgrade = registries.get(UpgradeIds.ENERGY).orElse(null);
+    public void updateMaxEnergy(HolderGetter<Upgrade> upgrades) {
+        Reference<Upgrade> speedUpgrade = upgrades.get(UpgradeIds.SPEED).orElse(null);
+        Reference<Upgrade> energyUpgrade = upgrades.get(UpgradeIds.ENERGY).orElse(null);
         if (speedUpgrade != null && tile.supportsUpgrade(speedUpgrade)) {
             long bufferMultipler = AttributeEnergy.STORAGE_MULTIPLIER;
             //TODO - 26.2: Take this into account for the item's defined max energy so that it doesn't display 1 kFE / 20 FE for an energized smelter
@@ -105,10 +105,10 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
         }
     }
 
-    public void updateEnergyPerTick(HolderLookup.Provider registries) {
+    public void updateEnergyPerTick(HolderGetter<Upgrade> upgrades) {
         if (tile.supportsUpgrades()) {
-            Reference<Upgrade> speedUpgrade = registries.get(UpgradeIds.SPEED).orElse(null);
-            Reference<Upgrade> energyUpgrade = registries.get(UpgradeIds.ENERGY).orElse(null);
+            Reference<Upgrade> speedUpgrade = upgrades.get(UpgradeIds.SPEED).orElse(null);
+            Reference<Upgrade> energyUpgrade = upgrades.get(UpgradeIds.ENERGY).orElse(null);
             if (speedUpgrade == null || energyUpgrade == null) {
                 //TODO is this line necessary?
                 setEnergyPerTick(getBaseEnergyPerTick());

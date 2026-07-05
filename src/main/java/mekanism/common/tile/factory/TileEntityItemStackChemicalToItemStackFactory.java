@@ -55,6 +55,7 @@ import mekanism.common.util.StatUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.item.Item;
@@ -278,13 +279,13 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     }
 
     @Override
-    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(registries, upgrade, totalInstalled);
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED) || upgrade.is(UpgradeIds.CHEMICAL) && supportsUpgrade(upgrade)) {
             if (useStatisticalMechanics()) {
-                chemicalPerTickMeanMultiplier = UpgradeUtils.getGasPerTickMeanMultiplier(registries, this);
+                chemicalPerTickMeanMultiplier = UpgradeUtils.getGasPerTickMeanMultiplier(upgrades, this);
             } else {
-                baseTotalUsage = UpgradeUtils.getBaseUsage(registries, this, BASE_TICKS_REQUIRED);
+                baseTotalUsage = UpgradeUtils.getBaseUsage(upgrades, this, BASE_TICKS_REQUIRED);
             }
         }
     }

@@ -38,7 +38,6 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
@@ -312,11 +311,10 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     @ComputerMethod(nameOverride = "setChunkLoadingAt", requiresPublicSecurity = true, methodDescription = "Set if the Dimensional Stabilizer is configured to load a the specified relative position (Stabilizer is at 0,0). True = load the chunk, false = don't load the chunk. " + COMPUTER_RANGE_STR)
     void computerSetChunkLoadingAt(int x, int z, boolean load) throws ComputerException {
         validateSecurityIsPublic();
-        Level level = validateLevel();
         if (setChunkLoadingAt(validateDimension(x, true), validateDimension(z, false), load)) {
             //If it changed we need to mark it as such and update various things
             setChanged(false);
-            energyContainer.updateEnergyPerTick(level.registryAccess());
+            energyContainer.updateEnergyPerTick(null);
             //Refresh the chunks that are loaded as it has changed
             getChunkLoader().refreshChunkTickets(anchorUpgrade);
         }

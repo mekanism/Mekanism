@@ -33,6 +33,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.HolderSet.Named;
@@ -155,7 +156,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     private void setUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int upgrades) {
         this.upgrades.put(upgrade, upgrades);
-        tile.recalculateUpgrades(registries, upgrade, upgrades);
+        tile.recalculateUpgrades(tile.getUpgradeLookup(registries), upgrade, upgrades);
         if (upgrade.is(UpgradeIds.MUFFLING)) {
             //Send an update packet to the client to update the number of muffling upgrades installed
             tile.sendUpdatePacket();
@@ -180,13 +181,14 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
                     //We can fit at least one in the output slot
                     //Actually remove them and put them in the output slot
                     transaction.commit();
+                    HolderGetter<Upgrade> upgradeLookup = tile.getUpgradeLookup(registries);
                     if (installed == removed) {
                         upgrades.removeInt(upgrade);
-                        tile.recalculateUpgrades(registries, upgrade, 0);
+                        tile.recalculateUpgrades(upgradeLookup, upgrade, 0);
                     } else {
                         int totalInstalled = installed - removed;
                         upgrades.put(upgrade, totalInstalled);
-                        tile.recalculateUpgrades(registries, upgrade, totalInstalled);
+                        tile.recalculateUpgrades(upgradeLookup, upgrade, totalInstalled);
                     }
                     //If we have some upgrades in the input slot, mark that we should check if they can be transferred
                     canCheckUpgrades = !upgradeSlot.isEmpty();
@@ -240,17 +242,18 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         } else if (!upgrades.isEmpty()) {
             upgrades.clear();
         }
-        HolderLookup.Provider lookup = upgradeInput.lookup();
-        Optional<Named<Upgrade>> tag = lookup.get(supported);
+        //Note: The cached tile upgrade registry will almost always be null here
+        HolderGetter<Upgrade> upgradeLookup = tile.getUpgradeLookup(upgradeInput.lookup());
+        Optional<Named<Upgrade>> tag = upgradeLookup.get(supported);
         if (tag.isPresent()) {
             for (Holder<Upgrade> upgrade : tag.get()) {
-                tile.recalculateUpgrades(lookup, upgrade, getUpgrades(upgrade));
+                tile.recalculateUpgrades(upgradeLookup, upgrade, getUpgrades(upgrade));
             }
         } else {//Best effort, and just recalculate the upgrades that are currently stored
             Mekanism.logger.warn("Unable to find supported upgrades: #{}. Recalculating upgrades for installed upgrades.", supported.location());
             for (ObjectIterator<Entry<Holder<Upgrade>>> iterator = Object2IntMaps.fastIterator(upgrades); iterator.hasNext(); ) {
                 Object2IntMap.Entry<Holder<Upgrade>> entry = iterator.next();
-                tile.recalculateUpgrades(lookup, entry.getKey(), entry.getIntValue());
+                tile.recalculateUpgrades(upgradeLookup, entry.getKey(), entry.getIntValue());
             }
         }
         //Load the inventory
@@ -279,7 +282,8 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     @Override
     public void readFromUpdateTag(ValueInput input) {
-        Holder.Reference<Upgrade> mufflingUpgrade = input.lookup().get(UpgradeIds.MUFFLING).orElse(null);
+        HolderGetter<Upgrade> upgradeLookup = tile.getUpgradeLookup(input.lookup());
+        Holder.Reference<Upgrade> mufflingUpgrade = upgradeLookup.get(UpgradeIds.MUFFLING).orElse(null);
         if (mufflingUpgrade != null && supports(mufflingUpgrade)) {
             int mufflingCount = input.getIntOr(SerializationConstants.MUFFLING_COUNT, 0);
             if (mufflingCount == 0) {
@@ -300,6 +304,6 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     @ComputerMethod
     List<Holder<Upgrade>> getSupportedUpgrades() throws ComputerException {
-        return tile.validateLevel().registryAccess().get(supported).stream().flatMap(HolderSet::stream).toList();
+        return tile.getUpgradeLookup(tile.validateLevel().registryAccess()).get(supported).stream().flatMap(HolderSet::stream).toList();
     }
 }

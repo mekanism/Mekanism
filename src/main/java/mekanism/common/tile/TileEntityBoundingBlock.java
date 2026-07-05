@@ -15,7 +15,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Nameable;
@@ -145,10 +145,10 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
-    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgradeType, int totalInstalled) {
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgradeType, int totalInstalled) {
         IBoundingBlock main = getMain();
         if (main != null && main.supportsUpgrades()) {
-            main.recalculateUpgrades(registries, upgradeType, totalInstalled);
+            main.recalculateUpgrades(upgrades, upgradeType, totalInstalled);
         }
     }
 

@@ -54,7 +54,7 @@ public class GuiUpgradeWindow extends GuiWindow {
             updateEnabledButtons();
             msSelected = Util.getMillis();
         }));
-        addChild(new GuiSupportedUpgrades(gui, relativeX + 6, relativeY + 68, upgradeComponent.getSupportedTypes()));
+        addChild(new GuiSupportedUpgrades(gui, relativeX + 6, relativeY + 68, upgradeComponent.getSupportedTypes(), tile::getUpgradeRegistry));
         rightScreen = addChild(new GuiInnerScreen(gui, scrollList.getRelativeRight(), relativeY + 18, 59, 50));
         addChild(new GuiProgress(upgradeComponent::getScaledUpgradeProgress, ProgressType.INSTALLING, gui, rightScreen.getRelativeRight() + 3, relativeY + 37));
         addChild(new GuiProgress(() -> 0, ProgressType.UNINSTALLING, gui, rightScreen.getRelativeRight() + 3, relativeY + 58));

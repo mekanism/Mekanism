@@ -3,10 +3,11 @@ package mekanism.common.capabilities.energy;
 import mekanism.api.IContentsListener;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
@@ -37,8 +38,8 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
     }
 
     @Override
-    public void updateEnergyPerTick(HolderLookup.Provider registries) {
-        super.updateEnergyPerTick(registries);
+    public void updateEnergyPerTick(HolderGetter<Upgrade> upgrades) {
+        super.updateEnergyPerTick(upgrades);
         //Also update our miner's energy specific values
         updateMinerEnergyPerTick();
     }

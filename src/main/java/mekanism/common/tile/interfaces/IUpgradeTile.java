@@ -7,6 +7,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -30,7 +31,10 @@ public interface IUpgradeTile {
         return false;
     }
 
-    default int getUpgrades(Holder<Upgrade> upgradeType) {
+    default int getUpgrades(@Nullable Holder<Upgrade> upgradeType) {
+        if (upgradeType == null) {
+            return 0;
+        }
         TileComponentUpgrade component = getComponent();
         return component == null ? 0 : component.getUpgrades(upgradeType);
     }
@@ -45,7 +49,7 @@ public interface IUpgradeTile {
     @Nullable
     TileComponentUpgrade getComponent();
 
-    void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgradeType, int totalInstalled);
+    void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgradeType, int totalInstalled);
 
     default boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
         return false;

@@ -68,6 +68,7 @@ import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -216,8 +217,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         super.onCachedRecipeChanged(registries, cachedRecipe, cacheIndex);
         recipeEnergyMultiplier = cachedRecipe == null ? 1 : cachedRecipe.getRecipe().getEnergyMultiplier();
         isMakingHydrogen = cachedRecipe != null && isHydrogenElectrolysis(cachedRecipe.getRecipe());
-        energyContainer.updateEnergyPerTick(registries);
-        energyContainer.updateMaxEnergy(registries);
+        HolderGetter<Upgrade> upgrades = getUpgradeLookup(registries);
+        energyContainer.updateEnergyPerTick(upgrades);
+        energyContainer.updateMaxEnergy(upgrades);
     }
 
     private static boolean isHydrogenElectrolysis(ElectrolysisRecipe recipe) {
@@ -311,8 +313,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(registries, upgrade, totalInstalled);
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED)) {
             double speed = Math.pow(2, totalInstalled);
             baselineMaxOperations = (int) speed;

@@ -12,7 +12,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -67,12 +67,12 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
     }
 
     @Override
-    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
         if (upgrade.is(UpgradeIds.SPEED)) {
             ticksRequired = UpgradeUtils.getTicks(baseTicksRequired, upgrade, totalInstalled);
             operationsPerTick = UpgradeUtils.getOperationsPerTick(baseTicksRequired, 1, upgrade, totalInstalled);
         }
-        super.recalculateUpgrades(registries, upgrade, totalInstalled);
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     public int getOperationsPerTick() {

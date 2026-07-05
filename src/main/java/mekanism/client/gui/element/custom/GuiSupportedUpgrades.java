@@ -2,7 +2,7 @@ package mekanism.client.gui.element.custom;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.MekanismRegistries;
+import java.util.function.Supplier;
 import mekanism.api.MekanismRegistries.Keys;
 import mekanism.api.text.EnumColor;
 import mekanism.api.upgrade.IUpgradeHelper;
@@ -53,6 +53,7 @@ public class GuiSupportedUpgrades extends GuiElement {
         return 2 + count / ROW_ROOM;
     }
 
+    private final Supplier<@Nullable Registry<Upgrade>> upgradeRegistry;
     private final TagKey<Upgrade> supportedUpgrades;
     private final int firstRowRoom;
     private final int firstRowStart;
@@ -63,9 +64,10 @@ public class GuiSupportedUpgrades extends GuiElement {
     @Nullable
     private ScreenRectangle cachedTooltipRect;
 
-    public GuiSupportedUpgrades(IGuiWrapper gui, int x, int y, TagKey<Upgrade> supportedUpgrades) {
+    public GuiSupportedUpgrades(IGuiWrapper gui, int x, int y, TagKey<Upgrade> supportedUpgrades, Supplier<@Nullable Registry<Upgrade>> upgradeRegistry) {
         super(gui, x, y, ELEMENT_WIDTH, ELEMENT_SIZE * calculateNeededRows(gui) + 2);
         this.supportedUpgrades = supportedUpgrades;
+        this.upgradeRegistry = upgradeRegistry;
         this.firstRowStart = getFirstRowStart(this);
         this.firstRowRoom = getFirstRowRoom(this.firstRowStart);
     }
@@ -76,17 +78,19 @@ public class GuiSupportedUpgrades extends GuiElement {
         //Draw the background
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiElementHolder.HOLDER, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         int backgroundColor = Color.argb(GuiElementHolder.getBackgroundColor()).alpha(0.5).argb();
-        Registry<Upgrade> upgrades = gui().registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
-        for (int i = 0, size = upgrades.size(); i < size; i++) {
-            Reference<Upgrade> upgrade = upgrades.get(i).orElse(null);
-            if (upgrade != null) {
-                UpgradePos pos = getUpgradePos(i);
-                int xPos = relativeX + 1 + pos.x;
-                int yPos = relativeY + 1 + pos.y;
-                gui().renderItem(guiGraphics, IUpgradeHelper.INSTANCE.asStack(upgrade), xPos, yPos, 0.75F);
-                if (!upgrade.is(supportedUpgrades)) {
-                    //Make the upgrade appear faded if it is not supported
-                    guiGraphics.fill(xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
+        Registry<Upgrade> upgrades = upgradeRegistry.get();
+        if (upgrades != null) {
+            for (int i = 0, size = upgrades.size(); i < size; i++) {
+                Reference<Upgrade> upgrade = upgrades.get(i).orElse(null);
+                if (upgrade != null) {
+                    UpgradePos pos = getUpgradePos(i);
+                    int xPos = relativeX + 1 + pos.x;
+                    int yPos = relativeY + 1 + pos.y;
+                    gui().renderItem(guiGraphics, IUpgradeHelper.INSTANCE.asStack(upgrade), xPos, yPos, 0.75F);
+                    if (!upgrade.is(supportedUpgrades)) {
+                        //Make the upgrade appear faded if it is not supported
+                        guiGraphics.fill(xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
+                    }
                 }
             }
         }
@@ -107,12 +111,11 @@ public class GuiSupportedUpgrades extends GuiElement {
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
-        Registry<Upgrade> upgrades = gui().registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
-        int size = upgrades.size();
-        int rowIndex = getRow(size - 1);
+        Registry<Upgrade> upgrades = upgradeRegistry.get();
+        int size = upgrades == null ? 0 : upgrades.size();
         int relativeMouseX = mouseX - getX() - 1;
         int relativeMouseY = mouseY - getY() - 1;
-        if (relativeMouseX >= 0 && relativeMouseX < PADDED_ELEMENT_WIDTH && relativeMouseY >= 0 && relativeMouseY < ELEMENT_SIZE * (rowIndex + 1)) {
+        if (size > 0 && relativeMouseX >= 0 && relativeMouseX < PADDED_ELEMENT_WIDTH && relativeMouseY >= 0 && relativeMouseY < ELEMENT_SIZE * (getRow(size - 1) + 1)) {
             int targetRow = relativeMouseY / ELEMENT_SIZE;
             int index;
             if (targetRow == 0) {

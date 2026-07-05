@@ -49,7 +49,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -186,11 +186,11 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.setLevel(world);
         //Invalidate the cache as if the level changed then it might no longer be valid
         fluidHandlerAbove = null;
-        if (level == null) {//Can this actually be null?
+        if (upgradesRegistry == null) {
             filterUpgrade = null;
         } else {
             //Note: We don't have to reset this on tag reload, as datapack registries do not support being reloaded without the server restarting
-            filterUpgrade = level.registryAccess().get(UpgradeIds.FILTER).orElse(null);
+            filterUpgrade = upgradesRegistry.get(UpgradeIds.FILTER).orElse(null);
         }
     }
 
@@ -390,8 +390,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(registries, upgrade, totalInstalled);
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED)) {
             ticksRequired = UpgradeUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
             outputRate = BASE_OUTPUT_RATE * (totalInstalled + 1);
