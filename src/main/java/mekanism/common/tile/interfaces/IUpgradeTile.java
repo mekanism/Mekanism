@@ -40,6 +40,8 @@ public interface IUpgradeTile {
         return component == null ? 0 : component.addUpgrades(registries, upgrade, maxAvailable);
     }
 
+    float getVolumeFactor();
+
     @Nullable
     TileComponentUpgrade getComponent();
 

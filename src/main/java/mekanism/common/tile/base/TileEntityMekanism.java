@@ -152,7 +152,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
       ITileRedstone, ISecurityTile, IUpgradeTile, ITierUpgradable, IComparatorSupport, ITrackableContainer, ITileHeatHandler, IComputerTile, ITileRadioactive, Nameable,
       IContentsListener {
 
-    private static final Supplier<@Nullable Holder<Upgrade>> ALWAYS_NULL = () -> null;
     protected static final Set<RelativeSide> BACK_ONLY = Set.of(RelativeSide.BACK);
 
     /// The players currently using this block.
@@ -258,7 +257,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private SoundEvent lastSoundEvent;
     @Nullable
     private Holder<Upgrade> mufflingUpgrade;
-    protected final Supplier<@Nullable Holder<Upgrade>> mufflingReference;
 
     /// Only used on the client
     @Nullable
@@ -326,13 +324,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (hasSecurity()) {
             securityComponent = new TileComponentSecurity(this);
         }
-        if (hasSound()) {
-            soundEvent = Attribute.getOrThrow(this.blockProvider, AttributeSound.class).getSound();
-            mufflingReference = () -> mufflingUpgrade;
-        } else {
-            soundEvent = null;
-            mufflingReference = ALWAYS_NULL;
-        }
+        soundEvent = hasSound() ? Attribute.getOrThrow(this.blockProvider, AttributeSound.class).getSound() : null;
     }
 
     private void setSupportedTypes(Holder<Block> block) {
@@ -1208,6 +1200,17 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
+    public float getVolumeFactor() {
+        //Note: Muffling upgrade will only be non-null if we support sound
+        if (mufflingUpgrade != null && supportsUpgrade(mufflingUpgrade)) {
+            int maxMufflingUpgrades = mufflingUpgrade.value().max();
+            int mufflerCount = Math.min(getUpgrades(mufflingUpgrade), maxMufflingUpgrades);
+            return 1.0F - (mufflerCount / (float) maxMufflingUpgrades);
+        }
+        return 1.0F;
+    }
+
+    @Override
     public void recalculateUpgrades(HolderLookup.Provider registries, Holder<Upgrade> upgrade, int totalInstalled) {
         if (upgrade.is(UpgradeIds.SPEED)) {
             if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
@@ -1450,7 +1453,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             // If this machine isn't fully muffled, and we don't seem to be playing a sound for it, go ahead and
             // play it
             if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundManager().isActive(activeSound))) {
-                activeSound = SoundHandler.startTileSound(lastSoundEvent, getSoundCategory(), getInitialVolume(), level.getRandom(), getSoundPos(), mufflingReference);
+                activeSound = SoundHandler.startTileSound(lastSoundEvent, getSoundCategory(), getInitialVolume(), level.getRandom(), getSoundPos());
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
             // we don't want to try again

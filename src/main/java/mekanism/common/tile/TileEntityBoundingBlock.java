@@ -120,6 +120,12 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
+    public float getVolumeFactor() {
+        IBoundingBlock main = getMain();
+        return main == null ? 1.0F : main.getVolumeFactor();
+    }
+
+    @Override
     public List<Component> getUpgradeWindowInfo(Holder<Upgrade> upgrade) {
         IBoundingBlock main = getMain();
         if (main != null) {
