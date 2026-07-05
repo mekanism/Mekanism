@@ -2,9 +2,11 @@ package mekanism.client.gui.element.custom;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import mekanism.api.Upgrade;
+import java.util.function.Supplier;
+import mekanism.api.MekanismRegistries.Keys;
 import mekanism.api.text.EnumColor;
+import mekanism.api.upgrade.IUpgradeHelper;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -12,13 +14,14 @@ import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
-import mekanism.common.util.EnumUtils;
-import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import org.jspecify.annotations.Nullable;
 
 public class GuiSupportedUpgrades extends GuiElement {
@@ -37,9 +40,12 @@ public class GuiSupportedUpgrades extends GuiElement {
         return (PADDED_ELEMENT_WIDTH - firstRowStart) / ELEMENT_SIZE;
     }
 
-    public static int calculateNeededRows(IFancyFontRenderer fontRenderer) {
-        int count = EnumUtils.UPGRADES.length;
-        int firstRowRoom = getFirstRowRoom(getFirstRowStart(fontRenderer));
+    public static int calculateNeededRows(IGuiWrapper gui) {
+        int count = gui.registryAccess().lookupOrThrow(Keys.UPGRADES).size();
+        if (count == 0) {
+            return 1;
+        }
+        int firstRowRoom = getFirstRowRoom(getFirstRowStart(gui));
         if (count <= firstRowRoom) {
             return 1;
         }
@@ -47,7 +53,8 @@ public class GuiSupportedUpgrades extends GuiElement {
         return 2 + count / ROW_ROOM;
     }
 
-    private final Set<Upgrade> supportedUpgrades;
+    private final Supplier<@Nullable Registry<Upgrade>> upgradeRegistry;
+    private final TagKey<Upgrade> supportedUpgrades;
     private final int firstRowRoom;
     private final int firstRowStart;
 
@@ -57,9 +64,10 @@ public class GuiSupportedUpgrades extends GuiElement {
     @Nullable
     private ScreenRectangle cachedTooltipRect;
 
-    public GuiSupportedUpgrades(IGuiWrapper gui, int x, int y, Set<Upgrade> supportedUpgrades) {
+    public GuiSupportedUpgrades(IGuiWrapper gui, int x, int y, TagKey<Upgrade> supportedUpgrades, Supplier<@Nullable Registry<Upgrade>> upgradeRegistry) {
         super(gui, x, y, ELEMENT_WIDTH, ELEMENT_SIZE * calculateNeededRows(gui) + 2);
         this.supportedUpgrades = supportedUpgrades;
+        this.upgradeRegistry = upgradeRegistry;
         this.firstRowStart = getFirstRowStart(this);
         this.firstRowRoom = getFirstRowRoom(this.firstRowStart);
     }
@@ -70,15 +78,20 @@ public class GuiSupportedUpgrades extends GuiElement {
         //Draw the background
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiElementHolder.HOLDER, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         int backgroundColor = Color.argb(GuiElementHolder.getBackgroundColor()).alpha(0.5).argb();
-        for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
-            Upgrade upgrade = EnumUtils.UPGRADES[i];
-            UpgradePos pos = getUpgradePos(i);
-            int xPos = relativeX + 1 + pos.x;
-            int yPos = relativeY + 1 + pos.y;
-            gui().renderItem(guiGraphics, UpgradeUtils.getStack(upgrade), xPos, yPos, 0.75F);
-            if (!supportedUpgrades.contains(upgrade)) {
-                //Make the upgrade appear faded if it is not supported
-                guiGraphics.fill(xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
+        Registry<Upgrade> upgrades = upgradeRegistry.get();
+        if (upgrades != null) {
+            for (int i = 0, size = upgrades.size(); i < size; i++) {
+                Reference<Upgrade> upgrade = upgrades.get(i).orElse(null);
+                if (upgrade != null) {
+                    UpgradePos pos = getUpgradePos(i);
+                    int xPos = relativeX + 1 + pos.x;
+                    int yPos = relativeY + 1 + pos.y;
+                    gui().renderItem(guiGraphics, IUpgradeHelper.INSTANCE.asStack(upgrade), xPos, yPos, 0.75F);
+                    if (!upgrade.is(supportedUpgrades)) {
+                        //Make the upgrade appear faded if it is not supported
+                        guiGraphics.fill(xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
+                    }
+                }
             }
         }
     }
@@ -98,21 +111,34 @@ public class GuiSupportedUpgrades extends GuiElement {
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
-        for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
-            UpgradePos pos = getUpgradePos(i);
-            if (mouseX >= getX() + 1 + pos.x && mouseX < getX() + 1 + pos.x + ELEMENT_SIZE &&
-                mouseY >= getY() + 1 + pos.y && mouseY < getY() + 1 + pos.y + ELEMENT_SIZE) {
-                Upgrade upgrade = EnumUtils.UPGRADES[i];
+        Registry<Upgrade> upgrades = upgradeRegistry.get();
+        int size = upgrades == null ? 0 : upgrades.size();
+        int relativeMouseX = mouseX - getX() - 1;
+        int relativeMouseY = mouseY - getY() - 1;
+        if (size > 0 && relativeMouseX >= 0 && relativeMouseX < PADDED_ELEMENT_WIDTH && relativeMouseY >= 0 && relativeMouseY < ELEMENT_SIZE * (getRow(size - 1) + 1)) {
+            int targetRow = relativeMouseY / ELEMENT_SIZE;
+            int index;
+            if (targetRow == 0) {
+                relativeMouseX -= firstRowStart;
+                index = relativeMouseX / ELEMENT_SIZE;
+            } else {
+                index = firstRowRoom + ROW_ROOM * (targetRow - 1) + relativeMouseX / ELEMENT_SIZE;
+            }
+            //Note: Registry#get returns an empty optional
+            Reference<Upgrade> holder = upgrades.get(index).orElse(null);
+            if (holder != null) {
+                Upgrade upgrade = holder.value();
                 Component upgradeName = MekanismLang.UPGRADE_TYPE.translateColored(EnumColor.YELLOW, upgrade);
                 List<Component> info;
-                if (supportedUpgrades.contains(upgrade)) {
-                    info = List.of(upgradeName, upgrade.getDescription());
+                if (holder.is(supportedUpgrades)) {
+                    info = List.of(upgradeName, upgrade.description());
                 } else {
-                    info = List.of(MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.getDescription());
+                    info = List.of(MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.description());
                 }
                 if (!info.equals(lastInfo)) {
                     lastInfo = info;
                     lastTooltip = TooltipUtils.create(info);
+                    UpgradePos pos = getUpgradePos(index);
                     //Note: We only have to update the tooltip rect if the tooltip changed as we know none of the elements share the same tooltips
                     cachedTooltipRect = new ScreenRectangle(getX() + 1 + pos.x, getY() + 1 + pos.y, ELEMENT_SIZE, ELEMENT_SIZE);
                 }
@@ -126,8 +152,12 @@ public class GuiSupportedUpgrades extends GuiElement {
         setTooltip(lastTooltip = null);
     }
 
+    private int getRow(int index) {
+        return index < firstRowRoom ? 0 : 1 + (index - firstRowRoom) / ROW_ROOM;
+    }
+
     private UpgradePos getUpgradePos(int index) {
-        int row = index < firstRowRoom ? 0 : 1 + (index - firstRowRoom) / ROW_ROOM;
+        int row = getRow(index);
         if (row == 0) {
             //First row has x start a lot further in
             return new UpgradePos(firstRowStart + (index % firstRowRoom) * ELEMENT_SIZE, 0);

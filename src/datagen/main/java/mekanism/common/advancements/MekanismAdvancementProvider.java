@@ -3,7 +3,11 @@ package mekanism.common.advancements;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.datagen.recipe.RecipeCriterion;
+import mekanism.api.upgrade.IUpgradeHelper;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.triggers.AlloyUpgradeTrigger;
 import mekanism.common.advancements.triggers.BlockLaserTrigger;
@@ -58,6 +62,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
     @Override
     public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer) {
         HolderGetter<Item> items = registries.lookupOrThrow(Registries.ITEM);
+        HolderGetter<Upgrade> upgrades = registries.lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
 
         advancement(MekanismAdvancements.ROOT)
               .display(MekanismItems.ATOMIC_DISASSEMBLER, Mekanism.rl("block/block_osmium"), AdvancementType.GOAL, false, false, false)
@@ -165,7 +170,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.STABILIZING_CHUNKS)
               .displayAndCriterion(MekanismBlocks.DIMENSIONAL_STABILIZER, AdvancementType.CHALLENGE, true)
-              .addCriterion(MekanismItems.ANCHOR_UPGRADE)
+              .addCriterion(UpgradeIds.ANCHOR.identifier().getPath(), hasUpgrade(UpgradeIds.ANCHOR))
               .save(consumer);
 
         advancement(MekanismAdvancements.PERSONAL_STORAGE)
@@ -312,7 +317,8 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .displayAndCriterion(MekanismItems.DICTIONARY, AdvancementType.TASK, false)
               .save(consumer);
         advancement(MekanismAdvancements.STONE_GENERATOR)
-              .displayAndCriterion(MekanismItems.STONE_GENERATOR_UPGRADE, AdvancementType.TASK, true)
+              .display(IUpgradeHelper.INSTANCE.asTemplate(upgrades, UpgradeIds.STONE_GENERATOR), AdvancementType.TASK, true)
+              .addCriterion(UpgradeIds.STONE_GENERATOR.identifier().getPath(), hasUpgrade(UpgradeIds.STONE_GENERATOR))
               .save(consumer);
 
         advancement(MekanismAdvancements.DISASSEMBLER)

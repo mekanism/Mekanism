@@ -1,4 +1,4 @@
-// 26.2	2026-06-16T12:38:59.4728945	Tags: mekanism
+// 26.2	2026-07-03T16:50:45.2478696	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -254,6 +254,15 @@ b52afb060e54f9fa521b82346af5cb3cd4378697 data/mekanism/tags/mekanism/chemical/re
 4911fa51ae365a17ba0c00b3bed313f1d43f20a6 data/mekanism/tags/mekanism/chemical/tin.json
 4855fe3f8bdf65c371fb4204cf9ab93833f1a3af data/mekanism/tags/mekanism/chemical/waste_barrel_decay_blacklist.json
 8f1b80f33d49ac84b841d229d26f396ea176c2e0 data/mekanism/tags/mekanism/chemical/water_vapor.json
+e0bc2397996dfd9d8420efa1f1d0847bdac9ed9c data/mekanism/tags/mekanism/upgrade/upgrade_support/anchor_only.json
+333c12128f8fc81d512421a36a97b9194c5da89b data/mekanism/tags/mekanism/upgrade/upgrade_support/default_advanced_machine.json
+a0d240e68004d3eedf124be26bb02ab6be0bbf77 data/mekanism/tags/mekanism/upgrade/upgrade_support/default_machine.json
+a4eb25488e319e036dc0e081dbae6b8921336626 data/mekanism/tags/mekanism/upgrade/upgrade_support/digital_miner.json
+7abce1e03b859ab37152c70b1e7e5a93f8a1a2bc data/mekanism/tags/mekanism/upgrade/upgrade_support/dimensional_stabilizer.json
+5290b25a1a0d1a5ed4160811787e631a4d19dc74 data/mekanism/tags/mekanism/upgrade/upgrade_support/electric_pump.json
+f9fae4ad64ef93b5645139ec7426f6ff46bf6079 data/mekanism/tags/mekanism/upgrade/upgrade_support/muffling_only.json
+e150f106e2b2a48beba1ea99f47eb4c14e2dbe22 data/mekanism/tags/mekanism/upgrade/upgrade_support/qio_filter_handler.json
+165b23af169c0dfc49a45c6c7d99065e010e155c data/mekanism/tags/mekanism/upgrade/upgrade_support/simple_machine.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanism/tags/mob_effect/speed_up_blacklist.json
 5a2931ef953e5514fb6f73eedec6ae10a3fbeb2c data/mekanism/tags/worldgen/biome/spawn_ores.json
 b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/block/axolotls_spawnable_on.json

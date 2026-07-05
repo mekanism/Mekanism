@@ -3,7 +3,6 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.IChemicalTank;
@@ -23,6 +22,8 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.ElectroSeparatorEnergyContainer;
@@ -66,6 +67,9 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
@@ -209,12 +213,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    public void onCachedRecipeChanged(@Nullable CachedRecipe<ElectrolysisRecipe> cachedRecipe, int cacheIndex) {
-        super.onCachedRecipeChanged(cachedRecipe, cacheIndex);
+    public void onCachedRecipeChanged(HolderLookup.Provider registries, @Nullable CachedRecipe<ElectrolysisRecipe> cachedRecipe, int cacheIndex) {
+        super.onCachedRecipeChanged(registries, cachedRecipe, cacheIndex);
         recipeEnergyMultiplier = cachedRecipe == null ? 1 : cachedRecipe.getRecipe().getEnergyMultiplier();
         isMakingHydrogen = cachedRecipe != null && isHydrogenElectrolysis(cachedRecipe.getRecipe());
-        energyContainer.updateEnergyPerTick();
-        energyContainer.updateMaxEnergy();
+        HolderGetter<Upgrade> upgrades = getUpgradeLookup(registries);
+        energyContainer.updateEnergyPerTick(upgrades);
+        energyContainer.updateMaxEnergy(upgrades);
     }
 
     private static boolean isHydrogenElectrolysis(ElectrolysisRecipe recipe) {
@@ -238,7 +243,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
         leftOutputSlot.drainTankIntoSlot(null);
         rightOutputSlot.drainTankIntoSlot(null);
-        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
+        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(level.registryAccess(), energyContainer);
 
         handleTank(leftTank, dumpLeft);
         handleTank(rightTank, dumpRight);
@@ -308,13 +313,18 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED) {
-            double speed = Math.pow(2, getUpgrades(Upgrade.SPEED));
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED)) {
+            double speed = Math.pow(2, totalInstalled);
             baselineMaxOperations = (int) speed;
             dumpRate = (int) (BASE_DUMP_RATE * speed);
         }
+    }
+
+    @Override
+    public boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
+        return upgrade.is(UpgradeIds.SPEED);
     }
 
     public ElectroSeparatorEnergyContainer energyContainer() {

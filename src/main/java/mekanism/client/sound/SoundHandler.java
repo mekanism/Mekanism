@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
-import mekanism.api.Upgrade;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -321,7 +320,7 @@ public class SoundHandler {
             // Every configured interval, see if we need to adjust muffling
             Level level = Minecraft.getInstance().level;
             if (level == null) {
-                this.stop();
+                stop();
                 return;
             }
             if (!MekanismUtils.isTickingNormally(level)) {
@@ -340,7 +339,7 @@ public class SoundHandler {
                 //Make sure we set our volume back to what it actually would be for purposes of letting other mods know
                 // what volume to use
                 volume = originalVolume;
-                SoundInstance s = soundEngine == null ? null :ClientHooks.playSound(soundEngine, this);
+                SoundInstance s = soundEngine == null ? null : ClientHooks.playSound(soundEngine, this);
                 IN_MUFFLED_CHECK = false;
 
                 if (s == this) {
@@ -360,12 +359,7 @@ public class SoundHandler {
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
             BlockEntity tile = WorldUtils.getTileEntity(Minecraft.getInstance().level, BlockPos.containing(getX(), getY(), getZ()));
-            float retVolume = 1.0F;
-
-            if (tile instanceof IUpgradeTile upgradeTile && upgradeTile.supportsUpgrade(Upgrade.MUFFLING)) {
-                int mufflerCount = Math.min(upgradeTile.getUpgrades(Upgrade.MUFFLING), Upgrade.MUFFLING.getMax());
-                retVolume = 1.0F - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
-            }
+            float retVolume = tile instanceof IUpgradeTile upgradeTile ? upgradeTile.getVolumeFactor() : 1.0F;
 
             if (tile instanceof ITileSound tileSound) {
                 retVolume *= tileSound.getVolume();

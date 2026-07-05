@@ -2,17 +2,17 @@ package mekanism.common.tile.prefab;
 
 import java.util.List;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -67,21 +67,16 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        if (upgrade == Upgrade.SPEED) {
-            ticksRequired = MekanismUtils.getTicks(this, baseTicksRequired);
-            operationsPerTick = MekanismUtils.getOperationsPerTick(this, baseTicksRequired, 1);
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        if (upgrade.is(UpgradeIds.SPEED)) {
+            ticksRequired = UpgradeUtils.getTicks(baseTicksRequired, upgrade, totalInstalled);
+            operationsPerTick = UpgradeUtils.getOperationsPerTick(baseTicksRequired, 1, upgrade, totalInstalled);
         }
-        super.recalculateUpgrades(upgrade);
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     public int getOperationsPerTick() {
         return this.operationsPerTick;
-    }
-
-    @Override
-    public List<Component> getInfo(Upgrade upgrade) {
-        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

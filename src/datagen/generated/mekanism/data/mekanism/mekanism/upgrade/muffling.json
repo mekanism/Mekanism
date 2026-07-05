@@ -1,0 +1,10 @@
+{
+  "color": "light_blue",
+  "description": {
+    "translate": "upgrade.mekanism.muffling.description"
+  },
+  "display_name": {
+    "translate": "upgrade.mekanism.muffling"
+  },
+  "max": 1
+}

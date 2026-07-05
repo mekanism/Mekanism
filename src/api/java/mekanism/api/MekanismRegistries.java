@@ -6,6 +6,7 @@ import mekanism.api.chemical.ChemicalSerializer;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.robit.RobitSkin;
+import mekanism.api.upgrade.Upgrade;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -81,6 +82,9 @@ public class MekanismRegistries {
 
         /// Gets the [ResourceKey] representing the name of the Datapack Registry for [`robit skins`][RobitSkin].
         public static final ResourceKey<Registry<RobitSkin>> ROBIT_SKINS = key("robit_skin");
+
+        /// Gets the [ResourceKey] representing the name of the Datapack Registry for [`upgrades`][Upgrade].
+        public static final ResourceKey<Registry<Upgrade>> UPGRADES = key("upgrade");
 
         private static <T> ResourceKey<Registry<T>> key(String path) {
             return ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, path));

@@ -11,6 +11,9 @@
     " G "
   ],
   "result": {
-    "id": "mekanism:upgrade_anchor"
+    "components": {
+      "mekanism:upgrade_type": "mekanism:anchor"
+    },
+    "id": "mekanism:upgrade"
   }
 }

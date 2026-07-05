@@ -1,19 +1,21 @@
 package mekanism.common.recipe.upgrade;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import mekanism.api.Upgrade;
 import mekanism.api.resource.LargeResourceStack;
-import mekanism.common.component.component.UpgradeAware;
+import mekanism.api.upgrade.IUpgradeHelper;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
-import mekanism.common.item.interfaces.IUpgradeItem;
+import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
+import net.minecraft.core.Holder;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -22,10 +24,10 @@ import org.jspecify.annotations.Nullable;
 
 public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData> {
 
-    private final Map<Upgrade, Integer> upgrades;
+    private final Object2IntMap<Holder<Upgrade>> upgrades;
     private final List<LargeResourceStack<ItemResource>> slots;
 
-    UpgradesRecipeData(Map<Upgrade, Integer> upgrades, List<LargeResourceStack<ItemResource>> slots) {
+    UpgradesRecipeData(Object2IntMap<Holder<Upgrade>> upgrades, List<LargeResourceStack<ItemResource>> slots) {
         this.upgrades = upgrades;
         this.slots = slots;
     }
@@ -33,21 +35,22 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
     @Nullable
     @Override
     public UpgradesRecipeData merge(UpgradesRecipeData other) {
-        Map<Upgrade, Integer> smallerUpgrades = other.upgrades;
-        Map<Upgrade, Integer> largerUpgrades = upgrades;
+        Object2IntMap<Holder<Upgrade>> smallerUpgrades = other.upgrades;
+        Object2IntMap<Holder<Upgrade>> largerUpgrades = this.upgrades;
         if (largerUpgrades.size() < smallerUpgrades.size()) {
-            smallerUpgrades = upgrades;
+            smallerUpgrades = this.upgrades;
             largerUpgrades = other.upgrades;
         }
         //Always copy, so we can safely pass the map ownership to the new component
         // as if we are crafting with stacked inputs then it might not line up
-        Map<Upgrade, Integer> upgrades = new EnumMap<>(largerUpgrades);
+        Object2IntMap<Holder<Upgrade>> upgrades = new Object2IntOpenHashMap<>(largerUpgrades);
         if (!smallerUpgrades.isEmpty()) {
             //Add smaller to larger, so we have to iterate fewer elements
-            for (Map.Entry<Upgrade, Integer> entry : smallerUpgrades.entrySet()) {
-                Upgrade upgrade = entry.getKey();
-                int total = upgrades.merge(upgrade, entry.getValue(), Integer::sum);
-                if (total > upgrade.getMax()) {
+            for (ObjectIterator<Object2IntMap.Entry<Holder<Upgrade>>> iterator = Object2IntMaps.fastIterator(smallerUpgrades); iterator.hasNext(); ) {
+                Object2IntMap.Entry<Holder<Upgrade>> entry = iterator.next();
+                Holder<Upgrade> upgrade = entry.getKey();
+                int total = upgrades.mergeInt(upgrade, entry.getIntValue(), Integer::sum);
+                if (total > upgrade.value().max()) {
                     //Invalid we can't store that many of this type of upgrade
                     return null;
                 }
@@ -64,16 +67,22 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
             return true;
         }
         ItemResource itemType = itemAccess.getResource();
-        Set<Upgrade> supportedUpgrades = Collections.emptySet();
+        TagKey<Upgrade> supportedUpgrades = null;
         if (itemType.getItem() instanceof BlockItem blockItem) {
             AttributeUpgradeSupport upgradeSupport = Attribute.get(blockItem.getBlock(), AttributeUpgradeSupport.class);
             if (upgradeSupport != null) {
                 supportedUpgrades = upgradeSupport.supportedUpgrades();
             }
         }
-        if (!supportedUpgrades.containsAll(upgrades.keySet())) {
-            //Not all upgrades are supported, fail
+        if (supportedUpgrades == null) {
+            //Unable to find what upgrades are supported, fail
             return false;
+        }
+        for (Holder<Upgrade> upgradeHolder : upgrades.keySet()) {
+            if (!upgradeHolder.is(supportedUpgrades)) {
+                //Upgrade is installed that isn't supported, fail
+                return false;
+            }
         }
         LargeResourceStack<ItemResource> input = LargeResourceStack.ITEM_HELPER.empty();
         LargeResourceStack<ItemResource> output = LargeResourceStack.ITEM_HELPER.empty();
@@ -83,13 +92,13 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
             }
             ItemResource resource = slot.resource();
             long amount = slot.amount();
-            Upgrade upgrade = resource.getItem() instanceof IUpgradeItem upgradeItem ? upgradeItem.getUpgradeType() : null;
-            if (upgrade == null) {
+            Holder<Upgrade> upgradeType = resource.get(IUpgradeHelper.INSTANCE.dataComponent());
+            if (upgradeType == null) {
                 //Not an upgrade
                 return false;
             }
             int maxStackSize = resource.getMaxStackSize();
-            if (supportedUpgrades.contains(upgrade)) {
+            if (upgradeType.is(supportedUpgrades)) {
                 if (input.isEmpty()) {
                     input = slot;
                     continue;

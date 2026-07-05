@@ -11,6 +11,7 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.ITooltipHelper;
 import mekanism.api.transaction.ITransactionHelper;
+import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.client.ClientModuleHelper;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.lib.radial.data.RadialDataHelper;
@@ -22,6 +23,7 @@ import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.service.MekanismAccess;
+import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.text.TooltipHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -59,6 +61,12 @@ class APIAccessTest {
     @DisplayName("Test getting the Radiation Manager")
     void testGetRadiationManager() {
         Assertions.assertInstanceOf(RadiationManager.class, IRadiationManager.INSTANCE);
+    }
+
+    @Test
+    @DisplayName("Test getting the Upgrade Helper")
+    void testGetUpgradeHelper() {
+        Assertions.assertInstanceOf(UpgradeUtils.class, IUpgradeHelper.INSTANCE);
     }
 
     @Test

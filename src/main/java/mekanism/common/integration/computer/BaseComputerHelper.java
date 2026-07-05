@@ -45,6 +45,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -213,6 +214,16 @@ public abstract class BaseComputerHelper {
             converted.add(converter.apply(el));
         }
         return converted;
+    }
+
+    @Nullable
+    public Object convert(@Nullable ResourceKey<?> key) {
+        return key == null ? null : convert(key.identifier());
+    }
+
+    @Nullable
+    public Object convert(@Nullable Holder<?> holder) {
+        return holder == null ? null : holder.getRegisteredName();
     }
 
     @Nullable

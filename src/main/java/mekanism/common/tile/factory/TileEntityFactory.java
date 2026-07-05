@@ -15,12 +15,13 @@ import java.util.function.BooleanSupplier;
 import java.util.function.ToIntBiFunction;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
@@ -59,10 +60,11 @@ import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.Block;
@@ -231,11 +233,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             sortingNeeded = true;
         }
 
+        HolderLookup.Provider registries = level.registryAccess();
         //Copy this so that if it changes we still have the original amount. Don't bother making it a constant though as this way
         // we can then use minusEqual instead of subtract to remove an extra copy call
         long prev = energyContainer.getAmountAsLong();
         for (int i = 0; i < recipeCacheLookupMonitors.length; i++) {
-            if (!recipeCacheLookupMonitors[i].updateAndProcess()) {
+            if (!recipeCacheLookupMonitors[i].updateAndProcess(registries)) {
                 //If we don't have a recipe in that slot make sure that our active state for that position is false
                 activeStates[i] = false;
             }
@@ -412,17 +415,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED) {
-            ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-            operationsPerTick = MekanismUtils.getOperationsPerTick(this, BASE_TICKS_REQUIRED, 1);
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED)) {
+            ticksRequired = UpgradeUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
+            operationsPerTick = UpgradeUtils.getOperationsPerTick(BASE_TICKS_REQUIRED, 1, upgrade, totalInstalled);
         }
-    }
-
-    @Override
-    public List<Component> getInfo(Upgrade upgrade) {
-        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

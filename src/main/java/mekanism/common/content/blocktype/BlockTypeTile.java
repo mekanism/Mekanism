@@ -3,13 +3,11 @@ package mekanism.common.content.blocktype;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
-import mekanism.api.Upgrade;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
-import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
@@ -70,11 +68,6 @@ public class BlockTypeTile<TILE extends TileEntityUpdateable> extends BlockType 
         @SafeVarargs
         public final T with(TileAttribute<TILE>... attrs) {
             holder.add(attrs);
-            return self();
-        }
-
-        public T withSupportedUpgrades(Upgrade... upgrades) {
-            holder.add(AttributeUpgradeSupport.create(upgrades));
             return self();
         }
     }

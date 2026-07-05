@@ -1,11 +1,13 @@
 {
   "parent": "mekanism:digital_miner",
   "criteria": {
-    "upgrade_stone_generator": {
+    "stone_generator": {
       "conditions": {
         "items": [
           {
-            "items": "mekanism:upgrade_stone_generator"
+            "predicates": {
+              "mekanism:upgrades": "mekanism:stone_generator"
+            }
           }
         ]
       },
@@ -17,7 +19,10 @@
       "translate": "advancements.mekanism.stone_generator.description"
     },
     "icon": {
-      "id": "mekanism:upgrade_stone_generator"
+      "components": {
+        "mekanism:upgrade_type": "mekanism:stone_generator"
+      },
+      "id": "mekanism:upgrade"
     },
     "title": {
       "translate": "advancements.mekanism.stone_generator.title"
@@ -25,7 +30,7 @@
   },
   "requirements": [
     [
-      "upgrade_stone_generator"
+      "stone_generator"
     ]
   ],
   "sends_telemetry_event": true

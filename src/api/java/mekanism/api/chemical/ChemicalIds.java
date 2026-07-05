@@ -12,6 +12,7 @@ public class ChemicalIds {
     private ChemicalIds() {
     }
 
+    ///@apiNote The empty chemical can be assumed to always be registered, and if a datapack tries to remove it, Mekanism will error.
     public static final ResourceKey<Chemical> EMPTY = key("empty");
 
     // ----------------------

@@ -5,6 +5,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
+import net.minecraft.core.HolderLookup;
 
 public class NucleosynthesizerRecipeCacheLookupMonitor extends RecipeCacheLookupMonitor<NucleosynthesizingRecipe> {
 
@@ -13,13 +14,13 @@ public class NucleosynthesizerRecipeCacheLookupMonitor extends RecipeCacheLookup
     }
 
     @Override
-    public int updateAndProcess(IEnergyContainer energyContainer) {
+    public int updateAndProcess(HolderLookup.Provider registries, IEnergyContainer energyContainer) {
         if (!(energyContainer instanceof MachineEnergyContainer<?> machineEnergyContainer)) {
             //Unknown energy container type just don't handle it
             return 0;
         }
         long prev = energyContainer.getAmountAsLong();
-        if (updateAndProcess() && cachedRecipe != null) {
+        if (updateAndProcess(registries) && cachedRecipe != null) {
             //TODO: Re-evaluate this at some point
             int toProcess = (int) Math.sqrt(prev / (double) machineEnergyContainer.getEnergyPerTick());
             for (int i = 0; i < toProcess - 1; i++) {

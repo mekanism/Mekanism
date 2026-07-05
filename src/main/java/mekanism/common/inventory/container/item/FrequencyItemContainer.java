@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.component.FrequencyAware;
-import mekanism.common.inventory.container.sync.SyncableFrequency;
-import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
+import mekanism.common.inventory.container.sync.SyncableStreamCodec;
+import mekanism.common.inventory.container.sync.SyncableFrequencyList;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -75,14 +75,14 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
         FrequencyType<FREQ> frequencyType = getFrequencyType();
         if (getLevel().isClientSide()) {
             //Client side sync handling
-            track(SyncableFrequency.create(frequencyType, this::getClientFrequency, this::setFrequency));
+            track(SyncableStreamCodec.frequency(frequencyType, this::getClientFrequency, this::setFrequency));
             track(SyncableFrequencyList.create(frequencyType, this::getPublicCache, value -> publicCache = value));
             track(SyncableFrequencyList.create(frequencyType, this::getPrivateCache, value -> privateCache = value));
             track(SyncableFrequencyList.create(frequencyType, this::getTrustedCache, value -> trustedCache = value));
         } else {
             //Server side sync handling
             //Note: It is important these are in the same order as the client side trackers
-            track(SyncableFrequency.create(frequencyType, this::getFrequencyFromStack, this::setFrequency));
+            track(SyncableStreamCodec.frequency(frequencyType, this::getFrequencyFromStack, this::setFrequency));
             track(SyncableFrequencyList.create(frequencyType, () -> frequencyType.getLookup(null, SecurityMode.PUBLIC).getFrequencies(), value -> publicCache = value));
             track(SyncableFrequencyList.create(frequencyType, () -> frequencyType.getLookup(getPlayerUUID(), SecurityMode.PRIVATE).getFrequencies(), value -> privateCache = value));
             track(SyncableFrequencyList.create(frequencyType, () -> frequencyType.getLookup(getPlayerUUID(), SecurityMode.TRUSTED).getFrequencies(), value -> trustedCache = value));

@@ -24,10 +24,11 @@ import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IMekanismResourceHandler;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.block.BlockBounding;
@@ -78,13 +79,14 @@ import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -157,6 +159,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private boolean initCalc = false;
     private int numPowering;
     private boolean clientRendering;
+    @Nullable
+    private Holder<Upgrade> anchorUpgrade;
+    @Nullable
+    private Holder<Upgrade> stoneGeneratorUpgrade;
 
     private final TileComponentChunkLoader<TileEntityDigitalMiner> chunkLoaderComponent = new TileComponentChunkLoader<>(this);
     @Nullable
@@ -406,7 +412,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             if (level != null && !level.isClientSide()) {
                 energyContainer.updateMinerEnergyPerTick();
                 // If the radius changed, and we're on the server, go ahead and refresh the chunk set
-                getChunkLoader().refreshChunkTickets(level, worldPosition);
+                getChunkLoader().refreshChunkTickets(anchorUpgrade, level, worldPosition);
             }
         }
     }
@@ -629,7 +635,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
         //Then source from the upgrade if it is installed
         if (replaceTarget == Items.COBBLESTONE || replaceTarget == Items.STONE) {
-            if (getUpgrades(Upgrade.STONE_GENERATOR) > 0) {
+            if (getUpgrades(stoneGeneratorUpgrade) > 0) {
                 return new ItemStack(replaceTarget);
             }
         }
@@ -729,7 +735,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingPos();
             int diameter = getDiameter();
-            searcher.setChunkCache(new MinerRegionCache(level, startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter), getUpgrades(Upgrade.ANCHOR) > 0));
+            searcher.setChunkCache(new MinerRegionCache(level, startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter), getUpgrades(anchorUpgrade) > 0));
             searcher.start();
         }
         running = true;
@@ -828,6 +834,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         super.setLevel(world);
         //Update miner energy as the world height is likely different compared to the old pre 1.18 values
         energyContainer.updateMinerEnergyPerTick();
+        if (upgradesRegistry == null) {
+            stoneGeneratorUpgrade = null;
+        } else {
+            //Note: We don't have to reset this on tag reload, as datapack registries do not support being reloaded without the server restarting
+            stoneGeneratorUpgrade = upgradesRegistry.get(UpgradeIds.STONE_GENERATOR).orElse(null);
+        }
     }
 
     @Override
@@ -1037,16 +1049,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED) {
-            delayLength = MekanismUtils.getTicks(this, MekanismConfig.general.minerTicksPerMine.get());
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED)) {
+            delayLength = UpgradeUtils.getTicks(MekanismConfig.general.minerTicksPerMine.get(), upgrade, totalInstalled);
         }
-    }
-
-    @Override
-    public List<Component> getInfo(Upgrade upgrade) {
-        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Nullable
@@ -1115,7 +1122,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         if (!Objects.equals(targetChunk, target)) {
             //Only update the target if it has changed
             targetChunk = target;
-            getChunkLoader().refreshChunkTickets();
+            getChunkLoader().refreshChunkTickets(anchorUpgrade);
         }
     }
 

@@ -122,7 +122,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         outputSlot.drainTankIntoSlot(null);
-        recipeCacheLookupMonitor.updateAndProcess();
+        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
         return sendUpdatePacket;
     }
 

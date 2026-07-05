@@ -37,6 +37,7 @@ import mekanism.common.network.to_server.PacketOpenGui;
 import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
 import mekanism.common.network.to_server.PacketRadialModeChange;
 import mekanism.common.network.to_server.PacketRemoveModule;
+import mekanism.common.network.to_server.PacketRemoveUpgrade;
 import mekanism.common.network.to_server.PacketTileGuiInteractItem;
 import mekanism.common.network.to_server.PacketUpdateModuleSettings;
 import mekanism.common.network.to_server.PacketWindowSelect;
@@ -113,6 +114,7 @@ public class PacketHandler extends BasePacketHandler {
         registrar.play(PacketPortableTeleporterTeleport.TYPE, PacketPortableTeleporterTeleport.STREAM_CODEC);
         registrar.play(PacketRadialModeChange.TYPE, PacketRadialModeChange.STREAM_CODEC);
         registrar.play(PacketRemoveModule.TYPE, PacketRemoveModule.STREAM_CODEC);
+        registrar.play(PacketRemoveUpgrade.TYPE, PacketRemoveUpgrade.STREAM_CODEC);
         registrar.play(PacketUpdateModuleSettings.TYPE, PacketUpdateModuleSettings.STREAM_CODEC);
         registrar.play(PacketWindowSelect.TYPE, PacketWindowSelect.STREAM_CODEC);
 

@@ -12,6 +12,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalSerializationHelper;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
@@ -64,6 +65,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.types.IRecipeHolderType;
@@ -86,6 +88,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 
 @JeiPlugin
 public class MekanismJEI implements IModPlugin {
@@ -146,6 +149,13 @@ public class MekanismJEI implements IModPlugin {
     public void registerItemSubtypes(ISubtypeRegistration registry) {
         registerItemSubtypes(registry, MekanismItems.ITEMS.getEntries());
         registerItemSubtypes(registry, MekanismBlocks.BLOCKS.getSecondaryEntries());
+        registry.registerSubtypeInterpreter(MekanismItems.UPGRADE.asItem(), new ISubtypeInterpreter<>() {
+            @Nullable
+            @Override
+            public Object getSubtypeData(ItemStack ingredient, UidContext context) {
+                return ingredient.get(IUpgradeHelper.INSTANCE.dataComponent());
+            }
+        });
     }
 
     @Override

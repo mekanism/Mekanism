@@ -52,6 +52,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -159,8 +160,8 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     }
 
     @Override
-    public void onCachedRecipeChanged(@Nullable CachedRecipe<NucleosynthesizingRecipe> cachedRecipe, int cacheIndex) {
-        super.onCachedRecipeChanged(cachedRecipe, cacheIndex);
+    public void onCachedRecipeChanged(HolderLookup.Provider registries, @Nullable CachedRecipe<NucleosynthesizingRecipe> cachedRecipe, int cacheIndex) {
+        super.onCachedRecipeChanged(registries, cachedRecipe, cacheIndex);
         //Note: Because we don't support speed upgrades we can do this in a much cleaner way than how we have to do it for the PRC
         ticksRequired = cachedRecipe == null ? BASE_TICKS_REQUIRED : cachedRecipe.getRecipe().getDuration();
     }
@@ -170,7 +171,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         gasInputSlot.fillTankOrConvert(null);
-        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
+        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(level.registryAccess(), energyContainer);
         return sendUpdatePacket;
     }
 

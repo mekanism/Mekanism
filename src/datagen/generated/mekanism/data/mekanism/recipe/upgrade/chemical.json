@@ -11,6 +11,9 @@
     " G "
   ],
   "result": {
-    "id": "mekanism:upgrade_chemical"
+    "components": {
+      "mekanism:upgrade_type": "mekanism:chemical"
+    },
+    "id": "mekanism:upgrade"
   }
 }

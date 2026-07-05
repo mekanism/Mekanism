@@ -336,7 +336,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
             }
 
             energySlot.fillContainerOrConvert(null);
-            recipeCacheLookupMonitor.updateAndProcess();
+            recipeCacheLookupMonitor.updateAndProcess(registryAccess());
 
             if (!isDefaultSkinManuallySelected() && HolidayManager.hasRobitSkinsToday() && getSkinId() == MekanismRobitSkins.BASE) {
                 //Randomize the robit's skin
@@ -699,7 +699,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     public RobitSkin getSkin() {
-        return MekanismRobitSkins.get(level().registryAccess(), getSkinId());
+        return MekanismRobitSkins.get(registryAccess(), getSkinId());
     }
 
     //TODO - 26.2: cache the skin instance and index
@@ -715,7 +715,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
             if (!IEntitySecurityUtils.INSTANCE.canAccess(player, this)) {
                 return false;
             }
-            SkinLookup skinLookup = MekanismRobitSkins.lookup(level().registryAccess(), skinKey);
+            SkinLookup skinLookup = MekanismRobitSkins.lookup(registryAccess(), skinKey);
             skinKey = skinLookup.name();
             if (getSkinId() == skinKey) {
                 //Don't do anything if the robit already has that skin selected
@@ -736,7 +736,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
 
     /// @apiNote Only call on the client.
     public Identifier getModelTexture() {
-        Registry<RobitSkin> robitSkins = level().registryAccess().lookupOrThrow(MekanismRegistries.Keys.ROBIT_SKINS);
+        Registry<RobitSkin> robitSkins = registryAccess().lookupOrThrow(MekanismRegistries.Keys.ROBIT_SKINS);
         ResourceKey<RobitSkin> skinKey = getSkinId();
         Optional<Holder.Reference<RobitSkin>> optionalSkin = robitSkins.get(skinKey);
         Holder.Reference<RobitSkin> skin;

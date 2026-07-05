@@ -13,6 +13,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
@@ -71,6 +72,7 @@ import mekanism.common.registries.MekanismChemicalIngredientTypes;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismCreativeTabs;
+import mekanism.common.registries.MekanismDataComponentPredicates;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.registries.MekanismDataSerializers;
@@ -121,6 +123,7 @@ import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.datamaps.DataMapsUpdatedEvent;
 import org.jspecify.annotations.Nullable;
@@ -214,6 +217,7 @@ public class Mekanism {
 
     private void addRegistrationListeners(IEventBus modEventBus) {
         modEventBus.addListener(this::registerRegistries);
+        modEventBus.addListener(this::registerSimpleDPRegistries);
 
         MekanismItems.ITEMS.register(modEventBus);
         MekanismBlocks.BLOCKS.register(modEventBus);
@@ -223,6 +227,7 @@ public class Mekanism {
         MekanismCreativeTabs.CREATIVE_TABS.register(modEventBus);
         MekanismCriteriaTriggers.CRITERIA_TRIGGERS.register(modEventBus);
         MekanismDataComponents.DATA_COMPONENTS.register(modEventBus);
+        MekanismDataComponentPredicates.DATA_COMPONENT_PREDICATE_TYPES.register(modEventBus);
         MekanismEntityTypes.ENTITY_TYPES.register(modEventBus);
         MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         MekanismGameEvents.GAME_EVENTS.register(modEventBus);
@@ -245,6 +250,10 @@ public class Mekanism {
         MekanismDataMapTypes.REGISTER.register(modEventBus);
         MekanismSlotDisplayTypes.SLOT_DISPLAY_TYPES.register(modEventBus);
         MekanismTicketTypes.TICKET_TYPES.register(modEventBus);
+    }
+
+    private void registerSimpleDPRegistries(DataPackRegistryEvent.NewRegistry event) {
+        event.dataPackRegistry(MekanismRegistries.Keys.UPGRADES, Upgrade.DIRECT_CODEC, Upgrade.DIRECT_CODEC);
     }
 
     private void registerRegistries(NewRegistryEvent event) {

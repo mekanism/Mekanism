@@ -1,7 +1,11 @@
 package mekanism.common.tile.qio;
 
 import java.util.Collection;
-import mekanism.api.Upgrade;
+import java.util.Collections;
+import java.util.List;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.integration.computer.ComputerException;
@@ -10,6 +14,8 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -17,10 +23,12 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ITileFilterHolder<QIOFilter<?>> {
 
+    //TODO - 26.2: Do we want to up this to Item.ABSOLUTE_MAX_STACK_SIZE? Even if not, should we switch this to Item.DEFAULT_MAX_STACK_SIZE?
+    private static final int BASE_TRANSIT_COUNT = 64;
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     private final SortableFilterManager<QIOFilter<?>> filterManager = new SortableFilterManager<QIOFilter<?>>((Class) QIOFilter.class, this::markForSave, this::getLevel);
-    //TODO - 26.2: Do we want to up this to Item.ABSOLUTE_MAX_STACK_SIZE? Even if not, should we switch this to Item.DEFAULT_MAX_STACK_SIZE?
-    private int maxTransitCount = 64;
+    private int maxTransitCount = BASE_TRANSIT_COUNT;
     private int maxTransitTypes = 1;
 
     public TileEntityQIOFilterHandler(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
@@ -33,15 +41,34 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED) {
-            int speedUpgrades = getUpgrades(Upgrade.SPEED);
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED)) {
             // 64 to 320 items
-            maxTransitCount = 64 + 32 * speedUpgrades;
+            maxTransitCount = getUpgradeEffect(totalInstalled, BASE_TRANSIT_COUNT);
             // 1 to 5 types
-            maxTransitTypes = Math.round(1F + speedUpgrades / 2F);
+            maxTransitTypes = getUpgradeEffect(totalInstalled, 1);
         }
+    }
+
+    private float getUpgradeEffectRaw(int totalInstalled, int base) {
+        return base + (base * totalInstalled) / 2F;
+    }
+
+    private int getUpgradeEffect(int totalInstalled, int base) {
+        return Math.round(getUpgradeEffectRaw(totalInstalled, base));
+    }
+
+    @Override
+    public List<Component> getUpgradeWindowInfo(Holder<Upgrade> upgrade) {
+        if (upgrade.is(UpgradeIds.SPEED)) {
+            if (supportsUpgrade(upgrade) && upgrade.value().supportsMultiple()) {
+                double effect = getUpgradeEffectRaw(getUpgrades(upgrade), 1);
+                return Collections.singletonList(MekanismLang.UPGRADES_EFFECT.translate(Math.round(effect * 100) / 100F));
+            }
+            return Collections.emptyList();
+        }
+        return super.getUpgradeWindowInfo(upgrade);
     }
 
     @Override

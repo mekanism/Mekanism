@@ -122,8 +122,8 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
         return TextComponentUtil.translate(getTranslationKey());
     }
 
-    /// Gets the corresponding text color for this color.
-    public TextColor getColor() {
+    @Override
+    public TextColor getTextColor() {
         return color;
     }
 

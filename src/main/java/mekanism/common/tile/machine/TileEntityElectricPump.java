@@ -11,10 +11,11 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -42,13 +43,13 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -98,6 +99,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     private final Set<BlockPos> recurringNodes = new ObjectOpenHashSet<>();
     @Nullable
     private BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction> fluidHandlerAbove;
+    @Nullable
+    private Holder<Upgrade> filterUpgrade;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityElectricPump> energyContainer;
@@ -183,6 +186,12 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.setLevel(world);
         //Invalidate the cache as if the level changed then it might no longer be valid
         fluidHandlerAbove = null;
+        if (upgradesRegistry == null) {
+            filterUpgrade = null;
+        } else {
+            //Note: We don't have to reset this on tag reload, as datapack registries do not support being reloaded without the server restarting
+            filterUpgrade = upgradesRegistry.get(UpgradeIds.FILTER).orElse(null);
+        }
     }
 
     public int estimateIncrementAmount() {
@@ -190,7 +199,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     private boolean suck(ServerLevel level, TransactionContext transaction) {
-        boolean hasFilter = getUpgrades(Upgrade.FILTER) > 0;
+        boolean hasFilter = getUpgrades(filterUpgrade) > 0;
         //First see if there are any fluid blocks under the pump - if so, suck and adds the location to the recurring list
         if (suck(level, worldPosition.relative(Direction.DOWN), hasFilter, true, transaction)) {
             return true;
@@ -381,11 +390,11 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED) {
-            ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-            outputRate = BASE_OUTPUT_RATE * (1 + getUpgrades(Upgrade.SPEED));
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED)) {
+            ticksRequired = UpgradeUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
+            outputRate = BASE_OUTPUT_RATE * (totalInstalled + 1);
         }
     }
 
@@ -397,11 +406,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         return type == ContainerType.FLUID;
-    }
-
-    @Override
-    public List<Component> getInfo(Upgrade upgrade) {
-        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     public MachineEnergyContainer<TileEntityElectricPump> energyContainer() {

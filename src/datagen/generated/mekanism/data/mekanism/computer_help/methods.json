@@ -4578,22 +4578,21 @@
     {
       "methodName": "getInstalledUpgrades",
       "returns": {
-        "type": "Table (String (Upgrade) => Number (int))",
+        "type": "Table (String (Holder) => Number (int))",
         "java_extra": [
-          "mekanism.api.Upgrade",
-          "java.lang.Integer"
+          "net.minecraft.core.Holder"
         ],
-        "java_type": "java.util.Map"
+        "java_type": "it.unimi.dsi.fastutil.objects.Object2IntMap"
       }
     },
     {
       "methodName": "getSupportedUpgrades",
       "returns": {
-        "type": "List (String (Upgrade))",
+        "type": "List (String (Holder))",
         "java_extra": [
-          "mekanism.api.Upgrade"
+          "net.minecraft.core.Holder"
         ],
-        "java_type": "java.util.Set"
+        "java_type": "java.util.List"
       }
     }
   ],

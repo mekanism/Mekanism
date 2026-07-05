@@ -1,0 +1,10 @@
+{
+  "color": "yellow",
+  "description": {
+    "translate": "upgrade.mekanism.chemical.description"
+  },
+  "display_name": {
+    "translate": "upgrade.mekanism.chemical"
+  },
+  "max": 8
+}

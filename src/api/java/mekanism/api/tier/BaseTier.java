@@ -83,10 +83,8 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
         this.textColor = TextColor.fromRgb(argb);
     }
 
-    /// Gets the color that corresponds to this tier for use in text messages.
-    ///
-    /// @since 10.4.0
-    public TextColor getColor() {
+    @Override
+    public TextColor getTextColor() {
         return this.textColor;
     }
 

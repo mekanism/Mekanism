@@ -220,6 +220,8 @@ public enum MekanismLang implements ILangEntry {
     FREE_RUNNERS_STORED("tooltip", "stored.free_runners"),
     FLAMETHROWER_STORED("tooltip", "stored.flamethrower"),
     JETPACK_STORED("tooltip", "stored.jetpack"),
+    TOOLTIP_UPGRADE_TYPE("tooltip", "upgrade.type"),
+    TOOLTIP_UPGRADE_MAX_INSTALLED("tooltip", "upgrade.max_installed"),
     //Gui stuff
     HEIGHT("gui", "height"),
     WIDTH("gui", "width"),

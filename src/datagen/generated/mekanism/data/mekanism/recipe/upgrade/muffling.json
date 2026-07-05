@@ -10,6 +10,9 @@
     " # "
   ],
   "result": {
-    "id": "mekanism:upgrade_muffling"
+    "components": {
+      "mekanism:upgrade_type": "mekanism:muffling"
+    },
+    "id": "mekanism:upgrade"
   }
 }

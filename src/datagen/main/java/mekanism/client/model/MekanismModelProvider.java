@@ -1,11 +1,13 @@
 package mekanism.client.model;
 
 import com.google.common.collect.Table;
+import com.google.gson.JsonObject;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.model.blockstate.HolidayBasedModelSelector;
@@ -13,6 +15,7 @@ import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel;
 import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
 import mekanism.client.model.blockstate.TransmitterBlockStateModel;
 import mekanism.client.model.data.TransmitterModelData.VisualConnectionStatus;
+import mekanism.client.model.item.ComponentItemModel;
 import mekanism.client.model.item.QIODriveArrayItemModel;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
@@ -53,6 +56,7 @@ import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
@@ -69,8 +73,10 @@ import net.minecraft.client.renderer.item.properties.select.DisplayContext;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -128,11 +134,20 @@ public class MekanismModelProvider extends BaseModelProvider {
         simpleCustomModel(blockModels, block, modelPath, ModelTemplates.CUBE_ALL, textureMapping, ItemModelUtils.plainModel(modelPath));
     }
 
+    private void addComponentBacked(ItemModelGenerators itemModels, Holder<Item> item, ResourceKey<? extends Registry<?>> componentRegistry) {
+        Identifier identifier = ModelLocationUtils.getModelLocation(item.value());
+        ItemModel.Unbaked unbaked = ItemModelUtils.plainModel(new ComponentBackedTemplate(componentRegistry).create(identifier, NO_TEXTURES, itemModels.modelOutput));
+        itemModels.itemModelOutput.accept(item.value(), new ComponentItemModel.Unbaked((CuboidItemModelWrapper.Unbaked) unbaked, componentRegistry));
+    }
+
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         //Items
         registerBuckets(MekanismFluids.FLUIDS, itemModels);
         registerModules(MekanismItems.ITEMS, itemModels);
+
+        addComponentBacked(itemModels, MekanismItems.UPGRADE, MekanismRegistries.Keys.UPGRADES);
+
         for (Table.Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             ItemRegistryObject<Item> itemValue = item.getValue();
             Identifier texture = itemTexture(itemValue);
@@ -596,13 +611,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         itemModels.declareCustomModelItem(MekanismItems.TELEPORTATION_CORE.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ULTIMATE_CONTROL_CIRCUIT.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ULTIMATE_TIER_INSTALLER.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.ANCHOR_UPGRADE.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.CHEMICAL_UPGRADE.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.ENERGY_UPGRADE.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.FILTER_UPGRADE.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.MUFFLING_UPGRADE.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.SPEED_UPGRADE.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.STONE_GENERATOR_UPGRADE.asItem());
         itemModels.declareCustomModelItem(MekanismItems.YELLOW_CAKE_URANIUM.asItem());
         itemModels.declareCustomModelItem(MekanismItems.BRONZE_DUST.asItem());
         itemModels.declareCustomModelItem(MekanismItems.LAPIS_LAZULI_DUST.asItem());
@@ -632,7 +640,6 @@ public class MekanismModelProvider extends BaseModelProvider {
 
     private void markManualBlocks() {
         markManualBlockState(MekanismBlocks.ADVANCED_BIN);
-        //markManualBlockState(MekanismBlocks.ADVANCED_BOUNDING_BLOCK); todo: is this an old file?
         markManualBlockState(MekanismBlocks.ADVANCED_CHEMICAL_TANK);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ADVANCED, FactoryType.COMBINING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ADVANCED, FactoryType.COMPRESSING));
@@ -833,6 +840,26 @@ public class MekanismModelProvider extends BaseModelProvider {
         @Override
         public CustomUnbakedBlockStateModel toUnbaked() {
             return this.blockStateModel;
+        }
+    }
+
+    private static class ComponentBackedTemplate extends ModelTemplate {
+
+        private final String componentName;
+
+        public ComponentBackedTemplate(ResourceKey<? extends Registry<?>> componentRegistry) {
+            super(ModelTemplates.FLAT_ITEM.model, ModelTemplates.FLAT_ITEM.suffix);
+            this.componentName = componentRegistry.identifier().getPath();
+        }
+
+        @Override
+        public JsonObject createBaseTemplate(Identifier target, Map<TextureSlot, Material> slots) {
+            JsonObject result = super.createBaseTemplate(target, slots);
+            if (!result.has("textures")) {
+                result.add("textures", new JsonObject());
+            }
+            result.getAsJsonObject("textures").addProperty(TextureSlot.LAYER0.getId(), "#" + componentName);
+            return result;
         }
     }
 }

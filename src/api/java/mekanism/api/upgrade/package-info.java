@@ -1,4 +1,4 @@
 @NullMarked
-package mekanism.common.inventory.container.sync.list;
+package mekanism.api.upgrade;
 
 import org.jspecify.annotations.NullMarked;

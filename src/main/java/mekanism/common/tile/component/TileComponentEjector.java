@@ -54,6 +54,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -440,7 +441,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public List<ISyncableData> getSpecificSyncableData() {
+    public List<ISyncableData> getSpecificSyncableData(Level level) {
         List<ISyncableData> list = new ArrayList<>();
         list.add(SyncableBoolean.create(this::hasStrictInput, input -> strictInput = input));
         list.add(SyncableInt.create(() -> TransporterUtils.getColorIndex(outputColor), index -> outputColor = TransporterUtils.readColor(index)));

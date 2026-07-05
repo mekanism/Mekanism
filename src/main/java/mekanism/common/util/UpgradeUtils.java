@@ -1,75 +1,150 @@
 package mekanism.common.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import mekanism.api.Upgrade;
-import mekanism.api.Upgrade.IUpgradeInfoHandler;
-import mekanism.common.MekanismLang;
+import com.google.common.primitives.Ints;
+import mekanism.api.math.MathUtils;
+import mekanism.api.upgrade.IUpgradeHelper;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
-public class UpgradeUtils {
+public class UpgradeUtils implements IUpgradeHelper {
 
-    private UpgradeUtils() {
+    @Override
+    public DataComponentType<Holder<Upgrade>> dataComponent() {
+        return MekanismDataComponents.UPGRADE_TYPE.get();
     }
 
-    public static ItemStack getStack(Upgrade upgrade) {
-        return getStack(upgrade, 1);
+    private DataComponentPatch getPatch(Holder<Upgrade> upgrade) {
+        return DataComponentPatch.builder()
+              .set(dataComponent(), upgrade)
+              .build();
     }
 
-    public static ItemStack getStack(Upgrade upgrade, int count) {
-        return new ItemStack(getItem(upgrade), count);
+    @Override
+    public ItemStackTemplate asTemplate(Holder<Upgrade> upgrade, int amount) {
+        return new ItemStackTemplate(MekanismItems.UPGRADE, amount, getPatch(upgrade));
     }
 
-    public static ItemResource getResource(Upgrade upgrade) {
-        return ItemResource.of(getItem(upgrade));
+    @Override
+    public ItemStack asStack(Holder<Upgrade> upgrade, int amount) {
+        return new ItemStack(MekanismItems.UPGRADE, amount, getPatch(upgrade));
     }
 
-    public static Holder<Item> getItem(Upgrade upgrade) {
-        return switch (upgrade) {
-            case SPEED -> MekanismItems.SPEED_UPGRADE;
-            case ENERGY -> MekanismItems.ENERGY_UPGRADE;
-            case FILTER -> MekanismItems.FILTER_UPGRADE;
-            case MUFFLING -> MekanismItems.MUFFLING_UPGRADE;
-            case CHEMICAL -> MekanismItems.CHEMICAL_UPGRADE;
-            case ANCHOR -> MekanismItems.ANCHOR_UPGRADE;
-            case STONE_GENERATOR -> MekanismItems.STONE_GENERATOR_UPGRADE;
-        };
+    @Override
+    public ItemResource asResource(Holder<Upgrade> upgrade) {
+        return ItemResource.of((Holder<Item>) MekanismItems.UPGRADE, getPatch(upgrade));
     }
 
-    public static List<Component> getInfo(BlockEntity tile, Upgrade upgrade) {
-        List<Component> ret = new ArrayList<>();
-        if (tile instanceof IUpgradeTile upgradeTile) {
-            if (tile instanceof IUpgradeInfoHandler upgradeInfoHandler) {
-                return upgradeInfoHandler.getInfo(upgrade);
-            } else {
-                ret = getMultScaledInfo(upgradeTile, upgrade);
+    public static int getBaseUsage(HolderGetter<Upgrade> upgrades, IUpgradeTile tile, int def) {
+        //getGasPerTickMean * required ticks (not rounded)
+        Holder.Reference<Upgrade> chemicalUpgrade = upgrades.get(UpgradeIds.CHEMICAL).orElse(null);
+        if (chemicalUpgrade != null && tile.supportsUpgrade(chemicalUpgrade)) {
+            // def * (upgradeMultiplier ^ ((2 * speed - gas) / 8)) * (upgradeMultiplier ^ (-speed / 8)) =
+            // def * upgradeMultiplier ^ ((speed - gas) / 8)
+            //TODO: We may want to validate this provides the numbers we desire if we ever end up with any machines
+            // that use this that are not statistical and have gas upgrades so would go through this code path
+            Holder.Reference<Upgrade> speedUpgrade = upgrades.get(UpgradeIds.SPEED).orElse(null);
+            if (speedUpgrade != null) {
+                //TODO - 26.2: Re-evaluate this cast
+                return Ints.saturatedCast(Math.round(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(),
+                      fractionUpgrades(tile, speedUpgrade) - fractionUpgrades(tile, chemicalUpgrade))));
             }
         }
-        return ret;
+        //If it doesn't support gas upgrades, we can fall through to the default value as the math would be:
+        // def * (upgradeMultiplier ^ (speed / 8)) * (upgradeMultiplier ^ (-speed / 8)) =
+        // def * 1
+        return def;
     }
 
-    public static List<Component> getMultScaledInfo(IUpgradeTile tile, Upgrade upgrade) {
-        List<Component> ret = new ArrayList<>();
-        if (tile.supportsUpgrades() && upgrade.getMax() > 1) {
-            double effect = Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), tile.getUpgrades(upgrade) / (float) upgrade.getMax());
-            ret.add(MekanismLang.UPGRADES_EFFECT.translate(Math.round(effect * 100) / 100F));
-        }
-        return ret;
+    /// Gets the operating ticks required for a machine via its upgrades.
+    ///
+    /// @param def the original, default ticks required
+    ///
+    /// @return required operating ticks
+    public static int getTicks(int def, Holder<Upgrade> speedUpgrade, int installedUpgrades) {
+        return Math.max(1, MathUtils.clampToInt(getTicksD(def, speedUpgrade, installedUpgrades)));
     }
 
-    public static List<Component> getExpScaledInfo(IUpgradeTile tile, Upgrade upgrade) {
-        List<Component> ret = new ArrayList<>();
-        if (tile.supportsUpgrades() && upgrade.getMax() > 1) {
-            ret.add(MekanismLang.UPGRADES_EFFECT.translate(Math.pow(2, (float) tile.getUpgrades(upgrade))));
+    /// Gets the operating ticks required for a machine via its upgrades.
+    ///
+    /// @param def the original, default ticks required
+    ///
+    /// @return required operating ticks
+    public static double getTicksD(int def, Holder<Upgrade> speedUpgrade, int installedUpgrades) {
+        return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(installedUpgrades, speedUpgrade));
+    }
+
+    /// Get the amount of operations per tick, accounting for bonus operations from non-default upgrade modifiers. Fractional operations are ignored
+    ///
+    /// @param defTicks          the original, default ticks required
+    /// @param defaultOperations the original, default operations (usually 1)
+    ///
+    /// @return max operations to do in one tick. If speed is not < 1 tick return the default
+    public static int getOperationsPerTick(int defTicks, int defaultOperations, Holder<Upgrade> speedUpgrade, int installedUpgrades) {
+        double ticksD = getTicksD(defTicks, speedUpgrade, installedUpgrades);
+        if (ticksD >= 1) {
+            return defaultOperations;
         }
-        return ret;
+        return MathUtils.clampToInt(Math.max(1, 1 / ticksD) * defaultOperations);
+    }
+
+    /// Gets the energy required per tick for a machine via its upgrades.
+    ///
+    /// @param tile tile containing upgrades
+    /// @param def  the original, default energy required
+    ///
+    /// @return required energy per tick
+    public static int getEnergyPerTick(IUpgradeTile tile, int def, Holder<Upgrade> energyUpgrade, Holder<Upgrade> speedUpgrade) {
+        return Mth.ceil(def * Math.pow(
+              MekanismConfig.general.maxUpgradeMultiplier.get(),
+              2 * fractionUpgrades(tile, speedUpgrade) - fractionUpgrades(tile, energyUpgrade)
+        ));
+    }
+
+    /// Gets the secondary energy multiplier required per tick for a machine via upgrades.
+    ///
+    /// @param tile tile containing upgrades
+    ///
+    /// @return max secondary energy per tick
+    public static double getGasPerTickMeanMultiplier(HolderGetter<Upgrade> upgrades, IUpgradeTile tile) {
+        Holder.Reference<Upgrade> speedUpgrade = upgrades.get(UpgradeIds.SPEED).orElse(null);
+        if (speedUpgrade != null) {
+            Holder.Reference<Upgrade> chemicalUpgrade = upgrades.get(UpgradeIds.CHEMICAL).orElse(null);
+            if (chemicalUpgrade != null && tile.supportsUpgrade(chemicalUpgrade)) {
+                return Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, speedUpgrade) - fractionUpgrades(tile, chemicalUpgrade));
+            }
+            return Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, speedUpgrade));
+        }
+        return 1;
+    }
+
+    /// Gets the maximum energy for a machine via its upgrades.
+    ///
+    /// @param tile tile containing upgrades
+    /// @param def  original, default max energy
+    ///
+    /// @return max energy
+    public static long getMaxEnergy(IUpgradeTile tile, long def, Holder<Upgrade> energyUpgrade) {
+        return MathUtils.clampToLong(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, energyUpgrade)));
+    }
+
+    private static double fractionUpgrades(IUpgradeTile tile, Holder<Upgrade> type) {
+        return fractionUpgrades(tile.getUpgrades(type), type);
+    }
+
+    private static double fractionUpgrades(int installed, Holder<Upgrade> type) {
+        return installed / (double) type.value().max();
     }
 }

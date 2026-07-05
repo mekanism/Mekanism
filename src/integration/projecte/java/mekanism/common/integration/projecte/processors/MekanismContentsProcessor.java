@@ -1,31 +1,34 @@
 package mekanism.common.integration.projecte.processors;
 
-import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongMaps;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.ToLongFunction;
 import mekanism.api.MekanismRegistries;
-import mekanism.api.Upgrade;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.resource.LargeResourceStack;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.UpgradeUtils;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.components.DataComponentProcessor;
 import moze_intel.projecte.api.components.IDataComponentProcessor;
 import moze_intel.projecte.api.proxy.IEMCProxy;
+import net.minecraft.core.Holder;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Range;
@@ -34,7 +37,7 @@ import org.jspecify.annotations.Nullable;
 @DataComponentProcessor
 public class MekanismContentsProcessor implements IDataComponentProcessor {
 
-    private Reference2LongMap<Upgrade> upgradeEmc = Reference2LongMaps.emptyMap();
+    private Object2LongMap<Holder<Upgrade>> upgradeEmc = Object2LongMaps.emptyMap();
     private Reference2LongMap<ModuleData<?>> moduleDataEmc = Reference2LongMaps.emptyMap();
 
     @Override
@@ -75,13 +78,14 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
         }
         UpgradeAware upgradeAware = resource.get(MekanismDataComponents.UPGRADES);
         if (upgradeAware != null) {//Stored upgrades
-            for (Map.Entry<Upgrade, Integer> entry : upgradeAware.upgrades().entrySet()) {
+            for (ObjectIterator<Object2IntMap.Entry<Holder<Upgrade>>> iterator = Object2IntMaps.fastIterator(upgradeAware.upgrades()); iterator.hasNext(); ) {
+                Object2IntMap.Entry<Holder<Upgrade>> entry = iterator.next();
                 long upgradeEmc = this.upgradeEmc.getLong(entry.getKey());
                 if (upgradeEmc == 0) {
                     //An upgrade is stored that doesn't have an emc value. Don't allow consuming it
                     return 0;
                 }
-                currentEMC = addEmc(currentEMC, upgradeEmc, entry.getValue());
+                currentEMC = addEmc(currentEMC, upgradeEmc, entry.getIntValue());
             }
             currentEMC = addEmc(emcProxy, currentEMC, upgradeAware.slotContents());
             if (currentEMC == 0) {
@@ -102,19 +106,19 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
     }
 
     @Override
-    public void updateCachedValues(@Nullable ToLongFunction<ItemInfo> emcLookup) {
+    public void updateCachedValues(@Nullable ToLongFunction<ItemInfo> emcLookup) {//TODO: Expose a registry lookup to updateCachedValues when I get around to porting ProjectE
         if (emcLookup == null) {
-            upgradeEmc = Reference2LongMaps.emptyMap();
+            upgradeEmc = Object2LongMaps.emptyMap();
             moduleDataEmc = Reference2LongMaps.emptyMap();
             return;
         }
-        upgradeEmc = new Reference2LongArrayMap<>(EnumUtils.UPGRADES.length);
-        for (Upgrade upgrade : EnumUtils.UPGRADES) {
+        upgradeEmc = new Object2LongOpenHashMap<>();
+        /*for (Upgrade upgrade : Upgrade.values()) {
             long emc = emcLookup.applyAsLong(ItemInfo.fromItem(UpgradeUtils.getItem(upgrade)));
             if (emc > 0) {
                 upgradeEmc.put(upgrade, emc);
             }
-        }
+        }*/
         moduleDataEmc = new Reference2LongOpenHashMap<>();
         for (ModuleData<?> moduleData : MekanismRegistries.MODULES) {
             long emc = emcLookup.applyAsLong(ItemInfo.fromItem(moduleData.getItemHolder()));

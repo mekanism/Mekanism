@@ -1,6 +1,5 @@
 package mekanism.common.util;
 
-import com.google.common.primitives.Ints;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -24,7 +23,6 @@ import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.MekanismItemAbilities;
-import mekanism.api.Upgrade;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
@@ -40,7 +38,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
@@ -205,13 +202,6 @@ public final class MekanismUtils {
         return orientation.getClockWise();
     }
 
-    public static double fractionUpgrades(IUpgradeTile tile, Upgrade type) {
-        if (tile.supportsUpgrade(type)) {
-            return tile.getUpgrades(type) / (double) type.getMax();
-        }
-        return 0;
-    }
-
     public static <RESOURCE extends Resource> float getScale(float prevScale, IResourceContainer<RESOURCE> container) {
         return getScale(prevScale, container.amountAsLong(), container.capacityAsLong(container.resource()), container.isEmpty());
     }
@@ -262,117 +252,6 @@ public final class MekanismUtils {
             return scale == 0 || scale == 1 || prevScale == 1 || prevScale == 0;
         }
         return true;
-    }
-
-    public static int getBaseUsage(IUpgradeTile tile, int def) {
-        if (tile.supportsUpgrades()) {
-            //getGasPerTickMean * required ticks (not rounded)
-            if (tile.supportsUpgrade(Upgrade.CHEMICAL)) {
-                // def * (upgradeMultiplier ^ ((2 * speed - gas) / 8)) * (upgradeMultiplier ^ (-speed / 8)) =
-                // def * upgradeMultiplier ^ ((speed - gas) / 8)
-                //TODO: We may want to validate this provides the numbers we desire if we ever end up with any machines
-                // that use this that are not statistical and have gas upgrades so would go through this code path
-                //TODO - 26.2: Re-evaluate this cast
-                return Ints.saturatedCast(Math.round(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(),
-                      fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.CHEMICAL))));
-            }
-            //If it doesn't support gas upgrades, we can fall through to the default value as the math would be:
-            // def * (upgradeMultiplier ^ (speed / 8)) * (upgradeMultiplier ^ (-speed / 8)) =
-            // def * 1
-        }
-        return def;
-    }
-
-    /// Gets the operating ticks required for a machine via its upgrades.
-    ///
-    /// @param tile tile containing upgrades
-    /// @param def  the original, default ticks required
-    ///
-    /// @return required operating ticks
-    public static int getTicks(IUpgradeTile tile, int def) {
-        if (tile.supportsUpgrades()) {
-            return Math.max(1, MathUtils.clampToInt(getTicksD(tile, def)));
-        }
-        return def;
-    }
-
-    /// Gets the operating ticks required for a machine via its upgrades.
-    ///
-    /// @param tile tile containing upgrades
-    /// @param def  the original, default ticks required
-    ///
-    /// @return required operating ticks
-    public static double getTicksD(IUpgradeTile tile, int def) {
-        return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(tile, Upgrade.SPEED));
-    }
-
-    /// Get the amount of operations per tick, accounting for bonus operations from non-default upgrade modifiers. Fractional operations are ignored
-    ///
-    /// @param tile              tile containing upgrades
-    /// @param defTicks          the original, default ticks required
-    /// @param defaultOperations the original, default operations (usually 1)
-    ///
-    /// @return max operations to do in one tick. If speed is not < 1 tick return the default
-    public static int getOperationsPerTick(IUpgradeTile tile, int defTicks, int defaultOperations) {
-        double ticksD = getTicksD(tile, defTicks);
-        if (ticksD >= 1) {
-            return defaultOperations;
-        }
-        return MathUtils.clampToInt(Math.max(1, 1 / ticksD) * defaultOperations);
-    }
-
-    /// Gets the energy required per tick for a machine via its upgrades.
-    ///
-    /// @param tile tile containing upgrades
-    /// @param def  the original, default energy required
-    ///
-    /// @return required energy per tick
-    public static int getEnergyPerTick(IUpgradeTile tile, int def) {
-        if (tile.supportsUpgrades()) {
-            return Mth.ceil(def * Math.pow(
-                  MekanismConfig.general.maxUpgradeMultiplier.get(),
-                  2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.ENERGY)
-            ));
-        }
-        return def;
-    }
-
-    /// Gets the secondary energy multiplier required per tick for a machine via upgrades.
-    ///
-    /// @param tile tile containing upgrades
-    ///
-    /// @return max secondary energy per tick
-    public static double getGasPerTickMeanMultiplier(IUpgradeTile tile) {
-        if (tile.supportsUpgrades()) {
-            if (tile.supportsUpgrade(Upgrade.CHEMICAL)) {
-                return Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.CHEMICAL));
-            }
-            return Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.SPEED));
-        }
-        return 1;
-    }
-
-    /// Gets the maximum energy for a machine via its upgrades.
-    ///
-    /// @param tile tile containing upgrades
-    /// @param def  original, default max energy
-    ///
-    /// @return max energy
-    public static long getMaxEnergy(IUpgradeTile tile, long def) {
-        if (tile.supportsUpgrades()) {
-            return MathUtils.clampToLong(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.ENERGY)));
-        }
-        return def;
-    }
-
-    /// Gets the maximum energy for a machine's item form via its upgrades.
-    ///
-    /// @param energyUpgrades number of installed energy upgrades
-    /// @param def            original, default max energy
-    ///
-    /// @return max energy
-    public static long getMaxEnergy(int energyUpgrades, long def) {
-        return MathUtils.clampToLong(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), energyUpgrades / (double) Upgrade.ENERGY.getMax()));
     }
 
     /// Gets a ResourceLocation that is in the render folder.

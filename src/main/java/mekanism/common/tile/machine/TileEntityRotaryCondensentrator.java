@@ -3,14 +3,13 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.ChemicalAttributeValidator;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
@@ -23,6 +22,8 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
@@ -55,6 +56,8 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
@@ -203,7 +206,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
             gasInputSlot.fillTankFromSlot(gasOutputSlot, null);
             fluidInputSlot.drainTankIntoSlot(fluidOutputSlot, null);
         }
-        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
+        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(level.registryAccess(), energyContainer);
         return sendUpdatePacket;
     }
 
@@ -293,11 +296,16 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED) {
-            baselineMaxOperations = (int) Math.pow(2, getUpgrades(Upgrade.SPEED));
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED)) {
+            baselineMaxOperations = (int) Math.pow(2, totalInstalled);
         }
+    }
+
+    @Override
+    public boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
+        return upgrade.is(UpgradeIds.SPEED);
     }
 
     @Override

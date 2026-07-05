@@ -10,6 +10,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.IntObjectToIntFunction;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.capabilities.energy.FixedUsageEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
@@ -31,6 +32,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IHasVisualization;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -42,6 +44,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, IHasVisualization {
 
@@ -114,9 +117,9 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         if (x >= 0 && x < MAX_LOAD_DIAMETER && z >= 0 && z < MAX_LOAD_DIAMETER) {
             if (setChunkLoadingAt(x, z, !isChunkLoadingAt(x, z))) {
                 setChanged(false);
-                energyContainer.updateEnergyPerTick();
+                energyContainer.updateEnergyPerTick(null);
                 //Refresh the chunks that are loaded as it has changed
-                getChunkLoader().refreshChunkTickets();
+                getChunkLoader().refreshChunkTickets(anchorUpgrade);
             }
         }
     }
@@ -139,9 +142,9 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 // in theory from packet something will always change, but in case there is a desync or in case this
                 // is done via a computer mod on already set chunks, don't actually update anything
                 setChanged(false);
-                energyContainer.updateEnergyPerTick();
+                energyContainer.updateEnergyPerTick(null);
                 //Refresh the chunks that are loaded as it has changed
-                getChunkLoader().refreshChunkTickets();
+                getChunkLoader().refreshChunkTickets(anchorUpgrade);
             }
         }
     }
@@ -235,10 +238,10 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         if (changed) {
             if (chunksLoaded != lastChunksLoaded) {
                 //If the number of chunks loaded is different we need to update our energy to use
-                energyContainer.updateEnergyPerTick();
+                energyContainer.updateEnergyPerTick(null);
             }
             //Refresh the chunks that are loaded as it has changed
-            getChunkLoader().refreshChunkTickets(level, worldPosition);
+            getChunkLoader().refreshChunkTickets(anchorUpgrade, level, worldPosition);
         }
     }
 
@@ -261,10 +264,10 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         if (changed) {
             if (chunksLoaded != lastChunksLoaded) {
                 //If the number of chunks loaded is different we need to update our energy to use
-                energyContainer.updateEnergyPerTick();
+                energyContainer.updateEnergyPerTick(null);
             }
             //Refresh the chunks that are loaded as it has changed
-            getChunkLoader().refreshChunkTickets(level, worldPosition);
+            getChunkLoader().refreshChunkTickets(anchorUpgrade, level, worldPosition);
         }
     }
 
@@ -278,7 +281,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     public void configurationDataSet() {
         super.configurationDataSet();
         //Refresh the chunk tickets as they may have changed
-        getChunkLoader().refreshChunkTickets();
+        getChunkLoader().refreshChunkTickets(anchorUpgrade);
     }
 
     public FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> energyContainer() {
@@ -311,9 +314,9 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         if (setChunkLoadingAt(validateDimension(x, true), validateDimension(z, false), load)) {
             //If it changed we need to mark it as such and update various things
             setChanged(false);
-            energyContainer.updateEnergyPerTick();
+            energyContainer.updateEnergyPerTick(null);
             //Refresh the chunks that are loaded as it has changed
-            getChunkLoader().refreshChunkTickets();
+            getChunkLoader().refreshChunkTickets(anchorUpgrade);
         }
     }
 
@@ -345,7 +348,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         }
 
         @Override
-        public boolean canOperate() {
+        public boolean canOperate(@Nullable Holder<Upgrade> anchorUpgrade) {
             return MekanismConfig.general.allowChunkloading.get() && getActive();
         }
     }

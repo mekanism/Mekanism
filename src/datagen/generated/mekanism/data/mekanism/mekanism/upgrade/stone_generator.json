@@ -1,0 +1,10 @@
+{
+  "color": "orange",
+  "description": {
+    "translate": "upgrade.mekanism.stone_generator.description"
+  },
+  "display_name": {
+    "translate": "upgrade.mekanism.stone_generator"
+  },
+  "max": 1
+}

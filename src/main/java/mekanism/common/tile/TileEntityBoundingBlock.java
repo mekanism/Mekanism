@@ -1,7 +1,9 @@
 package mekanism.common.tile;
 
+import java.util.Collections;
+import java.util.List;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
@@ -12,7 +14,10 @@ import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -109,6 +114,28 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
 
     @Nullable
     @Override
+    public TagKey<Upgrade> getSupportedUpgrade() {
+        IBoundingBlock main = getMain();
+        return main == null ? null : main.getSupportedUpgrade();
+    }
+
+    @Override
+    public float getVolumeFactor() {
+        IBoundingBlock main = getMain();
+        return main == null ? 1.0F : main.getVolumeFactor();
+    }
+
+    @Override
+    public List<Component> getUpgradeWindowInfo(Holder<Upgrade> upgrade) {
+        IBoundingBlock main = getMain();
+        if (main != null) {
+            return main.getUpgradeWindowInfo(upgrade);
+        }
+        return Collections.emptyList();
+    }
+
+    @Nullable
+    @Override
     public TileComponentUpgrade getComponent() {
         IBoundingBlock main = getMain();
         if (main != null && main.supportsUpgrades()) {
@@ -118,10 +145,10 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgradeType) {
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgradeType, int totalInstalled) {
         IBoundingBlock main = getMain();
         if (main != null && main.supportsUpgrades()) {
-            main.recalculateUpgrades(upgradeType);
+            main.recalculateUpgrades(upgrades, upgradeType, totalInstalled);
         }
     }
 

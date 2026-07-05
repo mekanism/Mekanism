@@ -8,8 +8,8 @@ import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.item.MekanismItemContainer.IItemContainerTracker;
 import mekanism.common.inventory.container.slot.HotBarSlot;
-import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
+import mekanism.common.inventory.container.sync.SyncableStreamCodec;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.qio.BulkQIOData;
@@ -81,7 +81,7 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
         if (itemAccess.getResource().getItem() instanceof IItemContainerTracker containerTracker) {
             containerTracker.addContainerTrackers(this, itemAccess);
         }
-        track(SyncableFrequency.create(FrequencyTypes.QIO, this::getFrequency, f -> freq = f));
+        track(SyncableStreamCodec.frequency(FrequencyTypes.QIO, this::getFrequency, f -> freq = f));
     }
 
     @Override

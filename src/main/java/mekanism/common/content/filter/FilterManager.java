@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import mekanism.api.SerializationConstants;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.list.SyncableFilterList;
+import mekanism.common.inventory.container.sync.SyncableStreamCodec;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.level.Level;
@@ -150,7 +150,7 @@ public class FilterManager<FILTER extends IFilter<?>> {
     }
 
     public void addContainerTrackers(MekanismContainer container) {
-        container.track(SyncableFilterList.create(this::getFilters, value -> {
+        container.track(SyncableStreamCodec.filterList(this::getFilters, value -> {
             if (value instanceof HashList<FILTER> filterList) {
                 this.filters = filterList;
             } else {

@@ -1,4 +1,4 @@
-// Recipes: mekanism	2026-06-20T12:37:42.1726606	Recipes: mekanism
+// Recipes: mekanism	2026-07-03T16:50:45.2543748	Recipes: mekanism
 2b816cbac12224aee87ce0c21265c2bff750f408 data/mekanism/recipe/antiprotonic_nucleosynthesizer.json
 bcf460616c15620125e6c29d7dfa3dc72956c9c6 data/mekanism/recipe/atomic_disassembler.json
 9c4185de4f86bdc198ff4677989b5c22b8c55faf data/mekanism/recipe/bin/advanced.json
@@ -2297,10 +2297,10 @@ deea817e562f28576af05661cc0cf57309c64f69 data/mekanism/recipe/transmitter/thermo
 b7250c900f7d826a9d55b9b866743c7da72bf686 data/mekanism/recipe/transmitter/universal_cable/basic.json
 480a7c2c9d04ea394843cfa8b759d8adaaf31d1b data/mekanism/recipe/transmitter/universal_cable/elite.json
 32cd8f7c0042f6eefa4dbac98823a0ffd1cee7d0 data/mekanism/recipe/transmitter/universal_cable/ultimate.json
-7d0289d7b1f6a99bc18c6de3d289f8a159adbf1c data/mekanism/recipe/upgrade/anchor.json
-359d51260ce7953f7bdf056b556afb569fb62123 data/mekanism/recipe/upgrade/chemical.json
-c8cc9a90841c9d7e734e3909b9ee5eaf4e9f2f5a data/mekanism/recipe/upgrade/energy.json
-df52196a00288372ff9bbd5da1636e176dba03ac data/mekanism/recipe/upgrade/filter.json
-8ded560143cfeb73de44e2d7fcf426586fdadbcb data/mekanism/recipe/upgrade/muffling.json
-9a61467e1e7837622725e4b6e764c0b1cc35e7df data/mekanism/recipe/upgrade/speed.json
-5a77ec871175461051b3ec3b83764f2541a71233 data/mekanism/recipe/upgrade/stone_generator.json
+4fd847f26e3148224004e445b9e743ec555b34c5 data/mekanism/recipe/upgrade/anchor.json
+ce64cddd111a64eed6cefd5f9d36384227062673 data/mekanism/recipe/upgrade/chemical.json
+41647f3abae6e90eeab5d7a891b041611d397a56 data/mekanism/recipe/upgrade/energy.json
+905270933f11e5bf82e047a2cde2dc940570ba3a data/mekanism/recipe/upgrade/filter.json
+577910343e03136c3af610060027d6feedca4b66 data/mekanism/recipe/upgrade/muffling.json
+a323499e31df70794cbdc80904a96116af2b20ee data/mekanism/recipe/upgrade/speed.json
+70f9d19b40a6f1a98a63e3a2598c79f32db15922 data/mekanism/recipe/upgrade/stone_generator.json

@@ -3,7 +3,6 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -22,6 +21,8 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -47,10 +48,12 @@ import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLoo
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -157,7 +160,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         energySlot.fillContainerOrConvert(null);
         gasInputSlot.fillTankOrConvert(null);
         outputSlot.drainTankIntoSlot(null);
-        recipeCacheLookupMonitor.updateAndProcess();
+        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
         return sendUpdatePacket;
     }
 
@@ -198,10 +201,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.CHEMICAL || upgrade == Upgrade.SPEED) {
-            injectUsage = MekanismUtils.getGasPerTickMeanMultiplier(this);
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.CHEMICAL) || upgrade.is(UpgradeIds.SPEED)) {
+            injectUsage = UpgradeUtils.getGasPerTickMeanMultiplier(upgrades, this);
         }
     }
 

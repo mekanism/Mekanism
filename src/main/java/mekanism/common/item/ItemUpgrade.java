@@ -1,18 +1,20 @@
 package mekanism.common.item;
 
 import java.util.function.Consumer;
-import mekanism.api.Upgrade;
-import mekanism.api.text.APILang;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.text.EnumColor;
-import mekanism.client.key.MekKeyHandler;
-import mekanism.client.key.MekanismKeyHandler;
+import mekanism.api.upgrade.IUpgradeHelper;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.MekanismLang;
-import mekanism.common.item.interfaces.IUpgradeItem;
+import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -22,30 +24,25 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class ItemUpgrade extends Item implements IUpgradeItem {
+public class ItemUpgrade extends Item implements ICustomCreativeTabContents {
 
-    private final Upgrade upgrade;
-
-    public ItemUpgrade(Upgrade type, Properties properties) {
+    public ItemUpgrade(Properties properties) {
         super(properties.rarity(Rarity.UNCOMMON));
-        upgrade = type;
     }
 
     @Override
     @Deprecated
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            Upgrade upgradeType = getUpgradeType();
-            tooltipAdder.accept(upgradeType.getDescription());
-            tooltipAdder.accept(APILang.UPGRADE_MAX_INSTALLED.translate(upgradeType.getMax()));
-        } else {
-            tooltipAdder.accept(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
+        //TODO - 26.2: Switch this to https://github.com/neoforged/NeoForge/pull/3132
+        DataComponentType<Holder<Upgrade>> dataComponentType = IUpgradeHelper.INSTANCE.dataComponent();
+        Holder<Upgrade> upgradeType = stack.get(dataComponentType);
+        if (upgradeType != null && tooltipDisplay.shows(dataComponentType)) {
+            Upgrade upgrade = upgradeType.value();
+            tooltipAdder.accept(MekanismLang.TOOLTIP_UPGRADE_TYPE.translateColored(EnumColor.PURPLE, upgrade.textColor(), upgrade));
+            tooltipAdder.accept(MekanismLang.TOOLTIP_UPGRADE_MAX_INSTALLED.translateColored(EnumColor.GRAY, EnumColor.AQUA, upgrade.max()));
+            tooltipAdder.accept(upgrade.description());
         }
-    }
-
-    @Override
-    public Upgrade getUpgradeType() {
-        return upgrade;
     }
 
     @Override
@@ -56,10 +53,10 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
             BlockEntity tile = WorldUtils.getTileEntity(world, context.getClickedPos());
             if (tile instanceof IUpgradeTile upgradeTile && upgradeTile.supportsUpgrades()) {
                 ItemStack stack = context.getItemInHand();
-                Upgrade type = getUpgradeType();
-                if (upgradeTile.supportsUpgrade(type)) {
+                Holder<Upgrade> upgradeType = stack.get(IUpgradeHelper.INSTANCE.dataComponent());
+                if (upgradeType != null && upgradeTile.supportsUpgrade(upgradeType)) {
                     if (!world.isClientSide()) {
-                        int added = upgradeTile.addUpgrades(type, stack.count());
+                        int added = upgradeTile.addUpgrades(world.registryAccess(), upgradeType, stack.count());
                         if (added > 0) {
                             stack.consume(added, player);
                         }
@@ -69,5 +66,18 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
             }
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public void addItems(ItemDisplayParameters displayParameters, Holder<Item> item, Consumer<ItemStack> addToTab) {
+        displayParameters.holders().lookupOrThrow(MekanismRegistries.Keys.UPGRADES)
+              .listElements()
+              .map(IUpgradeHelper.INSTANCE::asStack)
+              .forEach(addToTab);
+    }
+
+    @Override
+    public boolean addDefault() {
+        return false;
     }
 }

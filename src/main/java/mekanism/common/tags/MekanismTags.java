@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.Mekanism;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.IResource;
@@ -306,6 +307,27 @@ public class MekanismTags {
 
         private static TagKey<DataComponentType<?>> tag(String name) {
             return TagKey.create(Registries.DATA_COMPONENT_TYPE, Mekanism.rl(name));
+        }
+    }
+
+    public static class Upgrades {
+
+        private Upgrades() {
+        }
+
+        public static final TagKey<Upgrade> SIMPLE_MACHINE_UPGRADES = tag("upgrade_support/simple_machine");
+        public static final TagKey<Upgrade> DEFAULT_MACHINE_UPGRADES = tag("upgrade_support/default_machine");
+        public static final TagKey<Upgrade> DEFAULT_ADVANCED_MACHINE_UPGRADES = tag("upgrade_support/default_advanced_machine");
+        public static final TagKey<Upgrade> MUFFLING_ONLY = tag("upgrade_support/muffling_only");
+        public static final TagKey<Upgrade> ANCHOR_ONLY = tag("upgrade_support/anchor_only");
+
+        public static final TagKey<Upgrade> QIO_FILTER_HANDLER = tag("upgrade_support/qio_filter_handler");
+        public static final TagKey<Upgrade> ELECTRIC_PUMP = tag("upgrade_support/electric_pump");
+        public static final TagKey<Upgrade> DIGITAL_MINER = tag("upgrade_support/digital_miner");
+        public static final TagKey<Upgrade> DIMENSIONAL_STABILIZER = tag("upgrade_support/dimensional_stabilizer");
+
+        private static TagKey<Upgrade> tag(String name) {
+            return TagKey.create(MekanismRegistries.Keys.UPGRADES, Mekanism.rl(name));
         }
     }
 }

@@ -8,6 +8,7 @@ import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.Mekanism;
 import mekanism.common.component.BlockData;
 import mekanism.common.component.FilterAware;
@@ -43,6 +44,7 @@ import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier.RedstoneOutput;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -125,6 +127,11 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<RedstoneOutput>> REDSTONE_OUTPUT = DATA_COMPONENTS.simple("redstone_output",
           builder -> builder.persistent(RedstoneOutput.CODEC)
                 .networkSynchronized(RedstoneOutput.STREAM_CODEC)
+    );
+
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Holder<Upgrade>>> UPGRADE_TYPE = DATA_COMPONENTS.simple("upgrade_type",
+          builder -> builder.persistent(Upgrade.CODEC)
+                .networkSynchronized(Upgrade.STREAM_CODEC)
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> DEFAULT_MANUALLY_SELECTED = DATA_COMPONENTS.registerBoolean("default_manually_selected");

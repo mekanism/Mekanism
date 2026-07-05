@@ -86,6 +86,7 @@ import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
 import mekanism.client.model.blockstate.TransmitterBlockStateModel;
 import mekanism.client.model.energycube.EnergyCubeBaseLoader;
 import mekanism.client.model.item.QIODriveArrayItemModel;
+import mekanism.client.model.item.ComponentItemModel;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
@@ -391,6 +392,7 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerItemModels(RegisterItemModelsEvent event) {
         event.register(Mekanism.rl("qio_drive_item"), QIODriveArrayItemModel.Unbaked.MAP_CODEC);
+        event.register(Mekanism.rl("component_item"), ComponentItemModel.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent

@@ -14,11 +14,12 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IMekanismResourceHandler;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
@@ -57,8 +58,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
@@ -716,16 +718,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED) {
-            ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED)) {
+            ticksRequired = UpgradeUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
         }
-    }
-
-    @Override
-    public List<Component> getInfo(Upgrade upgrade) {
-        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     public MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer() {

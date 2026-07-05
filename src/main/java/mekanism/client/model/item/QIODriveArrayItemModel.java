@@ -42,11 +42,9 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.joml.Matrix4fc;
 import org.joml.Vector3fc;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 ///Copied and adapted from [CuboidItemModelWrapper]
-@NullMarked
 public record QIODriveArrayItemModel(
       QIODriveArrayBlockStateModel blockStateModel,
       List<ItemTintSource> tints,

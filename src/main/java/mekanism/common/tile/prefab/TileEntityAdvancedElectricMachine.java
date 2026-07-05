@@ -3,7 +3,6 @@ package mekanism.common.tile.prefab;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -21,6 +20,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
@@ -44,9 +45,11 @@ import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLoo
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
@@ -158,7 +161,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         secondarySlot.fillTankOrConvert(null);
-        recipeCacheLookupMonitor.updateAndProcess();
+        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
         return sendUpdatePacket;
     }
 
@@ -197,13 +200,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     }
 
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED || (upgrade == Upgrade.CHEMICAL && supportsUpgrade(Upgrade.CHEMICAL))) {
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.SPEED) || (upgrade.is(UpgradeIds.CHEMICAL) && supportsUpgrade(upgrade))) {
             if (useStatisticalMechanics()) {
-                gasPerTickMeanMultiplier = MekanismUtils.getGasPerTickMeanMultiplier(this);
+                gasPerTickMeanMultiplier = UpgradeUtils.getGasPerTickMeanMultiplier(upgrades, this);
             } else {
-                baseTotalUsage = MekanismUtils.getBaseUsage(this, baseTicksRequired);
+                baseTotalUsage = UpgradeUtils.getBaseUsage(upgrades, this, baseTicksRequired);
             }
         }
     }

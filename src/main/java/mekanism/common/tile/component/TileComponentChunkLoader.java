@@ -12,12 +12,14 @@ import java.util.Set;
 import java.util.stream.LongStream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -57,8 +59,8 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         this.forceTicks = forceTicks;
     }
 
-    public boolean canOperate() {
-        return MekanismConfig.general.allowChunkloading.get() && tile.supportsUpgrades() && tile.getUpgrades(Upgrade.ANCHOR) > 0;
+    public boolean canOperate(@Nullable Holder<Upgrade> anchorUpgrade) {
+        return anchorUpgrade != null && MekanismConfig.general.allowChunkloading.get() && tile.supportsUpgrade(anchorUpgrade) && tile.getUpgrades(anchorUpgrade) > 0;
     }
 
     private void releaseChunkTickets(ServerLevel world, BlockPos pos) {
@@ -98,22 +100,22 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     /// Release and re-register tickets, call when chunk set changes
-    public void refreshChunkTickets() {
-        refreshChunkTickets(tile.getLevel(), tile.getBlockPos());
+    public void refreshChunkTickets(@Nullable Holder<Upgrade> anchorUpgrade) {
+        refreshChunkTickets(anchorUpgrade, tile.getLevel(), tile.getBlockPos());
     }
 
     /// Release and re-register tickets, call when chunk set changes
-    public void refreshChunkTickets(@Nullable Level level, BlockPos pos) {
+    public void refreshChunkTickets(@Nullable Holder<Upgrade> anchorUpgrade, @Nullable Level level, BlockPos pos) {
         if (level != null && !level.isClientSide()) {
-            refreshChunkTickets((ServerLevel) level, pos, true);
+            refreshChunkTickets(anchorUpgrade, (ServerLevel) level, pos, true);
         }
     }
 
     /// @param ticketsChanged`true` if the chunk set of our tile changed, and we need to force adjusting our registered tickets.
     ///
     /// @apiNote Only call server side
-    private void refreshChunkTickets(ServerLevel world, BlockPos pos, boolean ticketsChanged) {
-        boolean canOperate = canOperate();
+    private void refreshChunkTickets(@Nullable Holder<Upgrade> anchorUpgrade, ServerLevel world, BlockPos pos, boolean ticketsChanged) {
+        boolean canOperate = canOperate(anchorUpgrade);
         if (MekanismAPI.debug) {
             LOGGER.debug("refreshChunkTickets called for {}. Can operate = {}", pos, canOperate);
         }
@@ -195,11 +197,11 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         }
     }
 
-    public void tickServer() {
+    public void tickServer(@Nullable Holder<Upgrade> anchorUpgrade) {
         Level world = tile.getLevel();
         if (world != null) {
             //Update tickets if the position changed, or we are no longer able to operate
-            refreshChunkTickets((ServerLevel) world, tile.getBlockPos(), false);
+            refreshChunkTickets(anchorUpgrade, (ServerLevel) world, tile.getBlockPos(), false);
         }
     }
 
@@ -281,8 +283,8 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         @Override
         public void validateTickets(ServerLevel world, TicketHelper ticketHelper) {
             Identifier worldName = world.dimension().identifier();
-            LOGGER.debug("Validating tickets for: {}. Blocks: {}, Entities: {}", worldName, ticketHelper.getBlockTickets().size(),
-                  ticketHelper.getEntityTickets().size());
+            LOGGER.debug("Validating tickets for: {}. Blocks: {}, Entities: {}", worldName, ticketHelper.getBlockTickets().size(), ticketHelper.getEntityTickets().size());
+            Holder<Upgrade> anchorUpgrade = world.registryAccess().get(UpgradeIds.ANCHOR).orElse(null);
             for (Map.Entry<BlockPos, TicketSet> entry : ticketHelper.getBlockTickets().entrySet()) {
                 //Only bother looking at non ticking chunks as we don't register any "fully" ticking chunks
                 BlockPos pos = entry.getKey();
@@ -290,12 +292,13 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                 LongSet naturalSpawningChunks = entry.getValue().naturalSpawning();
                 LOGGER.debug("Validating tickets for: {}, BlockPos: {}, Forced chunks: {}, Natural spawning forced chunks: {}", worldName, pos, forcedChunks.size(),
                       naturalSpawningChunks.size());
-                validateTickets(world, worldName, pos, ticketHelper, forcedChunks, false);
-                validateTickets(world, worldName, pos, ticketHelper, naturalSpawningChunks, true);
+                validateTickets(world, worldName, pos, ticketHelper, anchorUpgrade, forcedChunks, false);
+                validateTickets(world, worldName, pos, ticketHelper, anchorUpgrade, naturalSpawningChunks, true);
             }
         }
 
-        private void validateTickets(ServerLevel world, Identifier worldName, BlockPos pos, TicketHelper ticketHelper, LongSet forcedChunks, boolean ticking) {
+        private void validateTickets(ServerLevel world, Identifier worldName, BlockPos pos, TicketHelper ticketHelper, @Nullable Holder<Upgrade> anchorUpgrade,
+              LongSet forcedChunks, boolean ticking) {
             int ticketCount = forcedChunks.size();
             if (ticketCount > 0) {
                 //We expect this always be the case but just in case it is empty don't bother looking up the tile
@@ -304,7 +307,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                 BlockEntity tile = world.getBlockEntity(pos);
                 if (tile instanceof IChunkLoader) {
                     TileComponentChunkLoader<?> chunkLoader = ((IChunkLoader) tile).getChunkLoader();
-                    if (chunkLoader.canOperate()) {
+                    if (chunkLoader.canOperate(anchorUpgrade)) {
                         if (!forcedChunks.equals(chunkLoader.chunkSet)) {
                             //If there is a mismatch between the chunkSet and actual chunks
                             // update the chunk set to trust what chunks the loader actually has registered

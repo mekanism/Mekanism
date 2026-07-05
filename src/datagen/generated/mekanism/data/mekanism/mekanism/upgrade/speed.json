@@ -1,0 +1,10 @@
+{
+  "color": "red",
+  "description": {
+    "translate": "upgrade.mekanism.speed.description"
+  },
+  "display_name": {
+    "translate": "upgrade.mekanism.speed"
+  },
+  "max": 8
+}

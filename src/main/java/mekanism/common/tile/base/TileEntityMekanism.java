@@ -7,15 +7,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismItemAbilities;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -27,6 +28,8 @@ import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
@@ -95,7 +98,7 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
-import mekanism.common.tile.interfaces.ITileUpgradable;
+import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -107,7 +110,11 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
@@ -118,6 +125,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.Nameable;
@@ -140,7 +148,7 @@ import org.jspecify.annotations.Nullable;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
-      ITileRedstone, ISecurityTile, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, ITileHeatHandler, IComputerTile, ITileRadioactive, Nameable,
+      ITileRedstone, ISecurityTile, IUpgradeTile, ITierUpgradable, IComparatorSupport, ITrackableContainer, ITileHeatHandler, IComputerTile, ITileRadioactive, Nameable,
       IContentsListener {
 
     protected static final Set<RelativeSide> BACK_ONLY = Set.of(RelativeSide.BACK);
@@ -201,6 +209,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //Variables for handling ITileUpgradable
     @Nullable
     private TileComponentUpgrade upgradeComponent;
+    @Nullable
+    protected Holder<Upgrade> anchorUpgrade;
     //End variables ITileUpgradable
 
     //Variables for handling IFrequencyHandler
@@ -243,7 +253,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Nullable
     protected final Supplier<SoundEvent> soundEvent;
     @Nullable
-    protected SoundEvent lastSoundEvent;
+    private SoundEvent lastSoundEvent;
+    @Nullable
+    private Holder<Upgrade> mufflingUpgrade;
+    @Nullable
+    protected Registry<Upgrade> upgradesRegistry;
 
     /// Only used on the client
     @Nullable
@@ -603,10 +617,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         tile.frequencyComponent.tickServer(level, pos);
         if (tile.supportsUpgrades()) {
-            Objects.requireNonNull(tile.upgradeComponent).tickServer(null);
+            Objects.requireNonNull(tile.upgradeComponent).tickServer(level.registryAccess(), null);
         }
         if (tile.hasChunkloader) {
-            ((IChunkLoader) tile).getChunkLoader().tickServer();
+            ((IChunkLoader) tile).getChunkLoader().tickServer(tile.anchorUpgrade);
         }
         if (tile.isActivatable()) {
             if (tile.updateDelay > 0) {
@@ -714,14 +728,32 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
+    public void setLevel(Level world) {
+        super.setLevel(world);
+        if (supportsUpgrades()) {
+            if (level == null) {//Can this actually be null?
+                upgradesRegistry = null;
+                anchorUpgrade = null;
+                mufflingUpgrade = null;
+            } else {
+                upgradesRegistry = level.registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
+                //Note: We don't have to reset this on tag reload, as datapack registries do not support being reloaded without the server restarting
+                if (hasChunkloader) {
+                    anchorUpgrade = upgradesRegistry.get(UpgradeIds.ANCHOR).orElse(null);
+                }
+                if (hasSound()) {
+                    mufflingUpgrade = upgradesRegistry.get(UpgradeIds.MUFFLING).orElse(null);
+                }
+            }
+        }
+    }
+
+    @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         redstone = input.getBooleanOr(SerializationConstants.REDSTONE, redstone);
         for (ITileComponent component : components) {
             component.read(input);
-        }
-        if (supportsUpgrades()) {
-            recalculateUpgrades(Upgrade.SPEED);//force buffer to update
         }
         readSustainedData(input);
         for (IContainerType<?, ?> type : ContainerType.TYPES) {
@@ -796,10 +828,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.applyImplicitComponents(input);
         }
-        if (supportsUpgrades()) {
-            //Recalculate upgrades before setting types so that we don't clamp the stored energy
-            for (Upgrade upgrade : getSupportedUpgrade()) {
-                recalculateUpgrades(upgrade);
+        //Recalculate upgrades before setting types so that we don't clamp the stored energy
+        TagKey<Upgrade> supportedUpgrade = getSupportedUpgrade();
+        if (supportedUpgrade != null && upgradesRegistry != null) {
+            //The level should theoretically always be present here (and thus the upgrades registry should be present)
+            Optional<Named<Upgrade>> tag = upgradesRegistry.get(supportedUpgrade);
+            if (tag.isPresent()) {
+                for (Holder<Upgrade> upgrade : tag.get()) {
+                    recalculateUpgrades(upgradesRegistry, upgrade, getUpgrades(upgrade));
+                }
             }
         }
 
@@ -1135,12 +1172,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End methods IComparatorSupport
 
     //Methods for implementing ITileUpgradable
+    @Nullable
     @Override
-    public Set<Upgrade> getSupportedUpgrade() {
+    public TagKey<Upgrade> getSupportedUpgrade() {
         if (supportsUpgrades()) {
             return Attribute.getOrThrow(getBlockHolder(), AttributeUpgradeSupport.class).supportedUpgrades();
         }
-        return Collections.emptySet();
+        return null;
     }
 
     @Nullable
@@ -1149,17 +1187,37 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return upgradeComponent;
     }
 
+    @Nullable
+    public Registry<Upgrade> getUpgradeRegistry() {
+        return upgradesRegistry;
+    }
+
+    public HolderGetter<Upgrade> getUpgradeLookup(HolderLookup.Provider registries) {
+        return upgradesRegistry == null ? registries.lookupOrThrow(MekanismRegistries.Keys.UPGRADES) : upgradesRegistry;
+    }
+
     @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        if (upgrade == Upgrade.SPEED) {
+    public float getVolumeFactor() {
+        //Note: Muffling upgrade will only be non-null if we support sound
+        if (mufflingUpgrade != null && supportsUpgrade(mufflingUpgrade)) {
+            int maxMufflingUpgrades = mufflingUpgrade.value().max();
+            int mufflerCount = Math.min(getUpgrades(mufflingUpgrade), maxMufflingUpgrades);
+            return 1.0F - (mufflerCount / (float) maxMufflingUpgrades);
+        }
+        return 1.0F;
+    }
+
+    @Override
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        if (upgrade.is(UpgradeIds.SPEED)) {
             if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
-                machineEnergy.updateEnergyPerTick();
-                machineEnergy.updateMaxEnergy();
+                machineEnergy.updateEnergyPerTick(upgrades);
+                machineEnergy.updateMaxEnergy(upgrades);
             }
-        } else if (upgrade == Upgrade.ENERGY) {
+        } else if (upgrade.is(UpgradeIds.ENERGY)) {
             if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
-                machineEnergy.updateEnergyPerTick();
-                machineEnergy.updateMaxEnergy();
+                machineEnergy.updateEnergyPerTick(upgrades);
+                machineEnergy.updateMaxEnergy(upgrades);
             }
         }
     }
@@ -1405,8 +1463,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     protected boolean isFullyMuffled() {
-        if (hasSound() && supportsUpgrade(Upgrade.MUFFLING)) {
-            return getUpgrades(Upgrade.MUFFLING) >= Upgrade.MUFFLING.getMax();
+        if (hasSound() && mufflingUpgrade != null && supportsUpgrade(mufflingUpgrade)) {
+            return getUpgrades(mufflingUpgrade) >= mufflingUpgrade.value().max();
         }
         return false;
     }
@@ -1422,7 +1480,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return "";
     }
 
-    protected Level validateLevel() throws ComputerException {
+    public Level validateLevel() throws ComputerException {
         if (level == null) {
             throw new ComputerException("Tile's level is not set, how did you get here?");
         }

@@ -1,0 +1,10 @@
+{
+  "color": "green",
+  "description": {
+    "translate": "upgrade.mekanism.anchor.description"
+  },
+  "display_name": {
+    "translate": "upgrade.mekanism.anchor"
+  },
+  "max": 1
+}

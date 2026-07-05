@@ -4,16 +4,19 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.Upgrade;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.transaction.RateLimitTracker;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.UpgradeUtils;
+import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.HolderGetter;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
@@ -84,8 +87,10 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
         this.currentEnergyPerTick = energyPerTick;
     }
 
-    public void updateMaxEnergy() {
-        if (tile.supportsUpgrade(Upgrade.SPEED)) {
+    public void updateMaxEnergy(HolderGetter<Upgrade> upgrades) {
+        Reference<Upgrade> speedUpgrade = upgrades.get(UpgradeIds.SPEED).orElse(null);
+        Reference<Upgrade> energyUpgrade = upgrades.get(UpgradeIds.ENERGY).orElse(null);
+        if (speedUpgrade != null && tile.supportsUpgrade(speedUpgrade)) {
             long bufferMultipler = AttributeEnergy.STORAGE_MULTIPLIER;
             //TODO - 26.2: Take this into account for the item's defined max energy so that it doesn't display 1 kFE / 20 FE for an energized smelter
             if (tile instanceof TileEntityProgressMachine<?> progressMachine) {
@@ -95,15 +100,20 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
                 bufferMultipler *= factory.tier.processes;
             }
             setMaxEnergy(getEnergyPerTick() * bufferMultipler);
-        } else if (tile.supportsUpgrade(Upgrade.ENERGY)) {
-            setMaxEnergy(MekanismUtils.getMaxEnergy(tile, getBaseMaxEnergy()));
+        } else if (energyUpgrade != null && tile.supportsUpgrade(energyUpgrade)) {
+            setMaxEnergy(UpgradeUtils.getMaxEnergy(tile, getBaseMaxEnergy(), energyUpgrade));
         }
     }
 
-    public void updateEnergyPerTick() {
+    public void updateEnergyPerTick(HolderGetter<Upgrade> upgrades) {
         if (tile.supportsUpgrades()) {
-            if (tile.supportsUpgrade(Upgrade.ENERGY) || tile.supportsUpgrade(Upgrade.SPEED)) {
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(tile, getBaseEnergyPerTick()));
+            Reference<Upgrade> speedUpgrade = upgrades.get(UpgradeIds.SPEED).orElse(null);
+            Reference<Upgrade> energyUpgrade = upgrades.get(UpgradeIds.ENERGY).orElse(null);
+            if (speedUpgrade == null || energyUpgrade == null) {
+                //TODO is this line necessary?
+                setEnergyPerTick(getBaseEnergyPerTick());
+            } else if (tile.supportsUpgrade(energyUpgrade) || tile.supportsUpgrade(speedUpgrade)) {
+                setEnergyPerTick(UpgradeUtils.getEnergyPerTick(tile, getBaseEnergyPerTick(), energyUpgrade, speedUpgrade));
             }
         }
     }

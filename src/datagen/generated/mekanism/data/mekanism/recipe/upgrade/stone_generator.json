@@ -12,6 +12,9 @@
     " G "
   ],
   "result": {
-    "id": "mekanism:upgrade_stone_generator"
+    "components": {
+      "mekanism:upgrade_type": "mekanism:stone_generator"
+    },
+    "id": "mekanism:upgrade"
   }
 }

@@ -63,6 +63,10 @@ public class ExtendedAdvancementBuilder {
         return display(item, null, type, true, announceToChat, false);
     }
 
+    public ExtendedAdvancementBuilder display(ItemStackTemplate item, AdvancementType type, boolean announceToChat) {
+        return display(item, null, type, true, announceToChat, false);
+    }
+
     public <ITEM extends ItemLike & INamedEntry> ExtendedAdvancementBuilder displayAndCriterion(ITEM item, AdvancementType type, boolean announceToChat) {
         display(item.asItem().builtInRegistryHolder(), type, announceToChat);
         return addCriterion(item);

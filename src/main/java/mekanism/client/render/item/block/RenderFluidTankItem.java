@@ -25,10 +25,8 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.joml.Vector3fc;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-@NullMarked
 public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTankItem.TankRenderState> {
 
     private final Lazy<Vector3fc[]> extents = Lazy.of(() -> ModelUtil.computeExtents(MekanismBlocks.CREATIVE_FLUID_TANK));

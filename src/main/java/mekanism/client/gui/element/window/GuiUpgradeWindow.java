@@ -1,9 +1,9 @@
 package mekanism.client.gui.element.window;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import mekanism.api.Upgrade;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -23,16 +23,17 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
+import mekanism.common.network.to_server.PacketRemoveUpgrade;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
 
 public class GuiUpgradeWindow extends GuiWindow {
 
-    private final Map<Upgrade, WrappedTextRenderer> upgradeTypeData = new EnumMap<>(Upgrade.class);
+    private final Map<Holder<Upgrade>, WrappedTextRenderer> upgradeTypeData = new HashMap<>();
     private final WrappedTextRenderer noSelection = new WrappedTextRenderer(this, MekanismLang.UPGRADE_NO_SELECTION.translate());
     private final TileEntityMekanism tile;
     private final MekanismButton removeButton;
@@ -53,17 +54,13 @@ public class GuiUpgradeWindow extends GuiWindow {
             updateEnabledButtons();
             msSelected = Util.getMillis();
         }));
-        addChild(new GuiSupportedUpgrades(gui, relativeX + 6, relativeY + 68, upgradeComponent.getSupportedTypes()));
+        addChild(new GuiSupportedUpgrades(gui, relativeX + 6, relativeY + 68, upgradeComponent.getSupportedTypes(), tile::getUpgradeRegistry));
         rightScreen = addChild(new GuiInnerScreen(gui, scrollList.getRelativeRight(), relativeY + 18, 59, 50));
         addChild(new GuiProgress(upgradeComponent::getScaledUpgradeProgress, ProgressType.INSTALLING, gui, rightScreen.getRelativeRight() + 3, relativeY + 37));
         addChild(new GuiProgress(() -> 0, ProgressType.UNINSTALLING, gui, rightScreen.getRelativeRight() + 3, relativeY + 58));
         removeButton = addChild(new DigitalButton(gui, scrollList.getRelativeRight() + 1, relativeY + 54, 56, 12, MekanismLang.UPGRADE_UNINSTALL, (_, event, _) -> {
-            Upgrade selectedType = scrollList.getSelection();
-            if (selectedType != null) {
-                return PacketUtils.sendToServer(new PacketGuiInteract(event.hasShiftDown() ? GuiInteraction.REMOVE_ALL_UPGRADE : GuiInteraction.REMOVE_UPGRADE,
-                      this.tile, selectedType.ordinal()));
-            }
-            return false;
+            Holder<Upgrade> selectedType = scrollList.getSelection();
+            return selectedType != null && PacketUtils.sendToServer(new PacketRemoveUpgrade(this.tile.getBlockPos(), selectedType, event.hasShiftDown()));
         })).setTooltip(MekanismLang.UPGRADE_UNINSTALL_TOOLTIP);
         MekanismTileContainer<?> container = (MekanismTileContainer<?>) ((GuiMekanism<?>) gui()).getMenu();
         addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, rightScreen.getRelativeRight() + 2, relativeY + 18, container.getUpgradeSlot()));
@@ -88,7 +85,7 @@ public class GuiUpgradeWindow extends GuiWindow {
     public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawTitleText(guiGraphics, MekanismLang.UPGRADES.translate(), 5);
-        Upgrade selectedType = scrollList.getSelection();
+        Holder<Upgrade> selectedType = scrollList.getSelection();
         if (selectedType != null) {
             int amount = tile.getUpgrades(selectedType);
             WrappedTextRenderer textRenderer = upgradeTypeData.get(selectedType);
@@ -100,9 +97,9 @@ public class GuiUpgradeWindow extends GuiWindow {
             int lines = textRenderer.renderWithScale(guiGraphics, rightScreen.getRelativeX() + 2, rightScreen.getRelativeY() + 2, TextAlignment.LEFT, screenTextColor(),
                   screenWidth - 2, 0.6F);
             int textY = 4 + 6 * lines;
-            rightScreen.drawScaledScrollingString(guiGraphics, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), 0, textY,  TextAlignment.LEFT,
+            rightScreen.drawScaledScrollingString(guiGraphics, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.value().max()), 0, textY,  TextAlignment.LEFT,
                   screenTextColor(), screenWidth, 2, false, 0.6F, msSelected);
-            for (Component component : UpgradeUtils.getInfo(tile, selectedType)) {
+            for (Component component : tile.getUpgradeWindowInfo(selectedType)) {
                 //Note: We add the six here instead of after to account for the line above this for loop that draws the upgrade count
                 textY += 6;
                 rightScreen.drawScaledScrollingString(guiGraphics, component, 0, textY, TextAlignment.LEFT, screenTextColor(), screenWidth, 2,

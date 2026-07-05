@@ -7,15 +7,6 @@
     "TOP",
     "BOTTOM"
   ],
-  "mekanism.api.Upgrade": [
-    "SPEED",
-    "ENERGY",
-    "FILTER",
-    "CHEMICAL",
-    "MUFFLING",
-    "ANCHOR",
-    "STONE_GENERATOR"
-  ],
   "mekanism.api.security.SecurityMode": [
     "PUBLIC",
     "PRIVATE",

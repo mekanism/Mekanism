@@ -17,8 +17,8 @@ import mekanism.api.functions.TriConsumer;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.component.FrequencyAware;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableFrequency;
-import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
+import mekanism.common.inventory.container.sync.SyncableStreamCodec;
+import mekanism.common.inventory.container.sync.SyncableFrequencyList;
 import mekanism.common.lib.CustomObjectToObjectArrayMap;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
@@ -417,7 +417,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     private void trackFrequencyForMainContainer(MekanismContainer container, FrequencyData data, FrequencyType<?> key) {
         if (data.needsContainerSync) {
-            container.track(SyncableFrequency.create((FrequencyType<Frequency>) key, () -> data.selectedFrequency, data::setFrequency));
+            container.track(SyncableStreamCodec.frequency((FrequencyType<Frequency>) key, () -> data.selectedFrequency, data::setFrequency));
         }
         if (data.needsListCache) {
             track(container, key);

@@ -7,22 +7,6 @@ import net.minecraft.resources.Identifier;
 ///
 /// @apiNote These should only be accessed via their corresponding users, except for use in making it easier to not miss any entries in the DataGenerators
 public enum APILang implements ILangEntry {
-    //Upgrades
-    UPGRADE_SPEED("upgrade", "speed"),
-    UPGRADE_SPEED_DESCRIPTION("upgrade", "speed.description"),
-    UPGRADE_ENERGY("upgrade", "energy"),
-    UPGRADE_ENERGY_DESCRIPTION("upgrade", "energy.description"),
-    UPGRADE_FILTER("upgrade", "filter"),
-    UPGRADE_FILTER_DESCRIPTION("upgrade", "filter.description"),
-    UPGRADE_CHEMICAL("upgrade", "chemical"),
-    UPGRADE_CHEMICAL_DESCRIPTION("upgrade", "chemical.description"),
-    UPGRADE_MUFFLING("upgrade", "muffling"),
-    UPGRADE_MUFFLING_DESCRIPTION("upgrade", "muffling.description"),
-    UPGRADE_ANCHOR("upgrade", "anchor"),
-    UPGRADE_ANCHOR_DESCRIPTION("upgrade", "anchor.description"),
-    UPGRADE_STONE_GENERATOR("upgrade", "stone_generator"),
-    UPGRADE_STONE_GENERATOR_DESCRIPTION("upgrade", "stone_generator.description"),
-    UPGRADE_MAX_INSTALLED("upgrade", "max_installed"),
     //Boolean
     TRUE_LOWER("gui", "true_lower"),
     FALSE_LOWER("gui", "false_lower"),

@@ -150,7 +150,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         infusionSlot.fillTankOrConvert(null);
-        recipeCacheLookupMonitor.updateAndProcess();
+        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
         return sendUpdatePacket;
     }
 
