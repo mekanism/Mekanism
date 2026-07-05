@@ -3,15 +3,13 @@ package mekanism.client.model.item;
 import com.mojang.datafixers.util.Either;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import mekanism.api.MekanismRegistries;
-import mekanism.api.upgrade.IUpgradeHelper;
-import mekanism.api.upgrade.Upgrade;
+import mekanism.api.SerializationConstants;
 import net.minecraft.client.color.item.ItemTintSource;
-import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
@@ -26,20 +24,28 @@ import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.joml.Matrix4fc;
 import org.jspecify.annotations.Nullable;
 
 /// Copied and adapted from [CuboidItemModelWrapper]
-public class UpgradeItemModel implements ItemModel {
+public class ComponentItemModel<TYPE> implements ItemModel {
 
-    private static final ModelDebugName DEBUG_NAME = () -> "MekanismUpgradeItemModel";
+    private static final ModelDebugName DEBUG_NAME = () -> "MekanismComponentItemModel";
 
-    private final Map<ResourceKey<Upgrade>, ItemModel> cache = new IdentityHashMap<>(); // contains all the baked models since they'll never change
+    private final Map<ResourceKey<TYPE>, ItemModel> cache = new IdentityHashMap<>(); // contains all the baked models since they'll never change
+
+    private final ResourceKey<? extends Registry<TYPE>> componentRegistry;
+    private final String componentName;
+    private final DeferredHolder<DataComponentType<?>, DataComponentType<Holder<TYPE>>> componentType;
 
     private final List<ItemTintSource> tints;
     private final ItemModel missingItemModel;
@@ -47,39 +53,41 @@ public class UpgradeItemModel implements ItemModel {
     private final Matrix4fc transformation;
     private final ModelBaker baker;
 
-    private UpgradeItemModel(ModelBaker baker, List<ItemTintSource> tints, ResolvedModel resolvedBaseModel, Matrix4fc transformation, ItemModel missingItemModel) {
+    private ComponentItemModel(ModelBaker baker, List<ItemTintSource> tints, ResolvedModel resolvedBaseModel, Matrix4fc transformation, ItemModel missingItemModel,
+          ResourceKey<? extends Registry<?>> componentRegistry) {
         this.baker = baker;
         this.tints = tints;
         this.resolvedBaseModel = resolvedBaseModel;
         this.missingItemModel = missingItemModel;
         this.transformation = transformation;
+        this.componentRegistry = (ResourceKey<? extends Registry<TYPE>>) componentRegistry;
+        this.componentName = this.componentRegistry.identifier().getPath();
+        componentType = DeferredHolder.create(ResourceKey.create(Registries.DATA_COMPONENT_TYPE, this.componentRegistry.identifier().withSuffix("_type")));
     }
 
     @Override
     public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver modelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel level,
           @Nullable ItemOwner owner, int seed) {
         ItemModel model = missingItemModel;
-        Holder<Upgrade> upgradeType = stack.get(IUpgradeHelper.INSTANCE.dataComponent());
-        if (upgradeType != null) {
-            Either<ResourceKey<Upgrade>, Upgrade> value = upgradeType.unwrap();
-            Optional<ResourceKey<Upgrade>> upgradeResourceKey = value.left();
-            Optional<Upgrade> optionalUpgrade = value.right();
-            if (optionalUpgrade.isPresent() && level != null) {//Theoretically the other path is what will be taken the majority of times
-                upgradeResourceKey = level.registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES).getResourceKey(optionalUpgrade.get());
+        Holder<TYPE> typeHolder = stack.get(componentType);
+        if (typeHolder != null) {
+            Either<ResourceKey<TYPE>, TYPE> value = typeHolder.unwrap();
+            Optional<ResourceKey<TYPE>> resourceKey = value.left();
+            Optional<TYPE> optionalElement = value.right();
+            if (optionalElement.isPresent() && level != null) {//Theoretically the other path is what will be taken the majority of times
+                resourceKey = level.registryAccess().lookupOrThrow(componentRegistry).getResourceKey(optionalElement.get());
             }
-            if (upgradeResourceKey.isPresent()) {
-                model = cache.computeIfAbsent(upgradeResourceKey.get(), this::bakeModelForUpgrade);
+            if (resourceKey.isPresent()) {
+                model = cache.computeIfAbsent(resourceKey.get(), this::bakeModelForComponent);
             }
         }
         model.update(renderState, stack, modelResolver, displayContext, level, owner, seed);
     }
 
-    private ItemModel bakeModelForUpgrade(ResourceKey<Upgrade> upgrade) {
-        Identifier texture = upgrade.identifier().withPrefix("item/upgrade/");
+    private ItemModel bakeModelForComponent(ResourceKey<TYPE> key) {
+        Identifier texture = key.identifier().withPrefix("item/" + componentName + "/");
         TextureSlots textureSlots = makeTextureSlots(texture);
-        //Note: We use the primary texture as the particle
-        Material.Baked particle = baker.materials().resolveSlot(textureSlots, TextureSlot.LAYER0.getId(), DEBUG_NAME);
-        ModelRenderProperties properties = new ModelRenderProperties(resolvedBaseModel.getTopGuiLight().lightLikeBlock(), particle, resolvedBaseModel.getTopTransforms());
+        ModelRenderProperties properties = ModelRenderProperties.fromResolvedModel(baker, resolvedBaseModel, textureSlots);
         QuadCollection quads = resolvedBaseModel.getTopGeometry().bake(textureSlots, baker, BlockModelRotation.IDENTITY, DEBUG_NAME, resolvedBaseModel.getTopAdditionalProperties());
         return new CuboidItemModelWrapper(tints, quads, properties, transformation);
     }
@@ -92,15 +100,18 @@ public class UpgradeItemModel implements ItemModel {
             resolver.addLast(current.wrapped().textureSlots());
         }
         resolver.addLast(new TextureSlots.Data.Builder()
-              .addTexture(TextureSlot.LAYER0.getId(), new Material(texture))
+              .addTexture(componentName, new Material(texture))
               .build()
         );
         return resolver.resolve(DEBUG_NAME);
     }
 
-    public record Unbaked(CuboidItemModelWrapper.Unbaked cuboidUnbaked) implements ItemModel.Unbaked {
+    public record Unbaked(CuboidItemModelWrapper.Unbaked cuboidUnbaked, ResourceKey<? extends Registry<?>> componentRegistry) implements ItemModel.Unbaked {
 
-        public static final MapCodec<Unbaked> MAP_CODEC = CuboidItemModelWrapper.Unbaked.MAP_CODEC.xmap(Unbaked::new, Unbaked::cuboidUnbaked);
+        public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+              CuboidItemModelWrapper.Unbaked.MAP_CODEC.forGetter(Unbaked::cuboidUnbaked),
+              Identifier.CODEC.<ResourceKey<? extends Registry<?>>>xmap(ResourceKey::createRegistryKey, ResourceKey::identifier).fieldOf(SerializationConstants.MEK_DATA).forGetter(Unbaked::componentRegistry)
+        ).apply(i, Unbaked::new));
 
         @Override
         public void resolveDependencies(Resolver resolver) {
@@ -111,7 +122,8 @@ public class UpgradeItemModel implements ItemModel {
         public ItemModel bake(BakingContext context, Matrix4fc transformation) {
             ModelBaker baker = context.blockModelBaker();
             Matrix4fc modelTransform = Transformation.compose(transformation, cuboidUnbaked.transformation());
-            return new UpgradeItemModel(context.blockModelBaker(), cuboidUnbaked.tints(), baker.getModel(cuboidUnbaked.model()), modelTransform, context.missingItemModel());
+            return new ComponentItemModel<>(context.blockModelBaker(), cuboidUnbaked.tints(), baker.getModel(cuboidUnbaked.model()), modelTransform,
+                  context.missingItemModel(), componentRegistry);
         }
 
         @Override

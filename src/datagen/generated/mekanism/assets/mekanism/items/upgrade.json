@@ -1,6 +1,7 @@
 {
   "model": {
-    "type": "mekanism:upgrade_item",
-    "model": "minecraft:item/generated"
+    "type": "mekanism:component_item",
+    "mek_data": "mekanism:upgrade",
+    "model": "mekanism:item/upgrade"
   }
 }

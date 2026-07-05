@@ -1,4 +1,4 @@
-// 26.2	2026-07-05T07:54:56.3637745	Model Definitions - mekanism
+// 26.2	2026-07-05T09:45:51.0769547	Model Definitions - mekanism
 2e09b81571bcad7a3e925d2b03b1ec1dd0f9b71f assets/mekanism/blockstates/advanced_energy_cube.json
 00c0d0e76b525301d8b7a1adc5dcb5d3807c4d38 assets/mekanism/blockstates/advanced_logistical_transporter.json
 84712d3beb4b5acb6a471b330f3bfa9dcf4de4fa assets/mekanism/blockstates/advanced_mechanical_pipe.json
@@ -437,7 +437,7 @@ ad7bb7b614225c3791e69767d0fb9859122323a4 assets/mekanism/items/ultimate_sawing_f
 1befcd1e155773440e0d9e567df2abf9678d7f87 assets/mekanism/items/ultimate_thermodynamic_conductor.json
 056e03a73b9c5b8bae3e76b40c7da015dd84d841 assets/mekanism/items/ultimate_tier_installer.json
 e6944c589cbd1030c64d248e7da9f9ad38552e59 assets/mekanism/items/ultimate_universal_cable.json
-3e4d6caa5f2d07b2e949169b5bc7d61e36bc2cde assets/mekanism/items/upgrade.json
+6674035082621d86eadaf9ba63fdb6d1529370b3 assets/mekanism/items/upgrade.json
 9854e83dbce813b45eb81cbc25334e728a8034b3 assets/mekanism/items/uranium_hexafluoride_bucket.json
 e2a082a118887e44aec106e27a23918f70a864d1 assets/mekanism/items/uranium_ore.json
 18fded85443724b36fd55893208a13977e881d0a assets/mekanism/items/uranium_oxide_bucket.json
@@ -587,3 +587,4 @@ d2541eef0a9ae81c69452d598e4a32423068e4e3 assets/mekanism/models/item/ultimate_me
 fd630ee4468b049a3f36d62a0a2ae809979e3d01 assets/mekanism/models/item/ultimate_pressurized_tube.json
 5bcd79427e7751f940b00938296718cedca53dea assets/mekanism/models/item/ultimate_thermodynamic_conductor.json
 8be989ef5273eaec2c2439f58e3760b611d53d56 assets/mekanism/models/item/ultimate_universal_cable.json
+8d5d8f16e8fed5f4fbde527f83f5bf0f19043a0b assets/mekanism/models/item/upgrade.json
