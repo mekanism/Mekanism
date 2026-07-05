@@ -69,7 +69,7 @@ public class TextComponentUtil {
             }
             MutableComponent current = null;
             switch (component) {
-                case EnumColor color -> cachedStyle = cachedStyle.withColor(color.getColor());
+                case EnumColor color -> cachedStyle = cachedStyle.withColor(color.getTextColor());
                 case IHasTextComponent hasTextComponent -> current = hasTextComponent.getTextComponent().copy();
                 case IHasTranslationKey hasTranslationKey -> current = translate(hasTranslationKey.getTranslationKey());
                 case TextColor color -> cachedStyle = cachedStyle.withColor(color);
@@ -201,7 +201,7 @@ public class TextComponentUtil {
                 current = c.copy();
             } else if (component instanceof EnumColor color && cachedStyle.getColor() == null) {
                 //No color set yet in the cached style, apply the color
-                cachedStyle = cachedStyle.withColor(color.getColor());
+                cachedStyle = cachedStyle.withColor(color.getTextColor());
                 continue;
             } else if (component instanceof IHasTextComponent hasTextComponent) {
                 current = hasTextComponent.getTextComponent().copy();

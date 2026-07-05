@@ -340,7 +340,7 @@ public class MekanismItems {
         return ITEMS.registerItem(tier.getLowerName() + "_control_circuit", properties -> new Item(properties) {
             @Override
             public Component getName(ItemStack stack) {
-                return TextComponentUtil.build(tier.getColor(), super.getName(stack));
+                return TextComponentUtil.build(tier.getTextColor(), super.getName(stack));
             }
         });
     }

@@ -36,6 +36,6 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
         if (tier == null) {
             return super.getName(stack);
         }
-        return TextComponentUtil.build(tier.getBaseTier().getColor(), super.getName(stack));
+        return TextComponentUtil.build(tier.getBaseTier().getTextColor(), super.getName(stack));
     }
 }

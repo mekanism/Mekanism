@@ -67,7 +67,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
         if (baseTier == null) {
             return super.getName();
         }
-        return TextComponentUtil.build(baseTier.getColor(), super.getName());
+        return TextComponentUtil.build(baseTier.getTextColor(), super.getName());
     }
 
     @Override

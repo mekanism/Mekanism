@@ -33,6 +33,6 @@ public class ItemBlockInductionProvider extends ItemBlockTooltip<BlockTile<TileE
     @Override
     protected void addStats(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
           Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        tooltipAdder.accept(MekanismLang.INDUCTION_PORT_OUTPUT_RATE.translateColored(tier.getBaseTier().getColor(), EnumColor.GRAY, EnergyDisplay.of(tier.getOutput())));
+        tooltipAdder.accept(MekanismLang.INDUCTION_PORT_OUTPUT_RATE.translateColored(tier.getBaseTier().getTextColor(), EnumColor.GRAY, EnergyDisplay.of(tier.getOutput())));
     }
 }

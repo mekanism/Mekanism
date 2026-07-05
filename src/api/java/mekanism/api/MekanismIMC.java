@@ -9,7 +9,7 @@ import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 
 /// Class containing various helpers for sending IMC messages to Mekanism.
-public class MekanismIMC {
+public class MekanismIMC {//TODO - 26.2: Can these be moved to datamaps?
 
     private MekanismIMC() {
     }

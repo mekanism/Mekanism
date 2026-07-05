@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
@@ -46,6 +47,11 @@ public interface SupportsColorMap {
     default float[] getRgbCodeFloat() {
         return new float[]{getColor(0), getColor(1), getColor(2)};
     }
+
+    /// Gets the corresponding text color for this color.
+    ///
+    /// @since 10.8.0
+    TextColor getTextColor();
 
     /// Sets the internal color representation of this color from the color atlas.
     ///

@@ -39,7 +39,7 @@ public class ItemUpgrade extends Item implements ICustomCreativeTabContents {
         Holder<Upgrade> upgradeType = stack.get(dataComponentType);
         if (upgradeType != null && tooltipDisplay.shows(dataComponentType)) {
             Upgrade upgrade = upgradeType.value();
-            tooltipAdder.accept(MekanismLang.TOOLTIP_UPGRADE_TYPE.translateColored(EnumColor.PURPLE, upgrade.color(), upgrade));
+            tooltipAdder.accept(MekanismLang.TOOLTIP_UPGRADE_TYPE.translateColored(EnumColor.PURPLE, upgrade.textColor(), upgrade));
             tooltipAdder.accept(MekanismLang.TOOLTIP_UPGRADE_MAX_INSTALLED.translateColored(EnumColor.GRAY, EnumColor.AQUA, upgrade.max()));
             tooltipAdder.accept(upgrade.description());
         }

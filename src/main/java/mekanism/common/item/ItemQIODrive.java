@@ -40,7 +40,7 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
 
     @Override
     public Component getName(ItemStack stack) {
-        return TextComponentUtil.build(tier.getBaseTier().getColor(), super.getName(stack));
+        return TextComponentUtil.build(tier.getBaseTier().getTextColor(), super.getName(stack));
     }
 
     @Override

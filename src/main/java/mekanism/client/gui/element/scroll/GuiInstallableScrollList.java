@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.scroll;
 
 import java.util.List;
-import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -89,9 +88,8 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
         return cachedTooltipRect == null ? super.getTooltipRectangle(mouseX, mouseY) : cachedTooltipRect;
     }
 
-    @Nullable
-    protected EnumColor getColor(TYPE type) {
-        return null;
+    protected int getColor(TYPE type) {
+        return CommonColors.WHITE;
     }
 
     @Override
@@ -116,12 +114,11 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
                 texture = BASE;
                 slotTexture = BASE_SLOT;
             }
-            EnumColor color = getColor(type);
-            int argb = color == null ? CommonColors.WHITE : color.getPackedColor();
+            int color = getColor(type);
             int targetX = relativeX + 1;
             int targetY = relativeY + 1 + multipliedElement;
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, targetX, targetY, width - 8, elementHeight, argb);
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, slotTexture, targetX + 1, targetY + 1, 10, 10, argb);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, targetX, targetY, width - 8, elementHeight, color);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, slotTexture, targetX + 1, targetY + 1, 10, 10, color);
             gui().renderItem(guiGraphics, getRenderStack(type), relativeX + 3, relativeY + 3 + i * elementHeight, 0.5F);
         }
     }

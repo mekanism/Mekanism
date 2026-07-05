@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.text.EnumColor;
 import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.client.gui.IGuiWrapper;
@@ -59,10 +58,9 @@ public class GuiUpgradeScrollList extends GuiInstallableScrollList<Holder<Upgrad
         return IUpgradeHelper.INSTANCE.asStack(upgrade);
     }
 
-    @Nullable
     @Override
-    protected EnumColor getColor(Holder<Upgrade> upgrade) {
-        return upgrade.value().color();
+    protected int getColor(Holder<Upgrade> upgrade) {
+        return upgrade.value().argb();
     }
 
     @Override
