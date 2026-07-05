@@ -78,7 +78,6 @@ public class GuiSupportedUpgrades extends GuiElement {
         int backgroundColor = Color.argb(GuiElementHolder.getBackgroundColor()).alpha(0.5).argb();
         Registry<Upgrade> upgrades = gui().registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
         for (int i = 0, size = upgrades.size(); i < size; i++) {
-            //TODO - 26.2: Figure out if there is a better way to do this than by id
             Reference<Upgrade> upgrade = upgrades.get(i).orElse(null);
             if (upgrade != null) {
                 UpgradePos pos = getUpgradePos(i);
@@ -109,31 +108,40 @@ public class GuiSupportedUpgrades extends GuiElement {
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
         Registry<Upgrade> upgrades = gui().registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
-        for (int i = 0, size = upgrades.size(); i < size; i++) {
-            UpgradePos pos = getUpgradePos(i);
-            if (mouseX >= getX() + 1 + pos.x && mouseX < getX() + 1 + pos.x + ELEMENT_SIZE &&
-                mouseY >= getY() + 1 + pos.y && mouseY < getY() + 1 + pos.y + ELEMENT_SIZE) {
-                //TODO - 26.2: Figure out if there is a better way to do this than by id
-                Reference<Upgrade> holder = upgrades.get(i).orElse(null);
-                if (holder != null) {
-                    Upgrade upgrade = holder.value();
-                    Component upgradeName = MekanismLang.UPGRADE_TYPE.translateColored(EnumColor.YELLOW, upgrade);
-                    List<Component> info;
-                    if (holder.is(supportedUpgrades)) {
-                        info = List.of(upgradeName, upgrade.description());
-                    } else {
-                        info = List.of(MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.description());
-                    }
-                    if (!info.equals(lastInfo)) {
-                        lastInfo = info;
-                        lastTooltip = TooltipUtils.create(info);
-                        //Note: We only have to update the tooltip rect if the tooltip changed as we know none of the elements share the same tooltips
-                        cachedTooltipRect = new ScreenRectangle(getX() + 1 + pos.x, getY() + 1 + pos.y, ELEMENT_SIZE, ELEMENT_SIZE);
-                    }
-                    setTooltip(lastTooltip);
-                    //We can break once we managed to find a tooltip to render
-                    return;
+        int size = upgrades.size();
+        int rowIndex = getRow(size - 1);
+        int relativeMouseX = mouseX - getX() - 1;
+        int relativeMouseY = mouseY - getY() - 1;
+        if (relativeMouseX >= 0 && relativeMouseX < PADDED_ELEMENT_WIDTH && relativeMouseY >= 0 && relativeMouseY < ELEMENT_SIZE * (rowIndex + 1)) {
+            int targetRow = relativeMouseY / ELEMENT_SIZE;
+            int index;
+            if (targetRow == 0) {
+                relativeMouseX -= firstRowStart;
+                index = relativeMouseX / ELEMENT_SIZE;
+            } else {
+                index = firstRowRoom + ROW_ROOM * (targetRow - 1) + relativeMouseX / ELEMENT_SIZE;
+            }
+            //Note: Registry#get returns an empty optional
+            Reference<Upgrade> holder = upgrades.get(index).orElse(null);
+            if (holder != null) {
+                Upgrade upgrade = holder.value();
+                Component upgradeName = MekanismLang.UPGRADE_TYPE.translateColored(EnumColor.YELLOW, upgrade);
+                List<Component> info;
+                if (holder.is(supportedUpgrades)) {
+                    info = List.of(upgradeName, upgrade.description());
+                } else {
+                    info = List.of(MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.description());
                 }
+                if (!info.equals(lastInfo)) {
+                    lastInfo = info;
+                    lastTooltip = TooltipUtils.create(info);
+                    UpgradePos pos = getUpgradePos(index);
+                    //Note: We only have to update the tooltip rect if the tooltip changed as we know none of the elements share the same tooltips
+                    cachedTooltipRect = new ScreenRectangle(getX() + 1 + pos.x, getY() + 1 + pos.y, ELEMENT_SIZE, ELEMENT_SIZE);
+                }
+                setTooltip(lastTooltip);
+                //We can break once we managed to find a tooltip to render
+                return;
             }
         }
         lastInfo = Collections.emptyList();
@@ -141,8 +149,12 @@ public class GuiSupportedUpgrades extends GuiElement {
         setTooltip(lastTooltip = null);
     }
 
+    private int getRow(int index) {
+        return index < firstRowRoom ? 0 : 1 + (index - firstRowRoom) / ROW_ROOM;
+    }
+
     private UpgradePos getUpgradePos(int index) {
-        int row = index < firstRowRoom ? 0 : 1 + (index - firstRowRoom) / ROW_ROOM;
+        int row = getRow(index);
         if (row == 0) {
             //First row has x start a lot further in
             return new UpgradePos(firstRowStart + (index % firstRowRoom) * ELEMENT_SIZE, 0);
