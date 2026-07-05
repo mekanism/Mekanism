@@ -54,6 +54,7 @@ import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
@@ -134,6 +135,7 @@ public class MekanismModelProvider extends BaseModelProvider {
         //Items
         registerBuckets(MekanismFluids.FLUIDS, itemModels);
         registerModules(MekanismItems.ITEMS, itemModels);
+        itemModels.itemModelOutput.accept(MekanismItems.UPGRADE.asItem(), new UpgradeItemModel.Unbaked((CuboidItemModelWrapper.Unbaked) ItemModelUtils.plainModel(ModelLocationUtils.decorateItemModelLocation("generated"))));
         for (Table.Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             ItemRegistryObject<Item> itemValue = item.getValue();
             Identifier texture = itemTexture(itemValue);
@@ -597,7 +599,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         itemModels.declareCustomModelItem(MekanismItems.TELEPORTATION_CORE.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ULTIMATE_CONTROL_CIRCUIT.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ULTIMATE_TIER_INSTALLER.asItem());
-        itemModels.itemModelOutput.accept(MekanismItems.UPGRADE.asItem(), UpgradeItemModel.Unbaked.INSTANCE);
         itemModels.declareCustomModelItem(MekanismItems.YELLOW_CAKE_URANIUM.asItem());
         itemModels.declareCustomModelItem(MekanismItems.BRONZE_DUST.asItem());
         itemModels.declareCustomModelItem(MekanismItems.LAPIS_LAZULI_DUST.asItem());
