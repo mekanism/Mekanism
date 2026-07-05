@@ -110,7 +110,6 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.HolderSet.Named;
@@ -752,20 +751,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         redstone = input.getBooleanOr(SerializationConstants.REDSTONE, redstone);
         for (ITileComponent component : components) {
             component.read(input);
-        }
-        TileComponentUpgrade component = getComponent();
-        if (component != null) {
-            HolderLookup.Provider lookup = input.lookup();
-            Optional<Reference<Upgrade>> upgrade = lookup.get(UpgradeIds.SPEED);
-            //noinspection OptionalIsPresent - Capturing lambda
-            if (upgrade.isPresent()) {
-                //TODO - 26.2: Why do we force a buffer update? Theoretically reading the tile components should already have caused the upgrades to be recalculated
-                // It is because if there is no speed upgrades installed we want to update it. But maybe we should make TileComponentUpgrade call recalculate for all
-                // supported ones, even the ones that aren't stored?
-                Reference<Upgrade> speedUpgrade = upgrade.get();
-                //force buffer to update
-                recalculateUpgrades(lookup, speedUpgrade, getUpgrades(speedUpgrade));
-            }
         }
         readSustainedData(input);
         for (IContainerType<?, ?> type : ContainerType.TYPES) {

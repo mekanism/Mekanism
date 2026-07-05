@@ -18,6 +18,7 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
+import mekanism.common.Mekanism;
 import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.integration.computer.ComputerException;
@@ -34,6 +35,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.tags.TagKey;
@@ -51,7 +53,6 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     /// How long it takes this machine to install an upgrade.
     private static final int UPGRADE_TICKS_REQUIRED = SharedConstants.TICKS_PER_SECOND;
-    //TODO - 26.2: Validate there are no cases where a zero value is stored in an upgrade map as our positive int will error for that
     //TODO - 26.2: Make sure this is lenient so if there are invalid amounts or unknown upgrades then it skips them. Maybe just LenientUnboundedMapCodec ?
     private static final Codec<Object2IntMap<Holder<Upgrade>>> UPGRADE_MAP_CODEC = Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.POSITIVE_INT).xmap(
           Object2IntOpenHashMap::new,
@@ -219,8 +220,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     public void applyImplicitComponents(DataComponentGetter input) {
         UpgradeAware upgradeAware = input.get(MekanismDataComponents.UPGRADES);
         if (upgradeAware != null) {
-            upgrades.clear();
-            upgrades.putAll(upgradeAware.upgrades());
+            upgrades = new Object2IntOpenHashMap<>(upgradeAware.upgrades());
             upgradeSlot.setContents(upgradeAware.inputSlot(), null);
             upgradeOutputSlot.setContents(upgradeAware.outputSlot(), null);
         }
@@ -241,9 +241,17 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
             upgrades.clear();
         }
         HolderLookup.Provider lookup = upgradeInput.lookup();
-        for (ObjectIterator<Entry<Holder<Upgrade>>> iterator = Object2IntMaps.fastIterator(upgrades); iterator.hasNext(); ) {
-            Object2IntMap.Entry<Holder<Upgrade>> entry = iterator.next();
-            tile.recalculateUpgrades(lookup, entry.getKey(), entry.getIntValue());
+        Optional<Named<Upgrade>> tag = lookup.get(supported);
+        if (tag.isPresent()) {
+            for (Holder<Upgrade> upgrade : tag.get()) {
+                tile.recalculateUpgrades(lookup, upgrade, getUpgrades(upgrade));
+            }
+        } else {//Best effort, and just recalculate the upgrades that are currently stored
+            Mekanism.logger.warn("Unable to find supported upgrades: #{}. Recalculating upgrades for installed upgrades.", supported.location());
+            for (ObjectIterator<Entry<Holder<Upgrade>>> iterator = Object2IntMaps.fastIterator(upgrades); iterator.hasNext(); ) {
+                Object2IntMap.Entry<Holder<Upgrade>> entry = iterator.next();
+                tile.recalculateUpgrades(lookup, entry.getKey(), entry.getIntValue());
+            }
         }
         //Load the inventory
         ContainerType.ITEM.readFrom(upgradeInput, getSlots());
