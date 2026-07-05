@@ -17,6 +17,7 @@ import dev.emi.emi.platform.EmiAgnos;
 import dev.emi.emi.registry.EmiInitRegistryImpl;
 import dev.emi.emi.registry.EmiPluginContainer;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -167,8 +168,18 @@ public class EmiAliasProvider implements DataProvider {
         }
 
         @Override
+        public void addItemHolderAliases(Collection<? extends Holder<Item>> items, IHasTranslationKey... aliases) {
+            addAliases(items.stream().map(this::itemIngredient).toList(), aliases);
+        }
+
+        @Override
         public void addFluidAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
             addAliases(stacks, aliases);
+        }
+
+        @Override
+        public void addFluidHolderAliases(Collection<? extends Holder<Fluid>> fluids, IHasTranslationKey... aliases) {
+            addAliases(fluids.stream().map(this::fluidIngredient).toList(), aliases);
         }
 
         @Override

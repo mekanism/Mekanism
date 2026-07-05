@@ -375,8 +375,6 @@ public final class MekanismAliasMapping implements IAliasMapping {
 
     private <ITEM, FLUID, CHEMICAL> void addUpgradeAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
         HolderGetter<Upgrade> upgrades = rv.registries().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
-        //TODO - 26.2: Update JEI and fix the RVAliasHelper implementation so that it supports adding to the item instead of just specific instances properly
-        // https://github.com/mezz/JustEnoughItems/commit/e293d817a5c13a618a2a1ea8af6683b417922b89
         rv.addItemAliases(MekanismItems.UPGRADE, MekanismAliases.UPGRADE_AUGMENT);
         addUpgrade(rv, upgrades, UpgradeIds.SPEED, MekanismAliases.UPGRADE_OVERCLOCK);
         addUpgrade(rv, upgrades, UpgradeIds.ENERGY, MekanismAliases.ENERGY_STORAGE);

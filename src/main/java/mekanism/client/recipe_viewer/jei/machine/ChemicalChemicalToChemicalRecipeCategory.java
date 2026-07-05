@@ -17,7 +17,6 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class ChemicalChemicalToChemicalRecipeCategory extends HolderRecipeCategory<ChemicalChemicalToChemicalRecipe> {
@@ -50,10 +49,9 @@ public class ChemicalChemicalToChemicalRecipeCategory extends HolderRecipeCatego
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ChemicalChemicalToChemicalRecipe> recipeHolder, IFocusGroup focusGroup) {
         ChemicalChemicalToChemicalRecipe recipe = recipeHolder.value();
         builder.setShapeless();
-        ContextMap slotDisplayContext = getSlotDisplayContext();
-        initChemical(builder, RecipeIngredientRole.INPUT, leftInputGauge, recipe.getLeftInput().getRepresentations(slotDisplayContext))
+        initChemical(builder, RecipeIngredientRole.INPUT, leftInputGauge, recipe.getLeftInput()::getRepresentations)
               .setSlotName(LEFT_INPUT);
-        initChemical(builder, RecipeIngredientRole.INPUT, rightInputGauge, recipe.getRightInput().getRepresentations(slotDisplayContext))
+        initChemical(builder, RecipeIngredientRole.INPUT, rightInputGauge, recipe.getRightInput()::getRepresentations)
               .setSlotName(RIGHT_INPUT);
         initChemical(builder, outputGauge, recipe.getOutputDefinition())
               .setSlotName(OUTPUT);

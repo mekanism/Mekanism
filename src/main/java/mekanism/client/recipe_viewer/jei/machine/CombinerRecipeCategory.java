@@ -14,7 +14,6 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class CombinerRecipeCategory extends HolderRecipeCategory<CombinerRecipe> {
@@ -37,9 +36,8 @@ public class CombinerRecipeCategory extends HolderRecipeCategory<CombinerRecipe>
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CombinerRecipe> recipeHolder, IFocusGroup focusGroup) {
         CombinerRecipe recipe = recipeHolder.value();
-        ContextMap slotDisplayContext = getSlotDisplayContext();
-        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getMainInput().getRepresentations(slotDisplayContext));
-        initItem(builder, RecipeIngredientRole.INPUT, extra, recipe.getExtraInput().getRepresentations(slotDisplayContext));
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getMainInput()::getRepresentations);
+        initItem(builder, RecipeIngredientRole.INPUT, extra, recipe.getExtraInput()::getRepresentations);
         initItem(builder, output, recipe.getOutputDefinition());
     }
 }

@@ -26,7 +26,6 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.context.ContextMap;
 import org.jspecify.annotations.Nullable;
 
 public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionRecipeViewerRecipe> {
@@ -53,14 +52,13 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReci
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, FissionRecipeViewerRecipe recipe, IFocusGroup focusGroup) {
-        ContextMap slotDisplayContext = getSlotDisplayContext();
         //Handle the coolant either special cased water or the proper coolant
         if (recipe.inputCoolant() == null) {
-            initFluid(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.waterInput().getRepresentations(slotDisplayContext));
+            initFluid(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.waterInput()::getRepresentations);
         } else {
-            initChemical(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant().getRepresentations(slotDisplayContext));
+            initChemical(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant()::getRepresentations);
         }
-        initChemical(builder, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel().getRepresentations(slotDisplayContext));
+        initChemical(builder, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel()::getRepresentations);
         initChemical(builder, heatedCoolantTank, Collections.singletonList(recipe.outputCoolant()));
         initChemical(builder, wasteTank, Collections.singletonList(recipe.waste()));
     }

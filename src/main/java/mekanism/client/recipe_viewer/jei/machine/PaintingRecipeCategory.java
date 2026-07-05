@@ -24,7 +24,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class PaintingRecipeCategory extends HolderRecipeCategory<ItemStackChemicalToItemStackRecipe> {
@@ -57,16 +56,16 @@ public class PaintingRecipeCategory extends HolderRecipeCategory<ItemStackChemic
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, IFocusGroup focusGroup) {
         ItemStackChemicalToItemStackRecipe recipe = recipeHolder.value();
-        ContextMap slotDisplayContext = getSlotDisplayContext();
-        initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations(slotDisplayContext));
-        List<ChemicalStack> scaledChemicals = recipe.getChemicalInput().getRepresentations(slotDisplayContext);
-        if (recipe.perTickUsage()) {
-            scaledChemicals = scaledChemicals.stream()
-                  .map(chemical -> chemical.copyWithAmount(chemical.amount() * TileEntityPaintingMachine.BASE_TICKS_REQUIRED))
-                  .toList();
-        }
-        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, scaledChemicals)
-              .setSlotName(CHEMICAL_INPUT);
+        initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput()::getRepresentations);
+        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, recipe, (r, context) -> {
+            List<ChemicalStack> scaledChemicals = r.getChemicalInput().getRepresentations(context);
+            if (r.perTickUsage()) {
+                scaledChemicals = scaledChemicals.stream()
+                      .map(chemical -> chemical.copyWithAmount(chemical.amount() * TileEntityPaintingMachine.BASE_TICKS_REQUIRED))
+                      .toList();
+            }
+            return scaledChemicals;
+        }).setSlotName(CHEMICAL_INPUT);
         initItem(builder, output, recipe.getOutputDefinition());
     }
 }

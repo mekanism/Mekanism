@@ -17,7 +17,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<RotaryRecipe> {
@@ -43,14 +42,13 @@ public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<Ro
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<RotaryRecipe> recipeHolder, IFocusGroup focusGroup) {
         RotaryRecipe recipe = recipeHolder.value();
-        ContextMap slotDisplayContext = getSlotDisplayContext();
         if (condensentrating) {
             if (recipe.hasChemicalToFluid()) {
-                initChemical(builder, RecipeIngredientRole.INPUT, chemicalGauge, recipe.getChemicalInput().getRepresentations(slotDisplayContext));
+                initChemical(builder, RecipeIngredientRole.INPUT, chemicalGauge, recipe.getChemicalInput()::getRepresentations);
                 initFluid(builder, fluidGauge, recipe.getFluidOutputDefinition());
             }
         } else if (recipe.hasFluidToChemical()) {
-            initFluid(builder, RecipeIngredientRole.INPUT, fluidGauge, recipe.getFluidInput().getRepresentations(slotDisplayContext));
+            initFluid(builder, RecipeIngredientRole.INPUT, fluidGauge, recipe.getFluidInput()::getRepresentations);
             initChemical(builder, chemicalGauge, recipe.getChemicalOutputDefinition());
         }
     }

@@ -18,7 +18,6 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class MetallurgicInfuserRecipeCategory extends HolderRecipeCategory<ItemStackChemicalToItemStackRecipe> {
@@ -42,16 +41,17 @@ public class MetallurgicInfuserRecipeCategory extends HolderRecipeCategory<ItemS
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, IFocusGroup focusGroup) {
         ItemStackChemicalToItemStackRecipe recipe = recipeHolder.value();
-        ContextMap slotDisplayContext = getSlotDisplayContext();
-        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations(slotDisplayContext));
-        List<ChemicalStack> scaledChemicals = recipe.getChemicalInput().getRepresentations(slotDisplayContext);
-        if (recipe.perTickUsage()) {
-            scaledChemicals = scaledChemicals.stream()
-                  .map(chemical -> chemical.copyWithAmount(chemical.amount() * TileEntityMetallurgicInfuser.BASE_TICKS_REQUIRED))
-                  .toList();
-        }
-        initChemical(builder, RecipeIngredientRole.INPUT, infusionBar, scaledChemicals);
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput()::getRepresentations);
+        initChemical(builder, RecipeIngredientRole.INPUT, infusionBar, recipe, (r, context) -> {
+            List<ChemicalStack> scaledChemicals = r.getChemicalInput().getRepresentations(context);
+            if (r.perTickUsage()) {
+                return scaledChemicals.stream()
+                      .map(chemical -> chemical.copyWithAmount(chemical.amount() * TileEntityMetallurgicInfuser.BASE_TICKS_REQUIRED))
+                      .toList();
+            }
+            return scaledChemicals;
+        });
         initItem(builder, output, recipe.getOutputDefinition());
-        initItem(builder, RecipeIngredientRole.CRAFTING_STATION, extra, RecipeViewerUtils.getStacksFor(recipe.getChemicalInput(), true));
+        initItem(builder, RecipeIngredientRole.CRAFTING_STATION, extra, recipe.getChemicalInput(), (chemicalInput, context) -> RecipeViewerUtils.getStacksFor(chemicalInput, context, true));
     }
 }

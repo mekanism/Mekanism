@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.SerializationConstants;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
 import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
@@ -27,10 +28,13 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jspecify.annotations.Nullable;
 
@@ -58,7 +62,7 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, BasicItemStackToFluidOptionalItemRecipe recipe, IFocusGroup focusGroup) {
-        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput()::getRepresentations);
         List<FluidOptionalItemOutput> outputDefinition = recipe.getOutputDefinition();
         List<FluidStackTemplate> fluidOutputs = new ArrayList<>(outputDefinition.size());
         List<ItemStackTemplate> itemOutputs = new ArrayList<>();
@@ -79,7 +83,9 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
     @Nullable
     @Override
     public Identifier getIdentifier(BasicItemStackToFluidOptionalItemRecipe recipe) {
-        List<ItemStack> representations = recipe.getInput().getRepresentations(getSlotDisplayContext());
+        //TODO - 26.2: Can we grab the context map from jei?
+        ContextMap contextMap = SlotDisplayContext.fromLevel(Objects.requireNonNull(Minecraft.getInstance().level));
+        List<ItemStack> representations = recipe.getInput().getRepresentations(contextMap);
         if (representations.size() == 1) {
             Identifier itemId = BuiltInRegistries.ITEM.getKeyOrNull(representations.getFirst().getItem());
             if (itemId != null) {

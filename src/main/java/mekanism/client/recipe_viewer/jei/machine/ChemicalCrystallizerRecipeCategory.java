@@ -1,6 +1,5 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import java.util.List;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
@@ -72,12 +71,9 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
         ChemicalCrystallizerRecipe recipe = recipeHolder.value();
         initItem(builder, output, recipe.getOutputDefinition());
         ChemicalStackIngredient input = recipe.getInput();
-        initChemical(builder, RecipeIngredientRole.INPUT, gauge, input.getRepresentations(getSlotDisplayContext()))
+        initChemical(builder, RecipeIngredientRole.INPUT, gauge, input::getRepresentations)
               .setSlotName(CHEMICAL_INPUT);
-        List<ItemStack> displayItems = RecipeViewerUtils.getDisplayItems(input);
-        if (!displayItems.isEmpty()) {
-            initItem(builder, RecipeIngredientRole.RENDER_ONLY, screen.getSlotX(), screen.getSlotY(), displayItems).setSlotName(DISPLAYED_ITEM);
-        }
+        initItem(builder, RecipeIngredientRole.RENDER_ONLY, screen.getSlotX(), screen.getSlotY(), input, RecipeViewerUtils::getDisplayItems).setSlotName(DISPLAYED_ITEM);
     }
 
     private static class OreInfo implements IOreInfo {

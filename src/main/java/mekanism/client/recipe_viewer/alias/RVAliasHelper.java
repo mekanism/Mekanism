@@ -63,12 +63,8 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
         addItemAliases(stacks.stream().map(ItemStack::new).toList(), aliases);
     }
 
-    default void addItemHolderAliases(Collection<? extends Holder<Item>> items, IHasTranslationKey... aliases) {
-        addItemAliases(items.stream().map(ItemStack::new).toList(), aliases);
-    }
-
     default void addItemAliases(Holder<Item> item, IHasTranslationKey... aliases) {
-        addItemAliases(List.of(itemIngredient(item)), aliases);
+        addItemHolderAliases(List.of(item), aliases);
     }
 
     default void addItemAliases(Collection<ItemStack> stacks, IHasTranslationKey... aliases) {
@@ -88,7 +84,7 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
     }
 
     default void addFluidAliases(Holder<Fluid> fluid, IHasTranslationKey... aliases) {
-        addFluidAlias(fluidIngredient(fluid), aliases);
+        addFluidHolderAliases(List.of(fluid), aliases);
     }
 
     default void addAliases(FluidStack stack, IHasTranslationKey... aliases) {
@@ -121,11 +117,15 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
 
     void addItemAliases(List<ITEM> stacks, IHasTranslationKey... aliases);
 
+    void addItemHolderAliases(Collection<? extends Holder<Item>> items, IHasTranslationKey... aliases);
+
     default void addFluidAlias(FLUID fluid, IHasTranslationKey... aliases) {
         addFluidAliases(List.of(fluid), aliases);
     }
 
     void addFluidAliases(List<FLUID> stacks, IHasTranslationKey... aliases);
+
+    void addFluidHolderAliases(Collection<? extends Holder<Fluid>> fluids, IHasTranslationKey... aliases);
 
     default void addChemicalAlias(CHEMICAL chemical, IHasTranslationKey... aliases) {
         addChemicalAliases(List.of(chemical), aliases);

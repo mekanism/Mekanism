@@ -27,7 +27,6 @@ import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.context.ContextMap;
 import org.jspecify.annotations.Nullable;
 
 public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerRecipe> {
@@ -93,13 +92,12 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, BoilerRecipeViewerRecipe recipe, IFocusGroup focusGroup) {
-        ContextMap context = getSlotDisplayContext();
-        initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water().getRepresentations(context));
+        initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water()::getRepresentations);
         ChemicalStackTemplate cooledCoolant = recipe.cooledCoolant();
         if (recipe.superHeatedCoolant() == null || cooledCoolant == null) {
             initChemical(builder, steamTank, recipe.steamRepresentations());
         } else {
-            initChemical(builder, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant().getRepresentations(context));
+            initChemical(builder, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant()::getRepresentations);
             initChemical(builder, steamTank, recipe.steamRepresentations());
             initChemical(builder, cooledCoolantTank, Collections.singletonList(cooledCoolant));
         }

@@ -97,7 +97,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
     }
 
     protected void addCatalsyst(ChemicalStackIngredient ingredient) {
-        catalysts.add(ingredient(RecipeViewerUtils.getStacksFor(ingredient, true)));
+        catalysts.add(ingredient(RecipeViewerUtils.getStacksFor(ingredient, contextMap, true)));
     }
 
     protected void addItemOutputDefinition(List<ItemStackTemplate> definition) {

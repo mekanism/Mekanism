@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer.jei;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -12,6 +13,7 @@ import mekanism.client.recipe_viewer.alias.RVAliasHelper;
 import mekanism.common.Mekanism;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredientType;
+import mezz.jei.api.ingredients.IIngredientTypeWithSubtypes;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.registration.IIngredientAliasRegistration;
 import net.minecraft.client.Minecraft;
@@ -97,8 +99,18 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack, FluidStack, Chem
     }
 
     @Override
+    public void addItemHolderAliases(Collection<? extends Holder<Item>> items, IHasTranslationKey... aliases) {
+        addRawAliases(VanillaTypes.ITEM_STACK, items.stream().map(Holder::value).toList(), aliases);
+    }
+
+    @Override
     public void addItemAliases(List<ItemStack> stacks, IHasTranslationKey... aliases) {
         addAliases(VanillaTypes.ITEM_STACK, stacks, ITEM_TO_STRING, aliases);
+    }
+
+    @Override
+    public void addFluidHolderAliases(Collection<? extends Holder<Fluid>> fluids, IHasTranslationKey... aliases) {
+        addRawAliases(NeoForgeTypes.FLUID_STACK, fluids.stream().map(Holder::value).toList(), aliases);
     }
 
     @Override
@@ -123,6 +135,22 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack, FluidStack, Chem
                   .map(IHasTranslationKey::getTranslationKey)
                   .toList();
             registration.addAliases(type, stacks, aliasesAsString);
+        }
+    }
+
+    private <TYPE, INGREDIENT> void addRawAliases(IIngredientTypeWithSubtypes<TYPE, INGREDIENT> type, List<TYPE> raw, IHasTranslationKey... aliases) {
+        if (aliases.length == 0) {
+            Mekanism.logger.warn("Expected to have at least one alias for raw ingredients of type: {}. Ingredients: {}", type.getUid(), raw.stream()
+                  .map(Object::toString)
+                  .collect(Collectors.joining(", "))
+            );
+        } else {
+            List<String> aliasesAsString = Arrays.stream(aliases)
+                  .map(IHasTranslationKey::getTranslationKey)
+                  .toList();
+            for (TYPE baseIngredient : raw) {
+                registration.addAliases(type, baseIngredient, aliasesAsString);
+            }
         }
     }
 }

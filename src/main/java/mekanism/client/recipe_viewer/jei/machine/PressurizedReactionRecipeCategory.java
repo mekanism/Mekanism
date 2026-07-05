@@ -64,10 +64,9 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<PressurizedReactionRecipe> recipeHolder, IFocusGroup focusGroup) {
         PressurizedReactionRecipe recipe = recipeHolder.value();
-        ContextMap slotDisplayContext = getSlotDisplayContext();
-        initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations(slotDisplayContext));
-        initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations(slotDisplayContext));
-        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, recipe.getInputChemical().getRepresentations(slotDisplayContext));
+        initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid()::getRepresentations);
+        initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid()::getRepresentations);
+        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, recipe.getInputChemical()::getRepresentations);
         List<ItemStackTemplate> itemOutputs = new ArrayList<>();
         List<ChemicalStackTemplate> chemicalOutputs = new ArrayList<>();
         for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {

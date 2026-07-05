@@ -50,7 +50,7 @@ public class FluidToFluidRecipeCategory extends HolderRecipeCategory<FluidToFlui
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<FluidToFluidRecipe> recipeHolder, IFocusGroup focusGroup) {
         FluidToFluidRecipe recipe = recipeHolder.value();
-        initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
+        initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput()::getRepresentations);
         initFluid(builder, output, recipe.getOutputDefinition());
     }
 }
