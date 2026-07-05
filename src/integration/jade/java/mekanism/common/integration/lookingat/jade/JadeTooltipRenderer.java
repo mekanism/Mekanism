@@ -22,7 +22,12 @@ import snownee.jade.api.ui.Element;
 
 public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements IComponentProvider<ACCESSOR> {
 
-    static final JadeTooltipRenderer<?> INSTANCE = new JadeTooltipRenderer<>();
+    private static final JadeTooltipRenderer<?> INSTANCE = new JadeTooltipRenderer<>();
+
+    @SuppressWarnings("unchecked")
+    static <ACCESSOR extends Accessor<?>> JadeTooltipRenderer<ACCESSOR> instance() {
+        return (JadeTooltipRenderer<ACCESSOR>) INSTANCE;
+    }
 
     @Override
     public Identifier getUid() {

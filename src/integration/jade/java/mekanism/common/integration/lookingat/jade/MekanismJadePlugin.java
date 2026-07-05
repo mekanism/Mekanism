@@ -11,8 +11,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.EntityAccessor;
-import snownee.jade.api.IComponentProvider;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
@@ -32,10 +30,10 @@ public class MekanismJadePlugin implements IWailaPlugin {
         registration.addConfig(LookingAtUtils.ENERGY, true);
         registration.addConfig(LookingAtUtils.FLUID, true);
         registration.addConfig(LookingAtUtils.CHEMICAL, true);
-        registration.registerEntityComponent((IComponentProvider< EntityAccessor >) JadeTooltipRenderer.INSTANCE, EntityRobit.class);
-        registration.registerBlockComponent((IComponentProvider<BlockAccessor>) JadeTooltipRenderer.INSTANCE, Block.class);
-        registration.registerEntityComponent((IComponentProvider<EntityAccessor>) JadeBuiltinRemover.INSTANCE, EntityRobit.class);
-        registration.registerBlockComponent((IComponentProvider<BlockAccessor>) JadeBuiltinRemover.INSTANCE, Block.class);
+        registration.registerEntityComponent(JadeTooltipRenderer.instance(), EntityRobit.class);
+        registration.registerBlockComponent(JadeTooltipRenderer.instance(), Block.class);
+        registration.registerEntityComponent(JadeBuiltinRemover.instance(), EntityRobit.class);
+        registration.registerBlockComponent(JadeBuiltinRemover.instance(), Block.class);
         registration.addRayTraceCallback((_, accessor, _) -> {
             //Redirect bounding blocks to the main tile for purposes of naming and the like
             if (accessor instanceof BlockAccessor target && target.getBlockState().is(MekanismBlocks.BOUNDING_BLOCK)) {

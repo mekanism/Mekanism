@@ -625,7 +625,7 @@ dependencies {
 
     integration_wthitCompileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
     //integration_wthitLocalRuntime("mcp.mobius.waila:wthit:neo-${wthit_version}")
-    //integration_wthitLocalRuntime('lol.bai:badpackets:neo-0.8.1')
+    //integration_wthitLocalRuntime('lol.bai:badpackets:neo-0.12.2')
 
     def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minecraft_version}:${crafttweaker_version}"
     integration_crafttweakerCompileOnly(crt)

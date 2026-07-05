@@ -13,7 +13,12 @@ import snownee.jade.api.config.IPluginConfig;
 
 public class JadeBuiltinRemover<ACCESSOR extends Accessor<?>> implements IComponentProvider<ACCESSOR> {
 
-    static final JadeBuiltinRemover<?> INSTANCE = new JadeBuiltinRemover<>();
+    private static final JadeBuiltinRemover<?> INSTANCE = new JadeBuiltinRemover<>();
+
+    @SuppressWarnings("unchecked")
+    static <ACCESSOR extends Accessor<?>> JadeBuiltinRemover<ACCESSOR> instance() {
+        return (JadeBuiltinRemover<ACCESSOR>) INSTANCE;
+    }
 
     @Override
     public Identifier getUid() {

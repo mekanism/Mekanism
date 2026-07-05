@@ -19,7 +19,7 @@ public class WTHITDataProvider implements IDataProvider<BlockEntity> {
     @Override
     public void appendData(IDataWriter dataWriter, IServerAccessor<BlockEntity> serverAccessor, IPluginConfig config) {
         if (serverAccessor.getHitResult() instanceof BlockHitResult hitResult && hitResult.getType() != Type.MISS) {
-            Level level = serverAccessor.getWorld();
+            Level level = serverAccessor.getLevel();
             BlockEntity tile = serverAccessor.getTarget();
             BlockPos pos = hitResult.getBlockPos();
             BlockState state = tile == null ? level.getBlockState(pos) : tile.getBlockState();

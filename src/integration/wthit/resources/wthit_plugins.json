@@ -1,7 +1,8 @@
 {
   "mekanism:plugin": {
-    "initializer": "mekanism.common.integration.lookingat.wthit.MekanismWTHITPlugin",
-    "side": "*",
-    "required": []
+    "entrypoints" : {
+      "common": "mekanism.common.integration.lookingat.wthit.MekanismWTHITPlugin",
+      "client": "mekanism.common.integration.lookingat.wthit.MekanismWTHITClientPlugin"
+    }
   }
 }
