@@ -125,23 +125,6 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return new BlockHitResult(location, hit.getDirection(), mainPos, hit.isInside());
     }
 
-    //TODO - 26.2: onRemove @Override
-    protected void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        //Remove the main block if a bounding block gets broken by being directly replaced
-        // Note: We only do this if we don't go from bounding block to bounding block
-        if (!state.is(newState.getBlock())) {
-            BlockPos mainPos = getMainBlockPos(world, pos);
-            if (mainPos != null) {
-                BlockState mainState = world.getBlockState(mainPos);
-                if (!mainState.isAir()) {
-                    //Set the main block to air, which will invalidate the rest of the bounding blocks
-                    world.removeBlock(mainPos, false);
-                }
-            }
-            //TODO - 26.2: super.onRemove(state, world, pos, newState, isMoving);
-        }
-    }
-
     /// {@inheritDoc}
     ///
     /// Delegate to main [Block#getCloneItemStack(LevelReader, BlockPos, BlockState, boolean, Player)].
