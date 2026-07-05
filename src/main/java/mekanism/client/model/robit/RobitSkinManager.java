@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import mekanism.api.robit.RobitSkin;
+import mekanism.client.ModelUtil;
 import mekanism.client.RobitSpriteUploader;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismRobitSkins;
@@ -37,7 +38,6 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
-import net.minecraft.util.context.ContextMap;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
@@ -118,8 +118,9 @@ public class RobitSkinManager {
             return bakedMissingModel;
         }
         try {
+            TextureSlots textureSlots = ModelUtil.makeTextureSlots(resolved, "robit", activeTexture == null ? MekanismRobitSkins.BASE_SKIN_TEXTURE : activeTexture);
             //nb: can't use bakeTopGeometry as that is the vanilla-baked one
-            QuadCollection quadCollection = resolved.getTopGeometry().bake(makeTextureSlots(resolved, activeTexture), modelBaker, BlockModelRotation.IDENTITY, resolved, ContextMap.EMPTY);
+            QuadCollection quadCollection = resolved.getTopGeometry().bake(textureSlots, modelBaker, BlockModelRotation.IDENTITY, resolved, resolved.getTopAdditionalProperties());
             BlockStateModelPart bakedModel = new SimpleModelWrapper(
                   quadCollection,
                   resolved.getTopAmbientOcclusion(),
@@ -130,27 +131,6 @@ public class RobitSkinManager {
             Mekanism.logger.error("Unable to bake Robit model {} due to exception", skin, e);
             return bakedMissingModel;
         }
-    }
-
-    /// from [ResolvedModel#findTopTextureSlots(ResolvedModel)]
-    private static TextureSlots makeTextureSlots(ResolvedModel top, @Nullable Identifier activeTexture) {
-        ResolvedModel current = top;
-
-        TextureSlots.Resolver resolver;
-        for (resolver = new TextureSlots.Resolver(); current != null; current = current.parent()) {
-            resolver.addLast(current.wrapped().textureSlots());
-        }
-
-        if (activeTexture == null) {
-            activeTexture = MekanismRobitSkins.BASE_SKIN_TEXTURE;
-        }
-
-        resolver.addLast(new TextureSlots.Data.Builder()
-              .addTexture("robit", new Material(activeTexture))
-              .build()
-        );
-
-        return resolver.resolve(top);
     }
 
     /// @param model      Model parts for submitting

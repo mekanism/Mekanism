@@ -12,6 +12,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jspecify.annotations.Nullable;
 
@@ -27,13 +28,15 @@ public class RotaryEmiRecipe extends MekanismEmiRecipe<RotaryRecipe> {
         if (condensentrating) {
             if (recipe.hasChemicalToFluid()) {
                 addInputDefinition(recipe.getChemicalInput());
-                addFluidOutputDefinition(recipe.getFluidOutputDefinition());
+                //TODO - Emi: ContextMap
+                addFluidOutputDefinition(recipe.getFluidOutputDefinition(ContextMap.EMPTY));
             } else {
                 throw new IllegalArgumentException("Condensentrating recipes require a chemical to fluid component");
             }
         } else if (recipe.hasFluidToChemical()) {
             addInputDefinition(recipe.getFluidInput());
-            addChemicalOutputDefinition(recipe.getChemicalOutputDefinition());
+            //TODO - Emi: ContextMap
+            addChemicalOutputDefinition(recipe.getChemicalOutputDefinition(ContextMap.EMPTY));
         } else {
             throw new IllegalArgumentException("Decondensentrating recipes require a fluid to chemical component");
         }

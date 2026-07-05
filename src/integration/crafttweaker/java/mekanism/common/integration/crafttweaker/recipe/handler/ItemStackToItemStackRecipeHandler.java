@@ -18,7 +18,7 @@ public class ItemStackToItemStackRecipeHandler extends MekanismRecipeHandler<Ite
     public String dumpToCommandString(IRecipeManager<? super ItemStackToItemStackRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<ItemStackToItemStackRecipe> recipeHolder) {
         ItemStackToItemStackRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition());
+        return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ItemStackToItemStackRecipeHandler extends MekanismRecipeHandler<Ite
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ItemStackToItemStackRecipe> manager, RegistryAccess registryAccess,
           ItemStackToItemStackRecipe recipe) {
-        return decompose(recipe.getInput(), recipe.getOutputDefinition());
+        return decompose(recipe.getInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override

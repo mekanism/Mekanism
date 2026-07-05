@@ -18,7 +18,7 @@ public class FluidSlurryToSlurryRecipeHandler extends MekanismRecipeHandler<Flui
     public String dumpToCommandString(IRecipeManager<? super FluidChemicalToChemicalRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<FluidChemicalToChemicalRecipe> recipeHolder) {
         FluidChemicalToChemicalRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
+        return buildCommandString(manager, recipeHolder, recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class FluidSlurryToSlurryRecipeHandler extends MekanismRecipeHandler<Flui
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super FluidChemicalToChemicalRecipe> manager, RegistryAccess registryAccess, FluidChemicalToChemicalRecipe recipe) {
-        return decompose(recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
+        return decompose(recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override

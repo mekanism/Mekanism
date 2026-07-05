@@ -10,6 +10,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
@@ -104,13 +105,13 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     }
 
     @Override
-    public List<ChemicalStackTemplate> getChemicalOutputDefinition() {
+    public List<ChemicalStackTemplate> getChemicalOutputDefinition(ContextMap contextMap) {
         ChemicalStackTemplate output = Objects.requireNonNull(chemicalOutput, "This recipe has no fluid to chemical conversion.");
         return Collections.singletonList(output);
     }
 
     @Override
-    public List<FluidStackTemplate> getFluidOutputDefinition() {
+    public List<FluidStackTemplate> getFluidOutputDefinition(ContextMap contextMap) {
         FluidStackTemplate output = Objects.requireNonNull(fluidOutput, "This recipe has no chemical to fluid conversion.");
         return Collections.singletonList(output);
     }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeInput;
 import org.jetbrains.annotations.Contract;
 
@@ -40,7 +41,7 @@ public abstract class TwoInputMekRecipe<HOLDER_A, STACK_A extends TypedInstance<
     /// For JEI, gets the output representations to display.
     ///
     /// @return Representation of the output, **MUST NOT** be modified.
-    public abstract List<OUTPUT> getOutputDefinition();
+    public abstract List<OUTPUT> getOutputDefinition(ContextMap contextMap);
 
     @Override
     public boolean isIncomplete() {

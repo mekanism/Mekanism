@@ -14,6 +14,7 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.machine.TileEntityPrecisionSawmill;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -22,8 +23,10 @@ public class SawmillEmiRecipe extends MekanismEmiHolderRecipe<SawmillRecipe> {
     public SawmillEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<SawmillRecipe> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getInput());
-        addItemOutputDefinition(recipe.getMainOutputDefinition());
-        List<ItemStackTemplate> secondaryOutputDefinition = recipe.getSecondaryOutputDefinition();
+        //TODO - Emi: ContextMap
+        ContextMap contextMap = ContextMap.EMPTY;
+        addItemOutputDefinition(recipe.getMainOutputDefinition(contextMap));
+        List<ItemStackTemplate> secondaryOutputDefinition = recipe.getSecondaryOutputDefinition(contextMap);
         List<EmiStack> list = new ArrayList<>(secondaryOutputDefinition.size());
         for (ItemStackTemplate itemStack : secondaryOutputDefinition) {
             list.add(EmiStack.of(itemStack.create()).setChance((float) recipe.getSecondaryChance()));

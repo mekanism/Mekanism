@@ -11,6 +11,7 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
 import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -57,7 +58,7 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
     /// For JEI, gets the output representations to display.
     ///
     /// @return Representation of the output, **MUST NOT** be modified.
-    public abstract List<OUTPUT> getOutputDefinition();
+    public abstract List<OUTPUT> getOutputDefinition(ContextMap contextMap);
 
     @Override
     public boolean isIncomplete() {

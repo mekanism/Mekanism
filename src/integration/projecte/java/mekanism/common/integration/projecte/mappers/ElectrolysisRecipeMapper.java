@@ -28,7 +28,7 @@ public class ElectrolysisRecipeMapper extends TypedMekanismRecipeMapper<Electrol
             ChemicalStackTemplate rightOutput = basicRecipe.getRightChemicalOutput();
             return addConversions(mapper, new ElectrolysisRecipeOutput(leftOutput, rightOutput), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }
-        return addConversions(mapper, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forFluids, ElectrolysisRecipeMapper::addConversions);
+        return addConversions(mapper, contextMap, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forFluids, ElectrolysisRecipeMapper::addConversions);
     }
 
     private static boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, ElectrolysisRecipeOutput output, Object2IntMap<NormalizedSimpleStack> inputs) {

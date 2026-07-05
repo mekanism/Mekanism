@@ -66,6 +66,6 @@ public class PaintingRecipeCategory extends HolderRecipeCategory<ItemStackChemic
             }
             return scaledChemicals;
         }).setSlotName(CHEMICAL_INPUT);
-        initItem(builder, output, recipe.getOutputDefinition());
+        initItem(builder, output, recipe::getOutputDefinition);
     }
 }

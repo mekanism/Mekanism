@@ -20,7 +20,7 @@ public class ChemicalCrystallizerRecipeHandler extends MekanismRecipeHandler<Che
     public String dumpToCommandString(IRecipeManager<? super ChemicalCrystallizerRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder) {
         ChemicalCrystallizerRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition());
+        return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class ChemicalCrystallizerRecipeHandler extends MekanismRecipeHandler<Che
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ChemicalCrystallizerRecipe> manager, RegistryAccess registryAccess, ChemicalCrystallizerRecipe recipe) {
-        return decompose(recipe.getInput(), recipe.getOutputDefinition());
+        return decompose(recipe.getInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override

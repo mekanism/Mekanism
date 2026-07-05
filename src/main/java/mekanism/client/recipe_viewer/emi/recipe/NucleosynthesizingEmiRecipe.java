@@ -15,6 +15,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.lib.Color;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class NucleosynthesizingEmiRecipe extends MekanismEmiHolderRecipe<NucleosynthesizingRecipe> {
@@ -23,7 +24,8 @@ public class NucleosynthesizingEmiRecipe extends MekanismEmiHolderRecipe<Nucleos
         super(category, recipeHolder);
         addInputDefinition(recipe.getItemInput());
         addInputDefinition(recipe.getChemicalInput(), recipe.perTickUsage() ? TileEntityAntiprotonicNucleosynthesizer.BASE_TICKS_REQUIRED : 1);
-        addItemOutputDefinition(recipe.getOutputDefinition());
+        //TODO - Emi: ContextMap
+        addItemOutputDefinition(recipe.getOutputDefinition(ContextMap.EMPTY));
         addCatalsyst(recipe.getChemicalInput());
     }
 

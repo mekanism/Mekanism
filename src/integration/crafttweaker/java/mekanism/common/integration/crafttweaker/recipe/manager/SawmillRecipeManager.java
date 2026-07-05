@@ -12,6 +12,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.openzen.zencode.java.ZenCodeType;
@@ -123,7 +124,9 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SingleRecipeInpu
     @Override
     protected String describeOutputs(SawmillRecipe recipe) {
         StringBuilder builder = new StringBuilder();
-        List<ItemStackTemplate> mainOutputs = recipe.getMainOutputDefinition();
+        //TODO - CrT: ContextMap
+        ContextMap contextMap = ContextMap.EMPTY;
+        List<ItemStackTemplate> mainOutputs = recipe.getMainOutputDefinition(contextMap);
         if (!mainOutputs.isEmpty()) {
             builder.append("main: ").append(CrTUtils.describeOutputs(mainOutputs, stack -> ItemStackUtil.getCommandString(stack.create())));
         }
@@ -138,7 +141,7 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SingleRecipeInpu
                       .append(TextUtils.getPercent(recipe.getSecondaryChance()))
                       .append(": ");
             }
-            builder.append(CrTUtils.describeOutputs(recipe.getSecondaryOutputDefinition(), stack -> ItemStackUtil.getCommandString(stack.create())));
+            builder.append(CrTUtils.describeOutputs(recipe.getSecondaryOutputDefinition(contextMap), stack -> ItemStackUtil.getCommandString(stack.create())));
         }
         return builder.toString();
     }

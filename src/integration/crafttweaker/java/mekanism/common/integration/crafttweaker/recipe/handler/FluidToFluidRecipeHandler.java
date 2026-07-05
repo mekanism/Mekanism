@@ -17,7 +17,7 @@ public class FluidToFluidRecipeHandler extends MekanismRecipeHandler<FluidToFlui
     @Override
     public String dumpToCommandString(IRecipeManager<? super FluidToFluidRecipe> manager, RegistryAccess registryAccess, RecipeHolder<FluidToFluidRecipe> recipeHolder) {
         FluidToFluidRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition());
+        return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override
@@ -29,7 +29,7 @@ public class FluidToFluidRecipeHandler extends MekanismRecipeHandler<FluidToFlui
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super FluidToFluidRecipe> manager, RegistryAccess registryAccess, FluidToFluidRecipe recipe) {
-        return decompose(recipe.getInput(), recipe.getOutputDefinition());
+        return decompose(recipe.getInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override

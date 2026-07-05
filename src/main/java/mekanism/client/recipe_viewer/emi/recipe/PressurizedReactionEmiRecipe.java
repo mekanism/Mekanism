@@ -17,6 +17,7 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -29,7 +30,8 @@ public class PressurizedReactionEmiRecipe extends MekanismEmiHolderRecipe<Pressu
         addInputDefinition(recipe.getInputChemical());
         List<ItemStackTemplate> itemOutputs = new ArrayList<>();
         List<ChemicalStackTemplate> chemicalOutputs = new ArrayList<>();
-        for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
+        //TODO - Emi: ContextMap
+        for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition(ContextMap.EMPTY)) {
             if (output.item() != null) {
                 itemOutputs.add(output.item());
             }

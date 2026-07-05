@@ -37,11 +37,14 @@ import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
@@ -54,6 +57,11 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
 
     protected <TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>> boolean ingredientConflicts(INGREDIENT a, INGREDIENT b) {
         return a.getRepresentations().stream().anyMatch(b::testType);
+    }
+
+    protected ContextMap contextMap(RegistryAccess registryAccess) {
+        //TODO - CrT: ContextMap
+        return new ContextMap.Builder().withParameter(SlotDisplayContext.REGISTRIES, registryAccess).create(SlotDisplayContext.CONTEXT);
     }
 
     protected boolean chemicalIngredientConflicts(ChemicalStackIngredient a,

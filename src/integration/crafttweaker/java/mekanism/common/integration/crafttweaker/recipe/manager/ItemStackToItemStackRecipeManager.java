@@ -12,6 +12,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.openzen.zencode.java.ZenCodeType;
@@ -53,7 +54,8 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
 
     @Override
     protected String describeOutputs(ItemStackToItemStackRecipe recipe) {
-        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), template -> ItemStackUtil.getCommandString(template.create()));
+        //TODO - CrT: ContextMap
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(ContextMap.EMPTY), template -> ItemStackUtil.getCommandString(template.create()));
     }
 
     @ZenRegister

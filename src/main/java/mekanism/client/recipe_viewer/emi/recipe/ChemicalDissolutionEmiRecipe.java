@@ -14,6 +14,7 @@ import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class ChemicalDissolutionEmiRecipe extends MekanismEmiHolderRecipe<ChemicalDissolutionRecipe> {
@@ -22,7 +23,8 @@ public class ChemicalDissolutionEmiRecipe extends MekanismEmiHolderRecipe<Chemic
         super(category, recipeHolder);
         addInputDefinition(recipe.getItemInput());
         addInputDefinition(recipe.getChemicalInput(), recipe.perTickUsage() ? TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED : 1);
-        addOutputDefinition(recipe.getOutputDefinition().stream().<EmiStack>map(ChemicalEmiStack::new).toList());
+        //TODO - Emi: ContextMap
+        addOutputDefinition(recipe.getOutputDefinition(ContextMap.EMPTY).stream().<EmiStack>map(ChemicalEmiStack::new).toList());
     }
 
     @Override

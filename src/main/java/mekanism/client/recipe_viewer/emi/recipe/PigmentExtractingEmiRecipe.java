@@ -9,6 +9,7 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.recipe_viewer.color.PigmentExtractorColorDetails;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.tile.machine.TileEntityPigmentExtractor;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class PigmentExtractingEmiRecipe extends ItemStackToChemicalEmiRecipe<ItemStackToChemicalRecipe> {
@@ -17,7 +18,8 @@ public class PigmentExtractingEmiRecipe extends ItemStackToChemicalEmiRecipe<Ite
 
     public PigmentExtractingEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ItemStackToChemicalRecipe> recipeHolder) {
         super(category, recipeHolder, TileEntityPigmentExtractor.BASE_TICKS_REQUIRED);
-        output = getSupplier(recipe.getOutputDefinition(), ChemicalStack.EMPTY);
+        //TODO - Emi: ContextMap
+        output = getSupplier(recipe.getOutputDefinition(ContextMap.EMPTY), ChemicalStack.EMPTY);
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.util.Objects;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -37,7 +38,7 @@ public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemSta
     }
 
     @Override
-    public List<ItemStackTemplate> getOutputDefinition() {
+    public List<ItemStackTemplate> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
     }
 

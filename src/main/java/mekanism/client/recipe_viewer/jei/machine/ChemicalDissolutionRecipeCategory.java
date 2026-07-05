@@ -55,7 +55,7 @@ public class ChemicalDissolutionRecipeCategory extends HolderRecipeCategory<Chem
             }
             return scaledChemicals;
         });
-        initChemical(builder, outputGauge, recipe.getOutputDefinition());
+        initChemical(builder, outputGauge, recipe::getOutputDefinition);
     }
 
 }

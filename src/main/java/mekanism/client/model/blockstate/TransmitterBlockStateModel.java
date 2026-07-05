@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import mekanism.client.ModelUtil;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.client.model.data.TransmitterModelData.VisualConnectionStatus;
 import mekanism.common.Mekanism;
@@ -36,12 +37,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.context.ContextKeySet;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.ComposedModelState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
-import net.neoforged.neoforge.client.model.NeoForgeModelProperties;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.checkerframework.common.returnsreceiver.qual.This;
@@ -266,10 +265,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
 
         @Override
         public ContextMap getTopAdditionalProperties() {
-            ContextMap.Builder builder = new ContextMap.Builder();
-            fillAdditionalProperties(this, builder);
-            builder.withParameter(NeoForgeModelProperties.PART_VISIBILITY, visibilityMap);
-            return builder.create(ContextKeySet.EMPTY);
+            return ModelUtil.transmitterVisibility(this, visibilityMap);
         }
 
         @Override
@@ -286,15 +282,6 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         @Override
         public String debugName() {
             return "delegate:" + delegate.debugName();
-        }
-
-        //copied from Neo as it's private
-        private static void fillAdditionalProperties(@Nullable ResolvedModel model, ContextMap.Builder propertiesBuilder) {
-            if (model != null) {
-                fillAdditionalProperties(model.parent(), propertiesBuilder);
-                //noinspection OverrideOnly
-                model.wrapped().fillAdditionalProperties(propertiesBuilder);
-            }
         }
     }
 

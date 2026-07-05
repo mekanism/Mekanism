@@ -3,24 +3,29 @@ package mekanism.client.recipe_viewer.emi.recipe;
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.function.Supplier;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.recipe_viewer.color.PigmentMixerColorDetails;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import org.jspecify.annotations.Nullable;
 
 public class PigmentMixerEmiRecipe extends ChemicalChemicalToChemicalEmiRecipe {
 
     private final Supplier<ChemicalStack> leftInput;
     private final Supplier<ChemicalStack> rightInput;
-    private final Supplier<ChemicalStack> output;
+    private final Supplier<@Nullable ChemicalStackTemplate> output;
 
     public PigmentMixerEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ChemicalChemicalToChemicalRecipe> recipeHolder) {
         super(category, recipeHolder);
-        leftInput = getSupplier(recipe.getLeftInput().getRepresentations(), ChemicalStack.EMPTY);
-        rightInput = getSupplier(recipe.getRightInput().getRepresentations(), ChemicalStack.EMPTY);
-        output = getSupplier(recipe.getOutputDefinition(), ChemicalStack.EMPTY);
+        //TODO - Emi: ContextMap
+        ContextMap contextMap = ContextMap.EMPTY;
+        leftInput = getSupplier(recipe.getLeftInput().getRepresentations(contextMap), ChemicalStack.EMPTY);
+        rightInput = getSupplier(recipe.getRightInput().getRepresentations(contextMap), ChemicalStack.EMPTY);
+        output = getSupplier(recipe.getOutputDefinition(contextMap), null);
     }
 
     @Override

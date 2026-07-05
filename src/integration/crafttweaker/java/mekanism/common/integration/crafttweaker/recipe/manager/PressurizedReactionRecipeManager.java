@@ -15,6 +15,7 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.MekanismRecipeType;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
 import org.jspecify.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
@@ -159,7 +160,8 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
 
     @Override
     protected String describeOutputs(PressurizedReactionRecipe recipe) {
-        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), output -> {
+        //TODO - CrT: ContextMap
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(ContextMap.EMPTY), output -> {
             StringBuilder builder = new StringBuilder();
             ItemStackTemplate itemOutput = output.item();
             if (itemOutput != null) {

@@ -31,6 +31,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.context.ContextMap;
 import org.jspecify.annotations.Nullable;
 
 public record BoilerRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIngredient superHeatedCoolant, FluidStackIngredient water, @Nullable ChemicalStackTemplate steam,
@@ -51,7 +52,7 @@ public record BoilerRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIng
         return steam == null ? WATER_AMOUNT : steam.amount();
     }
 
-    public List<ChemicalStackTemplate> steamRepresentations() {
+    public List<ChemicalStackTemplate> steamRepresentations(ContextMap contextMap) {
         return steam == null ? Collections.emptyList() : Collections.singletonList(steam);
     }
 

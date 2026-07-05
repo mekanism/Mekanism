@@ -2,7 +2,7 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.chemical.ChemicalStackTemplate;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -24,8 +24,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.util.context.ContextMap;
-import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<PressurizedReactionRecipe> {
@@ -67,21 +66,21 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
         initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid()::getRepresentations);
         initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid()::getRepresentations);
         initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, recipe.getInputChemical()::getRepresentations);
-        List<ItemStackTemplate> itemOutputs = new ArrayList<>();
-        List<ChemicalStackTemplate> chemicalOutputs = new ArrayList<>();
-        for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
-            if (output.item() != null) {
-                itemOutputs.add(output.item());
+        List<ChemicalStack> chemicalOutputs = new ArrayList<>();
+        initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, recipe, (r, context) -> {
+            List<ItemStack> itemOutputs = new ArrayList<>();
+            for (PressurizedReactionRecipeOutput output : r.getOutputDefinition(context)) {
+                if (output.item() != null) {
+                    itemOutputs.add(output.item().create());
+                }
+                if (output.chemical() != null) {
+                    chemicalOutputs.add(output.chemical().create());
+                }
             }
-            if (output.chemical() != null) {
-                chemicalOutputs.add(output.chemical());
-            }
-        }
-        if (!itemOutputs.isEmpty()) {
-            initItem(builder, outputItem, itemOutputs);
-        }
+            return itemOutputs;
+        });
         if (!chemicalOutputs.isEmpty()) {
-            initChemical(builder, outputChemical, chemicalOutputs)
+            initChemical(builder, RecipeIngredientRole.OUTPUT, outputChemical, chemicalOutputs, (outputs, _) -> outputs)
                   .setSlotName(OUTPUT_CHEMICAL);
         }
     }

@@ -9,6 +9,7 @@ import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -66,7 +67,7 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
         return output;
     }
     @Override
-    public List<ItemStackTemplate> getOutputDefinition() {
+    public List<ItemStackTemplate> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
     }
 

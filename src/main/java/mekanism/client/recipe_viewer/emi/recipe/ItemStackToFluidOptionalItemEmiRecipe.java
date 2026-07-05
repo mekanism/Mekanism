@@ -12,6 +12,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
@@ -23,7 +24,8 @@ public class ItemStackToFluidOptionalItemEmiRecipe extends MekanismEmiRecipe<Bas
         super(category, id, recipe);
         this.processTime = processTime;
         addInputDefinition(recipe.getInput());
-        List<FluidOptionalItemOutput> outputDefinition = recipe.getOutputDefinition();
+        //TODO - Emi: ContextMap
+        List<FluidOptionalItemOutput> outputDefinition = recipe.getOutputDefinition(ContextMap.EMPTY);
         List<FluidStackTemplate> fluidOutputs = new ArrayList<>(outputDefinition.size());
         List<ItemStackTemplate> itemOutputs = new ArrayList<>();
         for (FluidOptionalItemOutput output : outputDefinition) {

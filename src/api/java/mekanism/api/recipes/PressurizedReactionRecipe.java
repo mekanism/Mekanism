@@ -12,6 +12,7 @@ import mekanism.api.recipes.vanilla_input.ReactionRecipeInput;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -67,7 +68,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     /// For JEI, gets the output representations to display.
     ///
     /// @return Representation of the output, **MUST NOT** be modified.
-    public abstract List<PressurizedReactionRecipeOutput> getOutputDefinition();
+    public abstract List<PressurizedReactionRecipeOutput> getOutputDefinition(ContextMap contextMap);
 
     /// Gets a new output based on the given inputs.
     ///

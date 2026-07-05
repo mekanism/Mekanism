@@ -21,7 +21,7 @@ public class ChemicalChemicalToChemicalRecipeHandler extends MekanismRecipeHandl
     public String dumpToCommandString(IRecipeManager<? super ChemicalChemicalToChemicalRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<ChemicalChemicalToChemicalRecipe> recipeHolder) {
         ChemicalChemicalToChemicalRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getLeftInput(), recipe.getRightInput(), recipe.getOutputDefinition());
+        return buildCommandString(manager, recipeHolder, recipe.getLeftInput(), recipe.getRightInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ChemicalChemicalToChemicalRecipeHandler extends MekanismRecipeHandl
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ChemicalChemicalToChemicalRecipe> manager, RegistryAccess registryAccess,
           ChemicalChemicalToChemicalRecipe recipe) {
-        return decompose(recipe.getLeftInput(), recipe.getRightInput(), recipe.getOutputDefinition());
+        return decompose(recipe.getLeftInput(), recipe.getRightInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override

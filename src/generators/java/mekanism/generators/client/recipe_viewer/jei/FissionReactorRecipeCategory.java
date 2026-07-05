@@ -59,8 +59,8 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReci
             initChemical(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant()::getRepresentations);
         }
         initChemical(builder, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel()::getRepresentations);
-        initChemical(builder, heatedCoolantTank, Collections.singletonList(recipe.outputCoolant()));
-        initChemical(builder, wasteTank, Collections.singletonList(recipe.waste()));
+        initChemical(builder, RecipeIngredientRole.OUTPUT, heatedCoolantTank, recipe.outputCoolant(), (outputCoolant, _) -> Collections.singletonList(outputCoolant.create()));
+        initChemical(builder, RecipeIngredientRole.OUTPUT, wasteTank, recipe.waste(), (waste, _) -> Collections.singletonList(waste.create()));
     }
 
     @Nullable

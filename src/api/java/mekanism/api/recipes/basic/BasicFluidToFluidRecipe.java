@@ -7,6 +7,7 @@ import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
@@ -32,7 +33,7 @@ public class BasicFluidToFluidRecipe extends FluidToFluidRecipe {
     }
 
     @Override
-    public List<FluidStackTemplate> getOutputDefinition() {
+    public List<FluidStackTemplate> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
     }
 

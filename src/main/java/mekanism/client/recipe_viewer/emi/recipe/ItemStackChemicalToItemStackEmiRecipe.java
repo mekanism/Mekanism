@@ -10,6 +10,7 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class ItemStackChemicalToItemStackEmiRecipe extends MekanismEmiHolderRecipe<ItemStackChemicalToItemStackRecipe> {
@@ -19,7 +20,8 @@ public class ItemStackChemicalToItemStackEmiRecipe extends MekanismEmiHolderReci
     public ItemStackChemicalToItemStackEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getItemInput());
-        addItemOutputDefinition(recipe.getOutputDefinition());
+        //TODO - Emi: ContextMap
+        addItemOutputDefinition(recipe.getOutputDefinition(ContextMap.EMPTY));
         addInputDefinition(recipe.getChemicalInput(), recipe.perTickUsage() ? PROCESS_TIME : 1);
         addCatalsyst(recipe.getChemicalInput());
     }

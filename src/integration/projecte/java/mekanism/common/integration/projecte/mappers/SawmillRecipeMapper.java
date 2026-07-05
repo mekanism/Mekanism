@@ -74,7 +74,7 @@ public class SawmillRecipeMapper extends TypedMekanismRecipeMapper<SawmillRecipe
                 return insertScaled(new Object2IntArrayMap<>(ingredients.size()), ingredients, primaryMultiplier);
             };
         }
-        return addConversions(mapper, recipe.getInput(), input -> SawmillOutput.create(recipe.getOutput(input), primaryMultiplier, secondaryMultiplier),
+        return addConversions(mapper, contextMap, recipe.getInput(), input -> SawmillOutput.create(recipe.getOutput(input), primaryMultiplier, secondaryMultiplier),
               output -> output.mainOutput() == null, representationGetter, SawmillRecipeMapper::addConversions);
     }
 

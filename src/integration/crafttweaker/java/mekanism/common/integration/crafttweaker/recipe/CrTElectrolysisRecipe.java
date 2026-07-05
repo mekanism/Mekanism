@@ -9,6 +9,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
+import net.minecraft.util.context.ContextMap;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -36,7 +37,8 @@ public class CrTElectrolysisRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<CrTElectrolysisRecipeOutput> getOutputs(ElectrolysisRecipe _this) {
-        return CrTUtils.convert(_this.getOutputDefinition(), output -> new CrTElectrolysisRecipeOutput(new CrTChemicalStack(output.left()), new CrTChemicalStack(output.right())));
+        //TODO - CrT: ContextMap
+        return CrTUtils.convert(_this.getOutputDefinition(ContextMap.EMPTY), output -> new CrTElectrolysisRecipeOutput(new CrTChemicalStack(output.left()), new CrTChemicalStack(output.right())));
     }
 
     /// @param left  Left output.

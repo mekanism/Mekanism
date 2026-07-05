@@ -9,6 +9,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -31,16 +32,16 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
     /// For JEI, gets the main output representations to display.
     ///
     /// @return Representation of the main output, **MUST NOT** be modified.
-    public abstract List<ItemStackTemplate> getMainOutputDefinition();
+    public abstract List<ItemStackTemplate> getMainOutputDefinition(ContextMap contextMap);
 
     /// For JEI, gets the secondary output representations to display.
     ///
     /// @return Representation of the secondary output, **MUST NOT** be modified.
-    public abstract List<ItemStackTemplate> getSecondaryOutputDefinition();
+    public abstract List<ItemStackTemplate> getSecondaryOutputDefinition(ContextMap contextMap);
 
     @Override
     @Deprecated
-    public List<ChanceOutput> getOutputDefinition() {
+    public List<ChanceOutput> getOutputDefinition(ContextMap contextMap) {
         //TODO - 26.2: Re-evaluate should we throw instead?
         return Collections.emptyList();
     }

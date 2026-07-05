@@ -13,6 +13,7 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.recipe.manager.RotaryRecipeManager;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -22,13 +23,14 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
     @Override
     public String dumpToCommandString(IRecipeManager<? super RotaryRecipe> manager, RegistryAccess registryAccess, RecipeHolder<RotaryRecipe> recipeHolder) {
         RotaryRecipe recipe = recipeHolder.value();
+        ContextMap contextMap = contextMap(registryAccess);
         //Note: We take advantage of the fact that if we have a recipe we have at least one direction and that we can skip parameters
         // as if they were optional as we will skip the later one as well and then end up with the proper method
         return buildCommandString(manager, recipeHolder,
               recipe.hasFluidToChemical() ? recipe.getFluidInput() : SKIP_OPTIONAL_PARAM,
               recipe.hasChemicalToFluid() ? recipe.getChemicalInput() : SKIP_OPTIONAL_PARAM,
-              recipe.hasFluidToChemical() ? recipe.getChemicalOutputDefinition() : SKIP_OPTIONAL_PARAM,
-              recipe.hasChemicalToFluid() ? recipe.getFluidOutputDefinition() : SKIP_OPTIONAL_PARAM
+              recipe.hasFluidToChemical() ? recipe.getChemicalOutputDefinition(contextMap) : SKIP_OPTIONAL_PARAM,
+              recipe.hasChemicalToFluid() ? recipe.getFluidOutputDefinition(contextMap) : SKIP_OPTIONAL_PARAM
         );
     }
 
@@ -45,13 +47,14 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super RotaryRecipe> manager, RegistryAccess registryAccess, RotaryRecipe recipe) {
+        ContextMap contextMap = contextMap(registryAccess);
         if (recipe.hasFluidToChemical()) {
             if (recipe.hasChemicalToFluid()) {
-                return decompose(recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getChemicalOutputDefinition(), recipe.getFluidOutputDefinition());
+                return decompose(recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getChemicalOutputDefinition(contextMap), recipe.getFluidOutputDefinition(contextMap));
             }
-            return decompose(recipe.getFluidInput(), recipe.getChemicalOutputDefinition());
+            return decompose(recipe.getFluidInput(), recipe.getChemicalOutputDefinition(contextMap));
         }//Else has chemical to fluid
-        return decompose(recipe.getChemicalInput(), recipe.getFluidOutputDefinition());
+        return decompose(recipe.getChemicalInput(), recipe.getFluidOutputDefinition(contextMap));
     }
 
     @Override

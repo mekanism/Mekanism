@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.SerializationConstants;
+import mekanism.client.ModelUtil;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
@@ -21,7 +22,6 @@ import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
-import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -86,24 +86,10 @@ public class ComponentItemModel<TYPE> implements ItemModel {
 
     private ItemModel bakeModelForComponent(ResourceKey<TYPE> key) {
         Identifier texture = key.identifier().withPrefix("item/" + componentName + "/");
-        TextureSlots textureSlots = makeTextureSlots(texture);
+        TextureSlots textureSlots = ModelUtil.makeTextureSlots(resolvedBaseModel, DEBUG_NAME, componentName, texture);
         ModelRenderProperties properties = ModelRenderProperties.fromResolvedModel(baker, resolvedBaseModel, textureSlots);
         QuadCollection quads = resolvedBaseModel.getTopGeometry().bake(textureSlots, baker, BlockModelRotation.IDENTITY, DEBUG_NAME, resolvedBaseModel.getTopAdditionalProperties());
         return new CuboidItemModelWrapper(tints, quads, properties, transformation);
-    }
-
-    /// from [ResolvedModel#findTopTextureSlots(ResolvedModel)]
-    private TextureSlots makeTextureSlots(Identifier texture) {
-        ResolvedModel current = resolvedBaseModel;
-        TextureSlots.Resolver resolver;
-        for (resolver = new TextureSlots.Resolver(); current != null; current = current.parent()) {
-            resolver.addLast(current.wrapped().textureSlots());
-        }
-        resolver.addLast(new TextureSlots.Data.Builder()
-              .addTexture(componentName, new Material(texture))
-              .build()
-        );
-        return resolver.resolve(DEBUG_NAME);
     }
 
     public record Unbaked(CuboidItemModelWrapper.Unbaked cuboidUnbaked, ResourceKey<? extends Registry<?>> componentRegistry) implements ItemModel.Unbaked {

@@ -11,6 +11,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.tile.component.config.DataType;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStackToEnergyRecipe> {
@@ -29,7 +30,8 @@ public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStac
     }
 
     private IEnergyInfoHandler getEnergyInfoHandler() {
-        int[] outputDefinition = recipe.getOutputDefinition();
+        //TODO - Emi: ContextMap
+        int[] outputDefinition = recipe.getOutputDefinition(ContextMap.EMPTY);
         if (outputDefinition.length > 1) {
             int maxEnergy = Arrays.stream(outputDefinition).max().getAsInt();
             return new IEnergyInfoHandler() {

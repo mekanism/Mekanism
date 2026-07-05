@@ -28,10 +28,10 @@ public class RotaryRecipeMapper extends TypedMekanismRecipeMapper<RotaryRecipe> 
             }
         } else {
             if (recipe.hasFluidToChemical()) {
-                handled = addConversions(mapper, recipe.getFluidInput(), recipe::getChemicalOutput, fakeGroupHelper::forFluids, TypedMekanismRecipeMapper::addConversion);
+                handled = addConversions(mapper, contextMap, recipe.getFluidInput(), recipe::getChemicalOutput, fakeGroupHelper::forFluids, TypedMekanismRecipeMapper::addConversion);
             }
             if (recipe.hasChemicalToFluid()) {
-                handled |= addConversions(mapper, recipe.getChemicalInput(), recipe::getFluidOutput, fakeGroupHelper::forChemicals, TypedMekanismRecipeMapper::addConversion);
+                handled |= addConversions(mapper, contextMap, recipe.getChemicalInput(), recipe::getFluidOutput, fakeGroupHelper::forChemicals, TypedMekanismRecipeMapper::addConversion);
             }
         }
         return handled;

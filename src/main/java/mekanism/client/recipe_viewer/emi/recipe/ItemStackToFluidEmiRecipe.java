@@ -9,6 +9,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.context.ContextMap;
 
 public class ItemStackToFluidEmiRecipe extends MekanismEmiRecipe<ItemStackToFluidRecipe> {
 
@@ -18,7 +19,8 @@ public class ItemStackToFluidEmiRecipe extends MekanismEmiRecipe<ItemStackToFlui
         super(category, id, recipe);
         this.processTime = processTime;
         addInputDefinition(recipe.getInput());
-        addFluidOutputDefinition(recipe.getOutputDefinition());
+        //TODO - Emi: ContextMap
+        addFluidOutputDefinition(recipe.getOutputDefinition(ContextMap.EMPTY));
     }
 
     @Override

@@ -30,7 +30,7 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
         ItemStackTemplate itemOutput;
         ChemicalStackTemplate chemicalOutput;
         PressurizedReactionRecipe recipe = recipeHolder.value();
-        List<PressurizedReactionRecipeOutput> outputs = recipe.getOutputDefinition();
+        List<PressurizedReactionRecipeOutput> outputs = recipe.getOutputDefinition(contextMap(registryAccess));
         if (outputs.isEmpty()) {
             //Validate it isn't empty, which shouldn't be possible
             itemOutput = null;
@@ -64,7 +64,7 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super PressurizedReactionRecipe> manager, RegistryAccess registryAccess, PressurizedReactionRecipe recipe) {
-        return decompose(recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputChemical(), recipe.getDuration(), recipe.getOutputDefinition(),
+        return decompose(recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputChemical(), recipe.getDuration(), recipe.getOutputDefinition(contextMap(registryAccess)),
               recipe.getEnergyRequired());
     }
 

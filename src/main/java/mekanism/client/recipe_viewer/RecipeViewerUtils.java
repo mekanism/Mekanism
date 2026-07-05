@@ -82,7 +82,7 @@ public class RecipeViewerUtils {
         };
     }
 
-    public static <T> T getCurrent(List<T> elements) {
+    public static <T extends @Nullable Object> T getCurrent(List<T> elements) {
         return elements.get(getIndex(elements));
     }
 
@@ -113,7 +113,7 @@ public class RecipeViewerUtils {
         if (recipeType != null) {
             for (RecipeHolder<? extends ItemStackToChemicalRecipe> recipeHolder : recipeType.getRecipes()) {
                 ItemStackToChemicalRecipe recipe = recipeHolder.value();
-                for (ChemicalStackTemplate output : recipe.getOutputDefinition()) {
+                for (ChemicalStackTemplate output : recipe.getOutputDefinition(contextMap)) {
                     if (anyMatch(supportedTypes, output.typeHolder())) {
                         stacks.addAll(recipe.getInput().getRepresentations(contextMap));
                         break;

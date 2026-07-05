@@ -16,6 +16,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.machine.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.machine.TileEntityPaintingMachine;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class PaintingEmiRecipe extends MekanismEmiHolderRecipe<ItemStackChemicalToItemStackRecipe> {
@@ -26,8 +27,10 @@ public class PaintingEmiRecipe extends MekanismEmiHolderRecipe<ItemStackChemical
         super(category, recipeHolder);
         addInputDefinition(recipe.getItemInput());
         addInputDefinition(recipe.getChemicalInput(), recipe.perTickUsage() ? TileEntityMetallurgicInfuser.BASE_TICKS_REQUIRED : 1);
-        addItemOutputDefinition(recipe.getOutputDefinition());
-        chemicalInput = getSupplier(recipe.getChemicalInput().getRepresentations(), ChemicalStack.EMPTY);
+        //TODO - Emi: ContextMap
+        ContextMap contextMap = ContextMap.EMPTY;
+        addItemOutputDefinition(recipe.getOutputDefinition(contextMap));
+        chemicalInput = getSupplier(recipe.getChemicalInput().getRepresentations(contextMap), ChemicalStack.EMPTY);
     }
 
     @Override

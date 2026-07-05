@@ -10,6 +10,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
+import net.minecraft.util.context.ContextMap;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -44,7 +45,8 @@ public class CrTChemicalDissolutionRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<ICrTChemicalStack> getOutputs(ChemicalDissolutionRecipe _this) {
-        return _this.getOutputDefinition().stream()
+        //TODO - CrT: ContextMap
+        return _this.getOutputDefinition(ContextMap.EMPTY).stream()
               .<ICrTChemicalStack>map(CrTChemicalStack::new)
               .toList();
     }

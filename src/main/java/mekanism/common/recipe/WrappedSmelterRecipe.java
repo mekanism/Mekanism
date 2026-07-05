@@ -55,11 +55,10 @@ public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
     }
 
     @Override
-    public List<ItemStackTemplate> getOutputDefinition() {
+    public List<ItemStackTemplate> getOutputDefinition(ContextMap contextMap) {
         List<ItemStackTemplate> list = new ArrayList<>();
         for (RecipeDisplay display : wrapped.display()) {
-            //TODO - 26.2 can we get a level here and use SlotDisplayContext.fromLevel()?
-            for (ItemStack stack : display.result().resolveForStacks(ContextMap.EMPTY)) {
+            for (ItemStack stack : display.result().resolveForStacks(contextMap)) {
                 if (!stack.isEmpty()) {//TODO - 26.2: Can resolved stacks ever be empty?
                     list.add(ItemStackTemplate.fromNonEmptyStack(stack));
                 }

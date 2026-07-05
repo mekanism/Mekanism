@@ -18,7 +18,7 @@ public class ItemStackChemicalToItemStackRecipeHandler extends MekanismRecipeHan
     public String dumpToCommandString(IRecipeManager<? super ItemStackChemicalToItemStackRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder) {
         ItemStackChemicalToItemStackRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.perTickUsage());
+        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(contextMap(registryAccess)), recipe.perTickUsage());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ItemStackChemicalToItemStackRecipeHandler extends MekanismRecipeHan
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ItemStackChemicalToItemStackRecipe> manager, RegistryAccess registryAccess,
           ItemStackChemicalToItemStackRecipe recipe) {
-        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.perTickUsage());
+        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(contextMap(registryAccess)), recipe.perTickUsage());
     }
 
     @Override

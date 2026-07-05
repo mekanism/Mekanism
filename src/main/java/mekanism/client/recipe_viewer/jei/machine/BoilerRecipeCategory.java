@@ -95,11 +95,11 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
         initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water()::getRepresentations);
         ChemicalStackTemplate cooledCoolant = recipe.cooledCoolant();
         if (recipe.superHeatedCoolant() == null || cooledCoolant == null) {
-            initChemical(builder, steamTank, recipe.steamRepresentations());
+            initChemical(builder, steamTank, recipe::steamRepresentations);
         } else {
             initChemical(builder, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant()::getRepresentations);
-            initChemical(builder, steamTank, recipe.steamRepresentations());
-            initChemical(builder, cooledCoolantTank, Collections.singletonList(cooledCoolant));
+            initChemical(builder, steamTank, recipe::steamRepresentations);
+            initChemical(builder, RecipeIngredientRole.OUTPUT, cooledCoolantTank, cooledCoolant, (cooled, _) -> Collections.singletonList(cooled.create()));
         }
     }
 }

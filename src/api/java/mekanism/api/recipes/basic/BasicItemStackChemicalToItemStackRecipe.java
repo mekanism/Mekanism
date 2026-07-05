@@ -8,6 +8,7 @@ import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -63,7 +64,7 @@ public abstract class BasicItemStackChemicalToItemStackRecipe extends ItemStackC
     }
 
     @Override
-    public List<ItemStackTemplate> getOutputDefinition() {
+    public List<ItemStackTemplate> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
     }
 

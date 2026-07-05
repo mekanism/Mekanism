@@ -51,7 +51,7 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSRecipeViewerRecipe>
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, SPSRecipeViewerRecipe recipe, IFocusGroup focusGroup) {
         initChemical(builder, RecipeIngredientRole.INPUT, input, recipe.input()::getRepresentations);
-        initChemical(builder, output, Collections.singletonList(recipe.output()));
+        initChemical(builder, RecipeIngredientRole.OUTPUT, output, recipe, (r, _) -> Collections.singletonList(r.output().create()));
     }
 
     @Nullable

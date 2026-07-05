@@ -4,6 +4,7 @@ import java.util.Objects;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jspecify.annotations.Nullable;
@@ -48,7 +49,7 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
     }
 
     @Override
-    public int[] getOutputDefinition() {
+    public int[] getOutputDefinition(ContextMap contextMap) {
         return new int[]{output};
     }
 

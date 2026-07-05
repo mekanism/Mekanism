@@ -10,6 +10,7 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.MekanismRecipeType;
+import net.minecraft.util.context.ContextMap;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -65,6 +66,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<SingleFluid
 
     @Override
     protected String describeOutputs(ElectrolysisRecipe recipe) {
-        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), output -> new CrTChemicalStack(output.left()) + " and " + new CrTChemicalStack(output.right()));
+        //TODO - CrT: ContextMap
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(ContextMap.EMPTY), output -> new CrTChemicalStack(output.left()) + " and " + new CrTChemicalStack(output.right()));
     }
 }

@@ -13,6 +13,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -62,7 +63,8 @@ public class CrTPressurizedReactionRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<CrTPressurizedReactionRecipeOutput> getOutputs(PressurizedReactionRecipe _this) {
-        return CrTUtils.convert(_this.getOutputDefinition(), output -> new CrTPressurizedReactionRecipeOutput(
+        //TODO - CrT: ContextMap
+        return CrTUtils.convert(_this.getOutputDefinition(ContextMap.EMPTY), output -> new CrTPressurizedReactionRecipeOutput(
               IItemStack.of(output.item() == null ? ItemStack.EMPTY : output.item().create()),
               new CrTChemicalStack(output.chemical() == null ? ChemicalStack.EMPTY : output.chemical().create())
         ));

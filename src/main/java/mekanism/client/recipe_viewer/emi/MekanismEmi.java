@@ -181,7 +181,7 @@ public class MekanismEmi implements EmiPlugin {
 
         registerItemSubtypes(registry, MekanismItems.ITEMS.getEntries());
         registerItemSubtypes(registry, MekanismBlocks.BLOCKS.getSecondaryEntries());
-        //TODO - 26.2: Do we need to manually specify the different upgrade types?
+        //TODO - Emi: Do we need to manually specify the different upgrade types?
     }
 
     public static void registerItemSubtypes(EmiRegistry registry, Collection<? extends Holder<Item>> items) {
@@ -210,7 +210,7 @@ public class MekanismEmi implements EmiPlugin {
         //Register both methods of rotary condensentrator recipes
         MekanismEmiRecipeCategory condensentratingCategory = addCategory(registry, RecipeViewerRecipeType.CONDENSENTRATING);
         MekanismEmiRecipeCategory decondensentratingCategory = addCategory(registry, RecipeViewerRecipeType.DECONDENSENTRATING);
-        //TODO - 26.2: review recipe access when updating emi
+        //TODO - Emi: review recipe access when updating emi
         for (RecipeHolder<RotaryRecipe> recipeHolder : MekanismRecipeType.ROTARY.getRecipes(MekanismClient.clientRecipes())) {
             RotaryRecipe recipe = recipeHolder.value();
             if (recipe.hasChemicalToFluid()) {
@@ -271,7 +271,7 @@ public class MekanismEmi implements EmiPlugin {
     public static <RECIPE extends MekanismRecipe<?>, TYPE extends IRecipeViewerRecipeType<RECIPE> & IMekanismRecipeTypeProvider<?, RECIPE, ?>> void addCategoryAndRecipes(
           EmiRegistry registry, TYPE recipeType, BiFunction<MekanismEmiRecipeCategory, RecipeHolder<RECIPE>, MekanismEmiRecipe<RECIPE>> recipeCreator) {
         MekanismEmiRecipeCategory category = addCategory(registry, recipeType);
-        //TODO - 26.2: review recipe access when updating emi
+        //TODO - Emi: review recipe access when updating emi
         for (RecipeHolder<RECIPE> recipe : recipeType.getRecipes(MekanismClient.clientRecipes())) {
             registry.addRecipe(recipeCreator.apply(category, recipe));
         }

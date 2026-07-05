@@ -6,6 +6,7 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -50,7 +51,7 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe<SingleRecip
     /// For JEI, gets the output representations to display.
     ///
     /// @return Representation of the output, **MUST NOT** be modified.
-    public abstract int[] getOutputDefinition();
+    public abstract int[] getOutputDefinition(ContextMap contextMap);
 
     @Override
     public boolean isIncomplete() {

@@ -109,6 +109,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
         if (typedRecipe.isIncomplete()) {
             return false;
         }
+        //TODO - ProjectE: Pass a ContextMap to handleRecipe?
         ContextMap contextMap = new ContextMap.Builder().withParameter(SlotDisplayContext.REGISTRIES, registryAccess).create(SlotDisplayContext.CONTEXT);
         return handleRecipe(mapper, typedRecipe, new MekFakeGroupHelper(fakeGroupManager), contextMap);
     }
@@ -137,20 +138,22 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
         return false;
     }
 
-    protected static <HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDERTYPE, STACK> inputs,
+    protected static <HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper,
+          ContextMap contextMap, InputIngredient<HOLDERTYPE, STACK> inputs,
           Function<STACK, OUTPUT> recipe, Function<SequencedCollection<STACK>, Object2IntMap<NormalizedSimpleStack>> toIngredient,
           TriPredicate<IMappingCollector<NormalizedSimpleStack, Long>, OUTPUT, Object2IntMap<NormalizedSimpleStack>> conversionAdder) {
-        return addConversions(mapper, inputs, recipe, ConstantPredicates.alwaysFalse(), toIngredient, conversionAdder);
+        return addConversions(mapper, contextMap, inputs, recipe, ConstantPredicates.alwaysFalse(), toIngredient, conversionAdder);
     }
 
-    protected static <HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDERTYPE, STACK> inputs,
-          Function<STACK, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker, Function<SequencedCollection<STACK>, Object2IntMap<NormalizedSimpleStack>> toIngredient,
+    protected static <HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper,
+          ContextMap contextMap, InputIngredient<HOLDERTYPE, STACK> inputs, Function<STACK, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker,
+          Function<SequencedCollection<STACK>, Object2IntMap<NormalizedSimpleStack>> toIngredient,
           TriPredicate<IMappingCollector<NormalizedSimpleStack, Long>, OUTPUT, Object2IntMap<NormalizedSimpleStack>> conversionAdder) {
         Map<OUTPUT, List<STACK>> reverseLookup = new HashMap<>();
-        for (STACK representation : inputs.getRepresentations(ContextMap.EMPTY)) {
+        for (STACK representation : inputs.getRepresentations(contextMap)) {
             OUTPUT output = recipe.apply(representation);
             if (!emptyChecker.test(output)) {
-                reverseLookup.computeIfAbsent(output, k -> new ArrayList<>()).add(representation);
+                reverseLookup.computeIfAbsent(output, _ -> new ArrayList<>()).add(representation);
             }
         }
         boolean handled = false;

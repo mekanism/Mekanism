@@ -10,6 +10,7 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class ItemStackToItemStackEmiRecipe extends MekanismEmiHolderRecipe<ItemStackToItemStackRecipe> {
@@ -20,7 +21,8 @@ public class ItemStackToItemStackEmiRecipe extends MekanismEmiHolderRecipe<ItemS
         super(category, recipeHolder);
         this.hideCraftable = recipeHolder.id().getPath().startsWith("/mekanism_generated/");
         addInputDefinition(recipe.getInput());
-        addItemOutputDefinition(recipe.getOutputDefinition());
+        //TODO - Emi: ContextMap
+        addItemOutputDefinition(recipe.getOutputDefinition(ContextMap.EMPTY));
     }
 
     @Override

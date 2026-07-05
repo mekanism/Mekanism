@@ -10,6 +10,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class FluidChemicalToChemicalEmiRecipe extends MekanismEmiHolderRecipe<FluidChemicalToChemicalRecipe> {
@@ -18,7 +19,8 @@ public class FluidChemicalToChemicalEmiRecipe extends MekanismEmiHolderRecipe<Fl
         super(category, recipeHolder);
         addInputDefinition(recipe.getFluidInput());
         addInputDefinition(recipe.getChemicalInput());
-        addChemicalOutputDefinition(recipe.getOutputDefinition());
+        //TODO - Emi: ContextMap
+        addChemicalOutputDefinition(recipe.getOutputDefinition(ContextMap.EMPTY));
     }
 
     @Override

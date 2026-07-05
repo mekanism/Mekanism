@@ -59,7 +59,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
     @Range(from = 0, to = Long.MAX_VALUE)
     public long recalculateEMC(ItemInfo info, @Range(from = 1, to = Long.MAX_VALUE) long currentEMC) throws ArithmeticException {
         IEMCProxy emcProxy = IEMCProxy.INSTANCE;
-        //TODO: ItemInfo will probably just become an ItemResource natively, but for now we just build a resource from it
+        //TODO - ProjectE: ItemInfo will probably just become an ItemResource natively, but for now we just build a resource from it
         ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(ItemResource.of(info.getItem(), info.getComponentsPatch()));
         ItemResource resource = itemAccess.getResource();
         //Stored items
@@ -106,7 +106,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
     }
 
     @Override
-    public void updateCachedValues(@Nullable ToLongFunction<ItemInfo> emcLookup) {//TODO: Expose a registry lookup to updateCachedValues when I get around to porting ProjectE
+    public void updateCachedValues(@Nullable ToLongFunction<ItemInfo> emcLookup) {//TODO - ProjectE: Expose a registry lookup to updateCachedValues when I get around to porting ProjectE
         if (emcLookup == null) {
             upgradeEmc = Object2LongMaps.emptyMap();
             moduleDataEmc = Reference2LongMaps.emptyMap();

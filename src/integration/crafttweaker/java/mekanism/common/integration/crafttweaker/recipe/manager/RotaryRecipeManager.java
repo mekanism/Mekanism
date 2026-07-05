@@ -11,6 +11,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.MekanismRecipeType;
+import net.minecraft.util.context.ContextMap;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -95,15 +96,16 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipeInput
     @Override
     protected String describeOutputs(RotaryRecipe recipe) {
         StringBuilder builder = new StringBuilder();
+        ContextMap contextMap = ContextMap.EMPTY;//TODO - CrT: ContextMap
         if (recipe.hasFluidToChemical()) {
-            builder.append(CrTUtils.describeOutputs(recipe.getChemicalOutputDefinition()))
+            builder.append(CrTUtils.describeOutputs(recipe.getChemicalOutputDefinition(contextMap)))
                   .append(" for fluid to chemical");
         }
         if (recipe.hasChemicalToFluid()) {
             if (recipe.hasFluidToChemical()) {
                 builder.append(" and ");
             }
-            builder.append(CrTUtils.describeOutputs(recipe.getFluidOutputDefinition(), IFluidStack::of))
+            builder.append(CrTUtils.describeOutputs(recipe.getFluidOutputDefinition(contextMap), IFluidStack::of))
                   .append(" for chemical to fluid");
         }
         return builder.toString();

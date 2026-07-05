@@ -51,7 +51,7 @@ public class ItemStackChemicalToItemStackRecipeCategory extends HolderRecipeCate
             }
             return scaledChemicals;
         });
-        initItem(builder, output, recipe.getOutputDefinition());
+        initItem(builder, output, recipe::getOutputDefinition);
         initItem(builder, RecipeIngredientRole.CRAFTING_STATION, extra, recipe.getChemicalInput(), (chemicalInput, context) -> RecipeViewerUtils.getStacksFor(chemicalInput, context, true));
     }
 }

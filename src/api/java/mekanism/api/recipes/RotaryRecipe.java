@@ -10,6 +10,7 @@ import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -74,14 +75,14 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
     /// @return Representation of the chemical output, **MUST NOT** be modified.
     ///
     /// @throws IllegalStateException if [#hasFluidToChemical()] is `false`.
-    public abstract List<ChemicalStackTemplate> getChemicalOutputDefinition();
+    public abstract List<ChemicalStackTemplate> getChemicalOutputDefinition(ContextMap contextMap);
 
     /// For JEI, gets the fluid output representations to display.
     ///
     /// @return Representation of the output, **MUST NOT** be modified.
     ///
     /// @throws IllegalStateException if [#hasChemicalToFluid()] is `false`.
-    public abstract List<FluidStackTemplate> getFluidOutputDefinition();
+    public abstract List<FluidStackTemplate> getFluidOutputDefinition(ContextMap contextMap);
 
     /// Gets a new chemical output based on the given input.
     ///

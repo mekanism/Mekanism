@@ -10,6 +10,7 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.machine.TileEntityMetallurgicInfuser;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class MetallurgicInfuserEmiRecipe extends MekanismEmiHolderRecipe<ItemStackChemicalToItemStackRecipe> {
@@ -18,7 +19,8 @@ public class MetallurgicInfuserEmiRecipe extends MekanismEmiHolderRecipe<ItemSta
         super(category, recipeHolder);
         addInputDefinition(recipe.getItemInput());
         addInputDefinition(recipe.getChemicalInput(), recipe.perTickUsage() ? TileEntityMetallurgicInfuser.BASE_TICKS_REQUIRED : 1);
-        addItemOutputDefinition(recipe.getOutputDefinition());
+        //TODO - Emi: ContextMap
+        addItemOutputDefinition(recipe.getOutputDefinition(ContextMap.EMPTY));
         addCatalsyst(recipe.getChemicalInput());
     }
 

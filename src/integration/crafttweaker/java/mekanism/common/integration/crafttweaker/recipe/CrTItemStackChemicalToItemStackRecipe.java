@@ -10,6 +10,7 @@ import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
+import net.minecraft.util.context.ContextMap;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -44,7 +45,7 @@ public class CrTItemStackChemicalToItemStackRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<IItemStack> getOutputs(ItemStackChemicalToItemStackRecipe _this) {
-        return CrTUtils.convertItems(_this.getOutputDefinition());
+        return CrTUtils.convertItems(_this.getOutputDefinition(ContextMap.EMPTY));//TODO - CrT: ContextMap
     }
 
     @ZenRegister

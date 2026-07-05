@@ -11,6 +11,7 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.MekanismRecipeType;
+import net.minecraft.util.context.ContextMap;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -48,6 +49,7 @@ public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<Sing
 
     @Override
     protected String describeOutputs(ChemicalDissolutionRecipe recipe) {
-        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), stack -> new CrTChemicalStack(stack.create()).toString());
+        //TODO - CrT: ContextMap
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(ContextMap.EMPTY), stack -> new CrTChemicalStack(stack.create()).toString());
     }
 }

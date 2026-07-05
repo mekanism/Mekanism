@@ -38,6 +38,6 @@ public class CombinerRecipeCategory extends HolderRecipeCategory<CombinerRecipe>
         CombinerRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getMainInput()::getRepresentations);
         initItem(builder, RecipeIngredientRole.INPUT, extra, recipe.getExtraInput()::getRepresentations);
-        initItem(builder, output, recipe.getOutputDefinition());
+        initItem(builder, output, recipe::getOutputDefinition);
     }
 }

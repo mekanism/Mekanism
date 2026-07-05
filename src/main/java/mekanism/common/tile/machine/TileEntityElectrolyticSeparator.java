@@ -73,6 +73,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
@@ -222,12 +224,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         energyContainer.updateMaxEnergy(upgrades);
     }
 
-    private static boolean isHydrogenElectrolysis(ElectrolysisRecipe recipe) {
+    private boolean isHydrogenElectrolysis(ElectrolysisRecipe recipe) {
         if (recipe instanceof BasicElectrolysisRecipe basicRecipe) {
             return basicRecipe.getLeftChemicalOutput().is(ChemicalIds.HYDROGEN) || basicRecipe.getRightChemicalOutput().is(ChemicalIds.HYDROGEN);
         }
         //do it the slow way
-        for (ElectrolysisRecipeOutput electrolysisRecipeOutput : recipe.getOutputDefinition()) {
+        ContextMap contextMap = level == null ? ContextMap.EMPTY : SlotDisplayContext.fromLevel(level);
+        for (ElectrolysisRecipeOutput electrolysisRecipeOutput : recipe.getOutputDefinition(contextMap)) {
             if (electrolysisRecipeOutput.left().is(ChemicalIds.HYDROGEN) || electrolysisRecipeOutput.right().is(ChemicalIds.HYDROGEN)) {
                 return true;
             }

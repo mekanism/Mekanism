@@ -20,7 +20,7 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
     public String dumpToCommandString(IRecipeManager<? super ChemicalDissolutionRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<ChemicalDissolutionRecipe> recipeHolder) {
         ChemicalDissolutionRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.perTickUsage());
+        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(contextMap(registryAccess)), recipe.perTickUsage());
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ChemicalDissolutionRecipe> manager, RegistryAccess registryAccess,
           ChemicalDissolutionRecipe recipe) {
-        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.perTickUsage());
+        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(contextMap(registryAccess)), recipe.perTickUsage());
     }
 
     @Override

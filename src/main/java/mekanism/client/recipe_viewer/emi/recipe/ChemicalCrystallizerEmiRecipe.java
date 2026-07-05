@@ -17,6 +17,7 @@ import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -27,15 +28,17 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
 
     public ChemicalCrystallizerEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder) {
         super(category, recipeHolder);
-        addItemOutputDefinition(recipe.getOutputDefinition());
+        //TODO - Emi: ContextMap
+        ContextMap contextMap = ContextMap.EMPTY;
+        addItemOutputDefinition(recipe.getOutputDefinition(contextMap));
         ChemicalStackIngredient input = recipe.getInput();
         addInputDefinition(input);
-        List<ChemicalStack> inputRepresentations = input.getRepresentations();
+        List<ChemicalStack> inputRepresentations = input.getRepresentations(contextMap);
         displayItems = RecipeViewerUtils.getDisplayItems(input, contextMap);
         oreInfo = new IOreInfo() {
             @Override
             public ChemicalResource getInputChemical() {
-                return inputRepresentations.isEmpty() ? ChemicalStack.EMPTY : RecipeViewerUtils.getCurrent(inputRepresentations);
+                return inputRepresentations.isEmpty() ? ChemicalResource.EMPTY : ChemicalResource.of(RecipeViewerUtils.getCurrent(inputRepresentations));
             }
 
             @Override

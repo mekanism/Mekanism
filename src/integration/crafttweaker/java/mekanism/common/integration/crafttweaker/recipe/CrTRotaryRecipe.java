@@ -10,6 +10,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
+import net.minecraft.util.context.ContextMap;
 import org.jspecify.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -27,7 +28,8 @@ public class CrTRotaryRecipe {
     @ZenCodeType.Getter("chemicalToFluid")
     public static ChemicalToFluid getChemicalToFluid(RotaryRecipe _this) {
         if (_this.hasChemicalToFluid()) {
-            return new ChemicalToFluid(_this.getChemicalInput(), CrTUtils.convertFluids(_this.getFluidOutputDefinition()));
+            //TODO - CrT: ContextMap
+            return new ChemicalToFluid(_this.getChemicalInput(), CrTUtils.convertFluids(_this.getFluidOutputDefinition(ContextMap.EMPTY)));
         }
         return null;
     }
@@ -39,7 +41,8 @@ public class CrTRotaryRecipe {
     @ZenCodeType.Getter("fluidToChemical")
     public static FluidToChemical getFluidToChemical(RotaryRecipe _this) {
         if (_this.hasFluidToChemical()) {
-            return new FluidToChemical(CrTUtils.toCrT(_this.getFluidInput()), CrTUtils.convertChemical(_this.getChemicalOutputDefinition()));
+            //TODO - CrT: ContextMap
+            return new FluidToChemical(CrTUtils.toCrT(_this.getFluidInput()), CrTUtils.convertChemical(_this.getChemicalOutputDefinition(ContextMap.EMPTY)));
         }
         return null;
     }

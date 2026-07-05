@@ -20,7 +20,7 @@ public class CombinerRecipeHandler extends MekanismRecipeHandler<CombinerRecipe>
     @Override
     public String dumpToCommandString(IRecipeManager<? super CombinerRecipe> manager, RegistryAccess registryAccess, RecipeHolder<CombinerRecipe> recipeHolder) {
         CombinerRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getMainInput(), recipe.getExtraInput(), recipe.getOutputDefinition());
+        return buildCommandString(manager, recipeHolder, recipe.getMainInput(), recipe.getExtraInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class CombinerRecipeHandler extends MekanismRecipeHandler<CombinerRecipe>
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super CombinerRecipe> manager, RegistryAccess registryAccess, CombinerRecipe recipe) {
-        return decompose(recipe.getMainInput(), recipe.getExtraInput(), recipe.getOutputDefinition());
+        return decompose(recipe.getMainInput(), recipe.getExtraInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override

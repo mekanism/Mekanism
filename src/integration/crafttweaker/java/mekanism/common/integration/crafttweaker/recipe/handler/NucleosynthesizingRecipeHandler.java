@@ -19,7 +19,7 @@ public class NucleosynthesizingRecipeHandler extends MekanismRecipeHandler<Nucle
     public String dumpToCommandString(IRecipeManager<? super NucleosynthesizingRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<NucleosynthesizingRecipe> recipeHolder) {
         NucleosynthesizingRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.getDuration(), recipe.perTickUsage());
+        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(contextMap(registryAccess)), recipe.getDuration(), recipe.perTickUsage());
     }
 
     @Override
@@ -34,7 +34,7 @@ public class NucleosynthesizingRecipeHandler extends MekanismRecipeHandler<Nucle
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super NucleosynthesizingRecipe> manager, RegistryAccess registryAccess, NucleosynthesizingRecipe recipe) {
-        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.getDuration(), recipe.perTickUsage());
+        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(contextMap(registryAccess)), recipe.getDuration(), recipe.perTickUsage());
     }
 
     @Override

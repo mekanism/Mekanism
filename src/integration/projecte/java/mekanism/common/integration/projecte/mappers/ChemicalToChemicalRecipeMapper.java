@@ -22,6 +22,6 @@ public class ChemicalToChemicalRecipeMapper extends TypedMekanismRecipeMapper<Ch
             //This will be the case for the majority of our recipes
             return addConversion(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }
-        return addConversions(mapper, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forChemicals, TypedMekanismRecipeMapper::addConversion);
+        return addConversions(mapper, contextMap, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forChemicals, TypedMekanismRecipeMapper::addConversion);
     }
 }

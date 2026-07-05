@@ -16,6 +16,7 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class ElectrolysisEmiRecipe extends MekanismEmiHolderRecipe<ElectrolysisRecipe> {
@@ -25,7 +26,8 @@ public class ElectrolysisEmiRecipe extends MekanismEmiHolderRecipe<ElectrolysisR
         addInputDefinition(recipe.getInput());
         List<ChemicalStack> leftDefinition = new ArrayList<>();
         List<ChemicalStack> rightDefinition = new ArrayList<>();
-        for (ElectrolysisRecipeOutput output : recipe.getOutputDefinition()) {
+        //TODO - Emi: ContextMap
+        for (ElectrolysisRecipeOutput output : recipe.getOutputDefinition(ContextMap.EMPTY)) {
             leftDefinition.add(output.left());
             rightDefinition.add(output.right());
         }

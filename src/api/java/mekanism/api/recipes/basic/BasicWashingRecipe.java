@@ -15,6 +15,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -62,7 +63,7 @@ public class BasicWashingRecipe extends FluidChemicalToChemicalRecipe {
     }
 
     @Override
-    public List<ChemicalStackTemplate> getOutputDefinition() {
+    public List<ChemicalStackTemplate> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
     }
 

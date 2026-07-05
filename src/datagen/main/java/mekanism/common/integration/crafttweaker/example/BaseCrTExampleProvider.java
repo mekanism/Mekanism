@@ -254,6 +254,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
                   if (ingredient.ingredient() instanceof SimpleChemicalIngredient simple && simple.chemicalSet() instanceof HolderSet.Named<Chemical> named) {
                       return CrTUtils.chemicalTags().tag(named.key()).withAmount(ingredient.amount()).getCommandString();
                   }
+                  //TODO - CrT: ContextMap
                   List<ChemicalStack> chemicals = ingredient.getRepresentations(ContextMap.EMPTY);
                   if (chemicals.size() == 1) {
                       return new CrTChemicalStack(chemicals.getFirst()).getCommandString();
@@ -268,6 +269,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             String tagRepresentation = tagManager.tag(named.key()).getCommandString();
             return ingredientType + ".from(" + tagRepresentation + ", " + ingredient.amount() + ")";
         }
+        //TODO - CrT: ContextMap
         List<ChemicalStack> chemicals = ingredient.getRepresentations(ContextMap.EMPTY);
         if (chemicals.size() == 1) {
             String stackRepresentation = singleDescription.apply(chemicals.getFirst()).getCommandString();

@@ -18,7 +18,7 @@ public class ItemStackToEnergyRecipeHandler extends MekanismRecipeHandler<ItemSt
     public String dumpToCommandString(IRecipeManager<? super ItemStackToEnergyRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<ItemStackToEnergyRecipe> recipeHolder) {
         ItemStackToEnergyRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition());
+        return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override
@@ -30,7 +30,7 @@ public class ItemStackToEnergyRecipeHandler extends MekanismRecipeHandler<ItemSt
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ItemStackToEnergyRecipe> manager, RegistryAccess registryAccess, ItemStackToEnergyRecipe recipe) {
-        return decompose(recipe.getInput(), recipe.getOutputDefinition());
+        return decompose(recipe.getInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override

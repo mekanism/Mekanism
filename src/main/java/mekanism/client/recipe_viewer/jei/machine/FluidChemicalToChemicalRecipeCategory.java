@@ -38,6 +38,6 @@ public class FluidChemicalToChemicalRecipeCategory extends HolderRecipeCategory<
         FluidChemicalToChemicalRecipe recipe = recipeHolder.value();
         initFluid(builder, RecipeIngredientRole.INPUT, fluidInput, recipe.getFluidInput()::getRepresentations);
         initChemical(builder, RecipeIngredientRole.INPUT, chemicalInput, recipe.getChemicalInput()::getRepresentations);
-        initChemical(builder, output, recipe.getOutputDefinition());
+        initChemical(builder, output, recipe::getOutputDefinition);
     }
 }

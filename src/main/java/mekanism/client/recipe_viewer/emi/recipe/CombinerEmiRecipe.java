@@ -10,6 +10,7 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.machine.TileEntityCombiner;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class CombinerEmiRecipe extends MekanismEmiHolderRecipe<CombinerRecipe> {
@@ -18,7 +19,8 @@ public class CombinerEmiRecipe extends MekanismEmiHolderRecipe<CombinerRecipe> {
         super(category, recipeHolder);
         addInputDefinition(recipe.getMainInput());
         addInputDefinition(recipe.getExtraInput());
-        addItemOutputDefinition(recipe.getOutputDefinition());
+        //TODO - Emi: ContextMap
+        addItemOutputDefinition(recipe.getOutputDefinition(ContextMap.EMPTY));
     }
 
     @Override

@@ -9,6 +9,7 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.tile.component.config.DataType;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class ItemStackToChemicalEmiRecipe<RECIPE extends ItemStackToChemicalRecipe> extends MekanismEmiHolderRecipe<RECIPE> {
@@ -19,7 +20,8 @@ public class ItemStackToChemicalEmiRecipe<RECIPE extends ItemStackToChemicalReci
         super(category, recipeHolder);
         this.processTime = processTime;
         addInputDefinition(recipe.getInput());
-        addChemicalOutputDefinition(recipe.getOutputDefinition());
+        //TODO - Emi: ContextMap
+        addChemicalOutputDefinition(recipe.getOutputDefinition(ContextMap.EMPTY));
     }
 
     @Override

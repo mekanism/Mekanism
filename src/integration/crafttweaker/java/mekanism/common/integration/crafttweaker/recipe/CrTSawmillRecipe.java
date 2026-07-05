@@ -8,6 +8,7 @@ import java.util.List;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
+import net.minecraft.util.context.ContextMap;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -28,7 +29,7 @@ public class CrTSawmillRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("mainOutputs")
     public static List<IItemStack> getMainOutputs(SawmillRecipe _this) {
-        return CrTUtils.convertItems(_this.getMainOutputDefinition());
+        return CrTUtils.convertItems(_this.getMainOutputDefinition(ContextMap.EMPTY));//TODO - CrT: ContextMap
     }
 
     /// Secondary output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
@@ -36,7 +37,7 @@ public class CrTSawmillRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("secondaryOutputs")
     public static List<IItemStack> getSecondaryOutputs(SawmillRecipe _this) {
-        return CrTUtils.convertItems(_this.getSecondaryOutputDefinition());
+        return CrTUtils.convertItems(_this.getSecondaryOutputDefinition(ContextMap.EMPTY));//TODO - CrT: ContextMap
     }
 
     /// Gets the chance (between 0 and 1) of the secondary output being produced.

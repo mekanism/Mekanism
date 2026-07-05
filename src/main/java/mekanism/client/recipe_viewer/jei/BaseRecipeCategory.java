@@ -291,8 +291,8 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         return initItem(builder, role, slot.getX(), slot.getY(), stacks);
     }
 
-    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, GuiSlot slot, List<ItemStackTemplate> stacks) {
-        return initItem(builder, slot.getX(), slot.getY(), stacks);
+    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, GuiSlot slot, Function<ContextMap, List<ItemStackTemplate>> templates) {
+        return initItem(builder, slot.getX(), slot.getY(), templates);
     }
 
     protected <DATA> IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, RecipeIngredientRole role, int x, int y, DATA data, BiFunction<DATA, ContextMap, List<ItemStack>> stacks) {
@@ -305,12 +305,14 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         return slotBuilder.addItemStacks(stacks.apply(slotBuilder.getContextMap()));
     }
 
-    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, int x, int y, List<ItemStackTemplate> templates) {
-        return initItem(builder, RecipeIngredientRole.OUTPUT, x, y, templates, (stacks, _) -> stacks.stream().map(ItemStackTemplate::create).toList());
+    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, int x, int y, Function<ContextMap, List<ItemStackTemplate>> templates) {
+        return initItem(builder, RecipeIngredientRole.OUTPUT, x, y, templates, (templateGenerator, contextMap) ->
+              templateGenerator.apply(contextMap).stream().map(ItemStackTemplate::create).toList());
     }
 
-    protected IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, GuiGauge<?> gauge, List<FluidStackTemplate> templates) {
-        return initFluid(builder, RecipeIngredientRole.OUTPUT, gauge, templates, (stacks, _) -> stacks.stream().map(FluidStackTemplate::create).toList());
+    protected IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, GuiGauge<?> gauge, Function<ContextMap, List<FluidStackTemplate>> templates) {
+        return initFluid(builder, RecipeIngredientRole.OUTPUT, gauge, templates, (templateGenerator, contextMap) ->
+              templateGenerator.apply(contextMap).stream().map(FluidStackTemplate::create).toList());
     }
 
     protected <DATA> IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiGauge<?> gauge, DATA data,
@@ -324,8 +326,9 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         return tankBuilder.slotBuilder().setFluidRenderer(tankBuilder.max(), false, tankBuilder.width(), tankBuilder.height());
     }
 
-    protected IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, GuiElement element, List<ChemicalStackTemplate> templates) {
-        return initChemical(builder, RecipeIngredientRole.OUTPUT, element, templates, (stacks, _) -> stacks.stream().map(ChemicalStackTemplate::create).toList());
+    protected IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, GuiElement element, Function<ContextMap, List<ChemicalStackTemplate>> templates) {
+        return initChemical(builder, RecipeIngredientRole.OUTPUT, element, templates, (templateGenerator, contextMap) ->
+              templateGenerator.apply(contextMap).stream().map(ChemicalStackTemplate::create).toList());
     }
 
     protected IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiElement element, Function<ContextMap, List<ChemicalStack>> stackFunction) {

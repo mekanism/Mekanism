@@ -8,6 +8,7 @@ import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
@@ -33,7 +34,7 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
     }
 
     @Override
-    public List<ItemStackTemplate> getOutputDefinition() {
+    public List<ItemStackTemplate> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
     }
 

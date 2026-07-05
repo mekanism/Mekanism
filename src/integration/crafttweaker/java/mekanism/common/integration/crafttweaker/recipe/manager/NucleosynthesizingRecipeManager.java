@@ -11,6 +11,7 @@ import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
+import net.minecraft.util.context.ContextMap;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -54,6 +55,7 @@ public class NucleosynthesizingRecipeManager extends MekanismRecipeManager<Singl
 
     @Override
     protected String describeOutputs(NucleosynthesizingRecipe recipe) {
-        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), template -> ItemStackUtil.getCommandString(template.create()));
+        //TODO - CrT: ContextMap
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(ContextMap.EMPTY), template -> ItemStackUtil.getCommandString(template.create()));
     }
 }

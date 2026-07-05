@@ -8,6 +8,7 @@ import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Contract;
@@ -40,7 +41,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     }
 
     @Override
-    public List<ElectrolysisRecipeOutput> getOutputDefinition() {
+    public List<ElectrolysisRecipeOutput> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(new ElectrolysisRecipeOutput(leftChemicalOutput, rightChemicalOutput));
     }
 

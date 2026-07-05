@@ -10,6 +10,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
+import net.minecraft.util.context.ContextMap;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -45,7 +46,8 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Si
 
     @Override
     protected String describeOutputs(FluidToFluidRecipe recipe) {
-        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), IFluidStack::of);
+        //TODO - CrT: ContextMap
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(ContextMap.EMPTY), IFluidStack::of);
     }
 
     @ZenRegister

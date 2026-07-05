@@ -6,6 +6,7 @@ import java.util.Objects;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
@@ -42,7 +43,7 @@ public abstract class BasicItemStackToFluidOptionalItemRecipe extends ItemStackT
     }
 
     @Override
-    public List<FluidOptionalItemOutput> getOutputDefinition() {
+    public List<FluidOptionalItemOutput> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
     }
 

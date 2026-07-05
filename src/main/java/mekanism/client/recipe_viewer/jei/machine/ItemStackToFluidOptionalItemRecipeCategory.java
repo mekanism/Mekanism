@@ -35,7 +35,7 @@ import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
-import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
 public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCategory<BasicItemStackToFluidOptionalItemRecipe> {
@@ -63,19 +63,21 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, BasicItemStackToFluidOptionalItemRecipe recipe, IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput()::getRepresentations);
-        List<FluidOptionalItemOutput> outputDefinition = recipe.getOutputDefinition();
-        List<FluidStackTemplate> fluidOutputs = new ArrayList<>(outputDefinition.size());
         List<ItemStackTemplate> itemOutputs = new ArrayList<>();
-        for (FluidOptionalItemOutput output : outputDefinition) {
-            fluidOutputs.add(output.fluid());
-            ItemStackTemplate optionalItem = output.optionalItem();
-            if (optionalItem != null) {
-                itemOutputs.add(optionalItem);
+        initFluid(builder, RecipeIngredientRole.OUTPUT, outputTank, recipe, (r, context) -> {
+            List<FluidOptionalItemOutput> outputDefinition = r.getOutputDefinition(context);
+            List<FluidStack> fluidOutputs = new ArrayList<>(outputDefinition.size());
+            for (FluidOptionalItemOutput output : outputDefinition) {
+                fluidOutputs.add(output.fluid().create());
+                ItemStackTemplate optionalItem = output.optionalItem();
+                if (optionalItem != null) {
+                    itemOutputs.add(optionalItem);
+                }
             }
-        }
-        initFluid(builder, outputTank, fluidOutputs);
+            return fluidOutputs;
+        });
         if (!itemOutputs.isEmpty()) {
-            initItem(builder, outputItem, itemOutputs)
+            initItem(builder, outputItem, _ -> itemOutputs)
                   .setSlotName(OUTPUT_ITEM);
         }
     }

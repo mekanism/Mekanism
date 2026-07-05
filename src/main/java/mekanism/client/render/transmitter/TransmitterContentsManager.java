@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import mekanism.client.ModelUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
@@ -17,15 +18,12 @@ import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
-import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.context.ContextKeySet;
 import net.minecraft.util.context.ContextMap;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.model.NeoForgeModelProperties;
 import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import org.jspecify.annotations.Nullable;
@@ -80,10 +78,7 @@ public class TransmitterContentsManager {
                     connections.put(sideName + value.name(), value == connectionType);
                 }
             }
-            cached = bake(texture, new ContextMap.Builder()
-                  .withParameter(NeoForgeModelProperties.PART_VISIBILITY, connections)
-                  .create(ContextKeySet.EMPTY)
-            );
+            cached = bake(texture, ModelUtil.transmitterVisibility(resolved, connections));
             bakedCache.put(texture, key, cached);
         }
         return cached;
@@ -91,7 +86,8 @@ public class TransmitterContentsManager {
 
     private List<BlockStateModelPart> bake(Identifier texture, ContextMap sideContext) {
         try {
-            QuadCollection quadCollection = resolved.getTopGeometry().bake(makeTextureSlots(texture), modelBaker, BlockModelRotation.IDENTITY, resolved, sideContext);
+            TextureSlots textureSlots = ModelUtil.makeTextureSlots(resolved, "contents", texture);
+            QuadCollection quadCollection = resolved.getTopGeometry().bake(textureSlots, modelBaker, BlockModelRotation.IDENTITY, resolved, sideContext);
             //we don't intend to use the particle, so no point resolving it
             BlockStateModelPart bakedModel = new SimpleModelWrapper(quadCollection, resolved.getTopAmbientOcclusion(), missingModelPart.particleMaterial());
             return Collections.singletonList(bakedModel);
@@ -99,20 +95,6 @@ public class TransmitterContentsManager {
             Mekanism.logger.error("Unable to bake Transmitter Contents model due to exception", e);
             return bakedMissingModel;
         }
-    }
-
-    /// from [ResolvedModel#findTopTextureSlots(ResolvedModel)]
-    private TextureSlots makeTextureSlots(Identifier texture) {
-        ResolvedModel current = resolved;
-        TextureSlots.Resolver resolver;
-        for (resolver = new TextureSlots.Resolver(); current != null; current = current.parent()) {
-            resolver.addLast(current.wrapped().textureSlots());
-        }
-        resolver.addLast(new TextureSlots.Data.Builder()
-              .addTexture("contents", new Material(texture))
-              .build()
-        );
-        return resolver.resolve(resolved);
     }
 
     private static class CacheKey {

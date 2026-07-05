@@ -8,6 +8,7 @@ import java.util.List;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
+import net.minecraft.util.context.ContextMap;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -28,6 +29,6 @@ public class CrTItemStackToItemStackRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<IItemStack> getOutputs(ItemStackToItemStackRecipe _this) {
-        return CrTUtils.convertItems(_this.getOutputDefinition());
+        return CrTUtils.convertItems(_this.getOutputDefinition(ContextMap.EMPTY));//TODO - CrT: ContextMap
     }
 }

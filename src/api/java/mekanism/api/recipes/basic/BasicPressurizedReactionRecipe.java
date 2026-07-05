@@ -12,6 +12,7 @@ import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -95,7 +96,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     }
 
     @Override
-    public List<PressurizedReactionRecipeOutput> getOutputDefinition() {
+    public List<PressurizedReactionRecipeOutput> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(new PressurizedReactionRecipeOutput(outputItem, outputChemical));
     }
 

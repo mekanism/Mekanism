@@ -9,6 +9,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -55,12 +56,12 @@ public class BasicSawmillRecipe extends SawmillRecipe {
     }
 
     @Override
-    public List<ItemStackTemplate> getMainOutputDefinition() {
+    public List<ItemStackTemplate> getMainOutputDefinition(ContextMap contextMap) {
         return mainOutput == null ? Collections.emptyList() : Collections.singletonList(mainOutput);
     }
 
     @Override
-    public List<ItemStackTemplate> getSecondaryOutputDefinition() {
+    public List<ItemStackTemplate> getSecondaryOutputDefinition(ContextMap contextMap) {
         return secondaryOutput == null ? Collections.emptyList() : Collections.singletonList(secondaryOutput);
     }
 

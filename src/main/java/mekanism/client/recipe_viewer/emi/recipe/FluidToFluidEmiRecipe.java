@@ -16,6 +16,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class FluidToFluidEmiRecipe extends MekanismEmiHolderRecipe<FluidToFluidRecipe> {
@@ -23,7 +24,8 @@ public class FluidToFluidEmiRecipe extends MekanismEmiHolderRecipe<FluidToFluidR
     public FluidToFluidEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<FluidToFluidRecipe> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getInput());
-        addFluidOutputDefinition(recipe.getOutputDefinition());
+        //TODO - Emi: ContextMap
+        addFluidOutputDefinition(recipe.getOutputDefinition(ContextMap.EMPTY));
     }
 
     @Override

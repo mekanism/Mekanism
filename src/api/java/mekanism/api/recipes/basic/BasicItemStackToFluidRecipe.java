@@ -6,6 +6,7 @@ import java.util.Objects;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.Contract;
@@ -35,7 +36,7 @@ public abstract class BasicItemStackToFluidRecipe extends ItemStackToFluidRecipe
     }
 
     @Override
-    public List<FluidStackTemplate> getOutputDefinition() {
+    public List<FluidStackTemplate> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
     }
 

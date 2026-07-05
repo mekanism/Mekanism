@@ -191,7 +191,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
         return Collections.emptyList();
     }
 
-    protected static <STACK> Supplier<STACK> getSupplier(List<STACK> stacks, STACK empty) {
+    protected static <STACK extends @Nullable Object> Supplier<STACK> getSupplier(List<STACK> stacks, STACK empty) {
         if (stacks.isEmpty()) {
             return () -> empty;
         } else if (stacks.size() == 1) {
