@@ -7,6 +7,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -160,6 +161,34 @@ public class MekanismAPITags {
 
         private static TagKey<EntityType<?>> tag(String name) {
             return TagKey.create(Registries.ENTITY_TYPE, rl(name));
+        }
+    }
+
+    /// @since 10.7.0
+    public static class Items {
+
+        private Items() {
+        }
+
+        /// Represents all items that are valid containers for modules
+        ///
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS = tag("module_containers");
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_ARMOR = tag("module_containers/armor");
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_ARMOR_HELMET = tag("module_containers/armor/helmet");
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_ARMOR_CHESTPLATE = tag("module_containers/armor/chestplate");
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_ARMOR_LEGGINGS = tag("module_containers/armor/leggings");
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_ARMOR_BOOTS = tag("module_containers/armor/boots");
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_MEKA_TOOL = tag("module_containers/meka_tool");
+
+        private static TagKey<Item> tag(String name) {
+            return TagKey.create(Registries.ITEM, rl(name));
         }
     }
 

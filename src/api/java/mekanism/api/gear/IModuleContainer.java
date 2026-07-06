@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import mekanism.api.MekanismIMC.ModuleContainerTarget;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
@@ -20,7 +19,7 @@ import org.jspecify.annotations.Nullable;
 /// [mekanism.api.MekanismIMC#addModuleContainer(ModuleContainerTarget)]. Module containers are immutable.
 ///
 /// @since 10.5.0
-public interface IModuleContainer {
+public interface IModuleContainer {//TODO - 26.2: Update docs about how to register module containers
 
     /// {@return all the modules currently installed on this container mapped by their type}
     Map<ModuleData<?>, ? extends IModule<?>> typedModules();

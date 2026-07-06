@@ -212,8 +212,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public int getEnchantmentLevel(ItemInstance instance, Holder<Enchantment> enchantment) {
         //Enchantments in our data
-        IModuleContainer container = ModuleHelper.get().getModuleContainerUnsafe(instance);
-        int moduleLevel = container.getModuleEnchantmentLevel(enchantment);
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(instance);
+        int moduleLevel = container == null ? 0 : container.getModuleEnchantmentLevel(enchantment);
         return Math.max(moduleLevel, super.getEnchantmentLevel(instance, enchantment));
     }
 

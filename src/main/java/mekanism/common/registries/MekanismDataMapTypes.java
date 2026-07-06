@@ -12,14 +12,19 @@ import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
+import mekanism.api.datamaps.holderset.DataMapHolderSetRemover;
+import mekanism.api.gear.ModuleData;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.DataMapTypeRegister;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.registries.datamaps.AdvancedDataMapType;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import org.jspecify.annotations.Nullable;
 
@@ -28,6 +33,9 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
     public static final DataMapTypeRegister REGISTER = new DataMapTypeRegister(Mekanism.MODID);
 
     private static final DataMapType<DamageType, MekaSuitAbsorption> MEKA_SUIT_ABSORPTION = REGISTER.registerSimple(MekaSuitAbsorption.ID, Registries.DAMAGE_TYPE, MekaSuitAbsorption.CODEC);
+    private static final AdvancedDataMapType<Item, HolderSet<ModuleData<?>>, DataMapHolderSetRemover<Item, ModuleData<?>>> SUPPORTED_MODULES = REGISTER.registerSyncedHolderSet(
+          Mekanism.rl("supported_modules"), Registries.ITEM, MekanismRegistries.Keys.MODULES, MekanismRegistries.MODULES.holderByNameCodec());
+
     private static final DataMapType<Chemical, ChemicalSolidTag> CHEMICAL_SOLID_TAG = REGISTER.registerSynced(ChemicalSolidTag.ID, MekanismRegistries.Keys.CHEMICAL,
           ChemicalSolidTag.CODEC, ChemicalSolidTag.SOLID_TAG_CODEC);
 
@@ -48,6 +56,11 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
     @Override
     public DataMapType<DamageType, MekaSuitAbsorption> mekaSuitAbsorption() {
         return MEKA_SUIT_ABSORPTION;
+    }
+
+    @Override
+    public AdvancedDataMapType<Item, HolderSet<ModuleData<?>>, DataMapHolderSetRemover<Item, ModuleData<?>>> supportedModules() {
+        return SUPPORTED_MODULES;
     }
 
     @Override
