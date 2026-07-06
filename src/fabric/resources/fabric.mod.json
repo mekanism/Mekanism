@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "mekanism",
+  "version": "${version}",
+  "name": "Mekanism",
+  "description": "High-tech machinery, powerful energy generation, fancy gadgets and more. Unofficial Fabric port.",
+  "authors": [
+    "Aidancbrady",
+    "Thommy101",
+    "Thiakil",
+    "pupnewfster",
+    "dizzyd"
+  ],
+  "contact": {
+    "homepage": "https://aidancbrady.com/mekanism/",
+    "issues": "https://github.com/mekanism/Mekanism/issues"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "mekanism.fabric.MekanismFabric"
+    ],
+    "client": [
+      "mekanism.fabric.client.MekanismFabricClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": "*",
+    "minecraft": "=${minecraft_version}",
+    "java": ">=21"
+  }
+}
