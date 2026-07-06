@@ -23,4 +23,4 @@ MDK.zip
 /bin
 /logs
 /annotation-processor/bin
-libs/
+libs/__pycache__/
