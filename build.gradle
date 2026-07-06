@@ -31,7 +31,9 @@ loom {
 
 sourceSets {
     main {
-        java.srcDirs = ['src/fabric/java']
+        //fabric_shim: Fabric-backed stand-ins for NeoForge classes (same simple names; see fabric-port/README.md).
+        //Upstream api/main srcDirs join this list as porting phases land (see PORTING.md).
+        java.srcDirs = ['src/fabric/java', 'src/fabric_shim/java']
         resources.srcDirs = ['src/fabric/resources']
     }
     //Upstream unit tests are NeoForge-coupled; they come back in Phase 6 (see PORTING.md)
@@ -55,6 +57,10 @@ repositories {
         name = 'modmuss50 (team reborn)'
         url = 'https://maven.modmuss50.me/'
     }
+    maven {
+        name = 'NeoForged (standalone bus library only)'
+        url = 'https://maven.neoforged.net/releases/'
+    }
 }
 
 dependencies {
@@ -69,6 +75,16 @@ dependencies {
     modImplementation("teamreborn:energy:${team_reborn_energy_version}") {
         transitive = false
     }
+
+    //NeoForge's event bus is published as a loader-independent library; using it directly keeps upstream
+    // net.neoforged.bus.api imports (IEventBus/Event/EventPriority/SubscribeEvent) valid with no remap.
+    // Version matches the bus bundled in NeoForge ${neo_version}. asm + log4j-api (its runtime deps) are
+    // already provided by the Fabric/Minecraft runtime, so only bus + typetools are jarred-in-jar.
+    include(implementation("net.neoforged:bus:${neoforged_bus_version}"))
+    include(implementation("net.jodah:typetools:${typetools_version}"))
+
+    //Compile-time nullability annotations (upstream got these transitively through the NeoForge platform)
+    compileOnly("org.jetbrains:annotations:${jetbrains_annotations_version}")
 }
 
 processResources {

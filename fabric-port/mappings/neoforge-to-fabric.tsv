@@ -14,9 +14,20 @@ net.neoforged.neoforge.common.util.FakePlayer	mekanism.fabric_shim.util.FakePlay
 # --- server lifecycle ---
 net.neoforged.neoforge.server.ServerLifecycleHooks	mekanism.fabric_shim.server.ServerLifecycleHooks
 
-# --- registries (Phase 1: shim reimplements over eager Registry.register) ---
+# --- event bus: NO remap needed ---
+# net.neoforged.bus.api.* (IEventBus/Event/EventPriority/SubscribeEvent/ICancellableEvent) stays
+# unchanged: the port depends on NeoForge's standalone bus library (net.neoforged:bus, JiJ'd).
+
+# --- registries (Phase 1: shim replays the NeoForge registration lifecycle on the mod bus) ---
 net.neoforged.neoforge.registries.DeferredRegister	mekanism.fabric_shim.registries.DeferredRegister
 net.neoforged.neoforge.registries.DeferredHolder	mekanism.fabric_shim.registries.DeferredHolder
+net.neoforged.neoforge.registries.RegistryBuilder	mekanism.fabric_shim.registries.RegistryBuilder
+net.neoforged.neoforge.registries.RegisterEvent	mekanism.fabric_shim.registries.RegisterEvent
+net.neoforged.neoforge.registries.NewRegistryEvent	mekanism.fabric_shim.registries.NewRegistryEvent
+net.neoforged.fml.event.IModBusEvent	mekanism.fabric_shim.fml.event.IModBusEvent
+
+# --- game event bus holder ---
+net.neoforged.neoforge.common.NeoForge	mekanism.fabric_shim.common.NeoForge
 
 # --- config ---
 # NO remap needed: Forge Config API Port (Fabric) provides net.neoforged.neoforge.common.ModConfigSpec
