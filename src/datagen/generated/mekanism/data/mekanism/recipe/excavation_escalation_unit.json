@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": "minecraft:iron_pickaxe",
+    "A": "#c:alloys/advanced",
+    "H": "mekanism:hdpe_sheet",
+    "P": "mekanism:module_base"
+  },
+  "pattern": [
+    "A#A",
+    "APA",
+    "HHH"
+  ],
+  "result": {
+    "components": {
+      "mekanism:module_type": "mekanism:excavation_escalation_unit",
+      "minecraft:rarity": "uncommon"
+    },
+    "id": "mekanism:module"
+  }
+}

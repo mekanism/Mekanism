@@ -22,7 +22,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.gear.ModuleData;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.client.MekanismClient;
@@ -260,9 +260,10 @@ public class MekanismEmi implements EmiPlugin {
         registry.addRecipe(new EmiInfoRecipe(List.of(EmiStack.of(MekanismFluids.HEAVY_WATER.value())), List.of(
               MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get())
         ), Mekanism.rl("info/heavy_water")));
+        //TODO: Can we just add this to the base module item?
         registry.addRecipe(new EmiInfoRecipe(MekanismRegistries.MODULES.stream()
-              .map(ModuleData::getItemHolder)
-              .<EmiIngredient>map(item -> EmiStack.of(item.value()))
+              .map(data -> IModuleHelper.INSTANCE.asStack(MekanismRegistries.MODULES.wrapAsHolder(data)))
+              .<EmiIngredient>map(EmiStack::of)
               .toList(), List.of(
               MekanismLang.RECIPE_VIEWER_INFO_MODULE_INSTALLATION.translate()
         ), Mekanism.rl("info/module_installation")));

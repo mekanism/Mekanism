@@ -59,7 +59,6 @@ import mekanism.common.content.blocktype.Factory;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
-import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.item.block.ItemBlockChemicalTank;
@@ -750,7 +749,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>, ItemBlockTooltip<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>>> MODIFICATION_STATION =
           BLOCKS.registerDetails("modification_station", properties -> new BlockTileModel<>(MekanismBlockTypes.MODIFICATION_STATION, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                      .addInput(itemType -> itemType.getItem() instanceof IModuleItem)
+                      .addInput(itemType -> itemType.has(IModuleHelper.INSTANCE.dataComponent()))
                       .addInput(IModuleHelper.INSTANCE::isModuleContainer)
                       .addEnergy()
                       .build()

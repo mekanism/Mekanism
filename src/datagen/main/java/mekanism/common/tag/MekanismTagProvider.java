@@ -10,7 +10,6 @@ import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
-import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
@@ -174,10 +173,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(FRAMEABLE).add(MekanismBlocks.STRUCTURAL_GLASS);
         getBuilder(FB_BE_WHITELIST).add(MekanismBlocks.STRUCTURAL_GLASS);
         getBuilder(PE_VEIN_SHOVEL).add(MekanismBlocks.SALT_BLOCK);
-
-        getBuilder(MekanismAPITags.Items.MEKA_UNITS).add(MekanismItems.ITEMS.getEntries().stream()
-              .filter(item -> item.get() instanceof IModuleItem)
-              .toList());
     }
 
     private void addEntities() {

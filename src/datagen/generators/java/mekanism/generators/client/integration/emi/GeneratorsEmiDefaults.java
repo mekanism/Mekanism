@@ -2,14 +2,17 @@ package mekanism.generators.client.integration.emi;
 
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.chemical.ChemicalIds;
+import mekanism.api.gear.ModuleData;
 import mekanism.client.integration.emi.BaseEmiDefaults;
 import mekanism.common.util.RegistryUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsItems;
+import mekanism.generators.common.registries.GeneratorsModules;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class GeneratorsEmiDefaults extends BaseEmiDefaults {
 
@@ -92,7 +95,8 @@ public class GeneratorsEmiDefaults extends BaseEmiDefaults {
     }
 
     private void addGearModuleRecipes() {
-        addRecipe(GeneratorsItems.MODULE_GEOTHERMAL_GENERATOR);
-        addRecipe(GeneratorsItems.MODULE_SOLAR_RECHARGING);
+        for (DeferredHolder<ModuleData<?>, ? extends ModuleData<?>> module : GeneratorsModules.MODULES.getEntries()) {
+            addRecipe(module);
+        }
     }
 }

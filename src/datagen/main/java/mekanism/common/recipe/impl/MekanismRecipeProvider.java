@@ -10,6 +10,7 @@ import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
@@ -29,6 +30,7 @@ import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -1313,63 +1315,63 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
               .save(output);
         //Jetpack Module
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_JETPACK)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.JETPACK_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Ingredient.of(MekanismItems.JETPACK, MekanismItems.ARMORED_JETPACK))
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, MekanismModules.JETPACK_UNIT.getId());
         //Electrolytic Breathing Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_ELECTROLYTIC_BREATHING)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.ELECTROLYTIC_BREATHING_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.ELECTROLYTIC_CORE)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
-              .save(output);
+              .save(output, MekanismModules.ELECTROLYTIC_BREATHING_UNIT.getId());
         //Dosimeter Module
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_DOSIMETER)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.DOSIMETER_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.DOSIMETER)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
-              .save(output);
+              .save(output, MekanismModules.DOSIMETER_UNIT.getId());
         //Geiger Module
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_GEIGER)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.GEIGER_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.GEIGER_COUNTER)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
-              .save(output);
+              .save(output, MekanismModules.GEIGER_UNIT.getId());
         //Energy Module
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_ENERGY)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.ENERGY_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
-              .save(output);
+              .save(output, MekanismModules.ENERGY_UNIT.getId());
         //Laser Dissipation Module
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_LASER_DISSIPATION)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.LASER_DISSIPATION_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismBlocks.LASER_AMPLIFIER)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
-              .save(output);
+              .save(output, MekanismModules.LASER_DISSIPATION_UNIT.getId());
         //Radiation Shielding Module
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_RADIATION_SHIELDING)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.RADIATION_SHIELDING_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.LEAD))
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
-              .save(output);
+              .save(output, MekanismModules.RADIATION_SHIELDING_UNIT.getId());
         //Color Modulation Module
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_COLOR_MODULATION)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.COLOR_MODULATION_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(MIXING_CHAR, Pattern.CONSTANT, MIXING_CHAR),
                     TripleLine.of(Pattern.OTHER, Pattern.PREVIOUS, Pattern.OTHER),
@@ -1379,33 +1381,33 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismBlocks.LASER)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
-              .save(output);
+              .save(output, MekanismModules.COLOR_MODULATION_UNIT.getId());
         //Charge Distribution Module
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_CHARGE_DISTRIBUTION)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.CHARGE_DISTRIBUTION_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismBlocks.BASIC_INDUCTION_PROVIDER)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, MekanismModules.CHARGE_DISTRIBUTION_UNIT.getId());
         //Teleportation Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_TELEPORTATION)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.TELEPORTATION_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ULTIMATE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.TELEPORTATION_CORE)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_ANTIMATTER)
-              .save(output);
+              .save(output, MekanismModules.TELEPORTATION_UNIT.getId());
         //Nutritional Injection Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_NUTRITIONAL_INJECTION)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.NUTRITIONAL_INJECTION_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.CANTEEN)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, MekanismModules.NUTRITIONAL_INJECTION_UNIT.getId());
         //Silk Touch Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_SILK_TOUCH)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.SILK_TOUCH_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
                     TripleLine.of(Pattern.DIAMOND, Pattern.PREVIOUS, Pattern.DIAMOND),
@@ -1415,9 +1417,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_GLOWSTONE)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.DIAMOND, this.items, ItemIds.DIAMOND_PICKAXE)
-              .save(output);
+              .save(output, MekanismModules.SILK_TOUCH_UNIT.getId());
         //Fortune Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_FORTUNE)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.FORTUNE_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
                     TripleLine.of(Pattern.DIAMOND, Pattern.PREVIOUS, Pattern.DIAMOND),
@@ -1427,9 +1429,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_GLOWSTONE)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.DIAMOND, this.items, Tags.Items.STORAGE_BLOCKS_DIAMOND)
-              .save(output);
+              .save(output, MekanismModules.FORTUNE_UNIT.getId());
         //Blasting Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_BLASTING)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.BLASTING_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.PREVIOUS, Pattern.CIRCUIT),
@@ -1439,41 +1441,41 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, BlockItemIds.TNT)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
-              .save(output);
+              .save(output, MekanismModules.BLASTING_UNIT.getId());
         //Excavation Escalation Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_EXCAVATION_ESCALATION)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.EXCAVATION_ESCALATION_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, ItemIds.IRON_PICKAXE)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
-              .save(output);
+              .save(output, MekanismModules.EXCAVATION_ESCALATION_UNIT.getId());
         //Attack Amplification Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_ATTACK_AMPLIFICATION)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.ATTACK_AMPLIFICATION_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, ItemIds.IRON_SWORD)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
-              .save(output);
+              .save(output, MekanismModules.ATTACK_AMPLIFICATION_UNIT.getId());
         //Farming Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_FARMING)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.FARMING_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, ItemIds.IRON_HOE)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
-              .save(output);
+              .save(output, MekanismModules.FARMING_UNIT.getId());
         //Shearing Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_SHEARING)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.SHEARING_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, ItemIds.SHEARS)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
-              .save(output);
+              .save(output, MekanismModules.SHEARING_UNIT.getId());
         //Vein Mining Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_VEIN_MINING)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.VEIN_MINING_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
                     TripleLine.of('x', Pattern.PREVIOUS, 's'),
@@ -1484,17 +1486,17 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key('x', this.items, ItemIds.DIAMOND_AXE)
               .key('s', this.items, ItemIds.DIAMOND_SHOVEL)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, MekanismModules.VEIN_MINING_UNIT.getId());
         //Vision Enhancement Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_VISION_ENHANCEMENT)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.VISION_ENHANCEMENT_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, ItemIds.EMERALD)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, MekanismModules.VISION_ENHANCEMENT_UNIT.getId());
         //Inhalation Purification Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_INHALATION_PURIFICATION)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.INHALATION_PURIFICATION_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
                     TripleLine.of(Pattern.ALLOY, Pattern.PREVIOUS, Pattern.ALLOY),
@@ -1504,9 +1506,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, MekanismItems.HAZMAT_MASK)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .key('o', MekanismItems.SCUBA_MASK)
-              .save(output);
+              .save(output, MekanismModules.INHALATION_PURIFICATION_UNIT.getId());
         //Magnetic Attraction Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_MAGNETIC_ATTRACTION)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.MAGNETIC_ATTRACTION_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.PREVIOUS, Pattern.CIRCUIT),
@@ -1516,9 +1518,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, BlockItemIds.IRON_BARS)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ELITE)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, MekanismModules.MAGNETIC_ATTRACTION_UNIT.getId());
         //Frost Walker Module
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_FROST_WALKER)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.FROST_WALKER_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
                     TripleLine.of(Pattern.ALLOY, Pattern.PREVIOUS, Pattern.ALLOY),
@@ -1527,9 +1529,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismFluids.HYDROGEN.getBucket())
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, MekanismModules.FROST_WALKER_UNIT.getId());
         //Soul Speed Module
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_SOUL_SURFER)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.SOUL_SURFER_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.BLOCK, Pattern.ALLOY),
                     TripleLine.of(Pattern.ALLOY, Pattern.PREVIOUS, Pattern.ALLOY),
@@ -1539,9 +1541,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.BLOCK, this.items, ItemTags.SOUL_FIRE_BASE_BLOCKS)
               .key(Pattern.CONSTANT, Ingredient.of(MekanismItems.FREE_RUNNERS, MekanismItems.ARMORED_FREE_RUNNERS))
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, MekanismModules.SOUL_SURFER_UNIT.getId());
         //Locomotive Boosting Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_LOCOMOTIVE_BOOSTING)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
                     TripleLine.of(Pattern.ENERGY, Pattern.PREVIOUS, Pattern.ENERGY),
@@ -1551,9 +1553,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, ItemIds.DIAMOND_LEGGINGS)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, MekanismModules.LOCOMOTIVE_BOOSTING_UNIT.getId());
         //Hydraulic Propulsion Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_HYDRAULIC_PROPULSION)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.HYDRAULIC_PROPULSION_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
                     TripleLine.of(Pattern.ENERGY, Pattern.PREVIOUS, Pattern.ENERGY),
@@ -1563,9 +1565,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, Ingredient.of(MekanismItems.FREE_RUNNERS, MekanismItems.ARMORED_FREE_RUNNERS))
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, MekanismModules.HYDRAULIC_PROPULSION_UNIT.getId());
         //Gyroscopic Stabilization Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_GYROSCOPIC_STABILIZATION)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.GYROSCOPIC_STABILIZATION_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
                     TripleLine.of(Pattern.CONSTANT, Pattern.PREVIOUS, Pattern.CONSTANT),
@@ -1574,17 +1576,17 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, BlockItemIds.OBSIDIAN)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, MekanismModules.GYROSCOPIC_STABILIZATION_UNIT.getId());
         //Hydrostatic Repulsion Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_HYDROSTATIC_REPULSOR)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.HYDROSTATIC_REPULSOR_UNIT))
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, BlockItemIds.LIGHTNING_ROD.weathering().unaffected())
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, MekanismModules.HYDROSTATIC_REPULSOR_UNIT.getId());
         //Motorized Servo Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_MOTORIZED_SERVO)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.MOTORIZED_SERVO_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
                     TripleLine.of(Pattern.CONSTANT, Pattern.PREVIOUS, Pattern.CONSTANT),
@@ -1594,9 +1596,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ELITE)
               .key(Pattern.CONSTANT, this.items, BlockItemIds.BLUE_ICE)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, MekanismModules.MOTORIZED_SERVO_UNIT.getId());
         //Gravitational Modulating Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_GRAVITATIONAL_MODULATING)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.GRAVITATIONAL_MODULATING_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
                     TripleLine.of(Pattern.ENERGY, Pattern.PREVIOUS, Pattern.ENERGY),
@@ -1606,9 +1608,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, Tags.Items.NETHER_STARS)
               .key(Pattern.ENERGY, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_ANTIMATTER)
-              .save(output);
+              .save(output, MekanismModules.GRAVITATIONAL_MODULATING_UNIT.getId());
         //Elytra Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_ELYTRA)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.ELYTRA_UNIT))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
                     TripleLine.of(Pattern.ALLOY, Pattern.PREVIOUS, Pattern.ALLOY),
@@ -1618,7 +1620,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, MekanismItems.HDPE_REINFORCED_ELYTRA)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.NUGGET, this.items, MekanismTags.Items.PELLETS_ANTIMATTER)
-              .save(output);
+              .save(output, MekanismModules.ELYTRA_UNIT.getId());
     }
 
     private void addLateGameRecipes() {

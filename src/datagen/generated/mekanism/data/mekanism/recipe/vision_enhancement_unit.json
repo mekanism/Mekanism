@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": "minecraft:emerald",
+    "A": "#c:alloys/elite",
+    "H": "#c:pellets/polonium",
+    "P": "mekanism:module_base"
+  },
+  "pattern": [
+    "A#A",
+    "APA",
+    "HHH"
+  ],
+  "result": {
+    "components": {
+      "mekanism:module_type": "mekanism:vision_enhancement_unit",
+      "minecraft:rarity": "rare"
+    },
+    "id": "mekanism:module"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": "#c:storage_blocks/refined_glowstone",
+    "A": "#c:alloys/elite",
+    "D": "minecraft:diamond_pickaxe",
+    "H": "#c:pellets/polonium",
+    "P": "mekanism:module_base"
+  },
+  "pattern": [
+    "A#A",
+    "DPD",
+    "HHH"
+  ],
+  "result": {
+    "components": {
+      "mekanism:module_type": "mekanism:silk_touch_unit",
+      "minecraft:rarity": "rare"
+    },
+    "id": "mekanism:module"
+  }
+}

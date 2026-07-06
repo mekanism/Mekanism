@@ -23,7 +23,6 @@ import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
-import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -31,7 +30,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
@@ -40,7 +39,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
 
     private final Function<IModule<MODULE>, MODULE> constructor;
     private final Int2ObjectMap<ConstructedConfigData> configData;
-    private final Holder<Item> itemHolder;
+    private final Rarity rarity;
     private final int maxStackSize;
     private final int exclusive;
     private final boolean noDisable;
@@ -52,7 +51,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
     /// Creates a new module data from the given builder.
     public ModuleData(ModuleDataBuilder<MODULE> builder) {
         this.constructor = builder.constructor;
-        this.itemHolder = builder.itemHolder;
+        this.rarity = builder.rarity;
         this.maxStackSize = builder.maxStackSize;
         this.exclusive = builder.exclusive;
         this.noDisable = builder.noDisable;
@@ -77,11 +76,11 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
         }
     }
 
-    /// Gets the holder for the item that this module type corresponds to and is used in the Modification Station to install this module type.
+    /// The rarity that should be applied to the constructed item.
     ///
-    /// @since 10.7.11
-    public final Holder<Item> getItemHolder() {
-        return itemHolder;
+    /// @since 10.8.0
+    public final Rarity getRarity() {
+        return rarity;
     }
 
     /// Gets a new instance of the custom module this data is for.
@@ -274,26 +273,23 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
         /// Helper creator for creating a module that has no special implementation details and is only used mainly as a marker for if it is installed and how many are
         /// installed.
         ///
-        /// @param item Holder for the item that this module corresponds to and is used in the Modification Station to install this module.
-        ///
-        /// @since 10.7.11
+        /// @since 10.8.0 - Previously required an item parameter.
         @SuppressWarnings({"rawtypes", "unchecked"})
-        public static ModuleDataBuilder<?> marker(Holder<Item> item) {
+        public static ModuleDataBuilder<?> marker() {
             //Note: We don't use customInstanced, so that we have the same instance between all our marker modules
-            return new ModuleDataBuilder(MARKER_MODULE_SUPPLIER, item, true);
+            return new ModuleDataBuilder(MARKER_MODULE_SUPPLIER, true);
         }
 
         /// Helper creator for creating a custom module. The given module supports no custom config options, and the returned instance should be immutable, and will be
         /// re-used for every instance of this module.
         ///
         /// @param customModule Constructor/factory for the custom module this data is for.
-        /// @param item         Holder for the item that this module corresponds to and is used in the Modification Station to install this module.
         ///
-        /// @since 10.7.11
-        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> customInstanced(Supplier<MODULE> customModule, Holder<Item> item) {
+        /// @since 10.8.0 - Previously required an item parameter.
+        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> customInstanced(Supplier<MODULE> customModule) {
             MODULE customModuleInstance = customModule.get();
-            Function<IModule<MODULE>, MODULE> function = module -> customModuleInstance;
-            return new ModuleDataBuilder<>(function, item, true);
+            Function<IModule<MODULE>, MODULE> function = _ -> customModuleInstance;
+            return new ModuleDataBuilder<>(function, true);
         }
 
         /// Helper creator for creating a custom module. The given module constructor should return an immutable instance for the custom module that is used to store any
@@ -302,17 +298,16 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
         /// the same module instance.
         ///
         /// @param customModule Constructor/factory for the custom module this data is for.
-        /// @param item         Holder for the item that this module corresponds to and is used in the Modification Station to install this module.
         ///
-        /// @since 10.7.11
-        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> custom(Function<IModule<MODULE>, MODULE> customModule, Holder<Item> item) {
-            return new ModuleDataBuilder<>(customModule, item, false);
+        /// @since 10.8.0 - Previously required an item parameter.
+        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> custom(Function<IModule<MODULE>, MODULE> customModule) {
+            return new ModuleDataBuilder<>(customModule, false);
         }
 
         private final Int2ObjectMap<ConfigData> configData = new Int2ObjectOpenHashMap<>();
         private final Function<IModule<MODULE>, MODULE> constructor;
-        private final Holder<Item> itemHolder;
         private final boolean isInstanced;
+        private Rarity rarity = Rarity.COMMON;
         private int maxStackSize = 1;
         private int exclusive;
         private boolean handlesModeChange;
@@ -321,9 +316,8 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
         private boolean noDisable;
         private boolean disabledByDefault;
 
-        private ModuleDataBuilder(Function<IModule<MODULE>, MODULE> constructor, Holder<Item> item, boolean isInstanced) {
+        private ModuleDataBuilder(Function<IModule<MODULE>, MODULE> constructor, boolean isInstanced) {
             this.constructor = Objects.requireNonNull(constructor, "Custom module constructor cannot be null.");
-            this.itemHolder = Objects.requireNonNull(item, "Item holder cannot be null.");
             this.isInstanced = isInstanced;
         }
 
@@ -380,6 +374,22 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
                 throw new IllegalStateException("Mode change being disabled by default must be done before adding any configs.");
             }
             modeChangeDisabledByDefault = true;
+            return this;
+        }
+
+        /// Marks the rarity of module items containing this module.
+        ///
+        /// @param rarity Rarity of the module item.
+        ///
+        /// @since 10.8.0
+        public ModuleDataBuilder<MODULE> rarity(Rarity rarity) {
+            Objects.requireNonNull(rarity, "Rarity cannot be null.");
+            if (rarity == Rarity.COMMON) {
+                throw new IllegalArgumentException("Rarity defaults to common");
+            } else if (this.rarity == rarity) {
+                throw new IllegalArgumentException("Rarity is already " + rarity + ", copy paste error?");
+            }
+            this.rarity = rarity;
             return this;
         }
 

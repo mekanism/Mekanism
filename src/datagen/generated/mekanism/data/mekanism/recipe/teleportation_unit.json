@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": "mekanism:teleportation_core",
+    "A": "#c:alloys/ultimate",
+    "H": "#c:pellets/antimatter",
+    "P": "mekanism:module_base"
+  },
+  "pattern": [
+    "A#A",
+    "APA",
+    "HHH"
+  ],
+  "result": {
+    "components": {
+      "mekanism:module_type": "mekanism:teleportation_unit",
+      "minecraft:rarity": "epic"
+    },
+    "id": "mekanism:module"
+  }
+}

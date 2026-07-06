@@ -3,21 +3,21 @@ package mekanism.client.integration.emi;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalIds;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.block.basic.BlockResource;
 import mekanism.common.content.blocktype.FactoryType;
-import mekanism.common.item.ItemModule;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismModules;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -288,10 +288,8 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
 
     private void addGearModuleRecipes() {
         addRecipe(MekanismItems.MODULE_BASE);
-        for (DeferredHolder<Item, ?> entry : MekanismItems.ITEMS.getEntries()) {
-            if (entry.value() instanceof ItemModule) {
-                addRecipe(entry);
-            }
+        for (DeferredHolder<ModuleData<?>, ? extends ModuleData<?>> module : MekanismModules.MODULES.getEntries()) {
+            addRecipe(module);
         }
     }
 

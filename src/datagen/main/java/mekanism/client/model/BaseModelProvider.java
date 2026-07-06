@@ -5,10 +5,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
-import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -165,14 +163,6 @@ public abstract class BaseModelProvider extends ModelProvider {
                       ),
                       ModelTemplates.PARTICLE_ONLY
                 ));
-            }
-        }
-    }
-
-    protected void registerModules(ItemDeferredRegister register, ItemModelGenerators itemModels) {
-        for (Holder<Item> itemProvider : register.getEntries()) {
-            if (itemProvider.value() instanceof ItemModule module) {
-                itemModels.generateFlatItem(module, ModelTemplates.FLAT_ITEM);
             }
         }
     }

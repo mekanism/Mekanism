@@ -8,6 +8,7 @@ import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -24,6 +25,7 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
+import mekanism.generators.common.registries.GeneratorsModules;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -242,21 +244,21 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
 
     private void addGearModuleRecipes() {
         //Geothermal Generator Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsItems.MODULE_GEOTHERMAL_GENERATOR)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(GeneratorsModules.GEOTHERMAL_GENERATOR_UNIT))
               .pattern(MekanismRecipeProvider.BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, GeneratorsBlocks.HEAT_GENERATOR)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, GeneratorsModules.GEOTHERMAL_GENERATOR_UNIT.getId());
         //Solar Recharging Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsItems.MODULE_SOLAR_RECHARGING)
+        ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(GeneratorsModules.SOLAR_RECHARGING_UNIT))
               .pattern(MekanismRecipeProvider.BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .save(output);
+              .save(output, GeneratorsModules.SOLAR_RECHARGING_UNIT.getId());
     }
 
     private void addFusionReactorRecipes() {

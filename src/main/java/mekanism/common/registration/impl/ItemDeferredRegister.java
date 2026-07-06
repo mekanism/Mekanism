@@ -7,8 +7,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
-import mekanism.common.content.gear.ModuleHelper;
-import mekanism.common.item.ItemModule;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.SharedConstants;
@@ -90,15 +88,6 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
                 return TextComponentUtil.build(color, super.getName(stack));
             }
         });
-    }
-
-    public ItemRegistryObject<ItemModule> registerModule(ModuleRegistryObject<?> moduleDataSupplier) {
-        return registerModule(moduleDataSupplier, Rarity.COMMON);
-    }
-
-    public ItemRegistryObject<ItemModule> registerModule(ModuleRegistryObject<?> moduleData, Rarity rarity) {
-        //Note: We use the internal helper just in case we end up needing to know it is an ItemModule instead of just an Item somewhere
-        return registerItem("module_" + moduleData.getName(), properties -> ModuleHelper.get().createModuleItem(moduleData, properties.rarity(rarity)));
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> registerItem(String name, Function<Item.Properties, ITEM> sup) {

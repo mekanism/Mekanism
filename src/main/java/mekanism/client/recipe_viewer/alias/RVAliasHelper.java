@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Optional;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.IModuleHelper;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
-import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.registration.impl.BlockRegistryObject;
-import mekanism.common.registration.impl.ItemDeferredRegister;
+import mekanism.common.registration.impl.ModuleDeferredRegister;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
 
@@ -133,15 +134,13 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
 
     void addChemicalAliases(List<CHEMICAL> stacks, IHasTranslationKey... aliases);
 
-    default void addModuleAliases(ItemDeferredRegister items) {
-        for (Holder<Item> entry : items.getEntries()) {
-            if (entry.value() instanceof IModuleItem module) {
-                addItemAliases(entry, IModuleHelper.INSTANCE.getSupportedItems(module.getModuleData())
-                      .stream()
-                      .map(item -> (IHasTranslationKey) item::getDescriptionId)
-                      .toArray(IHasTranslationKey[]::new)
-                );
-            }
+    default void addModuleAliases(ModuleDeferredRegister modules) {
+        for (DeferredHolder<ModuleData<?>, ? extends ModuleData<?>> module : modules.getEntries()) {
+            addAliases(IModuleHelper.INSTANCE.asStack(module), IModuleHelper.INSTANCE.getSupportedItems(module)
+                  .stream()
+                  .map(item -> (IHasTranslationKey) item::getDescriptionId)
+                  .toArray(IHasTranslationKey[]::new)
+            );
         }
     }
 }

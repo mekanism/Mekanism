@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import mekanism.api.IDynamicItemHelper;
 import mekanism.api.MekanismAPI;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
@@ -21,23 +22,12 @@ import org.jspecify.annotations.Nullable;
 /// Helper class for interacting with and creating custom modules.
 ///
 /// @see IModuleHelper#INSTANCE
-public interface IModuleHelper {
+public interface IModuleHelper extends IDynamicItemHelper<ModuleData<?>> {
 
     /// Provides access to Mekanism's implementation of [IModuleHelper].
     ///
     /// @since 10.4.0
     IModuleHelper INSTANCE = MekanismAPI.getService(IModuleHelper.class);
-
-    /// Helper method used to create Module items that can then be registered. When Mekanism is not installed a dummy Item should be registered instead of calling this
-    /// method.
-    ///
-    /// @param moduleDataSupplier Module data provider.
-    /// @param properties         Properties for the item.
-    ///
-    /// @return A new item that should be registered during item registration.
-    ///
-    /// @since 10.7.11
-    Item createModuleItem(Holder<ModuleData<?>> moduleDataSupplier, Item.Properties properties);
 
     /// Helper method to add an empty component to represent an empty module container.
     ///

@@ -87,8 +87,7 @@ public final class InventoryUtils {
             }
             IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(itemType);
             if (moduleContainer != null) {
-                dropItemContents(level, blockPos, moduleContainer.modules(), scalar, dropper,
-                      module -> ItemResource.of(module.getUntypedData().getItemHolder()), IModule::getInstalledCount);
+                dropItemContents(level, blockPos, moduleContainer.modules(), scalar, dropper, module -> IModuleHelper.INSTANCE.asResource(module.getDataHolder()), IModule::getInstalledCount);
             }
         }
     }

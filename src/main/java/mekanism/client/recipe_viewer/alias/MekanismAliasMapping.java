@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalIds;
+import mekanism.api.gear.IModuleHelper;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
@@ -17,10 +19,12 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismModules;
 import mekanism.common.resource.IResource;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.resources.ResourceKey;
@@ -52,27 +56,32 @@ public final class MekanismAliasMapping implements IAliasMapping {
 
     private <ITEM, FLUID, CHEMICAL> void addUnitAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
         rv.addAliases(MekanismBlocks.MODIFICATION_STATION, MekanismAliases.UNIT_INSTALLER, MekanismAliases.UNIT_INSTALLER_MODULE);
-        rv.addItemAliases(MekanismItems.MODULE_RADIATION_SHIELDING, MekanismAliases.RADIATION_PROTECTION);
-        rv.addItemAliases(MekanismItems.MODULE_ENERGY, MekanismAliases.ENERGY_STORAGE);
+        addModuleAliases(rv, MekanismModules.RADIATION_SHIELDING_UNIT, MekanismAliases.RADIATION_PROTECTION);
+        addModuleAliases(rv, MekanismModules.ENERGY_UNIT, MekanismAliases.ENERGY_STORAGE);
 
-        rv.addItemAliases(MekanismItems.MODULE_FORTUNE, getTranslationKey(Enchantments.FORTUNE));
-        rv.addItemAliases(MekanismItems.MODULE_ATTACK_AMPLIFICATION, MekanismAliases.UNIT_DAMAGE, getTranslationKey(Enchantments.SHARPNESS));
-        rv.addItemAliases(MekanismItems.MODULE_EXCAVATION_ESCALATION, MekanismAliases.UNIT_DIG_SPEED, getTranslationKey(Enchantments.EFFICIENCY));
-        rv.addItemAliases(MekanismItems.MODULE_BLASTING, MekanismAliases.TOOL_HAMMER, MekanismAliases.UNIT_AOE, MekanismAliases.UNIT_AOE_LONG);
-        rv.addItemAliases(MekanismItems.MODULE_FARMING, MekanismAliases.TOOL_AXE, MekanismAliases.TOOL_HOE, MekanismAliases.TOOL_SHOVEL);
+        addModuleAliases(rv, MekanismModules.FORTUNE_UNIT, getTranslationKey(Enchantments.FORTUNE));
+        addModuleAliases(rv, MekanismModules.ATTACK_AMPLIFICATION_UNIT, MekanismAliases.UNIT_DAMAGE, getTranslationKey(Enchantments.SHARPNESS));
+        addModuleAliases(rv, MekanismModules.EXCAVATION_ESCALATION_UNIT, MekanismAliases.UNIT_DIG_SPEED, getTranslationKey(Enchantments.EFFICIENCY));
+        addModuleAliases(rv, MekanismModules.BLASTING_UNIT, MekanismAliases.TOOL_HAMMER, MekanismAliases.UNIT_AOE, MekanismAliases.UNIT_AOE_LONG);
+        addModuleAliases(rv, MekanismModules.FARMING_UNIT, MekanismAliases.TOOL_AXE, MekanismAliases.TOOL_HOE, MekanismAliases.TOOL_SHOVEL);
 
-        rv.addItemAliases(MekanismItems.MODULE_VISION_ENHANCEMENT, MobEffects.NIGHT_VISION.value()::getDescriptionId);
-        rv.addItemAliases(MekanismItems.MODULE_NUTRITIONAL_INJECTION, MekanismAliases.UNIT_FEEDER);
+        addModuleAliases(rv, MekanismModules.VISION_ENHANCEMENT_UNIT, MobEffects.NIGHT_VISION.value()::getDescriptionId);
+        addModuleAliases(rv, MekanismModules.NUTRITIONAL_INJECTION_UNIT, MekanismAliases.UNIT_FEEDER);
         //Note: Jetpack module pairing with normal flight alias is in done in the gear section
-        rv.addItemAliases(MekanismItems.MODULE_GRAVITATIONAL_MODULATING, MekanismAliases.CREATIVE_FLIGHT);
-        rv.addItemAliases(MekanismItems.MODULE_CHARGE_DISTRIBUTION, MekanismAliases.ITEM_CHARGER);
-        rv.addItemAliases(MekanismItems.MODULE_HYDRAULIC_PROPULSION, MekanismAliases.AUTO_STEP, MekanismAliases.STEP_ASSIST, MobEffects.JUMP_BOOST.value()::getDescriptionId);
-        rv.addItemAliases(MekanismItems.MODULE_HYDROSTATIC_REPULSOR, MekanismAliases.UNIT_HYDROSTATIC_SPEED, getTranslationKey(Enchantments.DEPTH_STRIDER));
-        rv.addItemAliases(MekanismItems.MODULE_MOTORIZED_SERVO, getTranslationKey(Enchantments.SWIFT_SNEAK));
-        rv.addItemAliases(MekanismItems.MODULE_LOCOMOTIVE_BOOSTING, MobEffects.SPEED.value()::getDescriptionId);
-        rv.addItemAliases(MekanismItems.MODULE_SOUL_SURFER, getTranslationKey(Enchantments.SOUL_SPEED));
+        addModuleAliases(rv, MekanismModules.GRAVITATIONAL_MODULATING_UNIT, MekanismAliases.CREATIVE_FLIGHT);
+        addModuleAliases(rv, MekanismModules.CHARGE_DISTRIBUTION_UNIT, MekanismAliases.ITEM_CHARGER);
+        addModuleAliases(rv, MekanismModules.HYDRAULIC_PROPULSION_UNIT, MekanismAliases.AUTO_STEP, MekanismAliases.STEP_ASSIST, MobEffects.JUMP_BOOST.value()::getDescriptionId);
+        addModuleAliases(rv, MekanismModules.HYDROSTATIC_REPULSOR_UNIT, MekanismAliases.UNIT_HYDROSTATIC_SPEED, getTranslationKey(Enchantments.DEPTH_STRIDER));
+        addModuleAliases(rv, MekanismModules.MOTORIZED_SERVO_UNIT, getTranslationKey(Enchantments.SWIFT_SNEAK));
+        addModuleAliases(rv, MekanismModules.LOCOMOTIVE_BOOSTING_UNIT, MobEffects.SPEED.value()::getDescriptionId);
+        addModuleAliases(rv, MekanismModules.SOUL_SURFER_UNIT, getTranslationKey(Enchantments.SOUL_SPEED));
+        addModuleAliases(rv, MekanismModules.JETPACK_UNIT, MekanismAliases.FLIGHT);
 
-        rv.addModuleAliases(MekanismItems.ITEMS);
+        rv.addModuleAliases(MekanismModules.MODULES);
+    }
+
+    private <ITEM, FLUID, CHEMICAL> void addModuleAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv, Holder<ModuleData<?>> module, IHasTranslationKey... aliases) {
+        rv.addAliases(IModuleHelper.INSTANCE.asStack(module), aliases);
     }
 
     private static IHasTranslationKey getTranslationKey(ResourceKey<Enchantment> enchantmentKey) {
@@ -111,8 +120,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
 
         rv.addItemHolderAliases(List.of(
               MekanismItems.JETPACK,
-              MekanismItems.ARMORED_JETPACK,
-              MekanismItems.MODULE_JETPACK
+              MekanismItems.ARMORED_JETPACK
         ), MekanismAliases.FLIGHT);
         rv.addItemHolderAliases(List.of(
               MekanismItems.HAZMAT_MASK,

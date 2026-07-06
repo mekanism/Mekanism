@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "mekanismgenerators:item/module_solar_recharging_unit"
-  }
-}

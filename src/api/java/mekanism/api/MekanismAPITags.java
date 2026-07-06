@@ -7,7 +7,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -161,20 +160,6 @@ public class MekanismAPITags {
 
         private static TagKey<EntityType<?>> tag(String name) {
             return TagKey.create(Registries.ENTITY_TYPE, rl(name));
-        }
-    }
-
-    /// @since 10.7.0
-    public static class Items {
-
-        private Items() {
-        }
-
-        /// Contains all mekanism modules.
-        public static final TagKey<Item> MEKA_UNITS = tag("unit");
-
-        private static TagKey<Item> tag(String name) {
-            return TagKey.create(Registries.ITEM, rl(name));
         }
     }
 

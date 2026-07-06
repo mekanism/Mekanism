@@ -12,7 +12,6 @@ import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.single.BasicSingleHolder;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
-import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -77,7 +76,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(moduleSlot = InputInventorySlot.at(stack -> stack.getItem() instanceof IModuleItem, listener, 35, 118));
+        builder.addContainer(moduleSlot = InputInventorySlot.at(itemType -> itemType.has(IModuleHelper.INSTANCE.dataComponent()), listener, 35, 118));
         builder.addContainer(containerSlot = InputInventorySlot.at(1, IModuleHelper.INSTANCE::isModuleContainer, listener, 125, 118));
         moduleSlot.setSlotType(ContainerSlotType.NORMAL);
         moduleSlot.setSlotOverlay(SlotOverlay.MODULE);
@@ -102,8 +101,8 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                         ModuleContainer container = ModuleHelper.get().getModuleContainer(containerAccess.getResource());
                         if (container != null) {
                             // make sure the container supports this module and that we can still install more of this module
-                            Holder<ModuleData<?>> data = ((IModuleItem) moduleResource.getItem()).getModuleData();
-                            if (container.canInstall(containerAccess, data)) {
+                            Holder<ModuleData<?>> data = moduleResource.get(IModuleHelper.INSTANCE.dataComponent());
+                            if (data != null && container.canInstall(containerAccess, data)) {
                                 operatingTicks++;
                                 if (operatingTicks == ticksRequired) {
                                     operatingTicks = 0;
@@ -144,7 +143,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
             if (installed > 0) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
-                    int toRemove = playerInv.insert(ItemResource.of(type.value().getItemHolder()), removeAll ? installed : 1, transaction);
+                    int toRemove = playerInv.insert(IModuleHelper.INSTANCE.asResource(type), removeAll ? installed : 1, transaction);
                     //If we were able to add at least some of the modules to the player's inventory,
                     // and we are able to remove the corresponding number of modules from the item
                     if (toRemove > 0 && container.removeModule(player.registryAccess(), containerAccess, type, toRemove, transaction)) {

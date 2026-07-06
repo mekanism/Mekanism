@@ -21,7 +21,6 @@ public class GeneratorsModelProvider extends BaseModelProvider {
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         registerFluidBlockStates(blockModels, GeneratorsFluids.FLUIDS);
         registerBuckets(GeneratorsFluids.FLUIDS, itemModels);
-        registerModules(GeneratorsItems.ITEMS, itemModels);
         registerGenerated(itemModels, GeneratorsItems.HOHLRAUM, GeneratorsItems.SOLAR_PANEL, GeneratorsItems.TURBINE_BLADE);
 
         registerManualStates();

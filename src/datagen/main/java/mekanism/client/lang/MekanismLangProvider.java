@@ -158,7 +158,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addTags() {
-        add(MekanismAPITags.Items.MEKA_UNITS, "Meka Units");
         add(MekanismTags.Items.CONFIGURATORS, "Configurators");
         add(MekanismTags.BlockItems.PERSONAL_STORAGE, "Personal Storage");
 
@@ -311,7 +310,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.PLUTONIUM_PELLET, "Plutonium Pellet");
         add(MekanismItems.POLONIUM_PELLET, "Polonium Pellet");
         add(MekanismItems.REPROCESSED_FISSILE_FRAGMENT, "Reprocessed Fissile Fragment");
+        add(MekanismItems.MODULE, "Module");
         add(MekanismItems.MODULE_BASE, "Module Base");
+        add(MekanismItems.UPGRADE, "Upgrade");
         add(MekanismItems.PORTABLE_QIO_DASHBOARD, "Portable QIO Dashboard");
         //Tools/Armor
         add(MekanismItems.GAUGE_DROPPER, "Gauge Dropper");
@@ -359,8 +360,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.ENRICHED_OBSIDIAN, "Enriched Obsidian");
         add(MekanismItems.ENRICHED_GOLD, "Enriched Gold");
         add(MekanismItems.ENRICHED_TIN, "Enriched Tin");
-        //Upgrades
-        add(MekanismItems.UPGRADE, "Upgrade");
         //Alloys
         add(MekanismItems.INFUSED_ALLOY, "Infused Alloy");
         add(MekanismItems.REINFORCED_ALLOY, "Reinforced Alloy");
@@ -1712,6 +1711,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.RADIAL_BLASTING_POWER_HIGH, "High");
         add(MekanismLang.RADIAL_BLASTING_POWER_EXTREME, "Extreme");
         // Modules
+        add(MekanismLang.TOOLTIP_MODULE_TYPE, "Module Type: %1$s");
         add(MekanismLang.REMOVE_ALL_MODULES_TOOLTIP, "Removes a single module, hold shift to remove all.");
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_ENABLED_LOWER, "enabled");

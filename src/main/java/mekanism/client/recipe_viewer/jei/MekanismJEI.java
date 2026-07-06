@@ -12,6 +12,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalSerializationHelper;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.robit.GuiRobitRepair;
@@ -156,6 +157,13 @@ public class MekanismJEI implements IModPlugin {
                 return ingredient.get(IUpgradeHelper.INSTANCE.dataComponent());
             }
         });
+        registry.registerSubtypeInterpreter(MekanismItems.MODULE.asItem(), new ISubtypeInterpreter<>() {
+            @Nullable
+            @Override
+            public Object getSubtypeData(ItemStack ingredient, UidContext context) {
+                return ingredient.get(IModuleHelper.INSTANCE.dataComponent());
+            }
+        });
     }
 
     @Override
@@ -276,7 +284,8 @@ public class MekanismJEI implements IModPlugin {
         //Note: Use a "full" bucket's worth of heavy water, so that JEI renders it as desired in the info page
         registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.asStack(FluidType.BUCKET_VOLUME), NeoForgeTypes.FLUID_STACK,
               MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get()));
-        registry.addIngredientInfo(MekanismRegistries.MODULES.stream().map(data -> new ItemStack(data.getItemHolder())).toList(),
+        //TODO - 26.2: Can we add this to the base module item?
+        registry.addIngredientInfo(MekanismRegistries.MODULES.stream().map(data -> IModuleHelper.INSTANCE.asStack(MekanismRegistries.MODULES.wrapAsHolder(data))).toList(),
               VanillaTypes.ITEM_STACK, MekanismLang.RECIPE_VIEWER_INFO_MODULE_INSTALLATION.translate());
     }
 

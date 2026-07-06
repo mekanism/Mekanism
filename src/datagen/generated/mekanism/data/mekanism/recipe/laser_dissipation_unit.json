@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": "mekanism:laser_amplifier",
+    "A": "#c:alloys/advanced",
+    "H": "mekanism:hdpe_sheet",
+    "P": "mekanism:module_base"
+  },
+  "pattern": [
+    "A#A",
+    "APA",
+    "HHH"
+  ],
+  "result": {
+    "components": {
+      "mekanism:module_type": "mekanism:laser_dissipation_unit",
+      "minecraft:rarity": "uncommon"
+    },
+    "id": "mekanism:module"
+  }
+}

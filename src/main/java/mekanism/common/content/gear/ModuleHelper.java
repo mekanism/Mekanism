@@ -8,34 +8,29 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 import mekanism.api.MekanismIMC;
 import mekanism.api.MekanismIMC.ModuleContainerTarget;
-import mekanism.api.gear.IHUDElement;
-import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
-import mekanism.client.model.MekanismModelCache;
-import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.common.Mekanism;
-import mekanism.common.item.ItemModule;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.Rarity;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 /// @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via [IModuleHelper#INSTANCE]
@@ -126,11 +121,6 @@ public class ModuleHelper implements IModuleHelper {//TODO - 26.2: Evaluate movi
     }
 
     @Override
-    public ItemModule createModuleItem(Holder<ModuleData<?>> moduleDataSupplier, Properties properties) {
-        return new ItemModule(moduleDataSupplier, properties);
-    }
-
-    @Override
     public Item.Properties applyModuleContainerProperties(Item.Properties properties) {
         return properties.component(MekanismDataComponents.MODULE_CONTAINER, ModuleContainer.EMPTY);
     }
@@ -182,5 +172,35 @@ public class ModuleHelper implements IModuleHelper {//TODO - 26.2: Evaluate movi
     @Override
     public boolean isModuleContainer(Item item) {
         return moduleContainers.contains(item);
+    }
+
+    private DataComponentPatch getPatch(Holder<ModuleData<?>> module) {
+        Rarity rarity = module.value().getRarity();
+        DataComponentPatch.Builder builder = DataComponentPatch.builder()
+              .set(dataComponent(), module);
+        if (rarity != Rarity.COMMON) {
+            builder.set(DataComponents.RARITY, module.value().getRarity());
+        }
+        return builder.build();
+    }
+
+    @Override
+    public ItemStackTemplate asTemplate(Holder<ModuleData<?>> module, int amount) {
+        return new ItemStackTemplate(MekanismItems.MODULE, amount, getPatch(module));
+    }
+
+    @Override
+    public ItemStack asStack(Holder<ModuleData<?>> module, int amount) {
+        return new ItemStack(MekanismItems.MODULE, amount, getPatch(module));
+    }
+
+    @Override
+    public ItemResource asResource(Holder<ModuleData<?>> module) {
+        return ItemResource.of((Holder<Item>) MekanismItems.MODULE, getPatch(module));
+    }
+
+    @Override
+    public DataComponentType<Holder<ModuleData<?>>> dataComponent() {
+        return MekanismDataComponents.MODULE_TYPE.get();
     }
 }

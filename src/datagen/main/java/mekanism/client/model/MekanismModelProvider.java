@@ -144,8 +144,9 @@ public class MekanismModelProvider extends BaseModelProvider {
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         //Items
         registerBuckets(MekanismFluids.FLUIDS, itemModels);
-        registerModules(MekanismItems.ITEMS, itemModels);
 
+        //TODO - 26.2: Can we have the missing model instead default to MODULE_BASE?
+        addComponentBacked(itemModels, MekanismItems.MODULE, MekanismRegistries.Keys.MODULES);
         addComponentBacked(itemModels, MekanismItems.UPGRADE, MekanismRegistries.Keys.UPGRADES);
 
         for (Table.Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {

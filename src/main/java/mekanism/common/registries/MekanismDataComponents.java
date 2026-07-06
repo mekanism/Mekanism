@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.SecurityMode;
@@ -132,6 +133,10 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Holder<Upgrade>>> UPGRADE_TYPE = DATA_COMPONENTS.simple("upgrade_type",
           builder -> builder.persistent(Upgrade.CODEC)
                 .networkSynchronized(Upgrade.STREAM_CODEC)
+    );
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Holder<ModuleData<?>>>> MODULE_TYPE = DATA_COMPONENTS.simple("module_type",
+          builder -> builder.persistent(MekanismRegistries.MODULES.holderByNameCodec())
+                .networkSynchronized(ByteBufCodecs.holderRegistry(MekanismRegistries.Keys.MODULES))
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> DEFAULT_MANUALLY_SELECTED = DATA_COMPONENTS.registerBoolean("default_manually_selected");

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.text.EnumColor;
@@ -109,7 +111,7 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
 
     @Override
     protected ItemStack getRenderStack(ModuleData<?> moduleData) {
-        return new ItemStack(moduleData.getItemHolder());
+        return IModuleHelper.INSTANCE.asStack(MekanismRegistries.MODULES.wrapAsHolder(moduleData));
     }
 
     @Override

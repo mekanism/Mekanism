@@ -4,14 +4,12 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.ChemicalIds;
-import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsDamageTypes;
 import mekanism.generators.common.registries.GeneratorsDataComponents;
 import mekanism.generators.common.registries.GeneratorsFluids;
-import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
@@ -69,10 +67,6 @@ public class GeneratorsTagProvider extends BaseTagProvider {
 
         getBuilder(FRAMEABLE).add(GeneratorsBlocks.REACTOR_GLASS, GeneratorsBlocks.LASER_FOCUS_MATRIX);
         getBuilder(FB_BE_WHITELIST).add(GeneratorsBlocks.REACTOR_GLASS, GeneratorsBlocks.LASER_FOCUS_MATRIX);
-
-        getBuilder(MekanismAPITags.Items.MEKA_UNITS).add(GeneratorsItems.ITEMS.getEntries().stream()
-              .filter(item -> item.get() instanceof IModuleItem)
-              .toList());
     }
 
     private void addBoxBlacklist() {

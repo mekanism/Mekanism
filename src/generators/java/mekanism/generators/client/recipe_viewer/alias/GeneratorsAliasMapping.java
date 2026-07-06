@@ -12,6 +12,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
+import mekanism.generators.common.registries.GeneratorsModules;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.world.item.ItemStack;
 
@@ -22,7 +23,7 @@ public class GeneratorsAliasMapping implements IAliasMapping {
         addChemicalAliases(rv);
         addMultiblockAliases(rv);
         rv.addAliases(GeneratorsBlocks.GAS_BURNING_GENERATOR, GeneratorsAliases.GBG_ETHENE, GeneratorsAliases.GBG_ETHYLENE);
-        rv.addModuleAliases(GeneratorsItems.ITEMS);
+        rv.addModuleAliases(GeneratorsModules.MODULES);
     }
 
     private <ITEM, FLUID, CHEMICAL> void addChemicalAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
