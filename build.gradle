@@ -24,6 +24,11 @@ java {
     withSourcesJar()
 }
 
+loom {
+    //Generated from META-INF/accesstransformer.cfg by fabric-port/at2aw.py (see PORTING.md)
+    accessWidenerPath = file('src/fabric/resources/mekanism.accesswidener')
+}
+
 sourceSets {
     main {
         java.srcDirs = ['src/fabric/java']

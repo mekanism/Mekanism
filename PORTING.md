@@ -58,8 +58,8 @@ textually identical; no Yarn remap.
 ## Port status
 
 - [x] Phase 0a: branch + framework scaffolding
-- [ ] Phase 0b: Loom build boots an empty mod (api/main source sets dormant)
-- [ ] Phase 0c: AT→AW generation wired into build
+- [x] Phase 0b: Loom build boots an empty mod (api/main source sets dormant) — dev server boot verified 2026-07-05
+- [x] Phase 0c: AT→AW generation wired into build (`fabric-port/at2aw.py`; 92 live entries → 94 AW lines, validated by Loom; 2 stale upstream AT entries skip-listed)
 - [ ] Phase 1: entry points, registries, config
 - [ ] Phase 2: capabilities + transfer/energy bridge (critical path)
 - [ ] Phase 3: events + networking

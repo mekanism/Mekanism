@@ -28,9 +28,20 @@ AT_FILES = [
     # additions AT folded in when that module is enabled:
     # REPO_ROOT / "src" / "additions" / "resources" / "META-INF" / "accesstransformer.cfg",
 ]
-OUT_FILE = REPO_ROOT / "src" / "main" / "resources" / "mekanism.accesswidener"
+# Lives in the fabric bootstrap resources for now; moves to src/main/resources when Phase 1
+# activates the main source set (update loom.accessWidenerPath + fabric.mod.json alongside).
+OUT_FILE = REPO_ROOT / "src" / "fabric" / "resources" / "mekanism.accesswidener"
 
 ACCESS_KEYWORDS = {"public", "protected", "private", "default"}
+
+# Upstream AT entries that target classes/members which no longer exist in vanilla 1.21.1
+# (verified stale; nothing in Mekanism source references them). Keyed by (owner, member),
+# member None for class-level entries.
+KNOWN_STALE = {
+    ("net.minecraft.world.item.ArmorItem", "ARMOR_MODIFIER_UUID_PER_TYPE"),
+    # renamed to CopyCustomDataFunction in 1.20.5; unreferenced leftover
+    ("net.minecraft.world.level.storage.loot.functions.CopyNbtFunction$Path", None),
+}
 
 
 class Entry:
@@ -58,6 +69,9 @@ def parse_at(path: Path) -> list[Entry]:
         if not line:
             continue
         toks = line.split()
+        stale_key = (toks[1], toks[2].split("(")[0]) if len(toks) > 2 else (toks[1], None)
+        if len(toks) > 1 and stale_key in KNOWN_STALE:
+            continue
         access = toks[0]
         definalize = access.endswith("-f")
         access_base = access[:-2] if definalize else access

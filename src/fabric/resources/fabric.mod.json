@@ -17,6 +17,7 @@
   },
   "license": "MIT",
   "environment": "*",
+  "accessWidener": "mekanism.accesswidener",
   "entrypoints": {
     "main": [
       "mekanism.fabric.MekanismFabric"
