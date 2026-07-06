@@ -29,6 +29,19 @@ net.neoforged.fml.event.IModBusEvent	mekanism.fabric_shim.fml.event.IModBusEvent
 # --- game event bus holder ---
 net.neoforged.neoforge.common.NeoForge	mekanism.fabric_shim.common.NeoForge
 
+# --- fluids: Mekanism-owned FluidStack (mB amounts internally; droplet conversion only at the
+#     Phase 2 transfer-API boundary). Serialized formats match NeoForge's byte-for-byte. ---
+net.neoforged.neoforge.fluids.FluidStack	mekanism.fabric_shim.fluids.FluidStack
+net.neoforged.neoforge.fluids.IFluidTank	mekanism.fabric_shim.fluids.IFluidTank
+net.neoforged.neoforge.fluids.capability.IFluidHandler	mekanism.fabric_shim.fluids.capability.IFluidHandler
+
+# --- small common/util shims ---
+net.neoforged.neoforge.common.util.INBTSerializable	mekanism.fabric_shim.common.util.INBTSerializable
+net.neoforged.neoforge.common.util.TriPredicate	mekanism.fabric_shim.common.util.TriPredicate
+net.neoforged.neoforge.common.TranslatableEnum	mekanism.fabric_shim.common.TranslatableEnum
+net.neoforged.neoforge.common.MutableDataComponentHolder	mekanism.fabric_shim.common.MutableDataComponentHolder
+net.neoforged.fml.LogicalSide	mekanism.fabric_shim.fml.LogicalSide
+
 # --- config ---
 # NO remap needed: Forge Config API Port (Fabric) provides net.neoforged.neoforge.common.ModConfigSpec
 # and friends under their original package names. Only the registration call site changes
