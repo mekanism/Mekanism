@@ -52,15 +52,13 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
             gen.addProvider(true, new EmiAliasProvider(output, lookupProvider, Mekanism.MODID, MekanismAliasMapping::new));
             gen.addProvider(true, new MekanismEmiDefaults(output, serverResources, lookupProvider));
         } else {
-            pathsToSkip.add("emi/aliases");
-            pathsToSkip.add("emi/recipes/defaults");
-            fakeProviders.add("EMI Alias Provider: mekanism");
-            fakeProviders.add("EMI Default Recipe Provider: mekanism");
+            skipEmi(Mekanism.MODID, pathsToSkip, fakeProviders);
         }
         if (Mekanism.hooks.projecte.isLoaded()) {
             throw new UnsupportedOperationException("Re-enable ProjectE Custom Conversion Provider");
             //gen.addProvider(true, new MekanismCustomConversions(output, lookupProvider));
         } else {
+            Mekanism.logger.warn("Skipping and persisting existing {} data generated files for ProjectE", Mekanism.MODID);
             pathsToSkip.add("pe_custom_conversions");
             fakeProviders.add("Custom EMC Conversions: mekanism");
         }
@@ -68,13 +66,14 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
             throw new UnsupportedOperationException("Re-enable CrT Example Provider");
             //gen.addProvider(true, new MekanismCrTExampleProvider(output, serverResources, lookupProvider));
         } else {
+            Mekanism.logger.warn("Skipping and persisting existing {} data generated files for CraftTweaker", Mekanism.MODID);
             pathsToSkip.add("scripts");
             fakeProviders.add("CraftTweaker Examples: mekanism");
         }
 
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        gen.addProvider(true, new PersistingDisabledProvidersProvider(output, disabledCompats, pathsToSkip, fakeProviders));
+        gen.addProvider(true, new PersistingDisabledProvidersProvider(output, Mekanism.MODID, disabledCompats, pathsToSkip, fakeProviders));
     }
 
     public static void addDisabledEmiProvider(GatherDataEvent event, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid,
@@ -87,23 +86,30 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
             gen.addProvider(true, new EmiAliasProvider(output, lookupProvider, modid, mappings));
             gen.addProvider(true, defaultsProviderFunction.get().create(output, event.getResourceManager(PackType.SERVER_DATA), lookupProvider));
         } else {
-            pathsToSkip.add("emi/aliases");
-            pathsToSkip.add("emi/recipes/defaults");
-            fakeProviders.add("EMI Alias Provider: " + modid);
-            fakeProviders.add("EMI Default Recipe Provider: " + modid);
+            skipEmi(modid, pathsToSkip, fakeProviders);
         }
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        gen.addProvider(true, new PersistingDisabledProvidersProvider(output, Collections.emptySet(), pathsToSkip, fakeProviders));
+        gen.addProvider(true, new PersistingDisabledProvidersProvider(output, modid, Collections.emptySet(), pathsToSkip, fakeProviders));
+    }
+
+    private static void skipEmi(String modid, Set<String> pathsToSkip, List<String> fakeProviders) {
+        Mekanism.logger.warn("Skipping and persisting existing {} data generated files for EMI", modid);
+        pathsToSkip.add("emi/aliases");
+        pathsToSkip.add("emi/recipes/defaults");
+        fakeProviders.add("EMI Alias Provider: " + modid);
+        fakeProviders.add("EMI Default Recipe Provider: " + modid);
     }
 
     private final Set<String> disabledCompats;
     private final Set<String> pathsToSkip;
     private final List<String> fakeProviders;
     private final Path baseOutputPath;
+    private final String modid;
 
-    private PersistingDisabledProvidersProvider(PackOutput output, Set<String> disabledCompats, Set<String> pathsToSkip, List<String> fakeProviders) {
+    private PersistingDisabledProvidersProvider(PackOutput output, String modid, Set<String> disabledCompats, Set<String> pathsToSkip, List<String> fakeProviders) {
         this.baseOutputPath = output.getOutputFolder();
+        this.modid = modid;
         this.disabledCompats = disabledCompats;
         this.pathsToSkip = pathsToSkip.stream().map(path -> "/" + path + "/").collect(Collectors.toUnmodifiableSet());
         this.fakeProviders = fakeProviders;
@@ -124,6 +130,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
             //Skip if we don't have any things to override and persist
             return;
         }
+        disabledCompats.forEach(compat -> Mekanism.logger.warn("Skipping and persisting existing {} data generated compat recipes for {}.", modid, compat));
 
         //NeoForge added field so we can't just AT it
         FieldReflectionHelper<HashCache, Map<String, ProviderCache>> originalCachesField = new FieldReflectionHelper<>(HashCache.class, "originalCaches", Collections::emptyMap);

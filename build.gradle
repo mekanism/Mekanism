@@ -652,11 +652,13 @@ dependencies {
         datagenMainCompileOnly(ae2)
     }
 
-    if (enable_biomes_o_plenty.toBoolean() || enable_biomes_weve_gone.toBoolean()) {
+    def enableBoP = biomesoplenty_version.startsWith(minecraft_version)
+    def enableBWG = enable_biomes_weve_gone.toBoolean()
+    if (enableBoP || enableBWG) {
         datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${terrablender_version}")
     }
     def bop = ("com.github.glitchfiend:BiomesOPlenty-neoforge:${biomesoplenty_version}")
-    if (enable_biomes_o_plenty.toBoolean()) {
+    if (enableBoP) {
         datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${glitchcore_version}")
         datagenMainImplementation(bop)
     } else {
@@ -664,7 +666,7 @@ dependencies {
     }
 
     def bwg = "curse.maven:oh-the-biomes-weve-gone-1070751:${biomeswevegone_id}"
-    if (enable_biomes_weve_gone.toBoolean()) {
+    if (enableBWG) {
         datagenMainRuntimeOnly("curse.maven:corgilib-693313:${corgilib_id}")
         datagenMainRuntimeOnly("curse.maven:geckolib-388172:${geckolib_id}")
         datagenMainRuntimeOnly("curse.maven:oh-the-trees-youll-grow-962544:${ohthetreesyoullgrow_id}")
