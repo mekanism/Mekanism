@@ -68,7 +68,8 @@ public class MekanismHUD implements GuiLayer {
                 ItemStack stack = player.getItemBySlot(slotType);
                 IItemHUDProvider hudProvider = getHudProvider(stack);
                 if (hudProvider != null) {
-                    count += makeComponent(hudProvider, player, stack, slotType, renderStrings, IItemHUDProvider::addHUDStrings);
+                    //noinspection RedundantTypeArguments - Causes nullability warnings
+                    count += this.<EquipmentSlot>makeComponent(hudProvider, player, stack, slotType, renderStrings, IItemHUDProvider::addHUDStrings);
                 }
             }
             ResourceHandler<ItemResource> curiosInventory = Mekanism.hooks.getCuriosInventory(player);
@@ -134,8 +135,8 @@ public class MekanismHUD implements GuiLayer {
         }
     }
 
-    //TODO - 26.2: Fix nullability annotations
-    private int makeComponent(IItemHUDProvider hudProvider, Player player, ItemStack stack, EquipmentSlot slot, List<List<Component>> initial, HudComponentBuilder builder) {
+    private <SLOT extends @Nullable EquipmentSlot> int makeComponent(IItemHUDProvider hudProvider, Player player, ItemStack stack, SLOT slot, List<List<Component>> initial,
+          HudComponentBuilder<SLOT> builder) {
         List<Component> list = new ArrayList<>();
         builder.add(hudProvider, list, player, stack, slot);
         int size = list.size();
@@ -146,8 +147,8 @@ public class MekanismHUD implements GuiLayer {
     }
 
     @FunctionalInterface
-    private interface HudComponentBuilder {
+    private interface HudComponentBuilder<SLOT extends @Nullable EquipmentSlot> {
 
-        void add(IItemHUDProvider hudProvider, List<Component> existing, Player player, ItemStack stack, EquipmentSlot slot);
+        void add(IItemHUDProvider hudProvider, List<Component> existing, Player player, ItemStack stack, SLOT slot);
     }
 }

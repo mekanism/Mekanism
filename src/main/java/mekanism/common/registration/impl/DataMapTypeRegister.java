@@ -52,9 +52,9 @@ public final class DataMapTypeRegister {
 
     public <R, TYPE> AdvancedDataMapType<R, HolderSet<TYPE>, DataMapHolderSetRemover<R, TYPE>> registerSyncedHolderSet(Identifier name, ResourceKey<Registry<R>> registryKey,
           ResourceKey<? extends Registry<TYPE>> holderRegistryKey, Codec<Holder<TYPE>> holderCodec) {
-        return registerAdvanced(name, registryKey, HolderSetCodec.create(holderRegistryKey, holderCodec, false), builder -> builder
-              //TODO - 26.2: Does this sync it flat?
-              .synced(HolderSetCodec.create(holderRegistryKey, holderCodec, true), true)
+        Codec<HolderSet<TYPE>> codec = HolderSetCodec.create(holderRegistryKey, holderCodec, false);
+        return registerAdvanced(name, registryKey, codec, builder -> builder
+              .synced(codec, true)
               .merger(DataMapHolderSetMerger.instance())
               .remover(DataMapHolderSetRemover.codec(holderRegistryKey, holderCodec)));
     }
