@@ -11,7 +11,9 @@ import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.registries.datamaps.DataMapValueMerger;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
-//TODO - 26.2: Docs
+/// Implementation of [DataMapValueMerger] that handles merging [holder sets][HolderSet] together.
+///
+/// @since 10.8.0
 public final class DataMapHolderSetMerger<REGISTRY, TYPE> implements DataMapValueMerger<REGISTRY, HolderSet<TYPE>> {
 
     private static final DataMapHolderSetMerger<?, ?> INSTANCE = new DataMapHolderSetMerger<>();
@@ -28,10 +30,10 @@ public final class DataMapHolderSetMerger<REGISTRY, TYPE> implements DataMapValu
     public HolderSet<TYPE> merge(Registry<REGISTRY> registry, Either<TagKey<REGISTRY>, ResourceKey<REGISTRY>> first, HolderSet<TYPE> firstValue,
           Either<TagKey<REGISTRY>, ResourceKey<REGISTRY>> second, HolderSet<TYPE> secondValue) {
         if (firstValue.isImmediatelyResolvable() && secondValue.isImmediatelyResolvable()) {
-            //If it is immediately resolvable, just resolve it, calculate the union, and make a direct holderset
+            //If it both holder sets are immediately resolvable, resolve them, and calculate the union as a new direct holderset
             return HolderSet.direct(Stream.of(firstValue, secondValue).flatMap(HolderSet::stream).distinct().toList());
         }
-        //Otherwise create an OrHolderSet from both holdersets. If any are already an OrHolderSet, we effectively just add extra parameters to them
+        //Otherwise create an OrHolderSet from both holdersets. If either is already an OrHolderSet, it will be flattened to lower the nesting depth of the union
         List<HolderSet<TYPE>> holderSets = new ArrayList<>();
         addHolderSets(holderSets, firstValue);
         addHolderSets(holderSets, secondValue);

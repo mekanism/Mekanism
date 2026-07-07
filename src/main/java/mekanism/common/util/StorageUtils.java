@@ -115,10 +115,15 @@ public class StorageUtils {//TODO - 26.2: Re-evaluate which of these methods are
     }
 
     public static double getEnergyRatio(TypedInstance<Item> stack) {
-        EnergyHandler handler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack));
+        return getEnergyRatio(ItemAccessUtils.sideEffectFreeAccess(stack));
+    }
+
+    public static double getEnergyRatio(ItemAccess itemAccess) {
+        EnergyHandler handler = Capabilities.ENERGY.getCapability(itemAccess);
         return handler == null ? 0 : ContainerType.ENERGY.divideToLevel(handler);
     }
 
+    //TODO - 26.2: Should this method be used anywhere? Or is coloring happening elsewhere
     public static Component getEnergyPercent(TypedInstance<Item> stack, boolean colorText) {
         return getStoragePercent(getEnergyRatio(stack), colorText);
     }

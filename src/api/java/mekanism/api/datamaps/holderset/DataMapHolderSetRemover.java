@@ -13,9 +13,16 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.registries.datamaps.DataMapValueRemover;
 
-//TODO - 26.2: Docs
+/// Implementation of [DataMapValueRemover] that handles removing elements that match a given [holder set][HolderSet] from a data map of [holder sets][HolderSet].
+///
+/// @param toRemove   Holders that should be removed from the value of the data map.
+/// @param <REGISTRY> Registry the data map targets.
+/// @param <TYPE>     Holder type.
+///
+/// @since 10.8.0
 public record DataMapHolderSetRemover<REGISTRY, TYPE>(HolderSet<TYPE> toRemove) implements DataMapValueRemover<REGISTRY, HolderSet<TYPE>> {
 
+    /// Codec for creating a data map value remover for removing from [holder set][HolderSet] values.
     public static <REGISTRY, TYPE> Codec<DataMapHolderSetRemover<REGISTRY, TYPE>> codec(ResourceKey<? extends Registry<TYPE>> registryKey, Codec<Holder<TYPE>> elementCodec) {
         return HolderSetCodec.create(registryKey, elementCodec, false).xmap(DataMapHolderSetRemover::new, DataMapHolderSetRemover::toRemove);
     }

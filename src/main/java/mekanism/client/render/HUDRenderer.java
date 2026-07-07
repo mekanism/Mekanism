@@ -1,6 +1,7 @@
 package mekanism.client.render;
 
 import java.util.function.Predicate;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.gear.IClientModuleHelper;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModuleContainer;
@@ -9,9 +10,8 @@ import mekanism.client.pip.CompassPiP;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.item.gear.ItemMekaSuitArmor;
-import mekanism.common.item.gear.ItemMekaTool;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -19,6 +19,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.SubtitleOverlay;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
 
@@ -103,21 +105,22 @@ public class HUDRenderer {
         pose.pushMatrix();
         pose.translate(10, 10);
         int posX = 0;
-        Predicate<Item> showArmorPercent = item -> item instanceof ItemMekaSuitArmor;
+        Predicate<TypedInstance<Item>> showArmorPercent = item -> item.is(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR);
         for (int i = 0; i < EnumUtils.ARMOR_SLOTS.length; i++) {
             posX += renderEnergyIcon(player, font, guiGraphics, posX, ARMOR_ICONS[i], EnumUtils.ARMOR_SLOTS[i], showArmorPercent);
         }
-        Predicate<Item> showToolPercent = item -> item instanceof ItemMekaTool;
+        //TODO - 26.2: Do we want a separate tag for this
+        Predicate<TypedInstance<Item>> showToolPercent = item -> item.is(MekanismAPITags.Items.MODULE_CONTAINERS_MEKA_TOOL);
         for (EquipmentSlot hand : EnumUtils.HAND_SLOTS) {
             posX += renderEnergyIcon(player, font, guiGraphics, posX, TOOL_ICON, hand, showToolPercent);
         }
         pose.popMatrix();
     }
 
-    private int renderEnergyIcon(Player player, Font font, GuiGraphicsExtractor guiGraphics, int posX, Identifier icon, EquipmentSlot slot, Predicate<Item> showPercent) {
-        ItemStack stack = player.getItemBySlot(slot);
-        if (showPercent.test(stack.getItem())) {
-            renderHUDElement(font, guiGraphics, posX, 0, IClientModuleHelper.INSTANCE.hudElementPercent(icon, StorageUtils.getEnergyRatio(stack)), false);
+    private int renderEnergyIcon(Player player, Font font, GuiGraphicsExtractor guiGraphics, int posX, Identifier icon, EquipmentSlot slot, Predicate<TypedInstance<Item>> showPercent) {
+        ItemAccess itemAccess = ItemAccessUtils.forEntitySlot(player, slot);
+        if (showPercent.test(itemAccess.getResource())) {
+            renderHUDElement(font, guiGraphics, posX, 0, IClientModuleHelper.INSTANCE.hudElementPercent(icon, StorageUtils.getEnergyRatio(itemAccess)), false);
             return 48;
         }
         return 0;

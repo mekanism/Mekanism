@@ -91,7 +91,8 @@ import org.jspecify.annotations.Nullable;
 
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IComponentAware, ICapabilityAware {
 
-    //TODO: Expand this system so that modules can maybe define needed tanks?
+    //TODO - 26.2: Expand this system so that modules can maybe define needed tanks?
+    // Maybe we can define some of the things via a datapack registry, and then have modules declare what types of tanks they need?
     private final List<GenericTankSpec<ChemicalResource>> chemicalTankSpecs = new ArrayList<>();
     private final List<GenericTankSpec<ChemicalResource>> chemicalTankSpecsView = Collections.unmodifiableList(chemicalTankSpecs);
     private final List<GenericTankSpec<FluidResource>> fluidTankSpecs = new ArrayList<>();
@@ -107,11 +108,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
               properties.rarity(Rarity.EPIC).setNoCombineRepair().stacksTo(1)
         ));
         this.armorType = armorType;
+        this.absorption = getAbsorption(armorType);
         switch (armorType) {
             case HELMET -> {
                 fluidTankSpecs.add(GenericTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
                       fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE), itemType -> hasModule(itemType, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
-                absorption = 0.15F;
                 laserDissipation = 0.15F;
                 laserRefraction = 0.2F;
             }
@@ -125,17 +126,14 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(itemType, MekanismModules.JETPACK_UNIT);
                     return module == null ? 0L : MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount();
                 }, chemical -> chemical.is(ChemicalIds.HYDROGEN), itemType -> hasModule(itemType, MekanismModules.JETPACK_UNIT)));
-                absorption = 0.4F;
                 laserDissipation = 0.3F;
                 laserRefraction = 0.4F;
             }
             case LEGGINGS -> {
-                absorption = 0.3F;
                 laserDissipation = 0.1875F;
                 laserRefraction = 0.25F;
             }
             case BOOTS -> {
-                absorption = 0.15F;
                 laserDissipation = 0.1125F;
                 laserRefraction = 0.15F;
             }
@@ -390,6 +388,16 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return oldStack.getItem() != newStack.getItem();
     }
 
+    private static float getAbsorption(ArmorType armorType) {
+        return switch (armorType) {
+            case HELMET, BOOTS -> 0.15F;
+            case CHESTPLATE -> 0.4F;
+            case LEGGINGS -> 0.3F;
+            //TODO: Do we want to provide a default for BODY?
+            default -> throw new IllegalArgumentException("Unknown Equipment Slot Type");
+        };
+    }
+
     public static float getDamageAbsorbed(Player player, DamageSource source, float amount) {
         if (amount <= 0) {
             return 0;
@@ -402,6 +410,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(player, EquipmentSlot.Type.HUMANOID_ARMOR);
             for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
                 ItemResource itemType = armorSlots.getResource(slot);
+                //TODO - 26.2: Can we make this use the tag instead of an instance check?
                 if (!itemType.isEmpty() && itemType.value() instanceof ItemMekaSuitArmor armor) {
                     ItemAccess itemAccess = ItemAccess.forHandlerIndexStrict(armorSlots, slot);
                     EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(itemAccess));

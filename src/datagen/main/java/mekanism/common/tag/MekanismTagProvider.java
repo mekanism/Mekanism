@@ -105,7 +105,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Items.getProcessedResource(ResourceType.DIRTY_DUST, PrimaryResource.GOLD),
               MekanismTags.Items.getProcessedResource(ResourceType.CLUMP, PrimaryResource.GOLD)
         );
-        getBuilder(MekanismTags.Items.MEKASUIT_HUD_RENDERER).add(MekanismItems.MEKASUIT_HELMET);
+        getBuilder(MekanismAPITags.Items.MEKASUIT_HUD_RENDERER).add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_HELMET);
         getBuilder(MekanismTags.Items.STONE_CRAFTING_MATERIALS).add(ItemTags.STONE_CRAFTING_MATERIALS, Tags.Items.COBBLESTONES_NORMAL);
         getBuilder(MekanismTags.Items.MUFFLING_CENTER).add(
               Tags.Items.BRICKS,
@@ -304,7 +304,14 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_LEGGINGS,
               MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_BOOTS
         );
+        getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_COLORABLE).add(
+              MekanismItems.MEKASUIT_HELMET,
+              MekanismItems.MEKASUIT_BODYARMOR,
+              MekanismItems.MEKASUIT_PANTS,
+              MekanismItems.MEKASUIT_BOOTS
+        );
         getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS).add(
+              MekanismAPITags.Items.MODULE_CONTAINERS_COLORABLE,
               MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR,
               MekanismAPITags.Items.MODULE_CONTAINERS_MEKA_TOOL
         );

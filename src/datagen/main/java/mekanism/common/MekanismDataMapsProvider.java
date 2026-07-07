@@ -93,14 +93,13 @@ public class MekanismDataMapsProvider extends DataMapProvider {
     }
 
     private void gatherSupportedUnits() {
-        //TODO - 26.2: Expose resource keys for the various builtin meka module containers
         builder(IMekanismDataMapTypes.INSTANCE.supportedModules())
+              .add(MekanismAPITags.Items.MODULE_CONTAINERS_COLORABLE, HolderSet.direct(MekanismModules.COLOR_MODULATION_UNIT), false)
               .add(MekanismAPITags.Items.MODULE_CONTAINERS, HolderSet.direct(
                     MekanismModules.ENERGY_UNIT
               ), false)
               //MekaSuit Common
               .add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR, HolderSet.direct(
-                    MekanismModules.COLOR_MODULATION_UNIT,
                     MekanismModules.LASER_DISSIPATION_UNIT,
                     MekanismModules.RADIATION_SHIELDING_UNIT
               ), false)

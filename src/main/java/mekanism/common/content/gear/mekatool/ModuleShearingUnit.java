@@ -47,6 +47,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean canPerformAction(IModule<ModuleShearingUnit> module, IModuleContainer container, ITEM instance,
           ItemAbility action) {
         if (action == ItemAbilities.SHEARS_DISARM) {
+            //TODO - 26.2: Re-evaluate these behaviors that are tied directly to the meka-tool
             if (instance.is(MekanismItems.MEKA_TOOL)) {
                 //Only require energy if we are installed on a Meka-Tool and can thus calculate the energy required to break the block "safely"
                 // Note: We assume hardness is zero like the default is for tripwires as we don't have the target block in our current context

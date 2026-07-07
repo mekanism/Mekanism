@@ -329,7 +329,7 @@ public class CommonPlayerTickHandler {
     @Nullable
     private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {
         ItemAccess feetAccess = ItemAccessUtils.forEntitySlot(base, EquipmentSlot.FEET);
-        if (feetAccess.getResource().getItem() instanceof ItemMekaSuitArmor) {
+        if (feetAccess.getResource().is(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_BOOTS)) {
             EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(feetAccess));
             return new FallEnergyInfo(energyHandler, MekanismConfig.gear.mekaSuitFallDamageRatio, MekanismConfig.gear.mekaSuitEnergyUsageFall);
         }

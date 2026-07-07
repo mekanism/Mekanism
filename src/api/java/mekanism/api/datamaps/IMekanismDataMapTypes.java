@@ -63,7 +63,16 @@ public interface IMekanismDataMapTypes {
         return getData(registryAccess, Registries.DAMAGE_TYPE, holder, mekaSuitAbsorption());
     }
 
-    //TODO - 26.2: Docs
+    /// The [Item] data map that defines what modules can be installed on a given item.
+    ///
+    /// The location of this data map is `mekanism/data_maps/item/supported_modules.json`, and the values are [holder sets][HolderSet] defining what modules are valid for
+    /// the item.
+    ///
+    /// This is an [advanced data map][AdvancedDataMapType], which means it supports merging multiple module [holder sets][HolderSet] from various datapacks all targeting
+    /// the same item, and also supports removing specific modules as supported from an item.
+    ///
+    /// @implNote This data map is synced to the client.
+    /// @since 10.8.0
     AdvancedDataMapType<Item, HolderSet<ModuleData<?>>, DataMapHolderSetRemover<Item, ModuleData<?>>> supportedModules();
 
     /// The [Chemical][Chemical] data map that defines how radioactive a chemical is.

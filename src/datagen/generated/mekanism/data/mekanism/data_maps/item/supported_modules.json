@@ -2,7 +2,6 @@
   "values": {
     "#mekanism:module_containers": "mekanism:energy_unit",
     "#mekanism:module_containers/armor": [
-      "mekanism:color_modulation_unit",
       "mekanism:laser_dissipation_unit",
       "mekanism:radiation_shielding_unit"
     ],
@@ -32,6 +31,7 @@
       "mekanism:locomotive_boosting_unit",
       "mekanism:motorized_servo_unit"
     ],
+    "#mekanism:module_containers/colorable": "mekanism:color_modulation_unit",
     "#mekanism:module_containers/meka_tool": [
       "mekanism:attack_amplification_unit",
       "mekanism:blasting_unit",

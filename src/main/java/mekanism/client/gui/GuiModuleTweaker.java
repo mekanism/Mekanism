@@ -6,6 +6,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -165,7 +166,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 scrollList.clearSelection();
             }
             if (optionsButton != null) {//Should never be null here
-                optionsButton.active = MekanismItems.MEKASUIT_HELMET.is(itemType);
+                optionsButton.active = itemType.is(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_HELMET);
             }
             return true;
         }
@@ -183,6 +184,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         return ItemResource.of(menu.slots.get(index).getItem());
     }
 
+    //TODO - 26.2: Do we want to allow previewing held item? Might be useful for mekanism weapons, as apparently those are able to be colored?
     public static class ArmorPreview implements Supplier<HumanoidRenderState> {
 
         private final Map<EquipmentSlot, Supplier<ItemStack>> lazyItems = new EnumMap<>(EquipmentSlot.class);

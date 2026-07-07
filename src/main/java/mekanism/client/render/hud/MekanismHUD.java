@@ -2,6 +2,7 @@ package mekanism.client.render.hud;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.client.gui.GuiUtils;
@@ -9,7 +10,6 @@ import mekanism.client.render.HUDRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IItemHUDProvider;
-import mekanism.common.tags.MekanismTags;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -128,12 +128,13 @@ public class MekanismHUD implements GuiLayer {
                 pose.popMatrix();
             }
 
-            if (player.getItemBySlot(EquipmentSlot.HEAD).is(MekanismTags.Items.MEKASUIT_HUD_RENDERER)) {
+            if (player.getItemBySlot(EquipmentSlot.HEAD).is(MekanismAPITags.Items.MEKASUIT_HUD_RENDERER)) {
                 hudRenderer.renderHUD(minecraft, player, graphics, font, delta, graphics.guiWidth(), graphics.guiHeight(), maxTextHeight, reverseHud);
             }
         }
     }
 
+    //TODO - 26.2: Fix nullability annotations
     private int makeComponent(IItemHUDProvider hudProvider, Player player, ItemStack stack, EquipmentSlot slot, List<List<Component>> initial, HudComponentBuilder builder) {
         List<Component> list = new ArrayList<>();
         builder.add(hudProvider, list, player, stack, slot);
