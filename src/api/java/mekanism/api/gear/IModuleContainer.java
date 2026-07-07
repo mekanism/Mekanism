@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import mekanism.api.MekanismIMC.ModuleContainerTarget;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
@@ -16,8 +15,11 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
 
-/// Represents an item that can contain modules. Do not implement this interface directly, register new containers via
-/// [mekanism.api.MekanismIMC#addModuleContainer(ModuleContainerTarget)]. Module containers are immutable.
+/// Represents an item that can contain modules. Do not implement this interface directly, register new containers to the [relevant tag][
+///mekanism.api.MekanismAPITags.Items#MODULE_CONTAINERS], and then modules for them to the [supported modules data map][
+///mekanism.api.datamaps.IMekanismDataMapTypes#supportedModules()].
+///
+/// Module containers are immutable.
 ///
 /// @since 10.5.0
 public interface IModuleContainer {

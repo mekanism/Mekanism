@@ -9,12 +9,17 @@ import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
+import mekanism.api.datamaps.holderset.DataMapHolderSetRemover;
+import mekanism.api.gear.ModuleData;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.registries.datamaps.AdvancedDataMapType;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import org.jspecify.annotations.Nullable;
 
@@ -57,6 +62,18 @@ public interface IMekanismDataMapTypes {
     default MekaSuitAbsorption getMekaSuitAbsorption(RegistryAccess registryAccess, Holder<DamageType> holder) {
         return getData(registryAccess, Registries.DAMAGE_TYPE, holder, mekaSuitAbsorption());
     }
+
+    /// The [Item] data map that defines what modules can be installed on a given item.
+    ///
+    /// The location of this data map is `mekanism/data_maps/item/supported_modules.json`, and the values are [holder sets][HolderSet] defining what modules are valid for
+    /// the item.
+    ///
+    /// This is an [advanced data map][AdvancedDataMapType], which means it supports merging multiple module [holder sets][HolderSet] from various datapacks all targeting
+    /// the same item, and also supports removing specific modules as supported from an item.
+    ///
+    /// @implNote This data map is synced to the client.
+    /// @since 10.8.0
+    AdvancedDataMapType<Item, HolderSet<ModuleData<?>>, DataMapHolderSetRemover<Item, ModuleData<?>>> supportedModules();
 
     /// The [Chemical][Chemical] data map that defines how radioactive a chemical is.
     ///

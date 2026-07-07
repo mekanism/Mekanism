@@ -43,7 +43,6 @@ import mekanism.common.network.to_client.container.PacketUpdateContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -216,7 +215,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     protected void addArmorSlots(Inventory inv, int x, int y, int offhandOffset) {
         int armorSlots = 4;
         for (int index = 0; index < armorSlots; index++) {
-            final EquipmentSlot slotType = EnumUtils.EQUIPMENT_SLOT_TYPES[2 + armorSlots - index - 1];
+            final EquipmentSlot slotType = EquipmentSlot.VALUES.get(2 + armorSlots - index - 1);
             addSlot(new ArmorSlot(inv, 36 + armorSlots - index - 1, x, y, slotType));
             y += 18;
         }

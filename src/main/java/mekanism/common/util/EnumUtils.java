@@ -24,19 +24,11 @@ import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.equipment.ArmorType;
 
 public class EnumUtils {
 
     private EnumUtils() {
     }
-
-    /// Cached collection of armor slot positions from EquipmentSlotType. DO NOT MODIFY THIS LIST.
-    public static final EquipmentSlot[] ARMOR_SLOTS = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
-
-    /// Cached collection of hand slot positions from EquipmentSlotType. DO NOT MODIFY THIS LIST.
-    public static final EquipmentSlot[] HAND_SLOTS = {EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
 
     /// Cached value of [Direction#values()]. DO NOT MODIFY THIS LIST.
     public static final Direction[] DIRECTIONS = Direction.values();
@@ -106,9 +98,6 @@ public class EnumUtils {
     /// Cached value of [ResourceType#values()]. DO NOT MODIFY THIS LIST.
     public static final ResourceType[] RESOURCE_TYPES = ResourceType.values();
 
-    /// Cached value of [EquipmentSlot#values()]. DO NOT MODIFY THIS LIST.
-    public static final EquipmentSlot[] EQUIPMENT_SLOT_TYPES = EquipmentSlot.values();
-
     /// Cached value of [EnumColor#values()]. DO NOT MODIFY THIS LIST.
     public static final EnumColor[] COLORS = EnumColor.values();
 
@@ -117,7 +106,4 @@ public class EnumUtils {
 
     /// Cached value of [DriveStatus#values()]. DO NOT MODIFY THIS LIST.
     public static final DriveStatus[] DRIVE_STATUSES = DriveStatus.values();
-
-    /// Cached value of [ArmorType#values()]. DO NOT MODIFY THIS LIST.
-    public static final ArmorType[] ARMOR_TYPES = ArmorType.values();
 }

@@ -2,7 +2,6 @@ package mekanism.generators.common;
 
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
-import mekanism.api.MekanismIMC;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.command.builders.BuildCommand;
@@ -28,7 +27,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import org.jspecify.annotations.Nullable;
 
 @Mod(MekanismGenerators.MODID)
@@ -51,7 +49,6 @@ public class MekanismGenerators implements IModModule {
         MekanismGeneratorsConfig.registerConfigs(modContainer);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(MekanismGeneratorsConfig::onConfigLoad);
-        modEventBus.addListener(this::imcQueue);
 
         GeneratorsDataComponents.DATA_COMPONENTS.register(modEventBus);
         GeneratorsItems.ITEMS.register(modEventBus);
@@ -86,11 +83,6 @@ public class MekanismGenerators implements IModModule {
 
         //Finalization
         Mekanism.logger.info("Loaded 'Mekanism: Generators' module.");
-    }
-
-    private void imcQueue(InterModEnqueueEvent event) {
-        MekanismIMC.addMekaSuitHelmetModules(GeneratorsModules.SOLAR_RECHARGING_UNIT);
-        MekanismIMC.addMekaSuitPantsModules(GeneratorsModules.GEOTHERMAL_GENERATOR_UNIT);
     }
 
     @Override

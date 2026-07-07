@@ -63,6 +63,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -91,12 +92,12 @@ import org.jspecify.annotations.Nullable;
 
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IComponentAware, ICapabilityAware {
 
-    //TODO: Expand this system so that modules can maybe define needed tanks?
+    //TODO - 26.2: Expand this system so that modules can maybe define needed tanks?
+    // Maybe we can define some of the things via a datapack registry, and then have modules declare what types of tanks they need?
     private final List<GenericTankSpec<ChemicalResource>> chemicalTankSpecs = new ArrayList<>();
     private final List<GenericTankSpec<ChemicalResource>> chemicalTankSpecsView = Collections.unmodifiableList(chemicalTankSpecs);
     private final List<GenericTankSpec<FluidResource>> fluidTankSpecs = new ArrayList<>();
     private final List<GenericTankSpec<FluidResource>> fluidTankSpecsView = Collections.unmodifiableList(fluidTankSpecs);
-    private final float absorption;
     //Full laser dissipation causes 3/4 of the energy to be dissipated and the remaining energy to be refracted
     private final float laserDissipation;
     private final float laserRefraction;
@@ -107,11 +108,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
               properties.rarity(Rarity.EPIC).setNoCombineRepair().stacksTo(1)
         ));
         this.armorType = armorType;
-        switch (armorType) {
+        switch (this.armorType) {
             case HELMET -> {
                 fluidTankSpecs.add(GenericTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
                       fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE), itemType -> hasModule(itemType, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
-                absorption = 0.15F;
                 laserDissipation = 0.15F;
                 laserRefraction = 0.2F;
             }
@@ -125,17 +125,14 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(itemType, MekanismModules.JETPACK_UNIT);
                     return module == null ? 0L : MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount();
                 }, chemical -> chemical.is(ChemicalIds.HYDROGEN), itemType -> hasModule(itemType, MekanismModules.JETPACK_UNIT)));
-                absorption = 0.4F;
                 laserDissipation = 0.3F;
                 laserRefraction = 0.4F;
             }
             case LEGGINGS -> {
-                absorption = 0.3F;
                 laserDissipation = 0.1875F;
                 laserRefraction = 0.25F;
             }
             case BOOTS -> {
-                absorption = 0.15F;
                 laserDissipation = 0.1125F;
                 laserRefraction = 0.15F;
             }
@@ -212,8 +209,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public int getEnchantmentLevel(ItemInstance instance, Holder<Enchantment> enchantment) {
         //Enchantments in our data
-        IModuleContainer container = ModuleHelper.get().getModuleContainerUnsafe(instance);
-        int moduleLevel = container.getModuleEnchantmentLevel(enchantment);
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(instance);
+        int moduleLevel = container == null ? 0 : container.getModuleEnchantmentLevel(enchantment);
         return Math.max(moduleLevel, super.getEnchantmentLevel(instance, enchantment));
     }
 
@@ -390,7 +387,18 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return oldStack.getItem() != newStack.getItem();
     }
 
-    public static float getDamageAbsorbed(Player player, DamageSource source, float amount) {
+    private static float getAbsorption(EquipmentSlot armorType) {
+        return switch (armorType) {
+            case HEAD, FEET -> 0.15F;
+            case CHEST -> 0.4F;
+            case LEGS -> 0.3F;
+            //Based roughly off the defense values of the netherite armor material for body vs the sum of all the ones for a full set of humanoid armor
+            case BODY -> 0.95F;
+            default -> throw new IllegalArgumentException("Unknown Equipment Slot Armor Type");
+        };
+    }
+
+    public static float getDamageAbsorbed(LivingEntity entity, DamageSource source, float amount) {
         if (amount <= 0) {
             return 0;
         }
@@ -399,31 +407,34 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
         try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
             //Start by looping the armor, allowing modules to absorb damage if they can
-            ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(player, EquipmentSlot.Type.HUMANOID_ARMOR);
-            for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
-                ItemResource itemType = armorSlots.getResource(slot);
-                if (!itemType.isEmpty() && itemType.value() instanceof ItemMekaSuitArmor armor) {
-                    ItemAccess itemAccess = ItemAccess.forHandlerIndexStrict(armorSlots, slot);
-                    EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(itemAccess));
-                    if (energyHandler != null) {
-                        FoundArmorDetails details = new FoundArmorDetails(energyHandler, armor.absorption);
-                        armorDetails.add(details);
-                        for (IModule<?> module : IModuleHelper.INSTANCE.getAllModules(itemType)) {
-                            if (module.isEnabled()) {
-                                ModuleDamageAbsorbInfo damageAbsorbInfo = getModuleDamageAbsorbInfo(module, source);
-                                if (damageAbsorbInfo != null) {
-                                    float absorption = damageAbsorbInfo.absorptionRatio().getAsFloat();
-                                    ratioAbsorbed += absorbDamage(details.energyHandler, amount, absorption, ratioAbsorbed, damageAbsorbInfo.energyCost(), transaction);
-                                    if (ratioAbsorbed >= 1) {
-                                        //If we have fully absorbed the damage, stop checking/trying to absorb more
-                                        break;
+            for (EquipmentSlot armorType : EquipmentSlotGroup.ARMOR) {
+                //Player's don't have non-humanoid armor and the wrapper will throw for them, so skip them
+                if (!(entity instanceof Player) || armorType.getType() == Type.HUMANOID_ARMOR) {
+                    ResourceHandler<ItemResource> armorSlot = LivingEntityEquipmentWrapper.of(entity, armorType);
+                    ItemResource itemType = armorSlot.getResource(0);
+                    if (!itemType.isEmpty() && itemType.is(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR)) {
+                        ItemAccess itemAccess = ItemAccess.forHandlerIndexStrict(armorSlot, 0);
+                        EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(itemAccess));
+                        if (energyHandler != null) {
+                            FoundArmorDetails details = new FoundArmorDetails(energyHandler, getAbsorption(armorType));
+                            armorDetails.add(details);
+                            for (IModule<?> module : IModuleHelper.INSTANCE.getAllModules(itemType)) {
+                                if (module.isEnabled()) {
+                                    ModuleDamageAbsorbInfo damageAbsorbInfo = getModuleDamageAbsorbInfo(module, source);
+                                    if (damageAbsorbInfo != null) {
+                                        float absorption = damageAbsorbInfo.absorptionRatio().getAsFloat();
+                                        ratioAbsorbed += absorbDamage(details.energyHandler, amount, absorption, ratioAbsorbed, damageAbsorbInfo.energyCost(), transaction);
+                                        if (ratioAbsorbed >= 1) {
+                                            //If we have fully absorbed the damage, stop checking/trying to absorb more
+                                            break;
+                                        }
                                     }
                                 }
                             }
-                        }
-                        if (ratioAbsorbed >= 1) {
-                            //If we have fully absorbed the damage, stop checking/trying to absorb more
-                            break;
+                            if (ratioAbsorbed >= 1) {
+                                //If we have fully absorbed the damage, stop checking/trying to absorb more
+                                break;
+                            }
                         }
                     }
                 }
@@ -439,7 +450,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                             break;
                         }
                         // Next lookup the ratio at which we can absorb the given damage type from the data map
-                        MekaSuitAbsorption absorptionData = IMekanismDataMapTypes.INSTANCE.getMekaSuitAbsorption(player.registryAccess(), source.typeHolder());
+                        MekaSuitAbsorption absorptionData = IMekanismDataMapTypes.INSTANCE.getMekaSuitAbsorption(entity.registryAccess(), source.typeHolder());
                         if (absorptionData == null) {
                             absorbRatio = MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio.get();
                         } else {

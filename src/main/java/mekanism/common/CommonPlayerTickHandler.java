@@ -223,20 +223,18 @@ public class CommonPlayerTickHandler {
                 }
             }
         }
-        if (entity instanceof Player player) {
-            //TODO - 1.21: Should we rewrite this to try and take advantage of the new reduction system? It would be kind of nice to move this to the
-            // spot that reduction from armor happens. Though then the base armor reduction will apply before our energy based reduction
-            // Is that fine? Maybe it is better, or maybe it is worse from a balance standpoint
-            float ratioAbsorbed = ItemMekaSuitArmor.getDamageAbsorbed(player, damageContainer.getSource(), damage);
-            if (ratioAbsorbed > 0) {
-                //TODO - 1.21: What should we set this to, and how does it behave if we also cancel the event
-                //damageContainer.setPostAttackInvulnerabilityTicks();
-                float damageRemaining = damage * Math.max(0, 1 - ratioAbsorbed);
-                if (damageRemaining <= 0) {
-                    event.setCanceled(true);
-                } else {
-                    damageContainer.setNewDamage(damageRemaining);
-                }
+        //TODO - 1.21: Should we rewrite this to try and take advantage of the new reduction system? It would be kind of nice to move this to the
+        // spot that reduction from armor happens. Though then the base armor reduction will apply before our energy based reduction
+        // Is that fine? Maybe it is better, or maybe it is worse from a balance standpoint
+        float ratioAbsorbed = ItemMekaSuitArmor.getDamageAbsorbed(entity, damageContainer.getSource(), damage);
+        if (ratioAbsorbed > 0) {
+            //TODO - 1.21: What should we set this to, and how does it behave if we also cancel the event
+            //damageContainer.setPostAttackInvulnerabilityTicks();
+            float damageRemaining = damage * Math.max(0, 1 - ratioAbsorbed);
+            if (damageRemaining <= 0) {
+                event.setCanceled(true);
+            } else {
+                damageContainer.setNewDamage(damageRemaining);
             }
         }
     }
@@ -329,7 +327,7 @@ public class CommonPlayerTickHandler {
     @Nullable
     private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {
         ItemAccess feetAccess = ItemAccessUtils.forEntitySlot(base, EquipmentSlot.FEET);
-        if (feetAccess.getResource().getItem() instanceof ItemMekaSuitArmor) {
+        if (feetAccess.getResource().is(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_BOOTS)) {
             EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(feetAccess));
             return new FallEnergyInfo(energyHandler, MekanismConfig.gear.mekaSuitFallDamageRatio, MekanismConfig.gear.mekaSuitEnergyUsageFall);
         }

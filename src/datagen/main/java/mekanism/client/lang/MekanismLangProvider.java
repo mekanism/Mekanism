@@ -237,7 +237,17 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         add(MekanismTags.Items.GEMS_FLUORITE, "Fluorite");
 
-        add(MekanismTags.Items.MEKASUIT_HUD_RENDERER, "Renders MekaSuit HUD");
+        add(MekanismAPITags.Items.MEKASUIT_HUD_RENDERER, "Renders MekaSuit HUD");
+        add(MekanismAPITags.Items.MODULE_CONTAINERS, "Module Containers");
+        add(MekanismAPITags.Items.MODULE_CONTAINERS_COLORABLE, "Colorable Module Containers");
+        add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR, "Armor Module Containers");
+        add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_HELMET, "Helmet Module Containers");
+        add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_CHESTPLATE, "Chestplate Module Containers");
+        add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_LEGGINGS, "Legging Module Containers");
+        add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_BOOTS, "Boot Module Containers");
+        add(MekanismAPITags.Items.MODULE_CONTAINERS_HELD, "Held Module Containers");
+        add(MekanismAPITags.Items.MODULE_CONTAINERS_HELD_MEKA_TOOL, "Meka-Tool Module Containers");
+
         add(MekanismTags.Items.STONE_CRAFTING_MATERIALS, "Stone Crafting Materials");
         add(MekanismTags.Items.MUFFLING_CENTER, "Muffling Upgrade Usable Ingots");
 

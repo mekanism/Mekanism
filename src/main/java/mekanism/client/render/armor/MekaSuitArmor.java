@@ -46,7 +46,6 @@ import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -59,6 +58,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.ElytraAnimationState;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
@@ -575,7 +575,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     public QuickHash key(HumanoidRenderState state) {
         Object2BooleanMap<ModuleModelSpec> modules = new Object2BooleanOpenHashMap<>();
         Set<EquipmentSlot> wornParts = EnumSet.noneOf(EquipmentSlot.class);
-        for (EquipmentSlot slotType : EnumUtils.ARMOR_SLOTS) {
+        for (EquipmentSlot slotType : EquipmentSlotGroup.ARMOR) {
             ItemStack stack = getItemBySlot(state, slotType);
             if (stack.getItem() instanceof ItemMekaSuitArmor) {
                 IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);

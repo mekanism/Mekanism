@@ -9,7 +9,6 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
@@ -103,7 +102,7 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
     ///
     /// @return whether the given chestplate should be filled with hydrogen.
     private <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean checkChestPlate(ITEM chest) {
-        if (chest.is(MekanismItems.MEKASUIT_BODYARMOR)) {
+        if (IModuleHelper.INSTANCE.isModuleContainer(chest)) {
             return IModuleHelper.INSTANCE.getModule(chest, MekanismModules.JETPACK_UNIT) != null;
         }
         return true;

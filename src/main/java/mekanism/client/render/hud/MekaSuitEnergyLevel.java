@@ -1,11 +1,11 @@
 package mekanism.client.render.hud;
 
+import mekanism.api.MekanismAPITags;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.item.gear.ItemMekaSuitArmor;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -36,7 +36,7 @@ public class MekaSuitEnergyLevel implements GuiLayer {
         ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(minecraft.player, EquipmentSlot.Type.HUMANOID_ARMOR);
         for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
             ItemResource itemType = armorSlots.getResource(slot);
-            if (!itemType.isEmpty() && itemType.value() instanceof ItemMekaSuitArmor) {
+            if (!itemType.isEmpty() && itemType.is(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR)) {
                 EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forHandlerIndexStrict(armorSlots, slot));
                 if (energyHandler != null) {
                     capacity = MathUtils.addClamped(capacity, energyHandler.getCapacityAsLong());

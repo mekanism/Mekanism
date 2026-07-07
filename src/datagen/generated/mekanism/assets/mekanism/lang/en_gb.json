@@ -118,5 +118,6 @@
   "module.mekanism.motorized_servo_unit": "Motorised Servo Unit",
   "sound_event.mekanism.tile.machine.antiprotonic_nucleosynthesizer": "Nucleosynthesiser hums",
   "sound_event.mekanism.tile.machine.chemical_crystallizer": "Crystalliser hums",
-  "sound_event.mekanism.tile.machine.chemical_oxidizer": "Oxidiser hums"
+  "sound_event.mekanism.tile.machine.chemical_oxidizer": "Oxidiser hums",
+  "tag.item.mekanism.module_containers.armor": "Armour Module Containers"
 }

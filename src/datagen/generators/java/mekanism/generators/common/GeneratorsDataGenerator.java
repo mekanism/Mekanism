@@ -43,6 +43,7 @@ public class GeneratorsDataGenerator {
         gen.addProvider(true, new GeneratorsTagProvider(output, lookupProvider));
         gen.addProvider(true, new GeneratorsLootProvider(output, lookupProvider));
         gen.addProvider(true, drProvider);
+        gen.addProvider(true, new GeneratorsDataMapsProvider(output, lookupProvider));
         gen.addProvider(true, new MekRecipeRunner(output, lookupProvider, GeneratorsRecipeProvider::new, MekanismGenerators.MODID));
         gen.addProvider(true, new AdvancementProvider(output, lookupProvider, List.of(new GeneratorsAdvancementProvider())));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet

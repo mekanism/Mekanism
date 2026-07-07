@@ -17,10 +17,12 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismModules;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.util.ChemicalUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.neoforged.neoforge.common.data.DataMapProvider;
@@ -61,6 +63,8 @@ public class MekanismDataMapsProvider extends DataMapProvider {
               .add(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, new MekaSuitAbsorption(1F), false)
         ;
 
+        gatherSupportedUnits();
+
         Builder<ChemicalSolidTag, Chemical> chemicalSolidTagBuilder = builder(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
         for (Map.Entry<PrimaryResource, CleanDirtySlurryId> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
             chemicalSolidTagBuilder.add(entry.getValue().clean(), new ChemicalSolidTag(entry.getKey().getOreTag()), false);
@@ -85,6 +89,62 @@ public class MekanismDataMapsProvider extends DataMapProvider {
         ;
         builder(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant())
               .add(ChemicalIds.SUPERHEATED_SODIUM, new HeatedCoolant(provider.getOrThrow(ChemicalIds.SODIUM), 5), false)
+        ;
+    }
+
+    private void gatherSupportedUnits() {
+        builder(IMekanismDataMapTypes.INSTANCE.supportedModules())
+              .add(MekanismAPITags.Items.MODULE_CONTAINERS_COLORABLE, HolderSet.direct(MekanismModules.COLOR_MODULATION_UNIT), false)
+              .add(MekanismAPITags.Items.MODULE_CONTAINERS, HolderSet.direct(
+                    MekanismModules.ENERGY_UNIT
+              ), false)
+              //MekaSuit Common
+              .add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR, HolderSet.direct(
+                    MekanismModules.LASER_DISSIPATION_UNIT,
+                    MekanismModules.RADIATION_SHIELDING_UNIT
+              ), false)
+              //Meka-Tool
+              .add(MekanismAPITags.Items.MODULE_CONTAINERS_HELD_MEKA_TOOL, HolderSet.direct(
+                    MekanismModules.ATTACK_AMPLIFICATION_UNIT,
+                    MekanismModules.BLASTING_UNIT,
+                    MekanismModules.EXCAVATION_ESCALATION_UNIT,
+                    MekanismModules.FARMING_UNIT,
+                    MekanismModules.FORTUNE_UNIT,
+                    MekanismModules.SHEARING_UNIT,
+                    MekanismModules.SILK_TOUCH_UNIT,
+                    MekanismModules.TELEPORTATION_UNIT,
+                    MekanismModules.VEIN_MINING_UNIT
+              ), false)
+              //MekaSuit Helmet
+              .add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_HELMET, HolderSet.direct(
+                    MekanismModules.ELECTROLYTIC_BREATHING_UNIT,
+                    MekanismModules.INHALATION_PURIFICATION_UNIT,
+                    MekanismModules.NUTRITIONAL_INJECTION_UNIT,
+                    MekanismModules.VISION_ENHANCEMENT_UNIT
+              ), false)
+              //MekaSuit Chestplate
+              .add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_CHESTPLATE, HolderSet.direct(
+                    MekanismModules.CHARGE_DISTRIBUTION_UNIT,
+                    MekanismModules.DOSIMETER_UNIT,
+                    MekanismModules.ELYTRA_UNIT,
+                    MekanismModules.GEIGER_UNIT,
+                    MekanismModules.GRAVITATIONAL_MODULATING_UNIT,
+                    MekanismModules.JETPACK_UNIT
+              ), false)
+              //MekaSuit Leggings
+              .add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_LEGGINGS, HolderSet.direct(
+                    MekanismModules.GYROSCOPIC_STABILIZATION_UNIT,
+                    MekanismModules.HYDROSTATIC_REPULSOR_UNIT,
+                    MekanismModules.LOCOMOTIVE_BOOSTING_UNIT,
+                    MekanismModules.MOTORIZED_SERVO_UNIT
+              ), false)
+              //MekaSuit Boots
+              .add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_BOOTS, HolderSet.direct(
+                    MekanismModules.FROST_WALKER_UNIT,
+                    MekanismModules.HYDRAULIC_PROPULSION_UNIT,
+                    MekanismModules.MAGNETIC_ATTRACTION_UNIT,
+                    MekanismModules.SOUL_SURFER_UNIT
+              ), false)
         ;
     }
 }

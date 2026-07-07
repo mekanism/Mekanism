@@ -1,0 +1,47 @@
+{
+  "values": {
+    "#mekanism:module_containers": "mekanism:energy_unit",
+    "#mekanism:module_containers/armor": [
+      "mekanism:laser_dissipation_unit",
+      "mekanism:radiation_shielding_unit"
+    ],
+    "#mekanism:module_containers/armor/boots": [
+      "mekanism:frost_walker_unit",
+      "mekanism:hydraulic_propulsion_unit",
+      "mekanism:magnetic_attraction_unit",
+      "mekanism:soul_surfer_unit"
+    ],
+    "#mekanism:module_containers/armor/chestplate": [
+      "mekanism:charge_distribution_unit",
+      "mekanism:dosimeter_unit",
+      "mekanism:elytra_unit",
+      "mekanism:geiger_unit",
+      "mekanism:gravitational_modulating_unit",
+      "mekanism:jetpack_unit"
+    ],
+    "#mekanism:module_containers/armor/helmet": [
+      "mekanism:electrolytic_breathing_unit",
+      "mekanism:inhalation_purification_unit",
+      "mekanism:nutritional_injection_unit",
+      "mekanism:vision_enhancement_unit"
+    ],
+    "#mekanism:module_containers/armor/leggings": [
+      "mekanism:gyroscopic_stabilization_unit",
+      "mekanism:hydrostatic_repulsor_unit",
+      "mekanism:locomotive_boosting_unit",
+      "mekanism:motorized_servo_unit"
+    ],
+    "#mekanism:module_containers/colorable": "mekanism:color_modulation_unit",
+    "#mekanism:module_containers/held/meka_tool": [
+      "mekanism:attack_amplification_unit",
+      "mekanism:blasting_unit",
+      "mekanism:excavation_escalation_unit",
+      "mekanism:farming_unit",
+      "mekanism:fortune_unit",
+      "mekanism:shearing_unit",
+      "mekanism:silk_touch_unit",
+      "mekanism:teleportation_unit",
+      "mekanism:vein_mining_unit"
+    ]
+  }
+}

@@ -6,10 +6,10 @@ import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -34,7 +34,7 @@ public class RadiationUtil {
 
     public static double getRadiationResistance(LivingEntity entity) {
         double resistance = 0;
-        for (EquipmentSlot type : EnumUtils.ARMOR_SLOTS) {
+        for (EquipmentSlot type : EquipmentSlotGroup.ARMOR) {
             ItemStack stack = entity.getItemBySlot(type);
             if (!stack.isEmpty()) {
                 IRadiationShielding shielding = stack.getCapability(Capabilities.RADIATION_SHIELDING);

@@ -7,6 +7,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -160,6 +161,56 @@ public class MekanismAPITags {
 
         private static TagKey<EntityType<?>> tag(String name) {
             return TagKey.create(Registries.ENTITY_TYPE, rl(name));
+        }
+    }
+
+    /// @since 10.7.0
+    public static class Items {
+
+        private Items() {
+        }
+
+        /// @since 10.8.0
+        public static final TagKey<Item> MEKASUIT_HUD_RENDERER = tag("mekasuit_hud_renderer");
+        /// Represents all items that are containers that modules can be installed on
+        ///
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS = tag("module_containers");
+        /// Represents all items that are colorable containers that modules can be installed on
+        ///
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_COLORABLE = tag("module_containers/colorable");
+        /// Represents all items that are armors that modules can be installed on
+        ///
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_ARMOR = tag("module_containers/armor");
+        /// Represents all items that are helmets that modules can be installed on
+        ///
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_ARMOR_HELMET = tag("module_containers/armor/helmet");
+        /// Represents all items that are chestplates that modules can be installed on
+        ///
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_ARMOR_CHESTPLATE = tag("module_containers/armor/chestplate");
+        /// Represents all items that are leggings that modules can be installed on
+        ///
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_ARMOR_LEGGINGS = tag("module_containers/armor/leggings");
+        /// Represents all items that are boots that modules can be installed on
+        ///
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_ARMOR_BOOTS = tag("module_containers/armor/boots");
+        /// Represents all items that are held items that modules can be installed on
+        ///
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_HELD = tag("module_containers/held");
+        /// Represents all items that are Meka-Tools that modules can be installed on
+        ///
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_HELD_MEKA_TOOL = tag("module_containers/held/meka_tool");
+
+        private static TagKey<Item> tag(String name) {
+            return TagKey.create(Registries.ITEM, rl(name));
         }
     }
 

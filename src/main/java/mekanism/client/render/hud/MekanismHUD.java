@@ -2,6 +2,7 @@ package mekanism.client.render.hud;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.client.gui.GuiUtils;
@@ -9,7 +10,6 @@ import mekanism.client.render.HUDRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IItemHUDProvider;
-import mekanism.common.tags.MekanismTags;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -68,7 +68,8 @@ public class MekanismHUD implements GuiLayer {
                 ItemStack stack = player.getItemBySlot(slotType);
                 IItemHUDProvider hudProvider = getHudProvider(stack);
                 if (hudProvider != null) {
-                    count += makeComponent(hudProvider, player, stack, slotType, renderStrings, IItemHUDProvider::addHUDStrings);
+                    //noinspection RedundantTypeArguments - Causes nullability warnings
+                    count += this.<EquipmentSlot>makeComponent(hudProvider, player, stack, slotType, renderStrings, IItemHUDProvider::addHUDStrings);
                 }
             }
             ResourceHandler<ItemResource> curiosInventory = Mekanism.hooks.getCuriosInventory(player);
@@ -128,13 +129,14 @@ public class MekanismHUD implements GuiLayer {
                 pose.popMatrix();
             }
 
-            if (player.getItemBySlot(EquipmentSlot.HEAD).is(MekanismTags.Items.MEKASUIT_HUD_RENDERER)) {
+            if (player.getItemBySlot(EquipmentSlot.HEAD).is(MekanismAPITags.Items.MEKASUIT_HUD_RENDERER)) {
                 hudRenderer.renderHUD(minecraft, player, graphics, font, delta, graphics.guiWidth(), graphics.guiHeight(), maxTextHeight, reverseHud);
             }
         }
     }
 
-    private int makeComponent(IItemHUDProvider hudProvider, Player player, ItemStack stack, EquipmentSlot slot, List<List<Component>> initial, HudComponentBuilder builder) {
+    private <SLOT extends @Nullable EquipmentSlot> int makeComponent(IItemHUDProvider hudProvider, Player player, ItemStack stack, SLOT slot, List<List<Component>> initial,
+          HudComponentBuilder<SLOT> builder) {
         List<Component> list = new ArrayList<>();
         builder.add(hudProvider, list, player, stack, slot);
         int size = list.size();
@@ -145,8 +147,8 @@ public class MekanismHUD implements GuiLayer {
     }
 
     @FunctionalInterface
-    private interface HudComponentBuilder {
+    private interface HudComponentBuilder<SLOT extends @Nullable EquipmentSlot> {
 
-        void add(IItemHUDProvider hudProvider, List<Component> existing, Player player, ItemStack stack, EquipmentSlot slot);
+        void add(IItemHUDProvider hudProvider, List<Component> existing, Player player, ItemStack stack, SLOT slot);
     }
 }

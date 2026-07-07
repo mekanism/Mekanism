@@ -6,6 +6,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -22,7 +23,6 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketUpdateModuleSettings;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismSounds;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.InputWithModifiers;
@@ -32,10 +32,14 @@ import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot.Type;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -165,7 +169,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 scrollList.clearSelection();
             }
             if (optionsButton != null) {//Should never be null here
-                optionsButton.active = MekanismItems.MEKASUIT_HELMET.is(itemType);
+                optionsButton.active = itemType.is(MekanismAPITags.Items.MEKASUIT_HUD_RENDERER);
             }
             return true;
         }
@@ -194,36 +198,55 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
             this.preview = new ArmorStandRenderState();
             this.preview.entityType = EntityTypes.ARMOR_STAND;
             this.preview.showBasePlate = false;
-            for (EquipmentSlot armorSlot : EnumUtils.ARMOR_SLOTS) {
-                Supplier<ItemStack> lazyItem = () -> {
-                    ItemStack stack = player.getItemBySlot(armorSlot);
-                    if (stack.isEmpty()) {
-                        //Fall back to MekaSuit for rendering purposes of if not wearing a full set of stuff
-                        return (switch (armorSlot) {
-                            case FEET -> MekanismItems.MEKASUIT_BOOTS;
-                            case LEGS -> MekanismItems.MEKASUIT_PANTS;
-                            case CHEST -> MekanismItems.MEKASUIT_BODYARMOR;
-                            case HEAD -> MekanismItems.MEKASUIT_HELMET;
-                            default -> throw new IllegalStateException("Unknown armor slot: " + armorSlot.getName());
-                        }).asStack();
+            this.preview.mainArm = player.getMainArm();
+            for (EquipmentSlot armorSlot : EquipmentSlotGroup.ARMOR) {
+                if (armorSlot.getType() == Type.HUMANOID_ARMOR) {
+                    lazyItems.put(armorSlot, () -> {
+                        ItemStack stack = player.getItemBySlot(armorSlot);
+                        if (stack.isEmpty()) {
+                            //Fall back to MekaSuit for rendering purposes of if not wearing a full set of stuff
+                            return (switch (armorSlot) {
+                                case FEET -> MekanismItems.MEKASUIT_BOOTS;
+                                case LEGS -> MekanismItems.MEKASUIT_PANTS;
+                                case CHEST -> MekanismItems.MEKASUIT_BODYARMOR;
+                                case HEAD -> MekanismItems.MEKASUIT_HELMET;
+                                default -> throw new IllegalStateException("Unknown armor slot: " + armorSlot.getName());
+                            }).asStack();
+                        }
+                        return stack;
+                    });
+                }
+            }
+            for (EquipmentSlot handSlot : EquipmentSlotGroup.HAND) {
+                lazyItems.put(handSlot, () -> {
+                    ItemStack stack = player.getItemBySlot(handSlot);
+                    //Only render held items if they are a held module container
+                    if (stack.is(MekanismAPITags.Items.MODULE_CONTAINERS_HELD)) {
+                        return stack;
                     }
-                    return stack;
-                };
-                lazyItems.put(armorSlot, lazyItem);
+                    return ItemStack.EMPTY;
+                });
+            }
+            for (Map.Entry<EquipmentSlot, Supplier<ItemStack>> entry : lazyItems.entrySet()) {
                 //Copy the player's current armor when we first initialize this
-                updatePreview(armorSlot, lazyItem.get());
+                updatePreview(entry.getKey(), entry.getValue().get());
             }
         }
 
         public void tryUpdateFull(ItemStack stack) {
+            EquipmentSlot slot;
             Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
             if (StackUtils.isRenderableArmor(equippable)) {
                 //If the selected thing is an armor item update the stack for the slot
                 // this is of use in case the item may be an armor piece but is in the hotbar
-                EquipmentSlot slot = equippable.slot();
-                lazyItems.put(slot, () -> stack);
-                updatePreview(slot, stack);
+                slot = equippable.slot();
+            } else if (stack.is(MekanismAPITags.Items.MODULE_CONTAINERS_HELD)) {
+                slot = EquipmentSlot.MAINHAND;
+            } else {
+                return;
             }
+            lazyItems.put(slot, () -> stack);
+            updatePreview(slot, stack);
         }
 
         public void updatePreview(EquipmentSlot slot, ItemStack stack) {
@@ -250,6 +273,29 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 case FEET:
                     this.preview.feetEquipment = stack.copy();
                     break;
+                case MAINHAND:
+                    updateHandPreview(this.preview.mainArm, stack);
+                    break;
+                case OFFHAND:
+                    updateHandPreview(this.preview.mainArm.getOpposite(), stack);
+                    break;
+            }
+        }
+
+        private void updateHandPreview(HumanoidArm arm, ItemStack stack) {
+            ItemStackRenderState stackState;
+            if (arm == HumanoidArm.RIGHT) {
+                this.preview.rightHandItemStack = stack.copy();
+                stackState = this.preview.rightHandItemState;
+            } else {
+                this.preview.leftHandItemStack = stack.copy();
+                stackState = this.preview.leftHandItemState;
+            }
+            if (!stack.isEmpty()) {
+                ItemDisplayContext displayContext = arm == HumanoidArm.LEFT ? ItemDisplayContext.THIRD_PERSON_LEFT_HAND : ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+                itemModelResolver.updateForTopItem(stackState, stack, displayContext, null, null, 0);
+            } else {
+                stackState.clear();
             }
         }
 

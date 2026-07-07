@@ -66,8 +66,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addProcessedResources();
         addBeaconTags();
         addBoxBlacklist();
-        addTools();
-        addArmor();
+        addGear();
         addRods();
         addFuels();
         addAlloys();
@@ -106,7 +105,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Items.getProcessedResource(ResourceType.DIRTY_DUST, PrimaryResource.GOLD),
               MekanismTags.Items.getProcessedResource(ResourceType.CLUMP, PrimaryResource.GOLD)
         );
-        getBuilder(MekanismTags.Items.MEKASUIT_HUD_RENDERER).add(MekanismItems.MEKASUIT_HELMET);
+        getBuilder(MekanismAPITags.Items.MEKASUIT_HUD_RENDERER).add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_HELMET);
         getBuilder(MekanismTags.Items.STONE_CRAFTING_MATERIALS).add(ItemTags.STONE_CRAFTING_MATERIALS, Tags.Items.COBBLESTONES_NORMAL);
         getBuilder(MekanismTags.Items.MUFFLING_CENTER).add(
               Tags.Items.BRICKS,
@@ -289,6 +288,36 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST)
               .add(Tags.Blocks.RELOCATION_NOT_SUPPORTED, BlockTags.BEDS, BlockTags.DOORS)
               .add(BlockItemIds.TRIAL_SPAWNER.block(), BlockItemIds.VAULT.block());
+    }
+
+    private void addGear() {
+        addTools();
+        addArmor();
+        getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_HELMET).add(MekanismItems.MEKASUIT_HELMET);
+        getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_CHESTPLATE).add(MekanismItems.MEKASUIT_BODYARMOR);
+        getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_LEGGINGS).add(MekanismItems.MEKASUIT_PANTS);
+        getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_BOOTS).add(MekanismItems.MEKASUIT_BOOTS);
+        getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_HELD_MEKA_TOOL).add(MekanismItems.MEKA_TOOL);
+        getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_HELD).add(
+              MekanismAPITags.Items.MODULE_CONTAINERS_HELD_MEKA_TOOL
+        );
+        getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR).add(
+              MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_HELMET,
+              MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_CHESTPLATE,
+              MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_LEGGINGS,
+              MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_BOOTS
+        );
+        getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_COLORABLE).add(
+              MekanismItems.MEKASUIT_HELMET,
+              MekanismItems.MEKASUIT_BODYARMOR,
+              MekanismItems.MEKASUIT_PANTS,
+              MekanismItems.MEKASUIT_BOOTS
+        );
+        getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS).add(
+              MekanismAPITags.Items.MODULE_CONTAINERS_COLORABLE,
+              MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR,
+              MekanismAPITags.Items.MODULE_CONTAINERS_HELD
+        );
     }
 
     private void addTools() {

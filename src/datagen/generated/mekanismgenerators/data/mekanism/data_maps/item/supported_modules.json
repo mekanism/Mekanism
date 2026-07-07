@@ -1,0 +1,6 @@
+{
+  "values": {
+    "#mekanism:module_containers/armor/helmet": "mekanismgenerators:solar_recharging_unit",
+    "#mekanism:module_containers/armor/leggings": "mekanismgenerators:geothermal_generator_unit"
+  }
+}

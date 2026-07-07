@@ -1,13 +1,10 @@
 package mekanism.common.item.predicate;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import java.util.Set;
 import mekanism.api.SerializationConstants;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
-import mekanism.api.gear.ModuleData;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.registration.impl.ItemRegistryObject;
@@ -30,36 +27,32 @@ public class MaxedModuleContainerItemPredicate implements DataComponentPredicate
                     DataComponentMatchers.Builder.components()
                           .partial(TYPE, new MaxedModuleContainerItemPredicate(item))
                           .build()
-              )
-              .build();
+              ).build();
     }
 
-    public static final Codec<MaxedModuleContainerItemPredicate> CODEC = BuiltInRegistries.ITEM.holderByNameCodec().comapFlatMap(item -> {
-        if (IModuleHelper.INSTANCE.isModuleContainer(item)) {
-            return DataResult.success(new MaxedModuleContainerItemPredicate(item));
-        }
-        return DataResult.error(() -> "Specified item is not a module container item.");
-    }, pred -> pred.item).fieldOf(SerializationConstants.ITEM).codec();
+    public static final Codec<MaxedModuleContainerItemPredicate> CODEC = BuiltInRegistries.ITEM.holderByNameCodec()
+          .xmap(MaxedModuleContainerItemPredicate::new, pred -> pred.item)
+          .fieldOf(SerializationConstants.ITEM).codec();
     public static final DataComponentPredicate.Type<MaxedModuleContainerItemPredicate> TYPE = new ConcreteType<>(CODEC);
 
-    private final Set<ModuleData<?>> supportedModules;
     private final Holder<Item> item;
 
-    public MaxedModuleContainerItemPredicate(Holder<Item> item) {
+    private MaxedModuleContainerItemPredicate(Holder<Item> item) {
         this.item = item;
-        this.supportedModules = IModuleHelper.INSTANCE.getSupported(this.item);
     }
 
     @Override
-    public boolean matches(DataComponentGetter stack) {
-        IModuleContainer container = ModuleHelper.get().getModuleContainerUnsafe(stack);
-        if (container.moduleTypes().containsAll(supportedModules)) {
-            for (IModule<?> module : container.modules()) {
-                if (module.getInstalledCount() != module.getUntypedData().getMaxStackSize()) {
-                    return false;
+    public boolean matches(DataComponentGetter data) {
+        if (IModuleHelper.INSTANCE.isModuleContainer(this.item)) {
+            IModuleContainer container = ModuleHelper.get().getModuleContainerUnsafe(data);
+            if (container.moduleTypes().containsAll(IModuleHelper.INSTANCE.getSupported(this.item))) {
+                for (IModule<?> module : container.modules()) {
+                    if (module.getInstalledCount() != module.getUntypedData().getMaxStackSize()) {
+                        return false;
+                    }
                 }
+                return true;
             }
-            return true;
         }
         return false;
     }
