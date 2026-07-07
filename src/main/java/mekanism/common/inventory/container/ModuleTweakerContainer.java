@@ -5,7 +5,6 @@ import mekanism.common.inventory.container.slot.ArmorSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.OffhandSlot;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -26,7 +25,7 @@ public class ModuleTweakerContainer extends MekanismContainer {
     protected void addInventorySlots(Inventory inv) {
         int armorInventorySize = 4;
         for (int index = 0; index < armorInventorySize; index++) {
-            EquipmentSlot slotType = EnumUtils.EQUIPMENT_SLOT_TYPES[2 + armorInventorySize - index - 1];
+            EquipmentSlot slotType = EquipmentSlot.VALUES.get(2 + armorInventorySize - index - 1);
             addSlot(new ArmorSlot(inv, 36 + slotType.ordinal() - 2, 8, 8 + index * 18, slotType) {
                 @Override
                 public boolean mayPickup(Player player) {

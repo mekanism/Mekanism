@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.custom.module;
 
 import java.util.function.IntConsumer;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.config.ModuleColorConfig;
@@ -84,9 +85,16 @@ class ColorSelection extends MiniElement<Integer> {
             IModule<?> currentModule = parent.getCurrentModule();
             if (armorPreview != null && data.name().equals(ModuleColorModulationUnit.COLOR) && currentModule != null) {
                 ItemResource containerType = parent.getContainerType();
+                EquipmentSlot slot;
                 Equippable equippable = containerType.get(DataComponents.EQUIPPABLE);
                 if (StackUtils.isRenderableArmor(equippable)) {
-                    EquipmentSlot slot = equippable.slot();
+                    slot = equippable.slot();
+                } else if (containerType.is(MekanismAPITags.Items.MODULE_CONTAINERS_HELD)) {
+                    slot = EquipmentSlot.MAINHAND;
+                } else {
+                    slot = null;
+                }
+                if (slot != null) {
                     ItemStack stack = containerType.toStack();
                     //Replace the current preview with our copy
                     armorPreview.updatePreview(slot, stack);

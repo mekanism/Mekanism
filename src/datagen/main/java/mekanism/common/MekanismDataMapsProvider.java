@@ -104,7 +104,7 @@ public class MekanismDataMapsProvider extends DataMapProvider {
                     MekanismModules.RADIATION_SHIELDING_UNIT
               ), false)
               //Meka-Tool
-              .add(MekanismAPITags.Items.MODULE_CONTAINERS_MEKA_TOOL, HolderSet.direct(
+              .add(MekanismAPITags.Items.MODULE_CONTAINERS_HELD_MEKA_TOOL, HolderSet.direct(
                     MekanismModules.ATTACK_AMPLIFICATION_UNIT,
                     MekanismModules.BLASTING_UNIT,
                     MekanismModules.EXCAVATION_ESCALATION_UNIT,

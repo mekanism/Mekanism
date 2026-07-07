@@ -1,11 +1,11 @@
 package mekanism.common.content.gear.mekatool;
 
+import mekanism.api.MekanismAPITags;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemMekaTool;
-import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
@@ -46,23 +46,19 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     @Override
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean canPerformAction(IModule<ModuleShearingUnit> module, IModuleContainer container, ITEM instance,
           ItemAbility action) {
-        if (action == ItemAbilities.SHEARS_DISARM) {
-            //TODO - 26.2: Re-evaluate these behaviors that are tied directly to the meka-tool
-            if (instance.is(MekanismItems.MEKA_TOOL)) {
+        //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
+        // as it may not actually require energy
+        if (instance.is(MekanismAPITags.Items.MODULE_CONTAINERS_HELD_MEKA_TOOL)) {
+            if (action == ItemAbilities.SHEARS_DISARM) {
                 //Only require energy if we are installed on a Meka-Tool and can thus calculate the energy required to break the block "safely"
                 // Note: We assume hardness is zero like the default is for tripwires as we don't have the target block in our current context
                 int cost = ItemMekaTool.getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
                 return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), cost);
+            } else if (action == ItemAbilities.SHEARS_DIG) {
+                return ItemMekaTool.hasEnergyForDigAction(container, module.getEnergyHandler(ItemAccessUtils.sideEffectFreeAccess(instance), true));
+            } else if (action == ItemAbilities.SHEARS_TRIM) {
+                return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageShearTrim);
             }
-            //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
-            // as it may not actually require energy
-            return true;
-        } else if (action == ItemAbilities.SHEARS_DIG) {
-            //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
-            // as it may not actually require energy
-            return !instance.is(MekanismItems.MEKA_TOOL) || ItemMekaTool.hasEnergyForDigAction(container, module.getEnergyHandler(ItemAccessUtils.sideEffectFreeAccess(instance), true));
-        } else if (action == ItemAbilities.SHEARS_TRIM) {
-            return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageShearTrim);
         }
         return ItemAbilities.DEFAULT_SHEARS_ACTIONS.contains(action);
     }

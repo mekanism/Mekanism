@@ -23,7 +23,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
@@ -164,7 +163,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                     //Get any attribute tags
                     Set<Holder<Attribute>> attributes = new HashSet<>();
                     BiConsumer<Holder<Attribute>, AttributeModifier> attributeCollector = (holder, _) -> attributes.add(holder);
-                    for (EquipmentSlot slotType : EnumUtils.EQUIPMENT_SLOT_TYPES) {
+                    for (EquipmentSlot slotType : EquipmentSlot.VALUES) {
                         itemStack.forEachModifier(slotType, attributeCollector);
                     }
                     if (!attributes.isEmpty()) {

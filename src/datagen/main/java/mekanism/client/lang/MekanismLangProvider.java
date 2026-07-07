@@ -245,7 +245,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_CHESTPLATE, "Chestplate Module Containers");
         add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_LEGGINGS, "Legging Module Containers");
         add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_BOOTS, "Boot Module Containers");
-        add(MekanismAPITags.Items.MODULE_CONTAINERS_MEKA_TOOL, "Meka-Tool Module Containers");
+        add(MekanismAPITags.Items.MODULE_CONTAINERS_HELD, "Held Module Containers");
+        add(MekanismAPITags.Items.MODULE_CONTAINERS_HELD_MEKA_TOOL, "Meka-Tool Module Containers");
 
         add(MekanismTags.Items.STONE_CRAFTING_MATERIALS, "Stone Crafting Materials");
         add(MekanismTags.Items.MUFFLING_CENTER, "Muffling Upgrade Usable Ingots");

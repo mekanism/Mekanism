@@ -32,7 +32,7 @@
       "mekanism:motorized_servo_unit"
     ],
     "#mekanism:module_containers/colorable": "mekanism:color_modulation_unit",
-    "#mekanism:module_containers/meka_tool": [
+    "#mekanism:module_containers/held/meka_tool": [
       "mekanism:attack_amplification_unit",
       "mekanism:blasting_unit",
       "mekanism:excavation_escalation_unit",

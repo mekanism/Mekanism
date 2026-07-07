@@ -1,4 +1,4 @@
-// 26.2	2026-07-06T14:10:24.1626202	Tags: mekanism
+// 26.2	2026-07-07T13:03:05.0776568	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -229,14 +229,15 @@ e6375720adf130f0a959afb693ee69be811e8878 data/mekanism/tags/item/dirty_dusts/ura
 dca316bda51ed84e85e6cbfbf3951b15f8e970da data/mekanism/tags/item/enriched/redstone.json
 5252b1c1d9854e26952208625d740c80abd4495f data/mekanism/tags/item/enriched/tin.json
 43e264bb72047842f431edea92381d321a032a60 data/mekanism/tags/item/mekasuit_hud_renderer.json
-4627e56c7ce2ec89493ef2c13a01a4401e784f98 data/mekanism/tags/item/module_containers.json
+a341910d47eddbd390dc1bcdbc08a9df8153039d data/mekanism/tags/item/module_containers.json
 6e711e387be267858e9adc01c0c8796d3f3435ea data/mekanism/tags/item/module_containers/armor.json
 320d5f4cf2d4abe64354f32b16e99c7c35fbe08a data/mekanism/tags/item/module_containers/armor/boots.json
 de63f67a95415ac1aac5827edd14d90ca97e5073 data/mekanism/tags/item/module_containers/armor/chestplate.json
 2637a7099be4b951892b8d1c163837011868e91b data/mekanism/tags/item/module_containers/armor/helmet.json
 0a2ccf892b7a04731d065725d5acb692687e1691 data/mekanism/tags/item/module_containers/armor/leggings.json
 2c03bddd45e9e642954da6bc7bf4e9a1c996c27c data/mekanism/tags/item/module_containers/colorable.json
-b7070e1fd145e393931169cd89691c725e47a9c9 data/mekanism/tags/item/module_containers/meka_tool.json
+19eec09c1e8dc1fe2e64323a8342fb4990bc1c6b data/mekanism/tags/item/module_containers/held.json
+b7070e1fd145e393931169cd89691c725e47a9c9 data/mekanism/tags/item/module_containers/held/meka_tool.json
 b2120789859908320dbc76815630b40fe060ebc2 data/mekanism/tags/item/muffling_center.json
 a58ddd5a8f5be0c88b72a84ee584f41d15b7b367 data/mekanism/tags/item/personal_storage.json
 eeb29577fadceb1aba3a7629a1d1030ec8a2db2f data/mekanism/tags/item/shards.json

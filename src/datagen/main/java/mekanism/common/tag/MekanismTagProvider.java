@@ -297,7 +297,10 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_CHESTPLATE).add(MekanismItems.MEKASUIT_BODYARMOR);
         getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_LEGGINGS).add(MekanismItems.MEKASUIT_PANTS);
         getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_BOOTS).add(MekanismItems.MEKASUIT_BOOTS);
-        getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_MEKA_TOOL).add(MekanismItems.MEKA_TOOL);
+        getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_HELD_MEKA_TOOL).add(MekanismItems.MEKA_TOOL);
+        getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_HELD).add(
+              MekanismAPITags.Items.MODULE_CONTAINERS_HELD_MEKA_TOOL
+        );
         getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR).add(
               MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_HELMET,
               MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_CHESTPLATE,
@@ -313,7 +316,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismAPITags.Items.MODULE_CONTAINERS).add(
               MekanismAPITags.Items.MODULE_CONTAINERS_COLORABLE,
               MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR,
-              MekanismAPITags.Items.MODULE_CONTAINERS_MEKA_TOOL
+              MekanismAPITags.Items.MODULE_CONTAINERS_HELD
         );
     }
 

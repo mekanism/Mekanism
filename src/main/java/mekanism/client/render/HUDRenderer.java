@@ -10,7 +10,6 @@ import mekanism.client.pip.CompassPiP;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.DeltaTracker;
@@ -23,6 +22,7 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -36,6 +36,7 @@ public class HUDRenderer {
 
     private static final EquipmentSlot[] EQUIPMENT_ORDER = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND,
                                                             EquipmentSlot.OFFHAND};
+    private static final EquipmentSlot[] ARMOR_SLOTS = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     //TODO - 26.2: Remove padding gui sprites so they don't take as much space on the atlas?
     private static final Identifier[] ARMOR_ICONS = {Mekanism.rl("hud/mekasuit_helmet"), Mekanism.rl("hud/mekasuit_chest"),
                                                      Mekanism.rl("hud/mekasuit_leggings"), Mekanism.rl("hud/mekasuit_boots")};
@@ -106,12 +107,11 @@ public class HUDRenderer {
         pose.translate(10, 10);
         int posX = 0;
         Predicate<TypedInstance<Item>> showArmorPercent = item -> item.is(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR);
-        for (int i = 0; i < EnumUtils.ARMOR_SLOTS.length; i++) {
-            posX += renderEnergyIcon(player, font, guiGraphics, posX, ARMOR_ICONS[i], EnumUtils.ARMOR_SLOTS[i], showArmorPercent);
+        for (int i = 0; i < ARMOR_SLOTS.length; i++) {
+            posX += renderEnergyIcon(player, font, guiGraphics, posX, ARMOR_ICONS[i], ARMOR_SLOTS[i], showArmorPercent);
         }
-        //TODO - 26.2: Do we want a separate tag for this
-        Predicate<TypedInstance<Item>> showToolPercent = item -> item.is(MekanismAPITags.Items.MODULE_CONTAINERS_MEKA_TOOL);
-        for (EquipmentSlot hand : EnumUtils.HAND_SLOTS) {
+        Predicate<TypedInstance<Item>> showToolPercent = item -> item.is(MekanismAPITags.Items.MODULE_CONTAINERS_HELD);
+        for (EquipmentSlot hand : EquipmentSlotGroup.HAND) {
             posX += renderEnergyIcon(player, font, guiGraphics, posX, TOOL_ICON, hand, showToolPercent);
         }
         pose.popMatrix();

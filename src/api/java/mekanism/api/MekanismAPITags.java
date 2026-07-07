@@ -200,10 +200,14 @@ public class MekanismAPITags {
         ///
         /// @since 10.8.0
         public static final TagKey<Item> MODULE_CONTAINERS_ARMOR_BOOTS = tag("module_containers/armor/boots");
+        /// Represents all items that are held items that modules can be installed on
+        ///
+        /// @since 10.8.0
+        public static final TagKey<Item> MODULE_CONTAINERS_HELD = tag("module_containers/held");
         /// Represents all items that are Meka-Tools that modules can be installed on
         ///
         /// @since 10.8.0
-        public static final TagKey<Item> MODULE_CONTAINERS_MEKA_TOOL = tag("module_containers/meka_tool");
+        public static final TagKey<Item> MODULE_CONTAINERS_HELD_MEKA_TOOL = tag("module_containers/held/meka_tool");
 
         private static TagKey<Item> tag(String name) {
             return TagKey.create(Registries.ITEM, rl(name));
