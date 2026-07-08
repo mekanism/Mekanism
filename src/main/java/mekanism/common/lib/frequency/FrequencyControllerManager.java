@@ -34,13 +34,16 @@ public class FrequencyControllerManager {
 
     @SuppressWarnings("unchecked")
     public static <FREQ extends Frequency> FrequencyController<FREQ> getController(FrequencyType<FREQ> frequencyType) {
-        return (FrequencyController<FREQ>) controllers.get(frequencyType);
+        //Controllers are eagerly created for all registered types in serverLoad, but a pure remote client never calls
+        // serverLoad, so lazily create one here instead of returning null. The lazily created controller falls back
+        // to non-persisted, in-memory lookups below since dataStorage is null on the client.
+        return (FrequencyController<FREQ>) controllers.computeIfAbsent(frequencyType, type -> FrequencyController.create(type));
     }
 
     protected static <FREQ extends Frequency> FrequencyLookup<FREQ> createLookup(FrequencyType<FREQ> frequencyType, @Nullable UUID uuid, SecurityMode securityMode, Codec<FrequencyLookup<FREQ>> codec) {
         FrequencyLookup<FREQ> lookup;
         if (dataStorage == null) {
-            //assume client - TODO - 26.1 - does this even get called on the client? seems not
+            //Client-side (or a controller created lazily by getController() before serverLoad ran): keep the lookup in memory only
             lookup = new FrequencyLookup<>(frequencyType, uuid, securityMode);
         } else {
             SavedDataType<FrequencyLookup<FREQ>> dataType = new SavedDataType<>(
