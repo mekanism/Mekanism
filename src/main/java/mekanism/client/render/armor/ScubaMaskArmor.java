@@ -35,13 +35,6 @@ public class ScubaMaskArmor implements ICustomArmor, ResourceManagerReloadListen
             return;
         }
         poseStack.pushPose();
-        if (state.isBaby) {
-            if (BABY_MODEL_TRANSFORM.scaleHead()) {
-                float f = 1.5F / BABY_MODEL_TRANSFORM.babyHeadScale();
-                poseStack.scale(f, f, f);
-            }
-            poseStack.translate(0.0D, BABY_MODEL_TRANSFORM.babyYHeadOffset() / 16.0F, BABY_MODEL_TRANSFORM.babyZHeadOffset() / 16.0F);
-        }
         baseModel.head.translateAndRotate(poseStack);
         poseStack.translate(0, 0, 0.01);
         model.collect(poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY);

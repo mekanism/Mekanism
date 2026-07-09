@@ -43,11 +43,6 @@ public class JetpackArmor implements ICustomArmor, ResourceManagerReloadListener
             return;
         }
         poseStack.pushPose();
-        if (state.isBaby) {
-            float f1 = 1.0F / BABY_MODEL_TRANSFORM.babyBodyScale();
-            poseStack.scale(f1, f1, f1);
-            poseStack.translate(0.0D, BABY_MODEL_TRANSFORM.bodyYOffset() / 16.0F, 0.0D);
-        }
         baseModel.body.translateAndRotate(poseStack);
         poseStack.translate(0, 0, 0.06);
         model.collect(poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY);

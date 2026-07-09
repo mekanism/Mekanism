@@ -265,7 +265,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
 
         @Override
         public ContextMap getTopAdditionalProperties() {
-            return ModelUtil.transmitterVisibility(this, visibilityMap);
+            return ModelUtil.partVisibility(this, visibilityMap);
         }
 
         @Override

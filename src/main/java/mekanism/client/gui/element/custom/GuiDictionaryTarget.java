@@ -29,6 +29,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -146,7 +147,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                         tags.put(DictionaryTagType.ENTITY_TYPE, TagCache.getTagsAsStrings(type.getTags()));
                     }
                     //Enchantment tags
-                    ItemEnchantments enchantments = stack.getEnchantments();//TODO - 26.2: fix this
+                    ItemEnchantments enchantments = stack.getAllEnchantments(gui().registryAccess().lookupOrThrow(Registries.ENCHANTMENT));
                     if (!enchantments.isEmpty()) {
                         tags.put(DictionaryTagType.ENCHANTMENT, TagCache.getTagsAsStrings(enchantments.keySet().stream().flatMap(Holder::tags).distinct()));
                     }

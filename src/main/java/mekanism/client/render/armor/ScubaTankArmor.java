@@ -37,11 +37,6 @@ public class ScubaTankArmor implements ICustomArmor, ResourceManagerReloadListen
             return;
         }
         poseStack.pushPose();
-        if (state.isBaby) {
-            float f1 = 1.0F / BABY_MODEL_TRANSFORM.babyBodyScale();
-            poseStack.scale(f1, f1, f1);
-            poseStack.translate(0.0D, BABY_MODEL_TRANSFORM.bodyYOffset() / 16.0F, 0.0D);
-        }
         baseModel.body.translateAndRotate(poseStack);
         poseStack.translate(0, 0, 0.06);
         //TODO - 26.2 foil rendering? Not actually enchantable by default

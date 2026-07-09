@@ -78,7 +78,7 @@ public class TransmitterContentsManager {
                     connections.put(sideName + value.name(), value == connectionType);
                 }
             }
-            cached = bake(texture, ModelUtil.transmitterVisibility(resolved, connections));
+            cached = bake(texture, ModelUtil.partVisibility(resolved, connections));
             bakedCache.put(texture, key, cached);
         }
         return cached;

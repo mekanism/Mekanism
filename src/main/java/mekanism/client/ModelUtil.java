@@ -35,7 +35,7 @@ public class ModelUtil {
         return CuboidItemModelWrapper.computeExtents(bakedQuads);
     }
 
-    public static ContextMap transmitterVisibility(ResolvedModel resolvedModel, Map<String, Boolean> visibilityMap) {
+    public static ContextMap partVisibility(ResolvedModel resolvedModel, Map<String, Boolean> visibilityMap) {
         ContextMap.Builder builder = new ContextMap.Builder();
         fillAdditionalProperties(resolvedModel, builder);
         builder.withParameter(NeoForgeModelProperties.PART_VISIBILITY, visibilityMap);

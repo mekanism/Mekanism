@@ -73,7 +73,7 @@ public class MekanismRenderType {
     );*/
 
     public static final RenderType MEKASUIT = RenderType.create("mekanism_mekasuit", RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT)
-          .withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)//TODO - 26.2: Is this the correct atlas?
+          .withTexture("Sampler0", TextureAtlas.LOCATION_ITEMS)
           .useLightmap()
           .useOverlay()//TODO - 26.2: I don't think we want the overlay?
           .affectsCrumbling()
