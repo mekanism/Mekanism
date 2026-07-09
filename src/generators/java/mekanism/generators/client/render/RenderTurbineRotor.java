@@ -13,6 +13,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -95,7 +96,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
     }
 
     private void submitBlade(TurbineRotorRenderState state, TurbineBladeRenderState bladeState, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
-        nodeCollector.submitModel(this.model, bladeState, poseStack, this.model.getRenderType(), state.lightCoords, OverlayTexture.NO_OVERLAY, 0, state.breakProgress);
+        nodeCollector.submitModel(this.model, bladeState, poseStack, this.model.getRenderType(), state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, state.breakProgress);
     }
 
     @Override

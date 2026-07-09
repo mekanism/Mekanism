@@ -33,8 +33,7 @@ public class MekanismArmorLayer<STATE extends HumanoidRenderState, MODEL extends
     private A getArmorModel(STATE state, EquipmentSlot slot) {
         return (state.isBaby ? this.babyModelSet : this.modelSet).get(slot);
     }
-    
-    //PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ItemStack itemStack, EquipmentSlot slot, int lightCoords, S state
+
     private void renderArmorPart(PoseStack poseStack, SubmitNodeCollector nodeCollector, ItemStack stack, EquipmentSlot slot, STATE state, int lightCoords) {
         Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
         //TODO - 26.2: Should we check there is an asset id like super does?

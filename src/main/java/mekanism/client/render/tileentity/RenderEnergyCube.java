@@ -33,7 +33,7 @@ import org.jspecify.annotations.Nullable;
 public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnergyCube, EnergyCubeRenderState> {
 
     private static final Identifier CORE_TEXTURE = MekanismUtils.getRenderResource("energy_core.png");
-    public static final RenderType RENDER_TYPE = MekanismRenderType.STANDARD_TRANSLUCENT_TARGET.apply(CORE_TEXTURE);
+    public static final RenderType RENDER_TYPE = MekanismRenderType.STANDARD.apply(CORE_TEXTURE);
     public static final ModelLayerLocation CORE_LAYER = new ModelLayerLocation(Mekanism.rl("energy_core"), "main");
     public static final Axis coreVec = Axis.of(new Vector3f(0.0F, MekanismUtils.ONE_OVER_ROOT_TWO, MekanismUtils.ONE_OVER_ROOT_TWO));
 

@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -76,23 +77,23 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
         switch (state.direction) {
             case DOWN -> {
                 poseStack.translate(0, 1, 0);
-                poseStack.mulPose(Axis.XP.rotationDegrees(180));
+                poseStack.mulPose(Axis.XP.rotation(Mth.PI));
             }
             case NORTH -> {
                 poseStack.translate(0, 0.5, 0.5);
-                poseStack.mulPose(Axis.XN.rotationDegrees(90));
+                poseStack.mulPose(Axis.XN.rotation(Mth.HALF_PI));
             }
             case SOUTH -> {
                 poseStack.translate(0, 0.5, -0.5);
-                poseStack.mulPose(Axis.XP.rotationDegrees(90));
+                poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
             }
             case EAST -> {
                 poseStack.translate(-0.5, 0.5, 0);
-                poseStack.mulPose(Axis.ZN.rotationDegrees(90));
+                poseStack.mulPose(Axis.ZN.rotation(Mth.HALF_PI));
             }
             case WEST -> {
                 poseStack.translate(0.5, 0.5, 0);
-                poseStack.mulPose(Axis.ZP.rotationDegrees(90));
+                poseStack.mulPose(Axis.ZP.rotation(Mth.HALF_PI));
             }
         }
         nodeCollector.submitModel(this.model, state.modelState, poseStack, this.model.getRenderType(), state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, state.breakProgress);

@@ -4,12 +4,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
+import mekanism.client.model.MekanismJavaModel.FoilRendering;
 import mekanism.client.model.ModelArmoredFreeRunners;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelFreeRunners.FreeRunnerRenderState;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.util.Mth;
 import org.joml.Vector3fc;
 
 public class RenderFreeRunners implements NoDataSpecialModelRenderer {
@@ -27,10 +29,9 @@ public class RenderFreeRunners implements NoDataSpecialModelRenderer {
     public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+        poseStack.mulPose(Axis.ZP.rotation(Mth.PI));
         poseStack.translate(0, -1, 0);
-        //TODO - 26.2: Figure out foil
-        this.freeRunners.collect(FreeRunnerRenderState.BOTH, poseStack, nodeCollector, lightCoords, overlayCoords);
+        this.freeRunners.collect(FreeRunnerRenderState.BOTH, poseStack, nodeCollector, lightCoords, overlayCoords, FoilRendering.ITEM.foil(hasFoil), outlineColor);
         poseStack.popPose();
     }
 
@@ -43,9 +44,7 @@ public class RenderFreeRunners implements NoDataSpecialModelRenderer {
 
     public record Unbaked(GearArmorType armorType) implements NoDataSpecialModelRenderer.Unbaked {
 
-        public static final MapCodec<Unbaked> MAP_CODEC = GearArmorType.CODEC
-              .xmap(Unbaked::new, Unbaked::armorType)
-              .fieldOf("armor_type");
+        public static final MapCodec<Unbaked> MAP_CODEC = GearArmorType.CODEC.xmap(Unbaked::new, Unbaked::armorType).fieldOf("armor_type");
 
         @Override
         public SpecialModelRenderer<Void> bake(BakingContext context) {

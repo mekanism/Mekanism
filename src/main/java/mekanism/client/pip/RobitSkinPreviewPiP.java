@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import org.jspecify.annotations.Nullable;
 
@@ -21,7 +22,7 @@ public class RobitSkinPreviewPiP extends PictureInPictureRenderer<RobitSkinPrevi
     @Override
     protected void renderToTexture(RobitSkinPreviewPiP.State state, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
         Minecraft.getInstance().gameRenderer.lighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+        poseStack.mulPose(Axis.ZP.rotation(Mth.PI));
         poseStack.rotateAround(state.rotation, 0.5F, 0.0F, 0.5F);
         BakeResult model = state.model();
         nodeCollector.submitBlockModel(poseStack, model.renderType(), model.model(), BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);

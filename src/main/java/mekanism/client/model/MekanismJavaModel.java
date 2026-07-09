@@ -1,29 +1,23 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import mekanism.client.render.outline.Outlines;
-import mekanism.client.render.outline.Outlines.Line;
+import mekanism.client.render.MekanismRenderType;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.ModelPart.Cube;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import net.minecraft.util.Unit;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 //TODO - 26.2: review if any of these can be converted back to regular java models - needs rendertype without texture & only single rendertype/light coords
-public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extends Model<STATE>*/ {
+public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
 
     protected final ModelPart root;
     protected final List<ModelPart> allParts;
@@ -33,8 +27,7 @@ public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extend
         this.allParts = root.getAllParts();
     }
 
-    //TODO - 26.2 outlines??
-    public abstract void collect(STATE state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight);
+    public abstract void collect(STATE state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, @UnknownNullability FoilRendering foil, int outlineColor);
 
     public void setupAnim(STATE state) {
         this.resetPose();
@@ -50,17 +43,15 @@ public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extend
         return root;
     }
 
-    protected static void renderPartsToBuffer(List<ModelPart> parts, PoseStack poseStack, VertexConsumer vertexConsumer, int light, int overlayLight, int argb) {
+    protected static int collectParts(List<ModelPart> parts, PoseStack poseStack, RenderType renderType, SubmitNodeCollector collector, int light, int overlayLight,
+          int argb, @Nullable TextureAtlasSprite sprite, @UnknownNullability FoilRendering foil, int outlineColor, int nextOrder) {
         for (ModelPart part : parts) {
-            part.render(poseStack, vertexConsumer, light, overlayLight, argb);
+            collector.order(nextOrder++).submitModelPart(part, poseStack, renderType, light, overlayLight, sprite, argb, null, outlineColor);
+            if (foil != FoilRendering.NONE) {
+                collector.order(nextOrder++).submitModelPart(part, poseStack, foil.renderType(), light, overlayLight, sprite, argb, null, outlineColor);
+            }
         }
-    }
-
-    protected static void collectParts(List<ModelPart> parts, PoseStack poseStack, RenderType renderType, SubmitNodeCollector collector, int light, int overlayLight, int argb, @Nullable TextureAtlasSprite sprite) {
-        for (ModelPart part : parts) {
-            //TODO - 26.2: Figure out how foil rendering works now as it no longer is passed to this
-            collector.submitModelPart(part, poseStack, renderType, light, overlayLight, sprite, argb, null, EntityRenderState.NO_OUTLINE);
-        }
+        return nextOrder;
     }
 
     protected static List<ModelPart> getRenderableParts(ModelPart root, ModelPartData... modelPartData) {
@@ -80,69 +71,39 @@ public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extend
         return LayerDefinition.create(mesh, textureWidth, textureHeight);
     }
 
-    public static Set<Line> getPartsAsWireFrame(List<ModelPart> parts) {
-        Set<Line> lines = new HashSet<>();
-        //tmp variables to avoid allocating for each model part
-        Vector4f pos = new Vector4f();
-        Vector3f v0 = new Vector3f();
-        Vector3f v1 = new Vector3f();
-        Vector3f v2 = new Vector3f();
-        Vector3f v3 = new Vector3f();
-        PoseStack poseStack = new PoseStack();
-        for (ModelPart part : parts) {
-            visit(part, poseStack, v0, v1, v2, v3, pos, lines);
-        }
-        return lines;
-    }
-
-    //Simplified version of ModelPart#visit that also avoids capturing lambdas
-    private static void visit(ModelPart part, PoseStack poseStack, Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3, Vector4f pos, Set<Line> lines) {
-        if (part.visible) {
-            if (!part.isEmpty() || !part.children.isEmpty()) {
-                poseStack.pushPose();
-                part.translateAndRotate(poseStack);
-                visitAndRender(part.cubes, poseStack.last().pose(), v0, v1, v2, v3, pos, lines);
-                for (ModelPart child : part.children.values()) {
-                    visit(child, poseStack, v0, v1, v2, v3, pos, lines);
-                }
-                poseStack.popPose();
-            }
-        }
-    }
-
-    private static void visitAndRender(List<Cube> cubes, Matrix4f pose, Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3, Vector4f pos, Set<Line> lines) {
-        for (Cube cube : cubes) {
-            for (ModelPart.Polygon quad : cube.polygons) {
-                setVectorFromVertex(quad.vertices()[0], pose, pos, v0);
-                setVectorFromVertex(quad.vertices()[1], pose, pos, v1);
-                setVectorFromVertex(quad.vertices()[2], pose, pos, v2);
-                setVectorFromVertex(quad.vertices()[3], pose, pos, v3);
-                Outlines.addQuad(lines, v0, v1, v2, v3);
-            }
-        }
-    }
-
-    private static void setVectorFromVertex(ModelPart.Vertex vertex, Matrix4f pose, Vector4f pos, Vector3f vector) {
-        pos.set(vertex.worldX(), vertex.worldY(), vertex.worldZ(), 1);
-        pose.transform(pos);
-        vector.set(pos);
-    }
-
-    public abstract static class NoState extends MekanismJavaModel<@Nullable Void> {
+    public abstract static class NoState extends MekanismJavaModel<Unit> {
 
         public NoState(ModelPart root) {
             super(root);
         }
 
         public void setupAnim() {
-            setupAnim(null);
+            setupAnim(Unit.INSTANCE);
         }
 
         @Override
-        public final void collect(@Nullable Void unused, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight) {
-            collect(poseStack, submitNodeCollector, light, overlayLight);
+        public final void collect(Unit unused, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, @UnknownNullability FoilRendering foil, int outlineColor) {
+            collect(poseStack, submitNodeCollector, light, overlayLight, foil, outlineColor);
         }
 
-        public abstract void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight);
+        public abstract void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight, @UnknownNullability FoilRendering foil, int outlineColor);
+    }
+
+    public enum FoilRendering {
+        NONE,
+        ITEM,
+        ARMOR;
+
+        public RenderType renderType() {
+            return switch (this) {
+                case ITEM -> RenderTypes.entityGlint();
+                case ARMOR -> MekanismRenderType.ARMOR_GLINT;
+                default -> throw new IllegalStateException("No glint render type");
+            };
+        }
+
+        public FoilRendering foil(boolean hasFoil) {
+            return hasFoil ? this : NONE;
+        }
     }
 }

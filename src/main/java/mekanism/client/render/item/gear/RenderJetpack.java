@@ -4,11 +4,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
+import mekanism.client.model.MekanismJavaModel.FoilRendering;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelJetpack;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.util.Mth;
 import org.joml.Vector3fc;
 
 public class RenderJetpack implements NoDataSpecialModelRenderer {
@@ -26,9 +28,8 @@ public class RenderJetpack implements NoDataSpecialModelRenderer {
     public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-        //TODO - 26.2: Figure out foil
-        jetpack.collect(poseStack, nodeCollector, lightCoords, overlayCoords);
+        poseStack.mulPose(Axis.ZP.rotation(Mth.PI));
+        jetpack.collect(poseStack, nodeCollector, lightCoords, overlayCoords, FoilRendering.ITEM.foil(hasFoil), outlineColor);
         poseStack.popPose();
     }
 

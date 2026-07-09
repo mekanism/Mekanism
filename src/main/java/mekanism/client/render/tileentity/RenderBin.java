@@ -88,16 +88,16 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
             switch (state.facing) {
                 case NORTH -> {
                     poseStack.translate(0.71, 0.8, -0.0001);
-                    poseStack.mulPose(Axis.YP.rotationDegrees(180));
+                    poseStack.mulPose(Axis.YP.rotation(Mth.PI));
                 }
                 case SOUTH -> poseStack.translate(0.29, 0.8, 1.0001);
                 case WEST -> {
                     poseStack.translate(-0.0001, 0.8, 0.29);
-                    poseStack.mulPose(Axis.YP.rotationDegrees(-90));
+                    poseStack.mulPose(Axis.YN.rotation(Mth.HALF_PI));
                 }
                 case EAST -> {
                     poseStack.translate(1.0001, 0.8, 0.71);
-                    poseStack.mulPose(Axis.YP.rotationDegrees(90));
+                    poseStack.mulPose(Axis.YP.rotation(Mth.HALF_PI));
                 }
             }
 
@@ -112,29 +112,29 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
                 switch (state.facing) {
                     case SOUTH -> {
                         poseStack.translate(0, 1, 0);
-                        poseStack.mulPose(Axis.XP.rotationDegrees(90));
+                        poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
                     }
                     case NORTH -> {
                         poseStack.translate(1, 1, 1);
-                        poseStack.mulPose(Axis.YP.rotationDegrees(180));
-                        poseStack.mulPose(Axis.XP.rotationDegrees(90));
+                        poseStack.mulPose(Axis.YP.rotation(Mth.PI));
+                        poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
                     }
                     case EAST -> {
                         poseStack.translate(0, 1, 1);
-                        poseStack.mulPose(Axis.YP.rotationDegrees(90));
-                        poseStack.mulPose(Axis.XP.rotationDegrees(90));
+                        poseStack.mulPose(Axis.YP.rotation(Mth.HALF_PI));
+                        poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
                     }
                     case WEST -> {
                         poseStack.translate(1, 1, 0);
-                        poseStack.mulPose(Axis.YP.rotationDegrees(-90));
-                        poseStack.mulPose(Axis.XP.rotationDegrees(90));
+                        poseStack.mulPose(Axis.YN.rotation(Mth.HALF_PI));
+                        poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
                     }
                 }
 
                 float displayWidth = 1;
                 float displayHeight = 1;
                 poseStack.translate(displayWidth / 2, 1, displayHeight / 2);
-                poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+                poseStack.mulPose(Axis.XN.rotation(Mth.HALF_PI));
 
                 int requiredWidth = Math.max(font.width(state.displayCount), 1);
                 int requiredHeight = font.lineHeight + 2;

@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class ModelJetpack extends MekanismJavaModel.NoState {
 
@@ -119,11 +120,15 @@ public class ModelJetpack extends MekanismJavaModel.NoState {
     }
 
     @Override
-    public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight) {
+    public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight, @UnknownNullability FoilRendering foil, int outlineColor) {
         setupAnim();
-        collectParts(parts, poseStack, frameRenderType, collector, light, overlayLight, CommonColors.WHITE, null);
-        collectParts(litParts, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null);
-        collectParts(wingParts, poseStack, wingRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0x33FFFFFF, null);
+        collect(poseStack, collector, light, overlayLight, foil, outlineColor, 1);
+    }
+
+    protected int collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight, FoilRendering foil, int outlineColor, int order) {
+        int nextOrder = collectParts(parts, poseStack, frameRenderType, collector, light, overlayLight, CommonColors.WHITE, null, foil, outlineColor, order);
+        nextOrder = collectParts(litParts, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null,foil, outlineColor, nextOrder);
+        return collectParts(wingParts, poseStack, wingRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0x33FFFFFF, null, foil, outlineColor, nextOrder);
     }
 
     protected static ModelPartData thrusterLeft(float fuelZ) {

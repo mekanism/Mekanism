@@ -24,7 +24,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
@@ -53,7 +52,7 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
         if (state == null) {
             return;
         }
-        state.blockRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
+        state.blockRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor, hasFoil);
         if (state.coreTint != null) {
             float scaledTicks = 4 * state.ticks();
             poseStack.pushPose();
@@ -100,7 +99,7 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
             sideStates[side.ordinal()] = state;
         }
 
-        BlockModelRenderState modelRenderState = new BlockModelRenderState();
+        FoilableBlockModelRenderState modelRenderState = new FoilableBlockModelRenderState();
         BlockState blockState = itemBlock.getBlock().defaultBlockState();
         BlockStateModel blockStateModel = models().getBlockStateModelSet().get(blockState);
         if (blockStateModel instanceof EnergyCubeModel energyCubeModel) {
@@ -130,7 +129,7 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
         return Minecraft.getInstance();
     }
 
-    public record CubeState(@Nullable Integer coreTint, float ticks, BlockModelRenderState blockRenderState) {}
+    public record CubeState(@Nullable Integer coreTint, float ticks, FoilableBlockModelRenderState blockRenderState) {}
 
     public static class Unbaked implements SpecialModelRenderer.Unbaked<CubeState> {
 

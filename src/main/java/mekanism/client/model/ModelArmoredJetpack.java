@@ -76,13 +76,14 @@ public class ModelArmoredJetpack extends ModelJetpack {
     }
 
     @Override
-    public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight) {
-        super.collect(poseStack, collector, light, overlayLight);
+    public int collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight, FoilRendering foil, int outlineColor, int order) {
+        int nextOrder = super.collect(poseStack, collector, light, overlayLight, foil, outlineColor, order);
         poseStack.pushPose();
         poseStack.translate(0, 0, -0.0625);
-        collectParts(armoredParts, poseStack, frameRenderType, collector, light, overlayLight, CommonColors.WHITE, null);
-        collectParts(armoredLights, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null);
+        nextOrder = collectParts(armoredParts, poseStack, frameRenderType, collector, light, overlayLight, CommonColors.WHITE, null, foil, outlineColor, nextOrder);
+        nextOrder = collectParts(armoredLights, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null, foil, outlineColor, nextOrder);
         poseStack.popPose();
+        return nextOrder;
     }
 
 }

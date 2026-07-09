@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -59,7 +60,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
             poseStack.pushPose();
             poseStack.translate(0.5, 1.5, 0.5);
             MekanismRenderer.rotate(poseStack, state.direction, 0, 180, 90, 270);
-            poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+            poseStack.mulPose(Axis.ZP.rotation(Mth.PI));
             //TODO - 26.2: Do we need to do something for the light level similar to what double chests do of calculating the max of all the positions?
             nodeCollector.submitModel(this.model, state.rotation, poseStack, ModelWindGenerator.RENDER_TYPE, state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, state.breakProgress);
             poseStack.popPose();
@@ -90,7 +91,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
         }
         poseStack.translate(0.5F, 1.5F, 0.5F);
         MekanismRenderer.rotate(poseStack, generator.getDirection(), 0, 180, 90, 270);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+        poseStack.mulPose(Axis.ZP.rotation(Mth.PI));
         float angle;
         if (generator.getActive() && partialTick > 0) {
             angle = (generator.getAngle() + generator.getHeightSpeedRatio() * partialTick) % 360;

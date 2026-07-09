@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class ModelFreeRunners extends MekanismJavaModel<FreeRunnerRenderState> {
 
@@ -77,14 +78,20 @@ public class ModelFreeRunners extends MekanismJavaModel<FreeRunnerRenderState> {
     }
 
     @Override
-    public void collect(FreeRunnerRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight) {
+    public void collect(FreeRunnerRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, @UnknownNullability FoilRendering foil, int outlineColor) {
         setupAnim(state);
+        collect(state, poseStack, submitNodeCollector, light, overlayLight, foil, outlineColor, 1);
+    }
+
+    protected int collect(FreeRunnerRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, FoilRendering foil, int outlineColor, int order) {
+        int nextOrder = order;
         if (state.leftVisible()) {
-            collectParts(leftParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, CommonColors.WHITE, null);
+            nextOrder = collectParts(leftParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, CommonColors.WHITE, null, foil, outlineColor, nextOrder);
         }
         if (state.rightVisible) {
-            collectParts(rightParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, CommonColors.WHITE, null);
+            nextOrder = collectParts(rightParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, CommonColors.WHITE, null, foil, outlineColor, nextOrder);
         }
+        return nextOrder;
     }
 
     //TODO - 26.2: Do we want a static field for the various states?

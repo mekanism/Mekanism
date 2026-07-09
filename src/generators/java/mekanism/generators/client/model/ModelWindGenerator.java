@@ -1,6 +1,7 @@
 package mekanism.generators.client.model;
 
 import java.util.Collection;
+import mekanism.client.ModelUtil;
 import mekanism.client.model.MekanismJavaModel;
 import mekanism.client.model.ModelPartData;
 import mekanism.client.render.outline.Outlines.Line;
@@ -133,7 +134,7 @@ public class ModelWindGenerator extends Model<WindGeneratorRotationRenderState> 
 
     public Collection<Line> getWireFrame(WindGeneratorRotationRenderState state) {
         setupAnim(state);
-        return MekanismJavaModel.getPartsAsWireFrame(root().getAllParts());
+        return ModelUtil.getPartsAsWireFrame(root().getAllParts());
     }
 
     @Override

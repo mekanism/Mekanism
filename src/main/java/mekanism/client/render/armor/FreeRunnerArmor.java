@@ -1,6 +1,7 @@
 package mekanism.client.render.armor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import mekanism.client.model.MekanismJavaModel.FoilRendering;
 import mekanism.client.model.ModelArmoredFreeRunners;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelFreeRunners.FreeRunnerRenderState;
@@ -50,7 +51,7 @@ public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListe
             poseStack.translate(0, 0, 0.06);
             poseStack.scale(1.02F, 1.02F, 1.02F);
             poseStack.translate(-0.1375, -0.75, -0.0625);
-            this.model.collect(renderState, poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY);
+            this.model.collect(renderState, poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY, FoilRendering.ARMOR.foil(stack.hasFoil()), state.outlineColor);
             poseStack.popPose();
         }
     }

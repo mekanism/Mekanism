@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class ModelScubaMask extends MekanismJavaModel.NoState {
 
@@ -131,11 +132,11 @@ public class ModelScubaMask extends MekanismJavaModel.NoState {
     }
 
     @Override
-    public void collect(PoseStack matrix, SubmitNodeCollector collector, int light, int overlayLight) {
+    public void collect(PoseStack matrix, SubmitNodeCollector collector, int light, int overlayLight, @UnknownNullability FoilRendering foil, int outlineColor) {
         setupAnim();
-        collectParts(parts, matrix, RENDER_TYPE, collector, light, overlayLight, CommonColors.WHITE, null);
-        collectParts(litParts, matrix, RENDER_TYPE, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null);
-        collectParts(glass, matrix, GLASS_RENDER_TYPE, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0x4CFFFFFF, null);
+        int nextOrder = collectParts(parts, matrix, RENDER_TYPE, collector, light, overlayLight, CommonColors.WHITE, null, foil, outlineColor, 1);
+        nextOrder = collectParts(litParts, matrix, RENDER_TYPE, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null, foil, outlineColor, nextOrder);
+        collectParts(glass, matrix, GLASS_RENDER_TYPE, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0x4CFFFFFF, null, foil, outlineColor, nextOrder);
     }
 
 }

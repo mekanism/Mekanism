@@ -2,6 +2,7 @@ package mekanism.client.render.armor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.model.ModelScubaTank;
+import mekanism.client.render.MekanismRenderType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -39,8 +40,10 @@ public class ScubaTankArmor implements ICustomArmor, ResourceManagerReloadListen
         poseStack.pushPose();
         baseModel.body.translateAndRotate(poseStack);
         poseStack.translate(0, 0, 0.06);
-        //TODO - 26.2 foil rendering? Not actually enchantable by default
-        nodeCollector.submitModel(this.model, Unit.INSTANCE, poseStack, model.RENDER_TYPE, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, null);
+        nodeCollector.order(0).submitModel(this.model, Unit.INSTANCE, poseStack, model.RENDER_TYPE, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+        if (stack.hasFoil()) {
+            nodeCollector.order(1).submitModel(this.model, Unit.INSTANCE, poseStack, MekanismRenderType.ARMOR_GLINT, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, null);
+        }
         poseStack.popPose();
     }
 }

@@ -2,9 +2,11 @@ package mekanism.client.render;
 
 import java.util.function.Function;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.rendertype.TextureTransform;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
@@ -32,10 +34,8 @@ public class MekanismRenderType {
           .createRenderSetup()
     );
 
-    public static final Function<Identifier, RenderType> STANDARD = RenderTypes::entityCutout;/*Util.memoize(resourceLocation ->
+    public static final Function<Identifier, RenderType> STANDARD = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation ->
           createStandard("mek_standard", resourceLocation, UnaryOperator.identity(), false));*/
-    public static final Function<Identifier, RenderType> STANDARD_TRANSLUCENT_TARGET = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation ->
-          createStandard("mek_standard_translucent_target", resourceLocation, state -> state.setOutputState(RenderType.TRANSLUCENT_TARGET), true));*/
     public static final Function<Identifier, RenderType> ALARM = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation ->
           createStandard("mek_alarm", resourceLocation, state -> state.setCullState(RenderType.NO_CULL).setOutputState(RenderType.TRANSLUCENT_TARGET), true));*/
     //Similar to mekStandard but blurs the texture
@@ -78,6 +78,14 @@ public class MekanismRenderType {
           .useOverlay()//TODO - 26.2: I don't think we want the overlay?
           .affectsCrumbling()
           .setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE)//TODO - 26.2?: affectsOutline ? RenderSetup.OutlineProperty.AFFECTS_OUTLINE : RenderSetup.OutlineProperty.NONE)
+          .createRenderSetup()
+    );
+
+    ///Copy of [RenderTypes#ARMOR_ENTITY_GLINT] but without the view offset layering
+    public static final RenderType ARMOR_GLINT = RenderType.create("mekanism_armor_entity_glint", RenderSetup.builder(RenderPipelines.GLINT)
+          .withTexture("Sampler0", ItemFeatureRenderer.ENCHANTED_GLINT_ARMOR)
+          .setTextureTransform(TextureTransform.ARMOR_ENTITY_GLINT_TEXTURING)
+          //.setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
           .createRenderSetup()
     );
 

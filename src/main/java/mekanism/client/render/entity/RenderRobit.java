@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import org.jspecify.annotations.Nullable;
 
 public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, EntityModel<RobitRenderState>> {
@@ -76,7 +77,7 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, Enti
 
     private void submitRobitSkin(RobitRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
         poseStack.pushPose();
-        poseStack.mulPose(Axis.XP.rotationDegrees(180));
+        poseStack.mulPose(Axis.XP.rotation(Mth.PI));
         poseStack.translate(-0.5, -1.5, -0.5);
         submitRobitSkin(state.model, poseStack, nodeCollector, getOverlayCoords(state, this.getWhiteOverlayProgress(state)), state.lightCoords, state.outlineColor);
         poseStack.popPose();

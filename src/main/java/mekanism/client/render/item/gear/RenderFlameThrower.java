@@ -8,8 +8,10 @@ import mekanism.client.model.ModelFlamethrower;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
@@ -18,7 +20,7 @@ public class RenderFlameThrower implements NoDataSpecialModelRenderer {
 
     private final ModelFlamethrower flamethrower;
 
-    public RenderFlameThrower(EntityModelSet entityModels) {
+    private RenderFlameThrower(EntityModelSet entityModels) {
         flamethrower = new ModelFlamethrower(entityModels);
     }
 
@@ -26,9 +28,11 @@ public class RenderFlameThrower implements NoDataSpecialModelRenderer {
     public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-        //TODO - 26.2: Figure out foil
-        nodeCollector.submitModel(flamethrower, Unit.INSTANCE, poseStack, flamethrower.RENDER_TYPE, lightCoords, overlayCoords, EntityRenderState.NO_OUTLINE, null);
+        poseStack.mulPose(Axis.ZP.rotation(Mth.PI));
+        nodeCollector.order(0).submitModel(flamethrower, Unit.INSTANCE, poseStack, flamethrower.RENDER_TYPE, lightCoords, overlayCoords, outlineColor, null);
+        if (hasFoil) {
+            nodeCollector.order(1).submitModel(flamethrower, Unit.INSTANCE, poseStack, RenderTypes.entityGlint(), lightCoords, overlayCoords, EntityRenderState.NO_OUTLINE, null);
+        }
         poseStack.popPose();
     }
 

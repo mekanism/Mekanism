@@ -1,6 +1,7 @@
 package mekanism.client.render.armor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import mekanism.client.model.MekanismJavaModel.FoilRendering;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelJetpack;
 import net.minecraft.client.Minecraft;
@@ -45,7 +46,7 @@ public class JetpackArmor implements ICustomArmor, ResourceManagerReloadListener
         poseStack.pushPose();
         baseModel.body.translateAndRotate(poseStack);
         poseStack.translate(0, 0, 0.06);
-        model.collect(poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY);
+        model.collect(poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY, FoilRendering.ARMOR.foil(stack.hasFoil()), state.outlineColor);
         poseStack.popPose();
     }
 }

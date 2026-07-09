@@ -90,13 +90,14 @@ public class ModelArmoredFreeRunners extends ModelFreeRunners {
     }
 
     @Override
-    public void collect(FreeRunnerRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight) {
-        super.collect(state, poseStack, submitNodeCollector, light, overlayLight);
+    public int collect(FreeRunnerRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, FoilRendering foil, int outlineColor, int order) {
+        int nextOrder = super.collect(state, poseStack, submitNodeCollector, light, overlayLight, foil, outlineColor, order);
         if (state.leftVisible()) {
-            collectParts(litLeftParts, poseStack, getRenderType(), submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null);
+            nextOrder = collectParts(litLeftParts, poseStack, getRenderType(), submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null, foil, outlineColor, nextOrder);
         } else {
-            collectParts(litRightParts, poseStack, getRenderType(), submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null);
+            nextOrder = collectParts(litRightParts, poseStack, getRenderType(), submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null, foil, outlineColor, nextOrder);
         }
+        return nextOrder;
     }
 
     @Override
