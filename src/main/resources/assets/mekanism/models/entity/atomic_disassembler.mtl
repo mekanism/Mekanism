@@ -4,4 +4,3 @@ map_Kd #atomic_disassembler
 newmtl glow
 map_Kd #atomic_disassembler
 Ka 1 1 1
-newmtl none

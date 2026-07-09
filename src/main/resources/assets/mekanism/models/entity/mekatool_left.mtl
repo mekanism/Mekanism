@@ -1,10 +1,10 @@
 # Made in Blockbench 4.0.5
-newmtl 3
+newmtl body
 map_Kd #mekasuit_armor_body
-newmtl 4
+newmtl led
 map_Kd #leds
-newmtl 5
+Ka 1 1 1
+newmtl exoskeleton
 map_Kd #mekasuit_armor_exoskeleton
-newmtl 6
+newmtl mekatool
 map_Kd #mekatool
-newmtl none

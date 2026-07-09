@@ -1,7 +1,16 @@
 # Made in Blockbench 4.3.1
-newmtl 3
-map_Kd mekanism:entity/armor/mekasuit_elytra
-newmtl 6
-map_Kd mekanism:entity/armor/mekasuit_armor_modules
-newmtl 7
-map_Kd mekanism:entity/armor/mekasuit_gravitational_modulator
+newmtl elytra
+map_Kd #mekasuit_elytra
+newmtl elytra_led
+map_Kd #mekasuit_elytra
+Ka 1 1 1
+newmtl modules
+map_Kd #mekasuit_armor_modules
+newmtl modules_led
+map_Kd #mekasuit_armor_modules
+Ka 1 1 1
+newmtl gravitational_modulator
+map_Kd #mekasuit_gravitational_modulator
+newmtl gravitational_modulator_led
+map_Kd #mekasuit_gravitational_modulator
+Ka 1 1 1
