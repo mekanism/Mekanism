@@ -52,7 +52,12 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
         if (state == null) {
             return;
         }
-        state.blockRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor, hasFoil);
+        if (hasFoil) {
+            state.blockRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor, true);
+        } else {
+            //Use vanilla's normal rendering submit chain so that if something breaks when updating, we only have things break when using glint
+            state.blockRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
+        }
         if (state.coreTint != null) {
             float scaledTicks = 4 * state.ticks();
             poseStack.pushPose();
