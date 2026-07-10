@@ -519,7 +519,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.SUPERCHARGED_COIL, "Supercharged Coil");
         add(MekanismBlocks.DIMENSIONAL_STABILIZER, "Dimensional Stabilizer");
         //Bounding block (I don't think these lang keys actually will ever be used, but set them just in case)
-        add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
+        add(MekanismBlocks.BOUNDING_BLOCK.value().getDescriptionId(), "Bounding Block");
         //Ores
         addOre(OreType.OSMIUM, "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
         addOre(OreType.TIN, "A lightweight, yet sturdy, conductive material.");

@@ -48,7 +48,7 @@ public class AttributeHasBounding implements Attribute {
 
     public void placeBoundingBlocks(Level world, BlockPos orig, BlockState state) {
         handle(world, orig, state, orig, (level, boundingLocation, data) -> {
-            BlockState newState = BlockStateHelper.getStateForPlacement(MekanismBlocks.BOUNDING_BLOCK.defaultState(), level, boundingLocation, null, Direction.NORTH);
+            BlockState newState = BlockStateHelper.getStateForPlacement(MekanismBlocks.BOUNDING_BLOCK.value().defaultBlockState(), level, boundingLocation, null, Direction.NORTH);
             if (level.setBlockAndUpdate(boundingLocation, newState)) {
                 TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, boundingLocation, true);
                 if (tile != null) {

@@ -175,7 +175,7 @@ public abstract class BaseModelProvider extends ModelProvider {
         }
     }
 
-    protected void markManualBlockState(BlockRegistryObject<?, ?> registryObject) {
+    protected void markManualBlockState(DeferredHolder<Block, ?> registryObject) {
         manuallyGeneratedBlockStates.add(registryObject.getKey());
     }
 

@@ -3,14 +3,11 @@ package mekanism.common.registration.impl;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.SpecialColors;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
-import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
@@ -56,11 +53,9 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
         });
     }
 
-    public static void addToDisplay(ItemDisplayParameters displayParameters, CreativeModeTab.Output output, Collection<? extends Holder<Item>> items, Predicate<Holder<Item>> shouldSkip) {
+    public static void addToDisplay(ItemDisplayParameters displayParameters, CreativeModeTab.Output output, Collection<? extends Holder<Item>> items) {
         for (Holder<Item> itemProvider : items) {
-            if (!shouldSkip.test(itemProvider)) {
-                addToDisplay(displayParameters, output, itemProvider);
-            }
+            addToDisplay(displayParameters, output, itemProvider);
         }
     }
 
@@ -106,7 +101,7 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
     }
 
     public static void addToDisplay(ItemDeferredRegister register, ItemDisplayParameters displayParameters, CreativeModeTab.Output output) {
-        addToDisplay(displayParameters, output, register.getEntries(), ConstantPredicates.alwaysFalse());
+        addToDisplay(displayParameters, output, register.getEntries());
     }
 
     public static void addToDisplay(BlockDeferredRegister register, BuildCreativeModeTabContentsEvent event) {
@@ -114,8 +109,7 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
     }
 
     public static void addToDisplay(BlockDeferredRegister register, ItemDisplayParameters displayParameters, CreativeModeTab.Output output) {
-        //Don't add bounding blocks to the creative tab
-        addToDisplay(displayParameters, output, register.getSecondaryEntries(), MekanismBlocks.BOUNDING_BLOCK::secondaryKeyMatches);
+        addToDisplay(displayParameters, output, register.getSecondaryEntries());
     }
 
     public static void addToDisplay(FluidDeferredRegister register, BuildCreativeModeTabContentsEvent event) {
@@ -123,7 +117,7 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
     }
 
     public static void addToDisplay(FluidDeferredRegister register, ItemDisplayParameters displayParameters, CreativeModeTab.Output output) {
-        addToDisplay(displayParameters, output, register.getBucketEntries(), ConstantPredicates.alwaysFalse());
+        addToDisplay(displayParameters, output, register.getBucketEntries());
     }
 
     @FunctionalInterface

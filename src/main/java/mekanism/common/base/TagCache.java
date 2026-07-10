@@ -10,7 +10,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -99,26 +98,23 @@ public final class TagCache {
     }
 
     public static List<ItemStack> getItemTagStacks(String tagName) {
-        return itemTagStacks.computeIfAbsent(tagName, name -> {
-            Set<Item> items = collectTagStacks(BuiltInRegistries.ITEM, name, item -> !MekanismBlocks.BOUNDING_BLOCK.isSecondary(item));
-            return items.stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList();
-        });
+        return itemTagStacks.computeIfAbsent(tagName, name -> collectTagStacks(BuiltInRegistries.ITEM, name).map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList());
     }
 
     public static MatchingStacks getBlockTagStacks(String tagName) {
         return blockTagStacks.computeIfAbsent(tagName, name -> {
-            Set<Block> blocks = collectTagStacks(BuiltInRegistries.BLOCK, name, block -> !MekanismBlocks.BOUNDING_BLOCK.is(block));
+            Set<Block> blocks = collectTagStacks(BuiltInRegistries.BLOCK, name)
+                  .filter(block -> block != MekanismBlocks.BOUNDING_BLOCK.get())
+                  .collect(Collectors.toSet());
             return getMatching(blocks);
         });
     }
 
-    private static <TYPE> Set<TYPE> collectTagStacks(Registry<TYPE> registry, String tagName, Predicate<TYPE> validElement) {
+    private static <TYPE> Stream<TYPE> collectTagStacks(Registry<TYPE> registry, String tagName) {
         return registry.getTags()
               .filter(tag -> WildcardMatcher.matches(tagName, tag.key()))
               .flatMap(ListBacked::stream)
-              .map(Holder::value)
-              .filter(validElement)
-              .collect(Collectors.toSet());
+              .map(Holder::value);
     }
 
     private static MatchingStacks getMatching(Set<Block> blocks) {
@@ -132,15 +128,12 @@ public final class TagCache {
     public static List<ItemStack> getItemModIDStacks(HolderLookup.Provider registries, String modName) {
         return itemModIDStacks.computeIfAbsent(modName, name -> {
             List<ItemStack> stacks = new ArrayList<>();
-            for (Map.Entry<ResourceKey<Item>, Item> entry : BuiltInRegistries.ITEM.entrySet()) {
-                //Ugly check to make sure we don't include our bounding block in render list. Eventually this should maybe just use getRenderShape() with a dummy BlockState
-                if (!MekanismBlocks.BOUNDING_BLOCK.getItemHolder().is(entry.getKey())) {
-                    //Note: We get the modid based on the stack so that if there is a mod that has a different modid for an item
-                    // that isn't based on NBT it can properly change the modid (this is unlikely to happen, but you never know)
-                    ItemStack stack = new ItemStack(entry.getValue());
-                    if (!stack.isEmpty() && WildcardMatcher.matches(name, MekanismUtils.getModId(registries, stack))) {
-                        stacks.add(stack);
-                    }
+            for (Item item : BuiltInRegistries.ITEM) {
+                //Note: We get the modid based on the stack so that if there is a mod that has a different modid for an item
+                // that isn't based on NBT it can properly change the modid (this is unlikely to happen, but you never know)
+                ItemStack stack = new ItemStack(item);
+                if (!stack.isEmpty() && WildcardMatcher.matches(name, MekanismUtils.getModId(registries, stack))) {
+                    stacks.add(stack);
                 }
             }
             return stacks;

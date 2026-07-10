@@ -136,7 +136,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismTags.Blocks.FARMING_OVERRIDE).add(BlockItemIds.PINK_PETALS.block());
         getBuilder(BlockTags.CAMEL_SAND_STEP_SOUND_BLOCKS).add(MekanismBlocks.SALT_BLOCK);
 
-        addToTags(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS, Tags.Blocks.HIDDEN_FROM_RECIPE_VIEWERS, MekanismBlocks.BOUNDING_BLOCK);
+        getBuilder(Tags.Blocks.HIDDEN_FROM_RECIPE_VIEWERS).add(MekanismBlocks.BOUNDING_BLOCK);
 
         getBuilder(BlockTags.CANNOT_SUPPORT_SNOW_LAYER).add(
               MekanismBlocks.STRUCTURAL_GLASS,

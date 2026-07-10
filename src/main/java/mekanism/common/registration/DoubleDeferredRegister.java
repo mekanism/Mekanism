@@ -13,7 +13,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class DoubleDeferredRegister<PRIMARY, SECONDARY> {
 
-    private final DeferredRegister<PRIMARY> primaryRegister;
+    protected final DeferredRegister<PRIMARY> primaryRegister;
     private final DeferredRegister<SECONDARY> secondaryRegister;
 
     protected DoubleDeferredRegister(DeferredRegister<PRIMARY> primaryRegistry, DeferredRegister<SECONDARY> secondaryRegistry) {

@@ -1,4 +1,4 @@
-// 26.2	2026-07-05T18:12:25.9159346	Model Definitions - mekanism
+// 26.2	2026-07-10T09:42:59.4264961	Model Definitions - mekanism
 2e09b81571bcad7a3e925d2b03b1ec1dd0f9b71f assets/mekanism/blockstates/advanced_energy_cube.json
 00c0d0e76b525301d8b7a1adc5dcb5d3807c4d38 assets/mekanism/blockstates/advanced_logistical_transporter.json
 84712d3beb4b5acb6a471b330f3bfa9dcf4de4fa assets/mekanism/blockstates/advanced_mechanical_pipe.json
@@ -135,7 +135,6 @@ dae8ab811b94738b0846fadbdae8e73c14425bf6 assets/mekanism/items/block_tin.json
 404adcb4326945a60e5e2fcb842c31a66da254a0 assets/mekanism/items/block_uranium.json
 c335241f99e26b92a272b41b3517584e34debc1c assets/mekanism/items/boiler_casing.json
 45af2573674950242007161be874e95f5f96d1f9 assets/mekanism/items/boiler_valve.json
-d5ea06b3e43a2092add9ca5cdfb29567653293ac assets/mekanism/items/bounding_block.json
 0f53776fbaea214a701c131f05b1e5a3ffe81566 assets/mekanism/items/brine_bucket.json
 cf4949bcad128d5fe7c0b35ffd6c71987c8045a0 assets/mekanism/items/canteen.json
 d0347ac34a27f4e953505c026e765737ee071b25 assets/mekanism/items/cardboard_box.json

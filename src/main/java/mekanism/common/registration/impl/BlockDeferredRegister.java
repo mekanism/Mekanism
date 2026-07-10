@@ -5,13 +5,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registration.DoubleDeferredRegister;
 import mekanism.common.registries.MekanismDataComponents;
@@ -22,6 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
@@ -49,8 +50,7 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
     }
 
     public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Supplier<Properties> baseBlockProperties,
-          Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator,
-          BiFunction<BLOCK, Item.Properties, ITEM> itemCreator) {
+          Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator, BiFunction<BLOCK, Item.Properties, ITEM> itemCreator) {
         return registerAdvanced(name, key -> blockCreator.apply(baseBlockProperties.get().setId(createPrimaryId(key))), (key, block) -> {
             Item.Properties properties = new Item.Properties();
             if (Attribute.has(block, AttributeSecurity.class)) {
@@ -64,5 +64,9 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
             }
             return itemCreator.apply(block.get(), properties.setId(createSecondaryId(key)).useBlockDescriptionPrefix());
         }, BlockRegistryObject::new);
+    }
+
+    public <BLOCK extends Block> DeferredHolder<Block, BLOCK> registerBlockOnly(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator) {
+        return primaryRegister.register(name, key -> blockCreator.apply(BlockBehaviour.Properties.of().setId(createPrimaryId(key))));
     }
 }
