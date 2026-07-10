@@ -31,6 +31,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 
@@ -198,8 +199,7 @@ public class PlayerState {
     // ----------------------
 
     public void updateElytraFlight(Player player) {
-        //TODO - 26.2: Elytra - https://github.com/neoforged/NeoForge/pull/3192
-        AttributeInstance attributeInstance = null;//player.getAttribute(NeoForgeMod.GLIDING_FLIGHT);
+        AttributeInstance attributeInstance = player.getAttribute(NeoForgeMod.GLIDING_FLIGHT);
         if (attributeInstance != null) {
             boolean shouldDisableElytra = false;
             if (player.isShiftKeyDown() && player.isFallFlying()) {

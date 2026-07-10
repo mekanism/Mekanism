@@ -12,8 +12,10 @@ import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -43,8 +45,7 @@ public class ModuleElytraUnit implements ICustomModule<ModuleElytraUnit> {
             // only mark that we can use the elytra if the jetpack is not set to hover or if it is if it has no hydrogen stored
             IModule<ModuleJetpackUnit> jetpack = moduleContainer.getIfEnabled(MekanismModules.JETPACK_UNIT);
             if (jetpack == null || jetpack.getCustomInstance().mode() != JetpackMode.HOVER || !ChemicalUtils.hasChemicalOfType(itemAccess, ChemicalIds.HYDROGEN)) {
-                //TODO - 26.2: Elytra - https://github.com/neoforged/NeoForge/pull/3192
-                //event.addModifier(NeoForgeMod.GLIDING_FLIGHT, ELYTRA_FLIGHT_MODIFIER, EquipmentSlotGroup.CHEST);
+                event.addModifier(NeoForgeMod.GLIDING_FLIGHT, ELYTRA_FLIGHT_MODIFIER, EquipmentSlotGroup.CHEST);
             }
         }
     }

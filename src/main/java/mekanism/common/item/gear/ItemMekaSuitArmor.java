@@ -309,7 +309,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return slotType == armorType.getSlot() && getModules(instance).stream().anyMatch(IModule::handlesModeChange);
     }
 
-    //@Override//TODO - 26.2: Elytra - https://github.com/neoforged/NeoForge/pull/3192
+    @Override
     public void onGlideDamage(ItemStack stack, LivingEntity wearer, EquipmentSlot slot) {
         //Note: As canElytraFly is checked just before this we don't bother validating ahead of time we have the energy
         // or that we are the correct slot
