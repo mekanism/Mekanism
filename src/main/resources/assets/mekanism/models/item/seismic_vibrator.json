@@ -44,5 +44,8 @@
     "shaft": {
       "parent": "mekanism:block/vibrator_shaft"
     }
+  },
+  "textures": {
+    "particle": "mekanism:block/models/seismic_vibrator_1"
   }
 }
