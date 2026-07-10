@@ -238,8 +238,8 @@ public class MekanismModelProvider extends BaseModelProvider {
         {
             ItemModel.Unbaked modelToRegister = ItemModelUtils.select(
                   new DisplayContext(),
-                  ItemModelUtils.plainModel(modLocation("item/meka_tool_default")),
-                  ItemModelUtils.when(List.of(ItemDisplayContext.FIRST_PERSON_LEFT_HAND, ItemDisplayContext.THIRD_PERSON_LEFT_HAND), ItemModelUtils.plainModel(modLocation("item/meka_tool_left")))
+                  ItemModelUtils.plainModel(MekanismModelCache.INSTANCE.MEKATOOL_RIGHT_ID),
+                  ItemModelUtils.when(List.of(ItemDisplayContext.FIRST_PERSON_LEFT_HAND, ItemDisplayContext.THIRD_PERSON_LEFT_HAND), ItemModelUtils.plainModel(MekanismModelCache.INSTANCE.MEKATOOL_LEFT_ID))
             );
             itemModels.itemModelOutput.accept(MekanismItems.MEKA_TOOL.asItem(), modelToRegister);
         }

@@ -1,0 +1,11 @@
+{
+  "loader": "neoforge:obj",
+  "model": "mekanism:models/entity/mekasuit.obj",
+  "flip_v": true,
+  "textures": {
+    "mekasuit_armor_body": "mekanism:entity/armor/mekasuit_armor_body",
+    "mekasuit_armor_exoskeleton": "mekanism:entity/armor/mekasuit_armor_exoskeleton",
+    "mekasuit_armor_helmet": "mekanism:entity/armor/mekasuit_armor_helmet",
+    "mekasuit_player": "mekanism:entity/armor/mekasuit_player"
+  }
+}

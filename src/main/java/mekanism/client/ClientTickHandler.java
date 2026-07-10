@@ -22,7 +22,6 @@ import mekanism.common.base.KeySync;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
-import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.item.interfaces.IModeItem;
@@ -38,11 +37,7 @@ import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.object.armorstand.ArmorStandModel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
@@ -56,7 +51,6 @@ import net.minecraft.world.level.material.FogType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
-import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -317,49 +311,6 @@ public class ClientTickHandler {
                 //Scale the distance based on the number of installed modules
                 event.scaleFarPlaneDistance((float) Math.pow(module.getInstalledCount(), 1.25) / module.getUntypedData().getMaxStackSize());
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void renderEntityPre(RenderLivingEvent.Pre<?, ?, ?> evt) {
-        EntityModel<?> model = evt.getRenderer().getModel();
-        if (evt.getRenderState() instanceof HumanoidRenderState state && model instanceof HumanoidModel<?> humanoidModel) {
-            //If the entity has a humanoid model, then see if it is wearing a meka suit, in which case we want to hide various parts of the model
-            setModelVisibility(state, humanoidModel, false);
-        }
-    }
-
-    @SubscribeEvent
-    public void renderEntityPost(RenderLivingEvent.Post<?, ?, ?> evt) {
-        EntityModel<?> model = evt.getRenderer().getModel();
-        if (evt.getRenderState() instanceof HumanoidRenderState state && model instanceof HumanoidModel<?> humanoidModel) {
-            //Undo model visibility changes we made to ensure that other entities of the same type are properly visible
-            setModelVisibility(state, humanoidModel, true);
-        }
-    }
-
-    //TODO - 26.2: Re-evaluate how necessary this still is. Some of what was done here previously is now done via ClientRegistration#registerRenderStateModifiers
-    private static void setModelVisibility(HumanoidRenderState state, HumanoidModel<?> entityModel, boolean showModel) {
-        if (state.headEquipment.getItem() instanceof ItemMekaSuitArmor) {
-            entityModel.head.visible = showModel;
-            entityModel.hat.visible = showModel;
-        }
-        if (state.chestEquipment.getItem() instanceof ItemMekaSuitArmor) {
-            entityModel.body.visible = showModel;
-            if (entityModel instanceof ArmorStandModel armorStandModel) {
-                armorStandModel.rightBodyStick.visible = showModel;
-                armorStandModel.leftBodyStick.visible = showModel;
-                armorStandModel.shoulderStick.visible = showModel;
-            } else {
-                //Don't adjust arms for armor stands here the model will end up changing them anyway, and then we may incorrectly activate them,
-                // and we disable them explicitly via the modifying of the render state
-                entityModel.leftArm.visible = showModel;
-                entityModel.rightArm.visible = showModel;
-            }
-        }
-        if (state.legsEquipment.getItem() instanceof ItemMekaSuitArmor) {
-            entityModel.leftLeg.visible = showModel;
-            entityModel.rightLeg.visible = showModel;
         }
     }
 

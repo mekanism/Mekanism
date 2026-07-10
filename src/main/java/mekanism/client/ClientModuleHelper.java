@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import com.mojang.datafixers.util.Either;
 import java.util.function.Predicate;
 import mekanism.api.gear.IClientModuleHelper;
 import mekanism.api.gear.IHUDElement;
@@ -10,10 +11,12 @@ import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.common.content.gear.HUDElement;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.EquipmentSlot;
 
 public class ClientModuleHelper implements IClientModuleHelper {
@@ -39,7 +42,7 @@ public class ClientModuleHelper implements IClientModuleHelper {
     }
 
     @Override
-    public synchronized void addMekaSuitModuleModelSpec(String name, Holder<ModuleData<?>> moduleData, EquipmentSlot slotType, Predicate<HumanoidRenderState> isActive) {
+    public synchronized <AVATAR extends Avatar & ClientAvatarEntity> void addMekaSuitModuleModelSpec(String name, Holder<ModuleData<?>> moduleData, EquipmentSlot slotType, Predicate<Either<HumanoidRenderState, AVATAR>> isActive) {
         MekaSuitArmor.registerModule(name, moduleData, slotType, isActive);
     }
 }

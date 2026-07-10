@@ -1,0 +1,10 @@
+{
+  "loader": "neoforge:obj",
+  "model": "mekanism:models/entity/mekasuit_modules.obj",
+  "flip_v": true,
+  "textures": {
+    "mekasuit_elytra": "mekanism:entity/armor/mekasuit_elytra",
+    "mekasuit_armor_modules": "mekanism:entity/armor/mekasuit_armor_modules",
+    "mekasuit_gravitational_modulator": "mekanism:entity/armor/mekasuit_gravitational_modulator"
+  }
+}

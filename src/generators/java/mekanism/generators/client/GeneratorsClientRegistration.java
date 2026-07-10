@@ -63,7 +63,7 @@ public class GeneratorsClientRegistration {
         //ClientRegistration.addCustomModel(GeneratorsBlocks.CONTROL_ROD_ASSEMBLY, (orig, evt) -> new FuelAssemblyBakedModel(orig, 0.375));
 
         IClientModuleHelper moduleHelper = IClientModuleHelper.INSTANCE;
-        moduleHelper.addMekaSuitModuleModels(MekanismGenerators.rl("models/entity/mekasuit_modules.obj"));
+        moduleHelper.addMekaSuitModuleModels(MekanismGenerators.rl("entity/mekasuit_modules"));
         moduleHelper.addMekaSuitModuleModelSpec("solar_helmet", GeneratorsModules.SOLAR_RECHARGING_UNIT, EquipmentSlot.HEAD);
     }
 

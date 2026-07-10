@@ -85,8 +85,8 @@ import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel.Unbaked;
 import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
 import mekanism.client.model.blockstate.TransmitterBlockStateModel;
 import mekanism.client.model.energycube.EnergyCubeBaseLoader;
-import mekanism.client.model.item.QIODriveArrayItemModel;
 import mekanism.client.model.item.ComponentItemModel;
+import mekanism.client.model.item.QIODriveArrayItemModel;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
@@ -226,13 +226,11 @@ public class ClientRegistration {
             NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, RenderTickHandler::guiOpening);
         }
         IClientModuleHelper moduleHelper = IClientModuleHelper.INSTANCE;
-        moduleHelper.addMekaSuitModuleModels(Mekanism.rl("models/entity/mekasuit_modules.obj"));
+        moduleHelper.addMekaSuitModuleModels(Mekanism.rl("entity/mekasuit_modules"));
         moduleHelper.addMekaSuitModuleModelSpec("jetpack", MekanismModules.JETPACK_UNIT, EquipmentSlot.CHEST);
         moduleHelper.addMekaSuitModuleModelSpec("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlot.CHEST);
-        moduleHelper.addMekaSuitModuleModelSpec("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, state -> state.isFallFlying);
-
-        //TODO - 26.2: this shouldn't need extra in code processing - just a fix on the item model itself
-        //addLitModel(MekanismItems.MEKA_TOOL);
+        moduleHelper.addMekaSuitModuleModelSpec("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, either ->
+              either.map(state -> state.isFallFlying, LivingEntity::isFallFlying));
     }
 
     @SubscribeEvent
@@ -317,33 +315,56 @@ public class ClientRegistration {
     public static void registerRenderStateModifiers(RegisterRenderStateModifiersEvent event) {
         event.registerEntityModifier(new TypeToken<LivingEntityRenderer<? extends LivingEntity, LivingEntityRenderState, ?>>() {
         }, (entity, renderState) -> {
-            renderState.setRenderData(MekaSuitArmor.UUID_CONTEXT, entity.getUUID());
-            if (renderState instanceof HumanoidRenderState state && state.isFallFlying) {
-                renderState.setRenderData(MekaSuitArmor.DELTA_Y_CONTEXT, entity.getDeltaMovement().y);
-            }
-            if (renderState instanceof ArmorStandRenderState state) {
-                if (state.chestEquipment.getItem() instanceof ItemMekaSuitArmor) {
-                    state.showArms = false;
+            if (renderState instanceof HumanoidRenderState state) {
+                renderState.setRenderData(MekaSuitArmor.UUID_CONTEXT, entity.getUUID());
+                if (state.isFallFlying) {
+                    state.setRenderData(MekaSuitArmor.DELTA_Y_CONTEXT, entity.getDeltaMovement().y);
                 }
-            } else if (renderState instanceof AvatarRenderState state) {
                 if (state.headEquipment.getItem() instanceof ItemMekaSuitArmor) {
-                    state.showHat = false;
-                    state.showExtraEars = false;
+                    //Note: Hiding head also implicitly hides the hat model part as it is a child of head
+                    //TODO - 26.2: https://github.com/neoforged/NeoForge/pull/3290
+                    //state.changeModelPartVisibility(PartNames.HEAD, false);
+                    if (state instanceof AvatarRenderState avatarState) {
+                        avatarState.showHat = false;
+                        avatarState.showExtraEars = false;
+                    }
                 }
                 Item chest = state.chestEquipment.getItem();
                 if (chest instanceof ItemMekaSuitArmor) {
-                    state.showCape = false;
-                    state.showJacket = false;
-                    state.showLeftSleeve = false;
-                    state.showRightSleeve = false;
+                    //state.changeModelPartVisibility(PartNames.BODY, false);
+                    if (state instanceof ArmorStandRenderState armorStandState) {
+                        armorStandState.showArms = false;
+                        //TODO - 26.2: https://github.com/neoforged/NeoForge/pull/3290
+                        //state.changeModelPartVisibility(ArmorStandModel.RIGHT_BODY_STICK, false);
+                        //state.changeModelPartVisibility(ArmorStandModel.LEFT_BODY_STICK, false);
+                        //state.changeModelPartVisibility(ArmorStandModel.SHOULDER_STICK, false);
+                    } else {
+                        //Don't adjust arms for armor stands as we already use vanilla's way to define the arms shouldn't be shown
+                        //TODO - 26.2: https://github.com/neoforged/NeoForge/pull/3290
+                        //state.changeModelPartVisibility(PartNames.LEFT_ARM, false);
+                        //state.changeModelPartVisibility(PartNames.RIGHT_ARM, false);
+                        if (state instanceof AvatarRenderState avatarState) {
+                            avatarState.showCape = false;
+                            avatarState.showJacket = false;
+                            avatarState.showLeftSleeve = false;
+                            avatarState.showRightSleeve = false;
+                        }
+                    }
                 } else if (chest instanceof ItemJetpack || chest instanceof ItemScubaTank) {
-                    //Hide the player's cape if they have a thick armor piece on that would clip with it
-                    //TODO - 26.2: Look into the translations that CapeLayer does if the chest equipment has the humanoid layer type
-                    state.showCape = false;
+                    if (state instanceof AvatarRenderState avatarState) {
+                        //Hide the player's cape if they have a thick armor piece on that would clip with it
+                        //TODO - 26.2: Look into the translations that CapeLayer does if the chest equipment has the humanoid layer type
+                        avatarState.showCape = false;
+                    }
                 }
                 if (state.legsEquipment.getItem() instanceof ItemMekaSuitArmor) {
-                    state.showLeftPants = false;
-                    state.showRightPants = false;
+                    //TODO - 26.2: https://github.com/neoforged/NeoForge/pull/3290
+                    //state.changeModelPartVisibility(PartNames.LEFT_LEG, false);
+                    //state.changeModelPartVisibility(PartNames.RIGHT_LEG, false);
+                    if (state instanceof AvatarRenderState avatarState) {
+                        avatarState.showLeftPants = false;
+                        avatarState.showRightPants = false;
+                    }
                 }
             }
         });

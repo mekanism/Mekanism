@@ -33,22 +33,20 @@ import mekanism.common.util.WorldUtils;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.model.HumanoidModel.ArmPose;
-import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.player.AvatarRenderer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -165,28 +163,16 @@ public class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public void renderArm(RenderArmEvent event) {
-        AbstractClientPlayer player = event.getPlayer();
-        ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
+    public void renderArm(RenderArmEvent<?> event) {
+        Avatar avatar = event.getAvatar();
+        ItemStack chestStack = avatar.getItemBySlot(EquipmentSlot.CHEST);
         if (chestStack.getItem() instanceof ItemMekaSuitArmor armorItem) {
+            ModelPart arm = event.getArmPart();
+            //Reset the arm's pose like AvatarRenderer#renderHand does
+            arm.resetPose();
+            int outlineColor = minecraft.shouldEntityAppearGlowing(avatar) ? ARGB.opaque(avatar.getTeamColor()) : 0;
             MekaSuitArmor armor = (MekaSuitArmor) ((ISpecialGear) IClientItemExtensions.of(armorItem)).gearModel();
-            AvatarRenderer<AbstractClientPlayer> renderer = (AvatarRenderer<AbstractClientPlayer>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
-            PlayerModel model = renderer.getModel();
-            AvatarRenderState renderState = renderer.createRenderState();
-            renderer.extractRenderState(player, renderState, MekanismRenderer.getPartialTick());
-            //TODO - 26.2 model.setAllVisible(true);
-            //Note: We just want it to act as empty even if there is a map as it looks a lot better
-            boolean rightHand = event.getArm() == HumanoidArm.RIGHT;
-            if (rightHand) {
-                renderState.rightArmPose = ArmPose.EMPTY;
-            } else {
-                renderState.leftArmPose = ArmPose.EMPTY;
-            }
-            renderState.attackTime = 0.0F;
-            renderState.isCrouching = false;
-            renderState.swimAmount = 0.0F;
-            model.setupAnim(renderState);
-            armor.renderArm(model, event.getPoseStack(), event.getSubmitNodeCollector(), event.getPackedLight(), renderState, chestStack, rightHand);
+            armor.renderArm(event.getAvatar(), arm, event.getPoseStack(), event.getSubmitNodeCollector(), event.getLightCoords(), outlineColor, chestStack, event.getArm() == HumanoidArm.RIGHT);
             event.setCanceled(true);
         }
     }

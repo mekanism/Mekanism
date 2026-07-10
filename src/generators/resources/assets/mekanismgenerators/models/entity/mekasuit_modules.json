@@ -1,0 +1,8 @@
+{
+  "loader": "neoforge:obj",
+  "model": "mekanismgenerators:models/entity/mekasuit_modules.obj",
+  "flip_v": true,
+  "textures": {
+    "mekasuit_armor_helmet": "mekanism:entity/armor/mekasuit_armor_helmet"
+  }
+}
