@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
-import mekanism.api.recipes.display.SawingRecipeDisplay;
+import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -48,24 +48,6 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
         return Collections.emptyList();
     }
 
-    /// @since 10.8.0
-    /// @deprecated Prefer calling [#getMainOutputDisplay()] and [#getSecondaryOutputDisplay()]
-    @Override
-    @Deprecated
-    public final SlotDisplay getOutputDisplay() {
-        return new SlotDisplay.Composite(List.of(getMainOutputDisplay(), getSecondaryOutputDisplay()));
-    }
-
-    /// {@return a slot display for the main output of the recipe}
-    ///
-    /// @since 10.8.0
-    public abstract SlotDisplay getMainOutputDisplay();
-
-    /// {@return a slot display for the secondary output of the recipe}
-    ///
-    /// @since 10.8.0
-    public abstract SlotDisplay getSecondaryOutputDisplay();
-
     /// Gets the chance (between 0 and 1) of the secondary output being produced.
     public abstract double getSecondaryChance();
 
@@ -76,11 +58,9 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new SawingRecipeDisplay(
+        return List.of(new SimpleMachineRecipeDisplay(
               getInput().display(),
-              getMainOutputDisplay(),
-              getSecondaryOutputDisplay(),
-              getSecondaryChance(),
+              getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(PRECISION_SAWMILL)
         ));
     }

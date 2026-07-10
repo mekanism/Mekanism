@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
+import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -15,7 +16,6 @@ import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.display.DisplayContentsFactory.ForStacks;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.ApiStatus.Internal;
@@ -114,14 +114,14 @@ public final class ItemStackIngredient implements InputIngredient<Item, ItemStac
     @Override
     public List<ItemStack> getRepresentations(ContextMap context) {
         if (this.representations == null) {
-            this.representations = display().resolve(context, (ForStacks<ItemStack>) stack -> stack.copyWithCount(ingredient.count())).toList();
+            this.representations = display().resolve(context, SlotDisplay.ItemStackContentsFactory.INSTANCE).toList();
         }
         return representations;
     }
 
     @Override
     public SlotDisplay display() {
-        return ingredient.ingredient().display();
+        return new WithAmountSlotDisplay(ingredient.ingredient().display(), ingredient.count());
     }
 
     /// For use in recipe input caching. Gets the internal Neo Sized Ingredient.

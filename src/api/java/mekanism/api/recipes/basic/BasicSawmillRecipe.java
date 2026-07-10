@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.SawmillRecipe;
+import mekanism.api.recipes.display.slot.ChanceSlotDisplay;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
@@ -67,13 +68,21 @@ public class BasicSawmillRecipe extends SawmillRecipe {
     }
 
     @Override
-    public SlotDisplay getMainOutputDisplay() {
-        return mainOutput == null ? SlotDisplay.Empty.INSTANCE : new SlotDisplay.ItemStackSlotDisplay(mainOutput);
-    }
-
-    @Override
-    public SlotDisplay getSecondaryOutputDisplay() {
-        return secondaryOutput == null ? SlotDisplay.Empty.INSTANCE : new SlotDisplay.ItemStackSlotDisplay(secondaryOutput);
+    public SlotDisplay getOutputDisplay() {
+        SlotDisplay secondaryDisplay;
+        if (secondaryOutput == null || secondaryChance <= 0) {
+            secondaryDisplay = null;
+        } else {
+            secondaryDisplay = ChanceSlotDisplay.create(new SlotDisplay.ItemStackSlotDisplay(secondaryOutput), secondaryChance);
+        }
+        if (mainOutput != null && secondaryDisplay != null) {
+            return new SlotDisplay.Composite(List.of(new SlotDisplay.ItemStackSlotDisplay(mainOutput), secondaryDisplay));
+        } else if (mainOutput != null) {
+            return new SlotDisplay.ItemStackSlotDisplay(mainOutput);
+        } else if (secondaryDisplay != null) {
+            return secondaryDisplay;
+        }
+        throw new IllegalStateException("At least one output should always be present");
     }
 
     @Override
@@ -88,7 +97,7 @@ public class BasicSawmillRecipe extends SawmillRecipe {
 
     /// For Serializer use. DO NOT MODIFY RETURN VALUE.
     ///
-    /// @return the uncopied basic output, or empty if the value is ItemStack.EMPTY
+    /// @return the uncopied basic output, or empty if the value is `null`
     public Optional<ItemStackTemplate> getMainOutputRaw() {
         return Optional.ofNullable(this.mainOutput);
     }

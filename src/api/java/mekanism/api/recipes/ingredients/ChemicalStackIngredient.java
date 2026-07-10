@@ -8,8 +8,9 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
-import mekanism.api.recipes.ingredients.chemical.display.ForChemicalStacks;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
@@ -144,14 +145,14 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
     @Override
     public List<ChemicalStack> getRepresentations(ContextMap context) {
         if (this.representations == null) {
-            this.representations = display().resolve(context, (ForChemicalStacks<ChemicalStack>) stack -> stack.copyWithAmount(amount)).toList();
+            this.representations = display().resolve(context, ChemicalStackContentsFactory.INSTANCE).toList();
         }
         return representations;
     }
 
     @Override
     public SlotDisplay display() {
-        return ingredient.display();
+        return new WithAmountSlotDisplay(ingredient.display(), amount);
     }
 
     /// For use in recipe input caching. Gets the internal Chemical Ingredient.

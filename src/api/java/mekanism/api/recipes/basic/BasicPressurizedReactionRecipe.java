@@ -103,13 +103,15 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     }
 
     @Override
-    public SlotDisplay getChemicalOutputDisplay() {
-        return outputChemical == null ? SlotDisplay.Empty.INSTANCE : new ChemicalStackSlotDisplay(outputChemical);
-    }
-
-    @Override
-    public SlotDisplay getItemOutputDisplay() {
-        return outputItem == null ? SlotDisplay.Empty.INSTANCE : new SlotDisplay.ItemStackSlotDisplay(outputItem);
+    public SlotDisplay getOutputDisplay() {
+        if (outputItem != null && outputChemical != null) {
+            return new SlotDisplay.Composite(List.of(new SlotDisplay.ItemStackSlotDisplay(outputItem), new ChemicalStackSlotDisplay(outputChemical)));
+        } else if (outputItem != null) {
+            return new SlotDisplay.ItemStackSlotDisplay(outputItem);
+        } else if (outputChemical != null) {
+            return new ChemicalStackSlotDisplay(outputChemical);
+        }
+        throw new IllegalStateException("At least one output should always be present");
     }
 
     @Override

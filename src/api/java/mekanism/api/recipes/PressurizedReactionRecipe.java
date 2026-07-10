@@ -73,15 +73,10 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     /// @return Representation of the output, **MUST NOT** be modified.
     public abstract List<PressurizedReactionRecipeOutput> getOutputDefinition(ContextMap contextMap);
 
-    /// {@return a slot display for the chemical output of the recipe}
+    /// {@return a slot display for the output of the recipe}
     ///
     /// @since 10.8.0
-    public abstract SlotDisplay getChemicalOutputDisplay();
-
-    /// {@return a slot display for the item output of the recipe}
-    ///
-    /// @since 10.8.0
-    public abstract SlotDisplay getItemOutputDisplay();
+    public abstract SlotDisplay getOutputDisplay();
 
     /// Gets a new output based on the given inputs.
     ///
@@ -120,8 +115,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
               getInputSolid().display(),
               getInputFluid().display(),
               getInputChemical().display(),
-              getItemOutputDisplay(),
-              getChemicalOutputDisplay(),
+              getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(PRESSURIZED_REACTION_CHAMBER)
         ));
     }

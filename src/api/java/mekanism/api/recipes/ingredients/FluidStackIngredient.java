@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
+import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -18,7 +19,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SimpleFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
-import net.neoforged.neoforge.fluids.crafting.display.ForFluidStacks;
+import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.Nullable;
 
@@ -110,14 +111,14 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, FluidS
     @Override
     public List<FluidStack> getRepresentations(ContextMap context) {
         if (this.representations == null) {
-            this.representations = display().resolve(context, (ForFluidStacks<FluidStack>) stack -> stack.copyWithAmount(ingredient.amount())).toList();
+            this.representations = display().resolve(context, FluidStackContentsFactory.INSTANCE).toList();
         }
         return representations;
     }
 
     @Override
     public SlotDisplay display() {
-        return ingredient.ingredient().display();
+        return new WithAmountSlotDisplay(ingredient.ingredient().display(), ingredient.amount());
     }
 
     /// For use in recipe input caching. Gets the internal Neo Sized Fluid Ingredient.

@@ -4,7 +4,7 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
-import mekanism.api.recipes.display.RateBasedCombiningRecipeDisplay;
+import mekanism.api.recipes.display.PerTickCombiningRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
@@ -30,7 +30,7 @@ public class BasicPaintingRecipe extends BasicItemStackChemicalToItemStackRecipe
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new RateBasedCombiningRecipeDisplay(
+        return List.of(PerTickCombiningRecipeDisplay.create(
               getItemInput().display(),
               getChemicalInput().display(),
               perTickUsage(),

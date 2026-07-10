@@ -6,7 +6,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.SingleInputRecipe.FluidInputRecipe;
-import mekanism.api.recipes.display.MultiOutputRecipeDisplay;
+import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -35,30 +35,11 @@ public abstract class ElectrolysisRecipe extends FluidInputRecipe<ElectrolysisRe
         return MekanismRecipeTypes.TYPE_SEPARATING.value();
     }
 
-    /// @since 10.8.0
-    /// @deprecated Prefer calling [#getLeftOutputDisplay()] and [#getRightOutputDisplay()]
-    @Override
-    @Deprecated
-    public final SlotDisplay getOutputDisplay() {
-        return new SlotDisplay.Composite(List.of(getLeftOutputDisplay(), getRightOutputDisplay()));
-    }
-
-    /// {@return a slot display for the left output of the recipe}
-    ///
-    /// @since 10.8.0
-    public abstract SlotDisplay getLeftOutputDisplay();
-
-    /// {@return a slot display for the left output of the recipe}
-    ///
-    /// @since 10.8.0
-    public abstract SlotDisplay getRightOutputDisplay();
-
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new MultiOutputRecipeDisplay(
+        return List.of(new SimpleMachineRecipeDisplay(
               getInput().display(),
-              getLeftOutputDisplay(),
-              getRightOutputDisplay(),
+              getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(ELECTROLYTIC_SEPARATOR)
         ));
     }

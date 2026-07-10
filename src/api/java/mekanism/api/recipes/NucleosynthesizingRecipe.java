@@ -38,8 +38,8 @@ public abstract class NucleosynthesizingRecipe extends ItemStackChemicalToItemSt
         return List.of(new NucleosynthesizingRecipeDisplay(
               getItemInput().display(),
               getChemicalInput().display(),
-              getDuration(),
               perTickUsage(),
+              getDuration(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(ANTIPROTONIC_NUCLEOSYNTHESIZER)
         ));

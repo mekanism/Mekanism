@@ -32,9 +32,6 @@ public record ChemicalSlotDisplay(Holder<Chemical> chemical) implements SlotDisp
 
     @Override
     public <T> Stream<T> resolve(ContextMap context, DisplayContentsFactory<T> factory) {
-        return switch (factory) {
-            case ForChemicalStacks<T> chemicals -> Stream.of(chemicals.forStack(chemical));
-            default -> Stream.empty();
-        };
+        return factory instanceof ForChemicalStacks<T> chemicals ? Stream.of(chemicals.forStack(chemical)) : Stream.empty();
     }
 }

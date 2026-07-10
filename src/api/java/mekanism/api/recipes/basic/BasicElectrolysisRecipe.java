@@ -48,13 +48,8 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     }
 
     @Override
-    public SlotDisplay getLeftOutputDisplay() {
-        return new ChemicalStackSlotDisplay(leftChemicalOutput);
-    }
-
-    @Override
-    public SlotDisplay getRightOutputDisplay() {
-        return new ChemicalStackSlotDisplay(rightChemicalOutput);
+    public SlotDisplay getOutputDisplay() {
+        return new SlotDisplay.Composite(List.of(new ChemicalStackSlotDisplay(leftChemicalOutput), new ChemicalStackSlotDisplay(rightChemicalOutput)));
     }
 
     @Override

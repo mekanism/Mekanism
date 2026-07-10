@@ -8,7 +8,6 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.fluids.crafting.display.FluidStackSlotDisplay;
 import org.jetbrains.annotations.Contract;
@@ -51,14 +50,12 @@ public abstract class BasicItemStackToFluidOptionalItemRecipe extends ItemStackT
     }
 
     @Override
-    public SlotDisplay getFluidOutputDisplay() {
-        return new FluidStackSlotDisplay(output.fluid().create());
-    }
-
-    @Override
-    public SlotDisplay getItemOutputDisplay() {
-        ItemStackTemplate optionalItem = output.optionalItem();
-        return optionalItem == null ? SlotDisplay.Empty.INSTANCE : new SlotDisplay.ItemStackSlotDisplay(optionalItem);
+    public final SlotDisplay getOutputDisplay() {
+        SlotDisplay fluidDisplay = new FluidStackSlotDisplay(output.fluid().create());
+        if (output.optionalItem() == null) {
+            return fluidDisplay;
+        }
+        return new SlotDisplay.WithRemainder(fluidDisplay, new SlotDisplay.ItemStackSlotDisplay(output.optionalItem()));
     }
 
     @Override

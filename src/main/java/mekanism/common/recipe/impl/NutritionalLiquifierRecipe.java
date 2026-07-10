@@ -2,7 +2,7 @@ package mekanism.common.recipe.impl;
 
 import java.util.List;
 import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
-import mekanism.api.recipes.display.MultiOutputRecipeDisplay;
+import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
@@ -39,10 +39,9 @@ public class NutritionalLiquifierRecipe extends BasicItemStackToFluidOptionalIte
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new MultiOutputRecipeDisplay(
+        return List.of(new SimpleMachineRecipeDisplay(
               getInput().display(),
-              getFluidOutputDisplay(),
-              getItemOutputDisplay(),
+              getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(MekanismBlocks.NUTRITIONAL_LIQUIFIER.getItemHolder())
         ));
     }

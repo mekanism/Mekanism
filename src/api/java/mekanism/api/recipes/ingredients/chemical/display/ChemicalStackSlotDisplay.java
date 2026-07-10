@@ -29,9 +29,6 @@ public record ChemicalStackSlotDisplay(ChemicalStackTemplate stack) implements S
 
     @Override
     public <T> Stream<T> resolve(ContextMap context, DisplayContentsFactory<T> factory) {
-        return switch (factory) {
-            case ForChemicalStacks<T> chemicals -> Stream.of(chemicals.forStack(stack.create()));
-            default -> Stream.empty();
-        };
+        return factory instanceof ForChemicalStacks<T> chemicals ? Stream.of(chemicals.forStack(stack.create())) : Stream.empty();
     }
 }
