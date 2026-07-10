@@ -8,6 +8,9 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.neoforged.neoforge.fluids.crafting.display.FluidStackSlotDisplay;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -45,6 +48,17 @@ public abstract class BasicItemStackToFluidOptionalItemRecipe extends ItemStackT
     @Override
     public List<FluidOptionalItemOutput> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public SlotDisplay getFluidOutputDisplay() {
+        return new FluidStackSlotDisplay(output.fluid().create());
+    }
+
+    @Override
+    public SlotDisplay getItemOutputDisplay() {
+        ItemStackTemplate optionalItem = output.optionalItem();
+        return optionalItem == null ? SlotDisplay.Empty.INSTANCE : new SlotDisplay.ItemStackSlotDisplay(optionalItem);
     }
 
     @Override

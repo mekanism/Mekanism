@@ -12,10 +12,12 @@ import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
@@ -98,6 +100,16 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     @Override
     public List<PressurizedReactionRecipeOutput> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(new PressurizedReactionRecipeOutput(outputItem, outputChemical));
+    }
+
+    @Override
+    public SlotDisplay getChemicalOutputDisplay() {
+        return outputChemical == null ? SlotDisplay.Empty.INSTANCE : new ChemicalStackSlotDisplay(outputChemical);
+    }
+
+    @Override
+    public SlotDisplay getItemOutputDisplay() {
+        return outputItem == null ? SlotDisplay.Empty.INSTANCE : new SlotDisplay.ItemStackSlotDisplay(outputItem);
     }
 
     @Override

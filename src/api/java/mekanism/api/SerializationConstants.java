@@ -16,6 +16,10 @@ public final class SerializationConstants {
     public static final String X = "x";
     public static final String Y = "y";
     public static final String Z = "z";
+    /// @since 10.8.0
+    public static final String RESULT = "result";
+    /// @since 10.8.0
+    public static final String CRAFTING_STATION = "crafting_station";
 
     //Ingredients
     public static final String AMOUNT = "amount";
@@ -139,7 +143,7 @@ public final class SerializationConstants {
     public static final String CONFIG = "config";
     public static final String CONNECTION = "connection";
     public static final String CONTAINER = "container";
-    ///@since 10.8.0
+    /// @since 10.8.0
     public static final String CONTAINERS = "containers";
     public static final String CONTROL_TYPE = "control_type";
     /// @since 10.7.11

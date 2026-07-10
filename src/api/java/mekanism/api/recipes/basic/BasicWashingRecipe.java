@@ -9,17 +9,20 @@ import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
+import mekanism.api.recipes.display.CombiningRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
@@ -48,8 +51,13 @@ public class BasicWashingRecipe extends FluidChemicalToChemicalRecipe {
     }
 
     @Override
-    public ItemStack getToastSymbol() {
-        return new ItemStack(CHEMICAL_WASHER);
+    public List<RecipeDisplay> display() {
+        return List.of(new CombiningRecipeDisplay(
+              getChemicalInput().display(),
+              getFluidInput().display(),
+              getOutputDisplay(),
+              new SlotDisplay.ItemSlotDisplay(CHEMICAL_WASHER)
+        ));
     }
 
     @Override
@@ -65,6 +73,11 @@ public class BasicWashingRecipe extends FluidChemicalToChemicalRecipe {
     @Override
     public List<ChemicalStackTemplate> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public SlotDisplay getOutputDisplay() {
+        return new ChemicalStackSlotDisplay(output);
     }
 
     @Override

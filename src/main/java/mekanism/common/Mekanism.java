@@ -85,6 +85,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismPlacementModifiers;
+import mekanism.common.registries.MekanismRecipeDisplays;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSlotDisplayTypes;
@@ -235,6 +236,7 @@ public class Mekanism {
         MekanismFeatures.FEATURES.register(modEventBus);
         MekanismRecipeType.RECIPE_TYPES.register(modEventBus);
         MekanismRecipeSerializersInternal.RECIPE_SERIALIZERS.register(modEventBus);
+        MekanismRecipeDisplays.RECIPE_DISPLAY_TYPE.register(modEventBus);
         MekanismDataSerializers.DATA_SERIALIZERS.register(modEventBus);
         MekanismLootFunctions.REGISTER.register(modEventBus);
         MekanismChemicals.createAndRegisterDatapack(modEventBus);

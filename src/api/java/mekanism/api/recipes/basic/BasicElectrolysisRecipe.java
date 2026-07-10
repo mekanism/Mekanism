@@ -7,9 +7,11 @@ import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
@@ -43,6 +45,16 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     @Override
     public List<ElectrolysisRecipeOutput> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(new ElectrolysisRecipeOutput(leftChemicalOutput, rightChemicalOutput));
+    }
+
+    @Override
+    public SlotDisplay getLeftOutputDisplay() {
+        return new ChemicalStackSlotDisplay(leftChemicalOutput);
+    }
+
+    @Override
+    public SlotDisplay getRightOutputDisplay() {
+        return new ChemicalStackSlotDisplay(rightChemicalOutput);
     }
 
     @Override

@@ -9,10 +9,12 @@ import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
 public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
@@ -56,6 +58,11 @@ public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
     @Override
     public List<ChemicalStackTemplate> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public SlotDisplay getOutputDisplay() {
+        return new ChemicalStackSlotDisplay(output);
     }
 
     /// For Serializer usage only. Do not modify the returned stack!

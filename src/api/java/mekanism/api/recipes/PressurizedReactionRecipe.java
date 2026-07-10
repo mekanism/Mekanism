@@ -5,6 +5,7 @@ import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
+import mekanism.api.recipes.display.ReactionRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -17,6 +18,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -70,6 +73,16 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     /// @return Representation of the output, **MUST NOT** be modified.
     public abstract List<PressurizedReactionRecipeOutput> getOutputDefinition(ContextMap contextMap);
 
+    /// {@return a slot display for the chemical output of the recipe}
+    ///
+    /// @since 10.8.0
+    public abstract SlotDisplay getChemicalOutputDisplay();
+
+    /// {@return a slot display for the item output of the recipe}
+    ///
+    /// @since 10.8.0
+    public abstract SlotDisplay getItemOutputDisplay();
+
     /// Gets a new output based on the given inputs.
     ///
     /// @param solid    Specific item input.
@@ -102,8 +115,15 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     }
 
     @Override
-    public ItemStack getToastSymbol() {
-        return new ItemStack(PRESSURIZED_REACTION_CHAMBER);
+    public List<RecipeDisplay> display() {
+        return List.of(new ReactionRecipeDisplay(
+              getInputSolid().display(),
+              getInputFluid().display(),
+              getInputChemical().display(),
+              getItemOutputDisplay(),
+              getChemicalOutputDisplay(),
+              new SlotDisplay.ItemSlotDisplay(PRESSURIZED_REACTION_CHAMBER)
+        ));
     }
 
     /// @apiNote Both item and chemical may be present or one may be empty.

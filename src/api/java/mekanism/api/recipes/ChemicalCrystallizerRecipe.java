@@ -1,7 +1,9 @@
 package mekanism.api.recipes;
 
+import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.SingleInputRecipe.ChemicalInputRecipe;
+import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
 import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -10,6 +12,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 /// Input: Chemical
@@ -35,7 +39,11 @@ public abstract class ChemicalCrystallizerRecipe extends ChemicalInputRecipe<Ite
     }
 
     @Override
-    public ItemStack getToastSymbol() {
-        return new ItemStack(CHEMICAL_CRYSTALLIZER);
+    public List<RecipeDisplay> display() {
+        return List.of(new SimpleMachineRecipeDisplay(
+              getInput().display(),
+              getOutputDisplay(),
+              new SlotDisplay.ItemSlotDisplay(CHEMICAL_CRYSTALLIZER)
+        ));
     }
 }

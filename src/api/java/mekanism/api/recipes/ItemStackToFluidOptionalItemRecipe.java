@@ -2,12 +2,17 @@ package mekanism.api.recipes;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.SerializationConstants;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
 import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jspecify.annotations.Nullable;
 
@@ -22,6 +27,24 @@ import org.jspecify.annotations.Nullable;
 /// @since 10.6.3
 public abstract class ItemStackToFluidOptionalItemRecipe extends ItemInputRecipe<FluidOptionalItemOutput> {
 
+    /// @since 10.8.0
+    /// @deprecated Prefer calling [#getFluidOutputDisplay()] and [#getItemOutputDisplay()]
+    @Override
+    @Deprecated
+    public final SlotDisplay getOutputDisplay() {
+        return new SlotDisplay.Composite(List.of(getFluidOutputDisplay(), getItemOutputDisplay()));
+    }
+
+    /// {@return a slot display for the fluid output of the recipe}
+    ///
+    /// @since 10.8.0
+    public abstract SlotDisplay getFluidOutputDisplay();
+
+    /// {@return a slot display for the optional item output of the recipe}
+    ///
+    /// @since 10.8.0
+    public abstract SlotDisplay getItemOutputDisplay();
+
     /// @apiNote Fluid must be present, but the item may be empty.
     public record FluidOptionalItemOutput(FluidStackTemplate fluid, @Nullable ItemStackTemplate optionalItem) {
 
@@ -29,6 +52,15 @@ public abstract class ItemStackToFluidOptionalItemRecipe extends ItemInputRecipe
               FluidStackTemplate.CODEC.fieldOf(SerializationConstants.FLUID).forGetter(FluidOptionalItemOutput::fluid),
               ItemStackTemplate.CODEC.optionalFieldOf(SerializationConstants.ITEM).forGetter(output -> Optional.ofNullable(output.optionalItem))
         ).apply(instance, (fluid, item) -> new FluidOptionalItemOutput(fluid, item.orElse(null))));
+
+        /// Stream codec for serializing a fluid output with an optional item output
+        ///
+        /// @since 10.8.0
+        public static final StreamCodec<RegistryFriendlyByteBuf, FluidOptionalItemOutput> STREAM_CODEC = StreamCodec.composite(
+              FluidStackTemplate.STREAM_CODEC, FluidOptionalItemOutput::fluid,
+              ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC), output -> Optional.ofNullable(output.optionalItem()),
+              (fluid, item) -> new FluidOptionalItemOutput(fluid, item.orElse(null))
+        );
 
         public FluidOptionalItemOutput {
             Objects.requireNonNull(fluid, "Fluid output cannot be null.");

@@ -21,6 +21,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
     public static ItemStackToItemStackRecipe tryUnwrap(SmeltingRecipe original) {
@@ -65,6 +66,17 @@ public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
             }
         }
         return list;
+    }
+
+    @Override
+    public SlotDisplay getOutputDisplay() {
+        List<SlotDisplay> displays = display().stream().map(RecipeDisplay::result).toList();
+        if (displays.isEmpty()) {
+            return SlotDisplay.Empty.INSTANCE;
+        } else if (displays.size() == 1) {
+            return displays.getFirst();
+        }
+        return new SlotDisplay.Composite(displays);
     }
 
     @Override

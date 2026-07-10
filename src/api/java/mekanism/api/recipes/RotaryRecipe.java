@@ -1,9 +1,12 @@
 package mekanism.api.recipes;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
+import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
@@ -12,8 +15,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
@@ -77,12 +81,22 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
     /// @throws IllegalStateException if [#hasFluidToChemical()] is `false`.
     public abstract List<ChemicalStackTemplate> getChemicalOutputDefinition(ContextMap contextMap);
 
+    /// {@return a slot display for the chemical output of the recipe}
+    ///
+    /// @since 10.8.0
+    public abstract SlotDisplay getChemicalOutputDisplay();
+
     /// For JEI, gets the fluid output representations to display.
     ///
     /// @return Representation of the output, **MUST NOT** be modified.
     ///
     /// @throws IllegalStateException if [#hasChemicalToFluid()] is `false`.
     public abstract List<FluidStackTemplate> getFluidOutputDefinition(ContextMap contextMap);
+
+    /// {@return a slot display for the fluid output of the recipe}
+    ///
+    /// @since 10.8.0
+    public abstract SlotDisplay getFluidOutputDisplay();
 
     /// Gets a new chemical output based on the given input.
     ///
@@ -131,8 +145,20 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
     }
 
     @Override
-    public ItemStack getToastSymbol() {
-        return new ItemStack(ROTARY_CONDENSENTRATOR);
+    public List<RecipeDisplay> display() {
+        //TODO - 26.2: Do we need to have a custom display that we then pass a boolean parameter to for which direction it is going?
+        return Stream.<RecipeDisplay>of(
+                    hasChemicalToFluid() ? new SimpleMachineRecipeDisplay(
+                          getChemicalInput().display(),
+                          getFluidOutputDisplay(),
+                          new SlotDisplay.ItemSlotDisplay(ROTARY_CONDENSENTRATOR)
+                    ) : null,
+                    hasFluidToChemical() ? new SimpleMachineRecipeDisplay(
+                          getFluidInput().display(),
+                          getChemicalOutputDisplay(),
+                          new SlotDisplay.ItemSlotDisplay(ROTARY_CONDENSENTRATOR)
+                    ) : null
+              ).filter(Objects::nonNull)
+              .toList();
     }
-
 }

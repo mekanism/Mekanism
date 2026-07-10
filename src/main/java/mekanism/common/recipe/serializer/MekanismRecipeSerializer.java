@@ -24,6 +24,7 @@ import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
+import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalCrystallizerRecipe;
@@ -33,6 +34,7 @@ import mekanism.api.recipes.basic.BasicCombinerRecipe;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToEnergyRecipe;
+import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToItemStackRecipe;
 import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
@@ -153,6 +155,17 @@ public class MekanismRecipeSerializer {
               ItemStackTemplate.STREAM_CODEC, BasicNucleosynthesizingRecipe::getOutputRaw,
               ByteBufCodecs.VAR_INT, NucleosynthesizingRecipe::getDuration,
               ByteBufCodecs.BOOL, NucleosynthesizingRecipe::perTickUsage,
+              factory
+        ));
+    }
+
+    public static RecipeSerializer<BasicItemStackToFluidOptionalItemRecipe> itemToFluidOptionalItem(BiFunction<ItemStackIngredient, FluidOptionalItemOutput, BasicItemStackToFluidOptionalItemRecipe> factory) {
+        return new RecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
+              ItemStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(BasicItemStackToFluidOptionalItemRecipe::getInput),
+              FluidOptionalItemOutput.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicItemStackToFluidOptionalItemRecipe::getOutputRaw)
+        ).apply(instance, factory)), StreamCodec.composite(
+              ItemStackIngredient.STREAM_CODEC, BasicItemStackToFluidOptionalItemRecipe::getInput,
+              FluidOptionalItemOutput.STREAM_CODEC, BasicItemStackToFluidOptionalItemRecipe::getOutputRaw,
               factory
         ));
     }

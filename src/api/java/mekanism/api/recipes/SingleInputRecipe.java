@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -59,6 +60,11 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
     ///
     /// @return Representation of the output, **MUST NOT** be modified.
     public abstract List<OUTPUT> getOutputDefinition(ContextMap contextMap);
+
+    /// {@return a slot display for the output of the recipe}
+    ///
+    /// @since 10.8.0
+    public abstract SlotDisplay getOutputDisplay();
 
     @Override
     public boolean isIncomplete() {

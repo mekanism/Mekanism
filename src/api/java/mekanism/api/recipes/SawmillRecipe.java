@@ -5,15 +5,17 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
+import mekanism.api.recipes.display.SawingRecipeDisplay;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
 
@@ -46,6 +48,24 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
         return Collections.emptyList();
     }
 
+    /// @since 10.8.0
+    /// @deprecated Prefer calling [#getMainOutputDisplay()] and [#getSecondaryOutputDisplay()]
+    @Override
+    @Deprecated
+    public final SlotDisplay getOutputDisplay() {
+        return new SlotDisplay.Composite(List.of(getMainOutputDisplay(), getSecondaryOutputDisplay()));
+    }
+
+    /// {@return a slot display for the main output of the recipe}
+    ///
+    /// @since 10.8.0
+    public abstract SlotDisplay getMainOutputDisplay();
+
+    /// {@return a slot display for the secondary output of the recipe}
+    ///
+    /// @since 10.8.0
+    public abstract SlotDisplay getSecondaryOutputDisplay();
+
     /// Gets the chance (between 0 and 1) of the secondary output being produced.
     public abstract double getSecondaryChance();
 
@@ -55,8 +75,14 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
     }
 
     @Override
-    public ItemStack getToastSymbol() {
-        return new ItemStack(PRECISION_SAWMILL);
+    public List<RecipeDisplay> display() {
+        return List.of(new SawingRecipeDisplay(
+              getInput().display(),
+              getMainOutputDisplay(),
+              getSecondaryOutputDisplay(),
+              getSecondaryChance(),
+              new SlotDisplay.ItemSlotDisplay(PRECISION_SAWMILL)
+        ));
     }
 
     /// Represents a precalculated chance based output. This output keeps track of what random value was calculated for use in comparing if the secondary output should be

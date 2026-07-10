@@ -12,6 +12,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
@@ -109,9 +110,14 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, FluidS
     @Override
     public List<FluidStack> getRepresentations(ContextMap context) {
         if (this.representations == null) {
-            this.representations = ingredient.ingredient().display().resolve(context, (ForFluidStacks<FluidStack>) stack -> stack.copyWithAmount(ingredient.amount())).toList();
+            this.representations = display().resolve(context, (ForFluidStacks<FluidStack>) stack -> stack.copyWithAmount(ingredient.amount())).toList();
         }
         return representations;
+    }
+
+    @Override
+    public SlotDisplay display() {
+        return ingredient.ingredient().display();
     }
 
     /// For use in recipe input caching. Gets the internal Neo Sized Fluid Ingredient.

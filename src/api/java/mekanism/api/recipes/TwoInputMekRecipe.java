@@ -6,6 +6,7 @@ import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jetbrains.annotations.Contract;
 
 /// Base class to make implementing two input recipes easier
@@ -42,6 +43,11 @@ public abstract class TwoInputMekRecipe<HOLDER_A, STACK_A extends TypedInstance<
     ///
     /// @return Representation of the output, **MUST NOT** be modified.
     public abstract List<OUTPUT> getOutputDefinition(ContextMap contextMap);
+
+    /// {@return a slot display for the output of the recipe}
+    ///
+    /// @since 10.8.0
+    public abstract SlotDisplay getOutputDisplay();
 
     @Override
     public boolean isIncomplete() {

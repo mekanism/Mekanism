@@ -1,13 +1,16 @@
 package mekanism.api.recipes;
 
+import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.SingleInputRecipe.FluidInputRecipe;
+import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -26,7 +29,11 @@ public abstract class FluidToFluidRecipe extends FluidInputRecipe<FluidStackTemp
     }
 
     @Override
-    public ItemStack getToastSymbol() {
-        return new ItemStack(THERMAL_EVAPORATION_CONTROLLER);
+    public List<RecipeDisplay> display() {
+        return List.of(new SimpleMachineRecipeDisplay(
+              getInput().display(),
+              getOutputDisplay(),
+              new SlotDisplay.ItemSlotDisplay(THERMAL_EVAPORATION_CONTROLLER)
+        ));
     }
 }

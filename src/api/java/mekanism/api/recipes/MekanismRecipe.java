@@ -1,24 +1,28 @@
 package mekanism.api.recipes;
 
+import java.util.List;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
 
 /// Base class for helping wrap our recipes into IRecipes.
-//TODO - 26.2 implement display()?
 public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recipe<INPUT> {
-    //TODO: Should we make implementations override equals and hashcode?
 
+    private static final Recipe.CommonInfo NO_DISPLAY = new Recipe.CommonInfo(false);
+
+    private final Recipe.CommonInfo commonInfo;
     private final String group;
 
     protected MekanismRecipe() {
-        this("");//TODO - 26.2: Remove this constructor and force usage of groups
+        this(NO_DISPLAY, "");//TODO - 26.2: Remove this constructor and force usage of groups
     }
 
-    protected MekanismRecipe(String group) {
+    protected MekanismRecipe(Recipe.CommonInfo commonInfo, String group) {
+        this.commonInfo = commonInfo;
         this.group = group;
     }
 
@@ -45,22 +49,23 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
         return ItemStack.EMPTY;
     }
 
-    public ItemStack getToastSymbol() {//TODO - 26.2: Remove this after removing the things that use it
-        return ItemStack.EMPTY;
-    }
-
     @Override
     public PlacementInfo placementInfo() {
+        //TODO: Can we implement this?
         return PlacementInfo.NOT_PLACEABLE;
     }
 
     @Override
-    public boolean showNotification() {
-        return false;
+    public final boolean showNotification() {
+        return commonInfo.showNotification();
     }
+
+    @Override//Force implementation
+    public abstract List<RecipeDisplay> display();
 
     @Override
     public RecipeBookCategory recipeBookCategory() {
+        //TODO: Support custom recipe book categories?
         return RecipeBookCategories.CRAFTING_MISC;
     }
 }

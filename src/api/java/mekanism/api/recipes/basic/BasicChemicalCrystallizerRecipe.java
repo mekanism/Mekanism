@@ -11,6 +11,7 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -36,6 +37,11 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
     @Override
     public List<ItemStackTemplate> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public SlotDisplay getOutputDisplay() {
+        return new SlotDisplay.ItemStackSlotDisplay(output);
     }
 
     @Override

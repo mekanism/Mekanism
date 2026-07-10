@@ -13,6 +13,7 @@ import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -63,6 +64,16 @@ public class BasicSawmillRecipe extends SawmillRecipe {
     @Override
     public List<ItemStackTemplate> getSecondaryOutputDefinition(ContextMap contextMap) {
         return secondaryOutput == null ? Collections.emptyList() : Collections.singletonList(secondaryOutput);
+    }
+
+    @Override
+    public SlotDisplay getMainOutputDisplay() {
+        return mainOutput == null ? SlotDisplay.Empty.INSTANCE : new SlotDisplay.ItemStackSlotDisplay(mainOutput);
+    }
+
+    @Override
+    public SlotDisplay getSecondaryOutputDisplay() {
+        return secondaryOutput == null ? SlotDisplay.Empty.INSTANCE : new SlotDisplay.ItemStackSlotDisplay(secondaryOutput);
     }
 
     @Override

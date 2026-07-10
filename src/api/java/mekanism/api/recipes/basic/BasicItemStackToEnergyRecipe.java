@@ -1,5 +1,7 @@
 package mekanism.api.recipes.basic;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
@@ -7,6 +9,7 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import org.jspecify.annotations.Nullable;
 
 public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
@@ -74,5 +77,10 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
         int result = input.hashCode();
         result = 31 * result + output;
         return result;
+    }
+
+    @Override
+    public List<RecipeDisplay> display() {
+        return Collections.emptyList();
     }
 }

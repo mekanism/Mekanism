@@ -75,10 +75,16 @@ public abstract sealed class ChemicalIngredient implements Predicate<ChemicalRes
     /// @see Ingredient#display()
     /// @see net.neoforged.neoforge.fluids.crafting.FluidIngredient#display()
     public SlotDisplay display() {
-        return new SlotDisplay.Composite(chemicals()
+        List<SlotDisplay> list = chemicals()
               .stream()
               .<SlotDisplay>map(ChemicalSlotDisplay::new)
-              .toList());
+              .toList();
+        if (list.isEmpty()) {
+            return SlotDisplay.Empty.INSTANCE;
+        } else if (list.size() == 1) {
+            return list.getFirst();
+        }
+        return new SlotDisplay.Composite(list);
     }
 
     /// Checks if this ingredient matches no chemicals, i.e. if its list of [matching chemicals][#chemicals()] is empty.

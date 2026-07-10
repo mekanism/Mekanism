@@ -6,10 +6,12 @@ import java.util.Objects;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -41,6 +43,11 @@ public abstract class BasicItemStackToChemicalRecipe extends ItemStackToChemical
     @Override
     public List<ChemicalStackTemplate> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public SlotDisplay getOutputDisplay() {
+        return new ChemicalStackSlotDisplay(output);
     }
 
     @Override

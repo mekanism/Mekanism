@@ -18,6 +18,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
 /// Base implementation for a ChemicalIngredient with an amount.
@@ -143,9 +144,14 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
     @Override
     public List<ChemicalStack> getRepresentations(ContextMap context) {
         if (this.representations == null) {
-            this.representations = ingredient.display().resolve(context, (ForChemicalStacks<ChemicalStack>) stack -> stack.copyWithAmount(amount)).toList();
+            this.representations = display().resolve(context, (ForChemicalStacks<ChemicalStack>) stack -> stack.copyWithAmount(amount)).toList();
         }
         return representations;
+    }
+
+    @Override
+    public SlotDisplay display() {
+        return ingredient.display();
     }
 
     /// For use in recipe input caching. Gets the internal Chemical Ingredient.

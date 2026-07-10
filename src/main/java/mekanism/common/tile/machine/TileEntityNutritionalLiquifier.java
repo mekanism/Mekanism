@@ -37,7 +37,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
+import mekanism.common.recipe.impl.NutritionalLiquifierRecipe;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
@@ -169,8 +169,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
 
     @Override
     public MekanismRecipeType<SingleRecipeInput, BasicItemStackToFluidOptionalItemRecipe, IInputRecipeCache> getRecipeType() {
-        //TODO - V11: See comment in NutritionalLiquifierIRecipe. Note if either containsRecipe and findFirstRecipe get called a null pointer will occur
-        return null;
+        //TODO - V11: See comment in NutritionalLiquifierIRecipe. Note if either containsRecipe and findFirstRecipe get called this will throw
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -195,10 +195,9 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
             return null;
         }
         UseRemainder remainder = stack.get(DataComponents.USE_REMAINDER);
-        return new NutritionalLiquifierIRecipe(
+        return new NutritionalLiquifierRecipe(
               IngredientCreatorAccess.item().from(stack, 1),
               MekanismFluids.NUTRITIONAL_PASTE.asTemplate(food.nutrition() * 50),
-              //TODO - 26.2: Test that this is the right way to do this
               remainder == null ? null : remainder.convertInto()
         );
     }

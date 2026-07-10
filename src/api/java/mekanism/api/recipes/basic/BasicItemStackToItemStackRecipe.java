@@ -10,6 +10,7 @@ import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -40,6 +41,11 @@ public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemSta
     @Override
     public List<ItemStackTemplate> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public SlotDisplay getOutputDisplay() {
+        return new SlotDisplay.ItemStackSlotDisplay(output);
     }
 
     public ItemStackTemplate getOutputRaw() {

@@ -10,10 +10,13 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.fluids.crafting.display.FluidStackSlotDisplay;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -111,9 +114,19 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     }
 
     @Override
+    public SlotDisplay getChemicalOutputDisplay() {
+        return chemicalOutput == null ? SlotDisplay.Empty.INSTANCE : new ChemicalStackSlotDisplay(chemicalOutput);
+    }
+
+    @Override
     public List<FluidStackTemplate> getFluidOutputDefinition(ContextMap contextMap) {
         FluidStackTemplate output = Objects.requireNonNull(fluidOutput, "This recipe has no chemical to fluid conversion.");
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public SlotDisplay getFluidOutputDisplay() {
+        return fluidOutput == null ? SlotDisplay.Empty.INSTANCE : new FluidStackSlotDisplay(fluidOutput.create());
     }
 
     @Override

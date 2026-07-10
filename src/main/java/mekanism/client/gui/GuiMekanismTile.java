@@ -44,7 +44,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
             upgradeWindowTab = addRenderableWidget(new GuiUpgradeWindowTab(this, tile, () -> upgradeWindowTab));
         }
         if (tile.supportsRedstone()) {
-            //TODO - 26,1: The warning for redstone can overlap with elements in the following guis:
+            //TODO - 26.2: The warning for redstone can overlap with elements in the following guis:
             // - Chemical tank: Armor
             // - Heat generator: heat tab
             // - Quantum Entangloporter: heat tab

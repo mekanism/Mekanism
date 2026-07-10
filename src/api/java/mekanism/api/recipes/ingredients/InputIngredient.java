@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 /// Interface describing the base methods common to all inputs of our recipes.
 public interface InputIngredient<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>> extends Predicate<STACK> {
@@ -42,4 +43,9 @@ public interface InputIngredient<HOLDER_TYPE, STACK extends TypedInstance<HOLDER
     ///
     /// @apiNote Do not modify any of the values returned by the representations
     List<STACK> getRepresentations(ContextMap context);
+
+    /// {@return the slot display for this ingredient}
+    ///
+    /// @since 10.8.0
+    SlotDisplay display();
 }

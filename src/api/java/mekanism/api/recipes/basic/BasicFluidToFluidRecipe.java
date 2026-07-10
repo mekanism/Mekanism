@@ -9,8 +9,10 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.fluids.crafting.display.FluidStackSlotDisplay;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -35,6 +37,11 @@ public class BasicFluidToFluidRecipe extends FluidToFluidRecipe {
     @Override
     public List<FluidStackTemplate> getOutputDefinition(ContextMap contextMap) {
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public SlotDisplay getOutputDisplay() {
+        return new FluidStackSlotDisplay(output.create());
     }
 
     @Override

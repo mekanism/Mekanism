@@ -1,7 +1,9 @@
 package mekanism.api.recipes;
 
+import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.TwoInputMekRecipe.SimpleTwoInputRecipe;
+import mekanism.api.recipes.display.CombiningRecipeDisplay;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -11,6 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -65,7 +69,12 @@ public abstract class CombinerRecipe extends SimpleTwoInputRecipe<Item, ItemStac
     }
 
     @Override
-    public ItemStack getToastSymbol() {
-        return new ItemStack(COMBINER);
+    public List<RecipeDisplay> display() {
+        return List.of(new CombiningRecipeDisplay(
+              getMainInput().display(),
+              getExtraInput().display(),
+              getOutputDisplay(),
+              new SlotDisplay.ItemSlotDisplay(COMBINER)
+        ));
     }
 }
