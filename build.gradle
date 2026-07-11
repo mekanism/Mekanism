@@ -432,12 +432,12 @@ neoForge {
     }
 
     mods {
-        mekanism {
-            sourceSet((SourceSet) sourceSets.api)
-            sourceSet((SourceSet) sourceSets.main)
+        mekanism { net.neoforged.moddevgradle.dsl.ModModel mek ->
+            mek.modSourceSets.add(sourceSets.api)
+            mek.modSourceSets.add(sourceSets.main)
             for (def integration : integrations) {
                 if (((IntegrationSettings) integration.getValue()).shouldCompile()) {
-                    sourceSet((SourceSet) sourceSets.named("integration_${integration.getKey()}").get())
+                    mek.modSourceSets.add(sourceSets.named("integration_${integration.getKey()}"))
                 }
             }
         }
@@ -461,9 +461,11 @@ neoForge {
         for (def integration : integrations) {
             IntegrationSettings settings = (IntegrationSettings) integration.getValue()
             if (settings.shouldCompile() && settings.perModule()) {
-                def integrationSourceSet = sourceSets.named("integration_${integration.getKey()}_${module}").get()
+                def integrationSourceSet = sourceSets.named("integration_${integration.getKey()}_${name}")
                 module.modSourceSets.add(integrationSourceSet)
-                datagenMod.modSourceSets.add(integrationSourceSet)
+                if (settings.availableInDatagen()) {
+                    datagenMod.modSourceSets.add(integrationSourceSet)
+                }
             }
         }
     }
