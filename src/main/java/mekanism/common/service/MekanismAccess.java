@@ -8,7 +8,6 @@ import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
-import mekanism.client.recipe_viewer.jei.MekanismJEIHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ingredients.ChemicalIngredientCreator;
 import mekanism.common.recipe.ingredients.creator.ChemicalStackIngredientCreator;
@@ -21,11 +20,20 @@ public class MekanismAccess implements IMekanismAccess {
 
     @Nullable
     private IMekanismEmiHelper emiHelper;
+    @Nullable
+    private IMekanismJEIHelper jeiHelper;
 
     @Override
     public IMekanismJEIHelper jeiHelper() {
         Mekanism.hooks.jei.assertLoaded();
-        return MekanismJEIHelper.INSTANCE;
+        if (jeiHelper == null) {
+            //Lazily get the service, and don't throw if we fail as we want to be able to provide a better error message
+            jeiHelper = MekanismAPI.getOptionalService(IMekanismJEIHelper.class);
+            if (jeiHelper == null) {
+                throw new UnsupportedOperationException("JEI Integration has not been updated");
+            }
+        }
+        return jeiHelper;
     }
 
     @Override

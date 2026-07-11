@@ -6,11 +6,6 @@ import mezz.jei.api.ingredients.IIngredientHelper;
 
 public class MekanismJEIHelper implements IMekanismJEIHelper {
 
-    public static final MekanismJEIHelper INSTANCE = new MekanismJEIHelper();
-
-    private MekanismJEIHelper() {
-    }
-
     @Override
     public IIngredientHelper<ChemicalStack> getChemicalStackHelper() {
         return MekanismJEI.CHEMICAL_STACK_HELPER;

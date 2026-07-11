@@ -68,6 +68,7 @@ ext {
             'emi'          : new IntegrationSettings(false, true, true, 'client'),
             'framedblocks' : new IntegrationSettings(true, false, false),
             'jade'         : new IntegrationSettings(true, true, false),
+            'jei'          : new IntegrationSettings(true, false, true, 'client'),
             'projecte'     : new IntegrationSettings(false, true, false),
             'the_one_probe': new IntegrationSettings(false, false, false),
             'wthit'        : new IntegrationSettings(true, false, false)
@@ -639,9 +640,11 @@ dependencies {
     //We use https://github.com/jqwik-team/jqwik to allow for implementing property based testing
     testImplementation("net.jqwik:jqwik:${jqwik_version}")
 
-    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    def jeiApi = "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    apiCompileOnly(jeiApi)
+    integration_jeiCompileOnly(jeiApi)
     if (recipe_viewer == 'jei' || recipe_viewer == 'hybrid') {
-        localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+        integration_jeiLocalRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     }
 
     def emiApi = "dev.emi:emi-neoforge:${emi_version}+${previous_minecraft_version}:api"
