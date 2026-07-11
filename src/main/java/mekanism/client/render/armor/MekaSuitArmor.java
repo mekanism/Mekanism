@@ -42,7 +42,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemMekaTool;
-import mekanism.common.lib.Color;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
@@ -51,18 +50,23 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.feature.BlockModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.ElytraAnimationState;
@@ -103,6 +107,8 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     public static final ContextKey<Double> DELTA_Y_CONTEXT = new ContextKey<>(Mekanism.rl("delta_y"));
 
     private static final Vector3fc BASE_TRANSLATION = new Vector3f(-1, 0.5F, 0);
+    private static final RenderType NO_TINT = RenderTypes.entityCutout(TextureAtlas.LOCATION_ITEMS);
+    private static final RenderType TRANSLUCENT = RenderTypes.entityTranslucent(TextureAtlas.LOCATION_ITEMS);
 
     private final LoadingCache<QuickHash, ArmorQuads> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
         @Override
@@ -121,9 +127,9 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         MekanismModelCache.INSTANCE.reloadCallback(cache::invalidateAll);
     }
 
-    private static Color getColor(ItemStack stack) {
+    private static int getColor(ItemStack stack) {
         IModule<ModuleColorModulationUnit> colorUnit = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.COLOR_MODULATION_UNIT);
-        return colorUnit == null ? Color.WHITE : colorUnit.getCustomInstance().color();
+        return colorUnit == null ? CommonColors.WHITE : colorUnit.getCustomInstance().color();
     }
 
     public <AVATAR extends Avatar & ClientAvatarEntity> void renderArm(AVATAR avatar, ModelPart armPart, PoseStack poseStack, SubmitNodeCollector nodeCollector,
@@ -141,15 +147,15 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             int nextOrder = 1;
             if (hasOpaqueArm) {
                 List<BlockStateModelPart> opaqueParts = armorQuads.opaqueParts().get(armPos);
-                int[] tint = {getColor(stack).argb()};
-                nodeCollector.order(nextOrder++).submitBlockModel(poseStack, MekanismRenderType.MEKASUIT, opaqueParts, tint, lightCoords, OverlayTexture.NO_OVERLAY, outlineColor);
+                submitModel(nodeCollector.order(nextOrder++), poseStack, opaqueParts, lightCoords, outlineColor, getColor(stack));
                 if (hasFoil) {
-                    nodeCollector.order(nextOrder++).submitBlockModel(poseStack, MekanismRenderType.ARMOR_GLINT, opaqueParts, tint, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+                    nodeCollector.order(nextOrder++).submitBlockModel(poseStack, MekanismRenderType.ARMOR_GLINT, opaqueParts, BlockModelRenderState.EMPTY_TINTS, lightCoords,
+                          OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
                 }
             }
             if (hasTransparentArm) {
                 List<BlockStateModelPart> transparentParts = armorQuads.transparentParts().get(armPos);
-                nodeCollector.order(nextOrder++).submitBlockModel(poseStack, RenderTypes.entityTranslucent(TextureAtlas.LOCATION_ITEMS), transparentParts, BlockModelRenderState.EMPTY_TINTS,
+                nodeCollector.order(nextOrder++).submitBlockModel(poseStack, TRANSLUCENT, transparentParts, BlockModelRenderState.EMPTY_TINTS,
                       lightCoords, OverlayTexture.NO_OVERLAY, outlineColor);
                 if (hasFoil) {
                     nodeCollector.order(nextOrder).submitBlockModel(poseStack, MekanismRenderType.ARMOR_GLINT, transparentParts, BlockModelRenderState.EMPTY_TINTS,
@@ -194,29 +200,58 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         }
 
         //Pass white as the color because we don't want to tint transparent quads
-        render(baseModel, nodeCollector, poseStack, lightCoords, renderFoil, nextOrder, Color.WHITE, state, armorQuads.transparentParts(), true);
+        render(baseModel, nodeCollector, poseStack, lightCoords, renderFoil, nextOrder, CommonColors.WHITE, state, armorQuads.transparentParts(), true);
     }
 
     private <STATE extends HumanoidRenderState> int render(HumanoidModel<STATE> baseModel, SubmitNodeCollector nodeCollector, PoseStack poseStack, int lightCoords,
-          boolean renderFoil, int nextOrder, Color color, STATE state, Map<ModelPos, List<BlockStateModelPart>> quadMap, boolean transparent) {
+          boolean renderFoil, int nextOrder, int color, STATE state, Map<ModelPos, List<BlockStateModelPart>> quadMap, boolean transparent) {
         if (!quadMap.isEmpty()) {
-            RenderType renderType = transparent ? RenderTypes.entityTranslucent(TextureAtlas.LOCATION_ITEMS) : MekanismRenderType.MEKASUIT;
-            int[] tint = {color.argb()};
             for (Map.Entry<ModelPos, List<BlockStateModelPart>> entry : quadMap.entrySet()) {
                 ModelPos modelPos = entry.getKey();
                 poseStack.pushPose();
                 modelPos.translate(baseModel, poseStack, state);
                 modelPos.translateModel(poseStack);
-                nodeCollector.order(nextOrder++)
-                      .submitBlockModel(poseStack, renderType, entry.getValue(), tint, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
+                OrderedSubmitNodeCollector orderedCollector = nodeCollector.order(nextOrder++);
+                if (transparent) {
+                    orderedCollector.submitBlockModel(poseStack, TRANSLUCENT, entry.getValue(), BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
+                } else {
+                    submitModel(orderedCollector, poseStack, entry.getValue(), lightCoords, state.outlineColor, color);
+                }
                 if (renderFoil) {
-                    nodeCollector.order(nextOrder++)
-                          .submitBlockModel(poseStack, MekanismRenderType.ARMOR_GLINT, entry.getValue(), tint, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+                    nodeCollector.order(nextOrder++).submitBlockModel(poseStack, MekanismRenderType.ARMOR_GLINT, entry.getValue(), BlockModelRenderState.EMPTY_TINTS,
+                          lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
                 }
                 poseStack.popPose();
             }
         }
         return nextOrder;
+    }
+
+    private void submitModel(OrderedSubmitNodeCollector orderedCollector, PoseStack poseStack, List<BlockStateModelPart> parts, int lightCoords, int outlineColor, int tintColor) {
+        if (tintColor == CommonColors.WHITE || ARGB.alpha(tintColor) == 0) {
+            //If it is white or fully transparent, just render it without tint
+            orderedCollector.submitBlockModel(poseStack, NO_TINT, parts, BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, outlineColor);
+            return;
+        }
+        //Based on submitBlockModel, but using a custom render type for when we don't render the mekasuit
+        PoseStack.Pose pose = poseStack.last().copy();
+        if (!MekanismRenderType.MEKASUIT.isOutline()) {
+            BlockModelFeatureRenderer.Submit submit = new BlockModelFeatureRenderer.Submit(pose, MekanismRenderType.MEKASUIT, parts, BlockModelRenderState.EMPTY_TINTS,
+                  lightCoords, OverlayTexture.NO_OVERLAY, tintColor, null);
+            if (MekanismRenderType.MEKASUIT.hasBlending()) {
+                orderedCollector.submitSpecial(RenderPhaseKeys.TRANSLUCENT_BLOCKS_AND_ITEMS, submit);
+            } else {
+                orderedCollector.submitSpecial(RenderPhaseKeys.SOLID, submit);
+            }
+        }
+        if (outlineColor != 0) {
+            //Note: We don't need to color
+            RenderType outlineRenderType = NO_TINT.outline().isPresent() ? NO_TINT.outline().get() : null;
+            if (outlineRenderType != null) {
+                orderedCollector.submitSpecial(RenderPhaseKeys.OUTLINE, new BlockModelFeatureRenderer.Submit(pose, outlineRenderType, parts,
+                      BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, outlineColor, null));
+            }
+        }
     }
 
     @Override

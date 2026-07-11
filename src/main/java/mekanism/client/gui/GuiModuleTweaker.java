@@ -250,28 +250,31 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         }
 
         public void updatePreview(EquipmentSlot slot, ItemStack stack) {
+            updatePreviewNoCopy(slot, stack.copy());
+        }
+
+        public void updatePreviewNoCopy(EquipmentSlot slot, ItemStack stack) {
             //Based off of SmithingScreen
-            //TODO - 26.2: Once the mekasuit rendering is working, re-evaluate whether we are meant to have these copies or not
             switch (slot) {
                 case HEAD:
                     this.preview.headEquipment = ItemStack.EMPTY;
                     this.preview.headItem.clear();
                     if (!stack.isEmpty()) {
                         if (HumanoidArmorLayer.shouldRender(stack, EquipmentSlot.HEAD)) {
-                            this.preview.headEquipment = stack.copy();
+                            this.preview.headEquipment = stack;
                         } else {
                             itemModelResolver.updateForTopItem(this.preview.headItem, stack, ItemDisplayContext.HEAD, null, null, 0);
                         }
                     }
                     break;
                 case CHEST:
-                    this.preview.chestEquipment = stack.copy();
+                    this.preview.chestEquipment = stack;
                     break;
                 case LEGS:
-                    this.preview.legsEquipment = stack.copy();
+                    this.preview.legsEquipment = stack;
                     break;
                 case FEET:
-                    this.preview.feetEquipment = stack.copy();
+                    this.preview.feetEquipment = stack;
                     break;
                 case MAINHAND:
                     updateHandPreview(this.preview.mainArm, stack);
@@ -283,12 +286,22 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         }
 
         private void updateHandPreview(HumanoidArm arm, ItemStack stack) {
+            if (arm == HumanoidArm.RIGHT) {
+                this.preview.rightHandItemStack = stack;
+            } else {
+                this.preview.leftHandItemStack = stack;
+            }
+            updateHandRenderState(arm);
+        }
+
+        private void updateHandRenderState(HumanoidArm arm) {
+            ItemStack stack;
             ItemStackRenderState stackState;
             if (arm == HumanoidArm.RIGHT) {
-                this.preview.rightHandItemStack = stack.copy();
+                stack = this.preview.rightHandItemStack;
                 stackState = this.preview.rightHandItemState;
             } else {
-                this.preview.leftHandItemStack = stack.copy();
+                stack = this.preview.leftHandItemStack;
                 stackState = this.preview.leftHandItemState;
             }
             if (!stack.isEmpty()) {
@@ -296,6 +309,24 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 itemModelResolver.updateForTopItem(stackState, stack, displayContext, null, null, 0);
             } else {
                 stackState.clear();
+            }
+        }
+
+        public void refreshStackRenderState(EquipmentSlot slot) {
+            switch (slot) {
+                case HEAD:
+                    if (this.preview.headEquipment.isEmpty()) {
+                        this.preview.headItem.clear();
+                    } else {
+                        itemModelResolver.updateForTopItem(this.preview.headItem, this.preview.headEquipment, ItemDisplayContext.HEAD, null, null, 0);
+                    }
+                    break;
+                case MAINHAND:
+                    updateHandRenderState(this.preview.mainArm);
+                    break;
+                case OFFHAND:
+                    updateHandRenderState(this.preview.mainArm.getOpposite());
+                    break;
             }
         }
 

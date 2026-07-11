@@ -45,7 +45,8 @@ public class MekanismRenderPipelines {
           .withPrimitiveTopology(PrimitiveTopology.QUADS)
           .withDepthStencilState(DepthStencilState.DEFAULT)
           //The above is from ENTITY_SNIPPET, the below is from ENTITY_CUTOUT
-          .withShaderDefine("ALPHA_CUTOUT", 0.1F)
+          //Note: Don't limit the alpha of the passed tint, we skip using this if the tint is fully transparent anyway
+          //.withShaderDefine("ALPHA_CUTOUT", 0.1F)
           .withShaderDefine("PER_FACE_LIGHTING")
           .withBindGroupLayout(BindGroupLayouts.SAMPLER1)
           .withCull(false)

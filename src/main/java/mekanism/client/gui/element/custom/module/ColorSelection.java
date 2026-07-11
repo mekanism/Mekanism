@@ -97,13 +97,15 @@ class ColorSelection extends MiniElement<Integer> {
                 if (slot != null) {
                     ItemStack stack = containerType.toStack();
                     //Replace the current preview with our copy
-                    armorPreview.updatePreview(slot, stack);
+                    armorPreview.updatePreviewNoCopy(slot, stack);
                     updatePreviewColor = color -> {
                         ItemAccess itemAccess = ItemAccess.forStack(stack);
                         IModule<ModuleColorModulationUnit> module = IModuleHelper.INSTANCE.getModule(itemAccess.getResource(), MekanismModules.COLOR_MODULATION_UNIT);
                         if (module != null) {//Note: Should always be present
                             //Note: We can use the source data to ensure we have the correct config option, as with does not mutate it
                             module.replaceModuleConfig(registryAccess(), itemAccess, null, data.with(color));
+                            //If the stack's rendering is part of the render state, we need to allow the preview to apply it
+                            armorPreview.refreshStackRenderState(slot);
                         }
                     };
                     previewReset = () -> armorPreview.resetToDefault(slot);

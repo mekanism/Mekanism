@@ -72,7 +72,7 @@ public class MekanismRenderType {
                 .createCompositeState(false)
     );*/
 
-    public static final RenderType MEKASUIT = RenderType.create("mekanism_mekasuit", RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT)
+    public static final RenderType MEKASUIT = RenderType.create("mekanism_mekasuit", RenderSetup.builder(MekanismRenderPipelines.MEKASUIT)
           .withTexture("Sampler0", TextureAtlas.LOCATION_ITEMS)
           .useLightmap()
           .useOverlay()//TODO - 26.2: I don't think we want the overlay?

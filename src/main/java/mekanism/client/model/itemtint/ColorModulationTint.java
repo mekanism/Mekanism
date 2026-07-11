@@ -22,7 +22,7 @@ public class ColorModulationTint implements ItemTintSource {
         if (colorModulationUnit == null) {
             return -1;
         }
-        return colorModulationUnit.getCustomInstance().tintARGB();
+        return colorModulationUnit.getCustomInstance().color();
     }
 
     @Override
