@@ -6,7 +6,7 @@ import mekanism.additions.client.AdditionsLangProvider;
 import mekanism.additions.client.AdditionsModelProvider;
 import mekanism.additions.client.AdditionsSoundProvider;
 import mekanism.additions.client.AdditionsSpriteSourceProvider;
-import mekanism.additions.client.integration.emi.AdditionsEmiDefaults;
+import mekanism.additions.client.integration.emi_no_dep.AdditionsEmiDefaults;
 import mekanism.additions.client.recipe_viewer.aliases.AdditionsAliasMapping;
 import mekanism.additions.common.loot.AdditionsLootProvider;
 import mekanism.additions.common.recipe.AdditionsRecipeProvider;
@@ -49,9 +49,9 @@ public class AdditionsDataGenerator {
         gen.addProvider(true, new AdditionsDataMapsProvider(output, lookupProvider));
         gen.addProvider(true, new MekRecipeRunner(output, lookupProvider, AdditionsRecipeProvider::new, MekanismAdditions.MODID));
         gen.addProvider(true, new AdvancementProvider(output, lookupProvider, List.of(new AdditionsAdvancementProvider())));
+        gen.addProvider(true, new AdditionsEmiDefaults(output, event.getResourceManager(PackType.SERVER_DATA), lookupProvider));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismAdditions.MODID, AdditionsAliasMapping::new,
-              () -> AdditionsEmiDefaults::new);
+        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismAdditions.MODID, AdditionsAliasMapping::new);
     }
 }

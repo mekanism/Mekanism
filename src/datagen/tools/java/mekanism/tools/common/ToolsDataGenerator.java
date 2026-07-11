@@ -8,7 +8,7 @@ import mekanism.common.recipe.MekRecipeRunner;
 import mekanism.tools.client.ToolsModelProvider;
 import mekanism.tools.client.ToolsLangProvider;
 import mekanism.tools.client.ToolsSpriteSourceProvider;
-import mekanism.tools.client.integration.emi.ToolsEmiDefaults;
+import mekanism.tools.client.integration.emi_no_dep.ToolsEmiDefaults;
 import mekanism.tools.client.recipe_viewer.aliases.ToolsAliasMapping;
 import mekanism.tools.common.recipe.ToolsRecipeProvider;
 import net.minecraft.core.HolderLookup;
@@ -42,8 +42,9 @@ public class ToolsDataGenerator {
         gen.addProvider(true, new ToolsTagProvider(output, lookupProvider));
         gen.addProvider(true, new MekRecipeRunner(output, lookupProvider, ToolsRecipeProvider::new, MekanismTools.MODID));
         gen.addProvider(true, new AdvancementProvider(output, lookupProvider, List.of(new ToolsAdvancementProvider())));
+        gen.addProvider(true, new ToolsEmiDefaults(output, event.getResourceManager(PackType.SERVER_DATA), lookupProvider));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismTools.MODID, ToolsAliasMapping::new, () -> ToolsEmiDefaults::new);
+        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismTools.MODID, ToolsAliasMapping::new);
     }
 }

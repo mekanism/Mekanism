@@ -242,7 +242,8 @@ public class MekanismEmi implements EmiPlugin {
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.NUCLEOSYNTHESIZING, NucleosynthesizingEmiRecipe::new);
 
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.SPS, SPSEmiRecipe::new, SPSRecipeViewerRecipe.getSPSRecipes());
+        //TODO - Emi: Figure out the registry access, maybe we can get it from the EmiRegistry
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.SPS, SPSEmiRecipe::new, SPSRecipeViewerRecipe.getSPSRecipes(RecipeViewerUtils.getRegistryAccess()));
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.BOILER, BoilerEmiRecipe::new, BoilerRecipeViewerRecipe.getBoilerRecipes());
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.SAWING, SawmillEmiRecipe::new);
@@ -316,6 +317,7 @@ public class MekanismEmi implements EmiPlugin {
         }
     }
 
+    @FunctionalInterface
     public interface BasicRecipeCreator<RECIPE> {
 
         MekanismEmiRecipe<RECIPE> create(MekanismEmiRecipeCategory category, Identifier id, RECIPE recipe);

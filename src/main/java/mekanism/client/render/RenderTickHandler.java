@@ -1,12 +1,9 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.RelativeSide;
-import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.client.render.armor.MekaSuitArmor;
@@ -30,9 +27,7 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -63,19 +58,16 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import net.neoforged.neoforge.client.event.RenderArmEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
-import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.submit.RenderPhaseKeys;
-import org.jspecify.annotations.Nullable;
 
 public class RenderTickHandler {
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
     private static final BoltRenderer boltRenderer = new BoltRenderer();
-    private static final Object2BooleanMap<Class<?>> IS_EMI_SCREEN = new Object2BooleanOpenHashMap<>();
 
     private boolean outliningArea = false;
 
@@ -85,31 +77,6 @@ public class RenderTickHandler {
 
     public static void renderBolt(Object renderer, BoltEffect bolt, long gameTime) {
         boltRenderer.update(renderer, bolt, gameTime, MekanismRenderer.getPartialTick());
-    }
-
-    //Note: This listener is only registered if a recipe viewer is loaded
-    public static void guiOpening(ScreenEvent.Opening event) {
-        if (event.getCurrentScreen() instanceof GuiMekanism<?> screen) {
-            if (Mekanism.hooks.jei.isLoaded()) {
-                //If JEI is loaded and our current screen is a mekanism gui, check if the new screen is a JEI recipe screen
-                if (event.getNewScreen() instanceof IRecipesGui) {
-                    //If it is mark on our current screen that we are switching to JEI
-                    screen.switchingToRecipeViewer = true;
-                }
-            }
-            if (Mekanism.hooks.emi.isLoaded()) {
-                //If Emi is loaded and our current screen is a mekanism gui, check if the new screen is an Emi recipe screen
-                // https://github.com/emilyploszaj/emi/issues/481
-                if (isEmiScreen(event.getNewScreen())) {
-                    //If it is mark on our current screen that we are switching to EMI
-                    screen.switchingToRecipeViewer = true;
-                }
-            }
-        }
-    }
-
-    private static boolean isEmiScreen(@Nullable Screen newScreen) {
-        return newScreen != null && IS_EMI_SCREEN.computeIfAbsent(newScreen.getClass(), (Class<?> cl) -> cl.getName().startsWith("dev.emi.emi"));
     }
 
     //TODO - 26.2: Figure out if we need this any more

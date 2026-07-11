@@ -14,10 +14,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import mekanism.client.integration.emi.EmiAliasProvider;
-import mekanism.client.integration.emi.MekanismEmiDefaults;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
-import mekanism.client.recipe_viewer.alias.MekanismAliasMapping;
 import mekanism.common.lib.FieldReflectionHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
@@ -49,8 +46,8 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         List<String> fakeProviders = new ArrayList<>();
         ResourceManager serverResources = event.getResourceManager(PackType.SERVER_DATA);
         if (Mekanism.hooks.emi.isLoaded()) {
-            gen.addProvider(true, new EmiAliasProvider(output, lookupProvider, Mekanism.MODID, MekanismAliasMapping::new));
-            gen.addProvider(true, new MekanismEmiDefaults(output, serverResources, lookupProvider));
+            throw new UnsupportedOperationException("Re-enable EMI Alias Provider");
+            //gen.addProvider(true, new EmiAliasProvider(output, lookupProvider, Mekanism.MODID, MekanismAliasMapping::new));
         } else {
             skipEmi(Mekanism.MODID, pathsToSkip, fakeProviders);
         }
@@ -76,15 +73,14 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         gen.addProvider(true, new PersistingDisabledProvidersProvider(output, Mekanism.MODID, disabledCompats, pathsToSkip, fakeProviders));
     }
 
-    public static void addDisabledEmiProvider(GatherDataEvent event, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid,
-          Supplier<IAliasMapping> mappings, Supplier<ExistingFileProvider> defaultsProviderFunction) {
+    public static void addDisabledEmiProvider(GatherDataEvent event, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid, Supplier<IAliasMapping> mappings) {
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
         Set<String> pathsToSkip = new HashSet<>();
         List<String> fakeProviders = new ArrayList<>();
         if (Mekanism.hooks.emi.isLoaded()) {
-            gen.addProvider(true, new EmiAliasProvider(output, lookupProvider, modid, mappings));
-            gen.addProvider(true, defaultsProviderFunction.get().create(output, event.getResourceManager(PackType.SERVER_DATA), lookupProvider));
+            throw new UnsupportedOperationException("Re-enable EMI Alias Provider");
+            //gen.addProvider(true, new EmiAliasProvider(output, lookupProvider, modid, mappings));
         } else {
             skipEmi(modid, pathsToSkip, fakeProviders);
         }
@@ -96,9 +92,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     private static void skipEmi(String modid, Set<String> pathsToSkip, List<String> fakeProviders) {
         Mekanism.logger.warn("Skipping and persisting existing {} data generated files for EMI", modid);
         pathsToSkip.add("emi/aliases");
-        pathsToSkip.add("emi/recipes/defaults");
         fakeProviders.add("EMI Alias Provider: " + modid);
-        fakeProviders.add("EMI Default Recipe Provider: " + modid);
     }
 
     private final Set<String> disabledCompats;

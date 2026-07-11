@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+import mekanism.client.integration.emi_no_dep.MekanismEmiDefaults;
 import mekanism.client.lang.MekanismLangProvider;
 import mekanism.client.model.MekanismEquipmentAssetProvider;
 import mekanism.client.model.MekanismModelProvider;
@@ -110,6 +111,7 @@ public class MekanismDataGenerator {
         gen.addProvider(true, new MekRecipeRunner(output, lookupProvider, (registries, recipeOutput) -> new MekanismRecipeProvider(registries, recipeOutput, disabledCompats), Mekanism.MODID));
         gen.addProvider(true, new AdvancementProvider(output, lookupProvider, List.of(new MekanismAdvancementProvider())));
         gen.addProvider(true, new ComputerHelpProvider(output, lookupProvider, Mekanism.MODID));
+        gen.addProvider(true, new MekanismEmiDefaults(output, event.getResourceManager(PackType.SERVER_DATA), lookupProvider));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         PersistingDisabledProvidersProvider.addDisableableProviders(event, lookupProvider, disabledCompats);

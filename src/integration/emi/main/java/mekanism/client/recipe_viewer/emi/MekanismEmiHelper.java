@@ -9,11 +9,6 @@ import net.minecraft.core.Holder;
 
 public class MekanismEmiHelper implements IMekanismEmiHelper {
 
-    public static final MekanismEmiHelper INSTANCE = new MekanismEmiHelper();
-
-    private MekanismEmiHelper() {
-    }
-
     @Override
     public EmiStack createEmiStack(Holder<Chemical> chemical, long size) {
         if (size < 1) {

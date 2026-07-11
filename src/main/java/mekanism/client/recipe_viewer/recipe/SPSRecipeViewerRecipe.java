@@ -13,13 +13,14 @@ import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.recipe_viewer.INamedRVRecipe;
-import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder.Reference;
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
 //TODO - V11: Make the SPS have a proper recipe type to allow for custom recipes
 public record SPSRecipeViewerRecipe(Identifier id, ChemicalStackIngredient input, ChemicalStackTemplate output) implements INamedRVRecipe {
@@ -30,14 +31,19 @@ public record SPSRecipeViewerRecipe(Identifier id, ChemicalStackIngredient input
           ChemicalStackTemplate.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(SPSRecipeViewerRecipe::output)
     ).apply(instance, SPSRecipeViewerRecipe::new));
 
-    public static List<SPSRecipeViewerRecipe> getSPSRecipes() {
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
+    public static List<SPSRecipeViewerRecipe> getSPSRecipes(HolderLookup.@Nullable Provider lookupProvider) {
+        if (lookupProvider == null) {
+            //Something went horribly wrong, bail
+            Mekanism.logger.warn("No lookup provider provided to generate sps recipes with");
+            return Collections.emptyList();
+        }
+        Optional<? extends RegistryLookup<Chemical>> optionalRegistry = lookupProvider.lookup(MekanismRegistries.Keys.CHEMICAL);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
             Mekanism.logger.warn("Failed to find chemical registry when generating sps recipes");
             return Collections.emptyList();
         }
-        Registry<Chemical> chemicals = optionalRegistry.get();
+        RegistryLookup<Chemical> chemicals = optionalRegistry.get();
         Optional<Reference<Chemical>> poloniumReference = chemicals.get(ChemicalIds.POLONIUM);
         Optional<Reference<Chemical>> antimatterReference = chemicals.get(ChemicalIds.ANTIMATTER);
         if (poloniumReference.isEmpty() || antimatterReference.isEmpty()) {

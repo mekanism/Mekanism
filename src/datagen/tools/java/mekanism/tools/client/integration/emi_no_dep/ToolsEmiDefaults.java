@@ -1,7 +1,7 @@
-package mekanism.tools.client.integration.emi;
+package mekanism.tools.client.integration.emi_no_dep;
 
 import java.util.concurrent.CompletableFuture;
-import mekanism.client.integration.emi.BaseEmiDefaults;
+import mekanism.client.integration.emi_no_dep.BaseEmiDefaults;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.core.HolderLookup;

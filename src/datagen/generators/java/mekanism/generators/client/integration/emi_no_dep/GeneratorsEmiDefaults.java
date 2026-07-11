@@ -1,9 +1,9 @@
-package mekanism.generators.client.integration.emi;
+package mekanism.generators.client.integration.emi_no_dep;
 
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.gear.ModuleData;
-import mekanism.client.integration.emi.BaseEmiDefaults;
+import mekanism.client.integration.emi_no_dep.BaseEmiDefaults;
 import mekanism.common.util.RegistryUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;

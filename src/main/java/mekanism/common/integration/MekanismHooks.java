@@ -25,7 +25,9 @@ public final class MekanismHooks {
 
     //Note: These have to be static for use in CraftTweaker/Mod entrypoint annotations
     public static final String CURIOS_MOD_ID = "curios";
+    public static final String EMI_MOD_ID = "emi";
     public static final String FRAMED_BLOCKS_MOD_ID = "framedblocks";
+    public static final String JEI_MOD_ID = "jei";
     public static final String JEITWEAKER_MOD_ID = "jeitweaker";
     public static final String PROJECTE_MOD_ID = "projecte";
     public static final String TOP_MOD_ID = "theoneprobe";
@@ -74,8 +76,8 @@ public final class MekanismHooks {
         craftTweaker = new IntegrationInfo("crafttweaker", loadedCheck);
         curios = new IntegrationInfo(CURIOS_MOD_ID, loadedCheck);
         darkModeEverywhere = new IntegrationInfo("darkmodeeverywhere", loadedCheck);
-        jei = new IntegrationInfo("jei", loadedCheck);
-        emi = new IntegrationInfo("emi", loadedCheck);
+        jei = new IntegrationInfo(JEI_MOD_ID, loadedCheck);
+        emi = new IntegrationInfo(EMI_MOD_ID, loadedCheck);
         jeiTweaker = new IntegrationInfo(JEITWEAKER_MOD_ID, loadedCheck);
         projecte = new IntegrationInfo(PROJECTE_MOD_ID, loadedCheck);
         recipeStages = new IntegrationInfo("recipestages", loadedCheck);
@@ -125,12 +127,9 @@ public final class MekanismHooks {
         return computerCraft.isLoaded();
     }
 
-    public boolean recipeViewerCompatEnabled() {
-        return emi.isLoaded() || jei.isLoaded();
-    }
-
     /// @apiNote DME only uses strings in IMC, so we can safely just include them here without worrying about classloading issues
     private void sendDarkModeEverywhereIMC() {
+        //TODO - 26.2: Figure out what things we need to be adding to this
         List<Supplier<String>> methodBlacklist = List.of(
               //Used for drawing fluids and chemicals in various GUIs including JEI as well as similar styled things
               () -> "mekanism.client.gui.GuiUtils:drawTiledSprite",

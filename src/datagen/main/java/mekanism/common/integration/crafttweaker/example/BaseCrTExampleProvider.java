@@ -203,7 +203,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     public boolean recipeExists(Identifier location) {
-        return serverResources.getResource(location.withPrefix("recipes/").withSuffix(".json")).isPresent();
+        return serverResources.getResource(location.withPrefix("recipe/").withSuffix(".json")).isPresent();
     }
 
     protected abstract void addExamples(HolderLookup.Provider registries);

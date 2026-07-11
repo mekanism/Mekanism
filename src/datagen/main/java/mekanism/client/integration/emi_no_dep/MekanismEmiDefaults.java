@@ -1,4 +1,4 @@
-package mekanism.client.integration.emi;
+package mekanism.client.integration.emi_no_dep;
 
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismRegistries;
@@ -31,7 +31,7 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
     protected void addDefaults(HolderLookup.Provider lookupProvider) {
         addMiscRecipes();
         addGearModuleRecipes();
-        addLateGameRecipes();
+        addLateGameRecipes(lookupProvider);
         addInfusingRecipes();
         addCrushingRecipes();
         addEnrichingRecipes();
@@ -293,14 +293,14 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
         }
     }
 
-    private void addLateGameRecipes() {
+    private void addLateGameRecipes(HolderLookup.Provider lookupProvider) {
         String basePath = "processing/lategame/";
         addRecipe(basePath + "plutonium");
         addRecipe(basePath + "polonium");
         addRecipe(basePath + "plutonium_pellet/from_reaction");
         addRecipe(basePath + "polonium_pellet/from_reaction");
         addRecipe(basePath + "antimatter_pellet/from_gas");
-        for (SPSRecipeViewerRecipe recipe : SPSRecipeViewerRecipe.getSPSRecipes()) {
+        for (SPSRecipeViewerRecipe recipe : SPSRecipeViewerRecipe.getSPSRecipes(lookupProvider)) {
             addUncheckedRecipe(recipe.id());
         }
     }

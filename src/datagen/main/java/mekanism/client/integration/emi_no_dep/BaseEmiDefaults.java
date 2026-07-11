@@ -1,4 +1,4 @@
-package mekanism.client.integration.emi;
+package mekanism.client.integration.emi_no_dep;
 
 import com.mojang.serialization.Codec;
 import java.nio.file.Path;
@@ -100,6 +100,7 @@ public abstract class BaseEmiDefaults implements DataProvider {
     }
 
     public boolean recipeExists(Identifier location) {
-        return serverResources.getResource(location.withPrefix("recipes/").withSuffix(".json")).isPresent();
+        //TODO - 26.2: Figure out how to reimplement this
+        return true;//return serverResources.getResource(location.withPrefix("recipe/").withSuffix(".json")).isPresent();
     }
 }

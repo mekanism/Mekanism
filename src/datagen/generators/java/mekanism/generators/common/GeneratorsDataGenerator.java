@@ -8,7 +8,7 @@ import mekanism.common.recipe.MekRecipeRunner;
 import mekanism.generators.client.GeneratorsLangProvider;
 import mekanism.generators.client.GeneratorsModelProvider;
 import mekanism.generators.client.GeneratorsSoundProvider;
-import mekanism.generators.client.integration.emi.GeneratorsEmiDefaults;
+import mekanism.generators.client.integration.emi_no_dep.GeneratorsEmiDefaults;
 import mekanism.generators.client.recipe_viewer.alias.GeneratorsAliasMapping;
 import mekanism.generators.common.loot.GeneratorsLootProvider;
 import net.minecraft.core.HolderLookup;
@@ -46,9 +46,9 @@ public class GeneratorsDataGenerator {
         gen.addProvider(true, new GeneratorsDataMapsProvider(output, lookupProvider));
         gen.addProvider(true, new MekRecipeRunner(output, lookupProvider, GeneratorsRecipeProvider::new, MekanismGenerators.MODID));
         gen.addProvider(true, new AdvancementProvider(output, lookupProvider, List.of(new GeneratorsAdvancementProvider())));
+        gen.addProvider(true, new GeneratorsEmiDefaults(output, event.getResourceManager(PackType.SERVER_DATA), lookupProvider));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismGenerators.MODID, GeneratorsAliasMapping::new,
-              () -> GeneratorsEmiDefaults::new);
+        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismGenerators.MODID, GeneratorsAliasMapping::new);
     }
 }

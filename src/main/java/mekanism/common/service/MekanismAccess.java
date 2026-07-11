@@ -1,6 +1,7 @@
 package mekanism.common.service;
 
 import mekanism.api.IMekanismAccess;
+import mekanism.api.MekanismAPI;
 import mekanism.api.integration.emi.IMekanismEmiHelper;
 import mekanism.api.integration.jei.IMekanismJEIHelper;
 import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
@@ -13,9 +14,13 @@ import mekanism.common.recipe.ingredients.ChemicalIngredientCreator;
 import mekanism.common.recipe.ingredients.creator.ChemicalStackIngredientCreator;
 import mekanism.common.recipe.ingredients.creator.FluidStackIngredientCreator;
 import mekanism.common.recipe.ingredients.creator.ItemStackIngredientCreator;
+import org.jspecify.annotations.Nullable;
 
 /// @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via [IMekanismAccess#INSTANCE]
 public class MekanismAccess implements IMekanismAccess {
+
+    @Nullable
+    private IMekanismEmiHelper emiHelper;
 
     @Override
     public IMekanismJEIHelper jeiHelper() {
@@ -24,10 +29,16 @@ public class MekanismAccess implements IMekanismAccess {
     }
 
     @Override
-    public IMekanismEmiHelper emiHelper() {// TODO - 26.2: EMI
-        throw new IllegalStateException("EMI not included");
-        /*Mekanism.hooks.emi.assertLoaded();
-        return MekanismEmiHelper.INSTANCE;*/
+    public IMekanismEmiHelper emiHelper() {
+        Mekanism.hooks.emi.assertLoaded();
+        if (emiHelper == null) {
+            //Lazily get the service, and don't throw if we fail as we want to be able to provide a better error message
+            emiHelper = MekanismAPI.getOptionalService(IMekanismEmiHelper.class);
+            if (emiHelper == null) {
+                throw new UnsupportedOperationException("EMI Integration has not been updated");
+            }
+        }
+        return emiHelper;
     }
 
     @Override
