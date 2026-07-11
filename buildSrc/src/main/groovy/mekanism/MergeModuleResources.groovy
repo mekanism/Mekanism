@@ -23,6 +23,7 @@ import java.util.function.BinaryOperator
 abstract class MergeModuleResources extends DefaultTask {
 
     private static Closure<PatternFilterable> atlasFilter = { PatternFilterable pf -> pf.include('**/assets/*/atlases/**/*.json') }
+    private static Closure<PatternFilterable> dataMapFilter = { PatternFilterable pf -> pf.include('**/data/*/data_maps/**/*.json') }
     private static Closure<PatternFilterable> tagFilter = { PatternFilterable pf -> pf.include('**/data/*/tags/**/*.json') }
     static Closure<PatternFilterable> serviceFilter = { PatternFilterable pf -> pf.include('**/META-INF/services/*') }
 
@@ -72,6 +73,7 @@ abstract class MergeModuleResources extends DefaultTask {
         mergeBasic(toExclude, resources, 'META-INF/neoforge.mods.toml', (text, fileText) -> text + '\n' + fileText.split('\n', 3)[2])
 
         mergeAtlases(toExclude)
+        mergeDataMaps(toExclude)
         mergeTags(toExclude)
         //Include things that might be generated as classes in addition to our normal resources
         mergeServices(toExclude, resources + annotationGenerated)
@@ -123,6 +125,14 @@ abstract class MergeModuleResources extends DefaultTask {
         }
     }
 
+    private void mergeDataMaps(List<String> toExclude) {
+        //Go through the reverse atlas lookup and if there are multiple sourceSets that contain the same atlas
+        // properly merge that atlas
+        for (def entry : getReverseLookup(dataMapFilter, resources, 'data').entrySet()) {
+            mergeDataMapJson(toExclude, entry.key, entry.value)
+        }
+    }
+
     private void mergeTags(List<String> toExclude) {
         BinaryOperator<Object> merger = (a, b) -> {
             a.values += b.values
@@ -149,6 +159,42 @@ abstract class MergeModuleResources extends DefaultTask {
                 outputAsJson = json
             } else {
                 outputAsJson = appender.apply(outputAsJson, json)
+            }
+        }
+        if (outputAsJson != null) {
+            writeOutputFile(toExclude, outputPath, JsonOutput.toJson(outputAsJson))
+        }
+    }
+
+    private void mergeDataMapJson(List<String> toExclude, String outputPath, List<String> paths) {
+        //logger.quiet('{} appeared {} times', outputPath, paths.size())
+        if (paths.size() < 2) {
+            //Skip any there is only a single element for
+            return
+        }
+        Object outputAsJson = null
+
+        for (def file : objectFactory.fileCollection().from(paths)) {
+            Object json = new JsonSlurper().parse(file)
+            if (outputAsJson == null) {
+                outputAsJson = json
+            } else {
+                for (def values : json.values) {
+                    def target = values.getKey()
+                    def existing = outputAsJson.values[target]
+                    def value = values.getValue()
+                    if (existing == null) {
+                        outputAsJson.values[target] = value
+                    } else if (existing instanceof List) {
+                        if (value instanceof List) existing.addAll(value)
+                        else existing.add(value)
+                    } else {
+                        if (value instanceof List) {
+                            value.add(existing)
+                        }
+                        outputAsJson.values[target] = value
+                    }
+                }
             }
         }
         if (outputAsJson != null) {
