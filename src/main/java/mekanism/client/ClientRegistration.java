@@ -168,6 +168,8 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.tile.qio.QIOBlockTintSource;
 import mekanism.common.tile.transmitter.LogisticalTransporterBlockTintSource;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.PartNames;
+import net.minecraft.client.model.object.armorstand.ArmorStandModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -322,8 +324,7 @@ public class ClientRegistration {
                 }
                 if (state.headEquipment.getItem() instanceof ItemMekaSuitArmor) {
                     //Note: Hiding head also implicitly hides the hat model part as it is a child of head
-                    //TODO - 26.2: https://github.com/neoforged/NeoForge/pull/3290
-                    //state.changeModelPartVisibility(PartNames.HEAD, false);
+                    state.overrideModelPartVisibility(PartNames.HEAD, false);
                     if (state instanceof AvatarRenderState avatarState) {
                         avatarState.showHat = false;
                         avatarState.showExtraEars = false;
@@ -334,15 +335,13 @@ public class ClientRegistration {
                     //state.changeModelPartVisibility(PartNames.BODY, false);
                     if (state instanceof ArmorStandRenderState armorStandState) {
                         armorStandState.showArms = false;
-                        //TODO - 26.2: https://github.com/neoforged/NeoForge/pull/3290
-                        //state.changeModelPartVisibility(ArmorStandModel.RIGHT_BODY_STICK, false);
-                        //state.changeModelPartVisibility(ArmorStandModel.LEFT_BODY_STICK, false);
-                        //state.changeModelPartVisibility(ArmorStandModel.SHOULDER_STICK, false);
+                        state.overrideModelPartVisibility(ArmorStandModel.RIGHT_BODY_STICK, false);
+                        state.overrideModelPartVisibility(ArmorStandModel.LEFT_BODY_STICK, false);
+                        state.overrideModelPartVisibility(ArmorStandModel.SHOULDER_STICK, false);
                     } else {
                         //Don't adjust arms for armor stands as we already use vanilla's way to define the arms shouldn't be shown
-                        //TODO - 26.2: https://github.com/neoforged/NeoForge/pull/3290
-                        //state.changeModelPartVisibility(PartNames.LEFT_ARM, false);
-                        //state.changeModelPartVisibility(PartNames.RIGHT_ARM, false);
+                        state.overrideModelPartVisibility(PartNames.LEFT_ARM, false);
+                        state.overrideModelPartVisibility(PartNames.RIGHT_ARM, false);
                         if (state instanceof AvatarRenderState avatarState) {
                             avatarState.showCape = false;
                             avatarState.showJacket = false;
@@ -358,9 +357,8 @@ public class ClientRegistration {
                     }
                 }
                 if (state.legsEquipment.getItem() instanceof ItemMekaSuitArmor) {
-                    //TODO - 26.2: https://github.com/neoforged/NeoForge/pull/3290
-                    //state.changeModelPartVisibility(PartNames.LEFT_LEG, false);
-                    //state.changeModelPartVisibility(PartNames.RIGHT_LEG, false);
+                    state.overrideModelPartVisibility(PartNames.LEFT_LEG, false);
+                    state.overrideModelPartVisibility(PartNames.RIGHT_LEG, false);
                     if (state instanceof AvatarRenderState avatarState) {
                         avatarState.showLeftPants = false;
                         avatarState.showRightPants = false;
