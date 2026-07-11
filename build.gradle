@@ -70,6 +70,7 @@ ext {
             'jade'         : new IntegrationSettings(true, true, false),
             'jei'          : new IntegrationSettings(true, false, true, 'client'),
             'projecte'     : new IntegrationSettings(false, true, false),
+            'recipe_stages' : new IntegrationSettings(false, false, false),
             'the_one_probe': new IntegrationSettings(false, false, false),
             'wthit'        : new IntegrationSettings(true, false, false)
     ]
@@ -695,9 +696,11 @@ dependencies {
     //Mods we have dependencies on but don't bother loading into the dev environment
     integration_projecteCompileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
     integration_curiosCompileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
-    compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
+    integration_recipe_stagesCompileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
+    //TODO - 26.2: Move the computer integration out of the main sourceset
     compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
     //localRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
+    //TODO: Either move this out of the main source set, or move it to json files, depending on what Sara decides to do when updating it
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
     integration_framedblocksCompileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
 
@@ -714,7 +717,7 @@ dependencies {
     if (enableBoP || enableBWG) {
         datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${terrablender_version}")
     }
-    def bop = ("com.github.glitchfiend:BiomesOPlenty-neoforge:${biomesoplenty_version}")
+    def bop = "com.github.glitchfiend:BiomesOPlenty-neoforge:${biomesoplenty_version}"
     if (enableBoP) {
         datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${glitchcore_version}")
         datagenMainImplementation(bop)

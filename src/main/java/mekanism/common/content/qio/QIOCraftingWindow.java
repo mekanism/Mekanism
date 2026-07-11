@@ -8,11 +8,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.Mekanism;
 import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.integration.recipe_stages.IRecipeStagesHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
@@ -171,13 +174,13 @@ public class QIOCraftingWindow implements IContentsListener {
     }
 
     private ItemStack assembleRecipe(CraftingInput craftingInput, CraftingRecipe recipe) {
-        //TODO - RecipeStages: Reinstate this when RecipeStages updates
-        /*if (Mekanism.hooks.recipeStages.isLoaded()) {
-            if (recipe instanceof IStagedRecipe stagedRecipe) {
-                //Force assemble it as we handle validating if specific players can see/grab the output ourselves
-                return stagedRecipe.forceAssemble(craftingInput);
+        if (Mekanism.hooks.recipeStages.isLoaded() && IRecipeStagesHelper.INSTANCE != null) {
+            Optional<ItemStack> stagedOutput = IRecipeStagesHelper.INSTANCE.tryAssembleRecipe(craftingInput, recipe);
+            if (stagedOutput.isPresent()) {
+                //If the recipe is a recipe stages recipe, return the output from it
+                return stagedOutput.get();
             }
-        }*/
+        }
         return recipe.assemble(craftingInput);
     }
 
@@ -187,14 +190,12 @@ public class QIOCraftingWindow implements IContentsListener {
             //Note: We don't check if it matches as if we don't have a match there won't
             // be anything in our output slot, so it doesn't matter
             return false;
-        }
-        //TODO - RecipeStages: Reinstate this when RecipeStages updates
-        /*if (Mekanism.hooks.recipeStages.isLoaded()) {
+        } else if (Mekanism.hooks.recipeStages.isLoaded() && IRecipeStagesHelper.INSTANCE != null) {
             //If recipe stages is loaded check if the player has access to the recipe
-            if (!RecipeStagesUtil.hasStageForRecipe(lastRecipeJournal.recipe.value(), player)) {
+            if (!IRecipeStagesHelper.INSTANCE.hasStageForRecipe(lastRecipeJournal.recipe, player)) {
                 return false;
             }
-        }*/
+        }
         //If the recipe is dynamic, doLimitedCrafting is disabled, or the recipe is unlocked
         // allow viewing the recipe
         return lastRecipeJournal.recipe.value().isSpecial() || !player.level().getGameRules().get(GameRules.LIMITED_CRAFTING) || player.getRecipeBook().contains(lastRecipeJournal.recipe.id());
