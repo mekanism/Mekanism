@@ -41,6 +41,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -51,6 +52,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
+import net.neoforged.neoforge.common.damagesource.DamageContainer.Reduction;
 import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingJumpEvent;
@@ -223,18 +225,27 @@ public class CommonPlayerTickHandler {
                 }
             }
         }
-        //TODO - 1.21: Should we rewrite this to try and take advantage of the new reduction system? It would be kind of nice to move this to the
-        // spot that reduction from armor happens. Though then the base armor reduction will apply before our energy based reduction
-        // Is that fine? Maybe it is better, or maybe it is worse from a balance standpoint
-        float ratioAbsorbed = ItemMekaSuitArmor.getDamageAbsorbed(entity, damageContainer.getSource(), damage);
-        if (ratioAbsorbed > 0) {
-            //TODO - 1.21: What should we set this to, and how does it behave if we also cancel the event
-            //damageContainer.setPostAttackInvulnerabilityTicks();
-            float damageRemaining = damage * Math.max(0, 1 - ratioAbsorbed);
-            if (damageRemaining <= 0) {
-                event.setCanceled(true);
-            } else {
-                damageContainer.setNewDamage(damageRemaining);
+        for (EquipmentSlot slot : EquipmentSlotGroup.ARMOR) {
+            if (entity.getItemBySlot(slot).is(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR)) {
+                //Only add the reduction modifier if at least one module container armor is being worn
+                event.addReductionModifier(Reduction.ARMOR, (container, reduction) -> {
+                    float newDamage = container.getNewDamage();
+                    if (newDamage > reduction) {
+                        //Note: This acts on the damage after the reduction from armor has been performed
+                        float toReduce = newDamage - reduction;
+                        float ratioAbsorbed = Math.clamp(ItemMekaSuitArmor.getDamageAbsorbed(entity, container.getSource(), toReduce), 0, 1);
+                        if (ratioAbsorbed > 0) {
+                            if (ratioAbsorbed == 1) {
+                                //If we fully absorbed the damage, mark that we don't want side effects to be performed
+                                //TODO - 26.2: https://github.com/neoforged/NeoForge/pull/3284
+                                //container.setShouldCauseSideEffects(false);
+                            }
+                            return reduction + toReduce * ratioAbsorbed;
+                        }
+                    }
+                    return reduction;
+                });
+                break;
             }
         }
     }
