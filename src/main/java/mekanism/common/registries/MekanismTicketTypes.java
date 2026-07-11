@@ -14,6 +14,6 @@ public class MekanismTicketTypes {
 
     public static final DeferredRegister<TicketType> TICKET_TYPES = DeferredRegister.create(BuiltInRegistries.TICKET_TYPE, Mekanism.MODID);
 
-    //TODO - 26.2: Figure out what flags we should be passing to this ticket type
+    //TODO - 26.2: Figure out what flags we should be passing to this ticket type. Ender pearls use FLAG_LOADING, FLAG_SIMULATION, FLAG_KEEP_DIMENSION_ACTIVE
     public static final Holder<TicketType> ROBIT_CHUNK_UNLOAD = TICKET_TYPES.register("robit_chunk_unload", () -> new TicketType(SharedConstants.TICKS_PER_SECOND, TicketType.FLAG_KEEP_DIMENSION_ACTIVE));
 }
