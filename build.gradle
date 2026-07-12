@@ -128,7 +128,6 @@ configurations {
     extendConfigurations(compileOnly, apiCompileOnly, testCompileOnly)
     extendConfigurations(runtimeOnly, apiRuntimeOnly)
     extendConfigurations(localRuntime, apiLocalRuntime)
-    datagenNonMod
 }
 
 //Create sourceSets for the various integrations we have that we might want to be able to disable when porting
@@ -346,7 +345,6 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
             //And then setup the configurations for it
             setupConfigurationExtensions(extraSourceSet, base)
             if (extraType == 'datagen') {
-                project.configurations.named(extraSourceSet.getTaskName(null, 'implementation')).get().extendsFrom(project.configurations.named('datagenNonMod').get())
                 sourceSets.runData.compileClasspath += extraSourceSet.output
                 sourceSets.runData.runtimeClasspath += extraSourceSet.runtimeClasspath
                 for (def integration : integrations) {
@@ -655,10 +653,6 @@ neoForge {
     }
 }
 
-// Ensure any jar without the necessary FML manifest attributes gets picked up via legacy classpath.
-// This configuration only exists after setting the neoForge version above.
-configurations.dataAdditionalRuntimeClasspath.extendsFrom configurations.datagenNonMod
-
 static void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {
     exclusiveRepo(handler, url, filter -> {
         for (def group : groups) {
@@ -797,8 +791,7 @@ dependencies {
 
     datagenIntegrationFarmersDelightImplementation("curse.maven:farmers-delight-398521:${farmers_delight_id}")
 
-    //Note: Even though yaml ops defines a FMLModType we have to pretend FML doesn't know how to handle it due to a lib yaml ops bundles not defining it
-    datagenNonMod("com.thiakil:yaml-ops:${yamlops_version}")
+    datagenMainImplementation("com.thiakil:yaml-ops:${yamlops_version}")
 }
 
 def getManifestAttributes(String title) {
