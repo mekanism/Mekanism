@@ -3,7 +3,7 @@ package mekanism.common.recipe.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
@@ -19,10 +19,11 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
-import mekanism.common.recipe.compat.AE2RecipeProvider;
-import mekanism.common.recipe.compat.BWGRecipeProvider;
-import mekanism.common.recipe.compat.BiomesOPlentyRecipeProvider;
-import mekanism.common.recipe.compat.FarmersDelightRecipeProvider;
+import mekanism.common.recipe.compat.ICompatRecipeDatagen;
+import mekanism.common.recipe.compat.IMekAe2Datagen;
+import mekanism.common.recipe.compat.IMekBWGDatagen;
+import mekanism.common.recipe.compat.IMekBoPDatagen;
+import mekanism.common.recipe.compat.IMekFarmersDatagen;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
@@ -85,15 +86,15 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
         //Mod Compat Recipe providers
         this.disabledCompats = disabledCompats;
-        checkCompat("ae2", AE2RecipeProvider::new);
-        checkCompat("biomesoplenty", BiomesOPlentyRecipeProvider::new);
-        checkCompat("biomeswevegone", BWGRecipeProvider::new);
-        checkCompat("farmersdelight", FarmersDelightRecipeProvider::new);
+        checkCompat("ae2", () -> IMekAe2Datagen.INSTANCE);
+        checkCompat("biomesoplenty", () -> IMekBoPDatagen.INSTANCE);
+        checkCompat("biomeswevegone", () -> IMekBWGDatagen.INSTANCE);
+        checkCompat("farmersdelight", () -> IMekFarmersDatagen.INSTANCE);
     }
 
-    private void checkCompat(String modid, BiFunction<HolderLookup.Provider, String, ISubRecipeProvider> providerCreator) {
+    private void checkCompat(String modid, Supplier<ICompatRecipeDatagen> providerCreator) {
         if (ModList.get().isLoaded(modid)) {
-            compatProviders.add(providerCreator.apply(this.registries, modid));
+            compatProviders.add(providerCreator.get().recipeProvider(this.registries, modid));
         } else {
             disabledCompats.add(modid);
         }
