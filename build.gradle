@@ -171,7 +171,7 @@ for (String name : secondaryModules) {
             integrationSource.compileClasspath += sourceSet.output
             integrationSource.runtimeClasspath += sourceSet.runtimeClasspath
             if (settings.availableInDatagen() && settings.perModule().datagen()) {
-                def integrationDataSource = getIntegrationSourceSet(integrationName, name, true).get()
+                def integrationDataSource = getDataSourceSet(integrationSource).get()
                 integrationDataSource.compileClasspath += sourceSet.output
                 integrationDataSource.runtimeClasspath += sourceSet.runtimeClasspath
             }
@@ -220,7 +220,7 @@ def setupIntegrationSourceSet(String name, IntegrationSettings settings) {
 
     SourceSet integrationData = null
     if (settings.availableInDatagen()) {
-        integrationData = sourceSets.create(getIntegrationName(name, '', true))
+        integrationData = sourceSets.create(integration.getTaskName('datagen', null))
         if (!settings.perModule().datagen()) {
             //Reset the path if we don't have a module per datagen
             path = name
@@ -264,7 +264,7 @@ def setupIntegrationSourceSet(String name, IntegrationSettings settings) {
             addIntegrationIfShouldCompile(moduleIntegration, name, module, settings)
 
             if (integrationData != null && settings.perModule().datagen()) {
-                SourceSet moduleDataIntegration = sourceSets.create(getIntegrationName(name, module, true))
+                SourceSet moduleDataIntegration = sourceSets.create(moduleIntegration.getTaskName('datagen', null))
                 moduleDataIntegration.java.srcDirs = ["src/datagen/integration/${name}/${module}/java"]
                 moduleDataIntegration.resources.srcDirs = ["src/datagen/integration/${name}/${module}/resources"]
 
@@ -278,7 +278,7 @@ def setupIntegrationSourceSet(String name, IntegrationSettings settings) {
                 moduleDataIntegration.runtimeClasspath += moduleIntegration.runtimeClasspath
 
                 setupConfigurationExtensions(moduleDataIntegration, integrationData)
-                setupConfigurationExtensions(moduleDataIntegration, moduleIntegration)
+                setupConfigurationExtensions(moduleDataIntegration, moduleIntegration, false)
                 if (settings.shouldCompile()) {
                     // And add it to the datagen runs
                     sourceSets.runData.compileClasspath += moduleDataIntegration.output
@@ -341,11 +341,11 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
                     IntegrationSettings settings = (IntegrationSettings) integration.getValue()
                     if (settings.availableInDatagen()) {
                         if (settings.perModule().datagen() || base == project.sourceSets.main) {
-                            def integrationDataSource = getIntegrationSourceSet((String) integration.getKey(), base.name, true).get()
-                            integrationDataSource.compileClasspath += extraSourceSet.output
-                            integrationDataSource.runtimeClasspath += extraSourceSet.runtimeClasspath
+                            def moduleDataIntegration = getDataSourceSet(getIntegrationSourceSet((String) integration.getKey(), base.name)).get()
+                            moduleDataIntegration.compileClasspath += extraSourceSet.output
+                            moduleDataIntegration.runtimeClasspath += extraSourceSet.runtimeClasspath
                             //Make the integration datagen sourceset able to use dependencies defined in the corresponding module.
-                            setupConfigurationExtensions(integrationDataSource, extraSourceSet, false)
+                            setupConfigurationExtensions(moduleDataIntegration, extraSourceSet, false)
                         }
                     }
                 }
@@ -382,19 +382,28 @@ static void extendConfigurations(Configuration base, Configuration... configurat
     }
 }
 
-static String getIntegrationName(String name, String module = '', boolean datagen = false) {
-    String target = "integration_${name}"
-    if (!module.isEmpty() && !module.equals('main')) {
-        target += "_${module}"
+static String getIntegrationName(String name, String module = 'main') {
+    String target = ''
+    def components = name.split('_')
+    for (def component in components) {
+        target += component.substring(0, 1).toUpperCase(Locale.ROOT) + component.substring(1)
     }
-    if (datagen) {//TODO - 26.2: Do we want to do this similar to getExtraSourceSet?
-        return "data_${target}"
+    if (module != 'main') {
+        return "${module}Integration${target}"
     }
-    return target
+    return "integration${target}"
 }
 
-Provider<SourceSet> getIntegrationSourceSet(String name, String module = '', boolean datagen = false) {
-    return project.sourceSets.named(getIntegrationName(name, module, datagen))
+Provider<SourceSet> getIntegrationSourceSet(String name, String module = 'main') {
+    return project.sourceSets.named(getIntegrationName(name, module))
+}
+
+Provider<SourceSet> getDataSourceSet(Provider<SourceSet> base) {
+    return base.flatMap(s -> getDataSourceSet(s))
+}
+
+Provider<SourceSet> getDataSourceSet(SourceSet base) {
+    return getExtraSourceSet(base, 'datagen')
 }
 
 Provider<SourceSet> getExtraSourceSet(SourceSet base, String name) {
@@ -460,16 +469,18 @@ def forEachIntegrationSourceSet(boolean includeDatagen = false, BiConsumer<Integ
         IntegrationSettings settings = (IntegrationSettings) integration.getValue()
         if (settings.shouldCompile()) {
             String integrationName = (String) integration.getKey()
-            consumer.accept(settings, getIntegrationSourceSet(integrationName).get())
+            def integrationSourceSet = getIntegrationSourceSet(integrationName).get()
+            consumer.accept(settings, integrationSourceSet)
             if (includeDatagen && settings.availableInDatagen()) {
-                consumer.accept(settings, getIntegrationSourceSet(integrationName, '', true).get())
+                consumer.accept(settings, getDataSourceSet(integrationSourceSet).get())
             }
             def perModule = settings.perModule()
             if (perModule.enabled()) {
                 for (String module : secondaryModules) {
-                    consumer.accept(settings, getIntegrationSourceSet(integrationName, module).get())
+                    def moduleDataIntegration = getIntegrationSourceSet(integrationName, module).get()
+                    consumer.accept(settings, moduleDataIntegration)
                     if (includeDatagen && perModule.datagen()) {
-                        consumer.accept(settings, getIntegrationSourceSet(integrationName, module, true).get())
+                        consumer.accept(settings, getDataSourceSet(moduleDataIntegration).get())
                     }
                 }
             }
@@ -516,7 +527,7 @@ neoForge {
             for (def integration : integrations) {
                 IntegrationSettings settings = (IntegrationSettings) integration.getValue()
                 if (settings.shouldCompile() && settings.availableInDatagen()) {
-                    mek.modSourceSets.add(getIntegrationSourceSet((String) integration.getKey(), '', true))
+                    mek.modSourceSets.add(getDataSourceSet(getIntegrationSourceSet((String) integration.getKey())))
                 }
             }
         }
@@ -531,7 +542,7 @@ neoForge {
         // Create a secondary mod group for the modules main code + its datagen code
         final datagenMod = mods.maybeCreate(name + 'Data')
         datagenMod.modSourceSets.add(sourceSet)
-        datagenMod.modSourceSets.add(sourceSet.flatMap(s -> getExtraSourceSet(s, 'datagen')))
+        datagenMod.modSourceSets.add(sourceSet.flatMap(s -> getDataSourceSet(s)))
         for (def integration : integrations) {
             IntegrationSettings settings = (IntegrationSettings) integration.getValue()
             if (settings.shouldCompile() && settings.perModule().enabled()) {
@@ -540,7 +551,7 @@ neoForge {
                 if (settings.availableInDatagen()) {
                     datagenMod.modSourceSets.add(integrationSourceSet)
                     if (settings.perModule().datagen()) {
-                        datagenMod.modSourceSets.add(getIntegrationSourceSet((String) integration.getKey(), name, true))
+                        datagenMod.modSourceSets.add(integrationSourceSet.flatMap(s -> getDataSourceSet(s)))
                     }
                 }
             }
@@ -718,66 +729,64 @@ dependencies {
 
     def jeiApi = "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
     apiCompileOnly(jeiApi)
-    integration_jeiCompileOnly(jeiApi)
+    integrationJeiCompileOnly(jeiApi)
     if (recipe_viewer == 'jei' || recipe_viewer == 'hybrid') {
-        integration_jeiLocalRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+        integrationJeiLocalRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     }
 
     def emiApi = "dev.emi:emi-neoforge:${emi_version}+${previous_minecraft_version}:api"
     apiCompileOnly(emiApi)
-    integration_emiCompileOnly(emiApi)
+    integrationEmiCompileOnly(emiApi)
     def emi = "dev.emi:emi-neoforge:${emi_version}+${previous_minecraft_version}"
     //TODO: Re-evaluate (https://github.com/emilyploszaj/emi/issues/537) might allow us to not have to do this
     //Compile against full emi in datagen
-    data_integration_emiCompileOnly(emi)
+    datagenIntegrationEmiCompileOnly(emi)
     if (recipe_viewer == 'emi' || recipe_viewer == 'hybrid') {
-        integration_emiLocalRuntime(emi)
+        integrationEmiLocalRuntime(emi)
     } else {
         //We still need it to load in datagen regardless of if we are using emi or a different viewer so that we can access EMI related objects
-        if (integrations['emi'].shouldCompile()) {
-            data_integration_emiLocalRuntime(emi)
-        }
+        datagenIntegrationEmiLocalRuntime(emi)
     }
 
     //TODO: Re-enable when it updates
     //localRuntime("team.chisel.ctm:CTM:${major_minecraft_version}-${ctm_version}")
 
-    integration_the_one_probeCompileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
-    integration_the_one_probeLocalRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
+    integrationTheOneProbeCompileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
+    integrationTheOneProbeLocalRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
 
     //// Jade
     /// - CF
-    //integration_jadeCompileOnly("curse.maven:jade-api-324717:${jade_api_id}") - no longer on CF as such?
-    //integration_jadeCompileOnly("curse.maven:jade-api-324717:${jade_id}")
-    integration_jadeLocalRuntime("curse.maven:jade-324717:${jade_id}")
+    //integrationJadeCompileOnly("curse.maven:jade-api-324717:${jade_api_id}") - no longer on CF as such?
+    //integrationJadeCompileOnly("curse.maven:jade-api-324717:${jade_id}")
+    integrationJadeLocalRuntime("curse.maven:jade-324717:${jade_id}")
     /// - Maven (gradle build with added publish block, upload)
-    integration_jadeCompileOnly("snownee.jade:Jade:${jade_version}:api")
-    //integration_jadeLocalRuntime("snownee.jade:Jade:${jade_version}")
+    integrationJadeCompileOnly("snownee.jade:Jade:${jade_version}:api")
+    //integrationJadeLocalRuntime("snownee.jade:Jade:${jade_version}")
 
-    integration_wthitCompileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
-    //integration_wthitLocalRuntime("mcp.mobius.waila:wthit:neo-${wthit_version}")
-    //integration_wthitLocalRuntime('lol.bai:badpackets:neo-0.12.2')
+    integrationWthitCompileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
+    //integrationWthitLocalRuntime("mcp.mobius.waila:wthit:neo-${wthit_version}")
+    //integrationWthitLocalRuntime('lol.bai:badpackets:neo-0.12.2')
 
     def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minecraft_version}:${crafttweaker_version}"
-    integration_crafttweakerCompileOnly(crt)
-    integration_crafttweakerLocalRuntime(crt)
+    integrationCrafttweakerCompileOnly(crt)
+    integrationCrafttweakerLocalRuntime(crt)
     def jeiTweaker = "com.blamejared.jeitweaker:JeiTweaker-forge-1.20.1:${jeitweaker_version}"
-    integration_crafttweakerCompileOnly(jeiTweaker)
+    integrationCrafttweakerCompileOnly(jeiTweaker)
     //TODO: Re-enable when it updates
-    //integration_crafttweakerLocalRuntime(jeiTweaker)
+    //integrationCrafttweakerLocalRuntime(jeiTweaker)
 
     //Mods we have dependencies on but don't bother loading into the dev environment
-    integration_projecteCompileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
-    integration_curiosCompileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
-    integration_recipe_stagesCompileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
-    integration_computer_craftCompileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
-    //integration_computer_craftLocalRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
+    integrationProjecteCompileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
+    integrationCuriosCompileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
+    integrationRecipeStagesCompileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
+    integrationComputerCraftCompileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
+    //integrationComputerCraftLocalRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     //TODO: Either move this out of the main source set, or move it to json files, depending on what Sara decides to do when updating it
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
-    integration_framedblocksCompileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
+    integrationFramedblocksCompileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
 
     //Dependencies for data generators for mod compat reference
-    data_integration_projecteLocalRuntime("curse.maven:projecte-226410:${projecte_id}")
+    datagenIntegrationProjecteLocalRuntime("curse.maven:projecte-226410:${projecte_id}")
     def ae2 = "org.appliedenergistics:appliedenergistics2:${ae2_version}"
     if (enable_ae2.toBoolean()) {
         datagenMainImplementation(ae2)
@@ -836,14 +845,8 @@ void addIntegrationFiles(AbstractCopyTask task, SourceSet baseSourceSet, Transfo
     for (def integration : integrations) {
         IntegrationSettings settings = (IntegrationSettings) integration.getValue()
         if (settings.shouldCompile()) {
-            String integrationName = null
-            if (baseSourceSet == sourceSets.main) {
-                integrationName = getIntegrationName((String) integration.getKey())
-            } else if (settings.perModule().enabled()) {
-                integrationName = getIntegrationName((String) integration.getKey(), baseSourceSet.name)
-            }
-            if (integrationName != null) {
-                def integrationSourceSet = project.sourceSets.named(integrationName)
+            if (baseSourceSet == sourceSets.main || settings.perModule().enabled()) {
+                def integrationSourceSet = getIntegrationSourceSet((String) integration.getKey(), baseSourceSet.name)
                 task.from(integrationSourceSet.map(transformer))
                 task.dependsOn(integrationSourceSet.map(s -> s.classesTaskName))
             }
