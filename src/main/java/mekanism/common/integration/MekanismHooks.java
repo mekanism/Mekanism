@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.common.integration.computer.FactoryRegistry;
-import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
 import mekanism.common.integration.gender.MekanismGenderArmor;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.registries.MekanismItems;
@@ -24,6 +23,7 @@ import org.jspecify.annotations.Nullable;
 public final class MekanismHooks {
 
     //Note: These have to be static for use in CraftTweaker/Mod entrypoint annotations
+    public static final String CC_MOD_ID = "computercraft";
     public static final String CURIOS_MOD_ID = "curios";
     public static final String EMI_MOD_ID = "emi";
     public static final String FRAMED_BLOCKS_MOD_ID = "framedblocks";
@@ -72,7 +72,7 @@ public final class MekanismHooks {
         ModList modList = ModList.get();
         //Note: The modlist is null when running tests
         Predicate<String> loadedCheck = modList == null ? _ -> false : modList::isLoaded;
-        computerCraft = new IntegrationInfo("computercraft", loadedCheck);
+        computerCraft = new IntegrationInfo(CC_MOD_ID, loadedCheck);
         craftTweaker = new IntegrationInfo("crafttweaker", loadedCheck);
         curios = new IntegrationInfo(CURIOS_MOD_ID, loadedCheck);
         darkModeEverywhere = new IntegrationInfo("darkmodeeverywhere", loadedCheck);
@@ -103,9 +103,6 @@ public final class MekanismHooks {
     public void hookCommonSetup() {
         if (computerCompatEnabled()) {
             FactoryRegistry.load();
-            if (computerCraft.isLoaded()) {
-                CCCapabilityHelper.registerApis();
-            }
         }
 
         //TODO - 1.20: Move this out of here and back to always being registered whenever it gets fixed in Neo.

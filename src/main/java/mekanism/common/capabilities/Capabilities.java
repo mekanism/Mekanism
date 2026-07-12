@@ -14,7 +14,6 @@ import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.IEntitySecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.integration.computer.ComputerCapabilityHelper;
 import mekanism.common.lib.radiation.capability.RadiationEntity;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -94,7 +93,6 @@ public class Capabilities {
         TileEntityBoundingBlock.alwaysProxyCapability(event, IBlockSecurityUtils.INSTANCE.ownerCapability());
         TileEntityBoundingBlock.alwaysProxyCapability(event, IBlockSecurityUtils.INSTANCE.securityCapability());
         //Capabilities we need to proxy because some sub implementations use them
-        ComputerCapabilityHelper.addBoundingComputerCapabilities(event);
         TileEntityBoundingBlock.proxyCapability(event, ITEM.block());
         TileEntityBoundingBlock.proxyCapability(event, ENERGY.block());
         //Note: Common caps we may eventually want to proxy but currently have no use for doing so

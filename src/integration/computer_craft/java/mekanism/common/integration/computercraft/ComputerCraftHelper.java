@@ -1,21 +1,18 @@
-package mekanism.common.integration.computer.computercraft;
+package mekanism.common.integration.computercraft;
 
-import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.PeripheralCapability;
 import java.util.function.BooleanSupplier;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
-import mekanism.common.integration.computer.ComputerFilterHelper;
 import mekanism.common.integration.computer.IComputerTile;
+import mekanism.common.integration.computer.computercraft.IComputerCraftHelper;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
-import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jspecify.annotations.Nullable;
 
-public class CCCapabilityHelper {
+public class ComputerCraftHelper implements IComputerCraftHelper {
 
     private static final ICapabilityProvider<?, @Nullable Direction, IPeripheral> PROVIDER = getProvider();
 
@@ -29,15 +26,8 @@ public class CCCapabilityHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public static <TILE extends CapabilityTileEntity & IComputerTile> void addCapability(BlockEntityTypeBuilder<TILE> builder, BooleanSupplier supportsComputer) {
+    @Override
+    public <TILE extends CapabilityTileEntity & IComputerTile> void addCapability(BlockEntityTypeBuilder<TILE> builder, BooleanSupplier supportsComputer) {
         builder.with(PeripheralCapability.get(), (ICapabilityProvider<? super TILE, @Nullable Direction, IPeripheral>) PROVIDER, supportsComputer);
-    }
-
-    public static void addBoundingComputerCapabilities(RegisterCapabilitiesEvent event) {
-        TileEntityBoundingBlock.proxyCapability(event, PeripheralCapability.get());
-    }
-
-    public static void registerApis() {
-        ComputerCraftAPI.registerAPIFactory(CCApiObject.create(ComputerFilterHelper.class, "mekanismFilterHelper"));
     }
 }

@@ -63,16 +63,17 @@ ext {
     //Integrations that we sometimes have to disable compilation of when porting to newer mc versions
     integrations = [
             //boolean shouldCompile, boolean availableInDatagen, boolean perModule
-            'crafttweaker' : new IntegrationSettings(false, true, false),
-            'curios'       : new IntegrationSettings(true, false, false),
-            'emi'          : new IntegrationSettings(false, true, true, 'client'),
-            'framedblocks' : new IntegrationSettings(true, false, false),
-            'jade'         : new IntegrationSettings(true, true, false),
-            'jei'          : new IntegrationSettings(true, false, true, 'client'),
-            'projecte'     : new IntegrationSettings(false, true, false),
+            'computer_craft': new IntegrationSettings(true, false, false),
+            'crafttweaker'  : new IntegrationSettings(false, true, false),
+            'curios'        : new IntegrationSettings(true, false, false),
+            'emi'           : new IntegrationSettings(false, true, true, 'client'),
+            'framedblocks'  : new IntegrationSettings(true, false, false),
+            'jade'          : new IntegrationSettings(true, true, false),
+            'jei'           : new IntegrationSettings(true, false, true, 'client'),
+            'projecte'      : new IntegrationSettings(false, true, false),
             'recipe_stages' : new IntegrationSettings(false, false, false),
-            'the_one_probe': new IntegrationSettings(false, false, false),
-            'wthit'        : new IntegrationSettings(true, false, false)
+            'the_one_probe' : new IntegrationSettings(false, false, false),
+            'wthit'         : new IntegrationSettings(true, false, false)
     ]
 }
 
@@ -697,9 +698,8 @@ dependencies {
     integration_projecteCompileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
     integration_curiosCompileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     integration_recipe_stagesCompileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
-    //TODO - 26.2: Move the computer integration out of the main sourceset
-    compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
-    //localRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
+    integration_computer_craftCompileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
+    //integration_computer_craftLocalRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     //TODO: Either move this out of the main source set, or move it to json files, depending on what Sara decides to do when updating it
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
     integration_framedblocksCompileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")

@@ -1,4 +1,4 @@
-package mekanism.common.integration.computer.computercraft;
+package mekanism.common.integration.computercraft;
 
 import dan200.computercraft.api.lua.IDynamicLuaObject;
 import mekanism.common.content.filter.IFilter;

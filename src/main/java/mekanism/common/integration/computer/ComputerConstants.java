@@ -1,4 +1,4 @@
-package mekanism.common.integration.computer.computercraft;
+package mekanism.common.integration.computer;
 
 public class ComputerConstants {
 
