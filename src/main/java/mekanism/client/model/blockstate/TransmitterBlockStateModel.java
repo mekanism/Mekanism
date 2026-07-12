@@ -43,7 +43,7 @@ import net.neoforged.neoforge.client.model.ComposedModelState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelData;
-import org.checkerframework.common.returnsreceiver.qual.This;
+import org.jetbrains.annotations.Contract;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
@@ -257,7 +257,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
             this.visibilityMap = visibilityMap;
         }
 
-        @This
+        @Contract(value = "_ -> this", mutates = "this")
         public DelegateResolvedModel as(ResolvedModel other) {
             this.delegate = other;
             return this;
