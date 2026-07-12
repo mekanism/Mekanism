@@ -50,11 +50,21 @@ idea {
     }
 }
 
-record IntegrationSettings(boolean shouldCompile, boolean availableInDatagen, boolean perModule, String side) {
+enum PerModule {
+    NONE,
+    MODULE_ONLY,
+    ALL;
 
-    IntegrationSettings(boolean shouldCompile, boolean availableInDatagen, boolean perModule) {
-        this(shouldCompile, availableInDatagen, perModule, 'common')
+    boolean enabled() {
+        return this != NONE
     }
+
+    boolean datagen() {
+        return this == ALL
+    }
+}
+
+record IntegrationSettings(boolean shouldCompile = true, boolean availableInDatagen = false, PerModule perModule = PerModule.NONE, String pkg = 'common') {
 }
 
 ext {
@@ -62,18 +72,17 @@ ext {
     extraTypes = ['datagen']
     //Integrations that we sometimes have to disable compilation of when porting to newer mc versions
     integrations = [
-            //boolean shouldCompile, boolean availableInDatagen, boolean perModule
-            'computer_craft': new IntegrationSettings(true, false, false),
-            'crafttweaker'  : new IntegrationSettings(false, true, false),
-            'curios'        : new IntegrationSettings(true, false, false),
-            'emi'           : new IntegrationSettings(false, true, true, 'client'),
-            'framedblocks'  : new IntegrationSettings(true, false, false),
-            'jade'          : new IntegrationSettings(true, true, false),
-            'jei'           : new IntegrationSettings(true, false, true, 'client'),
-            'projecte'      : new IntegrationSettings(false, true, false),
-            'recipe_stages' : new IntegrationSettings(false, false, false),
-            'the_one_probe' : new IntegrationSettings(false, false, false),
-            'wthit'         : new IntegrationSettings(true, false, false)
+            'computer_craft': new IntegrationSettings(shouldCompile: true),
+            'crafttweaker'  : new IntegrationSettings(shouldCompile: false, availableInDatagen: true),
+            'curios'        : new IntegrationSettings(shouldCompile: true),
+            'emi'           : new IntegrationSettings(shouldCompile: false, availableInDatagen: true, perModule: PerModule.MODULE_ONLY, pkg: 'client'),
+            'framedblocks'  : new IntegrationSettings(shouldCompile: true),
+            'jade'          : new IntegrationSettings(shouldCompile: true),
+            'jei'           : new IntegrationSettings(shouldCompile: true, perModule: PerModule.MODULE_ONLY, pkg: 'client'),
+            'projecte'      : new IntegrationSettings(shouldCompile: false, availableInDatagen: true),
+            'recipe_stages' : new IntegrationSettings(shouldCompile: false),
+            'the_one_probe' : new IntegrationSettings(shouldCompile: false),
+            'wthit'         : new IntegrationSettings(shouldCompile: true)
     ]
 }
 
@@ -153,6 +162,21 @@ for (String name : secondaryModules) {
     }
     sourceSet.compileClasspath += sourceSets.api.output
     sourceSet.compileClasspath += sourceSets.main.output
+    //Expose the module's created source set to the corresponding per module integrations
+    for (def integration : integrations) {
+        IntegrationSettings settings = (IntegrationSettings) integration.getValue()
+        if (settings.perModule().enabled()) {
+            String integrationName = (String) integration.getKey()
+            def integrationSource = getIntegrationSourceSet(integrationName, name).get()
+            integrationSource.compileClasspath += sourceSet.output
+            integrationSource.runtimeClasspath += sourceSet.runtimeClasspath
+            if (settings.availableInDatagen() && settings.perModule().datagen()) {
+                def integrationDataSource = getIntegrationSourceSet(integrationName, name, true).get()
+                integrationDataSource.compileClasspath += sourceSet.output
+                integrationDataSource.runtimeClasspath += sourceSet.runtimeClasspath
+            }
+        }
+    }
     //Create all secondary sourceSets for this module
     setupExtraSourceSets(sourceSet)
 }
@@ -173,44 +197,98 @@ void setupConfigurationExtensions(SourceSet base, SourceSet from, boolean addToC
 }
 
 def setupIntegrationSourceSet(String name, IntegrationSettings settings) {
-    SourceSet base = sourceSets.create("integration_${name}")
+    SourceSet integration = sourceSets.create(getIntegrationName(name))
     String path = name
-    if (settings.perModule()) {
+    if (settings.perModule().enabled()) {
         path += '/main'
     }
-    base.java.srcDirs = ["src/integration/${path}/java"]
-    base.resources.srcDirs = ["src/integration/${path}/resources"]
+    integration.java.srcDirs = ["src/integration/${path}/java"]
+    integration.resources.srcDirs = ["src/integration/${path}/resources"]
     //Add the directory where Gradle would usually put the AP sources explicitly so IntelliJ picks it up
     // If we don't do this, IJ seems to run a weird heuristic on where to put the AP sources and put them
     // into the generated resource directory instead
     //TODO: Is this necessary? Do we have AP sources for integrations? We gather names from the CrT one, but I am unsure if that would output to this
-    base.java.srcDir(project.file("build/generated/sources/annotationProcessor/java/${base.name}"))
+    integration.java.srcDir(project.file("build/generated/sources/annotationProcessor/java/${integration.name}"))
 
-    base.compileClasspath += sourceSets.api.output
-    base.compileClasspath += sourceSets.main.output
-    base.runtimeClasspath += sourceSets.main.runtimeClasspath
+    integration.compileClasspath += sourceSets.api.output
+    integration.compileClasspath += sourceSets.main.output
+    integration.runtimeClasspath += sourceSets.main.runtimeClasspath
     //Note: We don't currently expose integrations to junit or gametests
 
-    setupConfigurationExtensions(base, sourceSets.main)
-    addIntegrationIfShouldCompile(base, name, 'main', settings)
+    setupConfigurationExtensions(integration, sourceSets.main)
+    addIntegrationIfShouldCompile(integration, name, 'main', settings)
 
-    if (settings.perModule()) {
+    SourceSet integrationData = null
+    if (settings.availableInDatagen()) {
+        integrationData = sourceSets.create(getIntegrationName(name, '', true))
+        if (!settings.perModule().datagen()) {
+            //Reset the path if we don't have a module per datagen
+            path = name
+        }
+        integrationData.java.srcDirs = ["src/datagen/integration/${path}/java"]
+        integrationData.resources.srcDirs = ["src/datagen/integration/${path}/resources"]
+
+        integrationData.compileClasspath += sourceSets.api.output
+        integrationData.compileClasspath += sourceSets.main.output
+        integrationData.compileClasspath += integration.output
+        integrationData.runtimeClasspath += integration.runtimeClasspath
+
+        setupConfigurationExtensions(integrationData, integration)
+        if (settings.shouldCompile()) {
+            // And add it to the datagen runs
+            sourceSets.runData.compileClasspath += integrationData.output
+            sourceSets.runData.runtimeClasspath += integrationData.runtimeClasspath
+        } else {
+            //Note: We need to exclude the code or IntelliJ gets confused when rebuilding to try and hotswap
+            println("Disabling main datagen compilation of ${name} integration")
+            integrationData.java.exclude('mekanism/')
+        }
+    }
+
+    if (settings.perModule().enabled()) {
         //Setup per module integrations
         for (String module : secondaryModules) {
-            SourceSet moduleIntegration = sourceSets.create("integration_${name}_${module}")
+            SourceSet moduleIntegration = sourceSets.create(getIntegrationName(name, module))
             moduleIntegration.java.srcDirs = ["src/integration/${name}/${module}/java"]
             moduleIntegration.resources.srcDirs = ["src/integration/${name}/${module}/resources"]
             moduleIntegration.java.srcDir(project.file("build/generated/sources/annotationProcessor/java/${moduleIntegration.name}"))
 
             moduleIntegration.compileClasspath += sourceSets.api.output
             moduleIntegration.compileClasspath += sourceSets.main.output
-            moduleIntegration.compileClasspath += base.output
+            moduleIntegration.compileClasspath += integration.output
             //Note: This includes the main runtime class path
-            moduleIntegration.runtimeClasspath += base.runtimeClasspath
+            moduleIntegration.runtimeClasspath += integration.runtimeClasspath
             //Note: We don't currently expose integrations to junit or gametests
 
-            setupConfigurationExtensions(moduleIntegration, base)
+            setupConfigurationExtensions(moduleIntegration, integration)
             addIntegrationIfShouldCompile(moduleIntegration, name, module, settings)
+
+            if (integrationData != null && settings.perModule().datagen()) {
+                SourceSet moduleDataIntegration = sourceSets.create(getIntegrationName(name, module, true))
+                moduleDataIntegration.java.srcDirs = ["src/datagen/integration/${name}/${module}/java"]
+                moduleDataIntegration.resources.srcDirs = ["src/datagen/integration/${name}/${module}/resources"]
+
+                moduleDataIntegration.compileClasspath += sourceSets.api.output
+                moduleDataIntegration.compileClasspath += sourceSets.main.output
+                moduleDataIntegration.compileClasspath += integration.output
+                moduleDataIntegration.compileClasspath += moduleIntegration.output
+                moduleDataIntegration.compileClasspath += integrationData.output
+                //Note: This includes the main runtime class path, as well as the base integration runtime class path
+                moduleDataIntegration.runtimeClasspath += integrationData.runtimeClasspath
+                moduleDataIntegration.runtimeClasspath += moduleIntegration.runtimeClasspath
+
+                setupConfigurationExtensions(moduleDataIntegration, integrationData)
+                setupConfigurationExtensions(moduleDataIntegration, moduleIntegration)
+                if (settings.shouldCompile()) {
+                    // And add it to the datagen runs
+                    sourceSets.runData.compileClasspath += moduleDataIntegration.output
+                    sourceSets.runData.runtimeClasspath += moduleDataIntegration.runtimeClasspath
+                } else {
+                    //Note: We need to exclude the code or IntelliJ gets confused when rebuilding to try and hotswap
+                    println("Disabling ${module} datagen compilation of ${name} integration")
+                    moduleDataIntegration.java.exclude('mekanism/')
+                }
+            }
         }
     }
 }
@@ -248,17 +326,6 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
     setupConfigurationExtensions(base, project.sourceSets.main)
 
     if (includeExtra) {
-        if (base != project.sourceSets.main) {
-            //Expose this source set to the corresponding per module integrations
-            for (def integration : integrations) {
-                if (((IntegrationSettings) integration.getValue()).perModule()) {
-                    def integrationSource = sourceSets.named("integration_${integration.getKey()}_${base.name}").get()
-                    integrationSource.compileClasspath += base.output
-                    integrationSource.runtimeClasspath += base.runtimeClasspath
-                }
-            }
-        }
-
         //And then setup and have all the extra sourceSets have their configurations extend the ones for the base module so that they can
         // properly access the dependency
         for (String extraType : extraTypes) {
@@ -272,11 +339,13 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
                 sourceSets.runData.runtimeClasspath += extraSourceSet.runtimeClasspath
                 for (def integration : integrations) {
                     IntegrationSettings settings = (IntegrationSettings) integration.getValue()
-                    if (settings.shouldCompile() && settings.availableInDatagen()) {
-                        //Make the datagen sourceset able to use dependencies defined in any integrations that should compile and be available in datagen
-                        setupConfigurationExtensions(extraSourceSet, sourceSets.named("integration_${integration.getKey()}").get(), false)
-                        if (settings.perModule() && base != project.sourceSets.main) {
-                            setupConfigurationExtensions(extraSourceSet, sourceSets.named("integration_${integration.getKey()}_${base.name}").get(), false)
+                    if (settings.availableInDatagen()) {
+                        if (settings.perModule().datagen() || base == project.sourceSets.main) {
+                            def integrationDataSource = getIntegrationSourceSet((String) integration.getKey(), base.name, true).get()
+                            integrationDataSource.compileClasspath += extraSourceSet.output
+                            integrationDataSource.runtimeClasspath += extraSourceSet.runtimeClasspath
+                            //Make the integration datagen sourceset able to use dependencies defined in the corresponding module.
+                            setupConfigurationExtensions(integrationDataSource, extraSourceSet, false)
                         }
                     }
                 }
@@ -304,33 +373,6 @@ SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
         extraSourceSet.compileClasspath += baseSourceSet.output
         extraSourceSet.runtimeClasspath += baseSourceSet.runtimeClasspath
     }
-    if (extra == 'datagen') {
-        //Expose the integrations to the corresponding datagen sourceset
-        for (def integration : integrations) {
-            IntegrationSettings settings = (IntegrationSettings) integration.getValue()
-            if (settings.availableInDatagen()) {
-                if (settings.shouldCompile()) {
-                    def integrationSourceSet = sourceSets.named("integration_${integration.getKey()}").get()
-                    extraSourceSet.compileClasspath += integrationSourceSet.output
-                    extraSourceSet.runtimeClasspath += integrationSourceSet.runtimeClasspath
-                    if (baseSourceSet != project.sourceSets.main && settings.perModule()) {
-                        def moduleIntegrationSourceSet = sourceSets.named("integration_${integration.getKey()}_${name}").get()
-                        extraSourceSet.compileClasspath += moduleIntegrationSourceSet.output
-                        extraSourceSet.runtimeClasspath += moduleIntegrationSourceSet.runtimeClasspath
-                    }
-                } else {
-                    def integrationName = integration.getKey()
-                    if (baseSourceSet == project.sourceSets.main) {
-                        println("[datagen] Disabling ${name} compilation of ${integrationName} integration")
-                        extraSourceSet.java.exclude("mekanism/${settings.side()}/integration/${integrationName}/**")
-                    } else if (settings.perModule()) {
-                        println("[datagen] Disabling ${name} compilation of ${integrationName} integration")
-                        extraSourceSet.java.exclude("mekanism/${name}/${settings.side()}/integration/${integrationName}/**")
-                    }
-                }
-            }
-        }
-    }
     return extraSourceSet
 }
 
@@ -338,6 +380,21 @@ static void extendConfigurations(Configuration base, Configuration... configurat
     for (def configuration : configurations) {
         configuration.extendsFrom(base)
     }
+}
+
+static String getIntegrationName(String name, String module = '', boolean datagen = false) {
+    String target = "integration_${name}"
+    if (!module.isEmpty() && !module.equals('main')) {
+        target += "_${module}"
+    }
+    if (datagen) {//TODO - 26.2: Do we want to do this similar to getExtraSourceSet?
+        return "data_${target}"
+    }
+    return target
+}
+
+Provider<SourceSet> getIntegrationSourceSet(String name, String module = '', boolean datagen = false) {
+    return project.sourceSets.named(getIntegrationName(name, module, datagen))
 }
 
 Provider<SourceSet> getExtraSourceSet(SourceSet base, String name) {
@@ -398,14 +455,22 @@ def setupTasks(SourceSet sourceSet) {
     }
 }
 
-def forEachIntegrationSourceSet(BiConsumer<IntegrationSettings, SourceSet> consumer) {
+def forEachIntegrationSourceSet(boolean includeDatagen = false, BiConsumer<IntegrationSettings, SourceSet> consumer) {
     for (def integration : integrations) {
         IntegrationSettings settings = (IntegrationSettings) integration.getValue()
         if (settings.shouldCompile()) {
-            consumer.accept(settings, project.sourceSets.named("integration_${integration.getKey()}").get())
-            if (settings.perModule()) {
+            String integrationName = (String) integration.getKey()
+            consumer.accept(settings, getIntegrationSourceSet(integrationName).get())
+            if (includeDatagen && settings.availableInDatagen()) {
+                consumer.accept(settings, getIntegrationSourceSet(integrationName, '', true).get())
+            }
+            def perModule = settings.perModule()
+            if (perModule.enabled()) {
                 for (String module : secondaryModules) {
-                    consumer.accept(settings, sourceSets.named("integration_${integration.getKey()}_${module}").get())
+                    consumer.accept(settings, getIntegrationSourceSet(integrationName, module).get())
+                    if (includeDatagen && perModule.datagen()) {
+                        consumer.accept(settings, getIntegrationSourceSet(integrationName, module, true).get())
+                    }
                 }
             }
         }
@@ -436,21 +501,27 @@ neoForge {
 
     mods {
         mekanism { net.neoforged.moddevgradle.dsl.ModModel mek ->
-            mek.modSourceSets.add(sourceSets.api)
-            mek.modSourceSets.add(sourceSets.main)
+            mek.modSourceSets.add((SourceSet) sourceSets.api)
+            mek.modSourceSets.add((SourceSet) sourceSets.main)
             for (def integration : integrations) {
                 if (((IntegrationSettings) integration.getValue()).shouldCompile()) {
-                    mek.modSourceSets.add(sourceSets.named("integration_${integration.getKey()}"))
+                    mek.modSourceSets.add(getIntegrationSourceSet((String) integration.getKey()))
                 }
             }
         }
         // contains main mod + its datagen code
-        mekanismData {
+        mekanismData { net.neoforged.moddevgradle.dsl.ModModel mek ->
             modSourceSets = mods.mekanism.modSourceSets
-            sourceSet((SourceSet) sourceSets.datagenMain)
+            mek.modSourceSets.add((SourceSet) sourceSets.datagenMain)
+            for (def integration : integrations) {
+                IntegrationSettings settings = (IntegrationSettings) integration.getValue()
+                if (settings.shouldCompile() && settings.availableInDatagen()) {
+                    mek.modSourceSets.add(getIntegrationSourceSet((String) integration.getKey(), '', true))
+                }
+            }
         }
-        mekanismtests {
-            sourceSet((SourceSet) sourceSets.gameTest)
+        mekanismtests { net.neoforged.moddevgradle.dsl.ModModel mek ->
+            mek.modSourceSets.add((SourceSet) sourceSets.gameTest)
         }
     }
     for (String name : secondaryModules) {
@@ -463,11 +534,14 @@ neoForge {
         datagenMod.modSourceSets.add(sourceSet.flatMap(s -> getExtraSourceSet(s, 'datagen')))
         for (def integration : integrations) {
             IntegrationSettings settings = (IntegrationSettings) integration.getValue()
-            if (settings.shouldCompile() && settings.perModule()) {
-                def integrationSourceSet = sourceSets.named("integration_${integration.getKey()}_${name}")
+            if (settings.shouldCompile() && settings.perModule().enabled()) {
+                def integrationSourceSet = getIntegrationSourceSet((String) integration.getKey(), name)
                 module.modSourceSets.add(integrationSourceSet)
                 if (settings.availableInDatagen()) {
                     datagenMod.modSourceSets.add(integrationSourceSet)
+                    if (settings.perModule().datagen()) {
+                        datagenMod.modSourceSets.add(getIntegrationSourceSet((String) integration.getKey(), name, true))
+                    }
                 }
             }
         }
@@ -653,17 +727,15 @@ dependencies {
     apiCompileOnly(emiApi)
     integration_emiCompileOnly(emiApi)
     def emi = "dev.emi:emi-neoforge:${emi_version}+${previous_minecraft_version}"
-    if (integrations['emi'].shouldCompile()) {
-        //TODO: Re-evaluate (https://github.com/emilyploszaj/emi/issues/537) might allow us to not have to do this
-        //Compile against full emi in datagen
-        datagenMainCompileOnly(emi)
-    }
+    //TODO: Re-evaluate (https://github.com/emilyploszaj/emi/issues/537) might allow us to not have to do this
+    //Compile against full emi in datagen
+    data_integration_emiCompileOnly(emi)
     if (recipe_viewer == 'emi' || recipe_viewer == 'hybrid') {
         integration_emiLocalRuntime(emi)
     } else {
         //We still need it to load in datagen regardless of if we are using emi or a different viewer so that we can access EMI related objects
         if (integrations['emi'].shouldCompile()) {
-            datagenMainRuntimeOnly(emi)
+            data_integration_emiLocalRuntime(emi)
         }
     }
 
@@ -705,6 +777,7 @@ dependencies {
     integration_framedblocksCompileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
 
     //Dependencies for data generators for mod compat reference
+    data_integration_projecteLocalRuntime("curse.maven:projecte-226410:${projecte_id}")
     def ae2 = "org.appliedenergistics:appliedenergistics2:${ae2_version}"
     if (enable_ae2.toBoolean()) {
         datagenMainImplementation(ae2)
@@ -715,11 +788,11 @@ dependencies {
     def enableBoP = biomesoplenty_version.startsWith(minecraft_version)
     def enableBWG = enable_biomes_weve_gone.toBoolean()
     if (enableBoP || enableBWG) {
-        datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${terrablender_version}")
+        datagenMainLocalRuntime("com.github.glitchfiend:TerraBlender-neoforge:${terrablender_version}")
     }
     def bop = "com.github.glitchfiend:BiomesOPlenty-neoforge:${biomesoplenty_version}"
     if (enableBoP) {
-        datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${glitchcore_version}")
+        datagenMainLocalRuntime("com.github.glitchfiend:GlitchCore-neoforge:${glitchcore_version}")
         datagenMainImplementation(bop)
     } else {
         datagenMainCompileOnly(bop)
@@ -727,9 +800,9 @@ dependencies {
 
     def bwg = "curse.maven:oh-the-biomes-weve-gone-1070751:${biomeswevegone_id}"
     if (enableBWG) {
-        datagenMainRuntimeOnly("curse.maven:corgilib-693313:${corgilib_id}")
-        datagenMainRuntimeOnly("curse.maven:geckolib-388172:${geckolib_id}")
-        datagenMainRuntimeOnly("curse.maven:oh-the-trees-youll-grow-962544:${ohthetreesyoullgrow_id}")
+        datagenMainLocalRuntime("curse.maven:corgilib-693313:${corgilib_id}")
+        datagenMainLocalRuntime("curse.maven:geckolib-388172:${geckolib_id}")
+        datagenMainLocalRuntime("curse.maven:oh-the-trees-youll-grow-962544:${ohthetreesyoullgrow_id}")
         datagenMainImplementation(bwg)
     } else {
         datagenMainCompileOnly(bwg)
@@ -741,8 +814,6 @@ dependencies {
     } else {
         datagenMainCompileOnly(farmersDelight)
     }
-    //TODO: Re-enable once this updates
-    //datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
 
     //Note: Even though yaml ops defines a FMLModType we have to pretend FML doesn't know how to handle it due to a lib yaml ops bundles not defining it
     datagenNonMod("com.thiakil:yaml-ops:${yamlops_version}")
@@ -767,9 +838,9 @@ void addIntegrationFiles(AbstractCopyTask task, SourceSet baseSourceSet, Transfo
         if (settings.shouldCompile()) {
             String integrationName = null
             if (baseSourceSet == sourceSets.main) {
-                integrationName = "integration_${integration.getKey()}"
-            } else if (settings.perModule()) {
-                integrationName = "integration_${integration.getKey()}_${baseSourceSet.name}"
+                integrationName = getIntegrationName((String) integration.getKey())
+            } else if (settings.perModule().enabled()) {
+                integrationName = getIntegrationName((String) integration.getKey(), baseSourceSet.name)
             }
             if (integrationName != null) {
                 def integrationSourceSet = project.sourceSets.named(integrationName)
@@ -895,7 +966,7 @@ tasks.register('generatePackageInfos', GeneratePackageInfos) {
             files.from(getExtraSourceSet(sourceSet, extraType).get().java.srcDirTrees)
         }
     }
-    forEachIntegrationSourceSet((settings, integration) -> files.from(integration.java.srcDirTrees))
+    forEachIntegrationSourceSet(true, (settings, integration) -> files.from(integration.java.srcDirTrees))
 }
 
 tasks.register('optimizePng', OptimizePng) {

@@ -14,7 +14,11 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import mekanism.client.integration.emi.IMekEmiDatagen;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
+import mekanism.client.recipe_viewer.alias.MekanismAliasMapping;
+import mekanism.common.integration.IMekCrTDatagen;
+import mekanism.common.integration.IMekProjectEDatagen;
 import mekanism.common.lib.FieldReflectionHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
@@ -46,22 +50,19 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         List<String> fakeProviders = new ArrayList<>();
         ResourceManager serverResources = event.getResourceManager(PackType.SERVER_DATA);
         if (Mekanism.hooks.emi.isLoaded()) {
-            throw new UnsupportedOperationException("Re-enable EMI Alias Provider");
-            //gen.addProvider(true, new EmiAliasProvider(output, lookupProvider, Mekanism.MODID, MekanismAliasMapping::new));
+            gen.addProvider(true, IMekEmiDatagen.INSTANCE.aliasProvider(output, lookupProvider, Mekanism.MODID, MekanismAliasMapping::new));
         } else {
             skipEmi(Mekanism.MODID, pathsToSkip, fakeProviders);
         }
         if (Mekanism.hooks.projecte.isLoaded()) {
-            throw new UnsupportedOperationException("Re-enable ProjectE Custom Conversion Provider");
-            //gen.addProvider(true, new MekanismCustomConversions(output, lookupProvider));
+            gen.addProvider(true, IMekProjectEDatagen.INSTANCE.customConversionProvider(output, lookupProvider));
         } else {
             Mekanism.logger.warn("Skipping and persisting existing {} data generated files for ProjectE", Mekanism.MODID);
             pathsToSkip.add("pe_custom_conversions");
             fakeProviders.add("Custom EMC Conversions: mekanism");
         }
         if (Mekanism.hooks.craftTweaker.isLoaded()) {
-            throw new UnsupportedOperationException("Re-enable CrT Example Provider");
-            //gen.addProvider(true, new MekanismCrTExampleProvider(output, serverResources, lookupProvider));
+            gen.addProvider(true, IMekCrTDatagen.INSTANCE.exampleProvider(output, serverResources, lookupProvider));
         } else {
             Mekanism.logger.warn("Skipping and persisting existing {} data generated files for CraftTweaker", Mekanism.MODID);
             pathsToSkip.add("scripts");
@@ -79,8 +80,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         Set<String> pathsToSkip = new HashSet<>();
         List<String> fakeProviders = new ArrayList<>();
         if (Mekanism.hooks.emi.isLoaded()) {
-            throw new UnsupportedOperationException("Re-enable EMI Alias Provider");
-            //gen.addProvider(true, new EmiAliasProvider(output, lookupProvider, modid, mappings));
+            gen.addProvider(true, IMekEmiDatagen.INSTANCE.aliasProvider(output, lookupProvider, modid, mappings));
         } else {
             skipEmi(modid, pathsToSkip, fakeProviders);
         }

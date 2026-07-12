@@ -1,4 +1,4 @@
-package mekanism.client.integration.emi_no_dep;
+package mekanism.client.integration.emi;
 
 import com.mojang.serialization.Codec;
 import java.nio.file.Path;
@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.tier.BaseTier;
-import mekanism.common.DataGenSerializationConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.RegistryUtils;
@@ -27,9 +26,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 public abstract class BaseEmiDefaults implements DataProvider {
 
-    private static final Codec<List<Identifier>> CODEC = ExtraCodecs.nonEmptyList(Identifier.CODEC.listOf())
-          .fieldOf(DataGenSerializationConstants.ADDED)
-          .codec();
+    private static final Codec<List<Identifier>> CODEC = ExtraCodecs.nonEmptyList(Identifier.CODEC.listOf()).fieldOf("added").codec();
 
     private final CompletableFuture<HolderLookup.Provider> registries;
     private final Set<Identifier> recipes = new HashSet<>();

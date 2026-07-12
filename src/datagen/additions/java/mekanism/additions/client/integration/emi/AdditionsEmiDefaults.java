@@ -1,11 +1,11 @@
-package mekanism.additions.client.integration.emi_no_dep;
+package mekanism.additions.client.integration.emi;
 
 import java.util.concurrent.CompletableFuture;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.text.EnumColor;
-import mekanism.client.integration.emi_no_dep.BaseEmiDefaults;
+import mekanism.client.integration.emi.BaseEmiDefaults;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;

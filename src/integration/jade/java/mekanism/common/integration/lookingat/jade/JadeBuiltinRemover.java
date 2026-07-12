@@ -2,6 +2,7 @@ package mekanism.common.integration.lookingat.jade;
 
 import mekanism.api.SerializationConstants;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.integration.lookingat.LookingAtConstants;
 import net.minecraft.resources.Identifier;
 import snownee.jade.api.Accessor;
 import snownee.jade.api.EntityAccessor;
@@ -22,7 +23,7 @@ public class JadeBuiltinRemover<ACCESSOR extends Accessor<?>> implements ICompon
 
     @Override
     public Identifier getUid() {
-        return JadeConstants.REMOVE_BUILTIN;
+        return LookingAtConstants.Jade.REMOVE_BUILTIN;
     }
 
     @Override

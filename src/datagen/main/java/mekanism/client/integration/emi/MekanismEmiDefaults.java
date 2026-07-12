@@ -1,4 +1,4 @@
-package mekanism.client.integration.emi_no_dep;
+package mekanism.client.integration.emi;
 
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismRegistries;

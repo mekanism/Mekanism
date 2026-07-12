@@ -1,4 +1,4 @@
 @NullMarked
-package mekanism.tools.client.integration.emi_no_dep;
+package mekanism.generators.client.integration.emi;
 
 import org.jspecify.annotations.NullMarked;

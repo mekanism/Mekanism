@@ -29,7 +29,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
 import mekanism.client.recipe_viewer.alias.RVAliasHelper;
-import mekanism.common.DataGenSerializationConstants;
+import mekanism.client.recipe_viewer.emi.ChemicalEmiStack;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.collection.HashList;
 import net.minecraft.core.Holder;
@@ -101,10 +101,10 @@ public class EmiAliasProvider implements DataProvider {
               }, ingredient -> new Dynamic<>(JsonOps.INSTANCE, EmiIngredientSerializer.getSerialized(ingredient))
         );
         private static final Codec<AliasInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              singleOrListCodec(INGREDIENT_CODEC).fieldOf(DataGenSerializationConstants.STACKS).forGetter(AliasInfo::ingredients),
+              singleOrListCodec(INGREDIENT_CODEC).fieldOf("stacks").forGetter(AliasInfo::ingredients),
               singleOrListCodec(ExtraCodecs.NON_EMPTY_STRING).fieldOf(SerializationConstants.TEXT).forGetter(AliasInfo::aliases)
         ).apply(instance, AliasInfo::new));
-        private static final Codec<List<AliasInfo>> LIST_CODEC = ExtraCodecs.nonEmptyList(CODEC.listOf()).fieldOf(DataGenSerializationConstants.ALIASES).codec();
+        private static final Codec<List<AliasInfo>> LIST_CODEC = ExtraCodecs.nonEmptyList(CODEC.listOf()).fieldOf("aliases").codec();
 
         private static <T> Codec<List<T>> singleOrListCodec(Codec<T> codec) {
             return Codec.either(codec, ExtraCodecs.nonEmptyList(codec.listOf())).xmap(
@@ -148,8 +148,7 @@ public class EmiAliasProvider implements DataProvider {
 
         @Override
         public EmiIngredient chemicalIngredient(Holder<Chemical> chemical) {
-            throw new UnsupportedOperationException("emi disabled");
-            //return new ChemicalEmiStack(chemical, 1);
+            return new ChemicalEmiStack(chemical, 1);
         }
 
         @Override

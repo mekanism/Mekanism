@@ -1,5 +1,6 @@
 package mekanism.common.integration.lookingat.jade;
 
+import mekanism.common.integration.lookingat.LookingAtConstants;
 import mekanism.common.integration.lookingat.LookingAtUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -12,7 +13,7 @@ public class JadeEntityDataProvider implements IServerDataProvider<EntityAccesso
 
     @Override
     public Identifier getUid() {
-        return JadeConstants.ENTITY_DATA;
+        return LookingAtConstants.Jade.ENTITY_DATA;
     }
 
     @Override

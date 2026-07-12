@@ -6,7 +6,7 @@ import mekanism.additions.client.AdditionsLangProvider;
 import mekanism.additions.client.AdditionsModelProvider;
 import mekanism.additions.client.AdditionsSoundProvider;
 import mekanism.additions.client.AdditionsSpriteSourceProvider;
-import mekanism.additions.client.integration.emi_no_dep.AdditionsEmiDefaults;
+import mekanism.additions.client.integration.emi.AdditionsEmiDefaults;
 import mekanism.additions.client.recipe_viewer.aliases.AdditionsAliasMapping;
 import mekanism.additions.common.loot.AdditionsLootProvider;
 import mekanism.additions.common.recipe.AdditionsRecipeProvider;

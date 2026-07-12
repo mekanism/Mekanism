@@ -5,6 +5,7 @@ import java.util.Optional;
 import mekanism.api.SerializationConstants;
 import mekanism.client.render.IFancyFontRenderer.TextAlignment;
 import mekanism.common.integration.lookingat.ILookingAtElement;
+import mekanism.common.integration.lookingat.LookingAtConstants;
 import mekanism.common.integration.lookingat.LookingAtElement;
 import mekanism.common.integration.lookingat.LookingAtElementType;
 import mekanism.common.integration.lookingat.TextElement;
@@ -31,7 +32,7 @@ public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements ICompo
 
     @Override
     public Identifier getUid() {
-        return JadeConstants.TOOLTIP_RENDERER;
+        return LookingAtConstants.Jade.TOOLTIP_RENDERER;
     }
 
     @Override

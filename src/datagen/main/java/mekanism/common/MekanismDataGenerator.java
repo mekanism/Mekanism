@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
-import mekanism.client.integration.emi_no_dep.MekanismEmiDefaults;
+import mekanism.client.integration.emi.MekanismEmiDefaults;
 import mekanism.client.lang.MekanismLangProvider;
 import mekanism.client.model.MekanismEquipmentAssetProvider;
 import mekanism.client.model.MekanismModelProvider;

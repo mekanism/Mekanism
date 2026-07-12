@@ -8,7 +8,7 @@ import mekanism.common.recipe.MekRecipeRunner;
 import mekanism.tools.client.ToolsModelProvider;
 import mekanism.tools.client.ToolsLangProvider;
 import mekanism.tools.client.ToolsSpriteSourceProvider;
-import mekanism.tools.client.integration.emi_no_dep.ToolsEmiDefaults;
+import mekanism.tools.client.integration.emi.ToolsEmiDefaults;
 import mekanism.tools.client.recipe_viewer.aliases.ToolsAliasMapping;
 import mekanism.tools.common.recipe.ToolsRecipeProvider;
 import net.minecraft.core.HolderLookup;

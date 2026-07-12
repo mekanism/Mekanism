@@ -37,8 +37,8 @@ import mekanism.common.content.gear.mekatool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.entity.RobitPrideSkinData;
+import mekanism.common.integration.lookingat.LookingAtConstants;
 import mekanism.common.integration.lookingat.LookingAtUtils;
-import mekanism.common.integration.lookingat.jade.JadeConstants;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType.ConfigSaveData;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -844,10 +844,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addJade() {
-        addJadeConfigTooltip(JadeConstants.REMOVE_BUILTIN, "Remove overwritten builtin renderings");
-        addJadeConfigTooltip(JadeConstants.ENTITY_DATA, "Jade entity data provider");
-        addJadeConfigTooltip(JadeConstants.BLOCK_DATA, "Jade tile data provider");
-        addJadeConfigTooltip(JadeConstants.TOOLTIP_RENDERER, "Jade tooltip renderer");
+        addJadeConfigTooltip(LookingAtConstants.Jade.REMOVE_BUILTIN, "Remove overwritten builtin renderings");
+        addJadeConfigTooltip(LookingAtConstants.Jade.ENTITY_DATA, "Jade entity data provider");
+        addJadeConfigTooltip(LookingAtConstants.Jade.BLOCK_DATA, "Jade tile data provider");
+        addJadeConfigTooltip(LookingAtConstants.Jade.TOOLTIP_RENDERER, "Jade tooltip renderer");
         addJadeConfigTooltip(LookingAtUtils.ENERGY, "Energy");
         addJadeConfigTooltip(LookingAtUtils.FLUID, "Fluid");
         addJadeConfigTooltip(LookingAtUtils.CHEMICAL, "Chemical");

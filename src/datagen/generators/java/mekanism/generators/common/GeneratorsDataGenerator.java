@@ -8,7 +8,7 @@ import mekanism.common.recipe.MekRecipeRunner;
 import mekanism.generators.client.GeneratorsLangProvider;
 import mekanism.generators.client.GeneratorsModelProvider;
 import mekanism.generators.client.GeneratorsSoundProvider;
-import mekanism.generators.client.integration.emi_no_dep.GeneratorsEmiDefaults;
+import mekanism.generators.client.integration.emi.GeneratorsEmiDefaults;
 import mekanism.generators.client.recipe_viewer.alias.GeneratorsAliasMapping;
 import mekanism.generators.common.loot.GeneratorsLootProvider;
 import net.minecraft.core.HolderLookup;
