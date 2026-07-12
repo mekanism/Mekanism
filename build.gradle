@@ -166,7 +166,7 @@ void setupConfigurationExtensions(SourceSet base, SourceSet from, boolean addToC
         if (base != from) {
             baseConfig.extendsFrom(project.configurations.named(from.getTaskName(null, type)).get())
         }
-        if (type == 'localRuntime') {
+        if (addToClasspath && type == 'localRuntime') {
             base.runtimeClasspath += baseConfig
         }
     }
