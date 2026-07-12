@@ -4,16 +4,13 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.common.integration.computer.FactoryRegistry;
-import mekanism.common.integration.gender.MekanismGenderArmor;
 import mekanism.common.recipe.bin.BinInsertRecipe;
-import mekanism.common.registries.MekanismItems;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.neoforge.capabilities.EntityCapability;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -27,6 +24,7 @@ public final class MekanismHooks {
     public static final String CURIOS_MOD_ID = "curios";
     public static final String EMI_MOD_ID = "emi";
     public static final String FRAMED_BLOCKS_MOD_ID = "framedblocks";
+    public static final String GENDER_MOD_ID = "wildfire_gender";
     public static final String JEI_MOD_ID = "jei";
     public static final String JEITWEAKER_MOD_ID = "jeitweaker";
     public static final String PROJECTE_MOD_ID = "projecte";
@@ -81,8 +79,8 @@ public final class MekanismHooks {
         jeiTweaker = new IntegrationInfo(JEITWEAKER_MOD_ID, loadedCheck);
         projecte = new IntegrationInfo(PROJECTE_MOD_ID, loadedCheck);
         recipeStages = new IntegrationInfo("recipestages", loadedCheck);
-        theOneProbe = new IntegrationInfo("TOP_MOD_ID", loadedCheck);
-        genderMod = new IntegrationInfo("wildfire_gender", loadedCheck);
+        theOneProbe = new IntegrationInfo(TOP_MOD_ID, loadedCheck);
+        genderMod = new IntegrationInfo(GENDER_MOD_ID, loadedCheck);
         framedBlocks = new IntegrationInfo(FRAMED_BLOCKS_MOD_ID, loadedCheck);
         curiosItemHandler = EntityCapability.createVoid(curios.rl("item_handler"), ResourceHandler.asClass());
     }
@@ -90,14 +88,6 @@ public final class MekanismHooks {
     @Nullable
     public ResourceHandler<ItemResource> getCuriosInventory(LivingEntity entity) {
         return entity.getCapability(curiosItemHandler);
-    }
-
-    public void hookCapabilityRegistration(RegisterCapabilitiesEvent event) {
-        if (genderMod.isLoaded()) {
-            MekanismGenderArmor.HAZMAT.register(event, MekanismItems.HAZMAT_GOWN);
-            MekanismGenderArmor.OPEN_FRONT.register(event, MekanismItems.JETPACK, MekanismItems.SCUBA_TANK);
-            MekanismGenderArmor.HIDES_BREASTS.register(event, MekanismItems.ARMORED_JETPACK, MekanismItems.MEKASUIT_BODYARMOR);
-        }
     }
 
     public void hookCommonSetup() {

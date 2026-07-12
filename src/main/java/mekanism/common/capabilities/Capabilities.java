@@ -76,8 +76,6 @@ public class Capabilities {
     }
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        Mekanism.hooks.hookCapabilityRegistration(event);
-
         EntityType<EntityRobit> robitEntityType = MekanismEntityTypes.ROBIT.get();
         event.registerEntity(IEntitySecurityUtils.INSTANCE.ownerCapability(), robitEntityType, (robit, _) -> robit);
         event.registerEntity(IEntitySecurityUtils.INSTANCE.securityCapability(), robitEntityType, (robit, _) -> robit);

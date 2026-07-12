@@ -64,7 +64,7 @@ enum PerModule {
     }
 }
 
-record IntegrationSettings(boolean shouldCompile = true, boolean availableInDatagen = false, PerModule perModule = PerModule.NONE, String pkg = 'common') {
+record IntegrationSettings(boolean shouldCompile = true, boolean availableInDatagen = false, PerModule perModule = PerModule.NONE) {
 }
 
 ext {
@@ -75,10 +75,11 @@ ext {
             'computer_craft': new IntegrationSettings(shouldCompile: true),
             'crafttweaker'  : new IntegrationSettings(shouldCompile: false, availableInDatagen: true),
             'curios'        : new IntegrationSettings(shouldCompile: true),
-            'emi'           : new IntegrationSettings(shouldCompile: false, availableInDatagen: true, perModule: PerModule.MODULE_ONLY, pkg: 'client'),
+            'emi'           : new IntegrationSettings(shouldCompile: false, availableInDatagen: true, perModule: PerModule.MODULE_ONLY),
             'framedblocks'  : new IntegrationSettings(shouldCompile: true),
+            'gender'        : new IntegrationSettings(shouldCompile: true, perModule: PerModule.MODULE_ONLY),
             'jade'          : new IntegrationSettings(shouldCompile: true),
-            'jei'           : new IntegrationSettings(shouldCompile: true, perModule: PerModule.MODULE_ONLY, pkg: 'client'),
+            'jei'           : new IntegrationSettings(shouldCompile: true, perModule: PerModule.MODULE_ONLY),
             'projecte'      : new IntegrationSettings(shouldCompile: false, availableInDatagen: true),
             'recipe_stages' : new IntegrationSettings(shouldCompile: false),
             'the_one_probe' : new IntegrationSettings(shouldCompile: false),
@@ -781,8 +782,7 @@ dependencies {
     integrationRecipeStagesCompileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     integrationComputerCraftCompileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
     //integrationComputerCraftLocalRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
-    //TODO: Either move this out of the main source set, or move it to json files, depending on what Sara decides to do when updating it
-    compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
+    integrationGenderCompileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
     integrationFramedblocksCompileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
 
     //Dependencies for data generators for mod compat reference
