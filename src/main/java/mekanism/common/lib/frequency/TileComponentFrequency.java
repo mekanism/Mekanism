@@ -163,7 +163,9 @@ public class TileComponentFrequency implements ITileComponent {
         FREQ freq = null;
         if (!Objects.equals(data.ownerUUID(), player) && SecurityUtils.get().isTrusted(data.securityMode(), data.ownerUUID(), player)) {
             manager = type.getLookup(data, data.ownerUUID());
-            freq = manager.getFrequency(data.key());
+            if (manager != null) {
+                freq = manager.getFrequency(data.key());
+            }
             if (freq == null) {
                 //Frequency doesn't exist, update the data to having the player as the owner
                 data = new FrequencyIdentity(data.key(), data.securityMode(), player);
@@ -172,6 +174,9 @@ public class TileComponentFrequency implements ITileComponent {
         if (freq == null) {
             //If the player is the owner, or is trying to create a new trusted frequency, create it for this player instead
             manager = type.getLookup(data, player);
+            if (manager == null) {
+                return;
+            }
             freq = manager.getOrCreateFrequency(data, player);
         }
         if (!freq.equals(oldFrequency)) {
