@@ -13,9 +13,10 @@ import mekanism.PerModule
 import neoforge.GeneratePackageInfos
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.UploadArtifact
+import net.neoforged.moddevgradle.dsl.ModModel
+import net.neoforged.moddevgradle.dsl.RunModel
 import org.gradle.buildconfiguration.tasks.UpdateDaemonJvm
 
-import java.util.function.BiConsumer
 import java.util.function.Consumer
 
 plugins {
@@ -29,15 +30,15 @@ plugins {
     id('net.neoforged.moddev').version('2.0.141')//https://projects.neoforged.net/neoforged/moddevgradle
 }
 
-tasks.named('wrapper', Wrapper) {
+tasks.named('wrapper', Wrapper, {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
     gradleVersion = '9.6.1'
     distributionType = Wrapper.DistributionType.ALL
-}
+})
 
-tasks.named('updateDaemonJvm', UpdateDaemonJvm) {
+tasks.named('updateDaemonJvm', UpdateDaemonJvm, {
     languageVersion = JavaLanguageVersion.of("${java_version}")
-}
+})
 
 defaultTasks('build')
 
@@ -132,10 +133,14 @@ configurations {
 
 //Create sourceSets for the various integrations we have that we might want to be able to disable when porting
 // We do this before creating the secondary modules, as we want to allow them to also reference the integrations in case they have their own integrations
-for (def integration : integrations) {
-    setupIntegrationSourceSet((String) integration.getKey(), (IntegrationSettings) integration.getValue())
+for (def integration : integrations as Map<String, IntegrationSettings>) {
+    setupIntegrationSourceSet(integration.key, integration.value)
 }
 
+setGroups(sourceSets.api)
+setGroups(sourceSets.test)
+setGroups(sourceSets.runMain)
+setGroups(sourceSets.runData)
 //Add all extra source sets that the main sourceSet should have
 setupExtraSourceSets(sourceSets.main)
 setupExtraSourceSets(sourceSets.gameTest, false)
@@ -155,17 +160,15 @@ for (String name : secondaryModules) {
     sourceSet.compileClasspath += sourceSets.api.output
     sourceSet.compileClasspath += sourceSets.main.output
     //Expose the module's created source set to the corresponding per module integrations
-    for (def integration : integrations) {
-        IntegrationSettings settings = (IntegrationSettings) integration.getValue()
-        if (settings.perModule().enabled()) {
-            def integrationName = (String) integration.getKey()
-            if (settings.scope().hasBase) {
-                def integrationSource = getIntegrationSourceSet(integrationName, name).get()
+    for (def integration : integrations as Map<String, IntegrationSettings>) {
+        if (integration.value.perModule().enabled()) {
+            if (integration.value.scope().hasBase) {
+                def integrationSource = getIntegrationSourceSet(integration.key, name).get()
                 integrationSource.compileClasspath += sourceSet.output
                 integrationSource.runtimeClasspath += sourceSet.runtimeClasspath
             }
-            if (settings.scope().hasData && settings.perModule().datagen()) {
-                def integrationDataSource = getIntegrationDataSourceSet(integrationName, name).get()
+            if (integration.value.scope().hasData && integration.value.perModule().datagen()) {
+                def integrationDataSource = getIntegrationDataSourceSet(integration.key, name).get()
                 integrationDataSource.compileClasspath += sourceSet.output
                 integrationDataSource.runtimeClasspath += sourceSet.runtimeClasspath
             }
@@ -200,6 +203,7 @@ def setupIntegrationSourceSet(String name, IntegrationSettings settings) {
         }
         integration.java.srcDirs = ["src/integration/${path}/java"]
         integration.resources.srcDirs = ["src/integration/${path}/resources"]
+        setGroups(integration)
         //Add the directory where Gradle would usually put the AP sources explicitly so IntelliJ picks it up
         // If we don't do this, IJ seems to run a weird heuristic on where to put the AP sources and put them
         // into the generated resource directory instead
@@ -224,6 +228,7 @@ def setupIntegrationSourceSet(String name, IntegrationSettings settings) {
         }
         integrationData.java.srcDirs = ["src/datagen/integration/${path}/java"]
         integrationData.resources.srcDirs = ["src/datagen/integration/${path}/resources"]
+        setGroups(integrationData)
 
         integrationData.compileClasspath += sourceSets.api.output
         integrationData.compileClasspath += sourceSets.main.output
@@ -256,6 +261,7 @@ def setupIntegrationSourceSet(String name, IntegrationSettings settings) {
                 moduleIntegration.java.srcDirs = ["src/integration/${name}/${module}/java"]
                 moduleIntegration.resources.srcDirs = ["src/integration/${name}/${module}/resources"]
                 moduleIntegration.java.srcDir(project.file("build/generated/sources/annotationProcessor/java/${moduleIntegration.name}"))
+                setGroups(moduleIntegration)
 
                 moduleIntegration.compileClasspath += sourceSets.api.output
                 moduleIntegration.compileClasspath += sourceSets.main.output
@@ -272,6 +278,7 @@ def setupIntegrationSourceSet(String name, IntegrationSettings settings) {
                 SourceSet moduleDataIntegration = sourceSets.create(IntegrationSettings.getDataName(name, module))
                 moduleDataIntegration.java.srcDirs = ["src/datagen/integration/${name}/${module}/java"]
                 moduleDataIntegration.resources.srcDirs = ["src/datagen/integration/${name}/${module}/resources"]
+                setGroups(moduleDataIntegration)
 
                 moduleDataIntegration.compileClasspath += sourceSets.api.output
                 moduleDataIntegration.compileClasspath += sourceSets.main.output
@@ -321,7 +328,8 @@ void addIntegrationIfShouldCompile(SourceSet integration, String integrationName
     }
 }
 
-def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
+void setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
+    setGroups(base)
     // Add the directory where Gradle would usually put the AP sources explicitly so IntelliJ picks it up
     // If we don't do this, IJ seems to run a weird heuristic on where to put the AP sources and put them
     // into the generated resource directory instead
@@ -347,11 +355,10 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
             if (extraType == 'datagen') {
                 sourceSets.runData.compileClasspath += extraSourceSet.output
                 sourceSets.runData.runtimeClasspath += extraSourceSet.runtimeClasspath
-                for (def integration : integrations) {
-                    IntegrationSettings settings = (IntegrationSettings) integration.getValue()
-                    if (settings.scope().hasData) {
-                        if (settings.perModule().datagen() || base == project.sourceSets.main) {
-                            def moduleDataIntegration = getIntegrationDataSourceSet((String) integration.getKey(), base.name).get()
+                for (def integration : integrations as Map<String, IntegrationSettings>) {
+                    if (integration.value.scope().hasData) {
+                        if (integration.value.perModule().datagen() || base == project.sourceSets.main) {
+                            def moduleDataIntegration = getIntegrationDataSourceSet(integration.key, base.name).get()
                             moduleDataIntegration.compileClasspath += extraSourceSet.output
                             moduleDataIntegration.runtimeClasspath += extraSourceSet.runtimeClasspath
                             //Make the integration datagen sourceset able to use dependencies defined in the corresponding module.
@@ -374,6 +381,7 @@ SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
     extraSourceSet.java.srcDirs = ["src/${extra}/${name}/java"]
     //Resources folder for if we have anything get created by our annotation processors or in the case of game tests, for any nbt presets
     extraSourceSet.resources.srcDirs = ["src/${extra}/${name}/resources"]
+    setGroups(extraSourceSet)
     extraSourceSet.compileClasspath += project.sourceSets.api.output
     extraSourceSet.compileClasspath += project.sourceSets.main.output
     extraSourceSet.runtimeClasspath += project.sourceSets.main.runtimeClasspath
@@ -392,43 +400,45 @@ static void extendConfigurations(Configuration base, Configuration... configurat
     }
 }
 
-Provider<SourceSet> getIntegrationSourceSet(String name, String module = 'main') {
-    return project.sourceSets.named(IntegrationSettings.getName(name, module))
+def getIntegrationSourceSet(String name, String module = 'main') {
+    return getSourceSet(IntegrationSettings.getName(name, module))
 }
 
-Provider<SourceSet> getIntegrationDataSourceSet(String name, String module = 'main') {
-    return project.sourceSets.named(IntegrationSettings.getDataName(name, module))
+def getIntegrationDataSourceSet(String name, String module = 'main') {
+    return getSourceSet(IntegrationSettings.getDataName(name, module))
 }
 
-Provider<SourceSet> getExtraSourceSet(SourceSet base, String name) {
-    return project.sourceSets.named(base.getTaskName(name, null))
+def getExtraSourceSet(SourceSet base, String name) {
+    return getSourceSet(base.getTaskName(name, null))
+}
+
+Provider<SourceSet> getSourceSet(String name) {
+    return project.sourceSets.named(name)
 }
 
 setupTasks(sourceSets.main)
 for (String name : secondaryModules) {
-    setupTasks(sourceSets.named(name).get())
+    setupTasks(getSourceSet(name).get())
 }
 
-def setupTasks(SourceSet sourceSet) {
-    def compileTask = tasks.named(sourceSet.compileJavaTaskName, JavaCompile) {
+void setupTasks(SourceSet sourceSet) {
+    def compileTask = tasks.named(sourceSet.compileJavaTaskName, JavaCompile, {
         //Configure specific compile tasks to have the proper annotation processor info
-        setGroup('compile')
         options.annotationProcessorPath = configurations.annotationProcessor
         options.compilerArgs.addAll([
                 "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? '' : sourceSet.name}",//annotation processor param
                 '-parameters'
         ])
-    }
+    })
     //Set the various variables/settings for the different process resources tasks
-    tasks.named(sourceSet.processResourcesTaskName, ProcessResources) {
-        setGroup('process resources')
+    tasks.named(sourceSet.processResourcesTaskName, ProcessResources, {
         duplicatesStrategy = DuplicatesStrategy.FAIL
         var versionProperties = ['file'       : ['jarVersion': mod_version], 'mc_version': minecraft_version_range, 'neo_version': neo_version_range,
                                  'jei_version': jei_version_range]
         //Mark the properties as inputs so that when they change things update
         inputs.properties(versionProperties)
         filesMatching('META-INF/neoforge.mods.toml') { expand(versionProperties) }
-        from("${projectDir}") { include('logo.png') }
+        from(layout.projectDirectory) { include('logo.png') }
         //Depend on the compile task so that we can map the computer methods as needed
         dependsOn(compileTask)
         def files = fileTree(dir: outputs.files.asPath, includes: ['**/*.json', '**/*.mcmeta'])
@@ -446,30 +456,28 @@ def setupTasks(SourceSet sourceSet) {
                 }
             }
         }
-    }
-    tasks.named(sourceSet.compileJavaTaskName, JavaCompile) { setGroup('compile') }
+    })
     for (String extraType : extraTypes) {
         def extraSourceSet = getExtraSourceSet(sourceSet, extraType).get()
-        tasks.named(extraSourceSet.processResourcesTaskName, ProcessResources) {
-            setGroup('process resources')
-            dependsOn(compileTask)
-        }
-        tasks.named(extraSourceSet.compileJavaTaskName, JavaCompile) { setGroup('compile') }
+        tasks.named(extraSourceSet.processResourcesTaskName, { dependsOn(compileTask) })
     }
 }
 
-def forEachIntegrationSourceSet(BiConsumer<IntegrationSettings, SourceSet> consumer) {
-    for (def integration : integrations) {
-        IntegrationSettings settings = (IntegrationSettings) integration.getValue()
-        if (settings.shouldCompile()) {
-            def integrationName = (String) integration.getKey()
-            if (settings.scope().hasBase) {
-                consumer.accept(settings, getIntegrationSourceSet(integrationName).get())
+void setGroups(SourceSet sourceSet) {
+    tasks.named(sourceSet.processResourcesTaskName, { setGroup('process resources') })
+    tasks.named(sourceSet.compileJavaTaskName, { setGroup('compile') })
+}
+
+void forEachIntegrationSourceSet(Consumer<SourceSet> consumer) {
+    for (def integration : integrations as Map<String, IntegrationSettings>) {
+        if (integration.value.shouldCompile()) {
+            if (integration.value.scope().hasBase) {
+                consumer.accept(getIntegrationSourceSet(integration.key).get())
             }
-            if (settings.perModule().enabled()) {
+            if (integration.value.perModule().enabled()) {
                 for (String module : secondaryModules) {
-                    if (settings.scope().hasBase) {
-                        consumer.accept(settings, getIntegrationSourceSet(integrationName, module).get())
+                    if (integration.value.scope().hasBase) {
+                        consumer.accept(getIntegrationSourceSet(integration.key, module).get())
                     }
                 }
             }
@@ -489,66 +497,11 @@ java {
     withSourcesJar()
 }
 
-final runsFolder = layout.projectDirectory.dir('runs')
-final clientRunsFolder = runsFolder.dir('client')
-
 neoForge {
     // This enables modding tasks and configurations
     enable {
         version = neo_version
         enabledSourceSets = sourceSets // All source sets use Minecraft code
-    }
-
-    mods {
-        mekanism { net.neoforged.moddevgradle.dsl.ModModel mek ->
-            mek.modSourceSets.add((SourceSet) sourceSets.api)
-            mek.modSourceSets.add((SourceSet) sourceSets.main)
-            for (def integration : integrations) {
-                IntegrationSettings settings = (IntegrationSettings) integration.getValue()
-                if (settings.shouldCompile() && settings.scope().hasBase) {
-                    mek.modSourceSets.add(getIntegrationSourceSet((String) integration.getKey()))
-                }
-            }
-        }
-        // contains main mod + its datagen code
-        mekanismData { net.neoforged.moddevgradle.dsl.ModModel mek ->
-            modSourceSets = mods.mekanism.modSourceSets
-            mek.modSourceSets.add((SourceSet) sourceSets.datagenMain)
-            for (def integration : integrations) {
-                IntegrationSettings settings = (IntegrationSettings) integration.getValue()
-                if (settings.shouldCompile() && settings.scope().hasData) {
-                    mek.modSourceSets.add(getIntegrationDataSourceSet((String) integration.getKey()))
-                }
-            }
-        }
-        mekanismtests { net.neoforged.moddevgradle.dsl.ModModel mek ->
-            mek.modSourceSets.add((SourceSet) sourceSets.gameTest)
-        }
-    }
-    for (String name : secondaryModules) {
-        final sourceSet = sourceSets.named(name)
-        def module = mods.maybeCreate(name)
-        module.modSourceSets.add(sourceSet)
-        // Create a secondary mod group for the modules main code + its datagen code
-        final datagenMod = mods.maybeCreate(name + 'Data')
-        datagenMod.modSourceSets.add(sourceSet)
-        datagenMod.modSourceSets.add(sourceSet.flatMap(s -> getExtraSourceSet(s, 'datagen')))
-        for (def integration : integrations) {
-            IntegrationSettings settings = (IntegrationSettings) integration.getValue()
-            if (settings.shouldCompile() && settings.perModule().enabled()) {
-                def integrationName = (String) integration.getKey()
-                if (settings.scope().hasBase) {
-                    def integrationSourceSet = getIntegrationSourceSet(integrationName, name)
-                    module.modSourceSets.add(integrationSourceSet)
-                    if (settings.scope().hasData) {
-                        datagenMod.modSourceSets.add(integrationSourceSet)
-                    }
-                }
-                if (settings.scope().hasData && settings.perModule().datagen()) {
-                    datagenMod.modSourceSets.add(getIntegrationDataSourceSet(integrationName, name))
-                }
-            }
-        }
     }
 
     accessTransformers = [
@@ -558,99 +511,149 @@ neoForge {
             'src/datagen/main/resources/META-INF/datagen_ats.cfg',
             'src/gameTest/resources/META-INF/gametest_ats.cfg',
     ]
-
     validateAccessTransformers = true
 
-    runs {
-        configureEach {
-            if (project.hasProperty('forge_force_ansi')) {
-                //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
-                // or eclipse's plugin that adds support for ansi escape in console
-                systemProperties.put('terminal.ansi', (String) property('forge_force_ansi'))
-            }
+    //Note: Some of the mods are missing if we don't eagerly resolve them
+    //TODO: Maybe this will stop being the case at some point?
+    List<ModModel> baseMods = []
+    List<ModModel> dataMods = []
 
-            loadedMods = [mods.mekanism]
-            for (String name : secondaryModules) {
-                loadedMods.add(mods.named(name))
+    def mekanismMod = mods.register('mekanism')
+    mekanismMod.configure({
+        modSourceSets.add((SourceSet) sourceSets.api)
+        modSourceSets.add((SourceSet) sourceSets.main)
+        for (def integration : integrations as Map<String, IntegrationSettings>) {
+            if (integration.value.shouldCompile() && integration.value.scope().hasBase) {
+                modSourceSets.add(getIntegrationSourceSet(integration.key))
             }
-            //if the selected toolchain is a JBR, enable DCEVM
-            if (javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse('').contains('JetBrains')) {
-                jvmArguments.addAll('-XX:+IgnoreUnrecognizedVMOptions', '-XX:+AllowEnhancedClassRedefinition')
-            }
-
-            // Uncomment this to get verbose debug logging
-            // logLevel = org.slf4j.event.Level.DEBUG
-
-            sourceSet = sourceSets.runMain
         }
+    })
+    def mekanismDataMod = mods.register('mekanismData')
+    mekanismDataMod.configure({
+        modSourceSets = mekanismMod.get().modSourceSets
+        modSourceSets.add((SourceSet) sourceSets.datagenMain)
+        for (def integration : integrations as Map<String, IntegrationSettings>) {
+            if (integration.value.shouldCompile() && integration.value.scope().hasData) {
+                modSourceSets.add(getIntegrationDataSourceSet(integration.key))
+            }
+        }
+    })
+    def mekanismTestMod = mods.register('mekanismTest')
+    mekanismTestMod.configure({
+        modSourceSets.add((SourceSet) sourceSets.gameTest)
+    })
+    baseMods.add(mekanismMod.get())
+    dataMods.add(mekanismDataMod.get())
+    for (String name : secondaryModules) {
+        def moduleMod = mods.register(name)
+        moduleMod.configure({
+            modSourceSets.add(getSourceSet(name))
+            for (def integration : integrations as Map<String, IntegrationSettings>) {
+                if (integration.value.shouldCompile() && integration.value.perModule().enabled() && integration.value.scope().hasBase) {
+                    modSourceSets.add(getIntegrationSourceSet(integration.key, name))
+                }
+            }
+        })
+        def moduleDataMod = mods.register(name + 'Data')
+        moduleDataMod.configure({
+            final sourceSet = getSourceSet(name)
+            modSourceSets.add(sourceSet)
+            modSourceSets.add(sourceSet.flatMap(s -> getExtraSourceSet(s, 'datagen')))
+            for (def integration : integrations as Map<String, IntegrationSettings>) {
+                if (integration.value.shouldCompile() && integration.value.scope().hasData && integration.value.perModule().enabled()) {
+                    if (integration.value.scope().hasBase) {
+                        modSourceSets.add(getIntegrationSourceSet(integration.key, name))
+                    }
+                    if (integration.value.perModule().datagen()) {
+                        modSourceSets.add(getIntegrationDataSourceSet(integration.key, name))
+                    }
+                }
+            }
+        })
+        baseMods.add(moduleMod.get())
+        dataMods.add(moduleDataMod.get())
+    }
+
+    runs.register('client', { run ->
+        client()
         //Note: To enable logging into the client account, set the mc_devlogin property to true in your gradle user home
         // You can also run gradlew runClient -Pmc_devlogin=true
-        client {
-            client()
-            gameDirectory.value(clientRunsFolder)
-            if (findProperty('mc_devlogin') ?: false) {
-                devLogin = true
-            }
-        }
-        clientAlt {
-            client()
-            gameDirectory.value(runsFolder.dir('clientAlt'))
-            // Force dev login to be disabled for this run to allow using a secondary username
-            devLogin = false
-            programArguments.addAll('--username', 'AltDev')
-        }
-        server {
-            server()
-            gameDirectory.value(runsFolder.dir('server'))
-        }
-        gameTestServer {
-            type = 'gameTestServer'
-            gameDirectory.value(runsFolder.dir('gameTestServer'))
-            sourceSet = sourceSets.gameTest
-            loadedMods.add(mods.mekanismtests)
-        }
-        gameTestClient {
-            client()
-            gameDirectory.value(clientRunsFolder)
-            if (findProperty('mc_devlogin') ?: false) {
-                devLogin = true
-            }
-            sourceSet = sourceSets.gameTest
-            loadedMods.add(mods.mekanismtests)
-            programArguments.addAll('--quickPlaySingleplayer', 'GameTestWorld')
-        }
-        dataGameTest {
-            //See https://neoforged.net/news/21.4release/ for why we only use clientData instead of splitting and having clientData and serverData
-            clientData()
-            gameDirectory.value(runsFolder.dir('gameTestServer'))
-            programArguments.addAll('--all', '--output', file('src/gameTest/generated/').absolutePath,
-                    '--mod', 'mekanismtests', '--existing', file('src/gameTest/resources/').absolutePath)
+        configureRun(baseMods, run, '', true)
+    })
+    runs.register('clientAlt', { run ->
+        client()
+        programArguments.addAll('--username', 'AltDev')
+        configureRun(baseMods, run)
+    })
+    runs.register('server', { run ->
+        server()
+        configureRun(baseMods, run)
+    })
+    runs.register('gameTestServer', { run ->
+        type = 'gameTestServer'
+        configureRun(baseMods, run)
+        sourceSet = sourceSets.gameTest
+        loadedMods.add((Provider<ModModel>) mekanismTestMod)
+    })
+    runs.register('gameTestClient', { run ->
+        client()
+        configureRun(baseMods, run, 'client', true)
+        sourceSet = sourceSets.gameTest
+        loadedMods.add((Provider<ModModel>) mekanismTestMod)
+        programArguments.addAll('--quickPlaySingleplayer', 'GameTestWorld')
+    })
+    runs.register('dataGameTest', { run ->
+        //See https://neoforged.net/news/21.4release/ for why we only use clientData instead of splitting and having clientData and serverData
+        clientData()
+        configureRun(baseMods, run, 'gameTestServer')
+        programArguments.addAll('--all', '--output', file('src/gameTest/generated/').absolutePath,
+                '--mod', 'mekanismtests', '--existing', file('src/gameTest/resources/').absolutePath)
+        sourceSet = sourceSets.gameTest
+        loadedMods.add((Provider<ModModel>) mekanismTestMod)
+    })
+    runs.register('data', { run ->
+        //See https://neoforged.net/news/21.4release/ for why we only use clientData instead of splitting and having clientData and serverData
+        clientData()
+        configureRun(dataMods, run)
+        programArguments.addAll('--all', '--output', file('src/datagen/generated/').absolutePath,
+                '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath)
 
-            sourceSet = sourceSets.gameTest
-            loadedMods.add(mods.mekanismtests)
-        }
-        data {
-            clientData()
-            gameDirectory.value(runsFolder.dir('data'))
-            programArguments.addAll('--all', '--output', file('src/datagen/generated/').absolutePath,
-                    '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath)
+        sourceSet = sourceSets.runData
 
-            sourceSet = sourceSets.runData
-            loadedMods = [mods.mekanismData]
-
-            for (String name : secondaryModules) {
-                //println("Adding $name")
-                loadedMods.add(mods.named(name + 'Data'))
-                programArguments.addAll('--mod', 'mekanism' + name, '--existing', file("src/${name}/resources/").absolutePath)
-            }
+        for (String name : secondaryModules) {
+            programArguments.addAll('--mod', 'mekanism' + name, '--existing', file("src/${name}/resources/").absolutePath)
         }
-    }
+    })
 
     unitTest {
         enable()
-        testedMod = mods.mekanism
-        loadedMods = runs.client.loadedMods
+        testedMod.set((Provider<ModModel>) mekanismMod)
+        loadedMods.addAll(baseMods)
     }
+}
+
+void configureRun(List<ModModel> mods, RunModel run, String runDir = '', boolean enableLogin = false) {
+    run.gameDirectory = layout.projectDirectory.dir('runs').dir(runDir.isEmpty() ? run.name : runDir)
+
+    // Uncomment this to get verbose debug logging
+    // run.logLevel = org.slf4j.event.Level.DEBUG
+
+    final forceAnsi = providers.gradleProperty('forge_force_ansi')
+    if (forceAnsi.isPresent()) {
+        //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
+        // or eclipse's plugin that adds support for ansi escape in console
+        run.systemProperties.put('terminal.ansi', forceAnsi.get())
+    }
+
+    run.loadedMods.addAll(mods)
+    run.sourceSet = sourceSets.runMain
+
+    //if the selected toolchain is a JBR, enable DCEVM
+    if (javaToolchains.launcherFor(java.toolchain).map(tool -> tool.metadata.vendor.contains('JetBrains')).getOrElse(false)) {
+        run.jvmArguments.addAll('-XX:+IgnoreUnrecognizedVMOptions', '-XX:+AllowEnhancedClassRedefinition')
+    }
+
+    run.devLogin = enableLogin && providers.gradleProperty('mc_devlogin').map(val -> val.toBoolean()).getOrElse(false)
 }
 
 static void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {
@@ -663,10 +666,10 @@ static void exclusiveRepo(RepositoryHandler handler, String url, String... group
 
 static void exclusiveRepo(RepositoryHandler handler, String url, Consumer<InclusiveRepositoryContentDescriptor> filterSetup) {
     handler.exclusiveContent {
-        it.forRepositories(handler.maven {
+        forRepositories(handler.maven {
             setUrl(url)
         })
-        it.filter { f -> filterSetup.accept(f) }
+        filter { f -> filterSetup.accept(f) }
     }
 }
 
@@ -687,16 +690,16 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
     exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel.projecte', 'snownee.jade')
     handler.exclusiveContent {
-        it.forRepositories(handler.mavenCentral())
-        it.filter {
+        forRepositories(handler.mavenCentral())
+        filter {
             includeGroup('org.appliedenergistics')
         }
     }
 }
 
-tasks.named('test', Test) {
+tasks.named('test', Test, {
     useJUnitPlatform()
-}
+})
 
 dependencies {
     compileOnly(project(':annotation-processor'))
@@ -808,11 +811,10 @@ def getManifestAttributes(String title) {
 }
 
 void addIntegrationFiles(AbstractCopyTask task, SourceSet baseSourceSet, Transformer<?, SourceSet> transformer) {
-    for (def integration : integrations) {
-        IntegrationSettings settings = (IntegrationSettings) integration.getValue()
-        if (settings.shouldCompile() && settings.scope().hasBase) {
-            if (baseSourceSet == sourceSets.main || settings.perModule().enabled()) {
-                def integrationSourceSet = getIntegrationSourceSet((String) integration.getKey(), baseSourceSet.name)
+    for (def integration : integrations as Map<String, IntegrationSettings>) {
+        if (integration.value.shouldCompile() && integration.value.scope().hasBase) {
+            if (baseSourceSet == sourceSets.main || integration.value.perModule().enabled()) {
+                def integrationSourceSet = getIntegrationSourceSet(integration.key, baseSourceSet.name)
                 task.from(integrationSourceSet.map(transformer))
                 task.dependsOn(integrationSourceSet.map(s -> s.classesTaskName))
             }
@@ -820,43 +822,43 @@ void addIntegrationFiles(AbstractCopyTask task, SourceSet baseSourceSet, Transfo
     }
 }
 
-tasks.named('jar', Jar) {
+tasks.named('jar', Jar, { jar ->
     dependsOn(apiClasses)
     duplicatesStrategy = DuplicatesStrategy.FAIL
     from([sourceSets.api.output, sourceSets.main.output])
-    addIntegrationFiles(it, sourceSets.main, s -> s.output)
+    addIntegrationFiles(jar, sourceSets.main, s -> s.output)
     exclude('crafttweaker_parameter_names.json')
     manifest.attributes(getManifestAttributes('Mekanism'))
-}
+})
 
-tasks.named('sourcesJar', Jar) {
+tasks.named('sourcesJar', Jar, {
     dependsOn(classes, apiClasses)
     duplicatesStrategy = DuplicatesStrategy.FAIL
     //Note: Already contains main source set's sources by default
     from(sourceSets.api.allJava, sourceSets.additions.allJava, sourceSets.generators.allJava, sourceSets.tools.allJava)
     for (String name : secondaryModules) {
-        def secondarySourceSet = sourceSets.named(name).get()
+        def secondarySourceSet = getSourceSet(name).get()
         from(secondarySourceSet.allJava)
         dependsOn(secondarySourceSet.classesTaskName)
     }
-    forEachIntegrationSourceSet((settings, integration) -> {
+    forEachIntegrationSourceSet(integration -> {
         from(integration.allJava)
         dependsOn(integration.classesTaskName)
     })
     manifest.attributes(getManifestAttributes('Mekanism'))
-}
+})
 
-def secondaryJar(SourceSet sourceSet, String title) {
-    return tasks.register(sourceSet.jarTaskName, Jar) {
+TaskProvider<Jar> secondaryJar(SourceSet sourceSet, String title) {
+    return tasks.register(sourceSet.jarTaskName, Jar, { jar ->
         duplicatesStrategy = DuplicatesStrategy.FAIL
         archiveClassifier.set(sourceSet.name)
         from(sourceSet.output)
         if (!title.isEmpty()) {
-            addIntegrationFiles(it, sourceSet, s -> s.output)
+            addIntegrationFiles(jar, sourceSet, s -> s.output)
             archiveFileName.set("${title}-${project.version}.jar")
         }
         manifest.attributes(getManifestAttributes(title.isEmpty() ? 'Mekanism' : title))
-    }
+    }) as TaskProvider<Jar>
 }
 
 def apiJar = secondaryJar(sourceSets.api, '')
@@ -864,7 +866,7 @@ def additionsJar = secondaryJar(sourceSets.additions, 'MekanismAdditions')
 def generatorsJar = secondaryJar(sourceSets.generators, 'MekanismGenerators')
 def toolsJar = secondaryJar(sourceSets.tools, 'MekanismTools')
 
-def mergeModuleResources = tasks.register('mergeModuleResources', MergeModuleResources) {
+def mergeModuleResources = tasks.register('mergeModuleResources', MergeModuleResources, {
     dependsOn('classes', 'apiClasses')
     mustRunAfter('clean')
     //Note: Get the resources from the output of process resources, so that any expands that need to happen we know have already happened
@@ -873,21 +875,21 @@ def mergeModuleResources = tasks.register('mergeModuleResources', MergeModuleRes
     // and not just the java source files. We filter further along to ensure we only take services into account
     annotationGenerated = sourceSets.main.output.classesDirs
     for (String name : secondaryModules) {
-        SourceSet secondarySourceSet = sourceSets.named(name).get()
+        SourceSet secondarySourceSet = getSourceSet(name).get()
         dependsOn(secondarySourceSet.classesTaskName)
         resources += tasks.named(secondarySourceSet.processResourcesTaskName).get().outputs.files
         annotationGenerated += secondarySourceSet.output.classesDirs
     }
-    forEachIntegrationSourceSet((settings, integration) -> {
+    forEachIntegrationSourceSet(integration -> {
         dependsOn(integration.classesTaskName)
         resources += tasks.named(integration.processResourcesTaskName).get().outputs.files
         annotationGenerated += integration.output.classesDirs
     })
     //Only look at generated service files as a restriction for our input
     annotationGenerated = annotationGenerated.asFileTree.matching(serviceFilter)
-}
+})
 
-def allJar = tasks.register('allJar', AllJar) {
+def allJar = tasks.register('allJar', AllJar, {
     dependsOn(mergeModuleResources)
     duplicatesStrategy = DuplicatesStrategy.FAIL
     archiveClassifier.set('all')
@@ -896,17 +898,18 @@ def allJar = tasks.register('allJar', AllJar) {
     apiOutput = sourceSets.api.output
     mainOutput = sourceSets.main.output
     for (String name : secondaryModules) {
-        secondaryModuleOutputs += sourceSets.named(name).get().output
+        secondaryModuleOutputs += getSourceSet(name).get().output
     }
-    forEachIntegrationSourceSet((settings, integration) -> secondaryModuleOutputs += integration.output)
-}
-
-tasks.withType(JavaCompile).configureEach({
-    options.encoding = 'UTF-8'
-    options.compilerArgs.addAll(['-Xmaxerrs', '100000'])
+    forEachIntegrationSourceSet(integration -> secondaryModuleOutputs += integration.output)
 })
 
-tasks.withType(Javadoc).configureEach({
+tasks.withType(JavaCompile).configureEach({ JavaCompile task ->
+    task.options.encoding = 'UTF-8'
+    task.options.compilerArgs.addAll(['-Xmaxerrs', '100000'])
+})
+
+tasks.withType(Javadoc).configureEach({ Javadoc task ->
+    def options = (StandardJavadocDocletOptions) task.options
     options.addBooleanOption('-no-fonts', true)
     options.encoding = 'UTF-8'
     options.tags = [
@@ -916,11 +919,11 @@ tasks.withType(Javadoc).configureEach({
     ]
 })
 
-tasks.named('assemble') {
+tasks.named('assemble', {
     dependsOn(apiJar, jar, additionsJar, generatorsJar, toolsJar, allJar, sourcesJar)
-}
+})
 
-tasks.register('generatePackageInfos', GeneratePackageInfos) {
+tasks.register('generatePackageInfos', GeneratePackageInfos, {
     files.from(sourceSets.api.java.srcDirTrees)
     files.from(sourceSets.gameTest.java.srcDirTrees)
     files.from(sourceSets.test.java.srcDirTrees)
@@ -929,39 +932,38 @@ tasks.register('generatePackageInfos', GeneratePackageInfos) {
         files.from(getExtraSourceSet(sourceSets.main, extraType).get().java.srcDirTrees)
     }
     for (String name : secondaryModules) {
-        def sourceSet = sourceSets.named(name).get()
+        def sourceSet = getSourceSet(name).get()
         files.from(sourceSet.java.srcDirTrees)
         for (String extraType : extraTypes) {
             files.from(getExtraSourceSet(sourceSet, extraType).get().java.srcDirTrees)
         }
     }
-    for (def integration : integrations) {
-        IntegrationSettings settings = (IntegrationSettings) integration.getValue()
-        def integrationName = (String) integration.getKey()
-        if (settings.scope().hasBase) {
-            files.from(getIntegrationSourceSet(integrationName).get().java.srcDirTrees)
+    for (def integration : integrations as Map<String, IntegrationSettings>) {
+        def scope = integration.value.scope()
+        if (scope.hasBase) {
+            files.from(getIntegrationSourceSet(integration.key).get().java.srcDirTrees)
         }
-        if (settings.scope().hasData) {
-            files.from(getIntegrationDataSourceSet(integrationName).get().java.srcDirTrees)
+        if (scope.hasData) {
+            files.from(getIntegrationDataSourceSet(integration.key).get().java.srcDirTrees)
         }
-        def perModule = settings.perModule()
+        def perModule = integration.value.perModule()
         if (perModule.enabled()) {
             for (String module : secondaryModules) {
-                if (settings.scope().hasBase) {
-                    files.from(getIntegrationSourceSet(integrationName, module).get().java.srcDirTrees)
+                if (scope.hasBase) {
+                    files.from(getIntegrationSourceSet(integration.key, module).get().java.srcDirTrees)
                 }
-                if (settings.scope().hasData && perModule.datagen()) {
-                    files.from(getIntegrationDataSourceSet(integrationName, module).get().java.srcDirTrees)
+                if (scope.hasData && perModule.datagen()) {
+                    files.from(getIntegrationDataSourceSet(integration.key, module).get().java.srcDirTrees)
                 }
             }
         }
     }
-}
+})
 
-tasks.register('optimizePng', OptimizePng) {
+tasks.register('optimizePng', OptimizePng, {
     def pngPatterns = ['**/*.png']
     //Ensure the logo is minimized (we add this file to each jar)
-    inputFiles.from(file("${projectDir}/logo.png"))
+    inputFiles.from(layout.projectDirectory.file('logo.png'))
     //Minimize any PNGs in the source sets
     def sourceSets = [sourceSets.main, sourceSets.additions, sourceSets.generators, sourceSets.tools]
     for (def sourceSet : sourceSets) {
@@ -977,21 +979,21 @@ tasks.register('optimizePng', OptimizePng) {
         // but it seems to function properly(?), whereas just always returning false does not
         !inputFiles.files.any { file -> file.length() != file.size() }
     }
-}
+})
 
 //properties to put in $HOME/.gradle/gradle.properties
 def MAVEN_PASSWORD_PROPERTY_NAME = 'mekanismMavenPassword'
 def MODMAVEN_PW = System.getenv('MEK_MAVEN_PW') ?: (String) project.findProperty(MAVEN_PASSWORD_PROPERTY_NAME)
 
 publishing {
-    publications { PublicationContainer publicationContainer ->
-        publicationContainer.register('maven', MavenPublication) { MavenPublication publication ->
-            publication.from((SoftwareComponent) components.java)
-            publication.groupId = project.group
-            publication.version = project.version
-            publication.artifactId = System.getenv('MAVEN_ARTIFACT') ?: project.base.archivesName.get()
-            publication.artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, allJar, sourcesJar]
-            publication.pom {
+    publications {
+        register('maven', MavenPublication, {
+            from((SoftwareComponent) components.java)
+            groupId = project.group
+            version = project.version
+            artifactId = System.getenv('MAVEN_ARTIFACT') ?: project.base.archivesName.get()
+            artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, allJar, sourcesJar]
+            pom {
                 name.set('Mekanism')
                 packaging = 'jar'
                 description.set('Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.')
@@ -1010,7 +1012,7 @@ publishing {
                     }
                 }
             }
-        }
+        })
     }
     repositories {
         maven {
@@ -1027,14 +1029,14 @@ publishing {
 
 def outputChangelog = tasks.register('outputChangelog', OutputChangelog, grgitService.service)
 outputChangelog.configure { OutputChangelog out ->
-    out.releaseNotes.value(provider {
+    out.releaseNotes = provider {
         //If we have a file specified that exists for the mod version, then we want to use it
         // otherwise we want to fall back to not having the value set
         def file = layout.projectDirectory.file("docs/release_${mod_version}.md")
         return file.asFile.exists() ? file : null
-    })
+    }
 }
-Provider<RegularFile> changelogFile = outputChangelog.<RegularFile> flatMap(c -> c.outputFile)
+def changelogFile = outputChangelog.<RegularFile> flatMap(c -> c.outputFile)
 
 if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKey')) {
     logger.lifecycle('Enabling Curseforge config')
@@ -1114,10 +1116,10 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
     def additionsModrinth = createSecondaryModrinthUpload('additions', 'a6F3uASn', additionsJar)
     def generatorsModrinth = createSecondaryModrinthUpload('generators', 'OFVYKsAk', generatorsJar)
     def toolsModrinth = createSecondaryModrinthUpload('tools', 'tqQpq1lt', toolsJar)
-    tasks.named('modrinth') {
+    tasks.named('modrinth', {
         dependsOn(jar, apiJar, outputChangelog)
         finalizedBy(additionsModrinth, generatorsModrinth, toolsModrinth)
-    }
+    })
 
     modrinth {
         if (System.getenv('MODRINTH_TOKEN') == null) {
@@ -1159,7 +1161,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
 }
 
 def createSecondaryModrinthUpload(String output, String targetProjectId, TaskProvider<Jar> sourceSetJar) {
-    return tasks.register("${output}Modrinth", TaskModrinthUpload) {
+    return tasks.register("${output}Modrinth", TaskModrinthUpload, {
         setGroup('publishing')
         setDescription("Upload Mekanism ${output} to Modrinth")
         dependsOn(tasks.named('modrinth'), sourceSetJar)
@@ -1180,5 +1182,5 @@ def createSecondaryModrinthUpload(String output, String targetProjectId, TaskPro
             }
             logger.lifecycle('Updated Modrinth extension')
         }
-    }
+    })
 }
