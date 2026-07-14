@@ -726,10 +726,10 @@ dependencies {
         integrationJeiLocalRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     }
 
-    def emiApi = "dev.emi:emi-neoforge:${emi_version}+${previous_minecraft_version}:api"
+    def emiApi = "dev.emi:emi-neoforge:${emi_version}:api"
     apiCompileOnly(emiApi)
     integrationEmiCompileOnly(emiApi)
-    def emi = "dev.emi:emi-neoforge:${emi_version}+${previous_minecraft_version}"
+    def emi = "dev.emi:emi-neoforge:${emi_version}"
     //TODO: Re-evaluate (https://github.com/emilyploszaj/emi/issues/537) might allow us to not have to do this
     //Compile against full emi in datagen
     datagenIntegrationEmiCompileOnly(emi)

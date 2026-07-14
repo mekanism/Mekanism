@@ -233,12 +233,13 @@ public class CommonPlayerTickHandler {
                     if (newDamage > reduction) {
                         //Note: This acts on the damage after the reduction from armor has been performed
                         float toReduce = newDamage - reduction;
-                        float ratioAbsorbed = Math.clamp(ItemMekaSuitArmor.getDamageAbsorbed(entity, container.getSource(), toReduce), 0, 1);
+                        float ratioAbsorbed = Math.max(0, ItemMekaSuitArmor.getDamageAbsorbed(entity, container.getSource(), toReduce));
                         if (ratioAbsorbed > 0) {
-                            if (ratioAbsorbed == 1) {
+                            if (ratioAbsorbed >= 1) {
                                 //If we fully absorbed the damage, mark that we don't want side effects to be performed
-                                //TODO - 26.2: https://github.com/neoforged/NeoForge/pull/3284
-                                //container.setShouldCauseSideEffects(false);
+                                container.setShouldCauseSideEffects(false);
+                                //And just return that we reduced all the damage so that we don't have to worry about floating point nonsense
+                                return newDamage;
                             }
                             return reduction + toReduce * ratioAbsorbed;
                         }
