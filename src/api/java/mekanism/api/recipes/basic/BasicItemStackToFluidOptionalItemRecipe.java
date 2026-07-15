@@ -51,7 +51,7 @@ public abstract class BasicItemStackToFluidOptionalItemRecipe extends ItemStackT
 
     @Override
     public final SlotDisplay getOutputDisplay() {
-        SlotDisplay fluidDisplay = new FluidStackSlotDisplay(output.fluid().create());
+        SlotDisplay fluidDisplay = new FluidStackSlotDisplay(output.fluid());
         if (output.optionalItem() == null) {
             return fluidDisplay;
         }

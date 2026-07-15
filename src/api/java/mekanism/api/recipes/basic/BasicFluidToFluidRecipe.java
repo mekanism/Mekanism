@@ -41,7 +41,7 @@ public class BasicFluidToFluidRecipe extends FluidToFluidRecipe {
 
     @Override
     public SlotDisplay getOutputDisplay() {
-        return new FluidStackSlotDisplay(output.create());
+        return new FluidStackSlotDisplay(output);
     }
 
     @Override

@@ -126,7 +126,7 @@ public class BasicRotaryRecipe extends RotaryRecipe {
 
     @Override
     public SlotDisplay getFluidOutputDisplay() {
-        return fluidOutput == null ? SlotDisplay.Empty.INSTANCE : new FluidStackSlotDisplay(fluidOutput.create());
+        return fluidOutput == null ? SlotDisplay.Empty.INSTANCE : new FluidStackSlotDisplay(fluidOutput);
     }
 
     @Override
