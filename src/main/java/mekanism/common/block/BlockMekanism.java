@@ -158,13 +158,11 @@ public abstract class BlockMekanism extends Block {
             //Note: We call onAdded here rather than in onPlace so that we make sure we can run any client side code and that the
             // tile is present
             tile.onAdded(world);
-            if (tile instanceof ISecurityTile securityTile && securityTile.getOwnerUUID() == null && placer != null) {
+            if (!world.isClientSide() && tile instanceof ISecurityTile securityTile && securityTile.getOwnerUUID() == null && placer != null) {
                 //There was no stored owner that got set, use the placer's id
                 securityTile.setOwnerUUID(placer.getUUID(), null);
-                if (!world.isClientSide()) {
-                    //If the machine doesn't already have an owner, make sure we portray this
-                    PacketDistributor.sendToAllPlayers(new PacketSyncSecurity(placer.getUUID()));
-                }
+                //If the machine doesn't already have an owner, make sure we portray this
+                PacketDistributor.sendToAllPlayers(new PacketSyncSecurity(placer.getUUID()));
             }
         }
     }

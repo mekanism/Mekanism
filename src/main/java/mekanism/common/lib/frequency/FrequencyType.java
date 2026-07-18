@@ -90,10 +90,14 @@ public class FrequencyType<FREQ extends Frequency> {
 
     @Nullable
     public FrequencyLookup<FREQ> getLookup(@Nullable UUID owner, SecurityMode securityMode) {
+        FrequencyController<FREQ> controller = getController();
+        if (controller == null) {
+            return null;
+        }
         return switch (securityMode) {
-            case PUBLIC -> getController().getPublicLookup();
-            case PRIVATE -> getController().getPrivateLookup(owner);
-            case TRUSTED -> getController().getTrustedLookup(owner);
+            case PUBLIC -> controller.getPublicLookup();
+            case PRIVATE -> controller.getPrivateLookup(owner);
+            case TRUSTED -> controller.getTrustedLookup(owner);
         };
     }
 
@@ -104,6 +108,9 @@ public class FrequencyType<FREQ extends Frequency> {
             return null;
         }
         FrequencyController<FREQ> controller = getController();
+        if (controller == null) {
+            return null;
+        }
         if (freq.getType() == FrequencyTypes.SECURITY) {
             //Frequency#getSecurity means something slightly different for security frequencies. They are always public
             return controller.getPublicLookup();
@@ -117,10 +124,14 @@ public class FrequencyType<FREQ extends Frequency> {
 
     @Nullable
     public FrequencyLookup<FREQ> getLookup(FrequencyIdentity identity, @Nullable UUID owner) {
+        FrequencyController<FREQ> controller = getController();
+        if (controller == null) {
+            return null;
+        }
         return switch (identity.securityMode()) {
-            case PUBLIC -> getController().getPublicLookup();
-            case PRIVATE -> getController().getPrivateLookup(owner);
-            case TRUSTED -> getController().getTrustedLookup(owner);
+            case PUBLIC -> controller.getPublicLookup();
+            case PRIVATE -> controller.getPrivateLookup(owner);
+            case TRUSTED -> controller.getTrustedLookup(owner);
         };
     }
 

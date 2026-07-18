@@ -80,20 +80,13 @@ public class ClientTickHandler {
                 return false;
             }
             JetpackMode mode = ((IJetpackItem) jetpackType.getItem()).getJetpackMode(jetpackType);
-            boolean guiOpen = minecraft.gui.screen() != null;
-            boolean ascending = player.input.keyPresses.jump();
-            boolean rising = ascending && !guiOpen;
-            if (mode == JetpackMode.NORMAL || mode == JetpackMode.VECTOR) {
-                return rising;
-            } else if (mode == JetpackMode.HOVER) {
-                boolean descending = player.input.keyPresses.shift();
-                if (!rising || descending) {
-                    return !CommonPlayerTickHandler.isOnGroundOrSleeping(player);
-                }
-                return true;
-            }
+            return IJetpackItem.getPlayerJetpackMode(player, mode, ClientTickHandler::isAscending) != JetpackMode.DISABLED;
         }
         return false;
+    }
+
+    private static boolean isAscending(LocalPlayer player) {
+        return minecraft.gui.screen() == null && player.input.keyPresses.jump();
     }
 
     public static boolean isScubaMaskOn(Player player) {
@@ -188,11 +181,11 @@ public class ClientTickHandler {
             ItemResource primaryJetpack = IJetpackItem.getPrimaryJetpack(minecraft.player);
             if (!primaryJetpack.isEmpty()) {
                 JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
-                JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, p -> p.input.keyPresses.jump());
-                MekanismClient.updateKey(minecraft.player.input.keyPresses.jump(), KeySync.ASCEND);
+                JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, ClientTickHandler::isAscending);
+                MekanismClient.updateKey(isAscending(minecraft.player), KeySync.ASCEND);
                 try (Transaction simulation = Transaction.openRoot()) {
                     double jetpackThrust = ((IJetpackItem) jetpack.getResource().getItem()).useJetpackFuel(registryAccess, jetpack, primaryJetpack, simulation);
-                    if (jetpackThrust > 0 && jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, p -> p.input.keyPresses.jump())) {
+                    if (jetpackThrust > 0 && jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, ClientTickHandler::isAscending)) {
                         minecraft.player.resetFallDistance();
                     }
                 }
