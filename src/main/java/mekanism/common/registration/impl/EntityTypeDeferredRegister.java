@@ -61,8 +61,8 @@ public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityT
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        bus.addListener(this::registerEntityAttributes);
-        bus.addListener(this::registerPlacements);
+        bus.addListener(EntityAttributeCreationEvent.class, this::registerEntityAttributes);
+        bus.addListener(RegisterSpawnPlacementsEvent.class, this::registerPlacements);
     }
 
     private void registerEntityAttributes(EntityAttributeCreationEvent event) {

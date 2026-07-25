@@ -34,7 +34,7 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        bus.addListener(addToExistingTabs);
+        bus.addListener(BuildCreativeModeTabContentsEvent.class, addToExistingTabs);
     }
 
     /// @apiNote We manually require the title and icon to be passed so that we ensure all tabs have one.

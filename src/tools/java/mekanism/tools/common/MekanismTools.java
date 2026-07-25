@@ -12,8 +12,10 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import org.jspecify.annotations.Nullable;
 
 @Mod(MekanismTools.MODID)
@@ -33,10 +35,10 @@ public class MekanismTools implements IModModule {
         versionNumber = new Version(modContainer);
         MekanismToolsConfig.registerConfigs(modContainer);
         //Register the listener for special mob spawning (mobs with Mekanism armor/tools)
-        NeoForge.EVENT_BUS.addListener(MobEquipmentHelper::onLivingSpecialSpawn);
+        NeoForge.EVENT_BUS.addListener(FinalizeSpawnEvent.class, MobEquipmentHelper::onLivingSpecialSpawn);
 
-        modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(MekanismToolsConfig::onConfigLoad);
+        modEventBus.addListener(FMLCommonSetupEvent.class, this::commonSetup);
+        modEventBus.addListener(ModConfigEvent.class, MekanismToolsConfig::onConfigLoad);
         ToolsItems.ITEMS.register(modEventBus);
         ToolsCreativeTabs.CREATIVE_TABS.register(modEventBus);
         ToolsRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);

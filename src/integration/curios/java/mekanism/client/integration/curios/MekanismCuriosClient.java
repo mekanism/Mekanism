@@ -18,7 +18,7 @@ import top.theillusivec4.curios.api.client.ICurioRenderer;
 public class MekanismCuriosClient {
 
     public MekanismCuriosClient(IEventBus modEventBus) {
-        modEventBus.addListener((FMLClientSetupEvent _) -> registerRenderers(MekanismItems.JETPACK, MekanismItems.ARMORED_JETPACK));
+        modEventBus.addListener(FMLClientSetupEvent.class, _ -> registerRenderers(MekanismItems.JETPACK, MekanismItems.ARMORED_JETPACK));
     }
 
     @SafeVarargs

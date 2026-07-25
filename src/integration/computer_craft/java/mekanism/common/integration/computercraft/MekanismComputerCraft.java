@@ -16,16 +16,8 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 public class MekanismComputerCraft {
 
     public MekanismComputerCraft(IEventBus modEventBus) {
-        modEventBus.addListener(EventPriority.LOW, this::commonSetup);
-        modEventBus.addListener(this::addBoundingCapability);
-    }
-
-    private void commonSetup(FMLCommonSetupEvent event) {
-        ComputerCraftAPI.registerAPIFactory(CCApiObject.create(ComputerFilterHelper.class, "mekanismFilterHelper"));
-    }
-
-    private void addBoundingCapability(RegisterCapabilitiesEvent event) {
+        modEventBus.addListener(EventPriority.LOW, FMLCommonSetupEvent.class, _ -> ComputerCraftAPI.registerAPIFactory(CCApiObject.create(ComputerFilterHelper.class, "mekanismFilterHelper")));
         //If ComputerCraft is loaded add the capability for it
-        TileEntityBoundingBlock.proxyCapability(event, PeripheralCapability.get());
+        modEventBus.addListener(RegisterCapabilitiesEvent.class, event -> TileEntityBoundingBlock.proxyCapability(event, PeripheralCapability.get()));
     }
 }

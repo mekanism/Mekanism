@@ -16,7 +16,7 @@ public class MekanismJeiScreenHooks {
     public MekanismJeiScreenHooks() {
         //Add at lowest to add after any other places we might check
         //Add at low instead of lowest so that it runs before the more expensive EMI check if both emi and jei are present
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOW, this::guiOpening);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOW, ScreenEvent.Opening.class, this::guiOpening);
     }
 
     //Note: This listener is only registered if JEI is loaded

@@ -211,6 +211,7 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
+import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
@@ -223,7 +224,7 @@ public class ClientRegistration {
     public static void init(FMLClientSetupEvent event) {
         NeoForge.EVENT_BUS.register(new ClientTickHandler());
         NeoForge.EVENT_BUS.register(new RenderTickHandler());
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, SoundHandler::onTilePlaySound);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, PlaySoundEvent.class, SoundHandler::onTilePlaySound);
         IClientModuleHelper moduleHelper = IClientModuleHelper.INSTANCE;
         moduleHelper.addMekaSuitModuleModels(Mekanism.rl("entity/mekasuit_modules"));
         moduleHelper.addMekaSuitModuleModelSpec("jetpack", MekanismModules.JETPACK_UNIT, EquipmentSlot.CHEST);

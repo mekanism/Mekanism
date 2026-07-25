@@ -71,7 +71,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
     @Override
     public void register(IEventBus bus) {
         super.register(bus);
-        bus.addListener(this::registerCapabilities);
+        bus.addListener(RegisterCapabilitiesEvent.class, this::registerCapabilities);
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {

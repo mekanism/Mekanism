@@ -32,6 +32,7 @@ import net.minecraft.world.level.gamerules.GameRules;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -59,11 +60,11 @@ public class MekanismAdditions implements IModModule {
         versionNumber = new Version(modContainer);
         MekanismAdditionsConfig.registerConfigs(modContainer);
 
-        NeoForge.EVENT_BUS.addListener(this::serverStarting);
-        NeoForge.EVENT_BUS.addListener(this::serverStopping);
+        NeoForge.EVENT_BUS.addListener(ServerStartingEvent.class, this::serverStarting);
+        NeoForge.EVENT_BUS.addListener(ServerStoppingEvent.class, this::serverStopping);
 
-        modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(MekanismAdditionsConfig::onConfigLoad);
+        modEventBus.addListener(FMLCommonSetupEvent.class, this::commonSetup);
+        modEventBus.addListener(ModConfigEvent.class, MekanismAdditionsConfig::onConfigLoad);
         AdditionsDataComponents.DATA_COMPONENTS.register(modEventBus);
         AdditionsItems.ITEMS.register(modEventBus);
         AdditionsBlocks.BLOCKS.register(modEventBus);

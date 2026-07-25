@@ -12,6 +12,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
@@ -98,7 +99,7 @@ public final class MekanismHooks {
         //TODO - 1.20: Move this out of here and back to always being registered whenever it gets fixed in Neo.
         // Modifying the result doesn't apply properly when "quick crafting"
         if (ModList.get().isLoaded("fastbench")) {
-            NeoForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
+            NeoForge.EVENT_BUS.addListener(ItemCraftedEvent.class, BinInsertRecipe::onCrafting);
         }
     }
 

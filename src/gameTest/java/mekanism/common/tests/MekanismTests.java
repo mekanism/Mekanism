@@ -37,7 +37,7 @@ public class MekanismTests {
 
         framework.init(modBus, container);
 
-        NeoForge.EVENT_BUS.addListener((final RegisterCommandsEvent event) -> {
+        NeoForge.EVENT_BUS.addListener(RegisterCommandsEvent.class, event -> {
             final LiteralArgumentBuilder<CommandSourceStack> node = Commands.literal("tests");
             framework.registerCommands(node);
             event.getDispatcher().register(node);

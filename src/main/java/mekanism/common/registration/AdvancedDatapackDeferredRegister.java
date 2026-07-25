@@ -30,7 +30,7 @@ public class AdvancedDatapackDeferredRegister<T, SERIALIZER> extends MekanismDef
     public void createAndRegisterDatapack(IEventBus bus, Codec<T> directCodec, @Nullable Codec<T> networkCodec, Consumer<RegistryBuilder<T>> consumer) {
         register(bus);
         //Create a new datapack registry using the direct codec that is created based on the serializer's codec
-        bus.addListener((DataPackRegistryEvent.NewRegistry event) -> event.dataPackRegistry(datapackRegistryName, directCodec, networkCodec, consumer));
+        bus.addListener(DataPackRegistryEvent.NewRegistry.class, event -> event.dataPackRegistry(datapackRegistryName, directCodec, networkCodec, consumer));
     }
 
     public ResourceKey<T> dataKey(String name) {

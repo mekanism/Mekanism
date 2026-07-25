@@ -20,7 +20,7 @@ public class MekanismEmiScreenHooks {
 
     public MekanismEmiScreenHooks() {
         //Add at lowest to add after any other places we might check
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::guiOpening);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, ScreenEvent.Opening.class, this::guiOpening);
     }
 
     //Note: This listener is only registered if EMI is loaded

@@ -11,7 +11,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 public class MekanismFGM {
 
     public MekanismFGM(IEventBus modEventBus) {
-        modEventBus.addListener((RegisterCapabilitiesEvent event) -> {
+        modEventBus.addListener(RegisterCapabilitiesEvent.class, event -> {
             MekanismGenderArmor.register(event, new MekanismGenderArmor(0.5F, 0.25F, false), MekanismItems.HAZMAT_GOWN);
             MekanismGenderArmor.register(event, new MekanismGenderArmor(false, false, 0, 0, false),
                   MekanismItems.JETPACK, MekanismItems.SCUBA_TANK);

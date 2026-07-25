@@ -26,6 +26,7 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import org.jspecify.annotations.Nullable;
 
@@ -47,8 +48,8 @@ public class MekanismGenerators implements IModModule {
         //Set our version number to match the neoforge.mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(modContainer);
         MekanismGeneratorsConfig.registerConfigs(modContainer);
-        modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(MekanismGeneratorsConfig::onConfigLoad);
+        modEventBus.addListener(FMLCommonSetupEvent.class, this::commonSetup);
+        modEventBus.addListener(ModConfigEvent.class, MekanismGeneratorsConfig::onConfigLoad);
 
         GeneratorsDataComponents.DATA_COMPONENTS.register(modEventBus);
         GeneratorsItems.ITEMS.register(modEventBus);

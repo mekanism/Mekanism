@@ -12,7 +12,7 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 public class MekanismFramedBlocksClient {
 
     public MekanismFramedBlocksClient(IEventBus modEventBus) {
-        modEventBus.addListener(MekanismFramedBlocksClient::onRegisterParticleProviders);
+        modEventBus.addListener(RegisterParticleProvidersEvent.class, MekanismFramedBlocksClient::onRegisterParticleProviders);
     }
 
     private static void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {

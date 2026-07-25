@@ -12,7 +12,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 public class ToolsFGM {
 
     public ToolsFGM(IEventBus modEventBus) {
-        modEventBus.addListener((RegisterCapabilitiesEvent event) -> {
+        modEventBus.addListener(RegisterCapabilitiesEvent.class, event -> {
             MekanismGenderArmor.register(event, new MekanismGenderArmor(0.9F), ToolsItems.BRONZE_CHESTPLATE);
             MekanismGenderArmor.register(event, new MekanismGenderArmor(0.6F, 0.1F), ToolsItems.LAPIS_LAZULI_CHESTPLATE);
             MekanismGenderArmor.register(event, new MekanismGenderArmor(1), ToolsItems.OSMIUM_CHESTPLATE);

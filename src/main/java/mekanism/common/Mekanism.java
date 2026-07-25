@@ -109,7 +109,10 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
@@ -124,6 +127,7 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.datamaps.DataMapsUpdatedEvent;
+import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -166,19 +170,19 @@ public class Mekanism {
         MekanismConfig.registerConfigs(modContainer);
 
         NeoForgeMod.enableMilkFluid();
-        NeoForge.EVENT_BUS.addListener(this::onEnergyTransferred);
-        NeoForge.EVENT_BUS.addListener(this::onChemicalTransferred);
-        NeoForge.EVENT_BUS.addListener(this::onLiquidTransferred);
-        NeoForge.EVENT_BUS.addListener(this::onModifyItemAttributes);
-        NeoForge.EVENT_BUS.addListener(this::onWorldLoad);
-        NeoForge.EVENT_BUS.addListener(this::onWorldUnload);
-        NeoForge.EVENT_BUS.addListener(this::registerCommands);
-        NeoForge.EVENT_BUS.addListener(this::serverStarted);
-        NeoForge.EVENT_BUS.addListener(this::serverStopped);
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
-        NeoForge.EVENT_BUS.addListener(this::onTagsReload);
-        NeoForge.EVENT_BUS.addListener(this::onDataMapsUpdated);
-        NeoForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
+        NeoForge.EVENT_BUS.addListener(EnergyTransferEvent.class, this::onEnergyTransferred);
+        NeoForge.EVENT_BUS.addListener(ChemicalTransferEvent.class, this::onChemicalTransferred);
+        NeoForge.EVENT_BUS.addListener(FluidTransferEvent.class, this::onLiquidTransferred);
+        NeoForge.EVENT_BUS.addListener(ItemAttributeModifierEvent.class, this::onModifyItemAttributes);
+        NeoForge.EVENT_BUS.addListener(LevelEvent.Load.class, this::onWorldLoad);
+        NeoForge.EVENT_BUS.addListener(LevelEvent.Unload.class, this::onWorldUnload);
+        NeoForge.EVENT_BUS.addListener(RegisterCommandsEvent.class, this::registerCommands);
+        NeoForge.EVENT_BUS.addListener(ServerStartedEvent.class, this::serverStarted);
+        NeoForge.EVENT_BUS.addListener(ServerStoppedEvent.class, this::serverStopped);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, AddServerReloadListenersEvent.class, this::addReloadListenersLowest);
+        NeoForge.EVENT_BUS.addListener(TagsUpdatedEvent.class, this::onTagsReload);
+        NeoForge.EVENT_BUS.addListener(DataMapsUpdatedEvent.class, this::onDataMapsUpdated);
+        NeoForge.EVENT_BUS.addListener(PermissionGatherEvent.Nodes.class, MekanismPermissions::registerPermissionNodes);
         NeoForge.EVENT_BUS.register(ChemicalResource.EMPTY);
         NeoForge.EVENT_BUS.register(IncompleteRecipeScanner.class);
         NeoForge.EVENT_BUS.addListener(OnDatapackSyncEvent.class, event -> {
@@ -192,12 +196,12 @@ public class Mekanism {
             //TODO - 26.2: Re-evaluate this. If we rewrite how the formulaic assemblicator handles recipes on the client side, then this might not be necessary?
             event.sendRecipes(RecipeType.CRAFTING);
         });
-        modEventBus.addListener(EventPriority.HIGH, Capabilities::registerProxyableCapabilities);
-        modEventBus.addListener(Capabilities::registerCapabilities);
-        modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::registerChunkTicketControllers);
-        modEventBus.addListener(MekanismConfig::onConfigLoad);
-        modEventBus.addListener(hooks::sendIMCMessages);
+        modEventBus.addListener(EventPriority.HIGH, RegisterCapabilitiesEvent.class, Capabilities::registerProxyableCapabilities);
+        modEventBus.addListener(RegisterCapabilitiesEvent.class, Capabilities::registerCapabilities);
+        modEventBus.addListener(FMLCommonSetupEvent.class, this::commonSetup);
+        modEventBus.addListener(RegisterTicketControllersEvent.class, this::registerChunkTicketControllers);
+        modEventBus.addListener(ModConfigEvent.class, MekanismConfig::onConfigLoad);
+        modEventBus.addListener(InterModEnqueueEvent.class, hooks::sendIMCMessages);
         addRegistrationListeners(modEventBus);
         FrequencyTypes.init();
         MekanismMultiblocks.register(modEventBus);
@@ -213,8 +217,8 @@ public class Mekanism {
     }
 
     private void addRegistrationListeners(IEventBus modEventBus) {
-        modEventBus.addListener(this::registerRegistries);
-        modEventBus.addListener(this::registerSimpleDPRegistries);
+        modEventBus.addListener(NewRegistryEvent.class, this::registerRegistries);
+        modEventBus.addListener(DataPackRegistryEvent.NewRegistry.class, this::registerSimpleDPRegistries);
 
         MekanismItems.ITEMS.register(modEventBus);
         MekanismBlocks.BLOCKS.register(modEventBus);
