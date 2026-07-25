@@ -63,6 +63,7 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     @Override
     protected void registerTags(HolderLookup.Provider registries) {
+        //TODO - 26.3: Make it so that cats sit/lay on cardboard boxes
         addProcessedResources();
         addBeaconTags();
         addBoxBlacklist();

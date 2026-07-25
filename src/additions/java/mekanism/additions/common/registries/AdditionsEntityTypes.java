@@ -42,6 +42,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.skeleton.AbstractSkeleton;
 import net.minecraft.world.entity.monster.skeleton.Bogged;
 import net.minecraft.world.entity.monster.skeleton.Parched;
+import net.minecraft.world.entity.monster.skeleton.Stray;
 import net.minecraft.world.phys.Vec3;
 
 public class AdditionsEntityTypes {
@@ -62,7 +63,7 @@ public class AdditionsEntityTypes {
         registerBaby(BabyType.ENDERMAN, map, () -> baby(EntityBabyEnderman::new, EntityTypes.ENDERMAN, 0.525F), EnderMan::createAttributes);
         registerBaby(BabyType.PARCHED, map, () -> baby(EntityBabyParched::new, EntityTypes.PARCHED), Parched::createAttributes);
         registerBaby(BabyType.SKELETON, map, () -> baby(EntityBabySkeleton::new, EntityTypes.SKELETON), AbstractSkeleton::createAttributes);
-        registerBaby(BabyType.STRAY, map, () -> baby(EntityBabyStray::new, EntityTypes.STRAY), AbstractSkeleton::createAttributes, EntityBabyStray::spawnRestrictions);
+        registerBaby(BabyType.STRAY, map, () -> baby(EntityBabyStray::new, EntityTypes.STRAY), AbstractSkeleton::createAttributes, Stray::checkStraySpawnRules);
         registerBaby(BabyType.WITHER_SKELETON, map, () -> baby(EntityBabyWitherSkeleton::new, EntityTypes.WITHER_SKELETON), AbstractSkeleton::createAttributes);
     }));
 
