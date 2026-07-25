@@ -30,6 +30,7 @@ import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.drawable.TilingDirection;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
@@ -69,7 +70,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
             if (icon == null) {
                 throw new IllegalStateException("Expected recipe type to have either an icon stack or an icon location");
             }
-            return helper.createDrawableSprite(Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI), icon);
+            return helper.createDrawableSprite(Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI), icon, 16, 16);
         }
         return helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, stack);
     }
@@ -260,7 +261,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         GaugeOverlay overlay = gauge.getGaugeOverlay();
         IDrawable drawable = overlayLookup.get(overlay);
         if (drawable == null) {
-            drawable = guiHelper.createDrawableSprite(Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI), overlay.getBarOverlay());
+            drawable = guiHelper.createDrawableSprite(Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI), overlay.getBarOverlay(), overlay.getWidth(), overlay.getHeight());
             overlayLookup.put(overlay, drawable);
         }
         return drawable;
@@ -318,12 +319,12 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     protected <DATA> IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiGauge<?> gauge, DATA data,
           BiFunction<DATA, ContextMap, List<FluidStack>> stackFunction) {
         RecipeTankBuilder tankBuilder = init(builder, NeoForgeTypes.FLUID_STACK, role, gauge, data, stackFunction, FluidStack::amount);
-        return tankBuilder.slotBuilder().setFluidRenderer(tankBuilder.max(), false, tankBuilder.width(), tankBuilder.height());
+        return tankBuilder.slotBuilder().setFluidRenderer(tankBuilder.max(), false, tankBuilder.width(), tankBuilder.height(), TilingDirection.UP_RIGHT);
     }
 
     protected IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiGauge<?> gauge, Function<ContextMap, List<FluidStack>> stackFunction) {
         RecipeTankBuilder tankBuilder = init(builder, NeoForgeTypes.FLUID_STACK, role, gauge, stackFunction, FluidStack::amount);
-        return tankBuilder.slotBuilder().setFluidRenderer(tankBuilder.max(), false, tankBuilder.width(), tankBuilder.height());
+        return tankBuilder.slotBuilder().setFluidRenderer(tankBuilder.max(), false, tankBuilder.width(), tankBuilder.height(), TilingDirection.UP_RIGHT);
     }
 
     protected IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, GuiElement element, Function<ContextMap, List<ChemicalStackTemplate>> templates) {
