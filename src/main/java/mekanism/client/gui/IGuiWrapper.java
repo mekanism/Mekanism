@@ -64,6 +64,7 @@ public interface IGuiWrapper extends ContainerEventHandler, IFancyFontRenderer {
         return warningSupplier;
     }
 
+    //TODO - 26.2: Make this render via a PiP so that it supports scaling to sizes greater than one? Maybe we can hijack OversizedItemRenderState?
     default void renderItem(GuiGraphicsExtractor guiGraphics, ItemStack stack, int x, int y, float scale) {
         if (!stack.isEmpty()) {
             Matrix3x2fStack pose = guiGraphics.pose();
