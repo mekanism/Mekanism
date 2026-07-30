@@ -13,7 +13,6 @@ import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.IWarningTracker;
-import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -38,16 +37,16 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
             IChemicalTank tank = tile.getChemicalTank();
             if (tank.isEmpty()) {
                 ret.add(MekanismLang.CHEMICAL.translate(MekanismLang.NONE));
-                ret.add(MekanismLang.GENERIC_FRACTION.translate(0, tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE :
+                ret.add(MekanismLang.GENERIC_FRACTION.translate(0, tile.getTier().isCreative() ? MekanismLang.INFINITE :
                                                                    TextUtils.format(tile.getTier().getCapacity())));
             } else {
                 ChemicalResource resource = tank.resource();
                 ret.add(MekanismLang.CHEMICAL.translate(resource));
-                if (tile.getTier() == ChemicalTankTier.CREATIVE) {
+                if (tile.getTier().isCreative()) {
                     ret.add(MekanismLang.INFINITE.translate());
                 } else {
                     ret.add(MekanismLang.GENERIC_FRACTION.translate(TextUtils.format(tank.amountAsLong()),
-                          tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE : TextUtils.format(tank.capacityAsLong(resource))));
+                          tile.getTier().isCreative() ? MekanismLang.INFINITE : TextUtils.format(tank.capacityAsLong(resource))));
                 }
             }
             return ret;

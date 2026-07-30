@@ -14,6 +14,7 @@ public class MekKeyHandler {
     private MekKeyHandler() {
     }
 
+    //TODO - 26.2: I think in theory we will eventually be able to replace this with: https://github.com/neoforged/NeoForge/pull/3331
     public static boolean isKeyPressed(KeyMapping keyBinding) {
         if (keyBinding.isDown()) {
             return true;

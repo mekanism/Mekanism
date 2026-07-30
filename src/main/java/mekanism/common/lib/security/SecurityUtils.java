@@ -160,7 +160,7 @@ public final class SecurityUtils implements ISecurityUtils {
         return new SecurityData(mode, false);
     }
 
-    private SecurityData getData(@Nullable UUID uuid, boolean isClient) {
+    public SecurityData getData(@Nullable UUID uuid, boolean isClient) {
         if (uuid == null) {
             return SecurityData.DUMMY;
         } else if (isClient) {

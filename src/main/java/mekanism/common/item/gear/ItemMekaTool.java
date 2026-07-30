@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.gear.ICustomModule;
@@ -17,11 +16,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.MathUtils;
-import mekanism.api.text.EnumColor;
-import mekanism.client.key.MekKeyHandler;
-import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.config.MekanismConfig;
@@ -48,7 +43,6 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -69,9 +63,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Tool;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -107,17 +99,6 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     @Override
     public void onDestroyed(ItemEntity item, DamageSource damageSource) {
         ModuleHelper.INSTANCE.dropModuleContainerContents(item, damageSource);
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            addModuleDetails(stack, tooltipAdder);
-        } else {
-            super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-            tooltipAdder.accept(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
-        }
     }
 
     @Override

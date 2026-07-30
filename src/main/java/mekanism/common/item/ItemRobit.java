@@ -1,12 +1,10 @@
 package mekanism.common.item;
 
 import java.util.UUID;
-import java.util.function.Consumer;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
-import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.ICapabilityAware;
@@ -22,7 +20,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.WorldUtils;
-import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -36,11 +33,8 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -54,6 +48,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
 
     public ItemRobit(Properties properties) {
         super(properties.rarity(Rarity.RARE).stacksTo(1)
+              .component(MekanismDataComponents.ROBIT_NAME, MekanismLang.ROBIT.translate())
               .component(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE)
               .component(MekanismDataComponents.SECURITY, SecurityMode.PUBLIC)
               .component(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, false)
@@ -63,21 +58,6 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
     @Override
     public void onDestroyed(ItemEntity item, DamageSource damageSource) {
         InventoryUtils.dropItemContents(item, damageSource);
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        Component name = stack.get(MekanismDataComponents.ROBIT_NAME);
-        if (name == null) {
-            name = MekanismLang.ROBIT.translate();
-        }
-        tooltipAdder.accept(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, name));
-        tooltipAdder.accept(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, RobitSkin.getTranslatedName(stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE))));
-        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
-        IItemSecurityUtils.INSTANCE.addSecurityTooltip(itemAccess, tooltipAdder);
-        tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(itemAccess)));
     }
 
     @Override

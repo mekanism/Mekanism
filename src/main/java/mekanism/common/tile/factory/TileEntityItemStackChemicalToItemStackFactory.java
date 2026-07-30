@@ -26,8 +26,6 @@ import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
-import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.component.containers.type.ContainerType;
@@ -124,7 +122,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
         // as maybe the valid recipes have changed, and we need to sort again and have all recipes know they may need to be rechecked
         // if they are not still valid
-        long capacity = Attribute.getOrThrow(getBlockHolder(), AttributeFactoryType.class).getFactoryType() == FactoryType.INFUSING ? TileEntityMetallurgicInfuser.MAX_INFUSE : TileEntityAdvancedElectricMachine.MAX_GAS;
+        long capacity = type == FactoryType.INFUSING ? TileEntityMetallurgicInfuser.MAX_INFUSE : TileEntityAdvancedElectricMachine.MAX_GAS;
         if (allowExtractingChemical()) {
             chemicalTank = BasicChemicalTank.create(capacity * tier.processes, this::containsRecipeB, markAllMonitorsChanged(listener));
         } else {
@@ -209,9 +207,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     }
 
     private boolean allowExtractingChemical() {
-        //Note: We can't use type directly as when this is being used for creating the chemical tank the type field hasn't been set yet
-        FactoryType factoryType = Attribute.getOrThrow(getBlockHolder(), AttributeFactoryType.class).getFactoryType();
-        return factoryType == FactoryType.COMPRESSING || factoryType == FactoryType.INFUSING;
+        return type == FactoryType.COMPRESSING || type == FactoryType.INFUSING;
     }
 
     private boolean useStatisticalMechanics() {

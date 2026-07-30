@@ -17,6 +17,7 @@ import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
+import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
@@ -33,12 +34,11 @@ import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<FreeRunnerMode>,
@@ -54,14 +54,6 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         super(material, ArmorType.BOOTS, properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1)
               .component(MekanismDataComponents.FREE_RUNNER_MODE, FreeRunnerMode.NORMAL)
         );
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredEnergy(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, true);
-        tooltipAdder.accept(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
     }
 
     @Override
@@ -108,7 +100,9 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(List<Component> list, Player player, ITEM instance, EquipmentSlot slotType) {
         if (slotType == EquipmentSlot.FEET) {
             list.add(MekanismLang.FREE_RUNNERS_MODE.translateColored(EnumColor.GRAY, getMode(instance).getTextComponent()));
-            StorageUtils.addStoredEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), list::add, true, MekanismLang.FREE_RUNNERS_STORED);
+            EnergyHandler energyHandler = ContainerType.ENERGY.getCapOrUnexposed(ItemAccessUtils.sideEffectFreeAccess(instance));
+            EnergyDisplay display = energyHandler == null ? EnergyDisplay.ZERO : EnergyDisplay.of(energyHandler);
+            list.add(MekanismLang.FREE_RUNNERS_STORED.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, display));
         }
     }
 

@@ -1,6 +1,8 @@
 package mekanism.api.tier;
 
-public interface ITier {
+import net.minecraft.util.StringRepresentable;
+
+public interface ITier extends StringRepresentable {
 
     /// Gets the base tier version of this tiered object.
     BaseTier getBaseTier();

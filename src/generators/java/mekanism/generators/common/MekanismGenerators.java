@@ -51,7 +51,7 @@ public class MekanismGenerators implements IModModule {
         modEventBus.addListener(FMLCommonSetupEvent.class, this::commonSetup);
         modEventBus.addListener(ModConfigEvent.class, MekanismGeneratorsConfig::onConfigLoad);
 
-        GeneratorsDataComponents.DATA_COMPONENTS.register(modEventBus);
+        GeneratorsDataComponents.register(modEventBus);
         GeneratorsItems.ITEMS.register(modEventBus);
         GeneratorsBlocks.BLOCKS.register(modEventBus);
         GeneratorsFluids.FLUIDS.register(modEventBus);

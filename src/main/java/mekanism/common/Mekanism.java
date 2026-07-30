@@ -227,7 +227,7 @@ public class Mekanism {
         MekanismContainerTypes.CONTAINER_TYPES.register(modEventBus);
         MekanismCreativeTabs.CREATIVE_TABS.register(modEventBus);
         MekanismCriteriaTriggers.CRITERIA_TRIGGERS.register(modEventBus);
-        MekanismDataComponents.DATA_COMPONENTS.register(modEventBus);
+        MekanismDataComponents.register(modEventBus);
         MekanismDataComponentPredicates.DATA_COMPONENT_PREDICATE_TYPES.register(modEventBus);
         MekanismEntityTypes.ENTITY_TYPES.register(modEventBus);
         MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);

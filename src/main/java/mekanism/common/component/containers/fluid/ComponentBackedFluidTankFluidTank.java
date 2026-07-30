@@ -1,9 +1,10 @@
 package mekanism.common.component.containers.fluid;
 
+import java.util.Objects;
 import mekanism.api.AutomationType;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.component.containers.resource.AttachedResources;
-import mekanism.common.item.block.machine.ItemBlockFluidTank;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FluidTankTier;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
@@ -16,15 +17,14 @@ public class ComponentBackedFluidTankFluidTank extends ComponentBackedFluidTank 
     private final boolean isCreative;
 
     public static ComponentBackedFluidTankFluidTank create(ItemAccess attachedAccess, int tankIndex) {
-        if (!(attachedAccess.getResource().getItem() instanceof ItemBlockFluidTank item)) {
-            throw new IllegalStateException("Attached to should always be a fluid tank item");
-        }
-        return new ComponentBackedFluidTankFluidTank(attachedAccess, tankIndex, item.getTier());
+        FluidTankTier tier = attachedAccess.getResource().get(MekanismDataComponents.FLUID_TANK_TIER);
+        Objects.requireNonNull(tier, "Attached to should always have a fluid tank tier defined");
+        return new ComponentBackedFluidTankFluidTank(attachedAccess, tankIndex, tier);
     }
 
     private ComponentBackedFluidTankFluidTank(ItemAccess attachedAccess, int tankIndex, FluidTankTier tier) {
         super(attachedAccess, tankIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), tier::getCapacity, tier::getTransferRate);
-        isCreative = tier == FluidTankTier.CREATIVE;
+        isCreative = tier.isCreative();
     }
 
     @Override

@@ -3,6 +3,7 @@ package mekanism.common.content.blocktype;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.block.attribute.AttributeEnergy;
@@ -20,7 +21,7 @@ public class BlockTypeTile<TILE extends TileEntityUpdateable> extends BlockType 
 
     private final Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar;
 
-    public BlockTypeTile(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
+    public BlockTypeTile(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, IHasTranslationKey description) {
         super(description);
         this.tileEntityRegistrar = tileEntityRegistrar;
     }
@@ -37,7 +38,7 @@ public class BlockTypeTile<TILE extends TileEntityUpdateable> extends BlockType 
         }
 
         public static <TILE extends TileEntityUpdateable> BlockTileBuilder<BlockTypeTile<TILE>, TILE, ?> createBlock(
-              Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
+              Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, IHasTranslationKey description) {
             return new BlockTileBuilder<>(new BlockTypeTile<>(tileEntityRegistrar, description));
         }
 

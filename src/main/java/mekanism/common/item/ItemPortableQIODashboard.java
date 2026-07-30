@@ -1,13 +1,10 @@
 package mekanism.common.item;
 
-import java.util.function.Consumer;
 import mekanism.api.security.IItemSecurityUtils;
-import mekanism.api.text.EnumColor;
-import mekanism.common.MekanismLang;
-import mekanism.common.component.FrequencyAware;
-import mekanism.common.component.qio.PortableDashboardContents;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.security.OwnerObject;
+import mekanism.common.component.FrequencyAware;
+import mekanism.common.component.qio.PortableDashboardContents;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.item.interfaces.IColoredItem;
@@ -21,13 +18,9 @@ import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -39,11 +32,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
@@ -59,16 +49,6 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
     @Override
     public void onDestroyed(ItemEntity item, DamageSource damageSource) {
         InventoryUtils.dropItemContents(item, damageSource);
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
-        IItemSecurityUtils.INSTANCE.addSecurityTooltip(itemAccess, tooltipAdder);
-        MekanismUtils.addFrequencyItemTooltip(stack, context, tooltipDisplay, tooltipAdder, flag);
-        tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(itemAccess)));
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override

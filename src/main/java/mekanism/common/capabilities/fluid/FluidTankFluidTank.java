@@ -7,7 +7,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.transaction.ITransactionHelper;
-import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.WorldUtils;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
@@ -34,7 +33,7 @@ public class FluidTankFluidTank extends BasicFluidTank {
               ITransactionHelper.INSTANCE.createInternalOnlyRateLimit(gameTimeSupplier, rateLimit),
               ITransactionHelper.INSTANCE.createInternalOnlyRateLimit(gameTimeSupplier, rateLimit), listener);
         this.tile = tile;
-        isCreative = tile.tier == FluidTankTier.CREATIVE;
+        isCreative = tile.tier.isCreative();
     }
 
     @Override

@@ -2,11 +2,10 @@ package mekanism.common.item.block.machine;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.Consumer;
+import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.component.component.AttachedEjector;
 import mekanism.common.component.component.AttachedSideConfig;
 import mekanism.common.component.component.AttachedSideConfig.LightConfigInfo;
-import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.lib.frequency.FrequencyType;
@@ -15,14 +14,9 @@ import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
-import mekanism.common.util.MekanismUtils;
+import net.minecraft.util.Unit;
 import net.minecraft.util.Util;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip<BlockTileModel<TileEntityQuantumEntangloporter, BlockTypeTile<TileEntityQuantumEntangloporter>>>
       implements IFrequencyItem {
@@ -38,16 +32,11 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip<BlockTileMo
     });
 
     public ItemBlockQuantumEntangloporter(BlockTileModel<TileEntityQuantumEntangloporter, BlockTypeTile<TileEntityQuantumEntangloporter>> block, Item.Properties properties) {
-        super(block, true, properties
+        super(block, properties
               .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
               .component(MekanismDataComponents.SIDE_CONFIG, SIDE_CONFIG)
+              .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
         );
-    }
-
-    @Override
-    protected void addStats(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
-          Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        MekanismUtils.addFrequencyItemTooltip(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override

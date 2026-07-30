@@ -27,17 +27,18 @@ public class EnergyDisplay implements IHasTextComponent {
     }
 
     public static EnergyDisplay of(long energy) {
-        return of(energy, 0L);
+        return of(energy, 0);
     }
 
     @Override
     public Component getTextComponent() {
         if (energy == Long.MAX_VALUE) {
             return MekanismLang.INFINITE.translate();
-        } else if (max == 0L) {
-            return UnitDisplayUtils.getEnergyDisplayShort(energy);
         }
-        //Pass max back as a new Energy Display so that if we have 0/infinite it shows that properly without us having to add extra handling
-        return MekanismLang.GENERIC_FRACTION.translate(UnitDisplayUtils.getEnergyDisplayShort(energy), of(max));
+        Component energyDisplay = UnitDisplayUtils.getEnergyDisplayShort(energy);
+        if (max == 0) {
+            return energyDisplay;
+        }
+        return MekanismLang.GENERIC_FRACTION.translate(energyDisplay, max == Long.MAX_VALUE ? MekanismLang.INFINITE : UnitDisplayUtils.getEnergyDisplayShort(max));
     }
 }

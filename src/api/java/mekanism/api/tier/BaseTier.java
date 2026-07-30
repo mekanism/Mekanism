@@ -26,7 +26,7 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
     /// Gets a tier by index, wrapping for out of bounds indices.
     ///
     /// @since 10.6.0
-    public static final IntFunction<BaseTier> BY_ID = ByIdMap.continuous(BaseTier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    public static final IntFunction<BaseTier> BY_ID = ByIdMap.continuous(BaseTier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);//TODO - 26.2: Re-evaluate the various out of bounds strategies we use
     /// Stream codec for syncing tiers by index.
     ///
     /// @since 10.6.0
@@ -34,6 +34,7 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
 
     public static final Codec<BaseTier> CODEC = StringRepresentable.fromEnum(BaseTier::values);
 
+    private final String serializedName;
     private final String name;
     private final MapColor mapColor;
     private TextColor textColor;
@@ -41,6 +42,7 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
     private int argb;
 
     BaseTier(String name, int rgb, MapColor mapColor) {
+        this.serializedName = name().toLowerCase(Locale.ROOT);
         this.name = name;
         this.mapColor = mapColor;
         setColorFromAtlas(new int[]{ARGB.red(rgb), ARGB.green(rgb), ARGB.blue(rgb)});
@@ -90,7 +92,7 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
 
     @Override
     public String getSerializedName() {
-        return name().toLowerCase(Locale.ROOT);
+        return this.serializedName;
     }
 
     /// Helper to lookup what base tier corresponds to the given integer value.

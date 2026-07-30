@@ -1,6 +1,5 @@
 package mekanism.common.item.block.machine;
 
-import java.util.function.Consumer;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -17,9 +16,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.TypedInstance;
@@ -42,8 +39,6 @@ import net.minecraft.world.entity.animal.goat.Goat;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -70,33 +65,12 @@ import org.jspecify.annotations.Nullable;
 
 public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implements IAttachmentBasedModeItem<Boolean> {
 
-    private final FluidTankTier tier;
-
     public ItemBlockFluidTank(BlockFluidTank block, Item.Properties properties) {
-        tier = Attribute.getTierNN(block, FluidTankTier.class);
-        super(block, true, properties.component(MekanismDataComponents.BUCKET_MODE, false)
+        super(block, properties
+              .component(MekanismDataComponents.FLUID_TANK_TIER, Attribute.getTierNN(block, FluidTankTier.class))
+              .component(MekanismDataComponents.BUCKET_MODE, false)
               .component(MekanismDataComponents.EDIT_MODE, ContainerEditMode.BOTH)
         );
-    }
-
-    @Override
-    public FluidTankTier getTier() {
-        return tier;
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        StorageUtils.addStoredSubstance(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, tier);
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-    }
-
-    @Override
-    protected void addTypeDetails(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
-          Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        tooltipAdder.accept(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getMode(itemAccess), true)));
-        //Don't call super so that we can exclude the stored fluid from being shown as we show it in hover text
-        //super.addTypeDetails(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override

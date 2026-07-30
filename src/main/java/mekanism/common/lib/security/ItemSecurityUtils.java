@@ -18,12 +18,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
 /// @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via [IItemSecurityUtils#INSTANCE]
 public class ItemSecurityUtils implements IItemSecurityUtils {
@@ -46,24 +48,31 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
     }
 
     @Override
-    public void addOwnerTooltip(ItemAccess itemAccess, Consumer<Component> tooltipAdder) {
+    public void addOwnerTooltip(ItemAccess itemAccess, Item.TooltipContext context, @Nullable Player player, Consumer<Component> builder) {
+        //TODO - 26.2: Instead of this method and the addSecurityTooltip method, should we just expose the data component to the API?
+        // If not then we may want to update the docs or add comments here to convey how this functions vs how the internal data component functions(?)
         Objects.requireNonNull(itemAccess, "Item access to add tooltip for may not be null.");
-        Objects.requireNonNull(tooltipAdder, "Tooltip consumer may not be null.");
+        Objects.requireNonNull(builder, "Tooltip consumer may not be null.");
         IOwnerObject ownerObject = ownerCapability(itemAccess);
         if (ownerObject != null) {
-            tooltipAdder.accept(OwnerDisplay.of(MekanismUtils.tryGetClientPlayer(), ownerObject.getOwnerUUID()).getTextComponent());
+            builder.accept(OwnerDisplay.of(player, ownerObject.getOwnerUUID()).getTextComponent());
         }
     }
 
     @Override
-    public void addSecurityTooltip(ItemAccess itemAccess, Consumer<Component> tooltipAdder) {
-        addOwnerTooltip(itemAccess, tooltipAdder);
+    public void addSecurityTooltip(ItemAccess itemAccess, Item.TooltipContext context, @Nullable Player player, Consumer<Component> builder) {
+        addOwnerTooltip(itemAccess, context, player, builder);
         ISecurityObject security = securityCapability(itemAccess);
         if (security != null) {
-            SecurityData data = SecurityUtils.get().getFinalData(security, true);
-            tooltipAdder.accept(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, data.mode()));
+            Level level = context.level();
+            if (level == null && player != null) {
+                level = player.level();
+            }
+            //If we can't determine if the tooltip is being gotten on the client side, just assume it is
+            SecurityData data = SecurityUtils.get().getFinalData(security, level == null || level.isClientSide());
+            builder.accept(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, data.mode()));
             if (data.override()) {
-                tooltipAdder.accept(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
+                builder.accept(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
             }
         }
     }

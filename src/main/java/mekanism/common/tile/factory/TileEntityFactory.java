@@ -114,10 +114,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     protected TileEntityFactory(Holder<Block> blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes) {
         FactoryTier tier = Attribute.getTierNN(blockProvider, FactoryTier.class);
         this.tier = tier;
+        this.type = Attribute.getOrThrow(blockProvider, AttributeFactoryType.class).getFactoryType();
         recipeCacheLookupMonitors = new FactoryRecipeCacheLookupMonitor[tier.processes];
         processInfoSlots = new ProcessInfo[tier.processes];
         super(blockProvider, pos, state);
-        type = Attribute.getOrThrow(blockProvider, AttributeFactoryType.class).getFactoryType();
         inputSlots = new ArrayList<>();
         outputSlots = new ArrayList<>();
 

@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPITags;
@@ -33,10 +32,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
-import mekanism.common.component.FrequencyAware;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.frequency.IFrequencyItem;
-import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.SharedConstants;
@@ -46,7 +42,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.resources.Identifier;
@@ -65,8 +60,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
@@ -307,17 +300,6 @@ public final class MekanismUtils {
             posY -= 0.08;
         }
         return new Vec3(player.getX(), posY, player.getZ());
-    }
-
-    /// @apiNote Only call on the client.
-    public static void addFrequencyItemTooltip(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        if (stack.isEmpty() || !(stack.getItem() instanceof IFrequencyItem frequencyItem)) {//Note: This shouldn't be empty, but we validate it just in case
-            return;
-        }
-        DataComponentType<? extends FrequencyAware<?>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(frequencyItem.getFrequencyType());
-        if (frequencyComponent != null) {
-            stack.addToTooltip(frequencyComponent, context, tooltipDisplay, tooltipAdder, flag);
-        }
     }
 
     public static int calculateUsage(long capacity) {

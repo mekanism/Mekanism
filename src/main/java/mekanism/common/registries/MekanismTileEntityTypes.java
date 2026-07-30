@@ -14,7 +14,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.computer.ComputerCapabilityHelper;
 import mekanism.common.item.block.ItemBlockChemicalTank;
-import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
@@ -142,7 +141,7 @@ public class MekanismTileEntityTypes {
     }
 
     private static void registerFactory(FactoryTier tier, FactoryType type, BlockEntityFactory<? extends TileEntityFactory<?>> factoryConstructor) {
-        BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> block = MekanismBlocks.getFactory(tier, type);
+        BlockRegistryObject<BlockFactory<?>, ?> block = MekanismBlocks.getFactory(tier, type);
         TileEntityTypeRegistryObject<? extends TileEntityFactory<?>> tileRO = TILE_ENTITY_TYPES.mekBuilder(block, (pos, state) -> factoryConstructor.create(block, pos, state))
               .clientTicker(TileEntityMekanism::tickClient)
               .serverTicker(TileEntityMekanism::tickServer)

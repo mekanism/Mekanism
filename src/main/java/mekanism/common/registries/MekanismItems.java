@@ -2,6 +2,7 @@ package mekanism.common.registries;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.mojang.datafixers.util.Either;
 import java.util.Locale;
 import java.util.Objects;
 import mekanism.api.chemical.ChemicalIds;
@@ -18,6 +19,8 @@ import mekanism.common.component.containers.energy.EnergyContainerBuilder;
 import mekanism.common.component.containers.fluid.FluidTanksBuilder;
 import mekanism.common.component.containers.item.ItemSlotsBuilder;
 import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.qio.DriveContents;
+import mekanism.common.component.qio.DriveMetadata;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.entity.EntityRobit;
@@ -30,11 +33,9 @@ import mekanism.common.item.ItemDosimeter;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.item.ItemGeigerCounter;
-import mekanism.common.item.ItemModule;
 import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.item.ItemQIODrive;
 import mekanism.common.item.ItemRefinedGlowstoneIngot;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemSeismicReader;
@@ -130,10 +131,10 @@ public class MekanismItems {
                 .build(), MekanismConfig.gear);
     public static final ItemRegistryObject<ItemPortableQIODashboard> PORTABLE_QIO_DASHBOARD = ITEMS.registerItem("portable_qio_dashboard", ItemPortableQIODashboard::new);
     // QIO Drives
-    public static final ItemRegistryObject<ItemQIODrive> BASE_QIO_DRIVE = registerQIODrive(QIODriveTier.BASE);
-    public static final ItemRegistryObject<ItemQIODrive> HYPER_DENSE_QIO_DRIVE = registerQIODrive(QIODriveTier.HYPER_DENSE);
-    public static final ItemRegistryObject<ItemQIODrive> TIME_DILATING_QIO_DRIVE = registerQIODrive(QIODriveTier.TIME_DILATING);
-    public static final ItemRegistryObject<ItemQIODrive> SUPERMASSIVE_QIO_DRIVE = registerQIODrive(QIODriveTier.SUPERMASSIVE);
+    public static final ItemRegistryObject<Item> BASE_QIO_DRIVE = registerQIODrive(QIODriveTier.BASE);
+    public static final ItemRegistryObject<Item> HYPER_DENSE_QIO_DRIVE = registerQIODrive(QIODriveTier.HYPER_DENSE);
+    public static final ItemRegistryObject<Item> TIME_DILATING_QIO_DRIVE = registerQIODrive(QIODriveTier.TIME_DILATING);
+    public static final ItemRegistryObject<Item> SUPERMASSIVE_QIO_DRIVE = registerQIODrive(QIODriveTier.SUPERMASSIVE);
 
     public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_MASK = ITEMS.registerItem("hazmat_mask", props -> new ItemHazmatSuitArmor(ArmorType.HELMET, props));
     public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_GOWN = ITEMS.registerItem("hazmat_gown", props -> new ItemHazmatSuitArmor(ArmorType.CHESTPLATE, props));
@@ -150,7 +151,7 @@ public class MekanismItems {
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.MEKASUIT, MekanismConfig.gear);
 
     public static final ItemRegistryObject<Item> MODULE_BASE = ITEMS.register("module_base");
-    public static final ItemRegistryObject<ItemModule> MODULE = ITEMS.registerItem("module", ItemModule::new);
+    public static final ItemRegistryObject<Item> MODULE = ITEMS.registerItem("module", Item::new);
     public static final ItemRegistryObject<ItemUpgrade> UPGRADE = ITEMS.registerItem("upgrade", ItemUpgrade::new);
 
     public static final ItemRegistryObject<ItemTierInstaller> BASIC_TIER_INSTALLER = registerInstaller(null, BaseTier.BASIC);
@@ -319,10 +320,13 @@ public class MekanismItems {
     }
 
     private static ItemRegistryObject<ItemAlloy> registerAlloy(AlloyTier tier, Rarity rarity) {
-        return ITEMS.registerItem("alloy_" + tier.getName(), properties -> new ItemAlloy(tier, properties.rarity(rarity)));
+        return ITEMS.registerItem("alloy_" + tier.getSerializedName(), properties -> new ItemAlloy(tier, properties.rarity(rarity)));
     }
 
-    private static ItemRegistryObject<ItemQIODrive> registerQIODrive(QIODriveTier tier) {
-        return ITEMS.registerItem("qio_drive_" + tier.name().toLowerCase(Locale.ROOT), properties -> new ItemQIODrive(tier, properties));
+    private static ItemRegistryObject<Item> registerQIODrive(QIODriveTier tier) {
+        return ITEMS.register("qio_drive_" + tier.name().toLowerCase(Locale.ROOT), tier.getBaseTier(), properties -> properties.stacksTo(1)
+              .component(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(0, 0, Either.left(tier)))
+              .component(MekanismDataComponents.DRIVE_CONTENTS, DriveContents.EMPTY)
+        );
     }
 }

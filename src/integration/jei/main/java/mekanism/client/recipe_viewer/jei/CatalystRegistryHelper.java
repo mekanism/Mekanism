@@ -2,14 +2,13 @@ package mekanism.client.recipe_viewer.jei;
 
 import java.util.List;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
-import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeFactoryType;
+import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
@@ -28,12 +27,10 @@ public class CatalystRegistryHelper {
         for (ItemLike workstation : workstations) {
             Item item = workstation.asItem();
             registry.addCraftingStation(recipeType, item);
-            if (item instanceof BlockItem blockItem) {
-                AttributeFactoryType factoryType = Attribute.get(blockItem.getBlock(), AttributeFactoryType.class);
-                if (factoryType != null) {
-                    for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
-                        registry.addCraftingStation(recipeType, MekanismBlocks.getFactory(tier, factoryType.getFactoryType()));
-                    }
+            FactoryType factoryType = item.components().get(MekanismDataComponents.FACTORY_TYPE);
+            if (factoryType != null) {
+                for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
+                    registry.addCraftingStation(recipeType, MekanismBlocks.getFactory(tier, factoryType));
                 }
             }
         }

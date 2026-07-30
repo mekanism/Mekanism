@@ -1,5 +1,7 @@
 package mekanism.common.component;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.network.codec.StreamCodec;
@@ -19,6 +21,7 @@ import org.jspecify.annotations.Nullable;
 public class PasteBucketConsumption implements ConsumableListener {
 
     public static final PasteBucketConsumption INSTANCE = new PasteBucketConsumption();
+    public static final Codec<PasteBucketConsumption> CODEC = MapCodec.unit(INSTANCE).codec();
     public static final StreamCodec<ByteBuf, PasteBucketConsumption> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     private PasteBucketConsumption() {

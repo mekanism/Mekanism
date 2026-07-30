@@ -31,6 +31,8 @@ public interface IAttachedContainers<TYPE, ATTACHED extends IAttachedContainers<
         return create(copy);
     }
 
+    boolean hasNonEmptyContents();
+
     @Override
     default Iterator<TYPE> iterator() {
         return containers().iterator();

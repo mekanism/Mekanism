@@ -2,12 +2,10 @@ package mekanism.common.util;
 
 import java.util.List;
 import java.util.function.Consumer;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -15,7 +13,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.tier.IStorageTier;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.chat.Component;
@@ -27,6 +24,7 @@ import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
@@ -36,77 +34,19 @@ public class StorageUtils {//TODO - 26.2: Re-evaluate which of these methods are
     private StorageUtils() {
     }
 
-    public static void addStoredEnergy(ItemAccess itemAccess, Consumer<Component> tooltipAdder, boolean showMissingCap) {
-        addStoredEnergy(itemAccess, tooltipAdder, showMissingCap, MekanismLang.STORED_ENERGY);
-    }
-
-    public static void addStoredEnergy(ItemAccess itemAccess, Consumer<Component> tooltipAdder, boolean showMissingCap, ILangEntry langEntry) {
-        EnergyHandler energyHandler = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
-        if (energyHandler != null) {
-            tooltipAdder.accept(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(energyHandler)));
-        } else if (showMissingCap) {
-            tooltipAdder.accept(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.ZERO));
-        }
-    }
-
-    public static void addStoredChemical(ItemAccess itemAccess, Consumer<Component> tooltipAdder) {
-        ContainerType.CHEMICAL.addStoredResource(itemAccess, tooltipAdder, MekanismLang.NO_CHEMICAL, EnumColor.ORANGE);
-    }
-
-    public static void addStoredFluid(ItemAccess itemAccess, Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry) {
-        ContainerType.FLUID.addStoredResource(itemAccess, tooltipAdder, emptyLangEntry, EnumColor.PINK);
-    }
-
-    /// @implNote Assumes there is only one "type" per substance type
-    public static void addStoredSubstance(ItemAccess itemAccess, Consumer<Component> tooltipAdder, IStorageTier tier) {
-        addStoredSubstance(itemAccess, tooltipAdder, tier.isCreative(), false);
-        addCapacity(tooltipAdder, tier);
-    }
-
-    public static void addCapacity(Consumer<Component> tooltipAdder, IStorageTier tier) {
+    public static void addCapacity(Consumer<Component> builder, IStorageTier tier, ILangEntry capacityLang) {
         if (tier.isCreative()) {
-            tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
+            builder.accept(MekanismLang.CAPACITY.translateColored(tier.getTextColor(), EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
-            tooltipAdder.accept(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getCapacity())));
+            builder.accept(capacityLang.translateColored(tier.getTextColor(), EnumColor.GRAY, TextUtils.format(tier.getCapacity())));
         }
     }
 
-    /// @implNote Assumes there is only one "type" per substance type
-    public static void addStoredSubstance(ItemAccess itemAccess, Consumer<Component> tooltipAdder, boolean isCreative, boolean displayType) {
-        LargeResourceStack<FluidResource> fluidStack = ContainerType.FLUID.getStoredContentsFromAttachment(itemAccess);
-        LargeResourceStack<ChemicalResource> chemicalStack = ContainerType.CHEMICAL.getStoredContentsFromAttachment(itemAccess);
-        LargeResourceStack<?> contents;
-        EnumColor color;
-        if (fluidStack.isEmpty()) {
-            contents = chemicalStack;
-            color = EnumColor.ORANGE;
-        } else {
-            contents = fluidStack;
-            color = EnumColor.PINK;
-        }
-        if (contents.isEmpty()) {
-            tooltipAdder.accept(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
-            return;
-        }
-        Component tooltip;
-        if (isCreative) {
-            tooltip = MekanismLang.GENERIC_STORED.translateColored(color, contents.resource(), EnumColor.GRAY, MekanismLang.INFINITE);
-        } else {
-            tooltip = MekanismLang.GENERIC_STORED_MB.translateColored(color, contents.resource(), EnumColor.GRAY, TextUtils.format(contents.amount()));
-        }
-        if (displayType) {
-            ILangEntry type = fluidStack.isEmpty() ? MekanismLang.CHEMICAL : MekanismLang.LIQUID;
-            tooltipAdder.accept(type.translateColored(EnumColor.YELLOW, tooltip));
-        } else {
-            tooltipAdder.accept(tooltip);
-        }
-    }
-
-    public static long getContainedChemical(@Nullable ResourceHandler<ChemicalResource> handler, ResourceKey<Chemical> type) {
+    public static <TYPE, RESOURCE extends RegisteredResource<TYPE>> long getContainedResource(@Nullable ResourceHandler<RESOURCE> handler, ResourceKey<TYPE> type) {
         if (handler != null) {
             for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
-                ChemicalResource chemicalInTank = handler.getResource(tank);
-                if (chemicalInTank.is(type)) {
+                RESOURCE resource = handler.getResource(tank);
+                if (resource.is(type)) {
                     return handler.getAmountAsLong(tank);
                 }
             }

@@ -1,8 +1,7 @@
 package mekanism.common.block.interfaces;
 
-import mekanism.api.text.ILangEntry;
-
+@FunctionalInterface
 public interface IHasDescription {
 
-    ILangEntry getDescription();
+    String getDescription();
 }

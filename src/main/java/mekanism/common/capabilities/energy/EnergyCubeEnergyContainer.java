@@ -32,7 +32,7 @@ public class EnergyCubeEnergyContainer extends BasicEnergyContainer {
     private EnergyCubeEnergyContainer(EnergyCubeTier tier, @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter,
           @Nullable IContentsListener listener) {
         super(tier.getCapacity(), ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), insertionRateLimiter, extractionRateLimiter, listener);
-        isCreative = tier == EnergyCubeTier.CREATIVE;
+        isCreative = tier.isCreative();
     }
 
     @Override

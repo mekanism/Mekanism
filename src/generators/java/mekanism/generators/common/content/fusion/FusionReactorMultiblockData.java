@@ -47,7 +47,7 @@ import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsDamageTypes;
-import mekanism.generators.common.registries.GeneratorsItems;
+import mekanism.generators.common.registries.GeneratorsDataComponents;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
 import net.minecraft.SharedConstants;
@@ -175,7 +175,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             }
             ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(itemType));
             return handler != null && ResourceHandlerUtil.isFull(handler);
-        }, GeneratorsItems.HOHLRAUM::is, this, 85, 39));
+        }, itemType -> itemType.has(GeneratorsDataComponents.REACTION_STARTER), this, 85, 39));
     }
 
     @Override
@@ -314,7 +314,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private void vaporiseHohlraum(TransactionContext transaction, ChemicalResource fuelType) {
-        if (GeneratorsItems.HOHLRAUM.is(reactorSlot.resource())) {
+        if (reactorSlot.resource().has(GeneratorsDataComponents.REACTION_STARTER)) {
             ResourceHandler<ChemicalResource> handler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(reactorSlot.asItemAccess()));
             if (handler != null && ResourceHandlerUtil.isFull(handler)) {
                 //Validate that the handler has some fusion fuel in it

@@ -20,6 +20,7 @@ import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.material.VanillaPaxelMaterialCreator;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
@@ -160,10 +161,11 @@ public class ToolsItems {
     }
 
     private static Item.Properties getBaseProperties(Identifier key, boolean fireResistant) {
-        Item.Properties properties = new StrictProperties();
-        properties.setId(ResourceKey.create(ITEMS.getRegistryKey(), key));
+        Item.Properties properties = new StrictProperties()
+              .setId(ResourceKey.create(ITEMS.getRegistryKey(), key))
+              .component(ToolsDataComponents.DISPLAY_HP, Unit.INSTANCE);
         if (fireResistant) {
-            properties = properties.fireResistant();
+            return properties.fireResistant();
         }
         return properties;
     }

@@ -1,17 +1,40 @@
 package mekanism.common.tier;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
+import java.util.Locale;
+import java.util.function.Consumer;
+import java.util.function.IntFunction;
+import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
+import mekanism.common.MekanismLang;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
+import mekanism.common.util.text.TextUtils;
+import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipProvider;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jspecify.annotations.Nullable;
 
-public enum TubeTier implements IStorageTier {
+public enum TubeTier implements IStorageTier, TooltipProvider {
     BASIC(BaseTier.BASIC, 4L * FluidType.BUCKET_VOLUME, 750),
     ADVANCED(BaseTier.ADVANCED, 16L * FluidType.BUCKET_VOLUME, 2 * FluidType.BUCKET_VOLUME),
     ELITE(BaseTier.ELITE, 256L * FluidType.BUCKET_VOLUME, 64 * FluidType.BUCKET_VOLUME),
     ULTIMATE(BaseTier.ULTIMATE, 1_024L * FluidType.BUCKET_VOLUME, 256 * FluidType.BUCKET_VOLUME);
 
+    public static final IntFunction<TubeTier> BY_ID = ByIdMap.continuous(TubeTier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+    public static final StreamCodec<ByteBuf, TubeTier> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, TubeTier::ordinal);
+    public static final Codec<TubeTier> CODEC = StringRepresentable.fromEnum(TubeTier::values);
+
+    private final String serializedName;
     private final long baseCapacity;
     private final int basePull;
     private final BaseTier baseTier;
@@ -21,6 +44,7 @@ public enum TubeTier implements IStorageTier {
     private CachedIntValue transferRateReference;
 
     TubeTier(BaseTier tier, long capacity, int transferRate) {
+        this.serializedName = name().toLowerCase(Locale.ROOT);
         baseCapacity = capacity;
         basePull = transferRate;
         baseTier = tier;
@@ -29,6 +53,11 @@ public enum TubeTier implements IStorageTier {
     @Override
     public BaseTier getBaseTier() {
         return baseTier;
+    }
+
+    @Override
+    public String getSerializedName() {
+        return this.serializedName;
     }
 
     @Override
@@ -47,6 +76,15 @@ public enum TubeTier implements IStorageTier {
 
     public int getBaseTransferRate() {
         return basePull;
+    }
+
+    @Override
+    public void addToTooltip(TooltipContext context, Consumer<Component> builder, TooltipFlag flag, DataComponentGetter components) {
+        builder.accept(MekanismLang.CAPACITY_MB_PER_TICK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(getCapacity())));
+        builder.accept(MekanismLang.PUMP_RATE_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(getTransferRate())));
+        builder.accept(CommonComponents.EMPTY);
+        builder.accept(MekanismLang.CAPABLE_OF_TRANSFERRING.translateColored(EnumColor.DARK_GRAY));
+        builder.accept(MekanismLang.CHEMICALS.translateColored(EnumColor.GRAY, EnumColor.PURPLE, MekanismLang.MEKANISM));
     }
 
     /// ONLY CALL THIS FROM TierConfig. It is used to give the TubeTier a reference to the actual config value object

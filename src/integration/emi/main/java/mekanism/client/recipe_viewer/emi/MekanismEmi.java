@@ -60,15 +60,15 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tier.FactoryTier;
@@ -79,7 +79,6 @@ import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -306,12 +305,10 @@ public class MekanismEmi implements EmiPlugin {
         for (ItemLike workstation : workstations) {
             Item item = workstation.asItem();
             registry.addWorkstation(category, EmiStack.of(item));
-            if (item instanceof BlockItem blockItem) {
-                AttributeFactoryType factoryType = Attribute.get(blockItem.getBlock(), AttributeFactoryType.class);
-                if (factoryType != null) {
-                    for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
-                        registry.addWorkstation(category, EmiStack.of(MekanismBlocks.getFactory(tier, factoryType.getFactoryType())));
-                    }
+            FactoryType factoryType = item.components().get(MekanismDataComponents.FACTORY_TYPE);
+            if (factoryType != null) {
+                for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
+                    registry.addWorkstation(category, EmiStack.of(MekanismBlocks.getFactory(tier, factoryType)));
                 }
             }
         }

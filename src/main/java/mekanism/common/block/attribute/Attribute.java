@@ -117,6 +117,11 @@ public interface Attribute {
 
     @Nullable
     static BaseTier getBaseTier(Holder<Block> block) {
+        return getBaseTier(block.value());
+    }
+
+    @Nullable
+    static BaseTier getBaseTier(Block block) {
         AttributeTier<?> attr = get(block, AttributeTier.class);
         return attr == null ? null : attr.tier().getBaseTier();
     }

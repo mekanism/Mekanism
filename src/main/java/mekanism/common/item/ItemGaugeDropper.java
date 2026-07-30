@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import java.util.function.Consumer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.component.containers.chemical.ComponentBackedChemicalTank;
@@ -11,15 +10,12 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
@@ -71,12 +67,5 @@ public class ItemGaugeDropper extends Item {
         ContainerType.FLUID.tryDumpContents(level, pos, itemAccess, null);
         ContainerType.CHEMICAL.tryDumpContents(level, pos, itemAccess, null);
         return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredSubstance(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, false, true);
     }
 }

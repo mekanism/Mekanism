@@ -1,6 +1,7 @@
 
 package mekanism.common.component.containers.item;
 
+import java.util.Objects;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.functions.ConstantPredicates;
@@ -9,7 +10,6 @@ import mekanism.api.resource.ResourceContainerWrapper;
 import mekanism.common.component.LockData;
 import mekanism.common.component.containers.resource.AttachedResources;
 import mekanism.common.inventory.slot.BinInventorySlot;
-import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.ItemAccessUtils;
@@ -27,15 +27,14 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     private final boolean isCreative;
 
     public static ComponentBackedBinInventorySlot create(ItemAccess attachedAccess, int tankIndex) {
-        if (!(attachedAccess.getResource().getItem() instanceof ItemBlockBin item)) {
-            throw new IllegalStateException("Attached to should always be a bin item");
-        }
-        return new ComponentBackedBinInventorySlot(attachedAccess, tankIndex, item.getTier());
+        BinTier tier = attachedAccess.getResource().get(MekanismDataComponents.BIN_TIER);
+        Objects.requireNonNull(tier, "Attached to should always have a bin tier defined");
+        return new ComponentBackedBinInventorySlot(attachedAccess, tankIndex, tier);
     }
 
     private ComponentBackedBinInventorySlot(ItemAccess attachedAccess, int slotIndex, BinTier tier) {
         super(attachedAccess, slotIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), BinInventorySlot.validator, false, tier::getCapacity);
-        isCreative = tier == BinTier.CREATIVE;
+        isCreative = tier.isCreative();
     }
 
     @Override

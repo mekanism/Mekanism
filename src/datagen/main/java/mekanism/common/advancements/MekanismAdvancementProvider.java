@@ -21,7 +21,6 @@ import mekanism.common.advancements.triggers.UseTierInstallerTrigger;
 import mekanism.common.advancements.triggers.ViewVibrationsTrigger;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.entity.RobitPrideSkinData;
-import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.item.predicate.FullCanteenItemPredicate;
 import mekanism.common.item.predicate.MaxedModuleContainerItemPredicate;
 import mekanism.common.registries.MekanismBlocks;
@@ -146,7 +145,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               ).save(consumer);
         advancement(MekanismAdvancements.FACTORY)
               .display(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.SMELTING).getItemHolder(), AdvancementType.GOAL, true)
-              .orCriteria("factory", items, getItems(MekanismBlocks.BLOCKS.getSecondaryEntries(), item -> item instanceof ItemBlockFactory))
+              .orCriteria("factory", items, MekanismBlocks.getFactoryBlocks().stream().map(ro -> ro.getItemHolder().get()).toArray(Item[]::new))
               .orCriteria("tier_installer", UseTierInstallerTrigger.TriggerInstance.any())
               .save(consumer);
         advancement(MekanismAdvancements.CONFIGURATION_COPYING)

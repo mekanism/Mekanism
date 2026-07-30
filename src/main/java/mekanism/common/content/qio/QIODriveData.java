@@ -14,18 +14,15 @@ import org.jetbrains.annotations.VisibleForTesting;
 public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
 
     private final QIODriveKey key;
-    private final long countCapacity;
-    private final int typeCapacity;
+    private final IQIODriveCapacity capacity;
     private final Map<ItemResource, StoredAmountJournal> itemMap = new HashMap<>();
     private int itemTypes;
     private long itemCount;
 
-    public QIODriveData(QIODriveKey key, ItemResource driveData) {
+    public QIODriveData(QIODriveKey key, ItemResource driveData, DriveMetadata driveMetadata) {
         this.key = key;
-        IQIODriveItem driveItem = (IQIODriveItem) driveData.getItem();
         // load capacity values
-        countCapacity = driveItem.getCountCapacity();
-        typeCapacity = driveItem.getTypeCapacity();
+        capacity = driveMetadata.capacity();
         // load item map from drive stack
         driveData.getOrDefault(MekanismDataComponents.DRIVE_CONTENTS, DriveContents.EMPTY).loadItemMap(this::addTypeFromSaved);
         //TODO - 26.2: Re-evaluate this, theoretically as we just loaded this the metadata should be correct?
@@ -47,11 +44,11 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
 
     public long add(ItemResource type, long amount, TransactionContext transaction) {
         // fail if we've reached item count capacity or adding this item would make us exceed type capacity
-        if (itemCount == countCapacity) {
+        if (itemCount == getCountCapacity()) {
             return 0;
         }
         StoredAmountJournal storedAmount;
-        if (itemTypes == typeCapacity) {
+        if (itemTypes == getTypeCapacity()) {
             storedAmount = itemMap.get(type);
             if (storedAmount == null) {//No space for more item types
                 return 0;
@@ -60,7 +57,7 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
             storedAmount = itemMap.computeIfAbsent(type, t -> new StoredAmountJournal(t, 0));
         }
         updateSnapshots(transaction);
-        long toAdd = Math.min(amount, countCapacity - itemCount);
+        long toAdd = Math.min(amount, getCountCapacity() - itemCount);
         if (storedAmount.stored == 0) {
             //Type was not counted, we need to add it to the number of item types we have
             itemTypes++;
@@ -136,15 +133,15 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
     }
 
     private DriveMetadata asDriveMetadata() {
-        return new DriveMetadata(itemCount, itemTypes);
+        return new DriveMetadata(itemCount, itemTypes, capacity);
     }
 
     public long getCountCapacity() {
-        return countCapacity;
+        return capacity.count();
     }
 
     public int getTypeCapacity() {
-        return typeCapacity;
+        return capacity.types();
     }
 
     public long getTotalCount() {

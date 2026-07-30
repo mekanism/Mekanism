@@ -2,7 +2,6 @@ package mekanism.common.item;
 
 import com.mojang.serialization.Codec;
 import java.util.Optional;
-import java.util.function.Consumer;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.SerializationConstants;
 import mekanism.api.security.IBlockSecurityUtils;
@@ -12,6 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.component.ConfigurationData;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
@@ -28,8 +28,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -45,16 +43,7 @@ public class ItemConfigurationCard extends Item {
     private static final Codec<Block> BLOCK_CODEC = BuiltInRegistries.BLOCK.byNameCodec();
 
     public ItemConfigurationCard(Properties properties) {
-        super(properties.stacksTo(1).rarity(Rarity.UNCOMMON));
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        //TODO - 26.2: Go through the various append methods we have and move some over to data component based
-        // Also support TooltipDisplay#hideTooltip
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        tooltipAdder.accept(MekanismLang.CONFIG_CARD_HAS_DATA.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getConfigCardName(getData(stack))));
+        super(properties.stacksTo(1).rarity(Rarity.UNCOMMON).component(MekanismDataComponents.CONFIGURATION_DATA.get(), ConfigurationData.NONE));
     }
 
     @Override
@@ -89,7 +78,7 @@ public class ItemConfigurationCard extends Item {
                     if (configOutput.isEmpty()) {
                         configOutput.discard(SerializationConstants.CONFIG);
                     }
-                    stack.set(MekanismDataComponents.CONFIGURATION_DATA, output.buildResult());
+                    stack.set(MekanismDataComponents.CONFIGURATION_DATA, new ConfigurationData(output.buildResult()));
                 }
                 player.sendOverlayMessage(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey)));
                 MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, true);
@@ -132,32 +121,18 @@ public class ItemConfigurationCard extends Item {
             player.sendOverlayMessage(MekanismLang.CONFIG_CARD_CLEARED.translate());
         }
         ItemStack configCard = player.getItemInHand(usedHand);
-        configCard.remove(MekanismDataComponents.CONFIGURATION_DATA);
+        configCard.set(MekanismDataComponents.CONFIGURATION_DATA, ConfigurationData.NONE);
         //TODO - 26.2: Does this need to use a copy of the stack rather than directly removing the component above? Check other implementations of use as well
         return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(configCard);
     }
 
     @Nullable
     private CompoundTag getData(ItemStack stack) {
-        CompoundTag data = stack.get(MekanismDataComponents.CONFIGURATION_DATA);
-        if (data == null || data.isEmpty()) {
-            return null;
-        }
-        return data;
+        return stack.getOrDefault(MekanismDataComponents.CONFIGURATION_DATA, ConfigurationData.NONE).configuration();
     }
 
     private Component getConfigCardName(ValueInput input) {
         return input.getString(SerializationConstants.DATA_NAME)
-              .map(TextComponentUtil::translate)
-              .orElseGet(MekanismLang.NONE::translate);
-    }
-
-    private Component getConfigCardName(@Nullable CompoundTag data) {
-        //TODO - 26.2: Do we want to change the caller of this to go via the value input method?
-        if (data == null) {
-            return MekanismLang.NONE.translate();
-        }
-        return data.getString(SerializationConstants.DATA_NAME)
               .map(TextComponentUtil::translate)
               .orElseGet(MekanismLang.NONE::translate);
     }

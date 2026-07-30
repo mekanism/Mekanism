@@ -4,10 +4,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import mekanism.api.MekanismRegistries;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.SpecialColors;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
+import mekanism.common.registries.MekanismItems;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
@@ -83,15 +86,20 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
         } else {
             visibility = CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS;
         }
-        for (Holder<Item> item : items) {
-            Item itemLike = item.value();
-            if (itemLike instanceof ICustomCreativeTabContents contents) {
+        for (Holder<Item> itemHolder : items) {
+            Item item = itemHolder.value();
+            if (item instanceof ICustomCreativeTabContents contents) {
                 if (contents.addDefault()) {
-                    output.accept(itemLike, visibility);
+                    output.accept(item, visibility);
                 }
-                contents.addItems(displayParameters, item, stack -> output.accept(stack, visibility));
+                contents.addItems(displayParameters, itemHolder, stack -> output.accept(stack, visibility));
+            } else if (MekanismItems.MODULE.is(item)) {
+                displayParameters.holders().lookupOrThrow(MekanismRegistries.Keys.MODULES)
+                      .listElements()
+                      .map(IModuleHelper.INSTANCE::asStack)
+                      .forEach(output::accept);
             } else {
-                output.accept(itemLike, visibility);
+                output.accept(item, visibility);
             }
         }
     }

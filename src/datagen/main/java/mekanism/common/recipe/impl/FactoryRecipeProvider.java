@@ -6,7 +6,6 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.content.blocktype.FactoryType;
-import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -39,9 +38,9 @@ class FactoryRecipeProvider extends BaseSubRecipeProvider {
         String ultimatePath = basePath + "ultimate/";
         TagKey<Item> osmiumIngot = MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM);
         for (FactoryType type : EnumUtils.FACTORY_TYPES) {
-            BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> basicFactory = MekanismBlocks.getFactory(FactoryTier.BASIC, type);
-            BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> advancedFactory = MekanismBlocks.getFactory(FactoryTier.ADVANCED, type);
-            BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> eliteFactory = MekanismBlocks.getFactory(FactoryTier.ELITE, type);
+            BlockRegistryObject<BlockFactory<?>, ?> basicFactory = MekanismBlocks.getFactory(FactoryTier.BASIC, type);
+            BlockRegistryObject<BlockFactory<?>, ?> advancedFactory = MekanismBlocks.getFactory(FactoryTier.ADVANCED, type);
+            BlockRegistryObject<BlockFactory<?>, ?> eliteFactory = MekanismBlocks.getFactory(FactoryTier.ELITE, type);
             addFactoryRecipe(consumer, basicPath, basicFactory, type.getBaseBlock(), Tags.Items.INGOTS_IRON, MekanismTags.Items.ALLOYS_BASIC, MekanismTags.Items.CIRCUITS_BASIC);
             addFactoryRecipe(consumer, advancedPath, advancedFactory, basicFactory, osmiumIngot, MekanismTags.Items.ALLOYS_INFUSED, MekanismTags.Items.CIRCUITS_ADVANCED);
             addFactoryRecipe(consumer, elitePath, eliteFactory, advancedFactory, Tags.Items.INGOTS_GOLD, MekanismTags.Items.ALLOYS_REINFORCED, MekanismTags.Items.CIRCUITS_ELITE);

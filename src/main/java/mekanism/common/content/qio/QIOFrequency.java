@@ -33,6 +33,7 @@ import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
+import mekanism.common.component.qio.DriveMetadata;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.slot.QIODriveSlot;
@@ -45,6 +46,7 @@ import mekanism.common.lib.inventory.UUIDItemResource;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.transaction.SimpleLongJournal;
 import mekanism.common.network.to_client.qio.PacketUpdateItemViewer;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderLookup;
@@ -447,6 +449,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         return getStored(itemType) > 0;
     }
 
+    @Nullable
     public QIODriveData getDriveData(QIODriveKey key) {
         return driveMap.get(key);
     }
@@ -577,14 +580,15 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     //TODO: Do we need to make drive adding and removal transactional?
     public void addDrive(QIODriveKey key, ItemResource driveData) {
-        if (driveData.getItem() instanceof IQIODriveItem) {
+        DriveMetadata driveMetadata = driveData.get(MekanismDataComponents.DRIVE_METADATA);
+        if (driveMetadata != null) {
             // if a drive in this position is already in the system, we remove it before adding this one
             if (driveMap.containsKey(key)) {
                 //Note: Don't save it as it should already be saved, and it would override this drive
                 removeDrive(key, true, false);
             }
             // add drive and capacity info to core tracking
-            QIODriveData data = new QIODriveData(key, driveData);
+            QIODriveData data = new QIODriveData(key, driveData, driveMetadata);
             totalCountCapacity += data.getCountCapacity();
             totalTypeCapacity += data.getTypeCapacity();
             driveMap.put(key, data);

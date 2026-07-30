@@ -1,9 +1,6 @@
 package mekanism.common.item;
 
-import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
-import mekanism.client.key.MekKeyHandler;
-import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
@@ -11,19 +8,15 @@ import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -33,20 +26,9 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 public class ItemSeismicReader extends ItemEnergized {
 
     public ItemSeismicReader(Properties properties) {
-        super(properties.rarity(Rarity.UNCOMMON).stacksTo(1));
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
-            tooltipAdder.accept(MekanismLang.DESCRIPTION_SEISMIC_READER.translate());
-        } else if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        } else {
-            tooltipAdder.accept(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
-            tooltipAdder.accept(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.getTranslatedKeyMessage()));
-        }
+        super(properties.rarity(Rarity.UNCOMMON).stacksTo(1)
+              .component(MekanismDataComponents.DESCRIPTION, MekanismLang.DESCRIPTION_SEISMIC_READER.translate())
+        );
     }
 
     @Override

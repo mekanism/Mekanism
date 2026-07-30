@@ -7,16 +7,16 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.IQIODriveHolder;
-import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.content.qio.QIOFrequency;
+import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 public class QIODriveSlot extends BasicInventorySlot {
 
-    public static final Predicate<ItemResource> IS_QIO_ITEM = itemType -> itemType.getItem() instanceof IQIODriveItem;
+    public static final Predicate<ItemResource> IS_QIO_ITEM = itemType -> itemType.has(MekanismDataComponents.DRIVE_METADATA);
 
     private final Supplier<@Nullable Level> levelSupplier;
     @Nullable
@@ -28,6 +28,7 @@ public class QIODriveSlot extends BasicInventorySlot {
         super(ConstantPredicates.notExternal(), ConstantPredicates.notExternal(), IS_QIO_ITEM, null, null, listener, x, y);
         this.driveHolder = driveHolder;
         this.levelSupplier = levelSupplier;
+        //TODO - 26.2: Re-evaluate nullability
         this.key = new QIODriveKey(this.driveHolder, slot);
     }
 

@@ -800,7 +800,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.DIMENSIONAL_STABILIZER,
               MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER
         );
-        addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE, MekanismBlocks.getFactoryBlocks());
+        addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE, MekanismBlocks.getFactoryBlocksAsArray());
         addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE,
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.values()
         );

@@ -2,15 +2,12 @@ package mekanism.tools.common.item;
 
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.Set;
-import java.util.function.Consumer;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.IPaxelMaterial;
-import mekanism.tools.common.util.ToolsUtils;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -20,8 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -55,13 +50,6 @@ public class ItemMekanismPaxel extends Item implements IsMekanismTool {
               .durability(material.getPaxelDurability())//must go after Tool
         );
         this.material = material;
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        ToolsUtils.addDurability(tooltipAdder, stack);
     }
 
     @Override

@@ -17,6 +17,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.component.containers.resource.AttachedResources;
 import mekanism.common.component.containers.resource.ComponentBackedResourceHandler;
+import mekanism.common.tier.IStorageTier;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.TextUtils;
@@ -136,21 +137,43 @@ public abstract class ResourceContainerType<RESOURCE extends Resource, CONTAINER
         to.copyContents(from, transaction);
     }
 
-    public void addStoredResource(ItemAccess itemAccess, Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry, EnumColor color) {
-        ResourceHandler<RESOURCE> handler = getCapOrUnexposed(itemAccess);
-        if (handler == null) {
-            tooltipAdder.accept(emptyLangEntry.translate());
-        } else {
-            for (int container = 0, containers = handler.size(); container < containers; container++) {
-                RESOURCE resource = handler.getResource(container);
-                if (resource.isEmpty()) {
-                    tooltipAdder.accept(emptyLangEntry.translateColored(EnumColor.GRAY));
-                } else {
-                    tooltipAdder.accept(MekanismLang.STORED.translateColored(EnumColor.YELLOW, color, resource, EnumColor.GRAY,
-                          MekanismLang.GENERIC_MB.translate(TextUtils.format(handler.getAmountAsLong(container)))));
+    public void addStoredResource(AttachedResources<RESOURCE> containers, Consumer<Component> builder, ILangEntry emptyLangEntry, EnumColor color,
+          @Nullable IStorageTier tier, @Nullable ILangEntry displayType, boolean forceAsList, ILangEntry listHeader) {
+        if (containers.hasNonEmptyContents()) {
+            if (forceAsList || containers.size() > 1) {
+                builder.accept(listHeader.translateColored(EnumColor.YELLOW));
+            }
+            boolean isCreative = tier != null && tier.isCreative();
+            if (containers.size() == 1) {
+                //Note: We know this resource is not empty here
+                Component tooltip = getStoredResourceTooltip(containers.get(0), color, isCreative, displayType);
+                if (forceAsList) {
+                    tooltip = MekanismLang.GENERIC_LIST.translate(tooltip);
+                }
+                builder.accept(tooltip);
+            } else {
+                for (LargeResourceStack<RESOURCE> resource : containers) {
+                    if (!resource.isEmpty()) {
+                        builder.accept(MekanismLang.GENERIC_LIST.translate(getStoredResourceTooltip(resource, color, isCreative, displayType)));
+                    }
                 }
             }
+        } else if (!containers.isEmpty()) {
+            builder.accept(emptyLangEntry.translateColored(EnumColor.DARK_RED));
         }
+    }
+
+    private Component getStoredResourceTooltip(LargeResourceStack<RESOURCE> resource, EnumColor color, boolean isCreative, @Nullable ILangEntry displayType) {
+        Component tooltip;
+        if (isCreative) {
+            tooltip = MekanismLang.GENERIC_STORED.translateColored(color, resource.resource(), EnumColor.GRAY, MekanismLang.INFINITE);
+        } else {
+            tooltip = MekanismLang.GENERIC_STORED_MB.translateColored(color, resource.resource(), EnumColor.GRAY, TextUtils.format(resource.amount()));
+        }
+        if (displayType != null) {
+            tooltip = displayType.translateColored(EnumColor.YELLOW, tooltip);
+        }
+        return tooltip;
     }
 
     /// @param toFill      Item type to try and fill.
@@ -177,36 +200,6 @@ public abstract class ResourceContainerType<RESOURCE extends Resource, CONTAINER
         }
         //The item is now filled return it for convenience
         return ItemAccessUtils.asStack(itemAccess);
-    }
-
-    /// Gets the resource stored in an item's container by checking the attachment. This is for cases when we may not actually have a resource handler provided as a
-    /// capability from our item, but it may have stored data in its container from when it was a block
-    ///
-    /// @implNote The returned stack is not scaled by the size of the passed item access.
-    public LargeResourceStack<RESOURCE> getStoredContentsFromAttachment(ItemAccess itemAccess) {
-        List<LargeResourceStack<RESOURCE>> containers = getAttachedContents(itemAccess.getResource());
-        return switch (containers.size()) {
-            case 0 -> stackHelper().empty();
-            case 1 -> containers.getFirst();
-            default -> {
-                LargeResourceStack<RESOURCE> stored = stackHelper().empty();
-                for (LargeResourceStack<RESOURCE> container : containers) {
-                    if (container.isEmpty()) {
-                        continue;
-                    }
-                    if (stored.isEmpty()) {
-                        stored = container;
-                    } else if (stored.matches(container.resource())) {
-                        stored = stored.grow(container.amount(), true);
-                        if (stored.amount() == Long.MAX_VALUE) {
-                            break;
-                        }
-                    }
-                    //Note: If we have multiple tanks that have different types stored we only return the first type
-                }
-                yield stored;
-            }
-        };
     }
 
     /// Gets the FIRST resource stored in an item's container by checking the attachment. This is for cases when we may not actually have a resource handler provided as a

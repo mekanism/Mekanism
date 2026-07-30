@@ -1091,6 +1091,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BUCKET_MODE, "Bucket Mode: %1$s");
         add(MekanismLang.STORED_ENERGY, "Stored energy: %1$s");
         add(MekanismLang.STORED, "Stored %1$s: %2$s");
+        add(MekanismLang.STORED_CHEMICALS, "Stored Chemicals:");
+        add(MekanismLang.STORED_FLUID, "Stored Liquids:");
         add(MekanismLang.STORED_MB_PERCENTAGE, "Stored %1$s: %2$s mB (%3$s)");
         add(MekanismLang.ITEM_AMOUNT, "Item amount: %1$s");
         add(MekanismLang.LOCKED, "Locked to item: %1$s");
@@ -1729,6 +1731,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_DAMAGE, "Damage Amplification: %1$s");
         add(MekanismLang.MODULE_TWEAKER, "Module Tweaker");
         add(MekanismLang.MODULE_INSTALLED, "Installed: %1$s");
+        add(MekanismLang.MODULE_INSTALLED_NONE, "No Modules Installed");
+        add(MekanismLang.MODULE_INSTALLED_LIST, "Installed Modules:");
         add(MekanismLang.MODULE_SUPPORTED, "Supported by:");
         add(MekanismLang.MODULE_CONFLICTING, "Conflicts with:");
         add(MekanismLang.MODULE_STACKABLE, "Stackable: %1$s");
@@ -1808,7 +1812,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         String name = TextUtils.formatAndCapitalize(type.getResource().getRegistrySuffix());
         OreBlockType oreBlockType = MekanismBlocks.ORES.get(type);
         add(oreBlockType.stone(), name + " Ore");
-        add(oreBlockType.stone().value().getDescriptionTranslationKey(), description);
+        add(oreBlockType.stone().value().getDescription(), description);
         add(oreBlockType.deepslate(), "Deepslate " + name + " Ore");
         add(MekanismTags.BlockItems.ORES.get(type), name + " Ores");
     }

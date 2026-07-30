@@ -1,11 +1,5 @@
 package mekanism.common.item;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
@@ -17,29 +11,12 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class ItemCraftingFormula extends Item {
 
     public ItemCraftingFormula(Properties properties) {
         super(properties.component(MekanismDataComponents.FORMULA_HOLDER, FormulaComponent.EMPTY));
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        Map<ItemResource, Integer> stacks = stack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaComponent.EMPTY).nonEmptyItems()
-              .collect(Collectors.toMap(Function.identity(), _ -> 1, Integer::sum, LinkedHashMap::new));
-        if (!stacks.isEmpty()) {
-            tooltipAdder.accept(MekanismLang.INGREDIENTS.translateColored(EnumColor.GRAY));
-            for (Entry<ItemResource, Integer> entry : stacks.entrySet()) {
-                tooltipAdder.accept(MekanismLang.GENERIC_TRANSFER.translateColored(EnumColor.GRAY, entry.getKey(), entry.getValue()));
-            }
-        }
     }
 
     @Override

@@ -7,13 +7,15 @@ import mekanism.common.component.containers.energy.EnergyContainerBuilder;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 
 public class ItemBlockResistiveHeater extends ItemBlockTooltip<BlockTile<?, ?>> {
 
     public ItemBlockResistiveHeater(BlockTile<?, ?> block, Item.Properties properties) {
-        super(block, true, properties
+        super(block, properties
               .component(MekanismDataComponents.ENERGY_USAGE, TileEntityResistiveHeater.BASE_USAGE)
+              .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
         );
     }
 

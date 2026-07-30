@@ -34,7 +34,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     private Boolean wasGettingPower;
 
     public DiversionTransporter(TileEntityTransmitter tile) {
-        super(tile, TransporterTier.BASIC);
+        super(tile, TransporterTier.BASIC);//TODO: Can we grab the tier from the corresponding SpecializedTransporter?
         modes = new DiversionControl[EnumUtils.DIRECTIONS.length];
         Arrays.fill(modes, DiversionControl.DISABLED);
     }

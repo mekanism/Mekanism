@@ -87,7 +87,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         configComponent.setupIOConfig(TransmissionType.ITEM, drainSlot, fillSlot, true).setCanEject(false);
         configComponent.setupIOConfig(TransmissionType.CHEMICAL, chemicalTank);
         ejectorComponent.setOutputData(configComponent, TransmissionType.CHEMICAL)
-              .setCanEject(_ -> canFunction() && (this.tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING));
+              .setCanEject(_ -> canFunction() && (this.tier.isCreative() || dumping != GasMode.DUMPING));
     }
 
     @Override
@@ -114,7 +114,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         boolean sendUpdatePacket = super.onUpdateServer(level);
         drainSlot.drainTankIntoSlot(null);
         fillSlot.fillTankFromSlot(null);
-        if (dumping != GasMode.IDLE && tier != ChemicalTankTier.CREATIVE && !chemicalTank.isEmpty()) {
+        if (dumping != GasMode.IDLE && !tier.isCreative() && !chemicalTank.isEmpty()) {
             ChemicalUtils.dump(chemicalTank, dumping, tier.getCapacity() / 400, tier.getTransferRate());
         }
         return sendUpdatePacket;
@@ -130,7 +130,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     @Override
     public boolean shouldDumpRadiation() {
-        return tier != ChemicalTankTier.CREATIVE;
+        return !tier.isCreative();
     }
 
     @Override

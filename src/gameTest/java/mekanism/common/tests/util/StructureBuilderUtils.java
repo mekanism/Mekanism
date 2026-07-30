@@ -8,10 +8,9 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
-import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.registration.impl.ItemRegistryObject;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -43,7 +42,7 @@ public class StructureBuilderUtils {
         }
     }
 
-    public static CompoundTag withDrive(ItemRegistryObject<? extends IQIODriveItem> drive) {
+    public static CompoundTag withDrive() {
         List<IInventorySlot> driveSlots = new ArrayList<>();
         for (int y = 0; y < 2; y++) {
             for (int x = 0; x < 6; x++) {
@@ -51,7 +50,7 @@ public class StructureBuilderUtils {
                 driveSlots.add(new QIODriveSlot(null, y * 6 + x, () -> null, null, 0, 0));
             }
         }
-        driveSlots.getFirst().setContents(drive.asResource(), 1, null);
+        driveSlots.getFirst().setContents(MekanismItems.BASE_QIO_DRIVE.asResource(), 1, null);
 
         //TODO - 26.2: Should we pass a path to the scoped collector?
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Mekanism.logger)) {

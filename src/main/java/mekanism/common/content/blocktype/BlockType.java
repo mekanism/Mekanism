@@ -3,7 +3,7 @@ package mekanism.common.content.blocktype;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import mekanism.api.text.ILangEntry;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomShape;
@@ -23,11 +23,11 @@ import org.jspecify.annotations.Nullable;
 
 public class BlockType {
 
-    private final ILangEntry description;
+    private final IHasTranslationKey description;
 
     private final Map<Class<? extends Attribute>, Attribute> attributeMap = new HashMap<>();
 
-    public BlockType(ILangEntry description) {
+    public BlockType(IHasTranslationKey description) {
         this.description = description;
     }
 
@@ -44,7 +44,7 @@ public class BlockType {
     public <ATTRIBUTE extends Attribute> ATTRIBUTE getOrThrow(Class<ATTRIBUTE> type) {
         ATTRIBUTE attribute = get(type);
         if (attribute == null) {
-            throw new IllegalStateException("Expected " + getDescription() + " to have an attribute of type " + type.getSimpleName());
+            throw new IllegalStateException("Expected " + description + " to have an attribute of type " + type.getSimpleName());
         }
         return attribute;
     }
@@ -73,8 +73,8 @@ public class BlockType {
         return attributeMap.values();
     }
 
-    public ILangEntry getDescription() {
-        return description;
+    public String getDescription() {
+        return description.getTranslationKey();
     }
 
     public static boolean is(Block block, BlockType... types) {
@@ -101,7 +101,7 @@ public class BlockType {
             this.holder = holder;
         }
 
-        public static BlockTypeBuilder<BlockType, ?> createBlock(ILangEntry description) {
+        public static BlockTypeBuilder<BlockType, ?> createBlock(IHasTranslationKey description) {
             return new BlockTypeBuilder<>(new BlockType(description));
         }
 

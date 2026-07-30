@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.text.EnumColor;
-import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.component.component.AttachedEjector;
@@ -23,18 +21,13 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
-import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
+import net.minecraft.util.Unit;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements ICustomCreativeTabContents {
@@ -65,31 +58,14 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     private final EnergyCubeTier tier;
 
     public ItemBlockEnergyCube(BlockEnergyCube block, Item.Properties properties) {
-        tier = Attribute.getTierNN(block, EnergyCubeTier.class);
-        super(block, true, properties
+        EnergyCubeTier tier = Attribute.getTierNN(block, EnergyCubeTier.class);
+        this.tier = tier;
+        super(block, properties
+              .component(MekanismDataComponents.ENERGY_CUBE_TIER, tier)
               .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
               .component(MekanismDataComponents.SIDE_CONFIG, SIDE_CONFIG)
+              .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
         );
-    }
-
-    @Override
-    public EnergyCubeTier getTier() {
-        return tier;
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
-          Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        StorageUtils.addStoredEnergy(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, true);
-        tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(tier.getCapacity())));
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-    }
-
-    @Override
-    protected void addTypeDetails(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
-          Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        //Don't call super so that we can exclude the stored energy from being shown as we show it in hover text
     }
 
     @Override
@@ -109,18 +85,18 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
 
     @Override
     public void addItems(ItemDisplayParameters displayParameters, Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        if (tier == EnergyCubeTier.CREATIVE) {
+        if (addDefault()) {
+            tabOutput.accept(ContainerType.ENERGY.getFilledVariant(item, null));
+        } else {
             //Add the empty and charged variants
             tabOutput.accept(withCreativeSideConfig(ALL_INPUT).toStack());
             tabOutput.accept(ContainerType.ENERGY.getFilledVariant(withCreativeSideConfig(ALL_OUTPUT), null));
-        } else {
-            tabOutput.accept(ContainerType.ENERGY.getFilledVariant(item, null));
         }
     }
 
     @Override
     public boolean addDefault() {
-        return tier != EnergyCubeTier.CREATIVE;
+        return !tier.isCreative();
     }
 
     public static ItemResource withCreativeSideConfig(AttachedSideConfig config) {

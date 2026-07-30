@@ -3,6 +3,8 @@ package mekanism.api.security;
 import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jspecify.annotations.Nullable;
@@ -39,22 +41,28 @@ public interface IItemSecurityUtils extends ITypedSecurityUtils<ItemAccess> {
     /// Adds any owner data that the given stack has to the passed in list of tooltips. If the stack does not expose an owner then the corresponding data will not be
     /// added.
     ///
-    /// @param itemAccess   Item access to retrieve the owner data from.
-    /// @param tooltipAdder Handles adding the extra tooltips.
+    /// @param itemAccess Item access to retrieve the owner data from.
+    /// @param context    Tooltip context.
+    /// @param player     The player viewing the tooltip.
+    /// @param builder    Handles adding the extra tooltips.
     ///
     /// @apiNote While this method won't crash if called on the server it won't render quite right due to not having access to the player, so it is best to only call this
     /// on the client.
-    /// @see #addSecurityTooltip(ItemAccess, Consumer)
-    void addOwnerTooltip(ItemAccess itemAccess, Consumer<Component> tooltipAdder);
+    /// @see #addSecurityTooltip(ItemAccess, Item.TooltipContext, Player, Consumer)
+    /// @since 10.8.0 Previously had fewer parameters.
+    void addOwnerTooltip(ItemAccess itemAccess, Item.TooltipContext context, @Nullable Player player, Consumer<Component> builder);
 
     /// Adds any owner and security data that the given stack has to the passed in list of tooltips. If the stack does not expose an owner or any security data then the
     /// corresponding data will not be added.
     ///
-    /// @param itemAccess   Item access to retrieve the owner and any security data from.
-    /// @param tooltipAdder Handles adding the extra tooltips.
+    /// @param itemAccess Item access to retrieve the owner and any security data from.
+    /// @param context    Tooltip context.
+    /// @param player     The player viewing the tooltip.
+    /// @param builder    Handles adding the extra tooltips.
     ///
     /// @apiNote While this method won't crash if called on the server it won't render quite right due to not having access to the player, so it is best to only call this
     /// on the client.
-    /// @see #addOwnerTooltip(ItemAccess, Consumer)
-    void addSecurityTooltip(ItemAccess itemAccess, Consumer<Component> tooltipAdder);
+    /// @see #addOwnerTooltip(ItemAccess, Item.TooltipContext, Player, Consumer)
+    /// @since 10.8.0 Previously had fewer parameters.
+    void addSecurityTooltip(ItemAccess itemAccess, Item.TooltipContext context, @Nullable Player player, Consumer<Component> builder);
 }

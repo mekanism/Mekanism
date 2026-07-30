@@ -537,7 +537,7 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerBlockColorHandlers(RegisterColorHandlersEvent.BlockTintSources event) {
         ClientRegistrationUtil.registerBlockColorHandler(event, state -> {
-                  BaseTier tier = Attribute.getBaseTier(state.typeHolder());
+                  BaseTier tier = Attribute.getBaseTier(state.getBlock());
                   if (tier != null) {
                       return tier.getPackedColor();
                   }

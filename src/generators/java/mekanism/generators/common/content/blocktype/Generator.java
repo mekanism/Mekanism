@@ -1,7 +1,7 @@
 package mekanism.generators.common.content.blocktype;
 
 import java.util.function.Supplier;
-import mekanism.api.text.ILangEntry;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.Attributes;
 import mekanism.common.content.blocktype.BlockTypeTile;
@@ -10,7 +10,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 
 public class Generator<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE> {
 
-    public Generator(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
+    public Generator(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, IHasTranslationKey description) {
         super(tileEntityRegistrar, description);
         add(Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), Attributes.SECURITY, Attributes.INVENTORY, Attributes.REDSTONE, Attributes.COMPARATOR);
     }
@@ -22,7 +22,7 @@ public class Generator<TILE extends TileEntityMekanism> extends BlockTypeTile<TI
         }
 
         public static <TILE extends TileEntityMekanism> GeneratorBuilder<Generator<TILE>, TILE, ?> createGenerator(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar,
-              ILangEntry description) {
+              IHasTranslationKey description) {
             return new GeneratorBuilder<>(new Generator<>(tileEntityRegistrar, description));
         }
     }

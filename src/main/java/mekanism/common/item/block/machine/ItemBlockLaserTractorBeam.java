@@ -5,12 +5,14 @@ import mekanism.api.AutomationType;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.item.block.ItemBlockTooltip;
+import mekanism.common.registries.MekanismDataComponents;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 
 public class ItemBlockLaserTractorBeam extends ItemBlockTooltip<BlockTile<?, ?>> {
 
     public ItemBlockLaserTractorBeam(BlockTile<?, ?> block, Item.Properties properties) {
-        super(block, true, properties);
+        super(block, properties.component(MekanismDataComponents.DETAILS, Unit.INSTANCE));
     }
 
     @Override

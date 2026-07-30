@@ -6,11 +6,11 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.upgrade.Upgrade;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
+import mekanism.api.upgrade.Upgrade;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.component.LockData;
@@ -19,14 +19,10 @@ import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.ResourceContainerType;
 import mekanism.common.component.qio.DriveContents;
 import mekanism.common.component.qio.DriveMetadata;
-import mekanism.common.content.qio.IQIODriveItem;
-import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
-import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.tier.BinTier;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -52,6 +48,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         }
         Set<RecipeUpgradeType> supportedTypes = EnumSet.noneOf(RecipeUpgradeType.class);
         Item item = itemType.getItem();
+        //TODO - 26.2: Do this off of the item's components?
         if (item instanceof BlockItem blockItem && Attribute.has(blockItem.getBlock(), AttributeUpgradeSupport.class)) {
             supportedTypes.add(RecipeUpgradeType.UPGRADE);
         }
@@ -72,14 +69,13 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             // there will be an owner one so given our security upgrade supports owner or security we only have to check for owner
             supportedTypes.add(RecipeUpgradeType.SECURITY);
         }
-        if (item instanceof ItemBlockBin bin && bin.getTier() != BinTier.CREATIVE) {
-            //If it isn't a creative bin try transferring the lock data
+        if (itemType.has(MekanismDataComponents.BIN_TIER)) {
             supportedTypes.add(RecipeUpgradeType.LOCK);
         }
-        if (item instanceof ItemBlockFactory) {
+        if (itemType.has(MekanismDataComponents.SORTING)) {
             supportedTypes.add(RecipeUpgradeType.SORTING);
         }
-        if (item instanceof IQIODriveItem) {
+        if (itemType.has(MekanismDataComponents.DRIVE_METADATA)) {
             supportedTypes.add(RecipeUpgradeType.QIO_DRIVE);
         }
         return supportedTypes;
@@ -143,8 +139,8 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 yield null;
             }
             case QIO_DRIVE -> {
-                DriveMetadata data = itemType.getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
-                if (data.count() > 0 && data.types() > 0) {
+                DriveMetadata data = itemType.get(MekanismDataComponents.DRIVE_METADATA);
+                if (data != null && data.count() > 0 && data.types() > 0) {
                     //If we don't have any stored items don't actually grab any recipe data
                     DriveContents contents = itemType.get(MekanismDataComponents.DRIVE_CONTENTS);
                     if (contents != null) {

@@ -8,6 +8,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.core.NonNullList;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -102,7 +103,7 @@ public class BinInsertRecipe extends BinRecipe {
             } else if (inserted == toInsert) {
                 //We could insert it all
                 //TODO: I think we can just skip this when handling it as a SpecialQIORecipe
-                ItemAccessUtils.exchange(binAccess, binAccess.getResource().with(MekanismDataComponents.FROM_RECIPE, true), transaction);
+                ItemAccessUtils.exchange(binAccess, binAccess.getResource().with(MekanismDataComponents.FROM_RECIPE, Unit.INSTANCE), transaction);
             }
             //Note: If we only managed to insert some of it into the bin, we skip marking our bin stack as being from a recipe
             // as there is no benefit to checking if we can insert extra stuff if we know we can't fit anymore
@@ -170,35 +171,32 @@ public class BinInsertRecipe extends BinRecipe {
 
     public static void onCrafting(ItemCraftedEvent event) {
         ItemStack result = event.getCrafting();
-        if (!result.isEmpty() && result.getItem() instanceof ItemBlockBin && result.count() == 1) {
-            //Remove the marker that the bin was crafted from a bin recipe
-            Boolean fromRecipe = result.remove(MekanismDataComponents.FROM_RECIPE);
-            if (fromRecipe != null && fromRecipe) {
-                //And if it was, try to move extra items from the container into it
-                ComponentBackedBinInventorySlot slot = convertToSlot(ItemAccess.forStack(result));
-                ItemResource storedResource = slot.resource();
-                if (!storedResource.isEmpty()) {
-                    //Protect against any mods that might be doing transactional logic, such as if an auto crafter validates it has enough energy before this event is fired
-                    try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
-                        Container craftingMatrix = event.getInventory();
-                        for (int i = 0, slots = craftingMatrix.getContainerSize(); i < slots; ++i) {
-                            ItemStack stack = craftingMatrix.getItem(i);
-                            //Check remaining items
-                            if (stack.count() > 1 && storedResource.matches(stack)) {
-                                //Try to insert any excess items in the slot (we lower it by one as the input slots have not been lowered yet)
-                                int toInsert = stack.count() - 1;
-                                int inserted = slot.insert(storedResource, toInsert, transaction, AutomationType.MANUAL);
-                                if (inserted == toInsert) {
-                                    //Set it to the single item we skipped
-                                    craftingMatrix.setItem(i, storedResource.toStack());
-                                } else if (inserted < toInsert) {
-                                    //Set the stack to whatever amount we were unable to insert
-                                    craftingMatrix.setItem(i, storedResource.toStack(toInsert + 1 - inserted));
-                                }
+        //Remove the marker that the bin was crafted from a bin recipe
+        if (!result.isEmpty() && result.getItem() instanceof ItemBlockBin && result.count() == 1 && result.remove(MekanismDataComponents.FROM_RECIPE) != null) {
+            //And if it was, try to move extra items from the container into it
+            ComponentBackedBinInventorySlot slot = convertToSlot(ItemAccess.forStack(result));
+            ItemResource storedResource = slot.resource();
+            if (!storedResource.isEmpty()) {
+                //Protect against any mods that might be doing transactional logic, such as if an auto crafter validates it has enough energy before this event is fired
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+                    Container craftingMatrix = event.getInventory();
+                    for (int i = 0, slots = craftingMatrix.getContainerSize(); i < slots; ++i) {
+                        ItemStack stack = craftingMatrix.getItem(i);
+                        //Check remaining items
+                        if (stack.count() > 1 && storedResource.matches(stack)) {
+                            //Try to insert any excess items in the slot (we lower it by one as the input slots have not been lowered yet)
+                            int toInsert = stack.count() - 1;
+                            int inserted = slot.insert(storedResource, toInsert, transaction, AutomationType.MANUAL);
+                            if (inserted == toInsert) {
+                                //Set it to the single item we skipped
+                                craftingMatrix.setItem(i, storedResource.toStack());
+                            } else if (inserted < toInsert) {
+                                //Set the stack to whatever amount we were unable to insert
+                                craftingMatrix.setItem(i, storedResource.toStack(toInsert + 1 - inserted));
                             }
                         }
-                        transaction.commit();
                     }
+                    transaction.commit();
                 }
             }
         }

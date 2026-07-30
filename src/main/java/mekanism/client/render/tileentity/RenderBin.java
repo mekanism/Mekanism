@@ -9,7 +9,6 @@ import mekanism.client.render.tileentity.RenderBin.BinRenderState;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.inventory.slot.BinInventorySlot;
-import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.client.gui.Font;
@@ -69,7 +68,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
                 //Copy from how the campfire renderer calculates the seed
                 int seed = (int) state.blockPos.asLong();
                 this.itemModelResolver.updateForTopItem(state.item, binSlot.getBinItemType().toStack(), ItemDisplayContext.GUI, level, null, seed);
-                state.displayCount = bin.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate() : TextComponentUtil.build(binSlot.amountAsInt());
+                state.displayCount = bin.getTier().isCreative() ? MekanismLang.INFINITE.translate() : TextComponentUtil.build(binSlot.amountAsInt());
                 if (binSlot.isLocked()) {
                     state.displayColor = EnumColor.AQUA.getPackedColor();
                 }

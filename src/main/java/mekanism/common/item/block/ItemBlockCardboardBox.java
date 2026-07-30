@@ -1,10 +1,7 @@
 package mekanism.common.item.block;
 
-import java.util.function.Consumer;
 import mekanism.api.security.IBlockSecurityUtils;
-import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.component.BlockData;
@@ -14,18 +11,14 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
-import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -37,18 +30,7 @@ import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
 
     public ItemBlockCardboardBox(BlockCardboardBox block, Item.Properties properties) {
-        super(block, properties.stacksTo(16));
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        BlockData existingData = stack.get(MekanismDataComponents.BLOCK_DATA);
-        //TODO - 26.2: Can we somehow move whether it has block data or not to the data component? Likely would require adding a default component for NO block data
-        tooltipAdder.accept(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(existingData != null, true)));
-        //TODO - 26.2: Make a Neo PR adding a supplier variant of this? so that mods don't have to call get?
-        stack.addToTooltip(MekanismDataComponents.BLOCK_DATA.get(), context, tooltipDisplay, tooltipAdder, flag);
+        super(block, properties.stacksTo(16).component(MekanismDataComponents.BLOCK_DATA, BlockData.NONE));
     }
 
     private static boolean canReplace(Level world, Player player, BlockPos pos, Direction sideClicked, BlockState state, ItemStack stack) {

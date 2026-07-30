@@ -62,9 +62,6 @@ public final class SerializationConstants {
     public static final String ITEM_OUTPUT = "item_output";
     public static final String FLUID_OUTPUT = "fluid_output";
 
-    //Transmitter model
-    public static final String GLASS = "glass";
-
     //Advancement Triggers
     public static final String ACTION = "action";
     public static final String COPY = "copy";
@@ -118,6 +115,8 @@ public final class SerializationConstants {
     public static final String BURN_TIME = "burn_time";
     public static final String MAX_BURN_RATE = "maxBurnPerTick";
     public static final String CACHE = "cache";
+    /// @since 10.8.0
+    public static final String CAPACITY = "capacity";
     public static final String CHANCE = "chance";
     public static final String CHANNEL = "channel";
     /// @since 10.7.0
@@ -156,6 +155,8 @@ public final class SerializationConstants {
     public static final String DATA_TYPE = "data_type";
     public static final String DELAY = "delay";
     public static final String DESCRIPTION = "description";
+    /// @since 10.8.0
+    public static final String DETAILS = "details";
     public static final String DIMENSION = "dimension";
     public static final String DIRECTION = "direction";
     public static final String DISABLED = "disabled";
@@ -303,6 +304,8 @@ public final class SerializationConstants {
     public static final String TEXTURES = "textures";
     /// @since 10.7.11
     public static final String THERMAL_ENTHALPY = "thermal_enthalpy";
+    /// @since 10.8.0
+    public static final String TIER = "tier";
     public static final String TIME = "time";
     /// @since 10.8.0
     public static final String TINT = "tint";

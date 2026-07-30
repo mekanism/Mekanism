@@ -26,7 +26,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -35,20 +34,10 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class ItemWalkieTalkie extends Item implements IModeItem {
 
-    public static final int MAX_CHANNEL = 9;
+    private static final int MAX_CHANNEL = 9;
 
     public ItemWalkieTalkie(Item.Properties properties) {
         super(properties.stacksTo(1).component(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT));
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        stack.addToTooltip(AdditionsDataComponents.WALKIE_DATA.get(), context, tooltipDisplay, tooltipAdder, flag);
-        if (!MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
-            tooltipAdder.accept(AdditionsLang.WALKIE_DISABLED.translateColored(EnumColor.DARK_RED));
-        }
     }
 
     @Override
@@ -100,9 +89,12 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         );
 
         @Override
-        public void addToTooltip(TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag flag, DataComponentGetter componentGetter) {
-            tooltipAdder.accept(OnOff.of(running(), true).getTextComponent());
-            tooltipAdder.accept(AdditionsLang.CHANNEL.translateColored(EnumColor.DARK_AQUA, EnumColor.GRAY, channel()));
+        public void addToTooltip(TooltipContext context, Consumer<Component> builder, TooltipFlag flag, DataComponentGetter componentGetter) {
+            builder.accept(OnOff.of(running(), true).getTextComponent());
+            builder.accept(AdditionsLang.CHANNEL.translateColored(EnumColor.DARK_AQUA, EnumColor.GRAY, channel()));
+            if (!MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
+                builder.accept(AdditionsLang.WALKIE_DISABLED.translateColored(EnumColor.DARK_RED));
+            }
         }
 
         /// A stream of possible data values, with running = true, for datagen

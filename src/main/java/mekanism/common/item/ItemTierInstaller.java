@@ -19,7 +19,6 @@ import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -82,7 +81,7 @@ public class ItemTierInstaller extends Item {
         } else if (world.isClientSide()) {
             return InteractionResult.PASS;
         }
-        Holder<Block> block = state.typeHolder();
+        Block block = state.getBlock();
         AttributeUpgradeable upgradeableBlock = Attribute.get(block, AttributeUpgradeable.class);
         if (upgradeableBlock != null) {
             BaseTier baseTier = Attribute.getBaseTier(block);

@@ -6,6 +6,7 @@ import mekanism.common.base.IModModule;
 import mekanism.common.lib.Version;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.registries.ToolsCreativeTabs;
+import mekanism.tools.common.registries.ToolsDataComponents;
 import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.resources.Identifier;
@@ -40,6 +41,7 @@ public class MekanismTools implements IModModule {
         modEventBus.addListener(FMLCommonSetupEvent.class, this::commonSetup);
         modEventBus.addListener(ModConfigEvent.class, MekanismToolsConfig::onConfigLoad);
         ToolsItems.ITEMS.register(modEventBus);
+        ToolsDataComponents.register(modEventBus);
         ToolsCreativeTabs.CREATIVE_TABS.register(modEventBus);
         ToolsRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
     }

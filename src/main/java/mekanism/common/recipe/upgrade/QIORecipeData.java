@@ -8,7 +8,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.UUID;
 import mekanism.common.component.qio.DriveContents;
 import mekanism.common.component.qio.DriveMetadata;
-import mekanism.common.content.qio.IQIODriveItem;
+import mekanism.common.content.qio.IQIODriveCapacity;
 import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.registries.MekanismDataComponents;
@@ -66,13 +66,18 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
             return itemCount == 0;
         }
         ItemResource itemType = itemAccess.getResource();
-        IQIODriveItem driveItem = (IQIODriveItem) itemType.getItem();
-        if (itemCount == 0 || itemCount > driveItem.getCountCapacity() || itemMap.size() > driveItem.getTypeCapacity()) {
+        DriveMetadata driveMetadata = itemType.get(MekanismDataComponents.DRIVE_METADATA);
+        if (driveMetadata == null) {
+            //No metadata defined on output item to know what capacity it has
+            return false;
+        }
+        IQIODriveCapacity capacity = driveMetadata.capacity();
+        if (itemCount == 0 || itemCount > capacity.count() || itemMap.size() > capacity.types()) {
             //If we have items stored but no types, have more items stored than the output item supports, or have more types stored
             // then return that we are not able to actually apply them to the stack
             return false;
         }
-        itemType = itemType.with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(itemCount, itemMap.size()))
+        itemType = itemType.with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(itemCount, itemMap.size(), capacity))
               //Note: We just directly pass the item map to it, as we don't need it anymore so the drive contents can take it over
               .with(MekanismDataComponents.DRIVE_CONTENTS, new DriveContents(itemMap));
         return ItemAccessUtils.exchange(itemAccess, itemType, transaction);

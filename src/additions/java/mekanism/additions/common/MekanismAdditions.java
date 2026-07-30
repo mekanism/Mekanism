@@ -65,7 +65,7 @@ public class MekanismAdditions implements IModModule {
 
         modEventBus.addListener(FMLCommonSetupEvent.class, this::commonSetup);
         modEventBus.addListener(ModConfigEvent.class, MekanismAdditionsConfig::onConfigLoad);
-        AdditionsDataComponents.DATA_COMPONENTS.register(modEventBus);
+        AdditionsDataComponents.register(modEventBus);
         AdditionsItems.ITEMS.register(modEventBus);
         AdditionsBlocks.BLOCKS.register(modEventBus);
         AdditionsCreativeTabs.CREATIVE_TABS.register(modEventBus);

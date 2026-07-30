@@ -1,8 +1,9 @@
 package mekanism.common.component.containers.energy;
 
+import java.util.Objects;
 import mekanism.api.AutomationType;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.item.block.ItemBlockEnergyCube;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.EnergyCubeTier;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -12,17 +13,16 @@ import org.jetbrains.annotations.Range;
 public class ComponentBackedEnergyCubeContainer extends ComponentBackedEnergyContainer {
 
     public static ComponentBackedEnergyCubeContainer create(ItemAccess attachedAccess) {
-        if (!(attachedAccess.getResource().getItem() instanceof ItemBlockEnergyCube item)) {
-            throw new IllegalStateException("Attached to should always be an energy cube item");
-        }
-        return new ComponentBackedEnergyCubeContainer(attachedAccess, item.getTier());
+        EnergyCubeTier tier = attachedAccess.getResource().get(MekanismDataComponents.ENERGY_CUBE_TIER);
+        Objects.requireNonNull(tier, "Attached to should always have an energy cube tier defined");
+        return new ComponentBackedEnergyCubeContainer(attachedAccess, tier);
     }
 
     private final boolean isCreative;
 
     private ComponentBackedEnergyCubeContainer(ItemAccess attachedAccess, EnergyCubeTier tier) {
         super(attachedAccess, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), tier::getCapacity, tier::getTransferRate);
-        isCreative = tier == EnergyCubeTier.CREATIVE;
+        isCreative = tier.isCreative();
     }
 
     @Override

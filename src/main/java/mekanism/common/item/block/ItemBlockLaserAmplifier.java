@@ -8,15 +8,17 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier.RedstoneOutput;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 
 public class ItemBlockLaserAmplifier extends ItemBlockTooltip<BlockTileModel<TileEntityLaserAmplifier, BlockTypeTile<TileEntityLaserAmplifier>>> {
 
     public ItemBlockLaserAmplifier(BlockTileModel<TileEntityLaserAmplifier, BlockTypeTile<TileEntityLaserAmplifier>> block, Item.Properties properties) {
-        super(block, true, properties
+        super(block, properties
               .component(MekanismDataComponents.REDSTONE_OUTPUT, RedstoneOutput.OFF)
               .component(MekanismDataComponents.DELAY, 0)
               .component(MekanismDataComponents.MIN_THRESHOLD, 0)
+              .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
         );
     }
 

@@ -1,6 +1,5 @@
 package mekanism.common.block.prefab;
 
-import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.BlockMekanism;
@@ -54,7 +53,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     }
 
     @Override
-    public ILangEntry getDescription() {
+    public String getDescription() {
         return type.getDescription();
     }
 
@@ -63,7 +62,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
         if (this instanceof IColoredBlock coloredBlock) {
             return TextComponentUtil.build(coloredBlock.getColor(), super.getName());
         }
-        BaseTier baseTier = Attribute.getBaseTier(builtInRegistryHolder());
+        BaseTier baseTier = Attribute.getBaseTier(this);
         if (baseTier == null) {
             return super.getName();
         }

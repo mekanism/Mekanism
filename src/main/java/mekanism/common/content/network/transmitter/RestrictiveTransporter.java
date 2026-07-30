@@ -6,7 +6,7 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 public class RestrictiveTransporter extends LogisticalTransporterBase {
 
     public RestrictiveTransporter(TileEntityTransmitter tile) {
-        super(tile, TransporterTier.BASIC);
+        super(tile, TransporterTier.BASIC);//TODO: Can we grab the tier from the corresponding SpecializedTransporter?
     }
 
     @Override

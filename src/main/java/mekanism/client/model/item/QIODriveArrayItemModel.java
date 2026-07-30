@@ -12,7 +12,7 @@ import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel;
 import mekanism.common.component.FrequencyAware;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.qio.DriveMetadata;
-import mekanism.common.content.qio.IQIODriveItem;
+import mekanism.common.content.qio.IQIODriveCapacity;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.frequency.IFrequencyItem;
@@ -109,32 +109,32 @@ public record QIODriveArrayItemModel(
             List<LargeResourceStack<ItemResource>> inventorySlots = ContainerType.ITEM.getAttachedContents(stack);
             boolean hasFrequency = hasFrequency(stack);
             for (int i = 0; i < TileEntityQIODriveArray.DRIVE_SLOTS; i++) {
-                DriveStatus status;
-                ItemResource driveData;
-                if (i < inventorySlots.size()) {
-                    driveData = inventorySlots.get(i).resource();
-                } else {
+                if (i >= inventorySlots.size()) {
                     break;
                 }
-                if (driveData.isEmpty() || !(driveData.getItem() instanceof IQIODriveItem driveItem)) {
+                ItemResource driveData = inventorySlots.get(i).resource();
+                if (driveData.isEmpty()) {
                     continue;
-                } else {
-                    DriveMetadata metadata = driveData.getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
-                    if (hasFrequency) {
-                        long countCapacity = driveItem.getCountCapacity();
-                        if (metadata.count() == countCapacity) {
-                            //If we are at max item capacity: Full
-                            status = DriveStatus.FULL;
-                        } else if (metadata.types() == driveItem.getTypeCapacity() || metadata.count() >= countCapacity * 0.75) {
-                            //If we are at max type capacity OR we are at 75% or more capacity: Near full
-                            status = DriveStatus.NEAR_FULL;
-                        } else {
-                            //Otherwise: Ready
-                            status = DriveStatus.READY;
-                        }
+                }
+                DriveMetadata metadata = driveData.get(MekanismDataComponents.DRIVE_METADATA);
+                if (metadata == null) {//Not actually a QIO Drive
+                    continue;
+                }
+                DriveStatus status;
+                if (hasFrequency) {
+                    IQIODriveCapacity capacity = metadata.capacity();
+                    if (metadata.count() == capacity.count()) {
+                        //If we are at max item capacity: Full
+                        status = DriveStatus.FULL;
+                    } else if (metadata.types() == capacity.types() || metadata.count() >= capacity.count() * 0.75) {
+                        //If we are at max type capacity OR we are at 75% or more capacity: Near full
+                        status = DriveStatus.NEAR_FULL;
                     } else {
-                        status = DriveStatus.OFFLINE;
+                        //Otherwise: Ready
+                        status = DriveStatus.READY;
                     }
+                } else {
+                    status = DriveStatus.OFFLINE;
                 }
                 driveStatus = TileEntityQIODriveArray.updateStatus(i, status, driveStatus);
             }

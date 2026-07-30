@@ -57,7 +57,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
             if (chemicalHandler == null) {
                 hudElementAdder.accept(IClientModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), 1));
             } else {
-                long stored = StorageUtils.getContainedChemical(chemicalHandler, ChemicalIds.HYDROGEN);
+                long stored = StorageUtils.getContainedResource(chemicalHandler, ChemicalIds.HYDROGEN);
                 double ratio = MathUtils.divideToLevel(stored, chemicalHandler.getCapacityAsLong(0, chemicalHandler.getResource(0)));
                 hudElementAdder.accept(IClientModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), ratio));
             }

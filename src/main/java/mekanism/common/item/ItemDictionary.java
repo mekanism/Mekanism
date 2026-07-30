@@ -1,19 +1,16 @@
 package mekanism.common.item;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
-import mekanism.client.key.MekKeyHandler;
-import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
@@ -23,8 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -38,18 +33,9 @@ import net.minecraft.world.phys.HitResult.Type;
 public class ItemDictionary extends Item {
 
     public ItemDictionary(Properties properties) {
-        super(properties.stacksTo(1).rarity(Rarity.UNCOMMON));
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
-            tooltipAdder.accept(MekanismLang.DESCRIPTION_DICTIONARY.translate());
-        } else {
-            tooltipAdder.accept(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.getTranslatedKeyMessage()));
-        }
+        super(properties.stacksTo(1).rarity(Rarity.UNCOMMON)
+              .component(MekanismDataComponents.DESCRIPTION, MekanismLang.DESCRIPTION_DICTIONARY.translate())
+        );
     }
 
     @Override

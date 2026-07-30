@@ -17,10 +17,6 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
-import mekanism.api.text.EnumColor;
-import mekanism.client.key.MekKeyHandler;
-import mekanism.client.key.MekanismKeyHandler;
-import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.GenericTankSpec;
 import mekanism.common.capabilities.ICapabilityAware;
@@ -48,14 +44,12 @@ import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtils;
-import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
@@ -72,8 +66,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.item.equipment.ArmorType;
@@ -149,25 +141,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public void onDestroyed(ItemEntity item, DamageSource damageSource) {
         ModuleHelper.INSTANCE.dropModuleContainerContents(item, damageSource);
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            addModuleDetails(stack, tooltipAdder);
-        } else {
-            ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
-            StorageUtils.addStoredEnergy(itemAccess, tooltipAdder, true);
-            if (!chemicalTankSpecs.isEmpty()) {
-                StorageUtils.addStoredChemical(itemAccess, tooltipAdder);
-            }
-            if (!fluidTankSpecs.isEmpty()) {
-                StorageUtils.addStoredFluid(itemAccess, tooltipAdder, MekanismLang.NO_FLUID_TOOLTIP);
-            }
-            tooltipAdder.accept(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
-        }
     }
 
     @Override

@@ -36,7 +36,7 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     private BinInventorySlot(@Nullable IContentsListener listener, BinTier tier) {
         super(tier.getCapacity(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, null, null, listener, 0, 0);
-        isCreative = tier == BinTier.CREATIVE;
+        isCreative = tier.isCreative();
         obeyStackLimit = false;
     }
 

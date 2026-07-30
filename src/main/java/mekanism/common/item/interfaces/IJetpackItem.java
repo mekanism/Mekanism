@@ -3,6 +3,7 @@ package mekanism.common.item.interfaces;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import mekanism.api.IIncrementalEnum;
@@ -28,6 +29,9 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -43,7 +47,7 @@ public interface IJetpackItem {
     ///@return thrust that fuel was consumed for
     <ITEM extends TypedInstance<Item> & DataComponentGetter> double useJetpackFuel(RegistryAccess registryAccess, ItemAccess itemAccess, ITEM primaryInstance, TransactionContext transaction);
 
-    enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasModeIcon, StringRepresentable, IHasEnumNameTextComponent {
+    enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasModeIcon, StringRepresentable, IHasEnumNameTextComponent, TooltipProvider {
         NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, "jetpack_normal"),
         HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA, "jetpack_hover"),
         VECTOR(MekanismLang.JETPACK_VECTOR, EnumColor.ORANGE, "jetpack_vector"),
@@ -89,6 +93,11 @@ public interface IJetpackItem {
         @Override
         public String getSerializedName() {
             return serializedName;
+        }
+
+        @Override
+        public void addToTooltip(TooltipContext context, Consumer<Component> builder, TooltipFlag flag, DataComponentGetter components) {
+            builder.accept(MekanismLang.MODE.translateColored(EnumColor.GRAY, this));
         }
     }
 

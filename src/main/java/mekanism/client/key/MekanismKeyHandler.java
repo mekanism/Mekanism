@@ -51,8 +51,8 @@ public class MekanismKeyHandler {
           .onKeyDown((_, _) -> handlePotentialModeItem(EquipmentSlot.LEGS)).build();
     public static final KeyMapping feetModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_FEET_MODE).conflictInGame().keyCode(InputConstants.KEY_B)
           .onKeyDown((_, _) -> handlePotentialModeItem(EquipmentSlot.FEET)).build();
-    public static final KeyMapping detailsKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_DETAILS_MODE).conflictInGui().keyCode(InputConstants.KEY_LSHIFT).build();
-    public static final KeyMapping descriptionKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_DESCRIPTION_MODE).conflictInGui().modifier(KeyModifier.SHIFT)
+    public static final KeyMapping detailsKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_DETAILS_MODE).keyCode(InputConstants.KEY_LSHIFT).build();
+    public static final KeyMapping descriptionKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_DESCRIPTION_MODE).modifier(KeyModifier.SHIFT)
           .keyCode(InputConstants.KEY_N).build();
     public static final KeyMapping moduleTweakerKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_MODULE_TWEAKER).conflictInGame().keyCode(InputConstants.KEY_BACKSLASH)
           .onKeyDown((_, _) -> {

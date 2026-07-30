@@ -70,7 +70,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Tool;
-import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -107,15 +107,6 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                     new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK), Optional.empty(), Optional.of(true))
               ), 1, 0, true))
         );
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        DisassemblerMode mode = getMode(stack);
-        tooltipAdder.accept(MekanismLang.MODE.translateColored(EnumColor.INDIGO, mode));
-        tooltipAdder.accept(MekanismLang.DISASSEMBLER_EFFICIENCY.translateColored(EnumColor.INDIGO, mode.getEfficiency()));
     }
 
     @Override
@@ -277,7 +268,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return stack.has(DataComponents.ENCHANTABLE) && super.supportsEnchantment(stack, enchantment);
     }
 
-    public enum DisassemblerMode implements IDisableableEnum<DisassemblerMode>, IHasEnumNameTextComponent, IRadialMode, StringRepresentable {
+    public enum DisassemblerMode implements IDisableableEnum<DisassemblerMode>, IHasEnumNameTextComponent, IRadialMode, StringRepresentable, TooltipProvider {
         NORMAL(MekanismLang.RADIAL_EXCAVATION_SPEED_NORMAL, 20, ConstantPredicates.ALWAYS_TRUE, EnumColor.BRIGHT_GREEN, ExcavationMode.NORMAL.icon()),
         SLOW(MekanismLang.RADIAL_EXCAVATION_SPEED_SLOW, 8, MekanismConfig.gear.disassemblerSlowMode, EnumColor.PINK, ExcavationMode.SLOW.icon()),
         //Note: Uses extreme icon as both are efficiency 128
@@ -345,6 +336,12 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         @Override
         public String getSerializedName() {
             return serializedName;
+        }
+
+        @Override
+        public void addToTooltip(TooltipContext context, Consumer<Component> builder, TooltipFlag flag, DataComponentGetter components) {
+            builder.accept(MekanismLang.MODE.translateColored(EnumColor.INDIGO, this));
+            builder.accept(MekanismLang.DISASSEMBLER_EFFICIENCY.translateColored(EnumColor.INDIGO, getEfficiency()));
         }
     }
 }

@@ -23,10 +23,15 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.Unit;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
+//TODO - 26.2: Re-evaluate our usages of cacheEncoding. Neo's wiki states: cacheEncoding caches the encoding result of the Codec such that any subsequent encodes
+// uses the cached value if the component value hasn't changed. This should only be used if the component value is expected to rarely or never change.
+//TODO - 26.2: Use ignoreSwapAnimation() for some of our components, most notably probably energy storage
 public class DataComponentDeferredRegister extends MekanismDeferredRegister<DataComponentType<?>> {
 
     public DataComponentDeferredRegister(String namespace) {
@@ -35,6 +40,11 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
 
     public <TYPE> MekanismDeferredHolder<DataComponentType<?>, DataComponentType<TYPE>> simple(String name, UnaryOperator<DataComponentType.Builder<TYPE>> operator) {
         return register(name, () -> operator.apply(DataComponentType.builder()).build());
+    }
+
+    public <TYPE> MekanismDeferredHolder<DataComponentType<?>, DataComponentType<TYPE>> simple(String name, Codec<TYPE> codec,
+          StreamCodec<? super RegistryFriendlyByteBuf, TYPE> streamCodec) {
+        return simple(name, builder -> builder.persistent(codec).networkSynchronized(streamCodec));
     }
 
     public <FREQ extends Frequency> MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<FREQ>>> registerFrequencyAware(String name,
@@ -58,29 +68,28 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
         ).cacheEncoding());
     }
 
+    public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Unit>> registerUnit(String name) {
+        return simple(name, Unit.CODEC, Unit.STREAM_CODEC);
+    }
+
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> registerBoolean(String name) {
-        return simple(name, builder -> builder.persistent(Codec.BOOL)
-              .networkSynchronized(ByteBufCodecs.BOOL));
+        return simple(name, Codec.BOOL, ByteBufCodecs.BOOL);
     }
 
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> registerNonNegativeInt(String name) {
-        return simple(name, builder -> builder.persistent(ExtraCodecs.POSITIVE_INT)
-              .networkSynchronized(ByteBufCodecs.VAR_INT));
+        return simple(name, ExtraCodecs.POSITIVE_INT, ByteBufCodecs.VAR_INT);
     }
 
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> registerInt(String name) {
-        return simple(name, builder -> builder.persistent(Codec.INT)
-              .networkSynchronized(ByteBufCodecs.VAR_INT));
+        return simple(name, Codec.INT, ByteBufCodecs.VAR_INT);
     }
 
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> registerNonNegativeLong(String name) {
-        return simple(name, builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_LONG)
-              .networkSynchronized(ByteBufCodecs.VAR_LONG));
+        return simple(name, ExtraCodecs.NON_NEGATIVE_LONG, ByteBufCodecs.VAR_LONG);
     }
 
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<UUID>> registerUUID(String name) {
-        return simple(name, builder -> builder.persistent(UUIDUtil.CODEC)
-              .networkSynchronized(UUIDUtil.STREAM_CODEC));
+        return simple(name, UUIDUtil.CODEC, UUIDUtil.STREAM_CODEC);
     }
 
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Component>> registerComponent(String name) {
@@ -92,7 +101,6 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
 
     public <TYPE> MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<TYPE>>> registerResourceKey(String name,
           ResourceKey<? extends Registry<TYPE>> registryKey) {
-        return simple(name, builder -> builder.persistent(ResourceKey.codec(registryKey))
-              .networkSynchronized(ResourceKey.streamCodec(registryKey)));
+        return simple(name, ResourceKey.codec(registryKey), ResourceKey.streamCodec(registryKey));
     }
 }

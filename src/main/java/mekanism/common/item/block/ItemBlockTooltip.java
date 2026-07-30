@@ -1,28 +1,16 @@
 package mekanism.common.item.block;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
-import java.util.function.Consumer;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
-import mekanism.api.text.EnumColor;
-import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
-import mekanism.client.key.MekKeyHandler;
-import mekanism.client.key.MekanismKeyHandler;
-import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
-import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
-import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.security.SecurityObject;
@@ -36,103 +24,35 @@ import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StorageUtils;
-import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import mekanism.common.util.text.TextUtils;
-import mekanism.common.util.text.UpgradeDisplay;
-import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
-public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends ItemBlockMekanism<BLOCK> implements ICapabilityAware, IComponentAware {
+public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLOCK> implements ICapabilityAware, IComponentAware {
 
-    private final boolean hasDetails;
-
+    //TODO - 26.2: Re-evaluate what callers should even be using this, vs just using ItemBlockMekanism now that we moved the description elsewhere
     public ItemBlockTooltip(BLOCK block, Item.Properties properties) {
-        this(block, false, properties);
-    }
-
-    public ItemBlockTooltip(BLOCK block, boolean hasDetails, Properties properties) {
         super(block, properties);
-        this.hasDetails = hasDetails;
     }
 
-    @Override
+    @Override//TODO - 26.2: Should we move this impl into ItemBlockMekanism? Then the only thing this class would do other than the super one is handling energy caps, components, and security
     public void onDestroyed(ItemEntity item, DamageSource damageSource) {
         //Try to drop the inventory contents if we are a block item that persists our inventory
         InventoryUtils.dropItemContents(item, damageSource);
     }
 
     @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
-            tooltipAdder.accept(getBlock().getDescription().translate());
-        } else if (hasDetails && MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            addDetails(stack, ItemAccessUtils.sideEffectFreeAccess(stack), context, tooltipDisplay, tooltipAdder, flag);
-        } else {
-            addStats(stack, ItemAccessUtils.sideEffectFreeAccess(stack), context, tooltipDisplay, tooltipAdder, flag);
-            if (hasDetails) {
-                tooltipAdder.accept(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
-            }
-            tooltipAdder.accept(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.getTranslatedKeyMessage()));
-        }
-    }
-
-    protected void addStats(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
-          Consumer<Component> tooltipAdder, TooltipFlag flag) {
-    }
-
-    protected void addDetails(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
-          Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        //Note: Security and owner info gets skipped if the stack doesn't expose them
-        IItemSecurityUtils.INSTANCE.addSecurityTooltip(itemAccess, tooltipAdder);
-        addTypeDetails(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
-        if (Attribute.has(getBlock(), AttributeInventory.class) && ContainerType.ITEM.supports(itemAccess.getResource())) {
-            tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(itemAccess)));
-        }
-        if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
-            UpgradeAware upgradeAware = itemAccess.getResource().get(MekanismDataComponents.UPGRADES);
-            if (upgradeAware != null) {
-                for (ObjectIterator<Object2IntMap.Entry<Holder<Upgrade>>> iterator = Object2IntMaps.fastIterator(upgradeAware.upgrades()); iterator.hasNext(); ) {
-                    Object2IntMap.Entry<Holder<Upgrade>> entry = iterator.next();
-                    tooltipAdder.accept(UpgradeDisplay.of(entry.getKey().value(), entry.getIntValue()).getTextComponent());
-                }
-            }
-        }
-    }
-
-    protected void addTypeDetails(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
-          Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        //Put this here so that energy cubes can skip rendering energy here
-        if (exposesEnergyCapOrTooltips()) {
-            StorageUtils.addStoredEnergy(itemAccess, tooltipAdder, false);
-        }
-        //TODO: Make this support "multiple" fluid types (and maybe display multiple tanks of the same fluid)
-        LargeResourceStack<FluidResource> fluidStack = ContainerType.FLUID.getStoredContentsFromAttachment(itemAccess);
-        if (!fluidStack.isEmpty()) {
-            tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack.resource(), EnumColor.GRAY, TextUtils.format(fluidStack.amount())));
-        }
-    }
-
-    @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        if (exposesEnergyCapOrTooltips()) {
+        if (exposesEnergyCap()) {
             //Ignore NBT for energized items causing re-equip animations
-            //TODO: Only ignore the energy attachment?
+            //TODO - 26.2: Only ignore the energy attachment?
+            // return slotChanged || !ItemStack.matchesIgnoringComponents(oldStack, newStack, );
             return slotChanged || oldStack.getItem() != newStack.getItem();
         }
         return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
@@ -140,9 +60,9 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     @Override
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        if (exposesEnergyCapOrTooltips()) {
+        if (exposesEnergyCap()) {
             //Ignore NBT for energized items causing block break reset
-            //TODO: Only ignore the energy attachment?
+            //TODO - 26.2: Only ignore the energy attachment?
             return oldStack.getItem() != newStack.getItem();
         }
         return super.shouldCauseBlockBreakReset(oldStack, newStack);
@@ -153,10 +73,6 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     protected boolean exposesEnergyCap() {
-        return exposesEnergyCapOrTooltips();
-    }
-
-    protected boolean exposesEnergyCapOrTooltips() {
         return Attribute.has(getBlock(), AttributeEnergy.class);
     }
 

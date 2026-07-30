@@ -1,11 +1,12 @@
 package mekanism.common.component.containers.chemical;
 
+import java.util.Objects;
 import mekanism.api.AutomationType;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.component.containers.resource.AttachedResources;
-import mekanism.common.item.block.ItemBlockChemicalTank;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.ChemicalTankTier;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -18,16 +19,15 @@ public class ComponentBackedChemicalTankTank extends ComponentBackedChemicalTank
     private final boolean isCreative;
 
     public static ComponentBackedChemicalTankTank create(ItemAccess attachedAccess, int tankIndex) {
-        if (!(attachedAccess.getResource().getItem() instanceof ItemBlockChemicalTank item)) {
-            throw new IllegalStateException("Attached to should always be a chemical tank item");
-        }
-        return new ComponentBackedChemicalTankTank(attachedAccess, tankIndex, item.getTier());
+        ChemicalTankTier tier = attachedAccess.getResource().get(MekanismDataComponents.CHEMICAL_TANK_TIER);
+        Objects.requireNonNull(tier, "Attached to should always have a chemical tank tier defined");
+        return new ComponentBackedChemicalTankTank(attachedAccess, tankIndex, tier);
     }
 
     private ComponentBackedChemicalTankTank(ItemAccess attachedAccess, int tankIndex, ChemicalTankTier tier) {
         super(attachedAccess, tankIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
-              tier::getCapacity, tier::getTransferRate, tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null);
-        isCreative = tier == ChemicalTankTier.CREATIVE;
+              tier::getCapacity, tier::getTransferRate, tier.isCreative() ? ChemicalAttributeValidator.ALWAYS_ALLOW : null);
+        isCreative = tier.isCreative();
     }
 
     @Override

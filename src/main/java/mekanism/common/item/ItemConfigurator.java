@@ -31,7 +31,6 @@ import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.lib.radial.IRadialModeItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -58,7 +57,7 @@ import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -79,13 +78,6 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         super(properties.rarity(Rarity.UNCOMMON).stacksTo(1)
               .component(MekanismDataComponents.CONFIGURATOR_MODE, ConfiguratorMode.CONFIGURATE_ITEMS)
         );
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        tooltipAdder.accept(MekanismLang.STATE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
     @Override
@@ -166,7 +158,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                         return InteractionResult.FAIL;
                     }
                     boolean creative = player.isCreative();
-                    if (tile instanceof TileEntityBin bin && bin.getTier() == BinTier.CREATIVE) {
+                    if (tile instanceof TileEntityBin bin && bin.getTier().isCreative()) {
                         //If the tile is a creative bin only allow clearing it if the player is in creative
                         // and don't bother popping the stack out
                         if (creative) {
@@ -247,7 +239,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         return ConfiguratorMode.CONFIGURATE_ITEMS;
     }
 
-    public enum ConfiguratorMode implements IIncrementalEnum<ConfiguratorMode>, IHasEnumNameTextComponent, IRadialMode, StringRepresentable {
+    public enum ConfiguratorMode implements IIncrementalEnum<ConfiguratorMode>, IHasEnumNameTextComponent, IRadialMode, StringRepresentable, TooltipProvider {
         CONFIGURATE_ITEMS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_CHEMICALS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.CHEMICAL, EnumColor.BRIGHT_GREEN, true, null),
@@ -322,6 +314,11 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         @Override
         public String getSerializedName() {
             return serializedName;
+        }
+
+        @Override
+        public void addToTooltip(TooltipContext context, Consumer<Component> builder, TooltipFlag flag, DataComponentGetter components) {
+            builder.accept(MekanismLang.STATE.translateColored(EnumColor.PINK, this));
         }
     }
 }

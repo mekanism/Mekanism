@@ -53,6 +53,7 @@ public class UnitDisplayUtils {
     };
 
     public static Component getEnergyDisplayShort(long value) {
+        //TODO - 26.2: Add a config option for whether the energy display should be shortened?
         //TODO - 26.2: Re-evaluate this, getDisplayBase takes a double, can we make it more accurate for higher values by creating a variant for longs?
         return getDisplayBase(value, FORGE_ENERGY, 2, true, true);
     }

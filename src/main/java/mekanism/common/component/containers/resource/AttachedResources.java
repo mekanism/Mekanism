@@ -30,4 +30,14 @@ public record AttachedResources<RESOURCE extends Resource>(List<LargeResourceSta
     public AttachedResources<RESOURCE> create(List<LargeResourceStack<RESOURCE>> containers) {
         return new AttachedResources<>(containers);
     }
+
+    @Override
+    public boolean hasNonEmptyContents() {
+        for (LargeResourceStack<RESOURCE> container : containers) {
+            if (!container.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

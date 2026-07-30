@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismItems;
 import mekanism.common.tests.MekanismTests;
 import mekanism.common.tests.helpers.QIOGameTestHelper;
 import mekanism.common.tests.util.StructureBuilderUtils;
@@ -28,7 +27,7 @@ public class TransactionalQIOTest {
     //Note: Our template is lazy so that we ensure the QIO drive is registered
     @RegisterStructureTemplate(BASE_DRIVE)
     public static final Supplier<StructureTemplate> BASE_DRIVE_TEMPLATE = StructureTemplateBuilder.lazy(1, 1, 1, builder -> builder
-          .set(0, 0, 0, MekanismBlocks.QIO_DRIVE_ARRAY.defaultState(), StructureBuilderUtils.withDrive(MekanismItems.BASE_QIO_DRIVE))
+          .set(0, 0, 0, MekanismBlocks.QIO_DRIVE_ARRAY.defaultState(), StructureBuilderUtils.withDrive())
     );
 
     @GameTest

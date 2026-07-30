@@ -3,7 +3,7 @@ package mekanism.common.registration.impl;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import mekanism.api.text.EnumColor;
+import mekanism.api.SupportsColorMap;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
@@ -81,11 +81,15 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
         return registerItem(name, properties -> new Item(properties.rarity(rarity)));
     }
 
-    public ItemRegistryObject<Item> register(String name, EnumColor color) {
-        return registerItem(name, properties -> new Item(properties) {
+    public ItemRegistryObject<Item> register(String name, SupportsColorMap color) {
+        return register(name, color, UnaryOperator.identity());
+    }
+
+    public ItemRegistryObject<Item> register(String name, SupportsColorMap color, UnaryOperator<Properties> propertyModifier) {
+        return registerItem(name, properties -> new Item(propertyModifier.apply(properties)) {
             @Override
             public Component getName(ItemStack stack) {
-                return TextComponentUtil.build(color, super.getName(stack));
+                return TextComponentUtil.build(color.getTextColor(), super.getName(stack));
             }
         });
     }

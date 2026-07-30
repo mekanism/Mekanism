@@ -2,15 +2,11 @@ package mekanism.common.content.gear;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.text.EnumColor;
-import mekanism.api.text.TextComponentUtil;
-import mekanism.common.MekanismLang;
 import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
@@ -68,18 +64,6 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
     default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> IModule<MODULE> getEnabledModule(ITEM instance,
           DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
         return IModuleHelper.INSTANCE.getIfEnabled(instance, type);
-    }
-
-    default <ITEM extends TypedInstance<Item> & DataComponentGetter> void addModuleDetails(ITEM instance, Consumer<Component> tooltipAdder) {
-        for (IModule<?> module : getModules(instance)) {
-            ModuleData<?> data = module.getUntypedData();
-            if (module.getInstalledCount() > 1) {
-                Component amount = MekanismLang.GENERIC_FRACTION.translate(module.getInstalledCount(), data.getMaxStackSize());
-                tooltipAdder.accept(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, data, amount));
-            } else {
-                tooltipAdder.accept(TextComponentUtil.build(EnumColor.GRAY, data));
-            }
-        }
     }
 
     default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean hasModule(ITEM instance, Holder<ModuleData<?>> type) {

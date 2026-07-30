@@ -14,6 +14,7 @@ import mekanism.common.component.component.AttachedSideConfig;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube.CubeSideState;
 import mekanism.common.tile.component.config.DataType;
@@ -32,6 +33,7 @@ import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -90,10 +92,12 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
     @Nullable
     @Override
     public CubeState extractArgument(ItemStack stack) {
-        ItemBlockEnergyCube itemBlock = (ItemBlockEnergyCube) stack.getItem();
-        EnergyCubeTier tier = itemBlock.getTier();
+        EnergyCubeTier tier = stack.get(MekanismDataComponents.ENERGY_CUBE_TIER);
+        if (tier == null) {
+            return null;
+        }
         CubeSideState[] sideStates = new CubeSideState[EnumUtils.SIDES.length];
-        AttachedSideConfig fallback = tier == EnergyCubeTier.CREATIVE ? ItemBlockEnergyCube.ALL_OUTPUT : ItemBlockEnergyCube.SIDE_CONFIG;
+        AttachedSideConfig fallback = tier.isCreative() ? ItemBlockEnergyCube.ALL_OUTPUT : ItemBlockEnergyCube.SIDE_CONFIG;
         IPersistentConfigInfo sideConfig = AttachedSideConfig.getStoredConfigInfo(stack, fallback, TransmissionType.ENERGY);
         for (RelativeSide side : EnumUtils.SIDES) {
             DataType dataType = sideConfig.getDataType(side);
@@ -105,6 +109,7 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
         }
 
         FoilableBlockModelRenderState modelRenderState = new FoilableBlockModelRenderState();
+        BlockItem itemBlock = (BlockItem) stack.getItem();
         BlockState blockState = itemBlock.getBlock().defaultBlockState();
         BlockStateModel blockStateModel = models().getBlockStateModelSet().get(blockState);
         if (blockStateModel instanceof EnergyCubeModel energyCubeModel) {

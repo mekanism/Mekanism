@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
@@ -24,14 +23,12 @@ import mekanism.common.item.interfaces.IChemicalItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.lib.transaction.TransactionHelper;
-import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
@@ -48,12 +45,11 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
@@ -62,20 +58,12 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemicalItem, ICustomCreativeTabContents, IAttachmentBasedModeItem<FlamethrowerMode> {
+public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemicalItem, IAttachmentBasedModeItem<FlamethrowerMode> {
 
     public ItemFlamethrower(Properties properties) {
         super(properties.stacksTo(1).rarity(Rarity.RARE).setNoCombineRepair()
               .component(MekanismDataComponents.FLAMETHROWER_MODE, FlamethrowerMode.COMBAT)
         );
-    }
-
-    @Override
-    @Deprecated
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredChemical(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder);
-        tooltipAdder.accept(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
     }
 
     @Override
@@ -168,21 +156,8 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     }
 
     @Override
-    public void addItems(ItemDisplayParameters displayParameters, Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        Optional<Reference<Chemical>> chemical = displayParameters.holders().get(getChemicalType());
-        //noinspection OptionalIsPresent - Capturing lambda
-        if (chemical.isPresent()) {
-            tabOutput.accept(ContainerType.CHEMICAL.getFilledVariant(item, chemical.get(), null));
-        }
-    }
-
-    private ResourceKey<Chemical> getChemicalType() {
+    public ResourceKey<Chemical> getChemicalType() {
         return ChemicalIds.HYDROGEN;
-    }
-
-    @Override
-    public boolean hasChemical(ItemAccess itemAccess) {
-        return ChemicalUtils.hasChemicalOfType(itemAccess, getChemicalType());
     }
 
     @Override
@@ -242,7 +217,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
         return itemAccess.getResource().getItem() instanceof ItemFlamethrower flamethrower && flamethrower.hasChemical(itemAccess);
     }
 
-    public enum FlamethrowerMode implements IIncrementalEnum<FlamethrowerMode>, IHasEnumNameTextComponent, StringRepresentable {
+    public enum FlamethrowerMode implements IIncrementalEnum<FlamethrowerMode>, IHasEnumNameTextComponent, StringRepresentable, TooltipProvider {
         COMBAT(MekanismLang.FLAMETHROWER_COMBAT, EnumColor.YELLOW),
         HEAT(MekanismLang.FLAMETHROWER_HEAT, EnumColor.ORANGE),
         INFERNO(MekanismLang.FLAMETHROWER_INFERNO, EnumColor.DARK_RED);
@@ -274,6 +249,11 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
         @Override
         public String getSerializedName() {
             return serializedName;
+        }
+
+        @Override
+        public void addToTooltip(TooltipContext context, Consumer<Component> builder, TooltipFlag flag, DataComponentGetter components) {
+            builder.accept(MekanismLang.MODE.translateColored(EnumColor.GRAY, this));
         }
     }
 }

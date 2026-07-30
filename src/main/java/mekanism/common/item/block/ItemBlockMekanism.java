@@ -1,14 +1,14 @@
 package mekanism.common.item.block;
 
 import mekanism.api.text.TextComponentUtil;
-import mekanism.api.tier.ITier;
+import mekanism.api.tier.BaseTier;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import org.jspecify.annotations.Nullable;
 
 public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
 
@@ -22,20 +22,17 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
         return (BLOCK) super.getBlock();
     }
 
-    @Nullable
-    public ITier getTier() {
-        return null;
-    }
-
     @Override
     public Component getName(ItemStack stack) {
-        if (getBlock() instanceof IColoredBlock coloredBlock) {
+        //TODO - 26.2: Can this be moved into the corresponding component or somewhere better?
+        BLOCK block = getBlock();
+        if (block instanceof IColoredBlock coloredBlock) {
             return TextComponentUtil.build(coloredBlock.getColor(), super.getName(stack));
         }
-        ITier tier = getTier();
+        BaseTier tier = Attribute.getBaseTier(block);
         if (tier == null) {
             return super.getName(stack);
         }
-        return TextComponentUtil.build(tier.getBaseTier().getTextColor(), super.getName(stack));
+        return TextComponentUtil.build(tier.getTextColor(), super.getName(stack));
     }
 }
