@@ -11,6 +11,7 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.key.MekKeyHandler;
+import mekanism.client.key.RadialConflictContext;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.client.render.lib.ScrollIncrementer;
@@ -222,7 +223,7 @@ public class ClientTickHandler {
             }
         }
 
-        if (minecraft.gui.screen() == null || minecraft.gui.screen() instanceof GuiRadialSelector) {
+        if (RadialConflictContext.INSTANCE.isActive()) {
             if (!MekKeyHandler.isRadialPressed() || (!updateSelectorRenderer(EquipmentSlot.MAINHAND) && !updateSelectorRenderer(EquipmentSlot.OFFHAND))) {
                 if (minecraft.gui.screen() != null) {
                     //If we currently have a radial selector gui open but shouldn't close it

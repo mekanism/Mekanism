@@ -29,9 +29,12 @@ import net.neoforged.neoforge.client.settings.KeyModifier;
 
 public class MekanismKeyHandler {
 
-    //TODO - 26.2: Re-evaluate key binding categories and also translating this
     public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Mekanism.rl("main"));
-    public static final KeyMapping handModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HAND_MODE).conflictInGame().keyCode(InputConstants.KEY_N)
+
+    public static final KeyMapping handModeSwitchKey = new MekKeyBindingBuilder()
+          .description(MekanismLang.KEY_HAND_MODE)
+          .conflictContext(RadialConflictContext.INSTANCE)
+          .keyCode(InputConstants.KEY_N)
           .onKeyDown((_, _) -> {
               Player player = Minecraft.getInstance().player;
               if (player != null) {
@@ -43,18 +46,45 @@ public class MekanismKeyHandler {
                   }
               }
           }).build();
-    public static final KeyMapping headModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HEAD_MODE).conflictInGame().keyCode(InputConstants.KEY_V)
-          .onKeyDown((_, _) -> handlePotentialModeItem(EquipmentSlot.HEAD)).build();
-    public static final KeyMapping chestModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_CHEST_MODE).conflictInGame().keyCode(InputConstants.KEY_G)
-          .onKeyDown((_, _) -> handlePotentialModeItem(EquipmentSlot.CHEST)).build();
-    public static final KeyMapping legsModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_LEGS_MODE).conflictInGame().keyCode(InputConstants.KEY_J)
-          .onKeyDown((_, _) -> handlePotentialModeItem(EquipmentSlot.LEGS)).build();
-    public static final KeyMapping feetModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_FEET_MODE).conflictInGame().keyCode(InputConstants.KEY_B)
-          .onKeyDown((_, _) -> handlePotentialModeItem(EquipmentSlot.FEET)).build();
-    public static final KeyMapping detailsKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_DETAILS_MODE).keyCode(InputConstants.KEY_LSHIFT).build();
-    public static final KeyMapping descriptionKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_DESCRIPTION_MODE).modifier(KeyModifier.SHIFT)
-          .keyCode(InputConstants.KEY_N).build();
-    public static final KeyMapping moduleTweakerKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_MODULE_TWEAKER).conflictInGame().keyCode(InputConstants.KEY_BACKSLASH)
+    public static final KeyMapping headModeSwitchKey = new MekKeyBindingBuilder()
+          .description(MekanismLang.KEY_HEAD_MODE)
+          .conflictInGame()
+          .keyCode(InputConstants.KEY_V)
+          .onKeyDown((_, _) -> handlePotentialModeItem(EquipmentSlot.HEAD))
+          .build();
+    public static final KeyMapping chestModeSwitchKey = new MekKeyBindingBuilder()
+          .description(MekanismLang.KEY_CHEST_MODE)
+          .conflictInGame()
+          .keyCode(InputConstants.KEY_G)
+          .onKeyDown((_, _) -> handlePotentialModeItem(EquipmentSlot.CHEST))
+          .build();
+    public static final KeyMapping legsModeSwitchKey = new MekKeyBindingBuilder()
+          .description(MekanismLang.KEY_LEGS_MODE)
+          .conflictInGame()
+          .keyCode(InputConstants.KEY_J)
+          .onKeyDown((_, _) -> handlePotentialModeItem(EquipmentSlot.LEGS))
+          .build();
+    public static final KeyMapping feetModeSwitchKey = new MekKeyBindingBuilder()
+          .description(MekanismLang.KEY_FEET_MODE)
+          .conflictInGame()
+          .keyCode(InputConstants.KEY_B)
+          .onKeyDown((_, _) -> handlePotentialModeItem(EquipmentSlot.FEET))
+          .build();
+    public static final KeyMapping detailsKey = new MekKeyBindingBuilder()
+          .description(MekanismLang.KEY_DETAILS_MODE)
+          .conflictInGui()
+          .keyCode(InputConstants.KEY_LSHIFT)
+          .build();
+    public static final KeyMapping descriptionKey = new MekKeyBindingBuilder()
+          .description(MekanismLang.KEY_DESCRIPTION_MODE)
+          .conflictInGui()
+          .modifier(KeyModifier.SHIFT)
+          .keyCode(InputConstants.KEY_N)
+          .build();
+    public static final KeyMapping moduleTweakerKey = new MekKeyBindingBuilder()
+          .description(MekanismLang.KEY_MODULE_TWEAKER)
+          .conflictInGame()
+          .keyCode(InputConstants.KEY_BACKSLASH)
           .onKeyDown((_, _) -> {
               Player player = Minecraft.getInstance().player;
               if (player != null && ModuleTweakerContainer.hasTweakableItem(player)) {
@@ -62,9 +92,17 @@ public class MekanismKeyHandler {
               }
           }).build();
     //TODO - 26.2: Evaluate control vs command for macs
-    public static final KeyMapping boostKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_BOOST).conflictInGame().keyCode(InputConstants.KEY_LCONTROL)
-          .onKeyDown((kb, _) -> MekanismClient.updateKey(kb, KeySync.BOOST)).onKeyUp(kb -> MekanismClient.updateKey(kb, KeySync.BOOST)).build();
-    public static final KeyMapping hudKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HUD).conflictInGame().keyCode(InputConstants.KEY_H)
+    public static final KeyMapping boostKey = new MekKeyBindingBuilder()
+          .description(MekanismLang.KEY_BOOST)
+          .conflictInGame()
+          .keyCode(InputConstants.KEY_LCONTROL)
+          .onKeyDown((kb, _) -> MekanismClient.updateKey(kb, KeySync.BOOST))
+          .onKeyUp(kb -> MekanismClient.updateKey(kb, KeySync.BOOST))
+          .build();
+    public static final KeyMapping hudKey = new MekKeyBindingBuilder()
+          .description(MekanismLang.KEY_HUD)
+          .conflictInGame()
+          .keyCode(InputConstants.KEY_H)
           .onKeyDown((_, _) -> {
               MekanismConfig.client.enableHUD.set(!MekanismConfig.client.enableHUD.get());
               // save the updated config info
