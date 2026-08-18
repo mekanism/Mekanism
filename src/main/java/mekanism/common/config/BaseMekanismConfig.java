@@ -10,7 +10,11 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 public abstract class BaseMekanismConfig implements IMekanismConfig {
 
-    private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+    private final ExecutorService savingExecutor = Executors.newSingleThreadExecutor(r -> {
+        Thread result = new Thread(r, "Mekanism-" + getFileName() + "-Config-Saver");
+        result.setDaemon(true);
+        return result;
+    });
 
     private final List<CachedValue<?>> cachedConfigValues = new ArrayList<>();
 
@@ -28,10 +32,10 @@ public abstract class BaseMekanismConfig implements IMekanismConfig {
 
     @Override
     public void save() {
-        EXECUTOR.submit(new ConfigSaver(getConfigSpec()));
+        savingExecutor.submit(new ConfigSaver(getConfigSpec()));
     }
 
-    private static class ConfigSaver implements Runnable {
+    private class ConfigSaver implements Runnable {
 
         private final ModConfigSpec configSpec;
         private int retries = 0;
@@ -47,7 +51,7 @@ public abstract class BaseMekanismConfig implements IMekanismConfig {
             } catch (Exception e) {
                 Mekanism.logger.error("Failed to save config", e);
                 if (retries++ < 3) {
-                    EXECUTOR.submit(this);
+                    savingExecutor.submit(this);
                 } else {
                     Mekanism.logger.error("Giving up");
                 }
