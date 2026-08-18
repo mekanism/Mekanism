@@ -16,6 +16,7 @@ import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.client.lang.BaseLanguageProvider;
+import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
@@ -133,7 +134,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
-        addModInfo("Additions module for Mekanism, contains miscellaneous things that do not thematically fit in the other modules");
+        addModInfo("Additions module for " + Mekanism.MOD_NAME + ", contains miscellaneous things that do not thematically fit in the other modules.");
         addPackData(AdditionsLang.MEKANISM_ADDITIONS, AdditionsLang.PACK_DESCRIPTION);
         add(AdditionsLang.CHANNEL, "Channel: %1$s");
         add(AdditionsLang.CHANNEL_CHANGE, "Channel changed to: %1$s");

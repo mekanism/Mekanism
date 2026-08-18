@@ -67,7 +67,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     protected void addModInfo(String description) {
-        add("fml.menu.mods.info.description." + modid, description);
+        add("neoforge.screen.mods.info.description." + modid, description);
     }
 
     protected void addEntity(Holder<EntityType<?>> key, String value) {

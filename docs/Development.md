@@ -50,7 +50,6 @@ Mekanism is developed for Minecraft 26.2 using NeoForge.
 * /data - From /src/main/resources/data and /src/datagen/generated/mekanism/data
 * /mekanism - .class files from /src/main/java and src/api/java
 * /META-INF - From /src/main/resources/META-INF
-* logo.png
 
 ### Mekanism-api.jar
 
@@ -64,7 +63,6 @@ This jar is for development purposes
 * /data - From /src/additions/resources/data and /src/datagen/generated/mekanismadditions/data
 * /mekanism - .class files from /src/additions/java
 * /META-INF - From /src/additions/resources/META-INF
-* logo.png
 
 ### MekanismDefense.jar (Planned for V11, currently placeholder)
 
@@ -72,7 +70,6 @@ This jar is for development purposes
 * /data - From /src/defense/resources/data and /src/datagen/generated/mekanismdefense/data
 * /mekanism - .class files from /src/defense/java
 * /META-INF - From /src/defense/resources/META-INF
-* logo.png
 
 ### MekanismGenerators.jar
 
@@ -80,7 +77,6 @@ This jar is for development purposes
 * /data - From /src/generators/resources/data and /src/datagen/generated/mekanismgenerators/data
 * /mekanism - .class files from /src/generators/java
 * /META-INF - From /src/generators/resources/META-INF
-* logo.png
 
 ### MekanismTools.jar
 
@@ -88,7 +84,6 @@ This jar is for development purposes
 * /data - From /src/tools/resources/data and /src/datagen/generated/mekanismtools/data
 * /mekanism - .class files from /src/tools/java
 * /META-INF - From /src/tools/resources/META-INF
-* logo.png
 
 ### Mekanism-all.jar
 
@@ -98,7 +93,6 @@ All in one jar.
 * /data - Data of all above jars (duplicate tags are last tag wins)
 * /mekanism - .class files from all above jars
 * /META-INF - META-INF of all above jars
-* logo.png
 
 ## Building
 

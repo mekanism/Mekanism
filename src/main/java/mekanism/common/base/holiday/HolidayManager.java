@@ -16,6 +16,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.registries.MekanismRobitSkins;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
@@ -38,6 +39,8 @@ public final class HolidayManager {
     private static final Map<Holder<SoundEvent>, Supplier<SoundEvent>> filterableSounds = new HashMap<>();
 
     private static boolean holidaysNotified = false;
+    @Nullable
+    private static Holiday modIconHoliday;
     @Nullable
     private static Holiday robitSkinHoliday;
     @Nullable
@@ -80,11 +83,15 @@ public final class HolidayManager {
     private static void updateToday() {
         //Mark that we haven't notified holidays yet today, and reset the filtering holidays
         holidaysNotified = false;
+        modIconHoliday = null;
         robitSkinHoliday = null;
         soundHoliday = null;
         YearlyDate date = YearlyDate.now();
         for (Holiday holiday : Holiday.VALUES) {
             if (holiday.updateIsToday(date)) {
+                if (modIconHoliday == null && holiday.customModIcon() != null) {
+                    modIconHoliday = holiday;
+                }
                 if (robitSkinHoliday == null && holiday.isRobitSkinRandomizer()) {
                     robitSkinHoliday = holiday;
                 }
@@ -125,4 +132,8 @@ public final class HolidayManager {
         return areHolidaysEnabled() && robitSkinHoliday != null;
     }
 
+    @Nullable
+    public static Identifier getCustomModIconToday() {
+        return areHolidaysEnabled() && modIconHoliday != null ? modIconHoliday.customModIcon() : null;
+    }
 }

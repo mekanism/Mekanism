@@ -621,7 +621,6 @@
   "configuration.mekanismtools.startup.materials.wood.top_level.tooltip": "Vanilla Material Paxel Settings for Wood.",
   "constants.mekanismtools.mod_name": "Mekanism: Tools",
   "constants.mekanismtools.pack_description": "Resources used for Mekanism: Tools",
-  "fml.menu.mods.info.description.mekanismtools": "Tools module for Mekanism",
   "item.mekanismtools.bronze_axe": "Bronze Axe",
   "item.mekanismtools.bronze_boots": "Bronze Boots",
   "item.mekanismtools.bronze_chestplate": "Bronze Chestplate",
@@ -797,6 +796,7 @@
   "mekanismtools.configuration.section.mekanism.tools.toml": "General Config",
   "mekanismtools.configuration.section.mekanism.tools.toml.title": "Mekanism: Tools - General Config",
   "mekanismtools.configuration.title": "Mekanism: Tools Config",
+  "neoforge.screen.mods.info.description.mekanismtools": "Tools module for Mekanism.",
   "tag.item.c.tools.paxel": "Paxels",
   "tooltip.mekanismtools.hp": "HP: %1$s"
 }

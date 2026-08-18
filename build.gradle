@@ -27,7 +27,7 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.moddev').version('2.0.141')//https://projects.neoforged.net/neoforged/moddevgradle
+    id('net.neoforged.moddev').version('2.0.143')//https://projects.neoforged.net/neoforged/moddevgradle
 }
 
 tasks.named('wrapper', Wrapper, {
@@ -438,7 +438,6 @@ void setupTasks(SourceSet sourceSet) {
         //Mark the properties as inputs so that when they change things update
         inputs.properties(versionProperties)
         filesMatching('META-INF/neoforge.mods.toml') { expand(versionProperties) }
-        from(layout.projectDirectory) { include('logo.png') }
         //Depend on the compile task so that we can map the computer methods as needed
         dependsOn(compileTask)
         def files = fileTree(dir: outputs.files.asPath, includes: ['**/*.json', '**/*.mcmeta'])
@@ -962,8 +961,6 @@ tasks.register('generatePackageInfos', GeneratePackageInfos, {
 
 tasks.register('optimizePng', OptimizePng, {
     def pngPatterns = ['**/*.png']
-    //Ensure the logo is minimized (we add this file to each jar)
-    inputFiles.from(layout.projectDirectory.file('logo.png'))
     //Minimize any PNGs in the source sets
     def sourceSets = [sourceSets.main, sourceSets.additions, sourceSets.generators, sourceSets.tools]
     for (def sourceSet : sourceSets) {

@@ -10,6 +10,7 @@ import mekanism.client.render.tileentity.RenderSPS;
 import mekanism.client.render.transmitter.TransmitterContentsManager;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IModModule;
 import mekanism.common.lib.radiation.ClientRadiation;
 import mekanism.common.lib.security.SecurityData;
@@ -35,6 +36,7 @@ import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.client.gui.modlist.ModDisplayInfo;
 import org.jspecify.annotations.Nullable;
 
 @Mod(value = Mekanism.MODID, dist = Dist.CLIENT)
@@ -48,6 +50,7 @@ public class MekanismClient {
 
     public MekanismClient(ModContainer container, IEventBus modEventBus) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        container.<ModDisplayInfo>registerExtensionPoint(ModDisplayInfo.class, () -> new MekanismModDisplayInfo(container, MekanismLang.MEKANISM));
         modEventBus.register(TransmitterContentsManager.class);
         modEventBus.register(RobitSpriteUploader.class);
         modEventBus.register(RobitSkinManager.class);

@@ -8,6 +8,7 @@ import java.util.Map;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registries.MekanismRobitSkins;
@@ -16,6 +17,7 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
@@ -63,6 +65,8 @@ public enum Holiday implements StringRepresentable {
         }
     },
     Pride(new MonthlyDate(Month.JUNE)) {
+        private final Identifier MOD_ICON = Mekanism.rl("pride_icon.png");
+
         @Override
         HolidayMessage getMessage(Player player) {
             return new HolidayMessage(getThemedLines(12, RobitPrideSkinData.PRIDE.getColor()),
@@ -71,6 +75,11 @@ public enum Holiday implements StringRepresentable {
                   MekanismLang.PRIDE_LINE_THREE.translateColored(EnumColor.PINK),
                   MekanismLang.HOLIDAY_SIGNATURE.translateColored(EnumColor.DARK_GRAY)
             );
+        }
+
+        @Override
+        public Identifier customModIcon() {
+            return MOD_ICON;
         }
 
         @Override
@@ -138,6 +147,10 @@ public enum Holiday implements StringRepresentable {
         return MekanismRobitSkins.BASE;
     }
 
+    @Nullable
+    public Identifier customModIcon() {
+        return null;
+    }
 
     protected static Component getThemedLines(int amount, EnumColor... colors) {
         MutableComponent component = Component.empty();

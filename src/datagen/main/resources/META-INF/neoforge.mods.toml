@@ -10,8 +10,9 @@ license="MIT"
     displayURL="https://aidancbrady.com/mekanism/"
     authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
     credits="unpairedbracket, CyanideX, Ridanisaurus and many others"
-    logoFile="logo.png"
-    description='''Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'''
+    bannerFile="mekanism:banner.png"
+    iconFile="mekanism:icon.png"
+    description="Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons."
 
 [[mixins]]
     config="mekanismdatagen.mixins.json"

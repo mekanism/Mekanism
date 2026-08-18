@@ -3,6 +3,7 @@ package mekanism.generators.client;
 import java.util.Objects;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.client.lang.BaseLanguageProvider;
+import mekanism.common.Mekanism;
 import mekanism.generators.client.recipe_viewer.alias.GeneratorsAliases;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.GeneratorsLang;
@@ -123,7 +124,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
-        addModInfo("Generators module for Mekanism");
+        addModInfo("Generators module for " + Mekanism.MOD_NAME + ".");
         addPackData(GeneratorsLang.MEKANISM_GENERATORS, GeneratorsLang.PACK_DESCRIPTION);
         add(GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING, "Active cooling: %1$s");
         add(GeneratorsLang.GAS_BURN_RATE, "Burn Rate: %1$s mB/t");

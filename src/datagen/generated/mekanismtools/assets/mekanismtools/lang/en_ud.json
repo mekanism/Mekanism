@@ -621,7 +621,6 @@
   "configuration.mekanismtools.startup.materials.wood.top_level.tooltip": "˙pooM ɹoɟ sᵷuᴉʇʇǝS ꞁǝxɐԀ ꞁɐᴉɹǝʇɐW ɐꞁꞁᴉuɐΛ",
   "constants.mekanismtools.mod_name": "sꞁoo⟘ :ɯsᴉuɐʞǝW",
   "constants.mekanismtools.pack_description": "sꞁoo⟘ :ɯsᴉuɐʞǝW ɹoɟ pǝsn sǝɔɹnosǝᴚ",
-  "fml.menu.mods.info.description.mekanismtools": "ɯsᴉuɐʞǝW ɹoɟ ǝꞁnpoɯ sꞁoo⟘",
   "item.mekanismtools.bronze_axe": "ǝxⱯ ǝzuoɹᗺ",
   "item.mekanismtools.bronze_boots": "sʇooᗺ ǝzuoɹᗺ",
   "item.mekanismtools.bronze_chestplate": "ǝʇɐꞁdʇsǝɥƆ ǝzuoɹᗺ",
@@ -797,6 +796,7 @@
   "mekanismtools.configuration.section.mekanism.tools.toml": "ᵷᴉɟuoƆ ꞁɐɹǝuǝ⅁",
   "mekanismtools.configuration.section.mekanism.tools.toml.title": "ᵷᴉɟuoƆ ꞁɐɹǝuǝ⅁ - sꞁoo⟘ :ɯsᴉuɐʞǝW",
   "mekanismtools.configuration.title": "ᵷᴉɟuoƆ sꞁoo⟘ :ɯsᴉuɐʞǝW",
+  "neoforge.screen.mods.info.description.mekanismtools": "˙ɯsᴉuɐʞǝW ɹoɟ ǝꞁnpoɯ sꞁoo⟘",
   "tag.item.c.tools.paxel": "sꞁǝxɐԀ",
   "tooltip.mekanismtools.hp": "%s :ԀH"
 }

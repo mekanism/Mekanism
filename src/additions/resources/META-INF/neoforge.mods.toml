@@ -8,8 +8,9 @@ license="MIT"
     displayURL="https://aidancbrady.com/mekanism/"
     authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
     credits="unpairedbracket, CyanideX, Ridanisaurus and many others"
-    logoFile="logo.png"
-    description='''Additions module for Mekanism, contains miscellaneous things that do not thematically fit in the other modules.'''
+    bannerFile="mekanism:banner.png"
+    iconFile="mekanism:icon.png"
+    description="Additions module for Mekanism, contains miscellaneous things that do not thematically fit in the other modules."
 
 [[dependencies.mekanismadditions]]
     modId="mekanism"

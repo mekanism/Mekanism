@@ -4,6 +4,7 @@ import java.util.Objects;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.BaseLanguageProvider;
+import mekanism.common.Mekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.tools.client.recipe_viewer.aliases.ToolsAliases;
 import mekanism.tools.common.MekanismTools;
@@ -104,7 +105,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
-        addModInfo("Tools module for Mekanism");
+        addModInfo("Tools module for " + Mekanism.MOD_NAME + ".");
         addPackData(ToolsLang.MEKANISM_TOOLS, ToolsLang.PACK_DESCRIPTION);
         add(ToolsLang.HP, "HP: %1$s");
     }
