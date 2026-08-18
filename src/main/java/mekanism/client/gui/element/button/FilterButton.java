@@ -9,7 +9,6 @@ import java.util.function.Predicate;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.MekanismClient;
-import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -147,7 +146,7 @@ public class FilterButton extends MekanismButton {
         if (filter instanceof SorterFilter<?> sorterFilter) {
             int colorX = relativeX + 22;
             int colorY = relativeY + 13;
-            GuiUtils.drawOutline(guiGraphics, colorX, colorY, 6, 6, 0xFF393939);
+            guiGraphics.outline(colorX, colorY, 6, 6, 0xFF393939);
             if (sorterFilter.color != null) {
                 guiGraphics.fill(colorX + 1, colorY + 1, colorX + 5, colorY + 5, sorterFilter.color.getPackedColor());
             }

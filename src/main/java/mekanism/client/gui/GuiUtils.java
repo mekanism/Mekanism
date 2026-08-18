@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import java.util.List;
 import java.util.function.Predicate;
 import net.minecraft.client.Minecraft;
@@ -18,21 +17,6 @@ import org.jspecify.annotations.Nullable;
 public class GuiUtils {
 
     private GuiUtils() {
-    }
-
-    public static void drawOutline(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int color) {
-        fill(guiGraphics, x, y, width, 1, color);
-        fill(guiGraphics, x, y + height - 1, width, 1, color);
-        if (height > 2) {
-            fill(guiGraphics, x, y + 1, 1, height - 2, color);
-            fill(guiGraphics, x + width - 1, y + 1, 1, height - 2, color);
-        }
-    }
-
-    public static void fill(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, int x, int y, int width, int height, int color) {
-        if (width != 0 && height != 0) {
-            guiGraphics.fill(pipeline, x, y, x + width, y + height, color);
-        }
     }
 
     public static void fill(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int color) {

@@ -2,7 +2,6 @@ package mekanism.common.world;
 
 import com.mojang.serialization.MapCodec;
 import mekanism.common.config.MekanismConfig;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 
@@ -16,7 +15,7 @@ public class ConfigurableUniformInt implements IntProvider {
 
     @Override
     public int sample(RandomSource random) {
-        return Mth.randomBetweenInclusive(random, minInclusive(), maxInclusive());
+        return random.nextIntBetweenInclusive(minInclusive(), maxInclusive());
     }
 
     @Override

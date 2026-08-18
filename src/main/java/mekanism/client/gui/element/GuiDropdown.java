@@ -4,18 +4,17 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.registries.MekanismSounds;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import org.jspecify.annotations.Nullable;
 
 public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends GuiTexturedElement {
@@ -91,7 +90,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
 
         int index = getHoveredIndex(mouseX, mouseY);
         if (index != -1) {
-            GuiUtils.drawOutline(guiGraphics, relativeX + 1, relativeY + ELEMENT_HEIGHT + index * 10, width - 2, 10, screenTextColor());
+            guiGraphics.outline(relativeX + 1, relativeY + ELEMENT_HEIGHT + index * 10, width - 2, 10, screenTextColor());
         }
 
         TYPE current = curType.get();

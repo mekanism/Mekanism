@@ -56,7 +56,7 @@ class ColorSelection extends MiniElement<Integer> {
     protected void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         int xTarget = getRelativeX() + OFFSET_X;
         int yTarget = getRelativeY() + OFFSET_Y;
-        GuiUtils.drawOutline(guiGraphics, xTarget, yTarget, 18, 18, GuiTextField.SCREEN_COLOR.getAsInt());
+        guiGraphics.outline(xTarget, yTarget, 18, 18, GuiTextField.SCREEN_COLOR.getAsInt());
         //Render the transparency grid inside it
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiColorWindow.TRANSPARENCY_GRID, xTarget + 1, yTarget + 1, 16, 16);
         //Draw color

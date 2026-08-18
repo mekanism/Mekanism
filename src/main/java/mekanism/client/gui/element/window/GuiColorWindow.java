@@ -284,7 +284,7 @@ public class GuiColorWindow extends GuiWindow {
             drawTiledGradient(guiGraphics, relativeX, relativeY, width, height);
             int posX = relativeX + Math.round(GuiColorWindow.this.saturation * width) - 2;
             int posY = relativeY + Math.round((1 - GuiColorWindow.this.value) * height) - 2;
-            GuiUtils.drawOutline(guiGraphics, posX, posY, 5, 5, CommonColors.WHITE);
+            guiGraphics.outline(posX, posY, 5, 5, CommonColors.WHITE);
             //Fill the selection in without taking alpha into account
             GuiUtils.fill(guiGraphics, posX + 1, posY + 1, 3, 3, ARGB.opaque(colorAsInt()));
         }

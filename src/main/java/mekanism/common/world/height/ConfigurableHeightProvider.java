@@ -10,7 +10,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.WorldConfig.OreVeinConfig;
 import mekanism.common.registries.MekanismHeightProviderTypes;
 import mekanism.common.resource.ore.OreType.OreVeinType;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
@@ -52,7 +51,7 @@ public class ConfigurableHeightProvider extends HeightProvider {
         }
         return switch (range.shape().get()) {
             case TRAPEZOID -> sampleTrapezoid(random, min, max);
-            case UNIFORM -> Mth.randomBetweenInclusive(random, min, max);
+            case UNIFORM -> random.nextIntBetweenInclusive(min, max);
         };
     }
 
@@ -60,10 +59,10 @@ public class ConfigurableHeightProvider extends HeightProvider {
         int plateau = range.plateau().getAsInt();
         int range = max - min;
         if (plateau >= range) {
-            return Mth.randomBetweenInclusive(random, min, max);
+            return random.nextIntBetweenInclusive(min, max);
         }
         int middle = (range - plateau) / 2;
-        return min + Mth.randomBetweenInclusive(random, 0, range - middle) + Mth.randomBetweenInclusive(random, 0, middle);
+        return min + random.nextIntBetweenInclusive(0, range - middle) + random.nextIntBetweenInclusive(0, middle);
     }
 
     @Override
