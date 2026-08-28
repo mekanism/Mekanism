@@ -8,15 +8,18 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiUtils;
-import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidType;
+import org.jspecify.annotations.Nullable;
 
 public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack> {
 
@@ -56,7 +59,13 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
     }
 
     @Override
+    @Deprecated(since = "JEI 30.26.0", forRemoval = true)
     public List<Component> getTooltip(ChemicalStack stack, TooltipFlag tooltipFlag) {
+        return getTooltip(stack, TooltipContext.EMPTY, null, tooltipFlag);
+    }
+
+    @Override
+    public List<Component> getTooltip(ChemicalStack stack, Item.TooltipContext tooltipContext, @Nullable Player player, TooltipFlag tooltipFlag) {
         List<Component> tooltips = new ArrayList<>();
         if (!stack.isEmpty()) {
             tooltips.add(TextComponentUtil.build(stack));
@@ -65,7 +74,7 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
                 tooltips.add(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.amount())));
             }
-            stack.appendHoverText(RecipeViewerUtils.getRVTooltipContext(), tooltips, tooltipFlag);
+            stack.appendHoverText(tooltipContext, tooltips, tooltipFlag);
         }
         return tooltips;
     }

@@ -48,4 +48,16 @@ public record WithAmountSlotDisplay(SlotDisplay source, int amount) implements S
     public boolean isEnabled(FeatureFlagSet enabledFeatures) {
         return this.source.isEnabled(enabledFeatures);
     }
+
+    /// Scales the amount for this slot display by the given scale.
+    ///
+    /// @param scale Scale to multiply the amount by. Must be positive.
+    public WithAmountSlotDisplay scale(int scale) {
+        if (scale <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        } else if (scale == 1) {
+            return this;
+        }
+        return new WithAmountSlotDisplay(source, amount * scale);
+    }
 }

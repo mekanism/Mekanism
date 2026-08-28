@@ -19,7 +19,7 @@ public class ChemicalEmiIngredientSerializer implements EmiStackSerializer<Chemi
 
     @Override
     public EmiStack create(Identifier id, DataComponentPatch ignored, long amount) {
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
+        Optional<Registry<Chemical>> optionalRegistry = MekanismEmi.getRegistry(MekanismRegistries.Keys.CHEMICAL);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
             Mekanism.logger.warn("Failed to find chemical registry while deserializing EMI chemical ingredient");
@@ -38,7 +38,7 @@ public class ChemicalEmiIngredientSerializer implements EmiStackSerializer<Chemi
     }
 
     void addEmiStacks(EmiRegistry emiRegistry) {
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
+        Optional<Registry<Chemical>> optionalRegistry = MekanismEmi.getRegistry(MekanismRegistries.Keys.CHEMICAL);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
             Mekanism.logger.warn("Failed to find chemical registry while registering EMI ingredients");

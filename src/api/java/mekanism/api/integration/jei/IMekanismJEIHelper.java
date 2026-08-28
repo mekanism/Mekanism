@@ -8,6 +8,8 @@ public interface IMekanismJEIHelper {
 
     /// Gets the ingredient helper for [`chemicals`][mekanism.api.chemical.ChemicalStack].
     ///
+    /// @throws IllegalStateException If called before JEI has initialized the helper via IModIngredientRegistration
+    ///
     /// @since 10.7.0
     IIngredientHelper<ChemicalStack> getChemicalStackHelper();
 }

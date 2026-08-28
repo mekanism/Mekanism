@@ -41,7 +41,7 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IFocusGroup focusGroup) {
-        initItem(builder, RecipeIngredientRole.INPUT, input, recipeHolder.value().getInput()::getRepresentations)
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipeHolder.value().getInput().display())
               .setSlotName(INPUT);
     }
 

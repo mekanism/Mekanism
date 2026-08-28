@@ -17,24 +17,24 @@ import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.recipe_viewer.INamedRVRecipe;
-import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder.Reference;
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
-public record BoilerRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIngredient superHeatedCoolant, FluidStackIngredient water, @Nullable ChemicalStackTemplate steam,
+public record BoilerRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIngredient superHeatedCoolant, FluidStackIngredient water, ChemicalStackTemplate steam,
                                        @Nullable ChemicalStackTemplate cooledCoolant, double temperature) implements INamedRVRecipe {
 
     private static final int WATER_AMOUNT = 1;
@@ -42,28 +42,24 @@ public record BoilerRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIng
           Identifier.CODEC.fieldOf(SerializationConstants.ID).forGetter(BoilerRecipeViewerRecipe::id),
           ChemicalStackIngredient.CODEC.optionalFieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(recipe -> Optional.ofNullable(recipe.superHeatedCoolant())),
           FluidStackIngredient.CODEC.optionalFieldOf(SerializationConstants.FLUID_INPUT, IngredientCreatorAccess.fluid().from(BuiltInRegistries.FLUID, FluidTags.WATER, WATER_AMOUNT)).forGetter(BoilerRecipeViewerRecipe::water),
-          ChemicalStackTemplate.CODEC.optionalFieldOf(SerializationConstants.MAIN_OUTPUT).forGetter(recipe -> Optional.ofNullable(recipe.steam())),
+          ChemicalStackTemplate.CODEC.fieldOf(SerializationConstants.MAIN_OUTPUT).forGetter(BoilerRecipeViewerRecipe::steam),
           ChemicalStackTemplate.CODEC.optionalFieldOf(SerializationConstants.SECONDARY_OUTPUT).forGetter(recipe -> Optional.ofNullable(recipe.cooledCoolant())),
           Codec.DOUBLE.optionalFieldOf(SerializationConstants.TEMPERATURE, HeatUtils.BASE_BOIL_TEMP).forGetter(BoilerRecipeViewerRecipe::temperature)
     ).apply(instance, (id, superHeatedCoolant, water, steam, cooledCoolant, temperature) ->
-          new BoilerRecipeViewerRecipe(id, superHeatedCoolant.orElse(null), water, steam.orElse(null), cooledCoolant.orElse(null), temperature)));
+          new BoilerRecipeViewerRecipe(id, superHeatedCoolant.orElse(null), water, steam, cooledCoolant.orElse(null), temperature)));
 
-    public int steamAmount() {
-        return steam == null ? WATER_AMOUNT : steam.amount();
+    public SlotDisplay steamDisplay() {
+        return new ChemicalStackSlotDisplay(steam);
     }
 
-    public List<ChemicalStackTemplate> steamRepresentations(ContextMap contextMap) {
-        return steam == null ? Collections.emptyList() : Collections.singletonList(steam);
-    }
-
-    public static List<BoilerRecipeViewerRecipe> getBoilerRecipes() {
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
+    public static List<BoilerRecipeViewerRecipe> getBoilerRecipes(HolderLookup.Provider registries) {
+        Optional<? extends HolderLookup.RegistryLookup<Chemical>> optionalRegistry = registries.lookup(MekanismRegistries.Keys.CHEMICAL);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
             Mekanism.logger.warn("Failed to find chemical registry when generating boiler recipes");
             return Collections.emptyList();
         }
-        Registry<Chemical> chemicals = optionalRegistry.get();
+        HolderLookup.RegistryLookup<Chemical> chemicals = optionalRegistry.get();
         Optional<Reference<Chemical>> steamReference = chemicals.get(ChemicalIds.STEAM);
         if (steamReference.isEmpty()) {
             return Collections.emptyList();

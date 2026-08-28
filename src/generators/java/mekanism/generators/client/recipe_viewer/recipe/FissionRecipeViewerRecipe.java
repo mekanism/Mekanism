@@ -17,9 +17,9 @@ import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.recipe_viewer.INamedRVRecipe;
-import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.RegistryUtils;
@@ -27,11 +27,12 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
 //If null -> coolant is water
@@ -51,14 +52,14 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
         return IngredientCreatorAccess.fluid().from(BuiltInRegistries.FLUID, FluidTags.WATER, outputCoolant().amount());
     }
 
-    public static List<FissionRecipeViewerRecipe> getFissionRecipes() {
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
+    public static List<FissionRecipeViewerRecipe> getFissionRecipes(HolderLookup.Provider registries) {
+        Optional<? extends HolderLookup.RegistryLookup<Chemical>> optionalRegistry = registries.lookup(MekanismRegistries.Keys.CHEMICAL);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
             Mekanism.logger.warn("Failed to find chemical registry when generating fission recipes");
             return Collections.emptyList();
         }
-        Registry<Chemical> chemicals = optionalRegistry.get();
+        HolderLookup.RegistryLookup<Chemical> chemicals = optionalRegistry.get();
         Optional<Reference<Chemical>> wasteReference = chemicals.get(ChemicalIds.NUCLEAR_WASTE);
         Optional<Reference<Chemical>> fuelReference = chemicals.get(ChemicalIds.FISSILE_FUEL);
         if (wasteReference.isEmpty() || fuelReference.isEmpty()) {
@@ -98,5 +99,13 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
             }
         }
         return recipes;
+    }
+
+    public SlotDisplay wasteDisplay() {
+        return new ChemicalStackSlotDisplay(waste);
+    }
+
+    public SlotDisplay outputCoolantDisplay() {
+        return new ChemicalStackSlotDisplay(outputCoolant);
     }
 }

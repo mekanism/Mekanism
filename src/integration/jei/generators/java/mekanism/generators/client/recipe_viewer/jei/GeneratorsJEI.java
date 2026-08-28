@@ -18,7 +18,9 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 
 @JeiPlugin
 public class GeneratorsJEI implements IModPlugin {
@@ -54,6 +56,7 @@ public class GeneratorsJEI implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
-        RecipeRegistryHelper.register(registry, GeneratorsRVRecipeType.FISSION, FissionRecipeViewerRecipe.getFissionRecipes());
+        HolderLookup.Provider registries = registry.getContextMap().getOrThrow(SlotDisplayContext.REGISTRIES);
+        RecipeRegistryHelper.register(registry, GeneratorsRVRecipeType.FISSION, FissionRecipeViewerRecipe.getFissionRecipes(registries));
     }
 }

@@ -15,15 +15,17 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.recipe.display.slot.ChemicalSolidTagSlotDisplay;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<ChemicalCrystallizerRecipe> {
 
-    private final List<ItemStack> displayItems;
+    private final SlotDisplay displayItems;
     private final IOreInfo oreInfo;
 
     public ChemicalCrystallizerEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder) {
@@ -34,7 +36,7 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
         ChemicalStackIngredient input = recipe.getInput();
         addInputDefinition(input);
         List<ChemicalStack> inputRepresentations = input.getRepresentations(contextMap);
-        displayItems = RecipeViewerUtils.getDisplayItems(input, contextMap);
+        displayItems = new ChemicalSolidTagSlotDisplay(input.display());
         oreInfo = new IOreInfo() {
             @Override
             public ChemicalResource getInputChemical() {

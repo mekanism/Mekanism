@@ -16,6 +16,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import mekanism.api.MekanismAPI;
@@ -78,16 +80,22 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 
 @EmiEntrypoint
 public class MekanismEmi implements EmiPlugin {
@@ -242,8 +250,9 @@ public class MekanismEmi implements EmiPlugin {
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.NUCLEOSYNTHESIZING, NucleosynthesizingEmiRecipe::new);
 
         //TODO - Emi: Figure out the registry access, maybe we can get it from the EmiRegistry
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.SPS, SPSEmiRecipe::new, SPSRecipeViewerRecipe.getSPSRecipes(RecipeViewerUtils.getRegistryAccess()));
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.BOILER, BoilerEmiRecipe::new, BoilerRecipeViewerRecipe.getBoilerRecipes());
+        HolderLookup.Provider registries = Objects.requireNonNull(getRegistryAccess());
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.SPS, SPSEmiRecipe::new, SPSRecipeViewerRecipe.getSPSRecipes(registries));
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.BOILER, BoilerEmiRecipe::new, BoilerRecipeViewerRecipe.getBoilerRecipes(registries));
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.SAWING, SawmillEmiRecipe::new);
 
@@ -312,6 +321,23 @@ public class MekanismEmi implements EmiPlugin {
                 }
             }
         }
+    }
+
+    @Nullable
+    public static RegistryAccess getRegistryAccess() {
+        Level level = MekanismClient.tryGetClientWorld();
+        if (level == null) {
+            return null;
+        }
+        return level.registryAccess();
+    }
+
+    public static <E> Optional<Registry<E>> getRegistry(ResourceKey<? extends Registry<? extends E>> registryKey) {
+        RegistryAccess registryAccess = getRegistryAccess();
+        if (registryAccess == null) {
+            return Optional.empty();
+        }
+        return registryAccess.lookup(registryKey);
     }
 
     @FunctionalInterface

@@ -19,7 +19,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
-import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
 /// Base implementation for a ChemicalIngredient with an amount.
@@ -144,6 +143,7 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
 
     @Override
     public List<ChemicalStack> getRepresentations(ContextMap context) {
+        //TODO - 26.2: Should we still be caching the representations in all our stack ingredients? What if different ContextMaps are passed
         if (this.representations == null) {
             this.representations = display().resolve(context, ChemicalStackContentsFactory.INSTANCE).toList();
         }
@@ -151,7 +151,7 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
     }
 
     @Override
-    public SlotDisplay display() {
+    public WithAmountSlotDisplay display() {
         return new WithAmountSlotDisplay(ingredient.display(), amount);
     }
 

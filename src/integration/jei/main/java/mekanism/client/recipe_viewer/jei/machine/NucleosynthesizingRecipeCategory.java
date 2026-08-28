@@ -1,8 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import java.util.List;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
+import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -34,7 +33,7 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
     private final GuiSlot input;
     private final GuiSlot extra;
     private final GuiSlot output;
-    private final GuiGauge<?> chemicalInput;
+    private final GuiGauge<?> inputChemical;
 
     public NucleosynthesizingRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<NucleosynthesizingRecipe> recipeType) {
         super(helper, recipeType);
@@ -44,7 +43,7 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
         addSlot(SlotType.POWER, 173, 69).with(SlotOverlay.POWER);
         addElement(new GuiInnerScreen(this, 45, 18, 104, 68));
         GaugeType type = GaugeType.SMALL_MED.with(DataType.INPUT);
-        chemicalInput = addElement(GuiChemicalGauge.getDummy(type, this, 5, 18));
+        inputChemical = addElement(GuiChemicalGauge.getDummy(type, this, 5, 18));
         addElement(new GuiEnergyGauge(IEnergyInfoHandler.ALWAYS_FULL, GaugeType.SMALL_MED, this, 172, 18));
         rateBar = addElement(new GuiDynamicHorizontalRateBar(this, getBarProgressTimer(), 5, 88, 183,
               Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170)));
@@ -60,17 +59,13 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<NucleosynthesizingRecipe> recipeHolder, IFocusGroup focusGroup) {
         NucleosynthesizingRecipe recipe = recipeHolder.value();
-        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput()::getRepresentations);
-        initChemical(builder, RecipeIngredientRole.INPUT, chemicalInput, recipe, (r, context) -> {
-            List<ChemicalStack> scaledChemicals = r.getChemicalInput().getRepresentations(context);
-            if (r.perTickUsage()) {
-                scaledChemicals = scaledChemicals.stream()
-                      .map(chemical -> chemical.copyWithAmount(chemical.amount() * TileEntityAntiprotonicNucleosynthesizer.BASE_TICKS_REQUIRED))
-                      .toList();
-            }
-            return scaledChemicals;
-        });
-        initItem(builder, output, recipe::getOutputDefinition);
-        initItem(builder, RecipeIngredientRole.CRAFTING_STATION, extra, recipe.getChemicalInput(), (chemicalInput, context) -> RecipeViewerUtils.getStacksFor(chemicalInput, context, true));
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().display());
+        WithAmountSlotDisplay chemicalInput = recipe.getChemicalInput().display();
+        if (recipe.perTickUsage()) {
+            chemicalInput = chemicalInput.scale(TileEntityAntiprotonicNucleosynthesizer.BASE_TICKS_REQUIRED);
+        }
+        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, chemicalInput);
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDisplay());
+        initItem(builder, RecipeIngredientRole.CRAFTING_STATION, extra, RecipeViewerUtils.getStacksFor(recipe.getChemicalInput(), true));
     }
 }

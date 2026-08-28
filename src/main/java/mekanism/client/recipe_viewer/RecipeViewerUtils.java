@@ -1,52 +1,27 @@
 package mekanism.client.recipe_viewer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.SequencedSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalStackTemplate;
-import mekanism.api.datamaps.chemical.ChemicalSolidTag;
-import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.client.MekanismClient;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.recipe.IMekanismRecipeTypeProvider;
-import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.recipe.display.slot.ChemicalConversionSlotDisplay;
+import mekanism.common.recipe.display.slot.ChemicalTankSlotDisplay;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet.Named;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.Util;
-import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.TooltipContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
 public class RecipeViewerUtils {
@@ -86,7 +61,7 @@ public class RecipeViewerUtils {
         return elements.get(getIndex(elements));
     }
 
-    public static int getIndex(List<?> elements) {
+    private static int getIndex(List<?> elements) {
         return (int) (Util.getMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.size());
     }
 
@@ -94,44 +69,19 @@ public class RecipeViewerUtils {
         return elements[getIndex(elements)];
     }
 
-    public static int getIndex(int[] elements) {
+    private static int getIndex(int[] elements) {
         return (int) (Util.getMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.length);
     }
 
-    public static List<ItemStack> getStacksFor(ChemicalStackIngredient ingredient, ContextMap contextMap, boolean displayConversions) {
-        Set<Holder<Chemical>> chemicals = ingredient.getRepresentations(contextMap).stream().map(ChemicalStack::typeHolder).collect(Collectors.toSet());
-        return getStacksFor(contextMap, chemicals, displayConversions ? MekanismRecipeType.CHEMICAL_CONVERSION : null);
-    }
-
-    private static List<ItemStack> getStacksFor(ContextMap contextMap, Set<Holder<Chemical>> supportedTypes, @Nullable IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe, ?> recipeType) {
-        List<ItemStack> stacks = new ArrayList<>();
+    public static SlotDisplay getStacksFor(ChemicalStackIngredient ingredient, boolean displayConversions) {
+        SlotDisplay ingredientDisplay = ingredient.display();
         //Always include the chemical tank of the type to portray that we accept items
-        for (Holder<Chemical> type : supportedTypes) {
-            stacks.add(ContainerType.CHEMICAL.getFilledVariant(MekanismBlocks.BASIC_CHEMICAL_TANK.getItemHolder(), type, null));
+        SlotDisplay display = new ChemicalTankSlotDisplay(ingredientDisplay);
+        if (displayConversions) {
+            //See if there are any chemical to item mappings
+            return new SlotDisplay.Composite(List.of(display, new ChemicalConversionSlotDisplay(ingredientDisplay)));
         }
-        //See if there are any chemical to item mappings
-        if (recipeType != null) {
-            for (RecipeHolder<? extends ItemStackToChemicalRecipe> recipeHolder : recipeType.getRecipes()) {
-                ItemStackToChemicalRecipe recipe = recipeHolder.value();
-                for (ChemicalStackTemplate output : recipe.getOutputDefinition(contextMap)) {
-                    if (anyMatch(supportedTypes, output.typeHolder())) {
-                        stacks.addAll(recipe.getInput().getRepresentations(contextMap));
-                        break;
-                    }
-                }
-            }
-        }
-        return stacks;
-    }
-
-    private static <T> boolean anyMatch(Collection<Holder<T>> holders, Holder<T> holder) {
-        for (Holder<T> toCheck : holders) {
-            //noinspection deprecation
-            if (toCheck.is(holder)) {
-                return true;
-            }
-        }
-        return false;
+        return display;
     }
 
     public static Map<Identifier, BasicItemStackToFluidOptionalItemRecipe> getLiquificationRecipes() {
@@ -148,53 +98,5 @@ public class RecipeViewerUtils {
             }
         }
         return liquification;
-    }
-
-    public static List<ItemStack> getDisplayItems(ChemicalStackIngredient ingredient, ContextMap contextMap) {
-        RegistryAccess registryAccess = getRegistryAccess();
-        if (registryAccess == null) {
-            return Collections.emptyList();
-        }
-        SequencedSet<Named<Item>> tags = new LinkedHashSet<>();
-        for (ChemicalStack chemicalStack : ingredient.getRepresentations(contextMap)) {
-            ChemicalSolidTag tag = chemicalStack.getSolidTag(registryAccess);
-            if (tag != null) {
-                tag.lookupTag(registryAccess).ifPresent(tags::add);
-            }
-        }
-        if (tags.size() == 1) {
-            //TODO: Eventually come up with a better way to do this to allow for if there outputs based on the input and multiple input types
-            return tags.getFirst().stream().map(ItemStack::new).toList();
-        }
-        return Collections.emptyList();
-    }
-
-    public static TooltipContext getRVTooltipContext() {
-        //Similar to how ItemEmiStack works
-        Level level = MekanismClient.tryGetClientWorld();
-        if (level == null) {
-            return TooltipContext.EMPTY;
-        } else if (Minecraft.getInstance().isSameThread()) {
-            return Item.TooltipContext.of(level);
-        }
-        // Don't provide world as context, as it is not thread safe
-        return Item.TooltipContext.of(level.registryAccess());
-    }
-
-    public static <E> Optional<Registry<E>> getRegistry(ResourceKey<? extends Registry<? extends E>> registryKey) {
-        RegistryAccess registryAccess = getRegistryAccess();
-        if (registryAccess == null) {
-            return Optional.empty();
-        }
-        return registryAccess.lookup(registryKey);
-    }
-
-    @Nullable
-    public static RegistryAccess getRegistryAccess() {
-        Level level = MekanismClient.tryGetClientWorld();
-        if (level == null) {
-            return null;
-        }
-        return level.registryAccess();
     }
 }

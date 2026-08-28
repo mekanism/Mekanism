@@ -3,6 +3,7 @@ package mekanism.generators.client.recipe_viewer.emi;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
+import java.util.Objects;
 import mekanism.client.recipe_viewer.emi.MekanismEmi;
 import mekanism.generators.client.recipe_viewer.GeneratorsRVRecipeType;
 import mekanism.generators.client.recipe_viewer.emi.recipe.FissionReactorEmiRecipe;
@@ -22,6 +23,6 @@ public class GeneratorsEmi implements EmiPlugin {
     }
 
     private void addCategories(EmiRegistry registry) {
-        MekanismEmi.addCategoryAndRecipes(registry, GeneratorsRVRecipeType.FISSION, FissionReactorEmiRecipe::new, FissionRecipeViewerRecipe.getFissionRecipes());
+        MekanismEmi.addCategoryAndRecipes(registry, GeneratorsRVRecipeType.FISSION, FissionReactorEmiRecipe::new, FissionRecipeViewerRecipe.getFissionRecipes(Objects.requireNonNull(MekanismEmi.getRegistryAccess())));
     }
 }

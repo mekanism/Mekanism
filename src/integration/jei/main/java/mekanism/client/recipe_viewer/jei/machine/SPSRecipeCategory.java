@@ -2,7 +2,6 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import com.mojang.serialization.Codec;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -50,8 +49,8 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSRecipeViewerRecipe>
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, SPSRecipeViewerRecipe recipe, IFocusGroup focusGroup) {
-        initChemical(builder, RecipeIngredientRole.INPUT, input, recipe.input()::getRepresentations);
-        initChemical(builder, RecipeIngredientRole.OUTPUT, output, recipe, (r, _) -> Collections.singletonList(r.output().create()));
+        initChemical(builder, RecipeIngredientRole.INPUT, input, recipe.input().display());
+        initChemical(builder, RecipeIngredientRole.OUTPUT, output, recipe.outputDisplay());
     }
 
     @Nullable

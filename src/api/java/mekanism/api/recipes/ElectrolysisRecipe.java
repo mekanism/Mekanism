@@ -35,6 +35,10 @@ public abstract class ElectrolysisRecipe extends FluidInputRecipe<ElectrolysisRe
         return MekanismRecipeTypes.TYPE_SEPARATING.value();
     }
 
+    /// {@inheritDoc} The first element with be for the left output, the second will be for the right output.
+    @Override
+    public abstract SlotDisplay.Composite getOutputDisplay();
+
     @Override
     public List<RecipeDisplay> display() {
         return List.of(new SimpleMachineRecipeDisplay(

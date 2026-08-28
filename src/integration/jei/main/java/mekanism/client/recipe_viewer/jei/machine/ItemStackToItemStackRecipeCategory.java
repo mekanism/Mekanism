@@ -34,7 +34,7 @@ public class ItemStackToItemStackRecipeCategory extends HolderRecipeCategory<Ite
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackToItemStackRecipe> recipeHolder, IFocusGroup focusGroup) {
         ItemStackToItemStackRecipe recipe = recipeHolder.value();
-        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput()::getRepresentations);
-        initItem(builder, output, recipe::getOutputDefinition);
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().display());
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDisplay());
     }
 }

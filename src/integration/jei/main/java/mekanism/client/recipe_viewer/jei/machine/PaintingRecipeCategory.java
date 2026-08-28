@@ -1,8 +1,8 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -56,16 +56,13 @@ public class PaintingRecipeCategory extends HolderRecipeCategory<ItemStackChemic
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, IFocusGroup focusGroup) {
         ItemStackChemicalToItemStackRecipe recipe = recipeHolder.value();
-        initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput()::getRepresentations);
-        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, recipe, (r, context) -> {
-            List<ChemicalStack> scaledChemicals = r.getChemicalInput().getRepresentations(context);
-            if (r.perTickUsage()) {
-                scaledChemicals = scaledChemicals.stream()
-                      .map(chemical -> chemical.copyWithAmount(chemical.amount() * TileEntityPaintingMachine.BASE_TICKS_REQUIRED))
-                      .toList();
-            }
-            return scaledChemicals;
-        }).setSlotName(CHEMICAL_INPUT);
-        initItem(builder, output, recipe::getOutputDefinition);
+        initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().display());
+        WithAmountSlotDisplay chemicalInput = recipe.getChemicalInput().display();
+        if (recipe.perTickUsage()) {
+            chemicalInput = chemicalInput.scale(TileEntityPaintingMachine.BASE_TICKS_REQUIRED);
+        }
+        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, chemicalInput)
+              .setSlotName(CHEMICAL_INPUT);
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDisplay());
     }
 }

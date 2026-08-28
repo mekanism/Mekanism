@@ -1,10 +1,6 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import java.util.ArrayList;
-import java.util.List;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
-import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -19,17 +15,13 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<PressurizedReactionRecipe> {
-
-    private static final String OUTPUT_CHEMICAL = "outputChemical";
 
     private final GuiGauge<?> inputChemical;
     private final GuiGauge<?> inputFluid;
@@ -52,36 +44,14 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
     }
 
     @Override
-    protected void renderElements(RecipeHolder<PressurizedReactionRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, int x, int y) {
-        super.renderElements(recipeHolder, recipeSlotsView, guiGraphics, x, y);
-        if (recipeSlotsView.findSlotByName(OUTPUT_CHEMICAL).isEmpty()) {
-            //If we don't have an output chemical at all for this recipe, draw the bar overlay manually
-            outputChemical.drawBarOverlay(guiGraphics);
-        }
-    }
-
-    @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<PressurizedReactionRecipe> recipeHolder, IFocusGroup focusGroup) {
         PressurizedReactionRecipe recipe = recipeHolder.value();
-        initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid()::getRepresentations);
-        initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid()::getRepresentations);
-        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, recipe.getInputChemical()::getRepresentations);
-        List<ChemicalStack> chemicalOutputs = new ArrayList<>();
-        initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, recipe, (r, context) -> {
-            List<ItemStack> itemOutputs = new ArrayList<>();
-            for (PressurizedReactionRecipeOutput output : r.getOutputDefinition(context)) {
-                if (output.item() != null) {
-                    itemOutputs.add(output.item().create());
-                }
-                if (output.chemical() != null) {
-                    chemicalOutputs.add(output.chemical().create());
-                }
-            }
-            return itemOutputs;
-        });
-        if (!chemicalOutputs.isEmpty()) {
-            initChemical(builder, RecipeIngredientRole.OUTPUT, outputChemical, chemicalOutputs, (outputs, _) -> outputs)
-                  .setSlotName(OUTPUT_CHEMICAL);
-        }
+        initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().display());
+        initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().display());
+        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, recipe.getInputChemical().display());
+        //Note: We allow JEI to handle figuring out what elements are valid for items vs chemicals based on the corresponding display contents factory
+        SlotDisplay outputDisplay = recipe.getOutputDisplay();
+        initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, outputDisplay);
+        initChemical(builder, RecipeIngredientRole.OUTPUT, outputChemical, outputDisplay);
     }
 }

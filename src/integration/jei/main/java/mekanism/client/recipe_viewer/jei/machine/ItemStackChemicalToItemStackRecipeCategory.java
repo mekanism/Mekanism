@@ -1,8 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import java.util.List;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.gui.element.bar.GuiEmptyBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -22,7 +21,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class ItemStackChemicalToItemStackRecipeCategory extends HolderRecipeCategory<ItemStackChemicalToItemStackRecipe> {
 
-    private final GuiBar<?> chemicalInput;
+    private final GuiBar<?> inputChemical;
     private final GuiSlot input;
     private final GuiSlot extra;
     private final GuiSlot output;
@@ -34,24 +33,20 @@ public class ItemStackChemicalToItemStackRecipeCategory extends HolderRecipeCate
         output = addSlot(SlotType.OUTPUT, 116, 35);
         addSlot(SlotType.POWER, 39, 35).with(SlotOverlay.POWER);
         addElement(new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 16));
-        chemicalInput = addElement(new GuiEmptyBar(this, 68, 36, 6, 12));
+        inputChemical = addElement(new GuiEmptyBar(this, 68, 36, 6, 12));
         addSimpleProgress(ProgressType.BAR, 86, 38);
     }
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, IFocusGroup focusGroup) {
         ItemStackChemicalToItemStackRecipe recipe = recipeHolder.value();
-        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput()::getRepresentations);
-        initChemical(builder, RecipeIngredientRole.INPUT, chemicalInput, recipe, (r, context) -> {
-            List<ChemicalStack> scaledChemicals = r.getChemicalInput().getRepresentations(context);
-            if (r.perTickUsage()) {
-                return scaledChemicals.stream()
-                      .map(chemical -> chemical.copyWithAmount(chemical.amount() * TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED))
-                      .toList();
-            }
-            return scaledChemicals;
-        });
-        initItem(builder, output, recipe::getOutputDefinition);
-        initItem(builder, RecipeIngredientRole.CRAFTING_STATION, extra, recipe.getChemicalInput(), (chemicalInput, context) -> RecipeViewerUtils.getStacksFor(chemicalInput, context, true));
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().display());
+        WithAmountSlotDisplay chemicalInput = recipe.getChemicalInput().display();
+        if (recipe.perTickUsage()) {
+            chemicalInput = chemicalInput.scale(TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED);
+        }
+        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, chemicalInput);
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDisplay());
+        initItem(builder, RecipeIngredientRole.CRAFTING_STATION, extra, RecipeViewerUtils.getStacksFor(recipe.getChemicalInput(), true));
     }
 }

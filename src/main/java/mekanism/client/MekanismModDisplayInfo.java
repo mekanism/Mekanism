@@ -20,11 +20,6 @@ public class MekanismModDisplayInfo extends DefaultModDisplayInfo {
     }
 
     @Override
-    public Component description() {//TODO - 26.2: Remove this and bump min neo version once https://github.com/neoforged/NeoForge/pull/3418 is merged
-        return Component.translatableWithFallback("neoforge.screen.mods.info.description." + id(), container().getModInfo().getDescription());
-    }
-
-    @Override
     public Component displayName() {
         //Allow translating the display name so that it can display upside down
         return translatableDisplayName.translate();

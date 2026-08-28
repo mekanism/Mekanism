@@ -23,8 +23,7 @@ public class BoilerEmiRecipe extends MekanismEmiRecipe<BoilerRecipeViewerRecipe>
     public BoilerEmiRecipe(MekanismEmiRecipeCategory category, Identifier id, BoilerRecipeViewerRecipe recipe) {
         super(category, id, recipe);
         addInputDefinition(recipe.water());
-        //TODO - Emi: ContextMap
-        addChemicalOutputDefinition(recipe.steamRepresentations(ContextMap.EMPTY));
+        addChemicalOutputDefinition(recipe.steamDisplay());
         ChemicalStackTemplate cooledCoolant = recipe.cooledCoolant();
         if (recipe.superHeatedCoolant() == null || cooledCoolant == null) {
             addEmptyInput();
@@ -41,7 +40,7 @@ public class BoilerEmiRecipe extends MekanismEmiRecipe<BoilerRecipeViewerRecipe>
         // so that they fit properly in emi
         addElement(widgetHolder, new GuiInnerScreen(this, 48, 23, 96, 40, () -> List.of(
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(recipe.temperature(), TemperatureUnit.KELVIN, true)),
-              MekanismLang.BOIL_RATE.translate(TextUtils.format(recipe.steamAmount()))
+              MekanismLang.BOIL_RATE.translate(TextUtils.format(recipe.steam().amount()))
         )));
         initTank(widgetHolder, GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 6, 13).setLabel(MekanismLang.BOILER_HEATED_COOLANT_TANK.translateColored(EnumColor.ORANGE)), input(1));
         initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 26, 13).setLabel(MekanismLang.BOILER_WATER_TANK.translateColored(EnumColor.INDIGO)), input(0));

@@ -1,7 +1,6 @@
 package mekanism.generators.client.recipe_viewer.jei;
 
 import com.mojang.serialization.Codec;
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.text.EnumColor;
@@ -54,13 +53,13 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReci
     public void setRecipe(IRecipeLayoutBuilder builder, FissionRecipeViewerRecipe recipe, IFocusGroup focusGroup) {
         //Handle the coolant either special cased water or the proper coolant
         if (recipe.inputCoolant() == null) {
-            initFluid(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.waterInput()::getRepresentations);
+            initFluid(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.waterInput().display());
         } else {
-            initChemical(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant()::getRepresentations);
+            initChemical(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant().display());
         }
-        initChemical(builder, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel()::getRepresentations);
-        initChemical(builder, RecipeIngredientRole.OUTPUT, heatedCoolantTank, recipe.outputCoolant(), (outputCoolant, _) -> Collections.singletonList(outputCoolant.create()));
-        initChemical(builder, RecipeIngredientRole.OUTPUT, wasteTank, recipe.waste(), (waste, _) -> Collections.singletonList(waste.create()));
+        initChemical(builder, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel().display());
+        initChemical(builder, RecipeIngredientRole.OUTPUT, heatedCoolantTank, recipe.outputCoolantDisplay());
+        initChemical(builder, RecipeIngredientRole.OUTPUT, wasteTank, recipe.wasteDisplay());
     }
 
     @Nullable

@@ -6,6 +6,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
 import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
+import mekanism.api.recipes.display.slot.ChanceSlotDisplay;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -47,6 +48,12 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
         //TODO - 26.2: Re-evaluate should we throw instead?
         return Collections.emptyList();
     }
+
+    /// {@inheritDoc} It is assumed that a [composite display][SlotDisplay.Composite] that has:
+    /// - the first element as a [chance display][ChanceSlotDisplay] is a grouping of multiple [chance displays][ChanceSlotDisplay].
+    /// - a size of `2`, represents the main output with the first display, and the chance output with the second display.
+    @Override
+    public abstract SlotDisplay getOutputDisplay();
 
     /// Gets the chance (between 0 and 1) of the secondary output being produced.
     public abstract double getSecondaryChance();

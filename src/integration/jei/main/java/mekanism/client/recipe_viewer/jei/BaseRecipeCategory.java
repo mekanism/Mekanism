@@ -6,11 +6,9 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalStackTemplate;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -51,12 +49,12 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.display.DisplayContentsFactory;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 
@@ -231,16 +229,15 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     public abstract Codec<RECIPE> getCodec(ICodecHelper codecHelper, IRecipeManager recipeManager);
 
     protected IProgressInfoHandler getSimpleProgressTimer() {
-        if (timer == null) {
-            timer = guiHelper.createTickTimer(SharedConstants.TICKS_PER_SECOND, SharedConstants.TICKS_PER_SECOND, false);
-        }
-        return () -> timer.getValue() / (float) SharedConstants.TICKS_PER_SECOND;
+        return () -> {
+            if (timer == null) {
+                timer = guiHelper.createTickTimer(SharedConstants.TICKS_PER_SECOND, SharedConstants.TICKS_PER_SECOND, false);
+            }
+            return timer.getValue() / (float) SharedConstants.TICKS_PER_SECOND;
+        };
     }
 
     protected IBarInfoHandler getBarProgressTimer() {
-        if (timer == null) {
-            timer = guiHelper.createTickTimer(SharedConstants.TICKS_PER_SECOND, SharedConstants.TICKS_PER_SECOND, false);
-        }
         return new IBarInfoHandler() {
             @Override
             public Component getTooltip() {
@@ -249,6 +246,9 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
 
             @Override
             public double getLevel() {
+                if (timer == null) {
+                    timer = guiHelper.createTickTimer(SharedConstants.TICKS_PER_SECOND, SharedConstants.TICKS_PER_SECOND, false);
+                }
                 return timer.getValue() / (double) SharedConstants.TICKS_PER_SECOND;
             }
         };
@@ -267,101 +267,35 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         return drawable;
     }
 
-    protected ChemicalStack getDisplayedChemicalStack(IRecipeSlotView recipeSlot) {
-        return recipeSlot.getDisplayedIngredient(MekanismJEI.TYPE_CHEMICAL).orElse(ChemicalStack.EMPTY);
-    }
-
-    protected <STACK> STACK getDisplayedStack(IRecipeSlotView recipeSlot, IIngredientType<STACK> type, STACK empty) {
-        return recipeSlot.getDisplayedIngredient(type).orElse(empty);
-    }
-
     protected <STACK> STACK getDisplayedStack(IRecipeSlotsView recipeSlotsView, String slotName, IIngredientType<STACK> type, STACK empty) {
         Optional<IRecipeSlotView> slotByName = recipeSlotsView.findSlotByName(slotName);
         //noinspection OptionalIsPresent - Capturing lambda
         if (slotByName.isPresent()) {
-            return getDisplayedStack(slotByName.get(), type, empty);
+            return slotByName.get().getDisplayedIngredient(type).orElse(empty);
         }
         return empty;
     }
 
-    protected <DATA> IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiSlot slot, DATA data, BiFunction<DATA, ContextMap, List<ItemStack>> stacks) {
-        return initItem(builder, role, slot.getX(), slot.getY(), data, stacks);
+    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiSlot slot, SlotDisplay display) {
+        return initItem(builder, role, slot.getX(), slot.getY(), display);
     }
 
-    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiSlot slot, Function<ContextMap, List<ItemStack>> stacks) {
-        return initItem(builder, role, slot.getX(), slot.getY(), stacks);
+    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, RecipeIngredientRole role, int x, int y, SlotDisplay display) {
+        return builder.addSlot(role, x + 1, y + 1).add(VanillaTypes.ITEM_STACK, display);
     }
 
-    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, GuiSlot slot, Function<ContextMap, List<ItemStackTemplate>> templates) {
-        return initItem(builder, slot.getX(), slot.getY(), templates);
-    }
-
-    protected <DATA> IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, RecipeIngredientRole role, int x, int y, DATA data, BiFunction<DATA, ContextMap, List<ItemStack>> stacks) {
-        IRecipeSlotBuilder slotBuilder = builder.addSlot(role, x + 1, y + 1);
-        return slotBuilder.addItemStacks(stacks.apply(data, slotBuilder.getContextMap()));
-    }
-
-    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, RecipeIngredientRole role, int x, int y, Function<ContextMap, List<ItemStack>> stacks) {
-        IRecipeSlotBuilder slotBuilder = builder.addSlot(role, x + 1, y + 1);
-        return slotBuilder.addItemStacks(stacks.apply(slotBuilder.getContextMap()));
-    }
-
-    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, int x, int y, Function<ContextMap, List<ItemStackTemplate>> templates) {
-        return initItem(builder, RecipeIngredientRole.OUTPUT, x, y, templates, (templateGenerator, contextMap) ->
-              templateGenerator.apply(contextMap).stream().map(ItemStackTemplate::create).toList());
-    }
-
-    protected IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, GuiGauge<?> gauge, Function<ContextMap, List<FluidStackTemplate>> templates) {
-        return initFluid(builder, RecipeIngredientRole.OUTPUT, gauge, templates, (templateGenerator, contextMap) ->
-              templateGenerator.apply(contextMap).stream().map(FluidStackTemplate::create).toList());
-    }
-
-    protected <DATA> IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiGauge<?> gauge, DATA data,
-          BiFunction<DATA, ContextMap, List<FluidStack>> stackFunction) {
-        RecipeTankBuilder tankBuilder = init(builder, NeoForgeTypes.FLUID_STACK, role, gauge, data, stackFunction, FluidStack::amount);
+    protected IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiGauge<?> gauge, SlotDisplay display) {
+        RecipeTankBuilder tankBuilder = init(builder, NeoForgeTypes.FLUID_STACK, role, gauge, display, FluidStackContentsFactory.INSTANCE, FluidStack::amount);
         return tankBuilder.slotBuilder().setFluidRenderer(tankBuilder.max(), false, tankBuilder.width(), tankBuilder.height(), TilingDirection.UP_RIGHT);
     }
 
-    protected IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiGauge<?> gauge, Function<ContextMap, List<FluidStack>> stackFunction) {
-        RecipeTankBuilder tankBuilder = init(builder, NeoForgeTypes.FLUID_STACK, role, gauge, stackFunction, FluidStack::amount);
-        return tankBuilder.slotBuilder().setFluidRenderer(tankBuilder.max(), false, tankBuilder.width(), tankBuilder.height(), TilingDirection.UP_RIGHT);
-    }
-
-    protected IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, GuiElement element, Function<ContextMap, List<ChemicalStackTemplate>> templates) {
-        return initChemical(builder, RecipeIngredientRole.OUTPUT, element, templates, (templateGenerator, contextMap) ->
-              templateGenerator.apply(contextMap).stream().map(ChemicalStackTemplate::create).toList());
-    }
-
-    protected IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiElement element, Function<ContextMap, List<ChemicalStack>> stackFunction) {
-        RecipeTankBuilder tankBuilder = init(builder, MekanismJEI.TYPE_CHEMICAL, role, element, stackFunction, ChemicalStack::amount);
+    protected IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiElement element, SlotDisplay display) {
+        RecipeTankBuilder tankBuilder = init(builder, MekanismJEI.TYPE_CHEMICAL, role, element, display, ChemicalStackContentsFactory.INSTANCE, ChemicalStack::amount);
         return tankBuilder.slotBuilder().setCustomRenderer(MekanismJEI.TYPE_CHEMICAL, new ChemicalStackRenderer(tankBuilder.max(), tankBuilder.width(), tankBuilder.height()));
-    }
-
-    protected <DATA> IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiElement element, DATA data,
-          BiFunction<DATA, ContextMap, List<ChemicalStack>> stackFunction) {
-        RecipeTankBuilder tankBuilder = init(builder, MekanismJEI.TYPE_CHEMICAL, role, element, data, stackFunction, ChemicalStack::amount);
-        return tankBuilder.slotBuilder().setCustomRenderer(MekanismJEI.TYPE_CHEMICAL, new ChemicalStackRenderer(tankBuilder.max(), tankBuilder.width(), tankBuilder.height()));
-    }
-
-    private <DATA, STACK> RecipeTankBuilder init(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, RecipeIngredientRole role, GuiElement element, DATA data,
-          BiFunction<DATA, ContextMap, List<STACK>> stackFunction, ToIntFunction<STACK> sizeExtractor) {
-        int width = element.getWidth() - 2;
-        int height = element.getHeight() - 2;
-        int x = element.getX() + 1;
-        int y = element.getY() + 1;
-        IRecipeSlotBuilder slotBuilder = builder.addSlot(role, x, y);
-        if (element instanceof GuiGauge<?> gauge) {
-            slotBuilder.setOverlay(getOverlay(gauge), 0, 0);
-        }
-        List<STACK> stacks = stackFunction.apply(data, slotBuilder.getContextMap());
-        //If we have no max (no fluids or just an empty fluid) we want to ensure the fluid renderer doesn't throw errors,
-        // so we just return a capacity for the render of a bucket
-        int max = stacks.stream().mapToInt(sizeExtractor).filter(stackSize -> stackSize > 0).max().orElse(FluidType.BUCKET_VOLUME);
-        return new RecipeTankBuilder(slotBuilder.addIngredients(type, stacks), max, width, height);
     }
 
     private <STACK> RecipeTankBuilder init(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, RecipeIngredientRole role, GuiElement element,
-          Function<ContextMap, List<STACK>> stackFunction, ToIntFunction<STACK> sizeExtractor) {
+          SlotDisplay display, DisplayContentsFactory<STACK> factory, ToIntFunction<STACK> sizeExtractor) {
         int width = element.getWidth() - 2;
         int height = element.getHeight() - 2;
         int x = element.getX() + 1;
@@ -370,11 +304,13 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         if (element instanceof GuiGauge<?> gauge) {
             slotBuilder.setOverlay(getOverlay(gauge), 0, 0);
         }
-        List<STACK> stacks = stackFunction.apply(slotBuilder.getContextMap());
         //If we have no max (no fluids or just an empty fluid) we want to ensure the fluid renderer doesn't throw errors,
         // so we just return a capacity for the render of a bucket
-        int max = stacks.stream().mapToInt(sizeExtractor).filter(stackSize -> stackSize > 0).max().orElse(FluidType.BUCKET_VOLUME);
-        return new RecipeTankBuilder(slotBuilder.addIngredients(type, stacks), max, width, height);
+        int max = display.resolve(slotBuilder.getContextMap(), factory)
+              .mapToInt(sizeExtractor)
+              .filter(stackSize -> stackSize > 0)
+              .max().orElse(FluidType.BUCKET_VOLUME);
+        return new RecipeTankBuilder(slotBuilder.add(type, display), max, width, height);
     }
 
     private record RecipeTankBuilder(IRecipeSlotBuilder slotBuilder, int max, int width, int height) {

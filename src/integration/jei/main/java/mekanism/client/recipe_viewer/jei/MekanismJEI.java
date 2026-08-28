@@ -2,11 +2,9 @@ package mekanism.client.recipe_viewer.jei;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
@@ -57,6 +55,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismSlotDisplayTypes;
 import mekanism.common.util.ItemAccessUtils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -78,10 +77,10 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.registration.ISlotDisplayInterpreterRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -98,9 +97,10 @@ public class MekanismJEI implements IModPlugin {
 
     public static final IIngredientType<ChemicalStack> TYPE_CHEMICAL = () -> ChemicalStack.class;
 
-    public static final ChemicalStackHelper CHEMICAL_STACK_HELPER = new ChemicalStackHelper();
     private static final ISubtypeInterpreter<ItemStack> MEKANISM_DATA_INTERPRETER = new MekanismSubtypeInterpreter();
     private static final Map<IRecipeViewerRecipeType<?>, IRecipeType<?>> recipeTypeInstanceCache = new HashMap<>();
+    @Nullable
+    public static ChemicalStackHelper chemicalStackHelper;
 
     public static IRecipeType<?> genericRecipeType(IRecipeViewerRecipeType<?> recipeType) {
         return recipeTypeInstanceCache.computeIfAbsent(recipeType, r -> {
@@ -170,24 +170,42 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerIngredients(IModIngredientRegistration registry) {
-        List<ChemicalStack> types;
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
-        if (optionalRegistry.isEmpty()) {
-            //Something went horribly wrong, bail
-            Mekanism.logger.warn("Failed to find chemical registry while registering JEI ingredients");
-            types = Collections.emptyList();
-        } else {
-            types = optionalRegistry.get().listElements()
-                  //Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
-                  .filter(chemical -> !chemical.is(ChemicalIds.EMPTY))
-                  .map(chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME))
-                  .toList();
-        }
-        CHEMICAL_STACK_HELPER.setColorHelper(registry.getColorHelper());
-        registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer(), ChemicalSerializationHelper.REFERENCE_CODEC.xmap(
+        HolderLookup.Provider registries = registry.getContextMap().getOrThrow(SlotDisplayContext.REGISTRIES);
+        HolderLookup.RegistryLookup<Chemical> chemicalLookup = registries.lookupOrThrow(MekanismRegistries.Keys.CHEMICAL);
+        chemicalStackHelper = new ChemicalStackHelper(registry.getColorHelper(), chemicalLookup);
+        //TODO - 26.2: Why does only liquid steam show in JEI when searching for steam?
+        List<ChemicalStack> types = chemicalLookup.listElements()
+              //Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
+              .filter(chemical -> !chemical.is(ChemicalIds.EMPTY))
+              .map(chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME))
+              .toList();
+        registry.register(TYPE_CHEMICAL, types, chemicalStackHelper, new ChemicalStackRenderer(), ChemicalSerializationHelper.REFERENCE_CODEC.xmap(
               chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME),
               ChemicalStack::typeHolder
         ));
+    }
+
+    @Override
+    public void registerSlotDisplayInterpreters(ISlotDisplayInterpreterRegistration registration) {
+        registration.register(MekanismSlotDisplayTypes.WITH_AMOUNT.get(), VanillaTypes.ITEM_STACK, (display, _, builder) -> builder
+              .addChildDisplay(display.source(), stack -> stack.copyWithCount(display.amount()))
+        );
+        registration.register(MekanismSlotDisplayTypes.WITH_AMOUNT.get(), NeoForgeTypes.FLUID_STACK, (display, _, builder) -> builder
+              .addChildDisplay(display.source(), stack -> stack.copyWithAmount(display.amount()))
+        );
+        registration.register(MekanismSlotDisplayTypes.WITH_AMOUNT.get(), TYPE_CHEMICAL, (display, _, builder) -> builder
+              .addChildDisplay(display.source(), stack -> stack.copyWithAmount(display.amount()))
+        );
+
+        registration.register(MekanismSlotDisplayTypes.CHEMICAL.get(), TYPE_CHEMICAL, (_, _, builder) -> builder
+              .setWildcardForSubtypes(true)
+        );
+        registration.register(MekanismSlotDisplayTypes.CHEMICAL_TAG.get(), TYPE_CHEMICAL, (display, _, builder) -> builder
+              .setTagKey(display.tag())
+              .setWildcardForSubtypes(true)
+        );
+        //TODO - 26.2: Add a setTooltipHeader for ChanceDisplay?, and maybe also addChildDisplay
+        //TODO - 26.2: Do we want to add a setTooltipHeader for ChemicalConversionSlotDisplay/ChemicalTankSlotDisplay??
     }
 
     @Override
@@ -253,10 +271,7 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
-        HolderLookup.Provider registryAccess = registry.getContextMap().getOptional(SlotDisplayContext.REGISTRIES);
-        if (registryAccess == null) {
-            registryAccess = RecipeViewerUtils.getRegistryAccess();
-        }
+        HolderLookup.Provider registries = registry.getContextMap().getOrThrow(SlotDisplayContext.REGISTRIES);
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.SMELTING, MekanismRecipeType.SMELTING);
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.ENRICHING, MekanismRecipeType.ENRICHING);
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.CRUSHING, MekanismRecipeType.CRUSHING);
@@ -282,8 +297,8 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.PAINTING, MekanismRecipeType.PAINTING);
         RecipeRegistryHelper.registerCondensentrator(registry);
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, RecipeViewerUtils.getLiquificationRecipes());
-        RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.SPS, SPSRecipeViewerRecipe.getSPSRecipes(registryAccess));
-        RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.BOILER, BoilerRecipeViewerRecipe.getBoilerRecipes());
+        RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.SPS, SPSRecipeViewerRecipe.getSPSRecipes(registries));
+        RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.BOILER, BoilerRecipeViewerRecipe.getBoilerRecipes(registries));
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.ENERGY_CONVERSION, MekanismRecipeType.ENERGY_CONVERSION);
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.CHEMICAL_CONVERSION, MekanismRecipeType.CHEMICAL_CONVERSION);
         //Note: Use a "full" bucket's worth of heavy water, so that JEI renders it as desired in the info page

@@ -49,11 +49,11 @@ public class ChemicalChemicalToChemicalRecipeCategory extends HolderRecipeCatego
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ChemicalChemicalToChemicalRecipe> recipeHolder, IFocusGroup focusGroup) {
         ChemicalChemicalToChemicalRecipe recipe = recipeHolder.value();
         builder.setShapeless();
-        initChemical(builder, RecipeIngredientRole.INPUT, leftInputGauge, recipe.getLeftInput()::getRepresentations)
+        initChemical(builder, RecipeIngredientRole.INPUT, leftInputGauge, recipe.getLeftInput().display())
               .setSlotName(LEFT_INPUT);
-        initChemical(builder, RecipeIngredientRole.INPUT, rightInputGauge, recipe.getRightInput()::getRepresentations)
+        initChemical(builder, RecipeIngredientRole.INPUT, rightInputGauge, recipe.getRightInput().display())
               .setSlotName(RIGHT_INPUT);
-        initChemical(builder, outputGauge, recipe::getOutputDefinition)
+        initChemical(builder, RecipeIngredientRole.OUTPUT, outputGauge, recipe.getOutputDisplay())
               .setSlotName(OUTPUT);
     }
 }

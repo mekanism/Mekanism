@@ -1,10 +1,6 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import java.util.ArrayList;
-import java.util.List;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
-import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -22,6 +18,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 public class ElectrolysisRecipeCategory extends HolderRecipeCategory<ElectrolysisRecipe> {
 
@@ -47,17 +44,9 @@ public class ElectrolysisRecipeCategory extends HolderRecipeCategory<Electrolysi
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ElectrolysisRecipe> recipeHolder, IFocusGroup focusGroup) {
         ElectrolysisRecipe recipe = recipeHolder.value();
-        initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput()::getRepresentations);
-        List<ChemicalStack> rightDefinition = new ArrayList<>();
-        initChemical(builder, RecipeIngredientRole.OUTPUT, leftOutput, recipe, (r, context) -> {
-            List<ElectrolysisRecipeOutput> outputDefinition = r.getOutputDefinition(context);
-            List<ChemicalStack> leftDefinition = new ArrayList<>(outputDefinition.size());
-            for (ElectrolysisRecipeOutput output : outputDefinition) {
-                leftDefinition.add(output.left().create());
-                rightDefinition.add(output.right().create());
-            }
-            return leftDefinition;
-        });
-        initChemical(builder, RecipeIngredientRole.OUTPUT, rightOutput, rightDefinition, (definition, _) -> definition);
+        initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().display());
+        SlotDisplay.Composite outputDisplay = recipe.getOutputDisplay();
+        initChemical(builder, RecipeIngredientRole.OUTPUT, leftOutput, outputDisplay.contents().getFirst());
+        initChemical(builder, RecipeIngredientRole.OUTPUT, rightOutput, outputDisplay.contents().getLast());
     }
 }

@@ -11,6 +11,9 @@ import mekanism.api.recipes.ingredients.chemical.display.ChemicalSlotDisplay;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalTagSlotDisplay;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.display.slot.ChemicalConversionSlotDisplay;
+import mekanism.common.recipe.display.slot.ChemicalSolidTagSlotDisplay;
+import mekanism.common.recipe.display.slot.ChemicalTankSlotDisplay;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -66,5 +69,23 @@ public class MekanismSlotDisplayTypes {
                 SlotDisplay.STREAM_CODEC, WithAmountSlotDisplay::source,
                 ByteBufCodecs.VAR_INT, WithAmountSlotDisplay::amount,
                 WithAmountSlotDisplay::new
+          )));
+    public static final DeferredHolder<SlotDisplay.Type<?>, SlotDisplay.Type<ChemicalTankSlotDisplay>> CHEMICAL_TANK = SLOT_DISPLAY_TYPES.register("chemical_tank",
+          () -> new SlotDisplay.Type<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
+                SlotDisplay.CODEC.fieldOf(SerializationConstants.BASE).forGetter(ChemicalTankSlotDisplay::chemicalSource)
+          ).apply(instance, ChemicalTankSlotDisplay::new)), SlotDisplay.STREAM_CODEC.map(
+                ChemicalTankSlotDisplay::new, ChemicalTankSlotDisplay::chemicalSource
+          )));
+    public static final DeferredHolder<SlotDisplay.Type<?>, SlotDisplay.Type<ChemicalConversionSlotDisplay>> CHEMICAL_CONVERSION = SLOT_DISPLAY_TYPES.register("chemical_conversion",
+          () -> new SlotDisplay.Type<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
+                SlotDisplay.CODEC.fieldOf(SerializationConstants.BASE).forGetter(ChemicalConversionSlotDisplay::chemicalSource)
+          ).apply(instance, ChemicalConversionSlotDisplay::new)), SlotDisplay.STREAM_CODEC.map(
+                ChemicalConversionSlotDisplay::new, ChemicalConversionSlotDisplay::chemicalSource
+          )));
+    public static final DeferredHolder<SlotDisplay.Type<?>, SlotDisplay.Type<ChemicalSolidTagSlotDisplay>> CHEMICAL_SOLID_TAG = SLOT_DISPLAY_TYPES.register("chemical_solid_tag",
+          () -> new SlotDisplay.Type<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
+                SlotDisplay.CODEC.fieldOf(SerializationConstants.BASE).forGetter(ChemicalSolidTagSlotDisplay::chemicalSource)
+          ).apply(instance, ChemicalSolidTagSlotDisplay::new)), SlotDisplay.STREAM_CODEC.map(
+                ChemicalSolidTagSlotDisplay::new, ChemicalSolidTagSlotDisplay::chemicalSource
           )));
 }

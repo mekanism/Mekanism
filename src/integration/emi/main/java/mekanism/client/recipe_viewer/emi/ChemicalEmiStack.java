@@ -16,10 +16,12 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.SizedChemicalInstance;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.client.MekanismClient;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -30,7 +32,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ARGB;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public class ChemicalEmiStack extends EmiStack {
 
@@ -44,7 +49,7 @@ public class ChemicalEmiStack extends EmiStack {
         //TODO - Emi: Re-evaluate usage and if we can just use the below, or what needs to happen
         // I am not sure if EmiRegistryAdapter even works with data pack registries in the first place,
         // so we might have to request a different entry point from Emi anyway
-        Optional<Registry<Chemical>> optionalRegistry = RecipeViewerUtils.getRegistry(MekanismRegistries.Keys.CHEMICAL);
+        Optional<Registry<Chemical>> optionalRegistry = MekanismEmi.getRegistry(MekanismRegistries.Keys.CHEMICAL);
         this(optionalRegistry.orElseThrow().wrapAsHolder(chemical), amount);
     }
 
@@ -115,8 +120,20 @@ public class ChemicalEmiStack extends EmiStack {
         List<Component> tooltips = new ArrayList<>();
         tooltips.add(getName());
         ChemicalStack stack = new ChemicalStack(chemical, amount > 1 ? amount : 1);
-        stack.appendHoverText(RecipeViewerUtils.getRVTooltipContext(), tooltips, TooltipFlag.NORMAL);
+        stack.appendHoverText(getRVTooltipContext(), tooltips, TooltipFlag.NORMAL);
         return tooltips;
+    }
+
+    private static TooltipContext getRVTooltipContext() {
+        //Similar to how ItemEmiStack works
+        Level level = MekanismClient.tryGetClientWorld();
+        if (level == null) {
+            return TooltipContext.EMPTY;
+        } else if (Minecraft.getInstance().isSameThread()) {
+            return Item.TooltipContext.of(level);
+        }
+        // Don't provide world as context, as it is not thread safe
+        return Item.TooltipContext.of(level.registryAccess());
     }
 
     @Override

@@ -120,7 +120,7 @@ public final class ItemStackIngredient implements InputIngredient<Item, ItemStac
     }
 
     @Override
-    public SlotDisplay display() {
+    public WithAmountSlotDisplay display() {
         return new WithAmountSlotDisplay(ingredient.ingredient().display(), ingredient.count());
     }
 

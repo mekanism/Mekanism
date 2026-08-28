@@ -744,7 +744,9 @@ dependencies {
     }
 
     integrationTheOneProbeCompileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
-    integrationTheOneProbeLocalRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
+    integrationTheOneProbeLocalRuntime("mcjty.theoneprobe:theoneprobe:${top_version}") {
+        transitive = false
+    }
 
     //// Jade
     /// - CF

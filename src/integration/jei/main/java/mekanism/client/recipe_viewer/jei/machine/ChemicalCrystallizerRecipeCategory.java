@@ -12,10 +12,10 @@ import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.recipe.display.slot.ChemicalSolidTagSlotDisplay;
 import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -69,11 +69,12 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder, IFocusGroup focusGroup) {
         ChemicalCrystallizerRecipe recipe = recipeHolder.value();
-        initItem(builder, output, recipe::getOutputDefinition);
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDisplay());
         ChemicalStackIngredient input = recipe.getInput();
-        initChemical(builder, RecipeIngredientRole.INPUT, gauge, input::getRepresentations)
+        initChemical(builder, RecipeIngredientRole.INPUT, gauge, input.display())
               .setSlotName(CHEMICAL_INPUT);
-        initItem(builder, RecipeIngredientRole.RENDER_ONLY, screen.getSlotX(), screen.getSlotY(), input, RecipeViewerUtils::getDisplayItems).setSlotName(DISPLAYED_ITEM);
+        initItem(builder, RecipeIngredientRole.RENDER_ONLY, screen.getSlotX(), screen.getSlotY(), new ChemicalSolidTagSlotDisplay(input.display()))
+              .setSlotName(DISPLAYED_ITEM);
     }
 
     private static class OreInfo implements IOreInfo {

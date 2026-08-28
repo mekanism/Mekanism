@@ -8,6 +8,9 @@ public class MekanismJEIHelper implements IMekanismJEIHelper {
 
     @Override
     public IIngredientHelper<ChemicalStack> getChemicalStackHelper() {
-        return MekanismJEI.CHEMICAL_STACK_HELPER;
+        if (MekanismJEI.chemicalStackHelper == null) {
+            throw new IllegalStateException("Ingredient helper requested before ingredients have been initialized");
+        }
+        return MekanismJEI.chemicalStackHelper;
     }
 }

@@ -1,8 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import java.util.List;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
+import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -45,17 +44,13 @@ public class ChemicalDissolutionRecipeCategory extends HolderRecipeCategory<Chem
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ChemicalDissolutionRecipe> recipeHolder, IFocusGroup focusGroup) {
         ChemicalDissolutionRecipe recipe = recipeHolder.value();
-        initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput()::getRepresentations);
-        initChemical(builder, RecipeIngredientRole.INPUT, inputGauge, recipe, (r, context) -> {
-            List<ChemicalStack> scaledChemicals = r.getChemicalInput().getRepresentations(context);
-            if (r.perTickUsage()) {
-                return scaledChemicals.stream()
-                      .map(chemical -> chemical.copyWithAmount(chemical.amount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED))
-                      .toList();
-            }
-            return scaledChemicals;
-        });
-        initChemical(builder, outputGauge, recipe::getOutputDefinition);
+        initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().display());
+        WithAmountSlotDisplay chemicalInput = recipe.getChemicalInput().display();
+        if (recipe.perTickUsage()) {
+            chemicalInput = chemicalInput.scale(TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED);
+        }
+        initChemical(builder, RecipeIngredientRole.INPUT, inputGauge, chemicalInput);
+        initChemical(builder, RecipeIngredientRole.OUTPUT, outputGauge, recipe.getOutputDisplay());
     }
 
 }

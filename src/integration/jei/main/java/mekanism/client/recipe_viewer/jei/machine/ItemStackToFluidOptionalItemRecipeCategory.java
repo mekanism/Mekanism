@@ -1,10 +1,8 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import com.mojang.serialization.Codec;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
 import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -30,14 +28,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
 public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCategory<BasicItemStackToFluidOptionalItemRecipe> {
-
-    private static final String OUTPUT_ITEM = "outputItem";
 
     private final GuiGauge<?> outputTank;
     private final GuiSlot outputItem;
@@ -53,24 +48,10 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, BasicItemStackToFluidOptionalItemRecipe recipe, IFocusGroup focusGroup) {
-        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput()::getRepresentations);
-        List<ItemStackTemplate> itemOutputs = new ArrayList<>();
-        initFluid(builder, RecipeIngredientRole.OUTPUT, outputTank, recipe, (r, context) -> {
-            List<FluidOptionalItemOutput> outputDefinition = r.getOutputDefinition(context);
-            List<FluidStack> fluidOutputs = new ArrayList<>(outputDefinition.size());
-            for (FluidOptionalItemOutput output : outputDefinition) {
-                fluidOutputs.add(output.fluid().create());
-                ItemStackTemplate optionalItem = output.optionalItem();
-                if (optionalItem != null) {
-                    itemOutputs.add(optionalItem);
-                }
-            }
-            return fluidOutputs;
-        });
-        if (!itemOutputs.isEmpty()) {
-            initItem(builder, outputItem, _ -> itemOutputs)
-                  .setSlotName(OUTPUT_ITEM);
-        }
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().display());
+        SlotDisplay outputDisplay = recipe.getOutputDisplay();
+        initFluid(builder, RecipeIngredientRole.OUTPUT, outputTank, outputDisplay);
+        initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, outputDisplay);
     }
 
     @Nullable

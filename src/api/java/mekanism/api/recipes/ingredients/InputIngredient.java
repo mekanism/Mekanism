@@ -2,9 +2,9 @@ package mekanism.api.recipes.ingredients;
 
 import java.util.List;
 import java.util.function.Predicate;
+import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
-import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 /// Interface describing the base methods common to all inputs of our recipes.
 public interface InputIngredient<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>> extends Predicate<STACK> {
@@ -47,5 +47,5 @@ public interface InputIngredient<HOLDER_TYPE, STACK extends TypedInstance<HOLDER
     /// {@return the slot display for this ingredient}
     ///
     /// @since 10.8.0
-    SlotDisplay display();
+    WithAmountSlotDisplay display();
 }

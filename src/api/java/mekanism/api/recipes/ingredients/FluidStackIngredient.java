@@ -13,7 +13,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.context.ContextMap;
-import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
@@ -117,7 +116,7 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, FluidS
     }
 
     @Override
-    public SlotDisplay display() {
+    public WithAmountSlotDisplay display() {
         return new WithAmountSlotDisplay(ingredient.ingredient().display(), ingredient.amount());
     }
 

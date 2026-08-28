@@ -36,8 +36,8 @@ public class CombinerRecipeCategory extends HolderRecipeCategory<CombinerRecipe>
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CombinerRecipe> recipeHolder, IFocusGroup focusGroup) {
         CombinerRecipe recipe = recipeHolder.value();
-        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getMainInput()::getRepresentations);
-        initItem(builder, RecipeIngredientRole.INPUT, extra, recipe.getExtraInput()::getRepresentations);
-        initItem(builder, output, recipe::getOutputDefinition);
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getMainInput().display());
+        initItem(builder, RecipeIngredientRole.INPUT, extra, recipe.getExtraInput().display());
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDisplay());
     }
 }

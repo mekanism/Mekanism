@@ -11,6 +11,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.recipe_viewer.INamedRVRecipe;
 import mekanism.common.Mekanism;
@@ -20,7 +21,7 @@ import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 //TODO - V11: Make the SPS have a proper recipe type to allow for custom recipes
 public record SPSRecipeViewerRecipe(Identifier id, ChemicalStackIngredient input, ChemicalStackTemplate output) implements INamedRVRecipe {
@@ -31,12 +32,7 @@ public record SPSRecipeViewerRecipe(Identifier id, ChemicalStackIngredient input
           ChemicalStackTemplate.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(SPSRecipeViewerRecipe::output)
     ).apply(instance, SPSRecipeViewerRecipe::new));
 
-    public static List<SPSRecipeViewerRecipe> getSPSRecipes(HolderLookup.@Nullable Provider lookupProvider) {
-        if (lookupProvider == null) {
-            //Something went horribly wrong, bail
-            Mekanism.logger.warn("No lookup provider provided to generate sps recipes with");
-            return Collections.emptyList();
-        }
+    public static List<SPSRecipeViewerRecipe> getSPSRecipes(HolderLookup.Provider lookupProvider) {
         Optional<? extends RegistryLookup<Chemical>> optionalRegistry = lookupProvider.lookup(MekanismRegistries.Keys.CHEMICAL);
         if (optionalRegistry.isEmpty()) {
             //Something went horribly wrong, bail
@@ -54,5 +50,9 @@ public record SPSRecipeViewerRecipe(Identifier id, ChemicalStackIngredient input
               IngredientCreatorAccess.chemicalStack().fromHolder(poloniumReference.get(), MekanismConfig.general.spsInputPerAntimatter.get()),
               new ChemicalStackTemplate(antimatterReference.get(), 1)
         ));
+    }
+
+    public SlotDisplay outputDisplay() {
+        return new ChemicalStackSlotDisplay(output);
     }
 }
