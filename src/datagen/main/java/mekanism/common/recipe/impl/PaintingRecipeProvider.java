@@ -94,7 +94,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         // things that make no sense to be colored, such as some sort of fancy carpets, or a unique type of glass that
         // is tagged as glass, but shouldn't be able to be converted directly into stained-glass
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_WOOL, oneAtATime, WOOL, basePath + "wool/");
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CARPETS, eightAtATime, CARPETS, basePath + "carpet/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CARPETS, PigmentExtractingRecipeProvider.CARPET_RATE, CARPETS, basePath + "carpet/");
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_BEDS, oneAtATime, BEDS, basePath + "bed/");
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CANDLE, oneAtATime, CANDLES, basePath + "candle/");
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_GLASS, eightAtATime, STAINED_GLASS, basePath + "glass/");
