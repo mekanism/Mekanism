@@ -173,7 +173,6 @@ public class MekanismJEI implements IModPlugin {
         HolderLookup.Provider registries = registry.getContextMap().getOrThrow(SlotDisplayContext.REGISTRIES);
         HolderLookup.RegistryLookup<Chemical> chemicalLookup = registries.lookupOrThrow(MekanismRegistries.Keys.CHEMICAL);
         chemicalStackHelper = new ChemicalStackHelper(registry.getColorHelper(), chemicalLookup);
-        //TODO - 26.2: Why does only liquid steam show in JEI when searching for steam?
         List<ChemicalStack> types = chemicalLookup.listElements()
               //Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
               .filter(chemical -> !chemical.is(ChemicalIds.EMPTY))

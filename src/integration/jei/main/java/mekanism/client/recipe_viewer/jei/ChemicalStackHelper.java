@@ -48,8 +48,9 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
 
     @Override
     public Object getUid(ChemicalStack ingredient, UidContext context) {
-        //Note: We just return the registry element itself as we have no component data
-        return ingredient.getChemical();
+        //Note: We just return the registry holder itself as we have no component data, and we can't return the element as if the impl is a record
+        // and the record components are the same it would end up being seen as "equal"
+        return ingredient.typeHolder();
     }
 
     @Override
