@@ -11,10 +11,9 @@ import net.minecraft.core.Direction;
 
 public record SidedBlockPos(long pos, Direction side) {
 
-    //TODO - 26.2: Should we just use Direction.CODEC to store the side? Most likely
     public static final Codec<SidedBlockPos> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           Codec.LONG.fieldOf(SerializationConstants.POSITION).forGetter(SidedBlockPos::pos),
-          Direction.LEGACY_ID_CODEC.fieldOf(SerializationConstants.SIDE).forGetter(SidedBlockPos::side)
+          Direction.CODEC.withAlternative(Direction.LEGACY_ID_CODEC).fieldOf(SerializationConstants.SIDE).forGetter(SidedBlockPos::side)
     ).apply(instance, SidedBlockPos::new));
 
     public static SidedBlockPos get(Destination destination) {

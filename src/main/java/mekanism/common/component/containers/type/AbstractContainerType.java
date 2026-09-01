@@ -1,7 +1,7 @@
 package mekanism.common.component.containers.type;
 
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import java.util.Map;
 import java.util.function.Supplier;
 import mekanism.common.component.containers.creator.IContainerCreator;
 import mekanism.common.config.IMekanismConfig;
@@ -18,7 +18,7 @@ import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializable, ATTACHED> implements IContainerType<CONTAINER, ATTACHED> {
 
-    private final Map<Item, Lazy<? extends IContainerCreator<CONTAINER, ATTACHED>>> knownDefaultCreators = new Reference2ObjectOpenHashMap<>();
+    private final Reference2ObjectMap<Item, Lazy<? extends IContainerCreator<CONTAINER, ATTACHED>>> knownDefaultCreators = new Reference2ObjectOpenHashMap<>();
     private final DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component;
     private final String containerTag;
 

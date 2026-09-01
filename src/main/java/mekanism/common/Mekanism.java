@@ -302,7 +302,7 @@ public class Mekanism {
         BuildCommand.register("tank", MekanismLang.DYNAMIC_TANK, new TankBuilder());
         BuildCommand.register("evaporation", MekanismLang.EVAPORATION_PLANT, new EvaporationBuilder());
         BuildCommand.register("sps", MekanismLang.SPS, new SPSBuilder());
-        event.getDispatcher().register(CommandMek.register());
+        event.getDispatcher().register(CommandMek.register(event.getBuildContext()));
     }
 
     private void serverStarted(ServerStartedEvent event) {

@@ -7,7 +7,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.resources.Identifier;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -41,8 +40,7 @@ public record ModuleHydrostaticRepulsorUnit(boolean swimBoost) implements ICusto
 
     @Override
     public void tickServer(IModule<ModuleHydrostaticRepulsorUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
-        //TODO - 26.2 if we want to do more than water, EntityFluidInteraction needs interrogating
-        if (isSwimBoost(module) && player.isEyeInFluid(FluidTags.WATER)) {
+        if (isSwimBoost(module) && player.getFluidInteraction().isInFluidMatching(player, (entity, type, _) -> entity.canSwimInFluidType(type))) {
             //Note: While we let creative players not use energy, we require that enough energy is present when we modify the attributes, as we don't have an entity context
             module.useAllEnergy(null, itemAccess, MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion.get(), transaction);
         }

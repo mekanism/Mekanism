@@ -2,8 +2,9 @@ package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class MekanismRenderer {
     public static RenderResizableCuboid.TexturePicker teleporterPortal;
     public static final Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
     private static final Map<TextureAtlasSprite, RenderResizableCuboid.TexturePicker> SINGLE_TEXTURE_PICKERS = new IdentityHashMap<>();
-    private static final Map<Fluid, ValveTextureGetter> VALVE_FLUID_TEX_CACHE = new HashMap<>();
+    private static final Reference2ObjectMap<Fluid, ValveTextureGetter> VALVE_FLUID_TEX_CACHE = new Reference2ObjectOpenHashMap<>();
 
     /// Get a fluid texture when a stack does not exist.
     ///

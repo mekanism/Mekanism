@@ -26,10 +26,12 @@ import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.ingredients.creator.ItemStackIngredientCreator;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -40,6 +42,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.neoforged.neoforge.common.CommonHooks;
@@ -308,6 +311,7 @@ public class QIOCraftingWindow implements IContentsListener {
             //If the recipe isn't valid, fail
             return;
         }
+        ContextMap contextMap = SlotDisplayContext.fromLevel(world);
         QIOFrequency frequency = holder.getFrequency();
         //Mark that we are crafting so changes to the slots below don't force a bunch of recalculations to take place
         CommonHooks.setCraftingPlayer(player);
@@ -409,7 +413,7 @@ public class QIOCraftingWindow implements IContentsListener {
                                     break;
                                 }
                                 // see if we have another valid input stored in the frequency and replace it with it if we do
-                                replacementHelper.findEquivalentItem(world, frequency, inputSlot, index, current, subTransaction);
+                                replacementHelper.findEquivalentItem(world, contextMap, frequency, inputSlot, index, current, subTransaction);
                                 // and stop crafting even if we have another valid item for that spot, as we want to give the player a chance
                                 // to notice the item it will be using changed in case it got replaced with some very expensive alternative
                                 stopCrafting = true;
@@ -469,6 +473,7 @@ public class QIOCraftingWindow implements IContentsListener {
             //If the recipe isn't valid, fail
             return ItemStack.EMPTY;
         }
+        ContextMap contextMap = SlotDisplayContext.fromLevel(world);
         QIOFrequency frequency = holder.getFrequency();
         //Mark that we are crafting so changes to the slots below don't force a bunch of recalculations to take place
         CommonHooks.setCraftingPlayer(player);
@@ -514,7 +519,7 @@ public class QIOCraftingWindow implements IContentsListener {
                                 return ItemStack.EMPTY;
                             }
                             // see if we have another valid input stored in the frequency and replace it with it if we do
-                            replacementHelper.findEquivalentItem(world, frequency, inputSlot, index, current, transaction);
+                            replacementHelper.findEquivalentItem(world, contextMap, frequency, inputSlot, index, current, transaction);
                         }
                     }
                 }
@@ -742,12 +747,7 @@ public class QIOCraftingWindow implements IContentsListener {
             }
         }
 
-        private static Iterable<ItemStack> getItems(Ingredient ingredient) {
-            //TODO - 26.2: unpack ingredients, check RecipeIndex(Cache)
-            return Collections.emptyList();
-        }
-
-        public void findEquivalentItem(Level world, QIOFrequency frequency, IInventorySlot slot, int index, ItemResource used, TransactionContext transaction) {
+        public void findEquivalentItem(Level world, ContextMap contextMap, QIOFrequency frequency, IInventorySlot slot, int index, ItemResource used, TransactionContext transaction) {
             mapRecipe(index, used);
             if (invalid) {
                 //If something about mapping the recipe went wrong, we can't find any equivalents
@@ -757,30 +757,31 @@ public class QIOCraftingWindow implements IContentsListener {
             //Validate the ingredient was valid for its spot, because if it isn't something went wrong and there is no point
             // in attempting to find a replacement
             if (usedIngredient != null && usedIngredient.test(used.toStack())) {
-                for (ItemStack item : getItems(usedIngredient)) {
-                    if (item.isEmpty()) {
-                        //If for some reason the ingredient returns empty stacks, just skip those
-                        continue;
-                    }
-                    //Start by checking against the exact stack it has stored as an item
-                    // Note: We can use a raw hashed item here as we don't store it anywhere, and just use it as a lookup
-                    if (testEquivalentItem(world, frequency, slot, index, usedIngredient, ItemResource.of(item), transaction)) {
-                        //Match found, we can exit
-                        return;
-                    }
-                    // if that didn't find a match, we go through all the items of the same basic type as the target item. For
-                    // vanilla ingredients this is expected to end up finding a match for the first item that we have types for,
-                    // but we check them all just in case the recipe is doing other validation in the matches check that doesn't
-                    // get reflected in the ingredient matching, for example how MekanismShapedRecipe works. For more complex
-                    // ingredients we do this because maybe we have some sort of "partial nbt" match or something and by checking
-                    // the larger grouping of potential matches we may find one we would otherwise have missed
-                    for (ItemResource type : frequency.getTypesForItem(item.getItem())) {
-                        if (testEquivalentItem(world, frequency, slot, index, usedIngredient, type, transaction)) {
-                            //Match found, we can exit
-                            return;
-                        }
-                    }
-                }
+                usedIngredient.display().resolve(contextMap, ItemStackIngredientCreator.RESOURCE_DISPLAY_RESOLVER)
+                      //If for some reason the ingredient returns empty stacks, just skip those
+                      .filter(item -> !item.isEmpty())
+                      //Note: We intentionally use a forEach rather than a toList or something that would allow us to avoid a capturing lambda
+                      // as we want to be able to avoid resolving every element in case it is an ingredient for an any holderset
+                      .forEach(item -> {
+                          //Start by checking against the exact stack it has stored as an item
+                          // Note: We can use a raw hashed item here as we don't store it anywhere, and just use it as a lookup
+                          if (testEquivalentItem(world, frequency, slot, index, usedIngredient, item, transaction)) {
+                              //Match found, we can exit
+                              return;
+                          }
+                          // if that didn't find a match, we go through all the items of the same basic type as the target item. For
+                          // vanilla ingredients this is expected to end up finding a match for the first item that we have types for,
+                          // but we check them all just in case the recipe is doing other validation in the matches check that doesn't
+                          // get reflected in the ingredient matching, for example how MekanismShapedRecipe works. For more complex
+                          // ingredients we do this because maybe we have some sort of "partial nbt" match or something and by checking
+                          // the larger grouping of potential matches we may find one we would otherwise have missed
+                          for (ItemResource type : frequency.getTypesForItem(item.getItem())) {
+                              if (testEquivalentItem(world, frequency, slot, index, usedIngredient, type, transaction)) {
+                                  //Match found, we can exit
+                                  return;
+                              }
+                          }
+                      });
             }
         }
 
@@ -846,9 +847,8 @@ public class QIOCraftingWindow implements IContentsListener {
             }
         }
 
-        //TODO - 26.2: Recipes. probably use the display() and make it a util func
         private static List<Ingredient> getIngredients(CraftingRecipe value) {
-            return Collections.emptyList();//value.getIngredients();
+            return value.placementInfo().ingredients();
         }
 
         private ItemStack getItem(int i, int index, ItemResource used) {

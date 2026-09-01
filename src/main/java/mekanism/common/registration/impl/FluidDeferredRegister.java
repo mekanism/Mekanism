@@ -264,6 +264,7 @@ public class FluidDeferredRegister {
         public final Identifier renderOverlayTexture;
         public final int color;
 
+        //TODO - 26.2: Do we want to copy various settings of water to have it push things and allow swimming in the fluids again?
         public MekanismFluidType(FluidType.Properties properties, FluidTypeRenderProperties renderProperties) {
             super(properties);
             this.stillTexture = renderProperties.stillTexture;

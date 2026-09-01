@@ -395,7 +395,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
 
     @Override
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
-        //TODO - 26.2: Should we be overriding Mob#mobInteract instead?? That is what horses use to open the gui
         if (!IEntitySecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
             return InteractionResult.FAIL;
         } else if (player.isShiftKeyDown()) {

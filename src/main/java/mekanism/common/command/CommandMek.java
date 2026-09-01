@@ -16,6 +16,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.MekanismPermissions;
 import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
@@ -37,7 +38,7 @@ public class CommandMek {
 
     private static final Map<UUID, Deque<BlockPos>> tpStack = new Object2ObjectOpenHashMap<>();
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    public static LiteralArgumentBuilder<CommandSourceStack> register(CommandBuildContext context) {
         return Commands.literal("mek")
               .requires(MekanismPermissions.COMMAND)
               .then(BuildCommand.COMMAND)
@@ -45,7 +46,7 @@ public class CommandMek {
               .then(DebugCommand.register())
               .then(ForceRetrogenCommand.register())
               .then(RadiationCommand.register())
-              .then(TestRulesCommand.register())
+              .then(TestRulesCommand.register(context))
               .then(TpCommand.register())
               .then(TppopCommand.register());
     }
@@ -65,7 +66,7 @@ public class CommandMek {
 
     private static class TestRulesCommand {
 
-        static ArgumentBuilder<CommandSourceStack, ?> register() {
+        static ArgumentBuilder<CommandSourceStack, ?> register(CommandBuildContext context) {
             return Commands.literal("testrules")
                   .requires(MekanismPermissions.COMMAND_TEST_RULES)
                   .executes(ctx -> {
@@ -82,8 +83,7 @@ public class CommandMek {
                       rules.set(GameRules.ADVANCE_TIME, false, server);
                       rules.set(GameRules.ADVANCE_WEATHER, false, server);
                       rules.set(GameRules.MOB_GRIEFING, false, server);
-                      //TODO - 26.2: check this is correct
-                      level.clockManager().moveToTimeMarker(level.registryAccess().holderOrThrow(WorldClocks.OVERWORLD), ClockTimeMarkers.NOON);
+                      level.clockManager().moveToTimeMarker(context.holderOrThrow(WorldClocks.OVERWORLD), ClockTimeMarkers.NOON);
                       //Act as if /weather clear was ran
                       level.getWeatherData().setRaining(false);
                       level.getWeatherData().setThundering(false);
