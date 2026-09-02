@@ -410,7 +410,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
     }
 
-    @Override//TODO - 26.2: fix tooltips showing for elements hidden by windows
+    @Override
     protected void extractTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.extractTooltip(guiGraphics, mouseX, mouseY);
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);

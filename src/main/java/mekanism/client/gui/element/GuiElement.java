@@ -316,6 +316,12 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
+    protected void extractTooltipForNextRenderPass(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        //TODO - 26.2: Can we move the logic from renderTooltip and GuiMekanism#extractTooltip here?
+        //tooltip.refreshTooltipForNextRenderPass(graphics, mouseX, mouseY, isMouseOverCheckWindows(mouseX, mouseY), isFocused(), getTooltipRectangle(mouseX, mouseY));
+    }
+
+    @Override
     public final boolean isDragging() {
         return this.isDragging;
     }
@@ -513,6 +519,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     /// Does the same as [#isMouseOver(double, double)], but validates there is no window in the way
     public final boolean isMouseOverCheckWindows(double mouseX, double mouseY) {
         //TODO: Ideally we would have the various places that call this instead check isHovered if we can properly override setting that
+        //TODO - 26.2: Override and reimplement AbstractWidget#extractRenderState ? And replace what it sets the isHovered check to be?
         boolean isHovering = isMouseOver(mouseX, mouseY);
         return checkWindows(mouseX, mouseY, isHovering);
     }
@@ -549,9 +556,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     public final void renderShifted(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        //Copy of super.render, except doesn't update the tooltip for the next render pass, as we handle that via renderTooltip
+        //Copy of super.extractRenderState, except doesn't update the tooltip for the next render pass, as we handle that via renderTooltip
         if (this.visible) {
-            //TODO - 1.21: Do we need to add support for guiGraphics.containsPointInScissor(mouseX, mouseY) to more places where we do adhoc mouse over checks?
+            //TODO - 26.2: Do we need to add support for guiGraphics.containsPointInScissor(mouseX, mouseY) to more places where we do adhoc mouse over checks?
             this.isHovered = guiGraphics.containsPointInScissor(mouseX, mouseY) && mouseX >= this.getX() && mouseY >= this.getY() &&
                              mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
             renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
@@ -560,15 +567,13 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     @Override
     public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        //Note: We copy super's visible check here so that if it is not visible we can skip the pose stack transforms
-        if (visible) {
-            Matrix3x2fStack matrix = guiGraphics.pose();
-            matrix.pushMatrix();
-            // fix render offset to be as we expect things to be for how we implement our render methods (based on relatives)
-            matrix.translate(getGuiLeft(), getGuiTop());
-            renderShifted(guiGraphics, mouseX, mouseY, partialTicks);
-            matrix.popMatrix();
-        }
+        //Note: Vanilla ensures visibility is checked before calling this method
+        Matrix3x2fStack matrix = guiGraphics.pose();
+        matrix.pushMatrix();
+        // fix render offset to be as we expect things to be for how we implement our render methods (based on relatives)
+        matrix.translate(getGuiLeft(), getGuiTop());
+        renderShifted(guiGraphics, mouseX, mouseY, partialTicks);
+        matrix.popMatrix();
     }
 
     public void renderWidget(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
