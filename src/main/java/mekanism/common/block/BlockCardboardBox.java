@@ -42,7 +42,8 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
         }
         if (!world.isClientSide()) {
             Optional<BlockData> blockData = Optional.ofNullable(WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos))
-                  .map(box -> box.components().get(MekanismDataComponents.BLOCK_DATA.value()));
+                  .map(box -> box.components().getOrDefault(MekanismDataComponents.BLOCK_DATA, BlockData.NONE))
+                  .filter(BlockData::hasData);
             if (blockData.isPresent()) {
                 if (!blockData.get().tryPlaceIntoWorld(world, pos, player)) {
                     //Can't place it into the world, skip
@@ -74,7 +75,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
-        if (state != null && context.getItemInHand().has(MekanismDataComponents.BLOCK_DATA)) {
+        if (state != null && BlockData.hasData(context.getItemInHand())) {
             return state.setValue(BlockStateHelper.storageProperty, true);
         }
         return state;

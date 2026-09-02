@@ -1,5 +1,6 @@
 package mekanism.common.block;
 
+import java.util.Set;
 import java.util.function.BiConsumer;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -43,6 +44,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.util.BlockRelocability;
 import org.jspecify.annotations.Nullable;
 
 //TODO: Extend MekanismBlock. Not done yet as checking is needed to ensure how drops happen still happens correctly and things in the super class don't mess this up
@@ -51,10 +54,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Nullable
     public static BlockPos getMainBlockPos(BlockGetter world, BlockPos thisPos) {
         TileEntityBoundingBlock te = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, thisPos);
-        if (te != null && te.canRedirectFrom(thisPos)) {
-            return te.getMainPos();
-        }
-        return null;
+        return te == null ? null : te.getMainPos();
     }
 
     //TODO - 26.2: When breaking it doesn't display the break progress outline if a bounding block is the primary target
@@ -80,6 +80,26 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return BlockStateHelper.getStateForPlacement(super.getStateForPlacement(context), context);
+    }
+
+    @Override
+    public BlockRelocability getRelocability(LevelReader level, BlockPos pos, BlockState state) {
+        if (state.is(Tags.Blocks.RELOCATION_NOT_SUPPORTED)) {//This is the check that happens in super
+            return BlockRelocability.No.INSTANCE;
+        }
+        BlockPos mainPos = getMainBlockPos(level, pos);
+        if (mainPos == null) {
+            //The bounding block is effectively air as it has no main position set, so something went wrong.
+            // Don't block a mod that is trying to move an AOE from being able to move the bounding block as it won't have a reference regardless of if it is moved
+            return BlockRelocability.Yes.INSTANCE;
+        }
+        BlockState mainState = level.getBlockState(mainPos);
+        BlockRelocability relocability = mainState.getRelocability(level, mainPos);
+        if (relocability instanceof BlockRelocability.Multiblock(Set<BlockPos> requiredPositions) && !requiredPositions.contains(pos)) {
+            //If the main position is a relocatable multiblock, but doesn't contain our position. It isn't valid, so return that we can't be relocated
+            return BlockRelocability.No.INSTANCE;
+        }
+        return relocability;
     }
 
     @Override

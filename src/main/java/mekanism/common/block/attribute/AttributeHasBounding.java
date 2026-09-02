@@ -7,7 +7,9 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
@@ -17,7 +19,7 @@ public class AttributeHasBounding implements Attribute {
 
     public static final AttributeHasBounding ABOVE_ONLY = new AttributeHasBounding(new HandleBoundingBlock() {
         @Override
-        public <DATA extends @Nullable Object> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
+        public <LEVEL extends LevelReader, DATA extends @Nullable Object> boolean handle(LEVEL level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<LEVEL, BlockPos, DATA> consumer) {
             return consumer.accept(level, pos.above(), data);
         }
     });
@@ -48,12 +50,16 @@ public class AttributeHasBounding implements Attribute {
 
     public void placeBoundingBlocks(Level world, BlockPos orig, BlockState state) {
         handle(world, orig, state, orig, (level, boundingLocation, data) -> {
+            Vec3i offset = getOffset(boundingLocation, data);
+            if (!validateOffset(level, boundingLocation, offset)) {
+                return false;
+            }
             BlockState newState = BlockStateHelper.getStateForPlacement(MekanismBlocks.BOUNDING_BLOCK.value().defaultBlockState(), level, boundingLocation, null, Direction.NORTH);
             if (level.setBlockAndUpdate(boundingLocation, newState)) {
                 TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, boundingLocation, true);
                 if (tile != null) {
                     //Note: As we place it on both server and client, we don't need to sync the main location here as it should already be set on both ends
-                    tile.setMainLocation(level, data, false);
+                    tile.setMainLocationOffset(offset);
                 } else {
                     Mekanism.logger.warn("Unable to find Bounding Block Tile at: {} in {}", boundingLocation, level.dimension().identifier());
                 }
@@ -67,9 +73,16 @@ public class AttributeHasBounding implements Attribute {
     public void syncMasterPosition(Level world, BlockPos orig, BlockState state) {
         if (!world.isClientSide()) {
             handle(world, orig, state, orig, (level, boundingLocation, data) -> {
+                Vec3i offset = getOffset(boundingLocation, data);
+                if (!validateOffset(level, boundingLocation, offset)) {
+                    return false;
+                }
                 TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, boundingLocation, true);
                 if (tile != null) {
-                    tile.setMainLocation(level, data, true);
+                    tile.setMainLocationOffset(offset);
+                    if (!level.isClientSide()) {
+                        tile.sendUpdatePacket();
+                    }
                 } else {
                     Mekanism.logger.warn("Unable to find Bounding Block Tile for sync at: {} in {}", boundingLocation, level.dimension().identifier());
                 }
@@ -78,13 +91,25 @@ public class AttributeHasBounding implements Attribute {
         }
     }
 
-    public <DATA extends @Nullable Object> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> predicate) {
+    private static Vec3i getOffset(BlockPos boundingPos, BlockPos mainPos) {
+        return boundingPos.subtract(mainPos);
+    }
+
+    private static boolean validateOffset(Level level, BlockPos pos, Vec3i offset) {
+        if (offset.equals(Vec3i.ZERO)) {
+            Mekanism.logger.error("Offset between bounding location {} and main pos in {} was zero", pos, level.dimension().identifier());
+            return false;
+        }
+        return true;
+    }
+
+    public <LEVEL extends LevelReader, DATA extends @Nullable Object> boolean handle(LEVEL level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<LEVEL, BlockPos, DATA> predicate) {
         return boundingPosHandlers.handle(level, pos, state, data, predicate);
     }
 
     public interface HandleBoundingBlock {
 
-        <DATA extends @Nullable Object> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> predicate);
+        <LEVEL extends LevelReader, DATA extends @Nullable Object> boolean handle(LEVEL level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<LEVEL, BlockPos, DATA> predicate);
     }
 
     @FunctionalInterface

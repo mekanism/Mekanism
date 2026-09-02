@@ -11,6 +11,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
@@ -76,6 +77,14 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
         this(state, blockEntity == null ? null : blockEntity.saveWithFullMetadata(provider));
     }
 
+    public static boolean hasData(DataComponentGetter stack) {
+        return stack.getOrDefault(MekanismDataComponents.BLOCK_DATA, NONE).hasData();
+    }
+
+    public boolean hasData() {
+        return !blockState.isAir();
+    }
+
     public boolean tryPlaceIntoWorld(Level level, BlockPos pos, @Nullable Player player) {
         //TODO: Note - this will not allow for rotation of the block based on how it is placed direction wise via the removal of
         // the cardboard box and will instead leave it how it was when the box was initially put on
@@ -127,13 +136,16 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
     }
 
     @Override
-    @SuppressWarnings("OptionalIsPresent")//Capturing lambdas
     public void addToTooltip(TooltipContext context, Consumer<Component> builder, TooltipFlag flag, DataComponentGetter componentGetter) {
-        boolean hasData = !blockState.isAir();
+        boolean hasData = hasData();
         builder.accept(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(hasData, true)));
-        if (!hasData) {
-            return;
+        if (hasData) {
+            addDataToTooltip(context, builder, flag);
         }
+    }
+
+    @SuppressWarnings("OptionalIsPresent")//Capturing lambdas
+    public void addDataToTooltip(TooltipContext context, Consumer<Component> builder, TooltipFlag flag) {
         Block block = blockState.getBlock();
         builder.accept(MekanismLang.BLOCK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, block));
         //TODO: Try to come up with a better way to proxy components from the stored block's BE

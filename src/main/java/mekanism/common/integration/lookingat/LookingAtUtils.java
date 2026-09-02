@@ -31,7 +31,6 @@ import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.tile.transmitter.TileEntityResourceTransmitter;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item.TooltipContext;
@@ -83,7 +82,7 @@ public class LookingAtUtils {
     public static void addInfoOrRedirect(LookingAtHelper info, Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
         if (tile instanceof TileEntityBoundingBlock boundingBlock) {
             //If we are a bounding block that has a position set, redirect the check to the main location
-            tile = boundingBlock.getMainTile(pos);
+            tile = boundingBlock.getMainTile();
             if (tile == null) {
                 //If there is no tile where the bounding block thinks the main tile is, exit
                 return;
@@ -96,9 +95,9 @@ public class LookingAtUtils {
 
     private static void addInfo(LookingAtHelper info, Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
         if (tile != null) {
-            BlockData blockData = tile.components().get(MekanismDataComponents.BLOCK_DATA.value());
-            if (blockData != null) {
-                blockData.addToTooltip(TooltipContext.EMPTY, info::addText, TooltipFlag.NORMAL, /*unused*/DataComponentMap.EMPTY);
+            BlockData blockData = tile.components().getOrDefault(MekanismDataComponents.BLOCK_DATA, BlockData.NONE);
+            if (blockData.hasData()) {
+                blockData.addDataToTooltip(TooltipContext.of(level), info::addText, TooltipFlag.NORMAL);
             }
             if (tile instanceof TileEntityBin bin && bin.getBinSlot().isLocked()) {
                 info.addText(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, bin.getBinSlot().getLockType()));

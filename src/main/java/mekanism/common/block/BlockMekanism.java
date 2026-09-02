@@ -1,5 +1,7 @@
 package mekanism.common.block;
 
+import java.util.HashSet;
+import java.util.Set;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
@@ -49,6 +51,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.redstone.Redstone;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.util.BlockRelocability;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 
@@ -147,6 +151,33 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
+    public BlockRelocability getRelocability(LevelReader level, BlockPos pos, BlockState state) {
+        if (state.is(Tags.Blocks.RELOCATION_NOT_SUPPORTED)) {//This is the check that happens in super
+            return BlockRelocability.No.INSTANCE;
+        } else if (RadiationManager.isGlobalRadiationEnabled()) {//Skip getting the tile if radiation is disabled in the config
+            BlockEntity tile = WorldUtils.getTileEntity(level, pos);
+            if (tile instanceof ITileRadioactive radioactiveTile && radioactiveTile.getRadiationScale(level) > 0) {
+                //Don't allow blocks that may have a radioactive substance in them to be picked up as it
+                // will effectively dupe the radiation and also leak out into the atmosphere which is not
+                // what people want, and means that it is likely someone miss-clicked.
+                return BlockRelocability.No.INSTANCE;
+            }
+        }
+        AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
+        if (hasBounding == null) {
+            return BlockRelocability.Yes.INSTANCE;
+        }
+        Set<BlockPos> positions = new HashSet<>();
+        positions.add(pos);
+        //noinspection RedundantTypeArguments - Nullability warnings get confused without the explicit types
+        if (hasBounding.<LevelReader, Set<BlockPos>>handle(level, pos, state, positions, (_, boundingLocation, set) -> set.add(boundingLocation.immutable()))) {
+            return new BlockRelocability.Multiblock(positions);
+        }
+        //Something went wrong, just return we can't relocate it. This should theoretically never be the case
+        return BlockRelocability.No.INSTANCE;
+    }
+
+    @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
         AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
@@ -233,14 +264,7 @@ public abstract class BlockMekanism extends Block {
         //Call super variant of player relative hardness to get default
         float speed = super.getDestroyProgress(state, player, blockGetter, pos);
         if (RadiationManager.isGlobalRadiationEnabled() && tile instanceof ITileRadioactive radioactiveTile) {
-            float radiationScale;
-            if (level != null) {
-                radiationScale = radioactiveTile.getRadiationScale(level);
-            } else if (blockGetter instanceof LevelReader levelReader) {
-                radiationScale = radioactiveTile.getRadiationScale(levelReader);
-            } else {
-                radiationScale = 0;
-            }
+            float radiationScale = blockGetter instanceof LevelReader levelReader ? radioactiveTile.getRadiationScale(levelReader) : 0;
             if (radiationScale > 0) {
                 //Our tile has some radioactive substance in it; slow down breaking it
                 //Note: Technically our getRadiationScale impls validate that radiation is enabled, but we do so here as well

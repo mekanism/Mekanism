@@ -1,8 +1,7 @@
 {
   "values": [
     "#c:relocation_not_supported",
-    "#minecraft:beds",
-    "#minecraft:doors",
+    "mekanism:cardboard_box",
     "minecraft:trial_spawner",
     "minecraft:vault"
   ]

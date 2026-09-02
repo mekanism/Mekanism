@@ -2,6 +2,7 @@
   "model": {
     "type": "minecraft:condition",
     "component": "mekanism:block_data",
+    "ignore_default": true,
     "on_false": {
       "type": "minecraft:model",
       "model": "mekanism:block/cardboard_box"

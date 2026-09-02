@@ -230,7 +230,6 @@ public final class SerializationConstants {
     public static final String LOCK_TYPE = "lock_type";
     public static final String LOGIC_TYPE = "logic_type";
     public static final String MAGNITUDE = "magnitude";
-    public static final String MAIN = "main";
     public static final String MAX = "max";
     public static final String MAX_BURN_TIME = "max_burn_time";
     public static final String MEK_DATA = "mek_data";
@@ -243,6 +242,8 @@ public final class SerializationConstants {
     public static final String NAME = "name";
     public static final String NEXT = "next";
     public static final String NUM_POWERING = "num_powering";
+    /// @since 10.8.0
+    public static final String OFFSET = "offset";
     public static final String ORE_TYPE = "ore_type";
     public static final String ORIGINAL_LOCATION = "original_location";
     public static final String OUTPUT_MODE = "output_mode";

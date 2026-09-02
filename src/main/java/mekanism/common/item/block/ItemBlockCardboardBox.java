@@ -1,5 +1,6 @@
 package mekanism.common.item.block;
 
+import java.util.Set;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockCardboardBox;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.BlockRelocability;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 
 public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
@@ -53,13 +55,17 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         Player player = context.getPlayer();
         if (stack.isEmpty() || player == null) {
             return InteractionResult.PASS;
-        }
-        Level world = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        if (!stack.has(MekanismDataComponents.BLOCK_DATA) && !player.isShiftKeyDown()) {
+        } else if (!player.isShiftKeyDown() && !BlockData.hasData(stack)) {
+            Level world = context.getLevel();
+            BlockPos pos = context.getClickedPos();
             BlockState state = world.getBlockState(pos);
-            if (!state.isAir() && state.getDestroySpeed(world, pos) != Block.INDESTRUCTIBLE) {
-                if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST)) {
+            if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST)) {
+                //Note: While this is slightly redundant with the relocability check below, we check it any way,
+                // as for balance reasons we don't allow moving spawners by default
+                return InteractionResult.FAIL;
+            } else if (!state.isAir() && state.getDestroySpeed(world, pos) != Block.INDESTRUCTIBLE) {
+                BlockRelocability relocability = state.getRelocability(world, pos);
+                if (!relocability.isRelocatable(Set.of(pos))) {
                     return InteractionResult.FAIL;
                 }
                 Identifier stateName = RegistryUtils.getName(state.typeHolder());

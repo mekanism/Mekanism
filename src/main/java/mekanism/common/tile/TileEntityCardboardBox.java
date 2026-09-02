@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import java.util.List;
 import mekanism.api.SerializationConstants;
+import mekanism.common.component.BlockData;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityUpdateable;
@@ -32,7 +33,7 @@ public class TileEntityCardboardBox extends TileEntityUpdateable {
     @Override
     public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
-        if (components().has(MekanismDataComponents.BLOCK_DATA.get())) {
+        if (BlockData.hasData(components())) {
             //If we have the block data component, just sync all the components to the client, as when handling the update tag
             // it deserializes any components and replaces the components with the new value
             output.store(SerializationConstants.COMPONENTS, DataComponentMap.CODEC, components());

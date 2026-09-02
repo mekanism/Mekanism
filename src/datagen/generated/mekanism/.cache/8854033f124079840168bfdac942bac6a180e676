@@ -1,4 +1,4 @@
-// 26.2	2026-07-10T09:42:59.4264961	Model Definitions - mekanism
+// 26.2	2026-09-02T10:09:15.8342739	Model Definitions - mekanism
 2e09b81571bcad7a3e925d2b03b1ec1dd0f9b71f assets/mekanism/blockstates/advanced_energy_cube.json
 00c0d0e76b525301d8b7a1adc5dcb5d3807c4d38 assets/mekanism/blockstates/advanced_logistical_transporter.json
 84712d3beb4b5acb6a471b330f3bfa9dcf4de4fa assets/mekanism/blockstates/advanced_mechanical_pipe.json
@@ -137,7 +137,7 @@ c335241f99e26b92a272b41b3517584e34debc1c assets/mekanism/items/boiler_casing.jso
 45af2573674950242007161be874e95f5f96d1f9 assets/mekanism/items/boiler_valve.json
 0f53776fbaea214a701c131f05b1e5a3ffe81566 assets/mekanism/items/brine_bucket.json
 cf4949bcad128d5fe7c0b35ffd6c71987c8045a0 assets/mekanism/items/canteen.json
-d0347ac34a27f4e953505c026e765737ee071b25 assets/mekanism/items/cardboard_box.json
+7d74a6ae0c80901565b933a959f7c479c618bed3 assets/mekanism/items/cardboard_box.json
 6b8bdbbb348f2de7dc8a239de62edcbcd9fe1da7 assets/mekanism/items/chargepad.json
 19cadfe817be15c78b33e102b65fd54b961640fb assets/mekanism/items/chemical_crystallizer.json
 9b4698fba4e0dd2e30718d77cddb58b183218e34 assets/mekanism/items/chemical_dissolution_chamber.json

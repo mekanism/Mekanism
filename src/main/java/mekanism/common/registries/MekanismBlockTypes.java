@@ -147,7 +147,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
@@ -335,7 +335,8 @@ public class MekanismBlockTypes {
           .with(AttributeCustomSelectionBox.JSON)
           .withBounding(new HandleBoundingBlock() {
               @Override
-              public <DATA extends @Nullable Object> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
+              public <LEVEL extends LevelReader, DATA extends @Nullable Object> boolean handle(LEVEL level, BlockPos pos, BlockState state, DATA data,
+                    TriBooleanFunction<LEVEL, BlockPos, DATA> consumer) {
                   BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
                   for (int x = -1; x <= 1; x++) {
                       for (int y = 0; y <= 1; y++) {
@@ -541,7 +542,8 @@ public class MekanismBlockTypes {
           .with(AttributeCustomSelectionBox.JSON)
           .withBounding(new HandleBoundingBlock() {
               @Override
-              public <DATA extends @Nullable Object> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
+              public <LEVEL extends LevelReader, DATA extends @Nullable Object> boolean handle(LEVEL level, BlockPos pos, BlockState state, DATA data,
+                    TriBooleanFunction<LEVEL, BlockPos, DATA> consumer) {
                   BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
                   if (!consumer.accept(level, mutable.setWithOffset(pos, Direction.UP), data)) {
                       return false;

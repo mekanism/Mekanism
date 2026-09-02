@@ -68,6 +68,7 @@ import net.minecraft.client.renderer.block.dispatch.VariantMutator;
 import net.minecraft.client.renderer.block.dispatch.WeightedVariants;
 import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.properties.conditional.HasComponent;
 import net.minecraft.client.renderer.item.properties.select.ComponentContents;
 import net.minecraft.client.renderer.item.properties.select.DisplayContext;
 import net.minecraft.client.resources.model.sprite.Material;
@@ -276,7 +277,7 @@ public class MekanismModelProvider extends BaseModelProvider {
         blockModels.itemModelOutput.accept(
               MekanismBlocks.CARDBOARD_BOX.asItem(),
               ItemModelUtils.conditional(
-                    ItemModelUtils.hasComponent(MekanismDataComponents.BLOCK_DATA.get()),
+                    new HasComponent(MekanismDataComponents.BLOCK_DATA.get(), true),
                     ItemModelUtils.plainModel(modLocation("block/cardboard_box_storage")),
                     ItemModelUtils.plainModel(modLocation("block/cardboard_box"))
               )

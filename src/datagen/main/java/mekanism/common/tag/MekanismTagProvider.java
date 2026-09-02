@@ -255,28 +255,14 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addBoxBlacklist() {
         getBuilder(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(
-              MekanismBlocks.CARDBOARD_BOX,
-              MekanismBlocks.BOUNDING_BLOCK,
-              MekanismBlocks.SECURITY_DESK,
-              MekanismBlocks.DIGITAL_MINER,
-              MekanismBlocks.SEISMIC_VIBRATOR,
-              MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR,
-              MekanismBlocks.MODIFICATION_STATION,
-              MekanismBlocks.ISOTOPIC_CENTRIFUGE,
-              MekanismBlocks.PIGMENT_MIXER,
-              //Don't allow blocks that may have a radioactive substance in them to be picked up as it
-              // will effectively dupe the radiation and also leak out into the atmosphere which is not
-              // what people want, and means that it is likely someone miss-clicked.
-              MekanismBlocks.RADIOACTIVE_WASTE_BARREL,
-              MekanismBlocks.PRESSURIZED_REACTION_CHAMBER,
+              //Don't allow other transmitters that have a buffer due to dupe bugs
+              //TODO: Maybe some better way of doing this can be thought of? But there isn't a great way to make it so transmitters push their contents
+              // into remaining network when removed except for when they are removed by a mod that saved their contents first
+              // In theory one solution might be to save the contents of the network on the network level but that would introduce other issues
               MekanismBlocks.BASIC_PRESSURIZED_TUBE,
               MekanismBlocks.ADVANCED_PRESSURIZED_TUBE,
               MekanismBlocks.ELITE_PRESSURIZED_TUBE,
               MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE,
-              //Don't allow other transmitters that have a buffer either due to dupe bugs
-              //TODO: Maybe some better way of doing this can be thought of? But there isn't a great way to make it so transmitters push their contents
-              // into remaining network when removed except for when they are removed by a mod that saved their contents first
-              // In theory one solution might be to save the contents of the network on the network level but that would introduce other issues
               MekanismBlocks.BASIC_MECHANICAL_PIPE,
               MekanismBlocks.ADVANCED_MECHANICAL_PIPE,
               MekanismBlocks.ELITE_MECHANICAL_PIPE,
@@ -287,7 +273,9 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE
         );
         getBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST)
-              .add(Tags.Blocks.RELOCATION_NOT_SUPPORTED, BlockTags.BEDS, BlockTags.DOORS)
+              .add(Tags.Blocks.RELOCATION_NOT_SUPPORTED)
+              //Don't allow cardboard boxes to pick up other cardboard boxes
+              .add(MekanismBlocks.CARDBOARD_BOX)
               .add(BlockItemIds.TRIAL_SPAWNER.block(), BlockItemIds.VAULT.block());
     }
 

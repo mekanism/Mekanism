@@ -33,7 +33,6 @@ public class GeneratorsTagProvider extends BaseTagProvider {
 
     @Override
     protected void registerTags(HolderLookup.Provider registries) {
-        addBoxBlacklist();
         addEndermanBlacklist();
         addDataComponents();
         addFluids();
@@ -67,13 +66,6 @@ public class GeneratorsTagProvider extends BaseTagProvider {
 
         getBuilder(FRAMEABLE).add(GeneratorsBlocks.REACTOR_GLASS, GeneratorsBlocks.LASER_FOCUS_MATRIX);
         getBuilder(FB_BE_WHITELIST).add(GeneratorsBlocks.REACTOR_GLASS, GeneratorsBlocks.LASER_FOCUS_MATRIX);
-    }
-
-    private void addBoxBlacklist() {
-        getBuilder(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(
-              GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR,
-              GeneratorsBlocks.WIND_GENERATOR
-        );
     }
 
     private void addEndermanBlacklist() {

@@ -45,7 +45,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
@@ -104,7 +104,8 @@ public class GeneratorsBlockTypes {
           .with(AttributeUpgradeSupport.MUFFLING_ONLY)
           .withBounding(new HandleBoundingBlock() {
               @Override
-              public <DATA extends @Nullable Object> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
+              public <LEVEL extends LevelReader, DATA extends @Nullable Object> boolean handle(LEVEL level, BlockPos pos, BlockState state, DATA data,
+                    TriBooleanFunction<LEVEL, BlockPos, DATA> consumer) {
                   BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
                   for (int i = 0; i < 4; i++) {
                       mutable.setWithOffset(pos, 0, i + 1, 0);
@@ -140,7 +141,8 @@ public class GeneratorsBlockTypes {
           .with(AttributeUpgradeSupport.MUFFLING_ONLY)
           .withBounding(new HandleBoundingBlock() {
               @Override
-              public <DATA extends @Nullable Object> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
+              public <LEVEL extends LevelReader, DATA extends @Nullable Object> boolean handle(LEVEL level, BlockPos pos, BlockState state, DATA data,
+                    TriBooleanFunction<LEVEL, BlockPos, DATA> consumer) {
                   BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
                   if (!consumer.accept(level, mutable, data)) {
                       return false;
