@@ -92,7 +92,7 @@ public class AttributeHasBounding implements Attribute {
     }
 
     private static Vec3i getOffset(BlockPos boundingPos, BlockPos mainPos) {
-        return boundingPos.subtract(mainPos);
+        return mainPos.subtract(boundingPos);
     }
 
     private static boolean validateOffset(Level level, BlockPos pos, Vec3i offset) {
