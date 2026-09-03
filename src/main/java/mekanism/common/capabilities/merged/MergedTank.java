@@ -6,7 +6,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
@@ -52,13 +52,13 @@ public class MergedTank {
     }
 
     public void addToUpdateTag(ValueOutput output) {
-        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, fluidTank);
-        NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, chemicalTank);
+        ValueUtils.storeNonEmpty(output, SerializationConstants.FLUID, fluidTank);
+        ValueUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, chemicalTank);
     }
 
     public void readFromUpdateTag(ValueInput input) {
-        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, fluidTank);
-        NBTUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, chemicalTank);
+        ValueUtils.readOrEmpty(input, SerializationConstants.FLUID, fluidTank);
+        ValueUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, chemicalTank);
     }
 
     public enum CurrentType {

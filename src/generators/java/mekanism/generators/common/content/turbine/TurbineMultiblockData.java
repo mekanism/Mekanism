@@ -28,7 +28,7 @@ import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -219,8 +219,8 @@ public class TurbineMultiblockData extends MultiblockData {
         prevSteamScale = input.getFloatOr(SerializationConstants.SCALE, prevSteamScale);
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
         lowerVolume = input.getIntOr(SerializationConstants.LOWER_VOLUME, lowerVolume);
-        NBTUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, chemicalTank);
-        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, ventTank);
+        ValueUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, chemicalTank);
+        ValueUtils.readOrEmpty(input, SerializationConstants.FLUID, ventTank);
         input.read(SerializationConstants.COMPLEX, BlockPos.CODEC).ifPresent(value -> complex = value);
         clientRotation = input.getFloatOr(SerializationConstants.ROTATION, clientRotation);
         clientRotationMap.put(inventoryID, clientRotation);
@@ -232,8 +232,8 @@ public class TurbineMultiblockData extends MultiblockData {
         output.putFloat(SerializationConstants.SCALE, prevSteamScale);
         output.putInt(SerializationConstants.VOLUME, getVolume());
         output.putInt(SerializationConstants.LOWER_VOLUME, lowerVolume);
-        NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, chemicalTank);
-        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, ventTank);
+        ValueUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, chemicalTank);
+        ValueUtils.storeNonEmpty(output, SerializationConstants.FLUID, ventTank);
         if (complex != null) {
             output.store(SerializationConstants.COMPLEX, BlockPos.CODEC, complex);
         }

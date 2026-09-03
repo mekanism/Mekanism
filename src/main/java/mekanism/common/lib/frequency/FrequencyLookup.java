@@ -154,8 +154,7 @@ public class FrequencyLookup<FREQ extends Frequency> extends SavedData {
         if (ownerUUID != null) {
             path.append(ownerUUID.toString().toLowerCase(Locale.ROOT)).append("/");
         }
-        //TODO - 26.2: Do we want to cache this?
-        path.append(securityMode.name().toLowerCase(Locale.ROOT));
+        path.append(securityMode.getSerializedName());
         return Mekanism.rl(path.toString());
     }
 

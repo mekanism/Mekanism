@@ -55,7 +55,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -679,7 +679,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         super.writeReducedUpdatedTag(output);
         output.putBoolean(SerializationConstants.RENDERING, shouldRender);
         if (color != null) {
-            NBTUtils.writeEnum(output, SerializationConstants.COLOR, color);
+            ValueUtils.writeEnum(output, SerializationConstants.COLOR, color);
         }
     }
 
@@ -687,7 +687,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         shouldRender = input.getBooleanOr(SerializationConstants.RENDERING, shouldRender);
-        color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
+        color = ValueUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
     }
 
     //Methods relating to IComputerTile

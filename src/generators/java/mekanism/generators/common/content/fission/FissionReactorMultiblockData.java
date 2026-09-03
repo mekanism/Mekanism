@@ -43,7 +43,7 @@ import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.WorldUtils;
@@ -286,10 +286,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         prevHeatedCoolantScale = input.getFloatOr(SerializationConstants.SCALE_ALT_2, prevHeatedCoolantScale);
         prevWasteScale = input.getFloatOr(SerializationConstants.SCALE_ALT_3, prevWasteScale);
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
-        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, coolantTank.getFluidTank());
-        NBTUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, fuelTank);
-        NBTUtils.readOrEmpty(input, SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank);
-        NBTUtils.readOrEmpty(input, SerializationConstants.CHEMICAL_STORED_ALT_2, wasteTank);
+        ValueUtils.readOrEmpty(input, SerializationConstants.FLUID, coolantTank.getFluidTank());
+        ValueUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, fuelTank);
+        ValueUtils.readOrEmpty(input, SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank);
+        ValueUtils.readOrEmpty(input, SerializationConstants.CHEMICAL_STORED_ALT_2, wasteTank);
         readValves(input);
         assemblies.clear();
         for (FormedAssembly assembly : input.listOrEmpty(SerializationConstants.ASSEMBLIES, FormedAssembly.CODEC)) {
@@ -305,10 +305,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         output.putFloat(SerializationConstants.SCALE_ALT_2, prevHeatedCoolantScale);
         output.putFloat(SerializationConstants.SCALE_ALT_3, prevWasteScale);
         output.putInt(SerializationConstants.VOLUME, getVolume());
-        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, coolantTank.getFluidTank());
-        NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, fuelTank);
-        NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank);
-        NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL_STORED_ALT_2, wasteTank);
+        ValueUtils.storeNonEmpty(output, SerializationConstants.FLUID, coolantTank.getFluidTank());
+        ValueUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, fuelTank);
+        ValueUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank);
+        ValueUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL_STORED_ALT_2, wasteTank);
         writeValves(output);
         if (!assemblies.isEmpty()) {
             TypedOutputList<FormedAssembly> serializedAssemblies = output.list(SerializationConstants.ASSEMBLIES, FormedAssembly.CODEC);

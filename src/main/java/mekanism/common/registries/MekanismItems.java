@@ -3,7 +3,6 @@ package mekanism.common.registries;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.mojang.datafixers.util.Either;
-import java.util.Locale;
 import java.util.Objects;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.functions.ConstantPredicates;
@@ -324,7 +323,7 @@ public class MekanismItems {
     }
 
     private static ItemRegistryObject<Item> registerQIODrive(QIODriveTier tier) {
-        return ITEMS.register("qio_drive_" + tier.name().toLowerCase(Locale.ROOT), tier.getBaseTier(), properties -> properties.stacksTo(1)
+        return ITEMS.register("qio_drive_" + tier.getSerializedName(), tier.getBaseTier(), properties -> properties.stacksTo(1)
               .component(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(0, 0, Either.left(tier)))
               .component(MekanismDataComponents.DRIVE_CONTENTS, DriveContents.EMPTY)
         );

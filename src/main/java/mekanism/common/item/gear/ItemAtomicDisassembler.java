@@ -87,7 +87,7 @@ import org.jspecify.annotations.Nullable;
 public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode>, IHasConditionalAttributes {
 
     //All basic dig actions except shears
-    //TODO - 26.2: review why these not longer exist
+    //TODO - 26.2: review why these not longer exist: https://github.com/neoforged/NeoForge/issues/3112
     public static final Set<ItemAbility> ALWAYS_SUPPORTED_ACTIONS = Set.of(/*ItemAbilities.AXE_DIG, ItemAbilities.HOE_DIG, ItemAbilities.SHOVEL_DIG, ItemAbilities.PICKAXE_DIG,
           ItemAbilities.SWORD_DIG*/);
     private static final Lazy<RadialData<DisassemblerMode>> LAZY_RADIAL_DATA = Lazy.of(() ->

@@ -18,7 +18,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -109,13 +109,13 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     @Override
     public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
-        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, bioFuelTank);
+        ValueUtils.storeNonEmpty(output, SerializationConstants.FLUID, bioFuelTank);
     }
 
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, bioFuelTank);
+        ValueUtils.readOrEmpty(input, SerializationConstants.FLUID, bioFuelTank);
     }
 
     @Override

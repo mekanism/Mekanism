@@ -111,7 +111,6 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
 
     @Override
     public final CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        //TODO - 26.2: Is this fine for how to create the problem reporter?
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);
             writeUpdatedTag(output);

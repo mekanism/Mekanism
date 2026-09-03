@@ -20,7 +20,7 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -133,14 +133,14 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     @Override
     public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
-        NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, chemicalTank);
+        ValueUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, chemicalTank);
         output.putInt(SerializationConstants.PROGRESS, processTicks);
     }
 
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, chemicalTank);
+        ValueUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, chemicalTank);
         processTicks = input.getIntOr(SerializationConstants.PROGRESS, processTicks);
     }
 

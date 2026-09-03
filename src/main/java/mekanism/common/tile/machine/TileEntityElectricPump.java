@@ -359,7 +359,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.loadAdditional(input);
         operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
         activeType = input.read(SerializationConstants.FLUID, FluidResource.CODEC).orElse(FluidResource.EMPTY);
-        //TODO - 26.2: Do we want to support loading the old format for this and the plenisher where it was all smashed in a single int array?
         for (BlockPos pos : input.listOrEmpty(SerializationConstants.RECURRING_NODES, BlockPos.CODEC)) {
             recurringNodes.add(pos);
         }

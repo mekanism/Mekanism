@@ -39,7 +39,7 @@ import mekanism.common.tile.multiblock.TileEntityBoilerValve;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -272,8 +272,8 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         prevSteamScale = input.getFloatOr(SerializationConstants.SCALE_ALT, prevSteamScale);
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setWaterVolume);
         input.getInt(SerializationConstants.LOWER_VOLUME).ifPresent(this::setSteamVolume);
-        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, waterTank);
-        NBTUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, steamTank);
+        ValueUtils.readOrEmpty(input, SerializationConstants.FLUID, waterTank);
+        ValueUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, steamTank);
         input.read(SerializationConstants.RENDER_Y, BlockPos.CODEC).ifPresent(value -> upperRenderLocation = value);
         readValves(input);
     }
@@ -285,8 +285,8 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         output.putFloat(SerializationConstants.SCALE_ALT, prevSteamScale);
         output.putInt(SerializationConstants.VOLUME, waterVolume);
         output.putInt(SerializationConstants.LOWER_VOLUME, steamVolume);
-        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, waterTank);
-        NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, steamTank);
+        ValueUtils.storeNonEmpty(output, SerializationConstants.FLUID, waterTank);
+        ValueUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, steamTank);
         if (upperRenderLocation != null) {
             output.store(SerializationConstants.RENDER_Y, BlockPos.CODEC, upperRenderLocation);
         }

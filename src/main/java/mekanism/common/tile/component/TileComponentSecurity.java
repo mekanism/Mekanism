@@ -14,7 +14,7 @@ import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -115,7 +115,7 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void deserialize(ValueInput securityInput) {
-        NBTUtils.setEnumIfPresent(securityInput, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, mode -> securityMode = mode);
+        ValueUtils.setEnumIfPresent(securityInput, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, mode -> securityMode = mode);
         //Note: We can just set the owner uuid directly as the frequency data should be set already from the frequency component
         // Or if it was cleared due to changing owner data as an item, the block place should update it properly
         //TODO: If this ends up causing issues anywhere we may want to consider ensuring the frequency gets set if it is missing
@@ -125,7 +125,7 @@ public class TileComponentSecurity implements ITileComponent {
     @Override
     public void serialize(ValueOutput securityOutput) {
         if (securityMode != SecurityMode.PUBLIC) {
-            NBTUtils.writeEnum(securityOutput, SerializationConstants.SECURITY_MODE, securityMode);
+            ValueUtils.writeEnum(securityOutput, SerializationConstants.SECURITY_MODE, securityMode);
         }
         securityOutput.storeNullable(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC, ownerUUID);
     }

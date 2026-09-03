@@ -35,7 +35,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -304,7 +304,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
         if (color != null) {
-            NBTUtils.writeEnum(output, SerializationConstants.COLOR, color);
+            ValueUtils.writeEnum(output, SerializationConstants.COLOR, color);
         }
         output.putBoolean(SerializationConstants.EJECT, autoEject);
         output.putBoolean(SerializationConstants.ROUND_ROBIN, roundRobin);
@@ -315,7 +315,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        this.color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
+        this.color = ValueUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
         autoEject = input.getBooleanOr(SerializationConstants.EJECT, autoEject);
         roundRobin = input.getBooleanOr(SerializationConstants.ROUND_ROBIN, roundRobin);
         singleItem = input.getBooleanOr(SerializationConstants.SINGLE_ITEM, singleItem);

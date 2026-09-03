@@ -147,7 +147,6 @@ public abstract class BlockMekanism extends Block {
         }
         //TODO - 26.2: I believe this theoretically only needs to happen if it supports comparators?
         Containers.updateNeighboursAfterDestroy(state, level, pos);
-
     }
 
     @Override

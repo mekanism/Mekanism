@@ -805,7 +805,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         running = input.getBooleanOr(SerializationConstants.RUNNING, running);
         delay = input.getIntOr(SerializationConstants.DELAY, delay);
         numPowering = input.getIntOr(SerializationConstants.NUM_POWERING, numPowering);
-        //TODO - 26.2: Do we want a codec that also tries to load it from int for legacy data?
         input.read(SerializationConstants.STATE, State.CODEC).ifPresent(s -> {
             if (!initCalc && s == State.SEARCHING) {
                 //If we loaded and haven't started yet, but we were searching when we saved

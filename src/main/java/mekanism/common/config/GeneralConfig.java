@@ -269,7 +269,6 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         MekanismConfigTranslations.GENERAL_BOILER.applyToBuilder(builder).push("boiler");
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
-        //TODO - 26.2: Do we want to up the water per tank default to match the cooledCoolantPerTank config?
         boilerWaterPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_CAPACITY_WATER.applyToBuilder(builder)
               .defineInRange("waterPerTank", 16L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
         boilerSteamPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_CAPACITY_STEAM.applyToBuilder(builder)

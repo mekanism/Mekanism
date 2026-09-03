@@ -337,7 +337,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return 0;
     }
 
-    /*TODO - 26.2: check that thse are handled by the item props
+    /*TODO - 26.2: check that these are handled by the item props
     @Override
     public int getDefense() {
         return getMaterial().value().getDefense(getType());

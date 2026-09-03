@@ -37,7 +37,7 @@ import mekanism.common.tile.interfaces.IFluidContainerManager;
 import mekanism.common.upgrade.FluidTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.common.util.ResourceUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -199,13 +199,13 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
-        NBTUtils.writeEnum(output, SerializationConstants.EDIT_MODE, editMode);
+        ValueUtils.writeEnum(output, SerializationConstants.EDIT_MODE, editMode);
     }
 
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        NBTUtils.setEnumIfPresent(input, SerializationConstants.EDIT_MODE, ContainerEditMode.BY_ID, mode -> editMode = mode);
+        ValueUtils.setEnumIfPresent(input, SerializationConstants.EDIT_MODE, ContainerEditMode.BY_ID, mode -> editMode = mode);
     }
 
     @Override
@@ -317,7 +317,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         //updateTag.put(SerializationConstants.VALVE, valveFluid.saveOptional(provider));
         output.putFloat(SerializationConstants.SCALE, prevScale);
         //TODO - 26.2: Re-evaluate this alternate encoding further (check history)
-        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, fluidTank);
+        ValueUtils.storeNonEmpty(output, SerializationConstants.FLUID, fluidTank);
         if (!valveJournal.fluid.isEmpty()) {
             output.store(SerializationConstants.VALVE, FluidResource.CODEC, valveJournal.fluid);
         }
@@ -340,7 +340,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         //TODO - 26.2: Should we only update this when the scale has changed? And/or if we had updated the light level?
         prevScale = scale;
 
-        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, fluidTank);
+        ValueUtils.readOrEmpty(input, SerializationConstants.FLUID, fluidTank);
         valveJournal.fluid = input.read(SerializationConstants.VALVE, FluidResource.CODEC).orElse(FluidResource.EMPTY);
     }
 

@@ -51,7 +51,7 @@ import mekanism.common.tile.multiblock.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -214,7 +214,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
-        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, inputTank);
+        ValueUtils.readOrEmpty(input, SerializationConstants.FLUID, inputTank);
         prevScale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
         readValves(input);
     }
@@ -222,7 +222,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public void writeUpdateTag(ValueOutput output) {
         super.writeUpdateTag(output);
-        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, inputTank);
+        ValueUtils.storeNonEmpty(output, SerializationConstants.FLUID, inputTank);
         output.putFloat(SerializationConstants.SCALE, prevScale);
         writeValves(output);
     }

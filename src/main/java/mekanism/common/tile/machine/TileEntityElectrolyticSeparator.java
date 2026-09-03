@@ -65,7 +65,7 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.ChemicalUtils;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
@@ -348,15 +348,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
-        NBTUtils.writeEnum(output, SerializationConstants.DUMP_LEFT, dumpLeft);
-        NBTUtils.writeEnum(output, SerializationConstants.DUMP_RIGHT, dumpRight);
+        ValueUtils.writeEnum(output, SerializationConstants.DUMP_LEFT, dumpLeft);
+        ValueUtils.writeEnum(output, SerializationConstants.DUMP_RIGHT, dumpRight);
     }
 
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        NBTUtils.setEnumIfPresent(input, SerializationConstants.DUMP_LEFT, GasMode.BY_ID, mode -> dumpLeft = mode);
-        NBTUtils.setEnumIfPresent(input, SerializationConstants.DUMP_RIGHT, GasMode.BY_ID, mode -> dumpRight = mode);
+        ValueUtils.setEnumIfPresent(input, SerializationConstants.DUMP_LEFT, GasMode.BY_ID, mode -> dumpLeft = mode);
+        ValueUtils.setEnumIfPresent(input, SerializationConstants.DUMP_RIGHT, GasMode.BY_ID, mode -> dumpRight = mode);
     }
 
     @Override

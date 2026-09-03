@@ -12,7 +12,7 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -59,28 +59,28 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
         if (lastColor != null) {
-            NBTUtils.writeEnum(output, SerializationConstants.COLOR, lastColor);
+            ValueUtils.writeEnum(output, SerializationConstants.COLOR, lastColor);
         }
     }
 
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        lastColor = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
+        lastColor = ValueUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
     }
 
     @Override
     public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         if (lastColor != null) {
-            NBTUtils.writeEnum(output, SerializationConstants.COLOR, lastColor);
+            ValueUtils.writeEnum(output, SerializationConstants.COLOR, lastColor);
         }
     }
 
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        EnumColor color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
+        EnumColor color = ValueUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
         if (lastColor != color) {
             lastColor = color;
             WorldUtils.updateBlock(level, getBlockPos(), getBlockState());

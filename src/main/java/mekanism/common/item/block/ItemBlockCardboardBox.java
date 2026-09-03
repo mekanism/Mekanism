@@ -39,7 +39,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         //Check if the player is allowed to use the cardboard box in the given position
         if (world.mayInteract(player, pos) && player.mayUseItemAt(pos.relative(sideClicked), sideClicked, stack)) {
             //If they are then check if they can "break" the block that is in that spot
-            //TODO - 26.2: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
+            //Note: This gets fired on both the client and the server
             if (!NeoForge.EVENT_BUS.post(new BreakBlockEvent(world, pos, state, player)).isCanceled()) {
                 //If they can then we need to see if they are allowed to "place" the cardboard box in the given position
                 //TODO: Once forge fixes https://github.com/MinecraftForge/MinecraftForge/issues/7609 use block snapshots

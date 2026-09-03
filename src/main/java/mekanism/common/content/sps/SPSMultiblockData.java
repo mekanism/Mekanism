@@ -27,7 +27,7 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.tile.multiblock.TileEntitySPSPort;
 import mekanism.common.util.ChemicalUtils;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
@@ -313,7 +313,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                 for (CoilData data : coilMap.values()) {
                     ValueOutput coilOutput = coilsOutput.addChild();
                     coilOutput.store(SerializationConstants.POSITION, BlockPos.CODEC, data.coilPos);
-                    NBTUtils.writeEnum(coilOutput, SerializationConstants.SIDE, data.side);
+                    ValueUtils.writeEnum(coilOutput, SerializationConstants.SIDE, data.side);
                     coilOutput.putInt(SerializationConstants.LEVEL, data.prevLevel);
                 }
             }

@@ -9,9 +9,9 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jspecify.annotations.Nullable;
 
-public class NBTUtils {//TODO - 26.2: Should we rename this class?
+public class ValueUtils {
 
-    private NBTUtils() {
+    private ValueUtils() {
     }
 
     //TODO - 26.2: Re-evaluate all these enum related methods and what cases should be replaced to use names instead of ordinals

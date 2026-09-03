@@ -73,7 +73,7 @@ import mekanism.common.registries.MekanismTicketTypes;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -460,7 +460,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     public void addAdditionalSaveData(ValueOutput output) {
         super.addAdditionalSaveData(output);
         output.store(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC, getOwnerUUID());
-        NBTUtils.writeEnum(output, SerializationConstants.SECURITY_MODE, getSecurityMode());
+        ValueUtils.writeEnum(output, SerializationConstants.SECURITY_MODE, getSecurityMode());
         output.putBoolean(SerializationConstants.FOLLOW, getFollowing());
         output.putBoolean(SerializationConstants.PICKUP_DROPS, getDropPickup());
         output.storeNullable(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC, homeLocation);
@@ -474,7 +474,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     public void readAdditionalSaveData(ValueInput input) {
         super.readAdditionalSaveData(input);
         input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(ownerUUID -> setOwnerUUID(ownerUUID, null));
-        NBTUtils.setEnumIfPresent(input, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, mode -> setSecurityMode(mode, null));
+        ValueUtils.setEnumIfPresent(input, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, mode -> setSecurityMode(mode, null));
         setFollowing(input.getBooleanOr(SerializationConstants.FOLLOW, getFollowing()));
         setDropPickup(input.getBooleanOr(SerializationConstants.PICKUP_DROPS, getDropPickup()));
         homeLocation = input.read(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC).orElse(null);

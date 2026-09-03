@@ -14,7 +14,7 @@ import mekanism.common.content.transporter.TransporterPathfinder.IdlePathData;
 import mekanism.common.lib.inventory.IAdvancedTransportEjector;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
-import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -82,16 +82,16 @@ public class TransporterStack {
     }
 
     private TransporterStack(ValueInput input) {
-        this.color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
+        this.color = ValueUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
         this.progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
         this.originalLocation = input.getLongOr(SerializationConstants.ORIGINAL_LOCATION, Long.MAX_VALUE);
-        this.pathType = NBTUtils.getEnum(input, SerializationConstants.PATH_TYPE, Path.BY_ID);
+        this.pathType = ValueUtils.getEnum(input, SerializationConstants.PATH_TYPE, Path.BY_ID);
         this.itemStack = LargeResourceStack.ITEM_HELPER.readOrEmpty(input, SerializationConstants.ITEM);
     }
 
     public static TransporterStack read(ValueInput input) {
         TransporterStack stack = new TransporterStack(input);
-        stack.idleDir = NBTUtils.getEnum(input, SerializationConstants.IDLE_DIR, Direction::from3DDataValue);
+        stack.idleDir = ValueUtils.getEnum(input, SerializationConstants.IDLE_DIR, Direction::from3DDataValue);
         stack.homeLocation = input.getLongOr(SerializationConstants.HOME_LOCATION, Long.MAX_VALUE);
         return stack;
     }
@@ -105,7 +105,7 @@ public class TransporterStack {
 
     private void writeCommon(ValueOutput output) {
         if (color != null) {
-            NBTUtils.writeEnum(output, SerializationConstants.COLOR, color);
+            ValueUtils.writeEnum(output, SerializationConstants.COLOR, color);
         }
         output.putInt(SerializationConstants.PROGRESS, progress);
         output.putLong(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
@@ -114,7 +114,7 @@ public class TransporterStack {
 
     public void writeToUpdateTag(LogisticalTransporterBase transporter, ValueOutput output) {
         writeCommon(output);
-        NBTUtils.writeEnum(output, SerializationConstants.PATH_TYPE, getPathType());
+        ValueUtils.writeEnum(output, SerializationConstants.PATH_TYPE, getPathType());
         long next = getNext(transporter);
         if (next != Long.MAX_VALUE) {
             output.putLong(SerializationConstants.NEXT, next);
@@ -130,10 +130,10 @@ public class TransporterStack {
         if (pathType != null) {
             //TODO - 26.2: Figure out path type and if we should set it to none when saving to file instead of not saving it
             // given that for syncing we pretend it is none.
-            NBTUtils.writeEnum(output, SerializationConstants.PATH_TYPE, pathType);
+            ValueUtils.writeEnum(output, SerializationConstants.PATH_TYPE, pathType);
         }
         if (idleDir != null) {
-            NBTUtils.writeEnum(output, SerializationConstants.IDLE_DIR, idleDir);
+            ValueUtils.writeEnum(output, SerializationConstants.IDLE_DIR, idleDir);
         }
         if (homeLocation != Long.MAX_VALUE) {
             output.putLong(SerializationConstants.HOME_LOCATION, homeLocation);
