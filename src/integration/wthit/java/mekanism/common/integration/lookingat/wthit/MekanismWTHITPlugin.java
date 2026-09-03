@@ -15,7 +15,6 @@ public class MekanismWTHITPlugin implements IWailaCommonPlugin {
 
     @Override
     public void register(ICommonRegistrar registration) {
-        //TODO - 26.2: Test this once WTHIT updates to 26.2
         registration.blockData(WTHITDataProvider.INSTANCE, BlockEntity.class);
         registration.entityData(WTHITEntityDataProvider.INSTANCE, EntityRobit.class);
         registration.localConfig(LookingAtUtils.ENERGY, true);

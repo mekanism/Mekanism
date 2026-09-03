@@ -28,7 +28,6 @@ public final class HolidayManager {
     private HolidayManager() {
     }
 
-    //TODO - 26.2: Fix shutdown handling of schedule executor causing the game to sometimes hang: https://github.com/mezz/JustEnoughItems/commit/9540c4861bdf9aee381a8d1d3827204cb3c69ffe
     private static final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor(r -> {
         Thread t = new Thread(r, "HolidayManager Day Checker");
         t.setDaemon(true);

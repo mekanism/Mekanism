@@ -16,7 +16,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.2: I think neo might have added a way to declare tooltips for fluids, if so we should gather those here
 public class GuiFluidBar extends GuiTankBar<FluidResource, IFluidTank> {
 
     public GuiFluidBar(IGuiWrapper gui, ResourceTankInfoProvider<FluidResource, IFluidTank> infoProvider, int x, int y, int width, int height, boolean horizontal) {

@@ -17,13 +17,6 @@ public enum MekanismLang implements ILangEntry {
     ALPHA_WARNING("constants", "alpha_warning"),
     ALPHA_WARNING_HERE("constants", "alpha_warning.here"),
     RECIPE_WARNING("constants", "recipe_warning"),
-    //Equipment
-    HEAD("equipment", "head"),
-    BODY("equipment", "body"),
-    LEGS("equipment", "legs"),
-    FEET("equipment", "feet"),
-    MAINHAND("equipment", "mainhand"),
-    OFFHAND("equipment", "offhand"),
     //Compass Directions
     NORTH_SHORT("direction", "north.short"),
     SOUTH_SHORT("direction", "south.short"),
@@ -880,16 +873,4 @@ public enum MekanismLang implements ILangEntry {
     public String getTranslationKey() {
         return key;
     }
-
-    //TODO - 26.2: unused?
-    /*public static ILangEntry get(EquipmentSlot type) {
-        return switch (type) {
-            case HEAD -> HEAD;
-            case CHEST, BODY -> BODY;
-            case LEGS -> LEGS;
-            case FEET -> FEET;
-            case MAINHAND -> MAINHAND;
-            case OFFHAND -> OFFHAND;
-        };
-    }*/
 }

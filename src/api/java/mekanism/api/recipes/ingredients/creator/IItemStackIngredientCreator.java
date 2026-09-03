@@ -227,12 +227,14 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
 
     /// Creates an Item Stack Ingredient that matches any of the given Item tags.
     ///
+    /// @param lookup Holder getter to find the tags in.
+    /// @param amount Amount needed.
     /// @param tags Tag to match.
     ///
     /// @throws NullPointerException     if the list of tags is null.
     /// @throws IllegalArgumentException if the list of tags is empty.
     /// @since 10.7.11
-    default ItemStackIngredient from(HolderGetter<Item> lookup, int amount, List<TagKey<Item>> tags) {//TODO - 26.2: Add docs for lookup param
+    default ItemStackIngredient from(HolderGetter<Item> lookup, int amount, List<TagKey<Item>> tags) {
         if (tags.isEmpty()) {
             throw new IllegalArgumentException("Attempted to create an ItemStackIngredient with no tags.");
         } else if (tags.size() == 1) {

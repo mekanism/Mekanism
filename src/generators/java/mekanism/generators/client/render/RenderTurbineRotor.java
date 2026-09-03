@@ -50,7 +50,6 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
         UUID multiblockUUID = rotor.getMultiblockUUID();
         if (multiblockUUID != null) {
             //We are rendering inside the multiblock, use full-bright for the textures
-            //TODO - 26.2: Validate that this works
             //TODO - 26.2: Should this calculate the light coords like MultiblockContentsRenderState
             state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
         }
