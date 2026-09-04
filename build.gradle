@@ -107,6 +107,9 @@ configurations {
 
 //Add all extra source sets that the main sourceSet should have
 setupExtraSourceSets(sourceSets.main)
+//Expose datagen classes to the test source set so unit tests can cover datagen-only utilities
+// (e.g. FormatSplitter, language providers that are not pulled into the main module).
+project.sourceSets.test.compileClasspath += sourceSets.datagenMain.output
 setupExtraSourceSets(sourceSets.gameTest, false)
 
 //Create sourceSets and configurations for each of the additional modules in src/$name and adds a reference to
