@@ -2,10 +2,8 @@ package mekanism.common.advancements;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.common.component.predicate.UpgradeTypeComponentPredicate;
 import mekanism.common.registries.MekanismDataComponentPredicates;
@@ -57,12 +55,5 @@ public abstract class BaseAdvancementProvider implements AdvancementSubProvider 
         return InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().withComponents(
               DataComponentMatchers.Builder.components().partial(MekanismDataComponentPredicates.UPGRADES.get(), new UpgradeTypeComponentPredicate(upgrade)).build()
         ));
-    }
-
-    protected static Item[] getItems(Collection<? extends Holder<Item>> items, Predicate<Item> matcher) {
-        return items.stream()
-              .map(Holder::value)
-              .filter(matcher)
-              .toArray(Item[]::new);
     }
 }

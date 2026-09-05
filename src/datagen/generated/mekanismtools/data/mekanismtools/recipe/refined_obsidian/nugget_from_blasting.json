@@ -6,12 +6,13 @@
     "mekanismtools:refined_obsidian_chestplate",
     "mekanismtools:refined_obsidian_leggings",
     "mekanismtools:refined_obsidian_boots",
-    "mekanismtools:refined_obsidian_sword",
-    "mekanismtools:refined_obsidian_pickaxe",
     "mekanismtools:refined_obsidian_axe",
-    "mekanismtools:refined_obsidian_shovel",
     "mekanismtools:refined_obsidian_hoe",
-    "mekanismtools:refined_obsidian_paxel"
+    "mekanismtools:refined_obsidian_paxel",
+    "mekanismtools:refined_obsidian_pickaxe",
+    "mekanismtools:refined_obsidian_shield",
+    "mekanismtools:refined_obsidian_shovel",
+    "mekanismtools:refined_obsidian_sword"
   ],
   "result": {
     "id": "mekanism:nugget_refined_obsidian"

@@ -6,12 +6,13 @@
     "mekanismtools:osmium_chestplate",
     "mekanismtools:osmium_leggings",
     "mekanismtools:osmium_boots",
-    "mekanismtools:osmium_sword",
-    "mekanismtools:osmium_pickaxe",
     "mekanismtools:osmium_axe",
-    "mekanismtools:osmium_shovel",
     "mekanismtools:osmium_hoe",
-    "mekanismtools:osmium_paxel"
+    "mekanismtools:osmium_paxel",
+    "mekanismtools:osmium_pickaxe",
+    "mekanismtools:osmium_shield",
+    "mekanismtools:osmium_shovel",
+    "mekanismtools:osmium_sword"
   ],
   "result": {
     "id": "mekanism:nugget_osmium"

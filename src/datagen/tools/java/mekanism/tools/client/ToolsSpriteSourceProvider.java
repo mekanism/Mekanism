@@ -3,6 +3,7 @@ package mekanism.tools.client;
 import java.util.concurrent.CompletableFuture;
 import mekanism.client.texture.BaseSpriteSourceProvider;
 import mekanism.tools.common.MekanismTools;
+import mekanism.tools.common.material.MaterialType;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.data.PackOutput;
@@ -16,8 +17,8 @@ public class ToolsSpriteSourceProvider extends BaseSpriteSourceProvider {
     @Override
     protected void gather() {
         SourceList atlas = atlas(AtlasIds.SHIELD_PATTERNS);
-        for (ShieldTextures textures : ShieldTextures.values()) {
-            addFiles(atlas, textures.getTexture().withPrefix("entity/shield/"));
+        for (MaterialType material : MaterialType.VALUES) {
+            addFiles(atlas, MekanismTools.rl(material.getSerializedName()).withPrefix("entity/shield/"));
         }
     }
 }

@@ -4,6 +4,7 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
 import mekanism.client.recipe_viewer.alias.MekanismAliases;
 import mekanism.client.recipe_viewer.alias.RVAliasHelper;
+import mekanism.tools.common.registration.ToolCollection;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
@@ -20,12 +21,16 @@ public class ToolsAliasMapping implements IAliasMapping {
         addVanillaPaxelAliases(rv, ToolsItems.DIAMOND_PAXEL, Items.DIAMOND_AXE, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL);
         addVanillaPaxelAliases(rv, ToolsItems.NETHERITE_PAXEL, Items.NETHERITE_AXE, Items.NETHERITE_PICKAXE, Items.NETHERITE_SHOVEL);
 
-        addPaxelAliases(rv, ToolsItems.BRONZE_PAXEL, ToolsItems.BRONZE_AXE, ToolsItems.BRONZE_PICKAXE, ToolsItems.BRONZE_SHOVEL);
-        addPaxelAliases(rv, ToolsItems.LAPIS_LAZULI_PAXEL, ToolsItems.LAPIS_LAZULI_AXE, ToolsItems.LAPIS_LAZULI_PICKAXE, ToolsItems.LAPIS_LAZULI_SHOVEL);
-        addPaxelAliases(rv, ToolsItems.OSMIUM_PAXEL, ToolsItems.OSMIUM_AXE, ToolsItems.OSMIUM_PICKAXE, ToolsItems.OSMIUM_SHOVEL);
-        addPaxelAliases(rv, ToolsItems.REFINED_GLOWSTONE_PAXEL, ToolsItems.REFINED_GLOWSTONE_AXE, ToolsItems.REFINED_GLOWSTONE_PICKAXE, ToolsItems.REFINED_GLOWSTONE_SHOVEL);
-        addPaxelAliases(rv, ToolsItems.REFINED_OBSIDIAN_PAXEL, ToolsItems.REFINED_OBSIDIAN_AXE, ToolsItems.REFINED_OBSIDIAN_PICKAXE, ToolsItems.REFINED_OBSIDIAN_SHOVEL);
-        addPaxelAliases(rv, ToolsItems.STEEL_PAXEL, ToolsItems.STEEL_AXE, ToolsItems.STEEL_PICKAXE, ToolsItems.STEEL_SHOVEL);
+        addPaxelAliases(rv, ToolsItems.BRONZE_TOOLS);
+        addPaxelAliases(rv, ToolsItems.LAPIS_LAZULI_TOOLS);
+        addPaxelAliases(rv, ToolsItems.OSMIUM_TOOLS);
+        addPaxelAliases(rv, ToolsItems.REFINED_GLOWSTONE_TOOLS);
+        addPaxelAliases(rv, ToolsItems.REFINED_OBSIDIAN_TOOLS);
+        addPaxelAliases(rv, ToolsItems.STEEL_TOOLS);
+    }
+
+    private <ITEM, FLUID, CHEMICAL> void addPaxelAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv, ToolCollection tools) {
+        addPaxelAliases(rv, tools.paxel(), tools.axe(), tools.pickaxe(), tools.shovel());
     }
 
     private <ITEM, FLUID, CHEMICAL> void addPaxelAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv, Holder<Item> paxel, IHasTranslationKey axe, IHasTranslationKey pickaxe,

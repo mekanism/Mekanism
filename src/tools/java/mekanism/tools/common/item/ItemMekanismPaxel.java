@@ -27,7 +27,7 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import org.jspecify.annotations.Nullable;
 
-public class ItemMekanismPaxel extends Item implements IsMekanismTool {
+public class ItemMekanismPaxel extends Item {
 
     private static final Set<ItemAbility> PAXEL_ACTIONS = Util.make(new ReferenceOpenHashSet<>(), actions -> {
         actions.add(MekanismItemAbilities.PAXEL_DIG);
@@ -35,8 +35,6 @@ public class ItemMekanismPaxel extends Item implements IsMekanismTool {
         actions.addAll(ItemAbilities.DEFAULT_SHOVEL_ACTIONS);
         actions.addAll(ItemAbilities.DEFAULT_AXE_ACTIONS);
     });
-
-    private final IPaxelMaterial material;
 
     public ItemMekanismPaxel(IPaxelMaterial material, Item.Properties properties) {
         super(properties
@@ -49,7 +47,6 @@ public class ItemMekanismPaxel extends Item implements IsMekanismTool {
               )
               .durability(material.getPaxelDurability())//must go after Tool
         );
-        this.material = material;
     }
 
     @Override

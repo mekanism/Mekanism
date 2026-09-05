@@ -6,12 +6,13 @@
     "mekanismtools:steel_chestplate",
     "mekanismtools:steel_leggings",
     "mekanismtools:steel_boots",
-    "mekanismtools:steel_sword",
-    "mekanismtools:steel_pickaxe",
     "mekanismtools:steel_axe",
-    "mekanismtools:steel_shovel",
     "mekanismtools:steel_hoe",
-    "mekanismtools:steel_paxel"
+    "mekanismtools:steel_paxel",
+    "mekanismtools:steel_pickaxe",
+    "mekanismtools:steel_shield",
+    "mekanismtools:steel_shovel",
+    "mekanismtools:steel_sword"
   ],
   "result": {
     "id": "mekanism:nugget_steel"

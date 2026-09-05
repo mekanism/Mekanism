@@ -22,7 +22,11 @@ public class ToolsEmiDefaults extends BaseEmiDefaults {
         addDefaults("refined_glowstone");
         addDefaults("refined_obsidian");
         addDefaults("steel");
-        addVanillaPaxelDefaults();
+        ToolsItems.vanillaPaxels().forEach(paxel -> {
+            if (paxel != ToolsItems.NETHERITE_PAXEL) {
+                addRecipe(paxel);
+            }
+        });
     }
 
     private void addDefaults(String name) {
@@ -40,13 +44,5 @@ public class ToolsEmiDefaults extends BaseEmiDefaults {
         addRecipe(baseToolsPath + "shovel");
         addRecipe(baseToolsPath + "hoe");
         addRecipe(baseToolsPath + "paxel");
-    }
-
-    private void addVanillaPaxelDefaults() {
-        addRecipe(ToolsItems.WOOD_PAXEL);
-        addRecipe(ToolsItems.STONE_PAXEL);
-        addRecipe(ToolsItems.IRON_PAXEL);
-        addRecipe(ToolsItems.GOLD_PAXEL);
-        addRecipe(ToolsItems.DIAMOND_PAXEL);
     }
 }

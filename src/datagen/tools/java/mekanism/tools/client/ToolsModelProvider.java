@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import mekanism.client.model.BaseModelProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.tools.client.render.item.RenderMekanismShieldItem;
 import mekanism.tools.common.MekanismTools;
-import mekanism.tools.common.item.ItemMekanismArmor;
-import mekanism.tools.common.item.ItemMekanismPaxel;
-import mekanism.tools.common.item.ItemMekanismShield;
+import mekanism.tools.common.material.MaterialType;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -30,7 +29,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
 
@@ -43,96 +42,75 @@ public class ToolsModelProvider extends BaseModelProvider {
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         //Shields
-        addShieldModel(itemModels, ToolsItems.BRONZE_SHIELD, Mekanism.rl("block/block_bronze"), ShieldTextures.BRONZE);
-        addShieldModel(itemModels, ToolsItems.LAPIS_LAZULI_SHIELD, mcLocation("block/lapis_block"), ShieldTextures.LAPIS_LAZULI);
-        addShieldModel(itemModels, ToolsItems.OSMIUM_SHIELD, Mekanism.rl("block/block_osmium"), ShieldTextures.OSMIUM);
-        addShieldModel(itemModels, ToolsItems.REFINED_GLOWSTONE_SHIELD, Mekanism.rl("block/block_refined_glowstone"), ShieldTextures.REFINED_GLOWSTONE);
-        addShieldModel(itemModels, ToolsItems.REFINED_OBSIDIAN_SHIELD, Mekanism.rl("block/block_refined_obsidian"), ShieldTextures.REFINED_OBSIDIAN);
-        addShieldModel(itemModels, ToolsItems.STEEL_SHIELD, Mekanism.rl("block/block_steel"), ShieldTextures.STEEL);
+        addShieldModel(itemModels, MaterialType.BRONZE, Mekanism.rl("block/block_bronze"));
+        addShieldModel(itemModels, MaterialType.LAPIS_LAZULI, mcLocation("block/lapis_block"));
+        addShieldModel(itemModels, MaterialType.OSMIUM, Mekanism.rl("block/block_osmium"));
+        addShieldModel(itemModels, MaterialType.REFINED_GLOWSTONE, Mekanism.rl("block/block_refined_glowstone"));
+        addShieldModel(itemModels, MaterialType.REFINED_OBSIDIAN, Mekanism.rl("block/block_refined_obsidian"));
+        addShieldModel(itemModels, MaterialType.STEEL, Mekanism.rl("block/block_steel"));
         //Armor items are generated textures, all other tools module items are handheld
-        for (Holder<Item> holder : ToolsItems.ITEMS.getEntries()) {
-            if (holder.value() instanceof ItemMekanismShield) {
+        for (MaterialType material : MaterialType.VALUES) {
+            material.tools.forEach(tool -> {
                 //Skip shields, we manually handle them above
-                continue;
-            }
-            String name = getPath(holder);
-            Identifier textureLoc;
-            if (isVanilla(holder, name)) {
-                textureLoc = itemTexture(holder);
-            } else {
-                int index = name.lastIndexOf('_');
-                textureLoc = modLocation("item/" + name.substring(0, index) + '/' + name.substring(index + 1));
-            }
-            Material texture = new Material(textureLoc);
-            armorOrHandheld(itemModels, holder, texture);
+                if (!(tool.value() instanceof ShieldItem)) {
+                    handheld(itemModels, tool, getTexture(tool));
+                }
+            });
+            ResourceKey<EquipmentAsset> armorAssetId = material.material.equipmentAsset();
+            generateTrimmableItem(itemModels, material.armor.helmet(), armorAssetId, ItemModelGenerators.TRIM_PREFIX_HELMET);
+            generateTrimmableItem(itemModels, material.armor.chestplate(), armorAssetId, ItemModelGenerators.TRIM_PREFIX_CHESTPLATE);
+            generateTrimmableItem(itemModels, material.armor.leggings(), armorAssetId, ItemModelGenerators.TRIM_PREFIX_LEGGINGS);
+            generateTrimmableItem(itemModels, material.armor.boots(), armorAssetId, ItemModelGenerators.TRIM_PREFIX_BOOTS);
+
         }
+        ToolsItems.vanillaPaxels().forEach(paxel -> handheld(itemModels, paxel, new Material(itemTexture(paxel))));
     }
 
-    private static Identifier typeToTrimSlot(ArmorType armorType) {
-        return switch (armorType) {
-            case HELMET -> ItemModelGenerators.TRIM_PREFIX_HELMET;
-            case CHESTPLATE -> ItemModelGenerators.TRIM_PREFIX_CHESTPLATE;
-            case LEGGINGS -> ItemModelGenerators.TRIM_PREFIX_LEGGINGS;
-            case BOOTS -> ItemModelGenerators.TRIM_PREFIX_BOOTS;
-            case BODY -> throw new UnsupportedOperationException();
-        };
+    private Material getTexture(ItemRegistryObject<?> mekItem) {
+        String name = mekItem.getName();
+        int index = name.lastIndexOf('_');
+        return new Material(modLocation("item/" + name.substring(0, index) + '/' + name.substring(index + 1)));
     }
 
-    protected void armorOrHandheld(ItemModelGenerators itemModels, Holder<Item> holder, Material texture) {
-        if (holder.value() instanceof ItemMekanismArmor armorItem) {
-            ResourceKey<EquipmentAsset> equipmentAssetId = armorItem.getEquipmentAssetId();
-            generateTrimmableItem(itemModels, armorItem, equipmentAssetId, texture);
-        } else {
-            Item item = holder.value();
-            Identifier itemModel = ModelTemplates.FLAT_HANDHELD_ITEM.create(
-                  ModelLocationUtils.getModelLocation(item),
-                  TextureMapping.layer0(texture),
-                  itemModels.modelOutput
-            );
-            itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(itemModel));
-        }
+    private void handheld(ItemModelGenerators itemModels, Holder<Item> holder, Material texture) {
+        Item item = holder.value();
+        Identifier itemModel = ModelTemplates.FLAT_HANDHELD_ITEM.create(
+              ModelLocationUtils.getModelLocation(item),
+              TextureMapping.layer0(texture),
+              itemModels.modelOutput
+        );
+        itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(itemModel));
     }
 
     /// Inlined and adapted from [net.minecraft.client.data.models.ItemModelGenerators#generateTrimmableItem], to take in custom base item texture
-    private static void generateTrimmableItem(ItemModelGenerators itemModels, ItemMekanismArmor armorItem, ResourceKey<EquipmentAsset> equipmentAssetId, Material itemTexture) {
-        Identifier slotTrimPrefix = typeToTrimSlot(armorItem.getArmorType());
-        Identifier modelLocation = ModelLocationUtils.getModelLocation(armorItem);
+    private void generateTrimmableItem(ItemModelGenerators itemModels, ItemRegistryObject<?> armorItem, ResourceKey<EquipmentAsset> equipmentAssetId, Identifier slotTrimPrefix) {
+        Material itemTexture = getTexture(armorItem);
+        Identifier modelLocation = armorItem.getId().withPrefix("item/");
         List<SelectItemModel.SwitchCase<ResourceKey<TrimMaterial>>> cases = new ArrayList<>(ItemModelGenerators.TRIM_MATERIAL_MODELS.size());
 
         for (ItemModelGenerators.TrimMaterialData material : ItemModelGenerators.TRIM_MATERIAL_MODELS) {
             Identifier trimModelLocation = modelLocation.withSuffix("_" + material.assets().base().suffix() + "_trim");
             Material trimOverlayTexture = new Material(slotTrimPrefix.withSuffix("_" + material.assets().assetId(equipmentAssetId).suffix()));
-            ItemModel.Unbaked trimModel;
             itemModels.generateLayeredItem(trimModelLocation, itemTexture, trimOverlayTexture);
-            trimModel = ItemModelUtils.plainModel(trimModelLocation);
+            ItemModel.Unbaked trimModel = ItemModelUtils.plainModel(trimModelLocation);
 
             cases.add(ItemModelUtils.when(material.materialKey(), trimModel));
         }
 
-        ItemModel.Unbaked untrimmedModel;
         ModelTemplates.FLAT_ITEM.create(modelLocation, TextureMapping.layer0(itemTexture), itemModels.modelOutput);
-        untrimmedModel = ItemModelUtils.plainModel(modelLocation);
+        ItemModel.Unbaked untrimmedModel = ItemModelUtils.plainModel(modelLocation);
 
-        itemModels.itemModelOutput.accept(armorItem, ItemModelUtils.select(new TrimMaterialProperty(), untrimmedModel, cases));
+        itemModels.itemModelOutput.accept(armorItem.value(), ItemModelUtils.select(new TrimMaterialProperty(), untrimmedModel, cases));
     }
-
-    private boolean isVanilla(Holder<Item> item, String name) {
-        if (item.value() instanceof ItemMekanismPaxel) {
-            return name.startsWith("netherite") || name.startsWith("diamond") || name.startsWith("gold") || name.startsWith("iron") ||
-                   name.startsWith("stone") || name.startsWith("wood");
-        }
-        return false;
-    }
-
 
     private static final ModelTemplate SHIELD = new ModelTemplate(Optional.of(Identifier.withDefaultNamespace("item/shield")), Optional.empty(), TextureSlot.PARTICLE);
     private static final ModelTemplate SHIELD_BLOCKING = new ModelTemplate(Optional.of(Identifier.withDefaultNamespace("item/shield_blocking")), Optional.of("_blocking"), TextureSlot.PARTICLE);
 
     /// Inlined and adapted from [ItemModelGenerators#generateShield(Item)] to use our renderer and vanilla's base model
-    private void addShieldModel(ItemModelGenerators itemModels, Holder<Item> shield, Identifier particle, ShieldTextures texture) {
-        Item item = shield.value();
+    private void addShieldModel(ItemModelGenerators itemModels, MaterialType material, Identifier particle) {
+        Item item = material.tools.shield().value();
         TextureMapping textureMapping = TextureMapping.particle(new Material(particle));
-        RenderMekanismShieldItem.UnbakedShield unbaked = new RenderMekanismShieldItem.UnbakedShield(texture.getTexture());
+        RenderMekanismShieldItem.UnbakedShield unbaked = new RenderMekanismShieldItem.UnbakedShield(MekanismTools.rl(material.getSerializedName()));
         ItemModel.Unbaked normal = ItemModelUtils.specialModel(SHIELD.create(item, textureMapping, itemModels.modelOutput), unbaked);
         ItemModel.Unbaked blocking = ItemModelUtils.specialModel(SHIELD_BLOCKING.create(item, textureMapping, itemModels.modelOutput), unbaked);
         itemModels.itemModelOutput.accept(

@@ -11,7 +11,6 @@ import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -106,30 +105,5 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
 
     public ItemRegistryObject<SpawnEggItem> registerSpawnEgg(MekanismDeferredHolder<EntityType<?>, ? extends EntityType<? extends Mob>> entityTypeProvider) {
         return registerItem(entityTypeProvider.getName() + "_spawn_egg", props -> new SpawnEggItem(props.spawnEgg(entityTypeProvider.get())));
-    }
-
-    public static class StrictProperties extends Item.Properties {
-
-        private boolean durabilitySet, toolSet;
-
-        @Override
-        public Item.Properties durability(int maxDamage) {
-            if (!durabilitySet) {
-                durabilitySet = true;
-                return super.durability(maxDamage);
-            }
-            return this;
-        }
-
-        @Override
-        public <T> Item.Properties component(DataComponentType<T> component, T value) {
-            if (component == net.minecraft.core.component.DataComponents.TOOL) {
-                if (toolSet) {
-                    return this;
-                }
-                toolSet = true;
-            }
-            return super.component(component, value);
-        }
     }
 }

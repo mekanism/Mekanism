@@ -1,9 +1,12 @@
 package mekanism.common.advancements;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.common.registration.INamedEntry;
+import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRequirements;
@@ -82,6 +85,14 @@ public class ExtendedAdvancementBuilder {
 
     public ExtendedAdvancementBuilder rewards(AdvancementRewards rewards) {
         return runInternal(builder -> builder.rewards(rewards));
+    }
+
+    public ExtendedAdvancementBuilder orCriteria(String key, HolderGetter<Item> lookup, Stream<? extends ItemRegistryObject<? extends Item>> items) {
+        return orCriteria(key, lookup, items.toArray(ItemLike[]::new));
+    }
+
+    public ExtendedAdvancementBuilder orCriteria(String key, HolderGetter<Item> lookup, List<? extends ItemRegistryObject<? extends Item>> items) {
+        return orCriteria(key, lookup, items.toArray(ItemLike[]::new));
     }
 
     public ExtendedAdvancementBuilder orCriteria(String key, HolderGetter<Item> lookup, ItemLike... items) {

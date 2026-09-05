@@ -6,12 +6,13 @@
     "mekanismtools:bronze_chestplate",
     "mekanismtools:bronze_leggings",
     "mekanismtools:bronze_boots",
-    "mekanismtools:bronze_sword",
-    "mekanismtools:bronze_pickaxe",
     "mekanismtools:bronze_axe",
-    "mekanismtools:bronze_shovel",
     "mekanismtools:bronze_hoe",
-    "mekanismtools:bronze_paxel"
+    "mekanismtools:bronze_paxel",
+    "mekanismtools:bronze_pickaxe",
+    "mekanismtools:bronze_shield",
+    "mekanismtools:bronze_shovel",
+    "mekanismtools:bronze_sword"
   ],
   "result": {
     "id": "mekanism:nugget_bronze"

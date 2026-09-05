@@ -3,6 +3,8 @@ package mekanism.tools.common;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.config.ToolsConfig.ArmorSpawnChanceConfig;
+import mekanism.tools.common.registration.ArmorCollection;
+import mekanism.tools.common.registration.ToolCollection;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
@@ -24,19 +26,12 @@ import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 
 public class MobEquipmentHelper {
 
-    private static final GearType REFINED_GLOWSTONE = new GearType(ToolsItems.REFINED_GLOWSTONE_SWORD, ToolsItems.REFINED_GLOWSTONE_SHOVEL,
-          ToolsItems.REFINED_GLOWSTONE_HELMET, ToolsItems.REFINED_GLOWSTONE_CHESTPLATE, ToolsItems.REFINED_GLOWSTONE_LEGGINGS, ToolsItems.REFINED_GLOWSTONE_BOOTS,
-          MekanismToolsConfig.tools.refinedGlowstoneSpawnRate);
-    private static final GearType LAPIS_LAZULI = new GearType(ToolsItems.LAPIS_LAZULI_SWORD, ToolsItems.LAPIS_LAZULI_SHOVEL, ToolsItems.LAPIS_LAZULI_HELMET,
-          ToolsItems.LAPIS_LAZULI_CHESTPLATE, ToolsItems.LAPIS_LAZULI_LEGGINGS, ToolsItems.LAPIS_LAZULI_BOOTS, MekanismToolsConfig.tools.lapisLazuliSpawnRate);
-    private static final GearType REFINED_OBSIDIAN = new GearType(ToolsItems.REFINED_OBSIDIAN_SWORD, ToolsItems.REFINED_OBSIDIAN_SHOVEL, ToolsItems.REFINED_OBSIDIAN_HELMET,
-          ToolsItems.REFINED_OBSIDIAN_CHESTPLATE, ToolsItems.REFINED_OBSIDIAN_LEGGINGS, ToolsItems.REFINED_OBSIDIAN_BOOTS, MekanismToolsConfig.tools.refinedObsidianSpawnRate);
-    private static final GearType STEEL = new GearType(ToolsItems.STEEL_SWORD, ToolsItems.STEEL_SHOVEL, ToolsItems.STEEL_HELMET, ToolsItems.STEEL_CHESTPLATE,
-          ToolsItems.STEEL_LEGGINGS, ToolsItems.STEEL_BOOTS, MekanismToolsConfig.tools.steelSpawnRate);
-    private static final GearType BRONZE = new GearType(ToolsItems.BRONZE_SWORD, ToolsItems.BRONZE_SHOVEL, ToolsItems.BRONZE_HELMET, ToolsItems.BRONZE_CHESTPLATE,
-          ToolsItems.BRONZE_LEGGINGS, ToolsItems.BRONZE_BOOTS, MekanismToolsConfig.tools.bronzeSpawnRate);
-    private static final GearType OSMIUM = new GearType(ToolsItems.OSMIUM_SWORD, ToolsItems.OSMIUM_SHOVEL, ToolsItems.OSMIUM_HELMET, ToolsItems.OSMIUM_CHESTPLATE,
-          ToolsItems.OSMIUM_LEGGINGS, ToolsItems.OSMIUM_BOOTS, MekanismToolsConfig.tools.osmiumSpawnRate);
+    private static final GearType REFINED_GLOWSTONE = new GearType(ToolsItems.REFINED_GLOWSTONE_ARMOR, ToolsItems.REFINED_GLOWSTONE_TOOLS, MekanismToolsConfig.tools.refinedGlowstoneSpawnRate);
+    private static final GearType LAPIS_LAZULI = new GearType(ToolsItems.LAPIS_LAZULI_ARMOR, ToolsItems.LAPIS_LAZULI_TOOLS, MekanismToolsConfig.tools.lapisLazuliSpawnRate);
+    private static final GearType REFINED_OBSIDIAN = new GearType(ToolsItems.REFINED_OBSIDIAN_ARMOR, ToolsItems.REFINED_OBSIDIAN_TOOLS, MekanismToolsConfig.tools.refinedObsidianSpawnRate);
+    private static final GearType STEEL = new GearType(ToolsItems.STEEL_ARMOR, ToolsItems.STEEL_TOOLS, MekanismToolsConfig.tools.steelSpawnRate);
+    private static final GearType BRONZE = new GearType(ToolsItems.BRONZE_ARMOR, ToolsItems.BRONZE_TOOLS, MekanismToolsConfig.tools.bronzeSpawnRate);
+    private static final GearType OSMIUM = new GearType(ToolsItems.OSMIUM_ARMOR, ToolsItems.OSMIUM_TOOLS, MekanismToolsConfig.tools.osmiumSpawnRate);
 
     private static boolean isZombie(LivingEntity entity) {
         //Ignore the specific subclasses that can't spawn with armor in vanilla
@@ -123,5 +118,9 @@ public class MobEquipmentHelper {
 
     private record GearType(Holder<Item> sword, Holder<Item> shovel, Holder<Item> helmet, Holder<Item> chestplate, Holder<Item> leggings, Holder<Item> boots,
                             ArmorSpawnChanceConfig spawnChance) {
+
+        public GearType(ArmorCollection armor, ToolCollection tools, ArmorSpawnChanceConfig spawnChange) {
+            this(tools.sword(), tools.shovel(), armor.helmet(), armor.chestplate(), armor.leggings(), armor.boots(), spawnChange);
+        }
     }
 }

@@ -1,15 +1,10 @@
 package mekanism.tools.common;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.common.tag.MekanismTagBuilder;
-import mekanism.tools.common.item.ItemMekanismAxe;
-import mekanism.tools.common.item.ItemMekanismPaxel;
-import mekanism.tools.common.item.ItemMekanismPickaxe;
-import mekanism.tools.common.item.ItemMekanismSword;
+import mekanism.tools.common.material.MaterialType;
 import mekanism.tools.common.registries.ToolsItems;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -26,27 +21,12 @@ public class ToolsTagProvider extends BaseTagProvider {
     @Override
     protected void registerTags(HolderLookup.Provider registries) {
         addToolTags();
-        getBuilder(ItemTags.PIGLIN_LOVED).add(
-              ToolsItems.GOLD_PAXEL,
-              ToolsItems.REFINED_GLOWSTONE_PICKAXE,
-              ToolsItems.REFINED_GLOWSTONE_AXE,
-              ToolsItems.REFINED_GLOWSTONE_SHOVEL,
-              ToolsItems.REFINED_GLOWSTONE_HOE,
-              ToolsItems.REFINED_GLOWSTONE_SWORD,
-              ToolsItems.REFINED_GLOWSTONE_PAXEL,
-              ToolsItems.REFINED_GLOWSTONE_HELMET,
-              ToolsItems.REFINED_GLOWSTONE_CHESTPLATE,
-              ToolsItems.REFINED_GLOWSTONE_LEGGINGS,
-              ToolsItems.REFINED_GLOWSTONE_BOOTS,
-              ToolsItems.REFINED_GLOWSTONE_SHIELD
-        );
+        MekanismTagBuilder<Item> piglinLoved = getBuilder(ItemTags.PIGLIN_LOVED).add(ToolsItems.GOLD_PAXEL);
+        ToolsItems.REFINED_GLOWSTONE_ARMOR.forEach(piglinLoved::add);
+        ToolsItems.REFINED_GLOWSTONE_TOOLS.forEach(piglinLoved::add);
+        ToolsItems.REFINED_GLOWSTONE_ARMOR.forEach(getBuilder(ItemTags.PIGLIN_SAFE_ARMOR)::add);
         //Make refined glowstone armor make you immune to freezing because of the light it gives off
-        getBuilder(ItemTags.FREEZE_IMMUNE_WEARABLES).add(
-              ToolsItems.REFINED_GLOWSTONE_HELMET,
-              ToolsItems.REFINED_GLOWSTONE_CHESTPLATE,
-              ToolsItems.REFINED_GLOWSTONE_LEGGINGS,
-              ToolsItems.REFINED_GLOWSTONE_BOOTS
-        );
+        ToolsItems.REFINED_GLOWSTONE_ARMOR.forEach(getBuilder(ItemTags.FREEZE_IMMUNE_WEARABLES)::add);
         getBuilder(ToolsTags.Blocks.MINEABLE_WITH_PAXEL).add(
               BlockTags.MINEABLE_WITH_AXE,
               BlockTags.MINEABLE_WITH_PICKAXE,
@@ -59,9 +39,19 @@ public class ToolsTagProvider extends BaseTagProvider {
         getBuilder(ToolsTags.Blocks.INCORRECT_FOR_REFINED_GLOWSTONE_TOOL).add(BlockTags.INCORRECT_FOR_DIAMOND_TOOL);
         getBuilder(ToolsTags.Blocks.INCORRECT_FOR_REFINED_OBSIDIAN_TOOL).add(BlockTags.INCORRECT_FOR_NETHERITE_TOOL);
         getBuilder(ToolsTags.Blocks.INCORRECT_FOR_STEEL_TOOL).add(BlockTags.INCORRECT_FOR_DIAMOND_TOOL);
-        createTag(getBuilder(ItemTags.CLUSTER_MAX_HARVESTABLES), item -> item instanceof ItemMekanismPickaxe || item instanceof ItemMekanismPaxel);
-        createTag(getBuilder(Tags.Items.MINING_TOOL_TOOLS), item -> item instanceof ItemMekanismPickaxe || item instanceof ItemMekanismPaxel);
-        createTag(getBuilder(Tags.Items.MELEE_WEAPON_TOOLS), item -> item instanceof ItemMekanismSword || item instanceof ItemMekanismAxe || item instanceof ItemMekanismPaxel);
+        MekanismTagBuilder<Item> clusterMaxHarvestables = getBuilder(ItemTags.CLUSTER_MAX_HARVESTABLES);
+        MekanismTagBuilder<Item> miningTools = getBuilder(Tags.Items.MINING_TOOL_TOOLS);
+        MekanismTagBuilder<Item> meleeWeapons = getBuilder(Tags.Items.MELEE_WEAPON_TOOLS);
+        ToolsItems.vanillaPaxels().forEach(paxel -> {
+            clusterMaxHarvestables.add(paxel);
+            miningTools.add(paxel);
+            meleeWeapons.add(paxel);
+        });
+        for (MaterialType material : MaterialType.VALUES) {
+            clusterMaxHarvestables.add(material.tools.pickaxe(), material.tools.paxel());
+            miningTools.add(material.tools.pickaxe(), material.tools.paxel());
+            meleeWeapons.add(material.tools.sword(), material.tools.axe(), material.tools.paxel());
+        }
     }
 
     private void addToolTags() {
@@ -71,8 +61,7 @@ public class ToolsTagProvider extends BaseTagProvider {
         addPickaxes();
         addShovels();
         addHoes();
-        addShields(ToolsItems.BRONZE_SHIELD, ToolsItems.LAPIS_LAZULI_SHIELD, ToolsItems.OSMIUM_SHIELD, ToolsItems.REFINED_GLOWSTONE_SHIELD,
-              ToolsItems.REFINED_OBSIDIAN_SHIELD, ToolsItems.STEEL_SHIELD);
+        addShields();
         //Armor
         addHelmets();
         addChestplates();
@@ -91,135 +80,84 @@ public class ToolsTagProvider extends BaseTagProvider {
         getBuilder(ItemTags.PICKAXES).add(ToolsTags.Items.TOOLS_PAXEL);
         getBuilder(ItemTags.AXES).add(ToolsTags.Items.TOOLS_PAXEL);
         getBuilder(ItemTags.SHOVELS).add(ToolsTags.Items.TOOLS_PAXEL);
-        getBuilder(ToolsTags.Items.TOOLS_PAXEL).add(
-              //Vanilla Paxels
-              ToolsItems.WOOD_PAXEL,
-              ToolsItems.STONE_PAXEL,
-              ToolsItems.GOLD_PAXEL,
-              ToolsItems.IRON_PAXEL,
-              ToolsItems.DIAMOND_PAXEL,
-              ToolsItems.NETHERITE_PAXEL,
-              //Our paxels
-              ToolsItems.BRONZE_PAXEL,
-              ToolsItems.LAPIS_LAZULI_PAXEL,
-              ToolsItems.OSMIUM_PAXEL,
-              ToolsItems.REFINED_GLOWSTONE_PAXEL,
-              ToolsItems.REFINED_OBSIDIAN_PAXEL,
-              ToolsItems.STEEL_PAXEL
-        );
+        MekanismTagBuilder<Item> builder = getBuilder(ToolsTags.Items.TOOLS_PAXEL);
+        //Vanilla Paxels
+        ToolsItems.vanillaPaxels().forEach(builder::add);
+        //Our paxels
+        for (MaterialType material : MaterialType.VALUES) {
+            builder.add(material.tools.paxel());
+        }
     }
 
     private void addSwords() {
-        getBuilder(ItemTags.SWORDS).add(
-              ToolsItems.BRONZE_SWORD,
-              ToolsItems.LAPIS_LAZULI_SWORD,
-              ToolsItems.OSMIUM_SWORD,
-              ToolsItems.REFINED_GLOWSTONE_SWORD,
-              ToolsItems.REFINED_OBSIDIAN_SWORD,
-              ToolsItems.STEEL_SWORD
-        );
+        MekanismTagBuilder<Item> builder = getBuilder(ItemTags.SWORDS);
+        for (MaterialType material : MaterialType.VALUES) {
+            builder.add(material.tools.sword());
+        }
     }
 
     private void addAxes() {
-        getBuilder(ItemTags.AXES).add(
-              ToolsItems.BRONZE_AXE,
-              ToolsItems.LAPIS_LAZULI_AXE,
-              ToolsItems.OSMIUM_AXE,
-              ToolsItems.REFINED_GLOWSTONE_AXE,
-              ToolsItems.REFINED_OBSIDIAN_AXE,
-              ToolsItems.STEEL_AXE
-        );
+        MekanismTagBuilder<Item> builder = getBuilder(ItemTags.AXES);
+        for (MaterialType material : MaterialType.VALUES) {
+            builder.add(material.tools.axe());
+        }
     }
 
     private void addPickaxes() {
-        getBuilder(ItemTags.PICKAXES).add(
-              ToolsItems.BRONZE_PICKAXE,
-              ToolsItems.LAPIS_LAZULI_PICKAXE,
-              ToolsItems.OSMIUM_PICKAXE,
-              ToolsItems.REFINED_GLOWSTONE_PICKAXE,
-              ToolsItems.REFINED_OBSIDIAN_PICKAXE,
-              ToolsItems.STEEL_PICKAXE
-        );
+        MekanismTagBuilder<Item> builder = getBuilder(ItemTags.PICKAXES);
+        for (MaterialType material : MaterialType.VALUES) {
+            builder.add(material.tools.pickaxe());
+        }
     }
 
     private void addShovels() {
-        getBuilder(ItemTags.SHOVELS).add(
-              ToolsItems.BRONZE_SHOVEL,
-              ToolsItems.LAPIS_LAZULI_SHOVEL,
-              ToolsItems.OSMIUM_SHOVEL,
-              ToolsItems.REFINED_GLOWSTONE_SHOVEL,
-              ToolsItems.REFINED_OBSIDIAN_SHOVEL,
-              ToolsItems.STEEL_SHOVEL
-        );
+        MekanismTagBuilder<Item> builder = getBuilder(ItemTags.SHOVELS);
+        for (MaterialType material : MaterialType.VALUES) {
+            builder.add(material.tools.shovel());
+        }
     }
 
     private void addHoes() {
-        getBuilder(ItemTags.HOES).add(
-              ToolsItems.BRONZE_HOE,
-              ToolsItems.LAPIS_LAZULI_HOE,
-              ToolsItems.OSMIUM_HOE,
-              ToolsItems.REFINED_GLOWSTONE_HOE,
-              ToolsItems.REFINED_OBSIDIAN_HOE,
-              ToolsItems.STEEL_HOE
-        );
+        MekanismTagBuilder<Item> builder = getBuilder(ItemTags.HOES);
+        for (MaterialType material : MaterialType.VALUES) {
+            builder.add(material.tools.hoe());
+        }
     }
 
-    @SafeVarargs
-    private void addShields(Holder<Item>... shields) {
-        getBuilder(Tags.Items.TOOLS_SHIELD).add(shields);
-        getBuilder(ItemTags.DURABILITY_ENCHANTABLE).add(shields);
+    private void addShields() {
+        MekanismTagBuilder<Item> shields = getBuilder(Tags.Items.TOOLS_SHIELD);
+        MekanismTagBuilder<Item> durabilityEnchantable = getBuilder(ItemTags.DURABILITY_ENCHANTABLE);
+        for (MaterialType material : MaterialType.VALUES) {
+            shields.add(material.tools.shield());
+            durabilityEnchantable.add(material.tools.shield());
+        }
     }
 
     private void addHelmets() {
-        getBuilder(ItemTags.HEAD_ARMOR).add(
-              ToolsItems.BRONZE_HELMET,
-              ToolsItems.LAPIS_LAZULI_HELMET,
-              ToolsItems.OSMIUM_HELMET,
-              ToolsItems.REFINED_GLOWSTONE_HELMET,
-              ToolsItems.REFINED_OBSIDIAN_HELMET,
-              ToolsItems.STEEL_HELMET
-        );
+        MekanismTagBuilder<Item> builder = getBuilder(ItemTags.HEAD_ARMOR);
+        for (MaterialType material : MaterialType.VALUES) {
+            builder.add(material.armor.helmet());
+        }
     }
 
     private void addChestplates() {
-        getBuilder(ItemTags.CHEST_ARMOR).add(
-              ToolsItems.BRONZE_CHESTPLATE,
-              ToolsItems.LAPIS_LAZULI_CHESTPLATE,
-              ToolsItems.OSMIUM_CHESTPLATE,
-              ToolsItems.REFINED_GLOWSTONE_CHESTPLATE,
-              ToolsItems.REFINED_OBSIDIAN_CHESTPLATE,
-              ToolsItems.STEEL_CHESTPLATE
-        );
+        MekanismTagBuilder<Item> builder = getBuilder(ItemTags.CHEST_ARMOR);
+        for (MaterialType material : MaterialType.VALUES) {
+            builder.add(material.armor.chestplate());
+        }
     }
 
     private void addLeggings() {
-        getBuilder(ItemTags.LEG_ARMOR).add(
-              ToolsItems.BRONZE_LEGGINGS,
-              ToolsItems.LAPIS_LAZULI_LEGGINGS,
-              ToolsItems.OSMIUM_LEGGINGS,
-              ToolsItems.REFINED_GLOWSTONE_LEGGINGS,
-              ToolsItems.REFINED_OBSIDIAN_LEGGINGS,
-              ToolsItems.STEEL_LEGGINGS
-        );
+        MekanismTagBuilder<Item> builder = getBuilder(ItemTags.LEG_ARMOR);
+        for (MaterialType material : MaterialType.VALUES) {
+            builder.add(material.armor.leggings());
+        }
     }
 
     private void addBoots() {
-        getBuilder(ItemTags.FOOT_ARMOR).add(
-              ToolsItems.BRONZE_BOOTS,
-              ToolsItems.LAPIS_LAZULI_BOOTS,
-              ToolsItems.OSMIUM_BOOTS,
-              ToolsItems.REFINED_GLOWSTONE_BOOTS,
-              ToolsItems.REFINED_OBSIDIAN_BOOTS,
-              ToolsItems.STEEL_BOOTS
-        );
-    }
-
-    private void createTag(MekanismTagBuilder<Item> tag, Predicate<Item> matcher) {
-        for (Holder<Item> itemProvider : ToolsItems.ITEMS.getEntries()) {
-            Item item = itemProvider.value();
-            if (matcher.test(item)) {
-                tag.add(itemProvider);
-            }
+        MekanismTagBuilder<Item> builder = getBuilder(ItemTags.FOOT_ARMOR);
+        for (MaterialType material : MaterialType.VALUES) {
+            builder.add(material.armor.boots());
         }
     }
 }
