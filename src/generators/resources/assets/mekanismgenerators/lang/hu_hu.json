@@ -44,7 +44,6 @@
   "chemical.mekanismgenerators.deuterium": "Deutérium",
   "chemical.mekanismgenerators.fusion_fuel": "D-T Üzemanyag",
   "chemical.mekanismgenerators.tritium": "Trícium",
-  "configuration.mekanismgenerators.gear.meka_suit.charge_rate.geothermal.tooltip": "Geotermikus töltési sebesség joule/tick értékben, a környezeti hőmérséklet feletti fokonként, valamint telepített fejlesztésenként. Az érték csökken attól függően, hogy a MekaSuit nadrág mekkora része van folyadékba merülve. A tűz körülbelül 200K-kel a környezeti hőmérséklet felettinek számít, a láva pedig 1000K-kel a környezeti hőmérséklet felettinek.",
   "constants.mekanismgenerators.mod_name": "Mekanism: Generátorok",
   "constants.mekanismgenerators.pack_description": "Mekanism: Generátorok-hoz felhasznált források",
   "description.mekanismgenerators.laser_focus_matrix": "Fúziós reaktor üvegpanelje, amely képes optikai energiát elnyelni, ezzel felmelegítve a reaktort.",

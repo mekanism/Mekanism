@@ -621,7 +621,6 @@
   "configuration.mekanismtools.startup.materials.wood.top_level.tooltip": "バニラ素材の木のパクセルの設定。",
   "constants.mekanismtools.mod_name": "Mekanism: Tools",
   "constants.mekanismtools.pack_description": "Mekanism: Toolsで使用されるリソース",
-  "fml.menu.mods.info.description.mekanismtools": "Mekanismのツールモジュール",
   "item.mekanismtools.bronze_axe": "青銅の斧",
   "item.mekanismtools.bronze_boots": "青銅のブーツ",
   "item.mekanismtools.bronze_chestplate": "青銅のチェストプレート",
@@ -797,6 +796,7 @@
   "mekanismtools.configuration.section.mekanism.tools.toml": "全般の設定",
   "mekanismtools.configuration.section.mekanism.tools.toml.title": "Mekanism: Tools - 全般の設定",
   "mekanismtools.configuration.title": "Mekanism: Toolsの設定",
+  "neoforge.screen.mods.info.description.mekanismtools": "Mekanismのツールモジュールです。",
   "tag.item.c.tools.paxel": "パクセル",
   "tooltip.mekanismtools.hp": "HP: %1$s"
 }
