@@ -14,7 +14,6 @@
   "configuration.mekanismtools.server.gear_spawn_chance.tooltip": "Iestatījumi, lai konfigurētu Mekanism: Rīku aprīkojuma parādīšanos uz mošķiem",
   "constants.mekanismtools.mod_name": "Mekanism: Tools",
   "constants.mekanismtools.pack_description": "Resursi priekš Mekanism: Tools",
-  "fml.menu.mods.info.description.mekanismtools": "Rīku modulis priekš Mekanism",
   "item.mekanismtools.bronze_axe": "Bronzas Cirvis",
   "item.mekanismtools.bronze_boots": "Bronzas Zābaki",
   "item.mekanismtools.bronze_chestplate": "Bronzas Bruņas",

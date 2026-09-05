@@ -148,7 +148,6 @@
   "fission.mekanismgenerators.stats": "Fisyon Reaktörü İstatistikleri",
   "fission.mekanismgenerators.surface_area": "Yakıt Yüzey Alanı: %1$s m²",
   "fission.mekanismgenerators.waste_tank": "Atık Tankı",
-  "fml.menu.mods.info.description.mekanismgenerators": "Mekanism için Jeneratörler modülü",
   "gui.mekanismgenerators.bio_generator.bio_fuel": "BiyoYakıt: %1$s",
   "gui.mekanismgenerators.gas_burning_generator.burn_rate": "Yanma Oranı: %1$s mB/t",
   "gui.mekanismgenerators.output_rate.short": "Çıkış: %1$s/t",

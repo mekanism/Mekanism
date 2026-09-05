@@ -247,7 +247,6 @@
   "configuration.mekanismtools.startup.materials.wood.enchantability": "Verzauberkeit",
   "constants.mekanismtools.mod_name": "Mekanism: Tools",
   "constants.mekanismtools.pack_description": "Für Mekanism: Tools verwendete Ressourcen",
-  "fml.menu.mods.info.description.mekanismtools": "Gegenstands-Module für Mekanism",
   "item.mekanismtools.bronze_axe": "Bronzeaxt",
   "item.mekanismtools.bronze_boots": "Bronzestiefel",
   "item.mekanismtools.bronze_chestplate": "Bronzebrustpanzer",

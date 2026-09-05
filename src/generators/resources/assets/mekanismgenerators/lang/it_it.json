@@ -109,7 +109,6 @@
   "fission.mekanismgenerators.stats": "Statistiche del Reattore a Fissione",
   "fission.mekanismgenerators.surface_area": "Superficie del carburante: %1$s m2",
   "fission.mekanismgenerators.waste_tank": "Cisterna per Scorie",
-  "fml.menu.mods.info.description.mekanismgenerators": "Modulo con generatori per la Mekanism",
   "gui.mekanismgenerators.bio_generator.bio_fuel": "Biocarburante: %1$s",
   "gui.mekanismgenerators.gas_burning_generator.burn_rate": "Tasso di combustione: %1$s mB/t",
   "gui.mekanismgenerators.output_rate.short": "Uscita: %1$s/t",
