@@ -48,7 +48,6 @@
   "configuration.mekanismtools.server.gear_spawn_chance.steel.chance.enchantment.weapon.tooltip": "La probabilidad de que si una criatura aparece con armas de Acero, éstas estén encantadas. Es multiplicada por el modificador de dificultad del chunk. Requiere que \"canSpawnWeapon\" esté habilitado.",
   "constants.mekanismtools.mod_name": "Mekanism: Tools",
   "constants.mekanismtools.pack_description": "Recursos utilizados por Mekanism: Tools",
-  "fml.menu.mods.info.description.mekanismtools": "Modulo de herramientas para el Mekanismo",
   "item.mekanismtools.bronze_axe": "Hacha de bronce",
   "item.mekanismtools.bronze_boots": "Botas de bronce",
   "item.mekanismtools.bronze_chestplate": "Pechera de bronce",
