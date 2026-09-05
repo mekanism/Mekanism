@@ -327,10 +327,18 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addArmor() {
+        getBuilder(ItemTags.GAZE_DISGUISE_EQUIPMENT).add(MekanismItems.MEKASUIT_HELMET);
         getBuilder(ItemTags.HEAD_ARMOR).add(MekanismItems.HAZMAT_MASK, MekanismItems.MEKASUIT_HELMET);
         getBuilder(ItemTags.CHEST_ARMOR).add(MekanismItems.HAZMAT_GOWN, MekanismItems.MEKASUIT_BODYARMOR);
         getBuilder(ItemTags.LEG_ARMOR).add(MekanismItems.HAZMAT_PANTS, MekanismItems.MEKASUIT_PANTS);
         getBuilder(ItemTags.FOOT_ARMOR).add(MekanismItems.HAZMAT_BOOTS, MekanismItems.MEKASUIT_BOOTS);
+        ItemRegistryObject<?>[] providers = {
+              MekanismItems.MEKASUIT_HELMET,
+              MekanismItems.MEKASUIT_BODYARMOR,
+              MekanismItems.MEKASUIT_PANTS,
+              MekanismItems.MEKASUIT_BOOTS
+        };
+        getBuilder(ItemTags.PIGLIN_SAFE_ARMOR).add(providers);
         getBuilder(ItemTags.TRIMMABLE_ARMOR).remove(
               MekanismItems.HAZMAT_MASK,
               MekanismItems.HAZMAT_GOWN,
@@ -341,12 +349,6 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismItems.MEKASUIT_PANTS,
               MekanismItems.MEKASUIT_BOOTS
         );
-        ItemRegistryObject<?>[] providers = {
-              MekanismItems.MEKASUIT_HELMET,
-              MekanismItems.MEKASUIT_BODYARMOR,
-              MekanismItems.MEKASUIT_PANTS,
-              MekanismItems.MEKASUIT_BOOTS
-        };
         getBuilder(ItemTags.DURABILITY_ENCHANTABLE).remove(providers);
         getBuilder(ItemTags.EQUIPPABLE_ENCHANTABLE).remove(providers);
         getBuilder(ItemTags.HEAD_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_HELMET);

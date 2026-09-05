@@ -144,16 +144,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public boolean makesPiglinsNeutral(ItemStack stack, LivingEntity wearer) {
-        return true;
-    }
-
-    @Override
-    public boolean isGazeDisguise(ItemStack stack, Player player, @Nullable LivingEntity entity) {
-        return true;//only called on helmet slot, no need to check type
-    }
-
-    @Override
     public boolean canWalkOnPowderedSnow(ItemStack stack, LivingEntity wearer) {
         return armorType == ArmorType.BOOTS;
     }

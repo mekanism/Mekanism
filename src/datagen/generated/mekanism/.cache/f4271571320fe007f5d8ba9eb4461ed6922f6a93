@@ -1,4 +1,4 @@
-// 26.2	2026-09-01T16:02:03.9016871	Tags: mekanism
+// 26.2	2026-09-05T16:30:40.5913938	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -328,9 +328,11 @@ c0ce6a50075da89bf71f5aebe24272ed6f32b70f data/minecraft/tags/item/enchantable/he
 61c09639a0d7a8d8efa2aba3a67df49294c8ce4a data/minecraft/tags/item/enchantable/leg_armor.json
 766b5e5562dd7d1638c6bad827b596b7b2aed821 data/minecraft/tags/item/foot_armor.json
 2c03bddd45e9e642954da6bc7bf4e9a1c996c27c data/minecraft/tags/item/freeze_immune_wearables.json
+2637a7099be4b951892b8d1c163837011868e91b data/minecraft/tags/item/gaze_disguise_equipment.json
 1af766279b7349f826a870d9d74c43d21314fded data/minecraft/tags/item/head_armor.json
 771a6defa11c27f05b6bd8a927fd24a1221158f8 data/minecraft/tags/item/leg_armor.json
 a16020216bc9f627bf30c93fb3b8fe7c764fb344 data/minecraft/tags/item/piglin_loved.json
+2c03bddd45e9e642954da6bc7bf4e9a1c996c27c data/minecraft/tags/item/piglin_safe_armor.json
 60123a60fc66ed7f7db9cf24e13e3a02a0e7a6be data/minecraft/tags/item/trimmable_armor.json
 2a7a0ca44ecbdfdfcda188a4fee34692dc24e2cf data/neoforge/tags/block/enderman_place_on_blacklist.json
 87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/neoforge/tags/damage_type/is_environment.json
