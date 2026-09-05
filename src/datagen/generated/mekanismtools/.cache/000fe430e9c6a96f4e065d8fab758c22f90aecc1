@@ -1,4 +1,4 @@
-// 26.2	2026-09-05T16:30:40.6949072	Recipes: mekanismtools
+// 26.2	2026-09-05T16:45:13.0065432	Recipes: mekanismtools
 e223cbde7adefe647bf8f1bdf89df15550e28599 data/mekanismtools/recipe/bronze/armor/boots.json
 5df9f38fdfc921e1f73cd85951a5ffeca198ff39 data/mekanismtools/recipe/bronze/armor/chestplate.json
 2142eada34d6e890a71bec0bda427ef87d4e1c49 data/mekanismtools/recipe/bronze/armor/helmet.json
@@ -12,6 +12,9 @@ fad9c1538293058cd1a25cbc9ab94e5180919ada data/mekanismtools/recipe/bronze/tools/
 9be130784c18f8400eb4df351447711fe1d6d922 data/mekanismtools/recipe/bronze/tools/pickaxe.json
 68a63e3cd95601a58a0020bbfeeeb38c7425365f data/mekanismtools/recipe/bronze/tools/shovel.json
 39bf19ec8dc9007b21f9072d8a43cf78a1613cbb data/mekanismtools/recipe/bronze/tools/sword.json
+92c1ee2bdbb3ab94bef82d5e12b111a66177fe18 data/mekanismtools/recipe/copper_nugget_from_blasting.json
+3c81a0e00833a2d6762d01182da5017234507a1e data/mekanismtools/recipe/copper_nugget_from_smelting.json
+b9136df51a1f226a98ad68f5129116679848251e data/mekanismtools/recipe/copper_paxel.json
 9a6ada439fcc09ba1bd476ff3ac5d730573b3a2e data/mekanismtools/recipe/diamond_paxel.json
 03622fe3f1ab8e7911fbee2b5e8483735d94f2f0 data/mekanismtools/recipe/gold_nugget_from_blasting.json
 3700e51f82a0d57ba3988e5a602a24b4080fe2d9 data/mekanismtools/recipe/gold_nugget_from_smelting.json

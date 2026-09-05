@@ -1,9 +1,9 @@
-// 26.2	2026-09-05T16:34:25.1230043	Tags: mekanismtools
+// 26.2	2026-09-05T16:43:24.2455959	Tags: mekanismtools
 13cf1fe06cf159d32d074144254a0d375f6b20e7 data/c/tags/block/mineable/paxel.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/c/tags/item/tools.json
-17f671f4aecb646abba334dc34eaf8812ddd1bd4 data/c/tags/item/tools/melee_weapon.json
-b735bc8d093a0d0b401481a9a2d3126d0c96f0a4 data/c/tags/item/tools/mining_tool.json
-9c771b9ee4551c2a015ea3603d7790fe6e61443f data/c/tags/item/tools/paxel.json
+a6c2ac44cb20597426bf42fbc03eddc74a481785 data/c/tags/item/tools/melee_weapon.json
+d60a2c6cb5c303e3c4e84510470de0191ea0f0df data/c/tags/item/tools/mining_tool.json
+ea32b302f33d4963196d8d2ccd5dea24e496e71a data/c/tags/item/tools/paxel.json
 6e3b9e4ae09c24327f7264b4e22d031964f76244 data/c/tags/item/tools/shield.json
 950a086f855d118e00d3fc9697663c7721c42db1 data/mekanismtools/tags/block/incorrect_for_bronze_tool.json
 b239e7b03736ed687b12fa515c9a1139f07cc1a8 data/mekanismtools/tags/block/incorrect_for_lapis_lazuli_tool.json
@@ -14,7 +14,7 @@ f57a1c0d935679dbbcab3f2e8a06cae2238a6735 data/mekanismtools/tags/block/incorrect
 b40db251330dcd4da692dd4047bf54363ee0f379 data/minecraft/tags/item/axes.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/breaks_decorated_pots.json
 cf56f9aea1d1e35302b87399545199f9945e4509 data/minecraft/tags/item/chest_armor.json
-b735bc8d093a0d0b401481a9a2d3126d0c96f0a4 data/minecraft/tags/item/cluster_max_harvestables.json
+d60a2c6cb5c303e3c4e84510470de0191ea0f0df data/minecraft/tags/item/cluster_max_harvestables.json
 fd8819751169c6f6051010b39b57d5081ca22086 data/minecraft/tags/item/enchantable/durability.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/mining.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/mining_loot.json

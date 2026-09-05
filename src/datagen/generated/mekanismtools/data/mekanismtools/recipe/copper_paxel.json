@@ -1,0 +1,18 @@
+{
+  "type": "mekanismtools:paxel",
+  "category": "equipment",
+  "key": {
+    "A": "minecraft:copper_axe",
+    "P": "minecraft:copper_pickaxe",
+    "R": "#c:rods/wooden",
+    "S": "minecraft:copper_shovel"
+  },
+  "pattern": [
+    "APS",
+    " R ",
+    " R "
+  ],
+  "result": {
+    "id": "mekanismtools:copper_paxel"
+  }
+}

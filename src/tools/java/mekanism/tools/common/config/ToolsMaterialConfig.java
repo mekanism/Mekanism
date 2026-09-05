@@ -9,12 +9,7 @@ import mekanism.tools.common.material.impl.OsmiumMaterialDefaults;
 import mekanism.tools.common.material.impl.RefinedGlowstoneMaterialDefaults;
 import mekanism.tools.common.material.impl.RefinedObsidianMaterialDefaults;
 import mekanism.tools.common.material.impl.SteelMaterialDefaults;
-import mekanism.tools.common.material.impl.vanilla.DiamondPaxelMaterialDefaults;
-import mekanism.tools.common.material.impl.vanilla.GoldPaxelMaterialDefaults;
-import mekanism.tools.common.material.impl.vanilla.IronPaxelMaterialDefaults;
-import mekanism.tools.common.material.impl.vanilla.NetheritePaxelMaterialDefaults;
-import mekanism.tools.common.material.impl.vanilla.StonePaxelMaterialDefaults;
-import mekanism.tools.common.material.impl.vanilla.WoodPaxelMaterialDefaults;
+import net.minecraft.world.item.ToolMaterial;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -24,9 +19,10 @@ public class ToolsMaterialConfig extends BaseMekanismConfig {
 
     public final VanillaPaxelMaterialCreator wood;
     public final VanillaPaxelMaterialCreator stone;
+    public final VanillaPaxelMaterialCreator copper;
     public final VanillaPaxelMaterialCreator iron;
-    public final VanillaPaxelMaterialCreator diamond;
     public final VanillaPaxelMaterialCreator gold;
+    public final VanillaPaxelMaterialCreator diamond;
     public final VanillaPaxelMaterialCreator netherite;
     public final MaterialCreator bronze;
     public final MaterialCreator lapisLazuli;
@@ -39,12 +35,13 @@ public class ToolsMaterialConfig extends BaseMekanismConfig {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
         ToolsConfigTranslations.STARTUP_MATERIALS.applyToBuilder(builder).push("materials");
-        wood = new VanillaPaxelMaterialCreator(this, builder, new WoodPaxelMaterialDefaults());
-        stone = new VanillaPaxelMaterialCreator(this, builder, new StonePaxelMaterialDefaults());
-        gold = new VanillaPaxelMaterialCreator(this, builder, new GoldPaxelMaterialDefaults());
-        iron = new VanillaPaxelMaterialCreator(this, builder, new IronPaxelMaterialDefaults());
-        diamond = new VanillaPaxelMaterialCreator(this, builder, new DiamondPaxelMaterialDefaults());
-        netherite = new VanillaPaxelMaterialCreator(this, builder, new NetheritePaxelMaterialDefaults());
+        wood = new VanillaPaxelMaterialCreator(this, builder, "wood", ToolMaterial.WOOD, 6.0F);
+        stone = new VanillaPaxelMaterialCreator(this, builder, "stone", ToolMaterial.STONE, 7.0F);
+        copper = new VanillaPaxelMaterialCreator(this, builder, "copper", ToolMaterial.COPPER, 7.0F);
+        iron = new VanillaPaxelMaterialCreator(this, builder, "iron", ToolMaterial.IRON, 6.0F);
+        gold = new VanillaPaxelMaterialCreator(this, builder, "gold", ToolMaterial.GOLD, 6.0F);
+        diamond = new VanillaPaxelMaterialCreator(this, builder, "diamond", ToolMaterial.DIAMOND, 5.0F);
+        netherite = new VanillaPaxelMaterialCreator(this, builder, "netherite", ToolMaterial.NETHERITE, 5.0F);
 
         lapisLazuli = new MaterialCreator(this, builder, new LapisLazuliMaterialDefaults());
         bronze = new MaterialCreator(this, builder, new BronzeMaterialDefaults());

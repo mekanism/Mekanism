@@ -16,6 +16,7 @@ public class ToolsAliasMapping implements IAliasMapping {
     public <ITEM, FLUID, CHEMICAL> void addAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
         addVanillaPaxelAliases(rv, ToolsItems.WOOD_PAXEL, Items.WOODEN_AXE, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL);
         addVanillaPaxelAliases(rv, ToolsItems.STONE_PAXEL, Items.STONE_AXE, Items.STONE_PICKAXE, Items.STONE_SHOVEL);
+        addVanillaPaxelAliases(rv, ToolsItems.COPPER_PAXEL, Items.COPPER_AXE, Items.COPPER_PICKAXE, Items.COPPER_SHOVEL);
         addVanillaPaxelAliases(rv, ToolsItems.GOLD_PAXEL, Items.GOLDEN_AXE, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL);
         addVanillaPaxelAliases(rv, ToolsItems.IRON_PAXEL, Items.IRON_AXE, Items.IRON_PICKAXE, Items.IRON_SHOVEL);
         addVanillaPaxelAliases(rv, ToolsItems.DIAMOND_PAXEL, Items.DIAMOND_AXE, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL);

@@ -10,7 +10,8 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
 
-    private final VanillaPaxelMaterial fallback;
+    private final ToolMaterial vanillaMaterial;
+    private final String registryPrefix;
 
     private final CachedFloatValue paxelDamage;
     private final CachedFloatValue paxelAtkSpeed;
@@ -18,8 +19,9 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
     private final CachedIntValue paxelEnchantability;
     private final CachedIntValue paxelDurability;
 
-    public VanillaPaxelMaterialCreator(IMekanismConfig config, ModConfigSpec.Builder builder, VanillaPaxelMaterial materialDefaults) {
-        this.fallback = materialDefaults;
+    public VanillaPaxelMaterialCreator(IMekanismConfig config, ModConfigSpec.Builder builder, String registryPrefix, ToolMaterial vanillaMaterial, float axeAttackDamageBaseline) {
+        this.registryPrefix = registryPrefix;
+        this.vanillaMaterial = vanillaMaterial;
         String toolKey = getRegistryPrefix();
         VanillaPaxelMaterialTranslations translations = VanillaPaxelMaterialTranslations.create(toolKey);
         translations.topLevel().applyToBuilder(builder).push(toolKey);
@@ -27,19 +29,19 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
         // can effectively have zero damage for things like the hoe
         paxelDamage = CachedFloatValue.wrap(config, translations.damage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "PaxelDamage", validateDefaultModifier(materialDefaults.getPaxelDamage()), this::validateDamageModifier));
+              .define(toolKey + "PaxelDamage", validateDefaultModifier(axeAttackDamageBaseline + 1), this::validateDamageModifier));
         paxelAtkSpeed = CachedFloatValue.wrap(config, translations.attackSpeed().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "PaxelAtkSpeed", (double) materialDefaults.getPaxelAtkSpeed()));
+              .define(toolKey + "PaxelAtkSpeed", (double) IPaxelMaterial.super.getPaxelAtkSpeed()));
         paxelEfficiency = CachedFloatValue.wrap(config, translations.efficiency().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "PaxelEfficiency", (double) materialDefaults.getPaxelEfficiency()));
+              .define(toolKey + "PaxelEfficiency", (double) this.vanillaMaterial.speed()));
         paxelEnchantability = CachedIntValue.wrap(config, translations.enchantability().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "PaxelEnchantability", materialDefaults.getPaxelEnchantability(), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "PaxelEnchantability", this.vanillaMaterial.enchantmentValue(), 0, Integer.MAX_VALUE));
         paxelDurability = CachedIntValue.wrap(config, translations.durability().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "PaxelDurability", materialDefaults.getPaxelDurability(), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "PaxelDurability", 2 * this.vanillaMaterial.durability(), 1, Integer.MAX_VALUE));
         builder.pop();
     }
 
@@ -56,7 +58,7 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
             } else {
                 actualValue = (float) val;
             }
-            float baseDamage = getVanillaTier().attackDamageBonus();
+            float baseDamage = toToolMaterial().attackDamageBonus();
             return actualValue >= -baseDamage && actualValue <= Float.MAX_VALUE - baseDamage;
         }
         return false;
@@ -67,16 +69,12 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
             if (validateDamageModifier(defaultModifier)) {
                 return defaultModifier;
             }
-            return (double) -getVanillaTier().attackDamageBonus();
+            return (double) -toToolMaterial().attackDamageBonus();
         };
     }
 
-    public ToolMaterial getVanillaTier() {
-        return fallback.getVanillaTier();
-    }
-
     public String getRegistryPrefix() {
-        return fallback.getRegistryPrefix();
+        return registryPrefix;
     }
 
     @Override
@@ -106,6 +104,6 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
 
     @Override
     public ToolMaterial toToolMaterial() {
-        return getVanillaTier();
+        return vanillaMaterial;
     }
 }

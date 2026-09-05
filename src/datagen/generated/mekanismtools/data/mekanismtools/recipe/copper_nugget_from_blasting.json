@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:blasting",
+  "experience": 0.1,
+  "ingredient": "mekanismtools:copper_paxel",
+  "result": {
+    "id": "minecraft:copper_nugget"
+  }
+}

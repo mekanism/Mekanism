@@ -149,6 +149,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
     private void registerVanillaPaxels() {
         registerVanillaPaxel(ToolsItems.WOOD_PAXEL, ItemIds.WOODEN_AXE, ItemIds.WOODEN_PICKAXE, ItemIds.WOODEN_SHOVEL, null);
         registerVanillaPaxel(ToolsItems.STONE_PAXEL, ItemIds.STONE_AXE, ItemIds.STONE_PICKAXE, ItemIds.STONE_SHOVEL, null);
+        registerVanillaPaxel(ToolsItems.COPPER_PAXEL, ItemIds.COPPER_AXE, ItemIds.COPPER_PICKAXE, ItemIds.COPPER_SHOVEL, ItemIds.COPPER_NUGGET);
         registerVanillaPaxel(ToolsItems.IRON_PAXEL, ItemIds.IRON_AXE, ItemIds.IRON_PICKAXE, ItemIds.IRON_SHOVEL, ItemIds.IRON_NUGGET);
         registerVanillaPaxel(ToolsItems.GOLD_PAXEL, ItemIds.GOLDEN_AXE, ItemIds.GOLDEN_PICKAXE, ItemIds.GOLDEN_SHOVEL, ItemIds.GOLD_NUGGET);
         registerVanillaPaxel(ToolsItems.DIAMOND_PAXEL, ItemIds.DIAMOND_AXE, ItemIds.DIAMOND_PICKAXE, ItemIds.DIAMOND_SHOVEL, null);

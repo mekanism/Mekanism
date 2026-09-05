@@ -22,6 +22,7 @@ import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.component.BlocksAttacks;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 
+//TODO - 26.2: Add a spear for each of our types??
 public record ToolCollection(ItemRegistryObject<AxeItem> axe, ItemRegistryObject<HoeItem> hoe, ItemRegistryObject<ItemMekanismPaxel> paxel,
                              ItemRegistryObject<Item> pickaxe, ItemRegistryObject<ShieldItem> shield, ItemRegistryObject<ShovelItem> shovel,
                              ItemRegistryObject<Item> sword) {

@@ -21,9 +21,9 @@ public class ToolsItems {
 
     public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismTools.MODID);
 
-    //TODO - 26.2: Add a copper paxel now that vanilla has tools for copper
     public static final ItemRegistryObject<ItemMekanismPaxel> WOOD_PAXEL = registerPaxel(MekanismToolsConfig.materials.wood);
     public static final ItemRegistryObject<ItemMekanismPaxel> STONE_PAXEL = registerPaxel(MekanismToolsConfig.materials.stone);
+    public static final ItemRegistryObject<ItemMekanismPaxel> COPPER_PAXEL = registerPaxel(MekanismToolsConfig.materials.copper);
     public static final ItemRegistryObject<ItemMekanismPaxel> IRON_PAXEL = registerPaxel(MekanismToolsConfig.materials.iron);
     public static final ItemRegistryObject<ItemMekanismPaxel> GOLD_PAXEL = registerPaxel(MekanismToolsConfig.materials.gold);
     public static final ItemRegistryObject<ItemMekanismPaxel> DIAMOND_PAXEL = registerPaxel(MekanismToolsConfig.materials.diamond);
@@ -49,7 +49,7 @@ public class ToolsItems {
 
     private static ItemRegistryObject<ItemMekanismPaxel> registerPaxel(VanillaPaxelMaterialCreator material) {
         return ITEMS.registerItem(material.getRegistryPrefix() + "_paxel", properties -> {
-            if (material.getVanillaTier() == ToolMaterial.NETHERITE) {
+            if (material.toToolMaterial() == ToolMaterial.NETHERITE) {
                 properties.fireResistant();
             }
             return new ItemMekanismPaxel(material, properties.component(ToolsDataComponents.DISPLAY_HP, Unit.INSTANCE));
@@ -65,6 +65,6 @@ public class ToolsItems {
     }
 
     public static Stream<ItemRegistryObject<ItemMekanismPaxel>> vanillaPaxels() {
-        return Stream.of(WOOD_PAXEL, STONE_PAXEL, IRON_PAXEL, GOLD_PAXEL, DIAMOND_PAXEL, NETHERITE_PAXEL);
+        return Stream.of(WOOD_PAXEL, STONE_PAXEL, COPPER_PAXEL, IRON_PAXEL, GOLD_PAXEL, DIAMOND_PAXEL, NETHERITE_PAXEL);
     }
 }

@@ -45,6 +45,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
         //Vanilla paxels
         addConfigs(MekanismToolsConfig.materials.wood);
         addConfigs(MekanismToolsConfig.materials.stone);
+        addConfigs(MekanismToolsConfig.materials.copper);
         addConfigs(MekanismToolsConfig.materials.iron);
         addConfigs(MekanismToolsConfig.materials.diamond);
         addConfigs(MekanismToolsConfig.materials.gold);
@@ -75,6 +76,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
         //Vanilla Paxels
         add(ToolsItems.WOOD_PAXEL, "Wood Paxel");
         add(ToolsItems.STONE_PAXEL, "Stone Paxel");
+        add(ToolsItems.COPPER_PAXEL, "Copper Paxel");
         add(ToolsItems.IRON_PAXEL, "Iron Paxel");
         add(ToolsItems.GOLD_PAXEL, "Gold Paxel");
         add(ToolsItems.DIAMOND_PAXEL, "Diamond Paxel");

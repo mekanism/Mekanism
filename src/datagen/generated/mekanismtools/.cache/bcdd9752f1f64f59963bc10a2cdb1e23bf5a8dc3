@@ -1,4 +1,4 @@
-// 26.2	2026-06-27T14:53:30.4556488	Model Definitions - mekanismtools
+// 26.2	2026-09-05T16:43:24.2415954	Model Definitions - mekanismtools
 d66c6ffc3fb2cbd0674fa554b97c8755badb92d0 assets/mekanismtools/items/bronze_axe.json
 287f228afc86b9c1224df3a918d6a52050e2cacc assets/mekanismtools/items/bronze_boots.json
 e20d371012b62203af4d374028bed9ba13201cca assets/mekanismtools/items/bronze_chestplate.json
@@ -10,6 +10,7 @@ d03d351a8c30945263ebba588d1f3c043cd01ade assets/mekanismtools/items/bronze_paxel
 7ef0eca995db800d605c257c1b8d631a82da465e assets/mekanismtools/items/bronze_shield.json
 4e39af527cd7095ed98ab10266975b4680577463 assets/mekanismtools/items/bronze_shovel.json
 f497973154b2ddcc827dbde9f8dd80c57165cd93 assets/mekanismtools/items/bronze_sword.json
+53babbee52224ea1602b16618d06328515368e50 assets/mekanismtools/items/copper_paxel.json
 e2d2ac9e3aad7b332a7c33fafa0fcf22217013c3 assets/mekanismtools/items/diamond_paxel.json
 beae338fea6b9103cd92f52d30ffbe8ba2521c25 assets/mekanismtools/items/gold_paxel.json
 602e88024fbc7abd1b4b3ac0f6ef27900592bbaf assets/mekanismtools/items/iron_paxel.json
@@ -127,6 +128,7 @@ db52f8d0e4135b05791833e5b0f035122b376929 assets/mekanismtools/models/item/bronze
 cf86f2dab8929adec5e37816f14c43f036aa824e assets/mekanismtools/models/item/bronze_shield_blocking.json
 a16fd57c265bc9e8febfd30ad524ebb69a7f8f32 assets/mekanismtools/models/item/bronze_shovel.json
 f87d34d22ea0072c58cbbac93a9a488ad5a709ea assets/mekanismtools/models/item/bronze_sword.json
+fa167f45516245e73edf3c17e7be6fc5fdf6581f assets/mekanismtools/models/item/copper_paxel.json
 18fd5bce439b8699a3e36a46567e02342808457f assets/mekanismtools/models/item/diamond_paxel.json
 782562565590cb809f91b143b4f7bc54faedbbb4 assets/mekanismtools/models/item/gold_paxel.json
 f7183a919c2602cedcb577684150eb0e33fc931c assets/mekanismtools/models/item/iron_paxel.json
