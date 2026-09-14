@@ -1,5 +1,6 @@
 package mekanism.tools.common.material;
 
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.common.config.IMekanismConfig;
@@ -9,15 +10,10 @@ import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.config.ToolsConfigTranslations.MaterialTranslations;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.EquipmentAsset;
@@ -450,20 +446,16 @@ public class MaterialCreator implements BaseMekanismMaterial {
         return equipmentAsset;
     }
 
-    /// copied and adapted from [ArmorMaterial#createAttributes(ArmorType)]
-    public ItemAttributeModifiers createAttributes(ArmorType type) {
-        int defense = getDefense(type);
-        ItemAttributeModifiers.Builder modifiers = ItemAttributeModifiers.builder();
-        EquipmentSlotGroup slotGroup = EquipmentSlotGroup.bySlot(type.getSlot());
-        Identifier modifierId = Identifier.withDefaultNamespace("armor." + type.getName());
-        modifiers.add(Attributes.ARMOR, new AttributeModifier(modifierId, defense, AttributeModifier.Operation.ADD_VALUE), slotGroup);
-        modifiers.add(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifierId, this.toughness(), AttributeModifier.Operation.ADD_VALUE), slotGroup);
-        if (knockbackResistance() > 0.0F) {
-            modifiers.add(
-                  Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(modifierId, this.knockbackResistance(), AttributeModifier.Operation.ADD_VALUE), slotGroup
-            );
-        }
-
-        return modifiers.build();
+    public ArmorMaterial toArmorMaterial(ArmorType type) {
+        return new ArmorMaterial(
+              getDurabilityForType(type),
+              Map.of(type, getDefense(type)),
+              getArmorEnchantmentValue(),
+              equipSound(),
+              toughness(),
+              knockbackResistance(),
+              getRepairItems(),
+              equipmentAsset()
+        );
     }
 }

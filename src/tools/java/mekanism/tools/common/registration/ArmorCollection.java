@@ -8,14 +8,10 @@ import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.registries.ToolsItems;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.equipment.ArmorType;
-import net.minecraft.world.item.equipment.Equippable;
 
-public record ArmorCollection(ItemRegistryObject<Item> helmet, ItemRegistryObject<Item> chestplate,
-                              ItemRegistryObject<Item> leggings, ItemRegistryObject<Item> boots) {
+public record ArmorCollection(ItemRegistryObject<Item> helmet, ItemRegistryObject<Item> chestplate, ItemRegistryObject<Item> leggings, ItemRegistryObject<Item> boots) {
 
     public static ArmorCollection create(ItemDeferredRegister registry, MaterialCreator material) {
         return new ArmorCollection(
@@ -27,23 +23,10 @@ public record ArmorCollection(ItemRegistryObject<Item> helmet, ItemRegistryObjec
     }
 
     private static ItemRegistryObject<Item> registerArmor(ItemDeferredRegister registry, MaterialCreator material, ArmorType armorType) {
-        return registry.registerSimple(material.getRegistryPrefix() + "_" + armorType.getName(), properties -> applyArmorProps(properties, material, armorType));
-    }
-
-    /// Copied and adapted from [Item.Properties#humanoidArmor]
-    private static Properties applyArmorProps(Properties properties, MaterialCreator material, ArmorType armorType) {
-        //TODO - 26.2: Can we call humanoidArmor and just create a per armor type ArmorMaterial that we pass?
-        return ToolsItems.setCommonProperties(properties, material)
-              .durability(material.getDurabilityForType(armorType))
-              .attributes(material.createAttributes(armorType))
-              .enchantable(material.getArmorEnchantmentValue())
-              .component(
-                    DataComponents.EQUIPPABLE, Equippable.builder(armorType.getSlot())
-                          .setEquipSound(material.equipSound())
-                          .setAsset(material.equipmentAsset())
-                          .build()
-              )
-              .repairable(material.getRepairItems());
+        return registry.registerSimple(material.getRegistryPrefix() + "_" + armorType.getName(), properties ->
+              ToolsItems.setCommonProperties(properties, material)
+                    .humanoidArmor(material.toArmorMaterial(armorType), armorType)
+        );
     }
 
     public List<ItemRegistryObject<Item>> asList() {
