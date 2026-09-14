@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/spear_in_hand",
+  "textures": {
+    "layer0": "mekanismtools:item/refined_obsidian/spear_in_hand"
+  }
+}

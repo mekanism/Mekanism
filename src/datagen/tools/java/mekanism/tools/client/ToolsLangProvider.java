@@ -110,13 +110,15 @@ public class ToolsLangProvider extends BaseLanguageProvider {
         add(armor.chestplate(), type + " Chestplate");
         add(armor.leggings(), type + " Leggings");
         add(armor.boots(), type + " Boots");
-        add(tools.sword(), type + " Sword");
-        add(tools.pickaxe(), type + " Pickaxe");
+
         add(tools.axe(), type + " Axe");
-        add(tools.shovel(), type + " Shovel");
         add(tools.hoe(), type + " Hoe");
         add(tools.paxel(), type + " Paxel");
+        add(tools.pickaxe(), type + " Pickaxe");
         addShield(tools.shield(), type + " Shield");
+        add(tools.shovel(), type + " Shovel");
+        add(tools.sword(), type + " Sword");
+        add(tools.spear(), type + " Spear");
     }
 
     private void addShield(IHasTranslationKey shield, String name) {

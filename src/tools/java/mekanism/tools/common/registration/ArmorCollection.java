@@ -27,17 +27,16 @@ public record ArmorCollection(ItemRegistryObject<Item> helmet, ItemRegistryObjec
     }
 
     private static ItemRegistryObject<Item> registerArmor(ItemDeferredRegister registry, MaterialCreator material, ArmorType armorType) {
-        return registry.registerItem(material.getRegistryPrefix() + "_" + armorType.getName(), properties -> new Item(
-              applyArmorProps(properties, material, armorType)
-        ));
+        return registry.registerSimple(material.getRegistryPrefix() + "_" + armorType.getName(), properties -> applyArmorProps(properties, material, armorType));
     }
 
     /// Copied and adapted from [Item.Properties#humanoidArmor]
     private static Properties applyArmorProps(Properties properties, MaterialCreator material, ArmorType armorType) {
+        //TODO - 26.2: Can we call humanoidArmor and just create a per armor type ArmorMaterial that we pass?
         return ToolsItems.setCommonProperties(properties, material)
               .durability(material.getDurabilityForType(armorType))
               .attributes(material.createAttributes(armorType))
-              .enchantable(material.getEnchantmentValue())
+              .enchantable(material.getArmorEnchantmentValue())
               .component(
                     DataComponents.EQUIPPABLE, Equippable.builder(armorType.getSlot())
                           .setEquipSound(material.equipSound())

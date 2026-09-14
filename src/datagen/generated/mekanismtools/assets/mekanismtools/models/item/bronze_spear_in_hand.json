@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/spear_in_hand",
+  "textures": {
+    "layer0": "mekanismtools:item/bronze/spear_in_hand"
+  }
+}

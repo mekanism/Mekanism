@@ -25,6 +25,7 @@ public class ToolsTagProvider extends BaseTagProvider {
         ToolsItems.REFINED_GLOWSTONE_ARMOR.forEach(piglinLoved::add);
         ToolsItems.REFINED_GLOWSTONE_TOOLS.forEach(piglinLoved::add);
         ToolsItems.REFINED_GLOWSTONE_ARMOR.forEach(getBuilder(ItemTags.PIGLIN_SAFE_ARMOR)::add);
+        getBuilder(ItemTags.PIGLIN_PREFERRED_WEAPONS).add(ToolsItems.REFINED_GLOWSTONE_TOOLS.spear());
         //Make refined glowstone armor make you immune to freezing because of the light it gives off
         ToolsItems.REFINED_GLOWSTONE_ARMOR.forEach(getBuilder(ItemTags.FREEZE_IMMUNE_WEARABLES)::add);
         getBuilder(ToolsTags.Blocks.MINEABLE_WITH_PAXEL).add(
@@ -50,13 +51,14 @@ public class ToolsTagProvider extends BaseTagProvider {
         for (MaterialType material : MaterialType.VALUES) {
             clusterMaxHarvestables.add(material.tools.pickaxe(), material.tools.paxel());
             miningTools.add(material.tools.pickaxe(), material.tools.paxel());
-            meleeWeapons.add(material.tools.sword(), material.tools.axe(), material.tools.paxel());
+            meleeWeapons.add(material.tools.sword(), material.tools.axe(), material.tools.paxel(), material.tools.spear());
         }
     }
 
     private void addToolTags() {
         addPaxels();
         addSwords();
+        addSpears();
         addAxes();
         addPickaxes();
         addShovels();
@@ -93,6 +95,13 @@ public class ToolsTagProvider extends BaseTagProvider {
         MekanismTagBuilder<Item> builder = getBuilder(ItemTags.SWORDS);
         for (MaterialType material : MaterialType.VALUES) {
             builder.add(material.tools.sword());
+        }
+    }
+
+    private void addSpears() {
+        MekanismTagBuilder<Item> builder = getBuilder(ItemTags.SPEARS);
+        for (MaterialType material : MaterialType.VALUES) {
+            builder.add(material.tools.spear());
         }
     }
 

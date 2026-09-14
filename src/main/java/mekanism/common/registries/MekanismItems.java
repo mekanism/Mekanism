@@ -150,7 +150,7 @@ public class MekanismItems {
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.MEKASUIT, MekanismConfig.gear);
 
     public static final ItemRegistryObject<Item> MODULE_BASE = ITEMS.register("module_base");
-    public static final ItemRegistryObject<Item> MODULE = ITEMS.registerItem("module", Item::new);
+    public static final ItemRegistryObject<Item> MODULE = ITEMS.register("module");
     public static final ItemRegistryObject<ItemUpgrade> UPGRADE = ITEMS.registerItem("upgrade", ItemUpgrade::new);
 
     public static final ItemRegistryObject<ItemTierInstaller> BASIC_TIER_INSTALLER = registerInstaller(null, BaseTier.BASIC);
@@ -267,7 +267,7 @@ public class MekanismItems {
                 .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackCapacity, chemical -> chemical.is(ChemicalIds.HYDROGEN))
                 .build(), MekanismConfig.gear
           );
-    public static final ItemRegistryObject<Item> HDPE_REINFORCED_ELYTRA = ITEMS.registerItem("hdpe_elytra", props -> new Item(props
+    public static final ItemRegistryObject<Item> HDPE_REINFORCED_ELYTRA = ITEMS.registerSimple("hdpe_elytra", props -> props
           .durability(648)
           .rarity(Rarity.EPIC)
           .component(DataComponents.GLIDER, Unit.INSTANCE)
@@ -279,7 +279,7 @@ public class MekanismItems {
                       .setDamageOnHurt(false)
                       .build()
           )
-          .repairable(HDPE_SHEET.value())));
+          .repairable(HDPE_SHEET.value()));
 
     static {
         for (ResourceType type : EnumUtils.RESOURCE_TYPES) {

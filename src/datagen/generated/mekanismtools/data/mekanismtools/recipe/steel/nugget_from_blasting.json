@@ -12,7 +12,8 @@
     "mekanismtools:steel_pickaxe",
     "mekanismtools:steel_shield",
     "mekanismtools:steel_shovel",
-    "mekanismtools:steel_sword"
+    "mekanismtools:steel_sword",
+    "mekanismtools:steel_spear"
   ],
   "result": {
     "id": "mekanism:nugget_steel"

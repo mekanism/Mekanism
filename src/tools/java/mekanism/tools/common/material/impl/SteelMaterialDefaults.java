@@ -94,7 +94,37 @@ public class SteelMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float knockbackResistance() {
-        return 0;
+    public float getSpearAttackDuration() {
+        return 1.05F;
+    }
+
+    @Override
+    public float getSpearDamageMultiplier() {
+        return 1.075F;
+    }
+
+    @Override
+    public float getSpearDelay() {
+        return 0.55F;
+    }
+
+    @Override
+    public float getSpearDismountTime() {
+        return 2.75F;
+    }
+
+    @Override
+    public float getSpearDismountThreshold() {
+        return 10.5F;
+    }
+
+    @Override
+    public float getSpearKnockbackTime() {
+        return 6.5F;
+    }
+
+    @Override
+    public float getSpearDamageTime() {
+        return 10.5F;
     }
 }

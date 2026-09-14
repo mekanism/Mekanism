@@ -100,4 +100,39 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     public float knockbackResistance() {
         return 0.1F;
     }
+
+    @Override
+    public float getSpearAttackDuration() {
+        return 1.15F;
+    }
+
+    @Override
+    public float getSpearDamageMultiplier() {
+        return 1.2F;
+    }
+
+    @Override
+    public float getSpearDelay() {
+        return 0.7F;
+    }
+
+    @Override
+    public float getSpearDismountTime() {
+        return 2.5F;
+    }
+
+    @Override
+    public float getSpearDismountThreshold() {
+        return 8.25F;
+    }
+
+    @Override
+    public float getSpearKnockbackTime() {
+        return 5.5F;
+    }
+
+    @Override
+    public float getSpearDamageTime() {
+        return 8.5F;
+    }
 }

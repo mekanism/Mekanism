@@ -38,6 +38,7 @@ public class ToolsCreativeTabs {
             for (MaterialType material : MaterialType.VALUES) {
                 material.armor.forEach(armor -> CreativeTabDeferredRegister.addToDisplay(event, armor));
                 CreativeTabDeferredRegister.addToDisplay(event, material.tools.sword());
+                CreativeTabDeferredRegister.addToDisplay(event, material.tools.spear());
                 CreativeTabDeferredRegister.addToDisplay(event, material.tools.shield());
             }
         }

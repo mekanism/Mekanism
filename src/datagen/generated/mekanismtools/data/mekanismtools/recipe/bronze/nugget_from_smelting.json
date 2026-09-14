@@ -12,7 +12,8 @@
     "mekanismtools:bronze_pickaxe",
     "mekanismtools:bronze_shield",
     "mekanismtools:bronze_shovel",
-    "mekanismtools:bronze_sword"
+    "mekanismtools:bronze_sword",
+    "mekanismtools:bronze_spear"
   ],
   "result": {
     "id": "mekanism:nugget_bronze"

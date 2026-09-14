@@ -49,6 +49,11 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
+    public int getArmorEnchantmentValue() {
+        return getEnchantmentValue() + 3;
+    }
+
+    @Override
     public float toughness() {
         return 0;
     }
@@ -94,7 +99,37 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float knockbackResistance() {
-        return 0;
+    public float getSpearAttackDuration() {
+        return 0.8F;
+    }
+
+    @Override
+    public float getSpearDamageMultiplier() {
+        return 0.82F;
+    }
+
+    @Override
+    public float getSpearDelay() {
+        return 0.65F;
+    }
+
+    @Override
+    public float getSpearDismountTime() {
+        return 4;
+    }
+
+    @Override
+    public float getSpearDismountThreshold() {
+        return 13;
+    }
+
+    @Override
+    public float getSpearKnockbackTime() {
+        return 8.75F;
+    }
+
+    @Override
+    public float getSpearDamageTime() {
+        return 13.25F;
     }
 }

@@ -83,6 +83,28 @@ public interface BaseMekanismMaterial extends IPaxelMaterial {
         return getEnchantmentValue();
     }
 
+    float getSpearAttackDuration();
+
+    float getSpearDamageMultiplier();
+
+    float getSpearDelay();
+
+    float getSpearDismountTime();
+
+    float getSpearDismountThreshold();
+
+    float getSpearKnockbackTime();
+
+    default float getSpearKnockbackThreshold() {
+        return 5.1F;
+    }
+
+    float getSpearDamageTime();
+
+    default float getSpearDamageThreshold() {
+        return 4.6F;
+    }
+
     String getRegistryPrefix();
 
     default boolean burnsInFire() {
@@ -92,7 +114,13 @@ public interface BaseMekanismMaterial extends IPaxelMaterial {
     //Armor material related helpers
     float toughness();
 
-    float knockbackResistance();
+    default float knockbackResistance() {
+        return 0;
+    }
+
+    default int getArmorEnchantmentValue() {
+        return getEnchantmentValue() - 5;
+    }
 
     Holder<SoundEvent> equipSound();
 

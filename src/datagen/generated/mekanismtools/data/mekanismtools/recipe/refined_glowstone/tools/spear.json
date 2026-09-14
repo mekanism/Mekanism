@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": "#c:ingots/refined_glowstone",
+    "R": "#c:rods/wooden"
+  },
+  "pattern": [
+    "  I",
+    " R ",
+    "R  "
+  ],
+  "result": {
+    "id": "mekanismtools:refined_glowstone_spear"
+  }
+}

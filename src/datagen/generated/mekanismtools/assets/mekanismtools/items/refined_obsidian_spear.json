@@ -1,0 +1,25 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanismtools:item/refined_obsidian_spear"
+        },
+        "when": [
+          "gui",
+          "ground",
+          "fixed",
+          "on_shelf"
+        ]
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mekanismtools:item/refined_obsidian_spear_in_hand"
+    },
+    "property": "minecraft:display_context"
+  },
+  "swap_animation_scale": 1.95
+}

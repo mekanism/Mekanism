@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": "#c:ingots/steel",
+    "R": "#c:ingots/iron"
+  },
+  "pattern": [
+    "  I",
+    " R ",
+    "R  "
+  ],
+  "result": {
+    "id": "mekanismtools:steel_spear"
+  }
+}

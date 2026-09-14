@@ -7,6 +7,7 @@ import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.config.ToolsConfigTranslations.MaterialTranslations;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -29,6 +30,10 @@ public class MaterialCreator implements BaseMekanismMaterial {
     private final BaseMekanismMaterial fallBack;
     private final ResourceKey<EquipmentAsset> equipmentAsset;
 
+    private final CachedIntValue toolDurability;
+    private final CachedFloatValue efficiency;
+    private final CachedFloatValue attackDamage;
+    private final CachedIntValue enchantability;
     private final CachedIntValue shieldDurability;
     private final CachedFloatValue swordDamage;
     private final CachedFloatValue swordAtkSpeed;
@@ -45,12 +50,18 @@ public class MaterialCreator implements BaseMekanismMaterial {
     private final CachedFloatValue paxelEfficiency;
     private final CachedIntValue paxelEnchantability;
     private final CachedIntValue paxelDurability;
-    private final CachedIntValue toolDurability;
-    private final CachedFloatValue efficiency;
-    private final CachedFloatValue attackDamage;
-    private final CachedIntValue enchantability;
+    private final CachedFloatValue spearAttackDuration;
+    private final CachedFloatValue spearDamageMultiplier;
+    private final CachedFloatValue spearDelay;
+    private final CachedFloatValue spearDismountTime;
+    private final CachedFloatValue spearDismountThreshold;
+    private final CachedFloatValue spearKnockbackTime;
+    private final CachedFloatValue spearKnockbackThreshold;
+    private final CachedFloatValue spearDamageTime;
+    private final CachedFloatValue spearDamageThreshold;
     private final CachedFloatValue toughness;
     private final CachedFloatValue knockbackResistance;
+    private final CachedIntValue armorEnchantability;
     private final CachedIntValue bootDurability;
     private final CachedIntValue leggingDurability;
     private final CachedIntValue chestplateDurability;
@@ -129,12 +140,46 @@ public class MaterialCreator implements BaseMekanismMaterial {
         paxelDurability = CachedIntValue.wrap(config, translations.paxelDurability().applyToBuilder(builder)
               .gameRestart()
               .defineInRange(toolKey + "PaxelDurability", materialDefaults.getPaxelDurability(), 1, Integer.MAX_VALUE));
+
+        Predicate<Object> ticksValidator = this::validateTicks;
+        spearAttackDuration = CachedFloatValue.wrap(config, translations.spearAttackDuration().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "SpearAttackDuration", (double) materialDefaults.getSpearAttackDuration(),
+                    value -> value instanceof Double && (int) (getActualValue((double) value) * SharedConstants.TICKS_PER_SECOND) > 0));
+        spearDamageMultiplier = CachedFloatValue.wrap(config, translations.spearDamageMultiplier().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "SpearDamageMultiplier", (double) materialDefaults.getSpearDamageMultiplier()));
+        spearDelay = CachedFloatValue.wrap(config, translations.spearDelay().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "SpearDelay", (double) materialDefaults.getSpearDelay(), ticksValidator));
+        spearDismountTime = CachedFloatValue.wrap(config, translations.spearDismountTime().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "SpearDismountTime", (double) materialDefaults.getSpearDismountTime(), ticksValidator));
+        spearDismountThreshold = CachedFloatValue.wrap(config, translations.spearDismountThreshold().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "SpearDismountThreshold", (double) materialDefaults.getSpearDismountThreshold()));
+        spearKnockbackTime = CachedFloatValue.wrap(config, translations.spearKnockbackTime().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "SpearKnockbackTime", (double) materialDefaults.getSpearKnockbackTime(), ticksValidator));
+        spearKnockbackThreshold = CachedFloatValue.wrap(config, translations.spearKnockbackThreshold().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "SpearKnockbackThreshold", (double) materialDefaults.getSpearKnockbackThreshold()));
+        spearDamageTime = CachedFloatValue.wrap(config, translations.spearDamageTime().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "SpearDamageTime", (double) materialDefaults.getSpearDamageTime(), ticksValidator));
+        spearDamageThreshold = CachedFloatValue.wrap(config, translations.spearDamageThreshold().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "SpearDamageThreshold", (double) materialDefaults.getSpearDamageThreshold()));
+
         toughness = CachedFloatValue.wrap(config, translations.toughness().applyToBuilder(builder)
               .gameRestart()
               .defineInRange(toolKey + "Toughness", materialDefaults.toughness(), 0, Float.MAX_VALUE));
         knockbackResistance = CachedFloatValue.wrap(config, translations.knockbackResistance().applyToBuilder(builder)
               .gameRestart()
               .defineInRange(toolKey + "KnockbackResistance", materialDefaults.knockbackResistance(), 0, Float.MAX_VALUE));
+        armorEnchantability = CachedIntValue.wrap(config, translations.armorEnchantability().applyToBuilder(builder)
+              .gameRestart()
+              .defineInRange(toolKey + "ArmorEnchantability", materialDefaults.getArmorEnchantmentValue(), 0, Integer.MAX_VALUE));
         bootDurability = CachedIntValue.wrap(config, translations.bootDurability().applyToBuilder(builder)
               .gameRestart()
               .defineInRange(toolKey + "BootDurability", materialDefaults.getDurabilityForType(ArmorType.BOOTS), 1, Integer.MAX_VALUE));
@@ -162,19 +207,20 @@ public class MaterialCreator implements BaseMekanismMaterial {
         builder.pop();
     }
 
+    private float getActualValue(double val) {
+        if (val > Float.MAX_VALUE) {
+            return Float.MAX_VALUE;
+        } else if (val < -Float.MAX_VALUE) {
+            //Note: Float.MIN_VALUE is the smallest positive value a float can represent
+            // the smallest value a float can represent overall is -Float.MAX_VALUE
+            return -Float.MAX_VALUE;
+        }
+        return (float) val;
+    }
+
     private boolean validateDamageModifier(Object value) {
         if (value instanceof Double) {
-            double val = (double) value;
-            float actualValue;
-            if (val > Float.MAX_VALUE) {
-                actualValue = Float.MAX_VALUE;
-            } else if (val < -Float.MAX_VALUE) {
-                //Note: Float.MIN_VALUE is the smallest positive value a float can represent
-                // the smallest value a float can represent overall is -Float.MAX_VALUE
-                actualValue = -Float.MAX_VALUE;
-            } else {
-                actualValue = (float) val;
-            }
+            float actualValue = getActualValue((double) value);
             float baseDamage = attackDamage.getOrDefault();
             return actualValue >= -baseDamage && actualValue <= Float.MAX_VALUE - baseDamage;
         }
@@ -188,6 +234,10 @@ public class MaterialCreator implements BaseMekanismMaterial {
             }
             return (double) -attackDamage.getOrDefault();
         };
+    }
+
+    private boolean validateTicks(Object value) {
+        return value instanceof Double && getActualValue((double) value) >= 0;
     }
 
     @Override
@@ -266,6 +316,51 @@ public class MaterialCreator implements BaseMekanismMaterial {
     }
 
     @Override
+    public float getSpearAttackDuration() {
+        return spearAttackDuration.get();
+    }
+
+    @Override
+    public float getSpearDamageMultiplier() {
+        return spearDamageMultiplier.get();
+    }
+
+    @Override
+    public float getSpearDelay() {
+        return spearDelay.get();
+    }
+
+    @Override
+    public float getSpearDismountTime() {
+        return spearDismountTime.get();
+    }
+
+    @Override
+    public float getSpearDismountThreshold() {
+        return spearDismountThreshold.get();
+    }
+
+    @Override
+    public float getSpearKnockbackTime() {
+        return spearKnockbackTime.get();
+    }
+
+    @Override
+    public float getSpearKnockbackThreshold() {
+        return spearKnockbackThreshold.get();
+    }
+
+    @Override
+    public float getSpearDamageTime() {
+        return spearDamageTime.get();
+    }
+
+    @Override
+    public float getSpearDamageThreshold() {
+        return spearDamageThreshold.get();
+    }
+
+    @Override
     public int getDurability() {
         return toolDurability.get();
     }
@@ -319,6 +414,11 @@ public class MaterialCreator implements BaseMekanismMaterial {
     @Override
     public float toughness() {
         return toughness.get();
+    }
+
+    @Override
+    public int getArmorEnchantmentValue() {
+        return armorEnchantability.get();
     }
 
     @Override

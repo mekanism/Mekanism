@@ -18,6 +18,7 @@ import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.renderer.item.ClientItem;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.SelectItemModel;
 import net.minecraft.client.renderer.item.properties.select.TrimMaterialProperty;
@@ -29,7 +30,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
 
@@ -50,12 +50,15 @@ public class ToolsModelProvider extends BaseModelProvider {
         addShieldModel(itemModels, MaterialType.STEEL, Mekanism.rl("block/block_steel"));
         //Armor items are generated textures, all other tools module items are handheld
         for (MaterialType material : MaterialType.VALUES) {
-            material.tools.forEach(tool -> {
-                //Skip shields, we manually handle them above
-                if (!(tool.value() instanceof ShieldItem)) {
-                    handheld(itemModels, tool, getTexture(tool));
-                }
-            });
+            //Skip shields, we manually handle them above
+            handheld(itemModels, material.tools.axe());
+            handheld(itemModels, material.tools.hoe());
+            handheld(itemModels, material.tools.paxel());
+            handheld(itemModels, material.tools.pickaxe());
+            handheld(itemModels, material.tools.shovel());
+            handheld(itemModels, material.tools.sword());
+            spear(itemModels, material.tools.spear());
+
             ResourceKey<EquipmentAsset> armorAssetId = material.material.equipmentAsset();
             generateTrimmableItem(itemModels, material.armor.helmet(), armorAssetId, ItemModelGenerators.TRIM_PREFIX_HELMET);
             generateTrimmableItem(itemModels, material.armor.chestplate(), armorAssetId, ItemModelGenerators.TRIM_PREFIX_CHESTPLATE);
@@ -72,6 +75,10 @@ public class ToolsModelProvider extends BaseModelProvider {
         return new Material(modLocation("item/" + name.substring(0, index) + '/' + name.substring(index + 1)));
     }
 
+    private void handheld(ItemModelGenerators itemModels, ItemRegistryObject<?> holder) {
+        handheld(itemModels, holder, getTexture(holder));
+    }
+
     private void handheld(ItemModelGenerators itemModels, Holder<Item> holder, Material texture) {
         Item item = holder.value();
         Identifier itemModel = ModelTemplates.FLAT_HANDHELD_ITEM.create(
@@ -80,6 +87,18 @@ public class ToolsModelProvider extends BaseModelProvider {
               itemModels.modelOutput
         );
         itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(itemModel));
+    }
+
+    /// Inlined and adapted from [net.minecraft.client.data.models.ItemModelGenerators#generateSpear], to take in custom base item texture
+    private void spear(ItemModelGenerators itemModels, ItemRegistryObject<?> spear) {
+        Material itemTexture = getTexture(spear);
+        Item item = spear.value();
+        Identifier modelLocation = ModelLocationUtils.getModelLocation(item);
+        ItemModel.Unbaked flatModel = ItemModelUtils.plainModel(ModelTemplates.FLAT_ITEM.create(modelLocation, TextureMapping.layer0(itemTexture), itemModels.modelOutput));
+        ItemModel.Unbaked inHandModel = ItemModelUtils.plainModel(
+              ModelTemplates.SPEAR_IN_HAND.create(item, TextureMapping.layer0(new Material(itemTexture.sprite().withSuffix("_in_hand"))), itemModels.modelOutput)
+        );
+        itemModels.itemModelOutput.accept(item, ItemModelGenerators.createFlatModelDispatch(flatModel, inHandModel), new ClientItem.Properties(true, false, 1.95F));
     }
 
     /// Inlined and adapted from [net.minecraft.client.data.models.ItemModelGenerators#generateTrimmableItem], to take in custom base item texture

@@ -80,6 +80,10 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY));
     private static final RecipePattern SHOVEL = RecipePattern.createPattern(Pattern.INGOT, ROD_CHAR, ROD_CHAR);
     private static final RecipePattern SWORD = RecipePattern.createPattern(Pattern.INGOT, Pattern.INGOT, ROD_CHAR);
+    private static final RecipePattern SPEAR = RecipePattern.createPattern(
+          TripleLine.of(Pattern.EMPTY, Pattern.EMPTY, Pattern.INGOT),
+          TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY),
+          TripleLine.of(ROD_CHAR, Pattern.EMPTY, Pattern.EMPTY));
     private static final RecipePattern PAXEL = RecipePattern.createPattern(
           TripleLine.of(AXE_CHAR, PICKAXE_CHAR, SHOVEL_CHAR),
           TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY),
@@ -124,6 +128,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         )).save(output, name + "/shield_decoration");
         String baseToolsPath = name + "/tools/";
         tool(SWORD, tools.sword(), ingot, rod).category(RecipeCategory.COMBAT).save(output, MekanismTools.rl(baseToolsPath + "sword"));
+        tool(SPEAR, tools.spear(), ingot, rod).category(RecipeCategory.COMBAT).save(output, MekanismTools.rl(baseToolsPath + "spear"));
         tool(PICKAXE, tools.pickaxe(), ingot, rod).category(RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "pickaxe"));
         tool(AXE, tools.axe(), ingot, rod).category(RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "axe"));
         tool(SHOVEL, tools.shovel(), ingot, rod).category(RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "shovel"));

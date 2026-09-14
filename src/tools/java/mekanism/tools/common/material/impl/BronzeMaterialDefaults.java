@@ -95,7 +95,37 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float knockbackResistance() {
-        return 0;
+    public float getSpearAttackDuration() {
+        return 0.9F;
+    }
+
+    @Override
+    public float getSpearDamageMultiplier() {
+        return 0.88F;
+    }
+
+    @Override
+    public float getSpearDelay() {
+        return 0.65F;
+    }
+
+    @Override
+    public float getSpearDismountTime() {
+        return 3.25F;
+    }
+
+    @Override
+    public float getSpearDismountThreshold() {
+        return 11.5F;
+    }
+
+    @Override
+    public float getSpearKnockbackTime() {
+        return 7.5F;
+    }
+
+    @Override
+    public float getSpearDamageTime() {
+        return 11.75F;
     }
 }

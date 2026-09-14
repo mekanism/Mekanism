@@ -103,4 +103,39 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
     public float knockbackResistance() {
         return 0.2F;
     }
+
+    @Override
+    public float getSpearAttackDuration() {
+        return 1.55F;
+    }
+
+    @Override
+    public float getSpearDamageMultiplier() {
+        return 1.7F;
+    }
+
+    @Override
+    public float getSpearDelay() {
+        return 0.2F;
+    }
+
+    @Override
+    public float getSpearDismountTime() {
+        return 1.5F;
+    }
+
+    @Override
+    public float getSpearDismountThreshold() {
+        return 5;
+    }
+
+    @Override
+    public float getSpearKnockbackTime() {
+        return 2.75F;
+    }
+
+    @Override
+    public float getSpearDamageTime() {
+        return 3.75F;
+    }
 }

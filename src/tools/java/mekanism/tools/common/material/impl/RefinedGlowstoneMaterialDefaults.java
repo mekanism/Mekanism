@@ -49,6 +49,11 @@ public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
+    public int getArmorEnchantmentValue() {
+        return getEnchantmentValue() + 3;
+    }
+
+    @Override
     public float toughness() {
         return 0;
     }
@@ -94,7 +99,37 @@ public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float knockbackResistance() {
-        return 0;
+    public float getSpearAttackDuration() {
+        return 0.95F;
+    }
+
+    @Override
+    public float getSpearDamageMultiplier() {
+        return 0.95F;
+    }
+
+    @Override
+    public float getSpearDelay() {
+        return 0.6F;
+    }
+
+    @Override
+    public float getSpearDismountTime() {
+        return 3;
+    }
+
+    @Override
+    public float getSpearDismountThreshold() {
+        return 12;
+    }
+
+    @Override
+    public float getSpearKnockbackTime() {
+        return 7.5F;
+    }
+
+    @Override
+    public float getSpearDamageTime() {
+        return 12.5F;
     }
 }

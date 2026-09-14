@@ -12,7 +12,8 @@
     "mekanismtools:refined_glowstone_pickaxe",
     "mekanismtools:refined_glowstone_shield",
     "mekanismtools:refined_glowstone_shovel",
-    "mekanismtools:refined_glowstone_sword"
+    "mekanismtools:refined_glowstone_sword",
+    "mekanismtools:refined_glowstone_spear"
   ],
   "result": {
     "id": "mekanism:nugget_refined_glowstone"

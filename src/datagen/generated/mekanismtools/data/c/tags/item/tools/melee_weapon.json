@@ -10,20 +10,26 @@
     "mekanismtools:bronze_sword",
     "mekanismtools:bronze_axe",
     "mekanismtools:bronze_paxel",
+    "mekanismtools:bronze_spear",
     "mekanismtools:lapis_lazuli_sword",
     "mekanismtools:lapis_lazuli_axe",
     "mekanismtools:lapis_lazuli_paxel",
+    "mekanismtools:lapis_lazuli_spear",
     "mekanismtools:osmium_sword",
     "mekanismtools:osmium_axe",
     "mekanismtools:osmium_paxel",
+    "mekanismtools:osmium_spear",
     "mekanismtools:refined_glowstone_sword",
     "mekanismtools:refined_glowstone_axe",
     "mekanismtools:refined_glowstone_paxel",
+    "mekanismtools:refined_glowstone_spear",
     "mekanismtools:refined_obsidian_sword",
     "mekanismtools:refined_obsidian_axe",
     "mekanismtools:refined_obsidian_paxel",
+    "mekanismtools:refined_obsidian_spear",
     "mekanismtools:steel_sword",
     "mekanismtools:steel_axe",
-    "mekanismtools:steel_paxel"
+    "mekanismtools:steel_paxel",
+    "mekanismtools:steel_spear"
   ]
 }

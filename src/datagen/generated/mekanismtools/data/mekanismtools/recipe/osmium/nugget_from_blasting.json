@@ -12,7 +12,8 @@
     "mekanismtools:osmium_pickaxe",
     "mekanismtools:osmium_shield",
     "mekanismtools:osmium_shovel",
-    "mekanismtools:osmium_sword"
+    "mekanismtools:osmium_sword",
+    "mekanismtools:osmium_spear"
   ],
   "result": {
     "id": "mekanism:nugget_osmium"

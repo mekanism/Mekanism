@@ -22,10 +22,9 @@ import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.component.BlocksAttacks;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 
-//TODO - 26.2: Add a spear for each of our types??
 public record ToolCollection(ItemRegistryObject<AxeItem> axe, ItemRegistryObject<HoeItem> hoe, ItemRegistryObject<ItemMekanismPaxel> paxel,
                              ItemRegistryObject<Item> pickaxe, ItemRegistryObject<ShieldItem> shield, ItemRegistryObject<ShovelItem> shovel,
-                             ItemRegistryObject<Item> sword) {
+                             ItemRegistryObject<Item> sword, ItemRegistryObject<Item> spear) {
 
     public static ToolCollection create(ItemDeferredRegister registry, MaterialCreator material) {
         return new ToolCollection(
@@ -38,9 +37,9 @@ public record ToolCollection(ItemRegistryObject<AxeItem> axe, ItemRegistryObject
               registry.registerItem(material.getRegistryPrefix() + "_paxel", properties -> new ItemMekanismPaxel(
                     material, ToolsItems.setCommonProperties(properties, material))
               ),
-              registry.registerItem(material.getRegistryPrefix() + "_pickaxe", properties -> new Item(ToolsItems.setCommonProperties(properties, material)
+              registry.registerSimple(material.getRegistryPrefix() + "_pickaxe", properties -> ToolsItems.setCommonProperties(properties, material)
                     .pickaxe(material.toToolMaterial(), material.getPickaxeDamage(), material.getPickaxeAtkSpeed())
-              )),
+              ),
               registry.registerItem(material.getRegistryPrefix() + "_shield", properties -> new ShieldItem(ToolsItems.setCommonProperties(properties, material)
                     .durability(material.getShieldDurability())
                     .component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)
@@ -64,9 +63,14 @@ public record ToolCollection(ItemRegistryObject<AxeItem> axe, ItemRegistryObject
               registry.registerItem(material.getRegistryPrefix() + "_shovel", properties -> new ShovelItem(
                     material.toToolMaterial(), material.getShovelDamage(), material.getShovelAtkSpeed(), ToolsItems.setCommonProperties(properties, material))
               ),
-              registry.registerItem(material.getRegistryPrefix() + "_sword", properties -> new Item(ToolsItems.setCommonProperties(properties, material)
+              registry.registerSimple(material.getRegistryPrefix() + "_sword", properties -> ToolsItems.setCommonProperties(properties, material)
                     .sword(material.toToolMaterial(), material.getSwordDamage(), material.getSwordAtkSpeed())
-              ))
+              ),
+              registry.registerSimple(material.getRegistryPrefix() + "_spear", properties -> ToolsItems.setCommonProperties(properties, material)
+                    .spear(material.toToolMaterial(), material.getSpearAttackDuration(), material.getSpearDamageMultiplier(), material.getSpearDelay(),
+                          material.getSpearDismountTime(), material.getSpearDismountThreshold(), material.getSpearKnockbackTime(), material.getSpearKnockbackThreshold(),
+                          material.getSpearDamageTime(), material.getSpearDamageThreshold())
+              )
         );
     }
 
@@ -84,5 +88,6 @@ public record ToolCollection(ItemRegistryObject<AxeItem> axe, ItemRegistryObject
         consumer.accept(this.shield);
         consumer.accept(this.shovel);
         consumer.accept(this.sword);
+        consumer.accept(this.spear);
     }
 }

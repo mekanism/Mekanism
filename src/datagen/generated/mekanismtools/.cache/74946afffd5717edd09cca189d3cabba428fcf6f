@@ -1,7 +1,7 @@
-// 26.2	2026-09-05T16:43:24.2455959	Tags: mekanismtools
+// 26.2	2026-09-14T10:59:06.6286354	Tags: mekanismtools
 13cf1fe06cf159d32d074144254a0d375f6b20e7 data/c/tags/block/mineable/paxel.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/c/tags/item/tools.json
-a6c2ac44cb20597426bf42fbc03eddc74a481785 data/c/tags/item/tools/melee_weapon.json
+a9b1406d28741b06bb1aff0b175adc726effbba7 data/c/tags/item/tools/melee_weapon.json
 d60a2c6cb5c303e3c4e84510470de0191ea0f0df data/c/tags/item/tools/mining_tool.json
 ea32b302f33d4963196d8d2ccd5dea24e496e71a data/c/tags/item/tools/paxel.json
 6e3b9e4ae09c24327f7264b4e22d031964f76244 data/c/tags/item/tools/shield.json
@@ -26,7 +26,9 @@ ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/we
 e01d70e305d942a3815bfa2630c32f18c7b58537 data/minecraft/tags/item/hoes.json
 33c4fcf2117cb7b8b7b18f179bb867c552c06a21 data/minecraft/tags/item/leg_armor.json
 9581467c567477a2c5ad115e3cee624633122eb1 data/minecraft/tags/item/pickaxes.json
-300c9eb1a75dd40166cc1c01e5099423ae2872b4 data/minecraft/tags/item/piglin_loved.json
+a645569723b0240a2c6201eacbe2d58d1dd7a96f data/minecraft/tags/item/piglin_loved.json
+67f530591e1b7568d4a4353b6a01eadfe2bb2ca3 data/minecraft/tags/item/piglin_preferred_weapons.json
 4b2c0ee85fec7ddd4d5fd69eb7b305bd1d38c389 data/minecraft/tags/item/piglin_safe_armor.json
 ec0da4985a81ff417ae0567b6917e65b05047624 data/minecraft/tags/item/shovels.json
+5ccf34d42ec51050194625bb2bc1835d3ae00b3e data/minecraft/tags/item/spears.json
 17a4d9ee96b1da5b6913541a1e593e2444fb4882 data/minecraft/tags/item/swords.json
