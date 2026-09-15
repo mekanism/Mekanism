@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.custom;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.chemical.ChemicalResource;
@@ -13,35 +12,31 @@ import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet.Named;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay.TagSlotDisplay;
 import org.jspecify.annotations.Nullable;
 
-public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
+public class GuiCrystallizerScreen extends GuiInnerScreen {
 
     @Nullable
     private final GuiSequencedSlotDisplay slotDisplay;
-    private final List<ItemStack> iterStacks;
     private final IOreInfo oreInfo;
     private final GuiSlot slot;
 
+    private SlotDisplay iterStacks = SlotDisplay.Empty.INSTANCE;
     private ChemicalResource prevSlurry = ChemicalResource.EMPTY;
 
-    public GuiQIOCrystallizerScreen(IGuiWrapper gui, int x, int y, int width, int height, IOreInfo oreInfo) {
+    public GuiCrystallizerScreen(IGuiWrapper gui, int x, int y, int width, int height, IOreInfo oreInfo) {
         super(gui, x, y, width, height);
         this.oreInfo = oreInfo;
         int slotX = relativeX + this.width - 18;
         this.slot = addChild(new GuiSlot(SlotType.DARK, gui, slotX, relativeY));
         if (this.oreInfo.usesSequencedDisplay()) {
-            this.iterStacks = new ArrayList<>();
             this.slotDisplay = addChild(new GuiSequencedSlotDisplay(gui, slotX + 1, relativeY + 1, () -> this.iterStacks));
             updateSlotContents();
         } else {
-            this.iterStacks = Collections.emptyList();
             this.slotDisplay = null;
         }
         defaultFormat();
@@ -62,29 +57,23 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
     }
 
     private void updateSlotContents() {
-        if (oreInfo.usesSequencedDisplay() && slotDisplay != null) {//Note: If we use the sequenced display, slotDisplay should never be null
+        if (slotDisplay != null) {
             ChemicalResource chemical = oreInfo.getInputChemical();
             if (!chemical.isEmpty()) {
                 if (!chemical.equals(prevSlurry)) {
                     prevSlurry = chemical;
-                    iterStacks.clear();
+                    iterStacks = SlotDisplay.Empty.INSTANCE;
                     if (!prevSlurry.isEmpty()) {
-                        RegistryAccess registryAccess = gui().registryAccess();
-                        ChemicalSolidTag tag = chemical.getSolidTag(registryAccess);
+                        ChemicalSolidTag tag = prevSlurry.getSolidTag(gui().registryAccess());
                         if (tag != null) {
-                            Named<Item> tagContents = tag.lookupTag(registryAccess).orElse(null);
-                            if (tagContents != null) {
-                                for (Holder<Item> tagContent : tagContents) {
-                                    iterStacks.add(new ItemStack(tagContent));
-                                }
-                            }
+                            iterStacks = new TagSlotDisplay(tag.solidRepresentation());
                         }
                     }
                     slotDisplay.updateStackList();
                 }
             } else if (!prevSlurry.isEmpty()) {
                 prevSlurry = ChemicalResource.EMPTY;
-                iterStacks.clear();
+                iterStacks = SlotDisplay.Empty.INSTANCE;
                 slotDisplay.updateStackList();
             }
         }

@@ -8,6 +8,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -52,11 +53,7 @@ public interface IRecipeViewerRecipeType<RECIPE> extends IHasTextComponent {
                     displays.add(new SlotDisplay.ItemSlotDisplay(MekanismBlocks.getFactory(tier, factoryType).getItemHolder()));
                 }
             }
-            if (displays.size() == 1) {
-                allDisplays.add(displays.getFirst());
-            } else {
-                allDisplays.add(new SlotDisplay.Composite(displays));
-            }
+            allDisplays.add(MekanismUtils.compactDisplay(displays));
         }
         return List.copyOf(allDisplays);
     }

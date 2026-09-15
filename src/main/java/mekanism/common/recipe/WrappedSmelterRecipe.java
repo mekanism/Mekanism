@@ -9,6 +9,7 @@ import mekanism.api.recipes.basic.BasicSmeltingRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -70,13 +71,7 @@ public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
 
     @Override
     public SlotDisplay getOutputDisplay() {
-        List<SlotDisplay> displays = display().stream().map(RecipeDisplay::result).toList();
-        if (displays.isEmpty()) {
-            return SlotDisplay.Empty.INSTANCE;
-        } else if (displays.size() == 1) {
-            return displays.getFirst();
-        }
-        return new SlotDisplay.Composite(displays);
+        return MekanismUtils.compactDisplay(display().stream().map(RecipeDisplay::result).toList());
     }
 
     @Override

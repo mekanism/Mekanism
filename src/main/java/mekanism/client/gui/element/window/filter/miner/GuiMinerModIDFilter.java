@@ -1,13 +1,10 @@
 package mekanism.client.gui.element.window.filter.miner;
 
-import java.util.Collections;
-import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiModIDFilter;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.miner.MinerModIDFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public class GuiMinerModIDFilter extends GuiModIDFilter<MinerModIDFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
@@ -33,14 +30,6 @@ public class GuiMinerModIDFilter extends GuiModIDFilter<MinerModIDFilter, TileEn
     @Override
     protected MinerModIDFilter createNewFilter() {
         return new MinerModIDFilter();
-    }
-
-    @Override
-    protected List<ItemStack> getRenderStacks() {
-        if (filter.hasFilter()) {
-            return TagCache.getBlockModIDStacks(filter.getModID()).stacks();
-        }
-        return Collections.emptyList();
     }
 
     @Override

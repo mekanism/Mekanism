@@ -2,12 +2,9 @@ package mekanism.api.datamaps.chemical;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
@@ -18,7 +15,7 @@ import net.minecraft.world.item.Item;
 /// @param solidRepresentation the item tag that represents the ore or block that goes with a chemical.
 ///
 /// @since 10.7.11
-public record ChemicalSolidTag(TagKey<Item> solidRepresentation) {//TODO - 26.2: Do we want to just define this in the recipe
+public record ChemicalSolidTag(TagKey<Item> solidRepresentation) {//TODO - 26.2: Just define this as part of the recipe
 
     /// The ID of the data map.
     ///
@@ -32,9 +29,4 @@ public record ChemicalSolidTag(TagKey<Item> solidRepresentation) {//TODO - 26.2:
     public static final Codec<ChemicalSolidTag> CODEC = Codec.withAlternative(RecordCodecBuilder.create(in -> in.group(
           TAG_CODEC.fieldOf(SerializationConstants.REPRESENTATION).forGetter(ChemicalSolidTag::solidRepresentation)
     ).apply(in, ChemicalSolidTag::new)), SOLID_TAG_CODEC);
-
-    /// Looks up the contents of the solid representation tag.
-    public Optional<HolderSet.Named<Item>> lookupTag(HolderGetter.Provider registries) {
-        return registries.get(solidRepresentation);
-    }
 }

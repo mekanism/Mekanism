@@ -61,6 +61,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -157,6 +158,26 @@ public final class MekanismUtils {
             return "";
         }
         return modid;
+    }
+
+    /// Gets the creator's modid if it exists, or falls back to the registry name.
+    ///
+    /// @implNote While the default implementation of getCreatorModId falls back to the registry name, it is possible someone is overriding this and not falling back.
+    public static String getModId(HolderLookup.Provider registries, Holder<Item> item) {
+        return getModId(registries, new ItemStack(item));
+    }
+
+    public static String getModId(HolderLookup.Provider registries, ItemResource item) {
+        return getModId(registries, item.toStack());
+    }
+
+    public static SlotDisplay compactDisplay(List<SlotDisplay> slotDisplays) {
+        if (slotDisplays.isEmpty()) {
+            return SlotDisplay.Empty.INSTANCE;
+        } else if (slotDisplays.size() == 1) {
+            return slotDisplays.getFirst();
+        }
+        return new SlotDisplay.Composite(slotDisplays);
     }
 
     public static boolean isRightArm(LivingEntity entity, InteractionHand hand) {

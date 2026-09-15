@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window.filter;
 
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
@@ -33,12 +32,6 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
     @Override
     protected ILangEntry getNoFilterSaveError() {
         return MekanismLang.ITEM_FILTER_NO_ITEM;
-    }
-
-    @Override
-    protected List<ItemStack> getRenderStacks() {
-        ItemResource itemType = filter.getItemType();
-        return itemType.isEmpty() ? Collections.emptyList() : Collections.singletonList(itemType.toStack());
     }
 
     @Nullable

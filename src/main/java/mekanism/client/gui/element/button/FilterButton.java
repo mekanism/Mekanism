@@ -1,7 +1,5 @@
 package mekanism.client.gui.element.button;
 
-import java.util.List;
-import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.ObjIntConsumer;
@@ -30,7 +28,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
@@ -58,7 +56,7 @@ public class FilterButton extends MekanismButton {
     }
 
     public FilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, FilterManager<?> filterManager,
-          ObjIntConsumer<@Nullable IFilter<?>> onPress, IntConsumer toggleButtonPress, Function<@Nullable IFilter<?>, List<ItemStack>> renderStackSupplier) {
+          ObjIntConsumer<@Nullable IFilter<?>> onPress, IntConsumer toggleButtonPress) {
         super(gui, x, y, width, height, CommonComponents.EMPTY, (element, _, _) -> {
             FilterButton button = (FilterButton) element;
             int actualIndex = button.filterIndex.getAsInt() + button.index;
@@ -70,7 +68,10 @@ public class FilterButton extends MekanismButton {
         this.filterManager = filterManager;
         this.onPress = onPress;
         slot = addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 2, relativeY + 2));
-        slotDisplay = addChild(new GuiSequencedSlotDisplay(gui, relativeX + 3, relativeY + 3, () -> renderStackSupplier.apply(getFilter())));
+        slotDisplay = addChild(new GuiSequencedSlotDisplay(gui, relativeX + 3, relativeY + 3, () -> {
+            IFilter<?> filter = getFilter();
+            return filter == null ? SlotDisplay.Empty.INSTANCE : filter.asSlotDisplay(gui.registryAccess());
+        }));
         toggleButton = addChild(new RadioButton(gui, relativeX + this.width - RadioButton.RADIO_SIZE - getToggleXShift(), relativeY + (this.height / 2) - (RadioButton.RADIO_SIZE / 2),
               this::isEnabled, (_, _, _) -> {
             toggleButtonPress.accept(getActualIndex());
@@ -155,7 +156,7 @@ public class FilterButton extends MekanismButton {
             drawScaledScrollingString(guiGraphics, color, 27, 12, TextAlignment.LEFT, titleTextColor(), textWidth - 8, 3, false, 0.7F);
         } else if (filter instanceof OredictionificatorItemFilter oreDictFilter) {
             ItemResource result = oreDictFilter.getResult();
-            Component text = TextComponentUtil.build(result, " (", MekanismClient.getModId(result.toStack()), ")");
+            Component text = TextComponentUtil.build(result, " (", MekanismClient.getModId(result), ")");
             drawScaledScrollingString(guiGraphics, text, 19, 12, TextAlignment.LEFT, titleTextColor(), textWidth, 3, false, 0.7F);
         } else if (filter instanceof QIOItemStackFilter itemFilter) {
             if (itemFilter.fuzzyMode) {

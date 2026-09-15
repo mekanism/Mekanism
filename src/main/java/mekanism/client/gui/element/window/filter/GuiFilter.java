@@ -145,7 +145,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
             //Only set it if it isn't null so that we don't set the sound variable
             slot.click(slotClickHandler);
         }
-        slotDisplay = addChild(new GuiSequencedSlotDisplay(gui(), relativeX + 8, relativeY + getSlotOffset() + 1, this::getRenderStacks));
+        slotDisplay = addChild(new GuiSequencedSlotDisplay(gui(), relativeX + 8, relativeY + getSlotOffset() + 1, () -> filter.asSlotDisplay(gui().registryAccess())));
     }
 
     @Nullable
@@ -217,8 +217,6 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     }
 
     protected abstract ILangEntry getNoFilterSaveError();
-
-    protected abstract List<ItemStack> getRenderStacks();
 
     @Override
     public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {

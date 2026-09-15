@@ -2,10 +2,9 @@ package mekanism.common.base;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,13 +22,18 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.HolderSet.ListBacked;
+import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.references.BlockItemIds;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay.ItemSlotDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay.TagSlotDisplay;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -41,10 +45,10 @@ public final class TagCache {
 
     private static final HolderSet.Named<Block> MINER_BLACKLIST_LOOKUP = BuiltInRegistries.BLOCK.getOrThrow(MekanismTags.Blocks.MINER_BLACKLIST);
 
-    private static final Map<String, MatchingStacks> blockTagStacks = new Object2ObjectOpenHashMap<>();
-    private static final Map<String, List<ItemStack>> itemTagStacks = new Object2ObjectOpenHashMap<>();
-    private static final Map<String, List<ItemStack>> itemModIDStacks = new Object2ObjectOpenHashMap<>();
-    private static final Map<String, MatchingStacks> blockModIDStacks = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, MatchingStacks> blockTagStacks = new HashMap<>();
+    private static final Map<String, MatchingStacks> itemTagStacks = new HashMap<>();
+    private static final Map<String, MatchingStacks> itemModIDStacks = new HashMap<>();
+    private static final Map<String, MatchingStacks> blockModIDStacks = new HashMap<>();
     private static final Map<Block, List<String>> tileEntityTypeTagCache = new IdentityHashMap<>();
 
     private static final Object2BooleanMap<String> blockTagBlacklistedElements = new Object2BooleanOpenHashMap<>();
@@ -97,11 +101,40 @@ public final class TagCache {
         return tags.map(tag -> tag.location().toString()).toList();
     }
 
-    public static List<ItemStack> getItemTagStacks(String tagName) {
-        return itemTagStacks.computeIfAbsent(tagName, name -> collectTagStacks(BuiltInRegistries.ITEM, name).map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList());
+    public static MatchingStacks getTagItems(HolderLookup.Provider registries, String tagName) {
+        if (tagName.isEmpty()) {
+            return MatchingStacks.NONE;
+        }
+        MatchingStacks matchingTargets = itemTagStacks.get(tagName);
+        if (matchingTargets == null) {
+            //Note: We use this instead of computeIfAbsent, to avoid the capturing lambdas for the already cached path
+            List<Named<Item>> matchingTags = registries.lookupOrThrow(Registries.ITEM)
+                  .listTags()
+                  .filter(element -> WildcardMatcher.matches(tagName, element.key()))
+                  .toList();
+            if (matchingTags.isEmpty()) {
+                matchingTargets = MatchingStacks.NONE;
+            } else if (matchingTags.size() == 1) {
+                Named<Item> tag = matchingTags.getFirst();
+                matchingTargets = tag.isBound() && tag.size() > 0 ? new MatchingStacks(true, new TagSlotDisplay(tag.key())) : MatchingStacks.NONE;
+            } else {
+                List<SlotDisplay> displays = matchingTags
+                      .stream()
+                      .flatMap(ListBacked::stream)
+                      .distinct()
+                      .<SlotDisplay>map(ItemSlotDisplay::new)
+                      .toList();
+                matchingTargets = displays.isEmpty() ? MatchingStacks.NONE : new MatchingStacks(true, MekanismUtils.compactDisplay(displays));
+            }
+            itemTagStacks.put(tagName, matchingTargets);
+        }
+        return matchingTargets;
     }
 
     public static MatchingStacks getBlockTagStacks(String tagName) {
+        if (tagName.isEmpty()) {
+            return MatchingStacks.NONE;
+        }
         return blockTagStacks.computeIfAbsent(tagName, name -> {
             Set<Block> blocks = collectTagStacks(BuiltInRegistries.BLOCK, name)
                   .filter(block -> block != MekanismBlocks.BOUNDING_BLOCK.get())
@@ -122,25 +155,47 @@ public final class TagCache {
             return MatchingStacks.NONE;
         }
         //Filter out any stacks that are empty such as if we are mining a block that doesn't have a direct item representation
-        return new MatchingStacks(true, blocks.stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList());
+        List<SlotDisplay> slotDisplays = blocks.stream()
+              .map(block -> block.asItem().builtInRegistryHolder())
+              .filter(item -> !item.is(BlockItemIds.AIR.item()))
+              .<SlotDisplay>map(ItemSlotDisplay::new)
+              .toList();
+        return new MatchingStacks(true, MekanismUtils.compactDisplay(slotDisplays));
     }
 
-    public static List<ItemStack> getItemModIDStacks(HolderLookup.Provider registries, String modName) {
-        return itemModIDStacks.computeIfAbsent(modName, name -> {
-            List<ItemStack> stacks = new ArrayList<>();
-            for (Item item : BuiltInRegistries.ITEM) {
-                //Note: We get the modid based on the stack so that if there is a mod that has a different modid for an item
-                // that isn't based on NBT it can properly change the modid (this is unlikely to happen, but you never know)
-                ItemStack stack = new ItemStack(item);
-                if (!stack.isEmpty() && WildcardMatcher.matches(name, MekanismUtils.getModId(registries, stack))) {
-                    stacks.add(stack);
-                }
+    public static MatchingStacks getModIdItems(HolderLookup.Provider registries, String modName) {
+        if (modName.isEmpty()) {
+            return MatchingStacks.NONE;
+        }
+        MatchingStacks matchingTargets = itemModIDStacks.get(modName);
+        if (matchingTargets == null) {
+            //Note: We use this instead of computeIfAbsent, to avoid the capturing lambdas for the already cached path
+            List<SlotDisplay> modItems = registries.lookupOrThrow(Registries.ITEM)
+                  .listElements()
+                  .filter(element -> {
+                      if (element.is(BlockItemIds.AIR.item())) {
+                          //Exclude the empty item
+                          return false;
+                      }
+                      //Note: We get the modid based on the stack so that if there is a mod that has a different modid for an item
+                      // that isn't based on NBT it can properly change the modid (this is unlikely to happen, but you never know)
+                      return WildcardMatcher.matches(modName, MekanismUtils.getModId(registries, element));
+                  }).<SlotDisplay>map(ItemSlotDisplay::new)
+                  .toList();
+            if (modItems.isEmpty()) {
+                matchingTargets = MatchingStacks.NONE;
+            } else {
+                matchingTargets = new MatchingStacks(true, MekanismUtils.compactDisplay(modItems));
             }
-            return stacks;
-        });
+            itemModIDStacks.put(modName, matchingTargets);
+        }
+        return matchingTargets;
     }
 
     public static MatchingStacks getBlockModIDStacks(String modName) {
+        if (modName.isEmpty()) {
+            return MatchingStacks.NONE;
+        }
         return blockModIDStacks.computeIfAbsent(modName, name -> {
             Set<Block> blocks = new ReferenceOpenHashSet<>();
             for (Map.Entry<ResourceKey<Block>, Block> entry : BuiltInRegistries.BLOCK.entrySet()) {
@@ -171,8 +226,8 @@ public final class TagCache {
     }
 
     /// @apiNote hasMatch might be true even if stacks is empty in the case there are blocks without a corresponding item form.
-    public record MatchingStacks(boolean hasMatch, List<ItemStack> stacks) {
+    public record MatchingStacks(boolean hasMatch, SlotDisplay display) {
 
-        private static final MatchingStacks NONE = new MatchingStacks(false, Collections.emptyList());
+        private static final MatchingStacks NONE = new MatchingStacks(false, SlotDisplay.Empty.INSTANCE);
     }
 }

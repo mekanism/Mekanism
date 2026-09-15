@@ -1,13 +1,10 @@
 package mekanism.client.gui.element.window.filter.miner;
 
-import java.util.Collections;
-import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiTagFilter;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.miner.MinerTagFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
@@ -33,14 +30,6 @@ public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDi
     @Override
     protected MinerTagFilter createNewFilter() {
         return new MinerTagFilter();
-    }
-
-    @Override
-    protected List<ItemStack> getRenderStacks() {
-        if (filter.hasFilter()) {
-            return TagCache.getBlockTagStacks(filter.getTagName()).stacks();
-        }
-        return Collections.emptyList();
     }
 
     @Override

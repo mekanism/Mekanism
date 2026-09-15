@@ -6,8 +6,8 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.client.gui.element.custom.GuiQIOCrystallizerScreen;
-import mekanism.client.gui.element.custom.GuiQIOCrystallizerScreen.IOreInfo;
+import mekanism.client.gui.element.custom.GuiCrystallizerScreen;
+import mekanism.client.gui.element.custom.GuiCrystallizerScreen.IOreInfo;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -67,7 +67,7 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
         addSlot(widgetHolder, SlotType.INPUT, 8, 65).with(SlotOverlay.PLUS);
         addSlot(widgetHolder, SlotType.OUTPUT, 129, 57, output(0)).recipeContext(this);
         addSimpleProgress(widgetHolder, ProgressType.LARGE_RIGHT, 53, 61, TileEntityChemicalCrystallizer.BASE_TICKS_REQUIRED);
-        GuiQIOCrystallizerScreen screen = addElement(widgetHolder, new GuiQIOCrystallizerScreen(this, 31, 13, 115, 42, oreInfo));
+        GuiCrystallizerScreen screen = addElement(widgetHolder, new GuiCrystallizerScreen(this, 31, 13, 115, 42, oreInfo));
         initItem(widgetHolder, screen.getSlotX(), screen.getSlotY(), ingredient(displayItems));
     }
 }

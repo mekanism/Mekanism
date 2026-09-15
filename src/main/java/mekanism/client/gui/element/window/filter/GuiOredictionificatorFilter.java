@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window.filter;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.IntPredicate;
@@ -18,7 +17,6 @@ import mekanism.common.util.text.InputValidator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 public class GuiOredictionificatorFilter extends GuiTextFilter<OredictionificatorItemFilter, TileEntityOredictionificator> {
@@ -125,12 +123,6 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     @Override
     protected OredictionificatorItemFilter createNewFilter() {
         return new OredictionificatorItemFilter();
-    }
-
-    @Override
-    protected List<ItemStack> getRenderStacks() {
-        ItemResource result = filter.getResult();
-        return result.isEmpty() ? Collections.emptyList() : Collections.singletonList(result.toStack());
     }
 
     @Nullable

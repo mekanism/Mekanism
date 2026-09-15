@@ -717,7 +717,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
         @Override
         public String getModID() {
-            return MekanismUtils.getModId(registries, itemType().toStack());
+            return MekanismUtils.getModId(registries, itemType());
         }
 
         @Override

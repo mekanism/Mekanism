@@ -7,7 +7,10 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 
 public class GuiSequencedSlotDisplay extends GuiElement {
 
@@ -15,9 +18,9 @@ public class GuiSequencedSlotDisplay extends GuiElement {
     private int stackIndex;
     private int stackSwitchTicker;
     private ItemStack renderStack = ItemStack.EMPTY;
-    private final Supplier<List<ItemStack>> stackListSupplier;
+    private final Supplier<SlotDisplay> stackListSupplier;
 
-    public GuiSequencedSlotDisplay(IGuiWrapper gui, int x, int y, Supplier<List<ItemStack>> stackListSupplier) {
+    public GuiSequencedSlotDisplay(IGuiWrapper gui, int x, int y, Supplier<SlotDisplay> stackListSupplier) {
         super(gui, x, y, 16, 16);
         this.stackListSupplier = stackListSupplier;
         //Mark it as false for active so that it doesn't intercept click events and ensures that it properly clears it
@@ -54,7 +57,8 @@ public class GuiSequencedSlotDisplay extends GuiElement {
     }
 
     public void updateStackList() {
-        iterStacks = stackListSupplier.get();
+        ContextMap contextMap = SlotDisplayContext.fromLevel(gui().getLevel());
+        iterStacks = stackListSupplier.get().resolveForStacks(contextMap);
         stackSwitchTicker = 0;
         tick();
         stackIndex = -1;

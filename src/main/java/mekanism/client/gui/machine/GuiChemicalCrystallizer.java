@@ -7,8 +7,8 @@ import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
-import mekanism.client.gui.element.custom.GuiQIOCrystallizerScreen;
-import mekanism.client.gui.element.custom.GuiQIOCrystallizerScreen.IOreInfo;
+import mekanism.client.gui.element.custom.GuiCrystallizerScreen;
+import mekanism.client.gui.element.custom.GuiCrystallizerScreen.IOreInfo;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
@@ -44,7 +44,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_INPUT));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 53, 61).recipeViewerCategory(tile))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
-        addRenderableWidget(new GuiQIOCrystallizerScreen(this, 31, 13, 115, 42, oreInfo));
+        addRenderableWidget(new GuiCrystallizerScreen(this, 31, 13, 115, 42, oreInfo));
     }
 
     @Override

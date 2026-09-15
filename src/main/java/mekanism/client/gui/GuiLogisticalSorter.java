@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.List;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
@@ -12,7 +11,6 @@ import mekanism.client.gui.element.window.filter.transporter.GuiSorterModIDFilte
 import mekanism.client.gui.element.window.filter.transporter.GuiSorterTagFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IModIDFilter;
@@ -31,7 +29,6 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEntityLogisticalSorter, MekanismTileContainer<TileEntityLogisticalSorter>> {
@@ -91,15 +88,5 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
         } else if (filter instanceof IModIDFilter) {
             addWindow(GuiSorterModIDFilter.edit(this, tile, (SorterModIDFilter) filter));
         }
-    }
-
-    @Override
-    protected List<ItemStack> getTagStacks(String tagName) {
-        return TagCache.getItemTagStacks(tagName);
-    }
-
-    @Override
-    protected List<ItemStack> getModIDStacks(String tagName) {
-        return TagCache.getItemModIDStacks(registryAccess(), tagName);
     }
 }

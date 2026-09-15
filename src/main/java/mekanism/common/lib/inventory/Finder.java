@@ -23,6 +23,6 @@ public interface Finder {
     }
 
     static boolean modID(String modID, HolderLookup.Provider registries, ItemResource toCheck) {
-        return !toCheck.isEmpty() && WildcardMatcher.matches(modID, MekanismUtils.getModId(registries, toCheck.toStack()));
+        return !toCheck.isEmpty() && WildcardMatcher.matches(modID, MekanismUtils.getModId(registries, toCheck));
     }
 }

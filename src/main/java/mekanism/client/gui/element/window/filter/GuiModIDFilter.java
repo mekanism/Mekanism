@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window.filter;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.IntPredicate;
 import mekanism.api.chemical.ChemicalStack;
@@ -50,14 +49,6 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     @Override
     protected boolean setText(GuiTextField text) {
         return setFilterName(text.getText(), false);
-    }
-
-    @Override
-    protected List<ItemStack> getRenderStacks() {
-        if (filter.hasFilter()) {
-            return TagCache.getItemModIDStacks(gui().registryAccess(), filter.getModID());
-        }
-        return Collections.emptyList();
     }
 
     @Nullable
@@ -128,6 +119,6 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     }
 
     protected boolean hasMatchingTargets(String name) {
-        return !TagCache.getItemModIDStacks(gui().registryAccess(), name).isEmpty();
+        return TagCache.getModIdItems(gui().registryAccess(), name).hasMatch();
     }
 }

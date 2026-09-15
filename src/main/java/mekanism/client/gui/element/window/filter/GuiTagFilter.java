@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window.filter;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.IntPredicate;
 import mekanism.api.text.ILangEntry;
@@ -13,7 +12,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
@@ -60,14 +58,6 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
     }
 
     protected boolean hasMatchingTargets(String name) {
-        return !TagCache.getItemTagStacks(name).isEmpty();
-    }
-
-    @Override
-    protected List<ItemStack> getRenderStacks() {
-        if (filter.hasFilter()) {
-            return TagCache.getItemTagStacks(filter.getTagName());
-        }
-        return Collections.emptyList();
+        return TagCache.getTagItems(gui().registryAccess(), name).hasMatch();
     }
 }

@@ -4,8 +4,8 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.client.gui.element.custom.GuiQIOCrystallizerScreen;
-import mekanism.client.gui.element.custom.GuiQIOCrystallizerScreen.IOreInfo;
+import mekanism.client.gui.element.custom.GuiCrystallizerScreen;
+import mekanism.client.gui.element.custom.GuiCrystallizerScreen.IOreInfo;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
@@ -38,7 +38,7 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
     private final OreInfo oreInfo = new OreInfo();
     private final GuiGauge<?> gauge;
     private final GuiSlot output;
-    private final GuiQIOCrystallizerScreen screen;
+    private final GuiCrystallizerScreen screen;
 
     public ChemicalCrystallizerRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ChemicalCrystallizerRecipe> recipeType) {
         super(helper, recipeType);
@@ -47,22 +47,23 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
         addSlot(SlotType.INPUT, 8, 65).with(SlotOverlay.PLUS);
         output = addSlot(SlotType.OUTPUT, 129, 57);
         addSimpleProgress(ProgressType.LARGE_RIGHT, 53, 61);
-        screen = addElement(new GuiQIOCrystallizerScreen(this, 31, 13, 115, 42, oreInfo));
+        screen = addElement(new GuiCrystallizerScreen(this, 31, 13, 115, 42, oreInfo));
     }
 
     @Override
     public void draw(RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our ore info
         oreInfo.currentRecipe = recipeHolder.value();
-        oreInfo.ingredient = (ChemicalStack) recipeSlotsView.findSlotByName(CHEMICAL_INPUT)
+        oreInfo.ingredient = recipeSlotsView.findSlotByName(CHEMICAL_INPUT)
               .flatMap(IRecipeSlotView::getDisplayedIngredient)
               .map(ITypedIngredient::getIngredient)
               .filter(ingredient -> ingredient instanceof ChemicalStack)
-              .orElse(null);
+              .map(ingredient -> ChemicalResource.of((ChemicalStack) ingredient))
+              .orElse(ChemicalResource.EMPTY);
         oreInfo.itemIngredient = getDisplayedStack(recipeSlotsView, DISPLAYED_ITEM, VanillaTypes.ITEM_STACK, ItemStack.EMPTY);
         super.draw(recipeHolder, recipeSlotsView, guiGraphics, mouseX, mouseY);
         oreInfo.currentRecipe = null;
-        oreInfo.ingredient = null;
+        oreInfo.ingredient = ChemicalResource.EMPTY;
         oreInfo.itemIngredient = ItemStack.EMPTY;
     }
 
@@ -81,16 +82,12 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
 
         @Nullable
         private ChemicalCrystallizerRecipe currentRecipe;
-        @Nullable
-        private ChemicalStack ingredient;
+        private ChemicalResource ingredient = ChemicalResource.EMPTY;
         private ItemStack itemIngredient = ItemStack.EMPTY;
 
         @Override
         public ChemicalResource getInputChemical() {
-            if (ingredient == null || ingredient.isEmpty()) {
-                return ChemicalResource.EMPTY;
-            }
-            return ChemicalResource.of(ingredient);
+            return ingredient;
         }
 
         @Nullable

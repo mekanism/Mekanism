@@ -32,7 +32,7 @@ public record ChemicalSolidTagSlotDisplay(SlotDisplay chemicalSource) implements
                           if (solidTag == null) {
                               return Stream.empty();
                           }
-                          return solidTag.lookupTag(registries).stream();
+                          return registries.get(solidTag.solidRepresentation()).stream();
                       })
                       .flatMap(HolderSet::stream)
                       .map(items::forStack);

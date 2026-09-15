@@ -6,7 +6,9 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -14,6 +16,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
@@ -36,6 +39,11 @@ public class OredictionificatorItemFilter extends OredictionificatorFilter<Item,
 
     public OredictionificatorItemFilter(OredictionificatorItemFilter filter) {
         super(filter);
+    }
+
+    @Override
+    public SlotDisplay asSlotDisplay(HolderLookup.Provider registries) {
+        return ResourceUtils.asSlotDisplay(getResult());
     }
 
     @Override

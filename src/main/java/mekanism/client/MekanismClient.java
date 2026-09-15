@@ -37,6 +37,7 @@ import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.modlist.ModDisplayInfo;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 @Mod(value = Mekanism.MODID, dist = Dist.CLIENT)
@@ -126,6 +127,10 @@ public class MekanismClient {
 
     public static String getModId(ItemStack stack) {
         return MekanismUtils.getModId(Objects.requireNonNull(Minecraft.getInstance().level, "No active Level").registryAccess(), stack);
+    }
+
+    public static String getModId(ItemResource item) {
+        return getModId(item.toStack());
     }
 
     @SubscribeEvent

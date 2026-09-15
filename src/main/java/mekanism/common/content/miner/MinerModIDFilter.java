@@ -10,11 +10,13 @@ import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
@@ -93,5 +95,10 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
     @Override
     public String getModID() {
         return modID;
+    }
+
+    @Override
+    public SlotDisplay asSlotDisplay(HolderLookup.Provider registries) {
+        return TagCache.getBlockModIDStacks(modID).display();
     }
 }

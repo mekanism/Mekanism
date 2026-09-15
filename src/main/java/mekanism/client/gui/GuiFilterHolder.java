@@ -1,7 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.Collections;
-import java.util.List;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.FilterButton;
@@ -9,9 +7,6 @@ import mekanism.client.gui.element.button.MovableFilterButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.common.content.filter.FilterManager;
 import mekanism.common.content.filter.IFilter;
-import mekanism.common.content.filter.IItemStackFilter;
-import mekanism.common.content.filter.IModIDFilter;
-import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
@@ -21,7 +16,6 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>, CONTAINER extends MekanismTileContainer<TILE>>
@@ -63,7 +57,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
                     GuiInteraction interaction = event.hasShiftDown() ? GuiInteraction.MOVE_FILTER_TO_BOTTOM : GuiInteraction.MOVE_FILTER_DOWN;
                     PacketUtils.sendToServer(new PacketGuiInteract(interaction, tile, index));
                 }
-            }, this::onClick, index -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), this::getRenderStacks));
+            }, this::onClick, index -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index))));
         }
     }
 
@@ -72,18 +66,6 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         if (leftScreen != null) {//Validate it was properly set
             leftScreen.drawScaledScrollingString(guiGraphics, text, x, y, TextAlignment.LEFT, screenTextColor(), leftScreen.getImageWidth() - x, 5, false, 0.8F);
         }
-    }
-
-    private List<ItemStack> getRenderStacks(@Nullable IFilter<?> filter) {
-        if (filter != null) {
-            return switch (filter) {
-                case IItemStackFilter<?> itemFilter -> List.of(itemFilter.getItemType().toStack());
-                case ITagFilter<?> tagFilter -> getTagStacks(tagFilter.getTagName());
-                case IModIDFilter<?> modIDFilter -> getModIDStacks(modIDFilter.getModID());
-                default -> Collections.emptyList();
-            };
-        }
-        return Collections.emptyList();
     }
 
     protected FilterButton addFilterButton(FilterButton button) {
@@ -100,10 +82,6 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
         return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar != null && scrollBar.adjustScroll(yDelta);
     }
-
-    protected abstract List<ItemStack> getTagStacks(String tagName);
-
-    protected abstract List<ItemStack> getModIDStacks(String tagName);
 
     @Override
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {

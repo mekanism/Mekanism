@@ -1,6 +1,5 @@
 package mekanism.client.gui.machine;
 
-import java.util.List;
 import mekanism.client.gui.GuiFilterHolder;
 import mekanism.client.gui.element.GuiDigitalSwitch;
 import mekanism.client.gui.element.GuiDigitalSwitch.SwitchType;
@@ -19,7 +18,6 @@ import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostBlockItemConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.TagCache;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
@@ -163,15 +161,5 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
             }
             field.setText("");
         }
-    }
-
-    @Override
-    protected List<ItemStack> getTagStacks(String tagName) {
-        return TagCache.getBlockTagStacks(tagName).stacks();
-    }
-
-    @Override
-    protected List<ItemStack> getModIDStacks(String tagName) {
-        return TagCache.getBlockModIDStacks(tagName).stacks();
     }
 }

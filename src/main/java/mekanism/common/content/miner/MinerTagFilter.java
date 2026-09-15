@@ -9,10 +9,12 @@ import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.lib.WildcardMatcher;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
@@ -90,5 +92,10 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
     @Override
     public String getTagName() {
         return tagName;
+    }
+
+    @Override
+    public SlotDisplay asSlotDisplay(HolderLookup.Provider registries) {
+        return TagCache.getBlockTagStacks(tagName).display();
     }
 }

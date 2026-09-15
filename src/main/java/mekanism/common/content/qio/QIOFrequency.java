@@ -196,7 +196,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 failedWildcardTags.clear();
             }
         }
-        String modID = MekanismUtils.getModId(registries(), type.toStack());
+        String modID = MekanismUtils.getModId(registries(), type);
         Set<ItemResource> modItems = modIDLookupMap.get(modID);
         if (modItems == null) {
             //If we added a new modid to the lookup map we also want to make sure that we clear our modid wildcard cache
@@ -252,7 +252,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 return true;
             }
         }
-        return modIDLookupMap.getOrDefault(MekanismUtils.getModId(registries(), itemType.toStack()), Collections.emptySet()).contains(itemType);
+        return modIDLookupMap.getOrDefault(MekanismUtils.getModId(registries(), itemType), Collections.emptySet()).contains(itemType);
     }
 
     @Override
@@ -290,7 +290,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             tagWildcardCache.clear();
             //Note: We don't need to clear the failed wildcard tags as if we are removing tags they still won't have any matches
         }
-        String modID = MekanismUtils.getModId(registries(), type.toStack());
+        String modID = MekanismUtils.getModId(registries(), type);
         Set<ItemResource> itemsForMod = modIDLookupMap.get(modID);
         //In theory if we are removing an item, and it existed we should have a set corresponding to it,
         // but double check that it is not null just in case

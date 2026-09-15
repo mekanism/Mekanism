@@ -1,6 +1,5 @@
 package mekanism.client.gui.machine;
 
-import java.util.Collections;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.button.FilterButton;
@@ -57,12 +56,8 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
             addRenderableWidget(new FilterButton(this, 10, 18 + i * 22, 202, 22, i, scrollBar::getCurrentSelection, filterManager, this::onClick,
-                  index -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), filter -> {
-                if (filter instanceof OredictionificatorItemFilter oredictionificatorFilter) {
-                    return Collections.singletonList(oredictionificatorFilter.getResult().toStack());
-                }
-                return Collections.emptyList();
-            })).warning(WarningType.INVALID_OREDICTIONIFICATOR_FILTER, filter -> filter != null && filter.isEnabled() && !filter.hasFilter());
+                  index -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index))
+            )).warning(WarningType.INVALID_OREDICTIONIFICATOR_FILTER, filter -> filter != null && filter.isEnabled() && !filter.hasFilter());
         }
         //While we track and show warnings on the slots themselves we also need to track the warning
         // for if any of the set filters have it even if one of them is not visible
