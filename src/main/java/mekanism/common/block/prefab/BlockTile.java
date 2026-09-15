@@ -58,7 +58,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
             //No tile, we can just skip trying to use without an item
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
+            return InteractionResult.PASS;
         } else if (world.isClientSide()) {
             return genericClientActivated(world, stack, tile);
         }

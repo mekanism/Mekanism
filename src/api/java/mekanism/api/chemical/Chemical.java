@@ -29,7 +29,7 @@ public interface Chemical {
     /// @return int representation of color in ARGB format
     ///
     /// @since 10.8.0
-    int tint();//TODO - 26.2: Should we try to move the icon and tint to a model/separate file that can be specified/overridden by a resource pack?
+    int tint();
 
     /// Returns the light level emitted by the chemical. As chemicals cannot be placed into the world, examples of use cases are: emissivity in multiblocks, or light
     /// level from within a FramedBlock.

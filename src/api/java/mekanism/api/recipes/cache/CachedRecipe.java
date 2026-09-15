@@ -306,7 +306,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
                     }
                     return;
                 }
-                //TODO - 26.2: If we fail to use stuff, should we reset the progress?
+                //Note: If for some reason we failed to use things (operations just set the machine as not active, but don't reset the progress)
             }
             setActive.accept(false);
             if (operations < 0) {

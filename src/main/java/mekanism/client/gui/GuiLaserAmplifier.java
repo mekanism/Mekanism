@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.math.BigDecimal;
 import java.util.List;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
@@ -44,11 +43,11 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         addRenderableWidget(new GuiTextField(this, TEXT_BOX_START, 43, 72, 11))
               .setMaxLength(10)
               .setEnterHandler(text -> setText(text, GuiInteraction.MIN_THRESHOLD))
-              .setInputValidator(InputValidator.SCI_NOTATION);
+              .setInputValidator(InputValidator.DIGIT);
         addRenderableWidget(new GuiTextField(this, TEXT_BOX_START, 58, 72, 11))
               .setMaxLength(10)
               .setEnterHandler(text -> setText(text, GuiInteraction.MAX_THRESHOLD))
-              .setInputValidator(InputValidator.SCI_NOTATION);
+              .setInputValidator(InputValidator.DIGIT);
     }
 
     @Override
@@ -68,20 +67,11 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
-    //TODO - 26.2: Should we just make this be Integer.parseInt without any handling for E?
-    private int parseInt(String text) throws NumberFormatException {
-        if (text.contains("E")) {
-            //TODO: Improve how we handle scientific notation, we currently create a big decimal and then
-            // we parse it as a floating long, ideally we could skip the big decimal side of things
-            text = new BigDecimal(text).toPlainString();
-        }
-        return Math.max(0, Integer.parseInt(text));
-    }
-
     private void setText(GuiTextField text, GuiInteraction interaction) {
         if (!text.getText().isEmpty()) {
             try {
-                PacketUtils.sendToServer(new PacketGuiInteract(interaction, tile, parseInt(text.getText())));
+                int value = Math.max(0, Integer.parseInt(text.getText()));
+                PacketUtils.sendToServer(new PacketGuiInteract(interaction, tile, value));
             } catch (NumberFormatException _) {
             }
             text.setText("");

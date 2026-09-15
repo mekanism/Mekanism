@@ -22,7 +22,6 @@ public class InputValidator {
     public static final IntPredicate RL_PATH = c -> Character.isBmpCodePoint(c) && Identifier.validPathChar((char) c);
     public static final IntPredicate RESOURCE_LOCATION = c -> Character.isBmpCodePoint(c) && Identifier.isAllowedInIdentifier((char) c);
     public static final IntPredicate DECIMAL = DIGIT.or(from('.'));
-    public static final IntPredicate SCI_NOTATION = DECIMAL.or(from('E'));
 
     public static final IntPredicate WILDCARD_CHARS = from('*', '#', '?');
     public static final IntPredicate FREQUENCY_CHARS = from('-', ' ', '|', '\'', '\"', '_', '+', ':', '(', ')', '?', '!', '/', '@', '$', '`', '~', ',', '.', '#');

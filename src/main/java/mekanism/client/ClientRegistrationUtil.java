@@ -39,7 +39,6 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -48,7 +47,6 @@ import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.fluid.FluidTintSources;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -64,21 +62,6 @@ public class ClientRegistrationUtil {
         }
         return CommonColors.WHITE;
     });
-    //TODO - 26.2 item models
-    /*
-    private static final ItemColor COLORED_ITEM_COLOR = (stack, tintIndex) -> {
-        Item item = stack.getItem();
-        if (tintIndex == 1 && item instanceof IColoredItem) {
-            EnumColor color = stack.get(MekanismDataComponents.COLOR);
-            if (color == null) {
-                return 0xFF555555;
-            }
-            int[] rgbCode = color.getRgbCode();
-            return ARGB.color(0xFF, rgbCode[0], rgbCode[1], rgbCode[2]);
-        }
-        return CommonColors.WHITE;
-    };*/
-    //private static final ItemColor BUCKET_ITEM_COLOR = new DynamicFluidContainerModel.Colors();
 
     private ClientRegistrationUtil() {
     }
@@ -155,18 +138,9 @@ public class ClientRegistrationUtil {
     }
 
     public static void registerIColoredBlockHandler(RegisterColorHandlersEvent event, BlockRegistryObject<?, ?>... blocks) {
-        //TODO - 26.2: do this with the models themselves?
+        //TODO - 26.2: Should we move plastic blocks to a custom model that handles the tinting?
         if (event instanceof RegisterColorHandlersEvent.BlockTintSources blockEvent) {
             registerBlockColorHandler(blockEvent, COLORED_BLOCK_COLOR, blocks);
-        }//TODO - 26.2 item colors
-        /* else if (event instanceof RegisterColorHandlersEvent.ItemTintSources itemEvent) {
-            registerItemColorHandler(itemEvent, COLORED_BLOCK_ITEM_COLOR, blocks);
-        }*/
-    }
-
-    public static void registerItemExtensions(RegisterClientExtensionsEvent event, IClientItemExtensions extension, ItemLike... items) {
-        for (ItemLike item : items) {
-            event.registerItem(extension, item.asItem());
         }
     }
 
