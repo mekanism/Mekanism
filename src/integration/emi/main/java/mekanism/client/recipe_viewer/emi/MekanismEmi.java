@@ -88,7 +88,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -310,15 +310,10 @@ public class MekanismEmi implements EmiPlugin {
         return category;
     }
 
-    private static void addWorkstations(EmiRegistry registry, EmiRecipeCategory category, List<ItemLike> workstations) {
-        for (ItemLike workstation : workstations) {
-            Item item = workstation.asItem();
-            registry.addWorkstation(category, EmiStack.of(item));
-            FactoryType factoryType = item.components().get(MekanismDataComponents.FACTORY_TYPE);
-            if (factoryType != null) {
-                for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
-                    registry.addWorkstation(category, EmiStack.of(MekanismBlocks.getFactory(tier, factoryType)));
-                }
+    private static void addWorkstations(EmiRegistry registry, EmiRecipeCategory category, List<SlotDisplay> workstations) {
+        for (SlotDisplay workstation : workstations) {
+            for (ItemStack stack : workstation.resolveForStacks()) {
+                registry.addWorkstation(category, EmiStack.of(stack));
             }
         }
     }

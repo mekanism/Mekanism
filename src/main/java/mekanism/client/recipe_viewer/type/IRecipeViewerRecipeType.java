@@ -1,9 +1,17 @@
 package mekanism.client.recipe_viewer.type;
 
+import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.common.content.blocktype.FactoryType;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.tier.FactoryTier;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.ItemLike;
 import org.jspecify.annotations.Nullable;
 
@@ -30,5 +38,26 @@ public interface IRecipeViewerRecipeType<RECIPE> extends IHasTextComponent {
 
     int height();
 
-    List<ItemLike> workstations();
+    List<SlotDisplay> workstations();
+
+    static List<SlotDisplay> asWorkStations(ItemLike... items) {
+        List<SlotDisplay> allDisplays = new ArrayList<>();
+        for (ItemLike itemLike : items) {
+            Item item = itemLike.asItem();
+            List<SlotDisplay> displays = new ArrayList<>();
+            displays.add(new SlotDisplay.ItemSlotDisplay(item));
+            FactoryType factoryType = item.components().get(MekanismDataComponents.FACTORY_TYPE);
+            if (factoryType != null) {
+                for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
+                    displays.add(new SlotDisplay.ItemSlotDisplay(MekanismBlocks.getFactory(tier, factoryType).getItemHolder()));
+                }
+            }
+            if (displays.size() == 1) {
+                allDisplays.add(displays.getFirst());
+            } else {
+                allDisplays.add(new SlotDisplay.Composite(displays));
+            }
+        }
+        return List.copyOf(allDisplays);
+    }
 }

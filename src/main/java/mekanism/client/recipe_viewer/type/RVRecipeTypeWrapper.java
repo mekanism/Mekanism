@@ -11,24 +11,25 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.ItemLike;
 import org.jspecify.annotations.Nullable;
 
 public record RVRecipeTypeWrapper<VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache>(
       Identifier id, ItemLike item, Class<? extends RECIPE> recipeClass, IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> vanillaProvider,
-      int xOffset, int yOffset, int width, int height, List<ItemLike> workstations
+      int xOffset, int yOffset, int width, int height, List<SlotDisplay> workstations
 ) implements IRecipeViewerRecipeType<RECIPE>, IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> {
 
     public RVRecipeTypeWrapper(IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> vanillaProvider, Class<? extends RECIPE> recipeClass,
           int xOffset, int yOffset, int width, int height, ItemLike icon, ItemLike... altWorkstations) {
-        this(vanillaProvider.getRegistryName(), icon, recipeClass, vanillaProvider, xOffset, yOffset, width, height, List.of(altWorkstations));
+        this(vanillaProvider.getRegistryName(), icon, recipeClass, vanillaProvider, xOffset, yOffset, width, height, IRecipeViewerRecipeType.asWorkStations(altWorkstations));
     }
 
     public RVRecipeTypeWrapper {
         if (workstations.isEmpty()) {
-            workstations = List.of(item);
+            workstations = IRecipeViewerRecipeType.asWorkStations(item);
         } else {
-            workstations = Stream.concat(Stream.of(item), workstations.stream()).toList();
+            workstations = Stream.concat(IRecipeViewerRecipeType.asWorkStations(item).stream(), workstations.stream()).toList();
         }
     }
 

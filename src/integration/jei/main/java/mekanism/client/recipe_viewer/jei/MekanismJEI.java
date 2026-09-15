@@ -86,6 +86,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay.ItemSlotDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -325,7 +326,7 @@ public class MekanismJEI implements IModPlugin {
 
         CatalystRegistryHelper.register(registry, RecipeTypes.SMELTING, RecipeViewerRecipeType.VANILLA_SMELTING.workstations());
         CatalystRegistryHelper.register(registry, RecipeTypes.CRAFTING, RecipeViewerRecipeType.VANILLA_CRAFTING.workstations());
-        CatalystRegistryHelper.register(registry, RecipeTypes.ANVIL, List.of(MekanismItems.ROBIT));
+        registry.addCraftingStation(RecipeTypes.ANVIL, new ItemSlotDisplay(MekanismItems.ROBIT));
     }
 
     @Override

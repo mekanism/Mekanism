@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer.type;
 
+import java.util.stream.Stream;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
@@ -28,6 +29,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay.ItemSlotDisplay;
 
 //Note: Do not use any classes from any recipe viewer mods here as this is to allow us to safely keep them each optional while referencing from our GUIs
 public class RecipeViewerRecipeType {
@@ -69,7 +72,11 @@ public class RecipeViewerRecipeType {
     public static final RVRecipeTypeWrapper<?, NucleosynthesizingRecipe, ?> NUCLEOSYNTHESIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.NUCLEOSYNTHESIZING, NucleosynthesizingRecipe.class, -6, -18, 182, 80, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
 
     //TODO: Decide if we want to make it so all mekanism energy supporting blocks that have gui's are added as catalysts?
-    public static final SimpleRVRecipeType<?, ItemStackToEnergyRecipe, ?> ENERGY_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.ENERGY_CONVERSION, ItemStackToEnergyRecipe.class, MekanismLang.CONVERSION_ENERGY, TransmissionType.ENERGY.guiTexture(), -20, -12, 132, 62, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
+    public static final SimpleRVRecipeType<?, ItemStackToEnergyRecipe, ?> ENERGY_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.ENERGY_CONVERSION, ItemStackToEnergyRecipe.class, MekanismLang.CONVERSION_ENERGY, TransmissionType.ENERGY.guiTexture(), -20, -12, 132, 62, new SlotDisplay.Composite(
+          Stream.of(MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE)
+                .<SlotDisplay>map(block -> new ItemSlotDisplay(block.getItemHolder()))
+                .toList()
+    ));
 
     public static final SimpleRVRecipeType<?, ItemStackToChemicalRecipe, ?> CHEMICAL_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.CHEMICAL_CONVERSION, ItemStackToChemicalRecipe.class, MekanismLang.CONVERSION_CHEMICAL, TransmissionType.CHEMICAL.guiTexture(), -20, -12, 132, 62, MekanismBlocks.PURIFICATION_CHAMBER, MekanismBlocks.METALLURGIC_INFUSER, MekanismBlocks.OSMIUM_COMPRESSOR, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
 

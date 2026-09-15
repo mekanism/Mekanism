@@ -10,15 +10,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.ItemLike;
 import org.jspecify.annotations.Nullable;
 
 public record VanillaRVRecipeType<RECIPE extends Recipe<?>>(
-      Identifier id, RecipeType<RECIPE> vanillaType, Class<? extends RECIPE> recipeClass, ItemStack iconStack, List<ItemLike> workstations
+      Identifier id, RecipeType<RECIPE> vanillaType, Class<? extends RECIPE> recipeClass, ItemStack iconStack, List<SlotDisplay> workstations
 ) implements IRecipeViewerRecipeType<RECIPE> {
 
     public VanillaRVRecipeType(RecipeType<RECIPE> vanillaType, Class<? extends RECIPE> recipeClass, Item item, ItemLike... altWorkstations) {
-        this(Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getKey(vanillaType)), vanillaType, recipeClass, new ItemStack(item), List.of(altWorkstations));
+        this(Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getKey(vanillaType)), vanillaType, recipeClass, new ItemStack(item), IRecipeViewerRecipeType.asWorkStations(altWorkstations));
     }
 
     @Override

@@ -12,14 +12,14 @@ import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
-public record RotaryRVRecipeType(Identifier id, IHasTranslationKey name, List<ItemLike> workstations) implements IRecipeViewerRecipeType<RotaryRecipe>,
+public record RotaryRVRecipeType(Identifier id, IHasTranslationKey name, List<SlotDisplay> workstations) implements IRecipeViewerRecipeType<RotaryRecipe>,
       IMekanismRecipeTypeProvider<RotaryRecipeInput, RotaryRecipe, RotaryInputRecipeCache> {
 
     public RotaryRVRecipeType(Identifier id, IHasTranslationKey name) {
-        this(id, name, List.of(MekanismBlocks.ROTARY_CONDENSENTRATOR));
+        this(id, name, IRecipeViewerRecipeType.asWorkStations(MekanismBlocks.ROTARY_CONDENSENTRATOR));
     }
 
     @Override
