@@ -27,12 +27,12 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.moddev').version('2.0.143')//https://projects.neoforged.net/neoforged/moddevgradle
+    id('net.neoforged.moddev').version('2.0.147')//https://projects.neoforged.net/neoforged/moddevgradle
 }
 
 tasks.named('wrapper', Wrapper, {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '9.6.1'
+    gradleVersion = '9.7.1'
     distributionType = Wrapper.DistributionType.ALL
 })
 
@@ -75,7 +75,7 @@ ext {
             'jei'             : new IntegrationSettings(shouldCompile: true, perModule: PerModule.MODULE_ONLY),
             'projecte'        : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL),
             'recipe_stages'   : new IntegrationSettings(shouldCompile: false),
-            'the_one_probe'   : new IntegrationSettings(shouldCompile: false),
+            'the_one_probe'   : new IntegrationSettings(shouldCompile: true),
             'wthit'           : new IntegrationSettings(shouldCompile: true)
     ]
 }
