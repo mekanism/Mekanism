@@ -22,6 +22,7 @@ abstract class OptimizePng extends DefaultTask {
     @Inject
     OptimizePng(ObjectFactory objects) {
         this.inputFiles = objects.fileCollection()
+        outputs.upToDateWhen { true }
     }
 
     @Inject
