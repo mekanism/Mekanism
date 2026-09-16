@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mekanismtools:osmium"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "mekanismtools:osmium"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mekanismtools:osmium"
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mekanismtools:refined_glowstone"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "mekanismtools:refined_glowstone"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mekanismtools:refined_glowstone"
+      }
+    ]
+  }
+}

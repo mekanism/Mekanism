@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mekanismtools:lapis_lazuli"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "mekanismtools:lapis_lazuli"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mekanismtools:lapis_lazuli"
+      }
+    ]
+  }
+}
