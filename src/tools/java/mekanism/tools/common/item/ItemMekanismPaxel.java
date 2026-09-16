@@ -45,7 +45,8 @@ public class ItemMekanismPaxel extends Item {
                     material.getPaxelAtkSpeed(),
                     0
               )
-              .durability(material.getPaxelDurability())//must go after Tool
+              //Durability must go after tool to set it to the correct value, rather than one that goes off of the base tool material
+              .durability(material.getPaxelDurability())
         );
     }
 

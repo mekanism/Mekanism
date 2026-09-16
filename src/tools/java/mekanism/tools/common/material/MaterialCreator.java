@@ -13,6 +13,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
@@ -448,7 +449,8 @@ public class MaterialCreator implements BaseMekanismMaterial {
 
     public ArmorMaterial toArmorMaterial(ArmorType type) {
         return new ArmorMaterial(
-              getDurabilityForType(type),
+              //Best effort durability multiplier
+              Mth.ceil(getDurabilityForType(type) / (float) type.getDurability(1)),
               Map.of(type, getDefense(type)),
               getArmorEnchantmentValue(),
               equipSound(),
