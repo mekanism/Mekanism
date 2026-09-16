@@ -4,7 +4,7 @@
   "key": {
     "A": "mekanismtools:steel_axe",
     "P": "mekanismtools:steel_pickaxe",
-    "R": "#c:ingots/iron",
+    "R": "#c:rods/wooden",
     "S": "mekanismtools:steel_shovel"
   },
   "pattern": [

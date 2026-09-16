@@ -1,4 +1,4 @@
-// 26.2	2026-09-14T10:59:06.630636	Recipes: mekanismtools
+// 26.2	2026-09-16T14:20:20.2657002	Recipes: mekanismtools
 e223cbde7adefe647bf8f1bdf89df15550e28599 data/mekanismtools/recipe/bronze/armor/boots.json
 5df9f38fdfc921e1f73cd85951a5ffeca198ff39 data/mekanismtools/recipe/bronze/armor/chestplate.json
 2142eada34d6e890a71bec0bda427ef87d4e1c49 data/mekanismtools/recipe/bronze/armor/helmet.json
@@ -85,13 +85,13 @@ d6f5a38818192d017c7256c4bb0c9c51913786d1 data/mekanismtools/recipe/refined_obsid
 eeccb6888d83240f692827e63d797f6a7a7d7c7b data/mekanismtools/recipe/steel/nugget_from_blasting.json
 994f026c66251ba2e6959112d000d151fcbb3af7 data/mekanismtools/recipe/steel/nugget_from_smelting.json
 6f9c96a63ba994bca7c4fabe27af030ee7c3526d data/mekanismtools/recipe/steel/shield.json
-ddfeadd7c0a55c4cfd564d5be5c9407061fff00e data/mekanismtools/recipe/steel/tools/axe.json
-bd8ef03bc963b82e9c9f13fb154a58703a7a865f data/mekanismtools/recipe/steel/tools/hoe.json
-84fb24dd62f3ed2cb99986d3ddd1861d12ec3adc data/mekanismtools/recipe/steel/tools/paxel.json
-57cde6252a68f05c33fdd95e50ce61aaf640bca4 data/mekanismtools/recipe/steel/tools/pickaxe.json
-54058a8582e21f1f47497d893649453cb4d54b99 data/mekanismtools/recipe/steel/tools/shovel.json
-b3c25014311410f8da21dece72939f874fae4af2 data/mekanismtools/recipe/steel/tools/spear.json
-d7af4c99203b1fc062d6b451c87a9d68fe818bf5 data/mekanismtools/recipe/steel/tools/sword.json
+f6233f7bf0df83bd3c752385de2e7edfbfef0c55 data/mekanismtools/recipe/steel/tools/axe.json
+e89853b000ee34e951bbbd3a80599c8d3cf95a7e data/mekanismtools/recipe/steel/tools/hoe.json
+f7d3f95af8e5ddff2017bce5909bd9528ecd5769 data/mekanismtools/recipe/steel/tools/paxel.json
+539a9458c4bf1d0c6c8854655d00c099e05f2c35 data/mekanismtools/recipe/steel/tools/pickaxe.json
+e83125e31a1277045cb6d8e132acebaea88f13eb data/mekanismtools/recipe/steel/tools/shovel.json
+054499e728f39a2601c8d869e2103dca6062e8a9 data/mekanismtools/recipe/steel/tools/spear.json
+8caedda56f540323830c6bb37377ff52a212d311 data/mekanismtools/recipe/steel/tools/sword.json
 66f14ec90da6a10557fcfe31e00c49718b429e2d data/mekanismtools/recipe/stone_paxel.json
 e4fa09a13395d21e6eb43210f32cc887acb5f2bd data/mekanismtools/recipe/wood_paxel.json
 e94efeab4533538deae5f948a65b2fefe6f24090 data/minecraft/recipe/bronze/shield_decoration.json

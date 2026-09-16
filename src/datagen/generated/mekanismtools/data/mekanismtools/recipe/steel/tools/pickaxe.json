@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "I": "#c:ingots/steel",
-    "R": "#c:ingots/iron"
+    "R": "#c:rods/wooden"
   },
   "pattern": [
     "III",
