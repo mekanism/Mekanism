@@ -25,7 +25,7 @@ public final class MekanismHooks {
     public static final String CURIOS_MOD_ID = "curios";
     public static final String EMI_MOD_ID = "emi";
     public static final String FRAMED_BLOCKS_MOD_ID = "framedblocks";
-    public static final String GENDER_MOD_ID = "wildfire_gender";
+    public static final String GENDER_MOD_ID = "female_gender_mod";
     public static final String JEI_MOD_ID = "jei";
     public static final String JEITWEAKER_MOD_ID = "jeitweaker";
     public static final String PROJECTE_MOD_ID = "projecte";

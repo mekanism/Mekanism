@@ -70,7 +70,7 @@ ext {
             'emi'             : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL, perModule: PerModule.MODULE_ONLY),
             'farmers_delight' : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.DATA_ONLY),
             'framedblocks'    : new IntegrationSettings(shouldCompile: true),
-            'gender'          : new IntegrationSettings(shouldCompile: true, perModule: PerModule.MODULE_ONLY),
+            'gender'          : new IntegrationSettings(shouldCompile: true, scope: IntegrationScope.DATA_ONLY, perModule: PerModule.ALL),
             'jade'            : new IntegrationSettings(shouldCompile: true),
             'jei'             : new IntegrationSettings(shouldCompile: true, perModule: PerModule.MODULE_ONLY),
             'projecte'        : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL),
@@ -361,6 +361,10 @@ void setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
                             def moduleDataIntegration = getIntegrationDataSourceSet(integration.key, base.name).get()
                             moduleDataIntegration.compileClasspath += extraSourceSet.output
                             moduleDataIntegration.runtimeClasspath += extraSourceSet.runtimeClasspath
+                            if (base != project.sourceSets.main) {
+                                //If we haven't already added the main extra source set to this integration, we need to do so here
+                                moduleDataIntegration.compileClasspath += getExtraSourceSet(project.sourceSets.main, extraType).get().output
+                            }
                             //Make the integration datagen sourceset able to use dependencies defined in the corresponding module.
                             setupConfigurationExtensions(moduleDataIntegration, extraSourceSet, false)
                         }
@@ -561,6 +565,7 @@ neoForge {
             for (def integration : integrations as Map<String, IntegrationSettings>) {
                 if (integration.value.shouldCompile() && integration.value.scope().hasData && integration.value.perModule().enabled()) {
                     if (integration.value.scope().hasBase) {
+                        //Add the base data so that it can be accessed by the datagen portion of the integration
                         modSourceSets.add(getIntegrationSourceSet(integration.key, name))
                     }
                     if (integration.value.perModule().datagen()) {
@@ -775,12 +780,12 @@ dependencies {
     integrationRecipeStagesCompileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     integrationComputerCraftCompileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
     //integrationComputerCraftLocalRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
-    integrationGenderCompileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
     integrationFramedblocksCompileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
 
     //Dependencies for data generators for mod compat reference
     datagenIntegrationProjecteLocalRuntime("curse.maven:projecte-226410:${projecte_id}")
     datagenIntegrationAe2Implementation("org.appliedenergistics:appliedenergistics2:${ae2_version}")
+    datagenIntegrationGenderImplementation("curse.maven:female-gender-456319:${gender_mod_id}")
 
     def terraBlender = "com.github.glitchfiend:TerraBlender-neoforge:${terrablender_version}"
     datagenIntegrationBiomesOPlentyLocalRuntime(terraBlender)

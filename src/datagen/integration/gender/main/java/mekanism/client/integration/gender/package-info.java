@@ -1,4 +1,4 @@
 @NullMarked
-package mekanism.common.integration.gender;
+package mekanism.client.integration.gender;
 
 import org.jspecify.annotations.NullMarked;

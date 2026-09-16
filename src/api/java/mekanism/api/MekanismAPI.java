@@ -1,7 +1,10 @@
 package mekanism.api;
 
 import com.mojang.logging.LogUtils;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.ServiceLoader;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.Nullable;
@@ -48,14 +51,10 @@ public class MekanismAPI {
     @Internal
     public static <SERVICE> SERVICE getService(Class<SERVICE> serviceClass) {
         SERVICE service = getOptionalService(serviceClass);
-        if (service != null) {
-            return service;
+        if (service == null) {
+            throw serviceImplException(serviceClass);
         }
-
-        IllegalStateException illegalStateException = new IllegalStateException("No valid ServiceImpl for " + serviceClass.getSimpleName() + " found");
-        logger.error("Failed to load service", illegalStateException);
-        logger.error("CL: {} CCL: {}", SERVICE_CL, Thread.currentThread().getContextClassLoader());
-        throw illegalStateException;
+        return service;
     }
 
     /// Loads a Mekanism service from ServiceLoader, ensuring that the correct classloader is used instead of relying on the context classloader, which may not be
@@ -72,5 +71,38 @@ public class MekanismAPI {
             return service.next();
         }
         return null;
+    }
+
+    /// Loads a Mekanism service from ServiceLoader for each modid, ensuring that the correct classloader is used instead of relying on the context classloader, which may
+    /// not be correct
+    ///
+    /// @param serviceClass the interface class to search for
+    ///
+    /// @return the concrete implementations
+    ///
+    /// @throws IllegalStateException when an implementation is not found, or multiple services have the same modid.
+    @Internal
+    public static <SERVICE extends ModBasedService> Map<String, SERVICE> getModBasedServices(Class<SERVICE> serviceClass) {
+        Map<String, SERVICE> map = new HashMap<>();
+        for (SERVICE service : ServiceLoader.load(serviceClass, SERVICE_CL)) {
+            if (map.put(service.modid(), service) != null) {
+                throw serviceImplException("Multiple ServiceImpls for " + serviceClass.getSimpleName() + " found with modid " + service.modid());
+            }
+        }
+        if (map.isEmpty()) {
+            throw serviceImplException(serviceClass);
+        }
+        return Collections.unmodifiableMap(map);
+    }
+
+    private static IllegalStateException serviceImplException(Class<?> serviceClass) {
+        return serviceImplException("No valid ServiceImpl for " + serviceClass.getSimpleName() + " found");
+    }
+
+    private static IllegalStateException serviceImplException(String message) {
+        IllegalStateException illegalStateException = new IllegalStateException(message);
+        logger.error("Failed to load service", illegalStateException);
+        logger.error("CL: {} CCL: {}", SERVICE_CL, Thread.currentThread().getContextClassLoader());
+        return illegalStateException;
     }
 }

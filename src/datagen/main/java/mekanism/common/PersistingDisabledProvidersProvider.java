@@ -15,6 +15,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import mekanism.client.integration.emi.IMekEmiDatagen;
+import mekanism.client.integration.gender.IMekGenderDatagen;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
 import mekanism.client.recipe_viewer.alias.MekanismAliasMapping;
 import mekanism.common.integration.IMekCrTDatagen;
@@ -54,6 +55,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         } else {
             skipEmi(Mekanism.MODID, pathsToSkip, fakeProviders);
         }
+        addGender(gen, output, lookupProvider, Mekanism.MODID, pathsToSkip, fakeProviders);
         if (Mekanism.hooks.projecte.isLoaded()) {
             gen.addProvider(true, IMekProjectEDatagen.INSTANCE.customConversionProvider(output, lookupProvider));
         } else {
@@ -84,6 +86,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         } else {
             skipEmi(modid, pathsToSkip, fakeProviders);
         }
+        addGender(gen, output, lookupProvider, modid, pathsToSkip, fakeProviders);
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         gen.addProvider(true, new PersistingDisabledProvidersProvider(output, modid, Collections.emptySet(), pathsToSkip, fakeProviders));
@@ -93,6 +96,20 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         Mekanism.logger.warn("Skipping and persisting existing {} data generated files for EMI", modid);
         pathsToSkip.add("emi/aliases");
         fakeProviders.add("EMI Alias Provider: " + modid);
+    }
+
+    private static void addGender(DataGenerator gen, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid, Set<String> pathsToSkip,
+          List<String> fakeProviders) {
+        if (Mekanism.hooks.genderMod.isLoaded()) {
+            IMekGenderDatagen genderDatagen = IMekGenderDatagen.INSTANCES.get(modid);
+            if (genderDatagen != null) {
+                gen.addProvider(true, genderDatagen.armorProvider(output, lookupProvider));
+            }
+        } else {
+            Mekanism.logger.warn("Skipping and persisting existing {} data generated files for Female Gender Mod", modid);
+            pathsToSkip.add("female_gender_mod/armor_data");
+            fakeProviders.add("Gender Armor Provider: " + modid);
+        }
     }
 
     private final Set<String> disabledCompats;
