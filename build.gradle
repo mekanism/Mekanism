@@ -510,6 +510,7 @@ neoForge {
     accessTransformers = [
             'src/main/resources/META-INF/accesstransformer.cfg',
             'src/additions/resources/META-INF/accesstransformer.cfg',
+            'src/tools/resources/META-INF/accesstransformer.cfg',
             //Dev time only ATs so the file name doesn't have to match accesstransformer.cfg
             'src/datagen/main/resources/META-INF/datagen_ats.cfg',
             'src/gameTest/resources/META-INF/gametest_ats.cfg',
