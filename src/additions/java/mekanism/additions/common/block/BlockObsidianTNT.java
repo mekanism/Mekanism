@@ -88,7 +88,6 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
 
     @Override
     public boolean onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction side, @Nullable LivingEntity source, ItemStack ignitionItem) {
-        //TODO - 26.3: Double check that we updated this correctly
         if (level instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.TNT_EXPLODES)) {
             if (source instanceof Player player && player.gameMode() == GameType.ADVENTURE
                 && !ignitionItem.canBreakBlockInAdventureMode(new BlockInWorld(level, pos, false))) {
@@ -102,11 +101,11 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
     }
 
     @Override
-    public void wasExploded(ServerLevel world, BlockPos pos, Explosion explosion) {
-        if (!world.isClientSide()) {
-            PrimedTnt tnt = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, explosion.getIndirectSourceEntity());
-            tnt.setFuse((short) (world.getRandom().nextInt(tnt.getFuse() / 4) + tnt.getFuse() / 8));
-            world.addFreshEntity(tnt);
+    public void wasExploded(ServerLevel level, BlockPos pos, Explosion explosion) {
+        if (level.getGameRules().get(GameRules.TNT_EXPLODES)) {
+            PrimedTnt tnt = new EntityObsidianTNT(level, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, explosion.getIndirectSourceEntity());
+            tnt.setFuse(PrimedTnt.getRandomShortFuse(tnt.getFuse(), level.getRandom()));
+            level.addFreshEntity(tnt);
         }
     }
 
