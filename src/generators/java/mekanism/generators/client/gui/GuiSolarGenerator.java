@@ -36,7 +36,7 @@ public class GuiSolarGenerator<TILE extends TileEntitySolarGenerator> extends Gu
         addRenderableWidget(new GuiEnergyTab(this, () -> List.of(GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProductionRate())))));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15));
         addRenderableWidget(new GuiStateTexture(this, 18, 35, tile::canSeeSun, MekanismGenerators.rl("state/sees_sun"),
-              MekanismGenerators.rl("state/no_sun.png")));
+              MekanismGenerators.rl("state/no_sun")));
     }
 
     @Override
