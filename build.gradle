@@ -434,6 +434,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe', 'dev.technici4n', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
+    exclusiveRepo(handler, 'https://maven.michiyo.me/releases/', 'li.cil.oc')
     exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel.projecte')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
     handler.exclusiveContent {
@@ -509,6 +510,7 @@ dependencies {
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
+    compileOnly("li.cil.oc:opencomputers:${oc_version}:api")
     compileOnly("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge-api:${cc_tweaked_version}")
     //localRuntime("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
@@ -730,7 +732,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
             //Add optional deps
             addOptional(
                     //Computers
-                    'cc-tweaked', 'oc2',
+                    'cc-tweaked', 'oc2', 'opencomputers',
                     //Looking at mods
                     'jade', 'the-one-probe', 'wthit-forge',
                     //Recipe viewers
