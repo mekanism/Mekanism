@@ -20,7 +20,6 @@ import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.context.ContextKeySet;
 import net.minecraft.util.context.ContextMap;
 import net.neoforged.neoforge.client.model.NeoForgeModelProperties;
 import org.joml.Matrix4f;
@@ -48,7 +47,7 @@ public class ModelUtil {
         ContextMap.Builder builder = ContextMap.builder();
         fillAdditionalProperties(resolvedModel, builder);
         builder.set(NeoForgeModelProperties.PART_VISIBILITY, visibilityMap);
-        return builder.buildAndValidate(ContextKeySet.EMPTY);
+        return builder.build();
     }
 
     /// copied from Neo [net.neoforged.neoforge.client.extensions.ResolvedModelExtension] as it's private
