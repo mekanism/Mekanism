@@ -14,7 +14,6 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.tile.interfaces.IHasMode;
-import mekanism.common.util.ValueUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.base.IReactorLogic;
 import mekanism.generators.common.base.IReactorLogicMode;
@@ -102,14 +101,14 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        ValueUtils.setEnumIfPresent(input, SerializationConstants.LOGIC_TYPE, FusionReactorLogic.BY_ID, logicType -> this.logicType = logicType);
+        input.read(SerializationConstants.LOGIC_TYPE, FusionReactorLogic.CODEC).ifPresent(logicType -> this.logicType = logicType);
         activeCooled = input.getBooleanOr(SerializationConstants.ACTIVE_COOLED, activeCooled);
     }
 
     @Override
     public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
-        ValueUtils.writeEnum(output, SerializationConstants.LOGIC_TYPE, logicType);
+        output.store(SerializationConstants.LOGIC_TYPE, FusionReactorLogic.CODEC, logicType);
         output.putBoolean(SerializationConstants.ACTIVE_COOLED, activeCooled);
     }
 

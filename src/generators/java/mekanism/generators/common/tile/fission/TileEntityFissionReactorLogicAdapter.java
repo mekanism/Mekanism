@@ -15,7 +15,6 @@ import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
-import mekanism.common.util.ValueUtils;
 import mekanism.common.util.text.TextUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.base.IReactorLogic;
@@ -161,13 +160,13 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        ValueUtils.setEnumIfPresent(input, SerializationConstants.LOGIC_TYPE, FissionReactorLogic.BY_ID, logicType -> this.logicType = logicType);
+        input.read(SerializationConstants.LOGIC_TYPE, FissionReactorLogic.CODEC).ifPresent(logicType -> this.logicType = logicType);
     }
 
     @Override
     public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
-        ValueUtils.writeEnum(output, SerializationConstants.LOGIC_TYPE, logicType);
+        output.store(SerializationConstants.LOGIC_TYPE, FissionReactorLogic.CODEC, logicType);
     }
 
     @Override

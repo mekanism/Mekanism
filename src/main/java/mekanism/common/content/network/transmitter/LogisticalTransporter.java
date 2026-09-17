@@ -10,7 +10,6 @@ import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.upgrade.transmitter.LogisticalTransporterUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
-import mekanism.common.util.ValueUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -95,29 +94,25 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     @Override
     public void read(ValueInput input) {
         super.read(input);
-        setColor(ValueUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID));
+        setColor(input.read(SerializationConstants.COLOR, EnumColor.CODEC).orElse(null));
     }
 
     @Override
     public void write(ValueOutput output) {
         super.write(output);
-        if (getColor() != null) {
-            ValueUtils.writeEnum(output, SerializationConstants.COLOR, getColor());
-        }
+        output.storeNullable(SerializationConstants.COLOR, EnumColor.CODEC, getColor());
     }
 
     @Override
     public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
-        if (getColor() != null) {
-            ValueUtils.writeEnum(output, SerializationConstants.COLOR, getColor());
-        }
+        output.storeNullable(SerializationConstants.COLOR, EnumColor.CODEC, getColor());
     }
 
     @Override
     public boolean handleUpdateTag(ValueInput input) {
         boolean refreshModelData = super.handleUpdateTag(input);
-        EnumColor color = ValueUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
+        EnumColor color = input.read(SerializationConstants.COLOR, EnumColor.CODEC).orElse(null);
         if (this.color != color) {
             setColor(color);
             //Color changed, mark the model data as needing to be refreshed

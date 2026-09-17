@@ -46,7 +46,6 @@ import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.ValueUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.BlockPos;
@@ -404,7 +403,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     @Override
     public void deserialize(ValueInput ejectorInput) {
         strictInput = ejectorInput.getBooleanOr(SerializationConstants.STRICT_INPUT, strictInput);
-        outputColor = ValueUtils.getEnum(ejectorInput, SerializationConstants.COLOR, EnumColor.BY_ID);
+        outputColor = ejectorInput.read(SerializationConstants.COLOR, EnumColor.CODEC).orElse(null);
         //Input colors
         Optional<int[]> optionalColors = ejectorInput.getIntArray(SerializationConstants.INPUT_COLOR);
         if (optionalColors.isPresent()) {
@@ -422,9 +421,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         if (strictInput) {
             ejectorOutput.putBoolean(SerializationConstants.STRICT_INPUT, true);
         }
-        if (outputColor != null) {
-            ValueUtils.writeEnum(ejectorOutput, SerializationConstants.COLOR, outputColor);
-        }
+        ejectorOutput.storeNullable(SerializationConstants.COLOR, EnumColor.CODEC, outputColor);
         //Input colors
         int[] colors = new int[inputColors.length];
         boolean hasColor = false;

@@ -3,7 +3,6 @@ package mekanism.generators.common.content.turbine;
 import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
-import mekanism.common.util.ValueUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -33,12 +32,12 @@ public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
     @Override
     public void load(ValueInput input) {
         super.load(input);
-        ValueUtils.setEnumIfPresent(input, SerializationConstants.DUMP_MODE, GasMode.BY_ID, mode -> dumpMode = mode);
+        input.read(SerializationConstants.DUMP_MODE, GasMode.CODEC).ifPresent(mode -> dumpMode = mode);
     }
 
     @Override
     public void save(ValueOutput output) {
         super.save(output);
-        ValueUtils.writeEnum(output, SerializationConstants.DUMP_MODE, dumpMode);
+        output.store(SerializationConstants.DUMP_MODE, GasMode.CODEC, dumpMode);
     }
 }

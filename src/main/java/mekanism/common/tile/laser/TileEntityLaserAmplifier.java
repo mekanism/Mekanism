@@ -28,7 +28,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.ValueUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -179,7 +178,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         input.getInt(SerializationConstants.MAX).ifPresent(this::updateMaxThreshold);
         //TODO - 26.3: Re-evaluate all the cases we have an or that support optional if we should just use the optional
         delay = input.getIntOr(SerializationConstants.TIME, delay);
-        ValueUtils.setEnumIfPresent(input, SerializationConstants.OUTPUT_MODE, RedstoneOutput.BY_ID, mode -> outputMode = mode);
+        input.read(SerializationConstants.OUTPUT_MODE, RedstoneOutput.CODEC).ifPresent(mode -> outputMode = mode);
     }
 
     @Override
@@ -188,7 +187,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         output.putInt(SerializationConstants.MIN, minThreshold);
         output.putInt(SerializationConstants.MAX, maxThreshold);
         output.putInt(SerializationConstants.TIME, delay);
-        ValueUtils.writeEnum(output, SerializationConstants.OUTPUT_MODE, outputMode);
+        output.store(SerializationConstants.OUTPUT_MODE, RedstoneOutput.CODEC, outputMode);
     }
 
     @Override

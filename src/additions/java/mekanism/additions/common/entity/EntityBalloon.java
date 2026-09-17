@@ -7,7 +7,6 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
-import mekanism.common.util.ValueUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -233,14 +232,14 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     public void readAdditionalSaveData(ValueInput input) {
-        ValueUtils.setEnumIfPresent(input, SerializationConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
+        input.read(SerializationConstants.COLOR, EnumColor.CODEC).ifPresent(color -> this.color = color);
         entityData.set(LATCHED_POS, input.read(SerializationConstants.LATCHED, BlockPos.CODEC));
         entityData.set(LATCHED_ENTITY, input.read(SerializationConstants.LATCHED_ENTITY, EntityReference.codec()));
     }
 
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
-        ValueUtils.writeEnum(output, SerializationConstants.COLOR, color);
+        output.store(SerializationConstants.COLOR, EnumColor.CODEC, color);
         output.storeNullable(SerializationConstants.LATCHED, BlockPos.CODEC, latchedPos());
         output.storeNullable(SerializationConstants.LATCHED_ENTITY, EntityReference.codec(), entityData.get(LATCHED_ENTITY).orElse(null));
     }

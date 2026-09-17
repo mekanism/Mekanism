@@ -8,11 +8,11 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.transporter.SorterFilter;
@@ -35,7 +35,6 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.ValueUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -303,9 +302,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @Override
     public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
-        if (color != null) {
-            ValueUtils.writeEnum(output, SerializationConstants.COLOR, color);
-        }
+        output.storeNullable(SerializationConstants.COLOR, EnumColor.CODEC, color);
         output.putBoolean(SerializationConstants.EJECT, autoEject);
         output.putBoolean(SerializationConstants.ROUND_ROBIN, roundRobin);
         output.putBoolean(SerializationConstants.SINGLE_ITEM, singleItem);
@@ -315,7 +312,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        this.color = ValueUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
+        this.color = input.read(SerializationConstants.COLOR, EnumColor.CODEC).orElse(null);
         autoEject = input.getBooleanOr(SerializationConstants.EJECT, autoEject);
         roundRobin = input.getBooleanOr(SerializationConstants.ROUND_ROBIN, roundRobin);
         singleItem = input.getBooleanOr(SerializationConstants.SINGLE_ITEM, singleItem);

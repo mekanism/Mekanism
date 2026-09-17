@@ -40,7 +40,6 @@ import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.ChemicalTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.ChemicalUtils;
-import mekanism.common.util.ValueUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -179,13 +178,13 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     @Override
     public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
-        ValueUtils.writeEnum(output, SerializationConstants.DUMP_MODE, dumping);
+        output.store(SerializationConstants.DUMP_MODE, GasMode.CODEC, dumping);
     }
 
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        ValueUtils.setEnumIfPresent(input, SerializationConstants.DUMP_MODE, GasMode.BY_ID, mode -> dumping = mode);
+        input.read(SerializationConstants.DUMP_MODE, GasMode.CODEC).ifPresent(mode -> dumping = mode);
     }
 
     @Override

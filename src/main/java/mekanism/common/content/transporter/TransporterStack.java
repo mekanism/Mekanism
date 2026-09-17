@@ -1,8 +1,10 @@
 package mekanism.common.content.transporter;
 
+import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.SerializationConstants;
@@ -14,13 +16,13 @@ import mekanism.common.content.transporter.TransporterPathfinder.IdlePathData;
 import mekanism.common.lib.inventory.IAdvancedTransportEjector;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
-import mekanism.common.util.ValueUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -82,16 +84,16 @@ public class TransporterStack {
     }
 
     private TransporterStack(ValueInput input) {
-        this.color = ValueUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
+        this.color = input.read(SerializationConstants.COLOR, EnumColor.CODEC).orElse(null);
         this.progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
         this.originalLocation = input.getLongOr(SerializationConstants.ORIGINAL_LOCATION, Long.MAX_VALUE);
-        this.pathType = ValueUtils.getEnum(input, SerializationConstants.PATH_TYPE, Path.BY_ID);
+        this.pathType = input.read(SerializationConstants.PATH_TYPE, Path.CODEC).orElse(null);
         this.itemStack = LargeResourceStack.ITEM_HELPER.readOrEmpty(input, SerializationConstants.ITEM);
     }
 
     public static TransporterStack read(ValueInput input) {
         TransporterStack stack = new TransporterStack(input);
-        stack.idleDir = ValueUtils.getEnum(input, SerializationConstants.IDLE_DIR, Direction::from3DDataValue);
+        stack.idleDir = input.read(SerializationConstants.IDLE_DIR, Direction.CODEC).orElse(null);
         stack.homeLocation = input.getLongOr(SerializationConstants.HOME_LOCATION, Long.MAX_VALUE);
         return stack;
     }
@@ -104,9 +106,7 @@ public class TransporterStack {
     }
 
     private void writeCommon(ValueOutput output) {
-        if (color != null) {
-            ValueUtils.writeEnum(output, SerializationConstants.COLOR, color);
-        }
+        output.storeNullable(SerializationConstants.COLOR, EnumColor.CODEC, color);
         output.putInt(SerializationConstants.PROGRESS, progress);
         output.putLong(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
         LargeResourceStack.ITEM_HELPER.storeNonEmpty(output, SerializationConstants.ITEM, itemStack);
@@ -114,7 +114,7 @@ public class TransporterStack {
 
     public void writeToUpdateTag(LogisticalTransporterBase transporter, ValueOutput output) {
         writeCommon(output);
-        ValueUtils.writeEnum(output, SerializationConstants.PATH_TYPE, getPathType());
+        output.store(SerializationConstants.PATH_TYPE, Path.CODEC, getPathType());
         long next = getNext(transporter);
         if (next != Long.MAX_VALUE) {
             output.putLong(SerializationConstants.NEXT, next);
@@ -127,14 +127,10 @@ public class TransporterStack {
 
     public void write(ValueOutput output) {
         writeCommon(output);
-        if (pathType != null) {
-            //TODO - 26.3: Figure out path type and if we should set it to none when saving to file instead of not saving it
-            // given that for syncing we pretend it is none.
-            ValueUtils.writeEnum(output, SerializationConstants.PATH_TYPE, pathType);
-        }
-        if (idleDir != null) {
-            ValueUtils.writeEnum(output, SerializationConstants.IDLE_DIR, idleDir);
-        }
+        //TODO - 26.3: Figure out path type and if we should set it to none when saving to file instead of not saving it
+        // given that for syncing we pretend it is none.
+        output.storeNullable(SerializationConstants.PATH_TYPE, Path.CODEC, pathType);
+        output.storeNullable(SerializationConstants.IDLE_DIR, Direction.CODEC, idleDir);
         if (homeLocation != Long.MAX_VALUE) {
             output.putLong(SerializationConstants.HOME_LOCATION, homeLocation);
         }
@@ -323,13 +319,20 @@ public class TransporterStack {
         return null;
     }
 
-    public enum Path {
+    public enum Path implements StringRepresentable {
         DEST,
         HOME,
         NONE;
 
+        public static final Codec<Path> CODEC = StringRepresentable.fromEnum(Path::values);
         public static final IntFunction<Path> BY_ID = ByIdMap.continuous(Path::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, Path> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, Path::ordinal);
+
+        private final String serializedName;
+
+        Path() {
+            this.serializedName = name().toLowerCase(Locale.ROOT);
+        }
 
         public boolean hasTarget() {
             return this != NONE;
@@ -341,6 +344,11 @@ public class TransporterStack {
 
         public boolean isHome() {
             return this == HOME;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return serializedName;
         }
     }
 }

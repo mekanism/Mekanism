@@ -101,7 +101,6 @@ import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.ValueUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
@@ -804,13 +803,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public void writeSustainedData(ValueOutput output) {
         if (supportsRedstone()) {
-            ValueUtils.writeEnum(output, SerializationConstants.CONTROL_TYPE, controlType);
+            output.store(SerializationConstants.CONTROL_TYPE, RedstoneControl.CODEC, controlType);
         }
     }
 
     public void readSustainedData(ValueInput input) {
         if (supportsRedstone()) {
-            ValueUtils.setEnumIfPresent(input, SerializationConstants.CONTROL_TYPE, RedstoneControl.BY_ID, type -> controlType = supportedOrNextType(type));
+            input.read(SerializationConstants.CONTROL_TYPE, RedstoneControl.CODEC).ifPresent(type -> controlType = supportedOrNextType(type));
         }
     }
 
