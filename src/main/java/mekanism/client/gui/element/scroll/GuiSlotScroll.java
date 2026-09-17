@@ -102,7 +102,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
             return super.mouseReleased(event);
         }
         super.mouseReleased(event);
-        //TODO - 26.2: Evaluate if we just want to pass the mouse button event directly?
+        //TODO - 26.3: Evaluate if we just want to pass the mouse button event directly?
         clickHandler.onClick(() -> getSlot(event.x(), event.y()), event.button(), event.hasShiftDown(), gui().getCarriedItem());
         return true;
     }
@@ -183,7 +183,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
             //Note: If it would still overflow, then we just let the scrolling text handle it
             scale = 0.5F;
         }
-        //TODO - 26.2: gui zindex
+        //TODO - 26.3: gui zindex
         //PoseStack pose = guiGraphics.pose();
         //pose.pushPose();
         //pose.translate(0, 0, 200);

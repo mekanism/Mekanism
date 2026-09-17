@@ -601,7 +601,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private boolean canMine(ServerLevel level, BlockState state, BlockPos pos) {
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
         dummy.setEmulatingData(this);//pretend to be the owner
-        //TODO - 26.2: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
+        //TODO - 26.3: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
         boolean canMine = !NeoForge.EVENT_BUS.post(new BreakBlockEvent(level, pos, state, dummy)).isCanceled();
         if (MekanismAPI.debug && !canMine) {
             Mekanism.logger.debug("Denied mining block: {} @ {} {}", state, level.dimension().identifier(), pos);

@@ -30,7 +30,7 @@ public record PacketLightningRender(LightningPreset preset, int renderer, Vector
           PacketLightningRender::new
     );
 
-    //TODO - 26.2: Re-evaluate this constructor
+    //TODO - 26.3: Re-evaluate this constructor
     public PacketLightningRender(LightningPreset preset, int renderer, Vec3 start, Vec3 end, int segments) {
         this(preset, renderer, start.toVector3f(), end.toVector3f(), segments);
     }

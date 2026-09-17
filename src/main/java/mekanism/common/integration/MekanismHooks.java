@@ -117,7 +117,7 @@ public final class MekanismHooks {
 
     /// @apiNote DME only uses strings in IMC, so we can safely just include them here without worrying about classloading issues
     private void sendDarkModeEverywhereIMC() {
-        //TODO - 26.2: Figure out what things we need to be adding to this
+        //TODO - 26.3: Figure out what things we need to be adding to this
         List<Supplier<String>> methodBlacklist = List.of(
               //Used for drawing fluids and chemicals in various GUIs including JEI as well as similar styled things
               () -> "mekanism.client.gui.GuiUtils:drawTiledSprite",

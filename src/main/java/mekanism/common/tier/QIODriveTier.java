@@ -12,7 +12,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 
-//TODO - 26.2: Do we want to expose this to the config? If not we could make the metadata just be the DriveCapacity record
+//TODO - 26.3: Do we want to expose this to the config? If not we could make the metadata just be the DriveCapacity record
 public enum QIODriveTier implements ITier, IQIODriveCapacity {
     BASE(BaseTier.BASIC, 16_000, 128),
     HYPER_DENSE(BaseTier.ADVANCED, 128_000, 256),

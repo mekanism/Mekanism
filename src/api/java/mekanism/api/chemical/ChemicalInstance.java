@@ -21,7 +21,7 @@ import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import org.jspecify.annotations.Nullable;
 
 /// @since 10.8.0
-public interface ChemicalInstance extends TypedInstance<Chemical>, IHasTranslationKey {//TODO - 26.2: Docs
+public interface ChemicalInstance extends TypedInstance<Chemical>, IHasTranslationKey {//TODO - 26.3: Docs
 
     String FIELD_ID = ItemInstance.FIELD_ID;
 

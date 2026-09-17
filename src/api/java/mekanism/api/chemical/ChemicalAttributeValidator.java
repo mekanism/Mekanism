@@ -6,7 +6,7 @@ import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 
 @FunctionalInterface
-public interface ChemicalAttributeValidator {//TODO - 26.2: Re-evaluate how this class functions
+public interface ChemicalAttributeValidator {//TODO - 26.3: Re-evaluate how this class functions
 
     ChemicalAttributeValidator DEFAULT = attr -> !attr.needsValidation();
     ChemicalAttributeValidator ALWAYS_ALLOW = new ChemicalAttributeValidator() {

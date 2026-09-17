@@ -91,7 +91,7 @@ public class MekanismKeyHandler {
                   PacketUtils.sendToServer(new PacketOpenGui(GuiType.MODULE_TWEAKER));
               }
           }).build();
-    //TODO - 26.2: Evaluate control vs command for macs
+    //TODO - 26.3: Evaluate control vs command for macs
     public static final KeyMapping boostKey = new MekKeyBindingBuilder()
           .description(MekanismLang.KEY_BOOST)
           .conflictInGame()

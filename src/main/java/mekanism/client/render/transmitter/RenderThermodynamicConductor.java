@@ -31,7 +31,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
         super.extractRenderState(conductor, state, partialTick, cameraPosition, breakProgress);
         ThermodynamicConductor transmitter = conductor.getTransmitter();
         setContentsModel(conductor, state, HEAT_ICON_LOCATION, HeatUtils.getColorFromTemp(transmitter.getTemperature(), transmitter.getBaseColor()).argb());
-        //TODO - 26.2: What do we want to use for the light level
+        //TODO - 26.3: What do we want to use for the light level
         state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
     }
 

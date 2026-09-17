@@ -77,7 +77,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.2: Part of leg LED is not glowing
+//TODO - 26.3: Part of leg LED is not glowing
 public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
     private static final String INACTIVE_TAG = "inactive_";
@@ -185,7 +185,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                     ModelPos.BODY.translate(baseModel, poseStack, state);
                     PoseStack.Pose pose = poseStack.last().copy();
                     for (BoltRenderState boltState : boltRenderStates) {
-                        //TODO - 26.2: Figure out the render phase to target
+                        //TODO - 26.3: Figure out the render phase to target
                         nodeCollector.submitSpecial(RenderPhaseKeys.AFTER_TERRAIN, new BoltFeatureRenderer.Submit(pose, boltState));
                     }
                     poseStack.popPose();
@@ -339,12 +339,12 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                 yRot = EXPANDED_WING_Y_ROT * scale;
                 zRot = EXPANDED_WING_Z_ROT * scale;
             }
-            //TODO - 26.2: I think we should actually be updating the rotations in entity.elytraAnimationState rather than in the state? Maybe we can do it in the update render state method?
+            //TODO - 26.3: I think we should actually be updating the rotations in entity.elytraAnimationState rather than in the state? Maybe we can do it in the update render state method?
             // Also is there a reason to only be doing this for players?
             if (state instanceof AvatarRenderState playerState) {
                 //If the entity is a player, then transition the wings gradually to their target position
                 ElytraAnimationState elytraAnimationState;
-                //TODO - 26.2: What is the difference between playerState.flyingYRot and state.elytraRotY?
+                //TODO - 26.3: What is the difference between playerState.flyingYRot and state.elytraRotY?
                 state.elytraRotX = 0;
                 state.elytraRotY = state.elytraRotY + (yRot - state.elytraRotY) * 0.01F;
                 //Base off of target values

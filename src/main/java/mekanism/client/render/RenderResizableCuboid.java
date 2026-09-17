@@ -38,7 +38,7 @@ public class RenderResizableCuboid {
               renderPos, argb, argb, argb, argb, argb, argb, spriteFromDirection, false);
     }
 
-    //TODO - 26.2: Try use some kind of ColorGetter instead of unrolling arrays?
+    //TODO - 26.3: Try use some kind of ColorGetter instead of unrolling arrays?
 
     /// Based off of Tinker's in the distant past and thoroughly disassembled and reassembled over the years.
     ///
@@ -565,7 +565,7 @@ public class RenderResizableCuboid {
 
     }
 
-    //TODO - 26.2: Should we no-op all the cases of scale == 0
+    //TODO - 26.3: Should we no-op all the cases of scale == 0
     public static void renderObject(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, @SideRender.SideRenderFlags byte sideRenderCheck,
           float cubeMinX, float cubeMinY, float cubeMinZ, float cubeMaxX, float cubeMaxY, float cubeMaxZ, TexturePicker spriteFromDirection, int overlay, int glowLight,
           int scaledColor, BlockPos terPos, BlockPos renderStartPos, int physicalLength, int physicalWidth) {

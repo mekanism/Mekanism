@@ -249,7 +249,7 @@ public final class ChemicalStack implements SizedChemicalInstance {
         if (isEmpty()) {
             return;
         }
-        //TODO - 26.2: Fire an event similar to what Neo does for fluid stacks, as we don't provide any other way to add custom tooltip information now
+        //TODO - 26.3: Fire an event similar to what Neo does for fluid stacks, as we don't provide any other way to add custom tooltip information now
         for (DataMapType<Chemical, ? extends IChemicalAttribute> attributeType : IMekanismDataMapTypes.INSTANCE.chemicalAttributeTypes()) {
             IChemicalAttribute attribute = getData(attributeType);
             if (attribute != null) {

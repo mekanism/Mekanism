@@ -59,7 +59,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
             poseStack.translate(0.5, 1.5, 0.5);
             MekanismRenderer.rotate(poseStack, state.direction, 0, 180, 90, 270);
             poseStack.rotate(Axis.ZP, Mth.PI);
-            //TODO - 26.2: Do we need to do something for the light level similar to what double chests do of calculating the max of all the positions?
+            //TODO - 26.3: Do we need to do something for the light level similar to what double chests do of calculating the max of all the positions?
             submitCrumblingModel(nodeCollector, this.model, state.rotation, poseStack, ModelWindGenerator.RENDER_TYPE, state);
             poseStack.popPose();
         }

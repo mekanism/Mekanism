@@ -70,7 +70,7 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
                 fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
             }
         }
-        //TODO - 26.2: do this with the block model from model manager (copy Energy cube item)
+        //TODO - 26.3: do this with the block model from model manager (copy Energy cube item)
         BlockState blockState = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
         BlockModelRenderState blockModel = new BlockModelRenderState();
         mc().getBlockModelResolver().update(blockModel, blockState, ModelUtil.BLOCK_DISPLAY_NO_CONTEXT);

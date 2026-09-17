@@ -39,7 +39,7 @@ public record WithAmountSlotDisplay(SlotDisplay source, int amount) implements S
                   .map(stack -> fluids.forStack(stack.copyWithAmount(amount)));
             case ForChemicalStacks<T> chemicals -> source.resolve(context, ChemicalStackContentsFactory.INSTANCE)
                   .map(stack -> chemicals.forStack(stack.copyWithAmount(amount)));
-            //TODO - 26.2: Should we be doing a best effort thing like this, or should we return that nothing could be resolved?
+            //TODO - 26.3: Should we be doing a best effort thing like this, or should we return that nothing could be resolved?
             default -> source.resolve(context, factory);
         };
     }

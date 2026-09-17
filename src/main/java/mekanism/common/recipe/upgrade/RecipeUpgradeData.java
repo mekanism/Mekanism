@@ -48,7 +48,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         }
         Set<RecipeUpgradeType> supportedTypes = EnumSet.noneOf(RecipeUpgradeType.class);
         Item item = itemType.getItem();
-        //TODO - 26.2: Do this off of the item's components?
+        //TODO - 26.3: Do this off of the item's components?
         if (item instanceof BlockItem blockItem && Attribute.has(blockItem.getBlock(), AttributeUpgradeSupport.class)) {
             supportedTypes.add(RecipeUpgradeType.UPGRADE);
         }

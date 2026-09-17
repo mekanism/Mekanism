@@ -54,7 +54,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     /// How long it takes this machine to install an upgrade.
     private static final int UPGRADE_TICKS_REQUIRED = SharedConstants.TICKS_PER_SECOND;
-    //TODO - 26.2: Make sure this is lenient so if there are invalid amounts or unknown upgrades then it skips them. Maybe just LenientUnboundedMapCodec ?
+    //TODO - 26.3: Make sure this is lenient so if there are invalid amounts or unknown upgrades then it skips them. Maybe just LenientUnboundedMapCodec ?
     private static final Codec<Object2IntMap<Holder<Upgrade>>> UPGRADE_MAP_CODEC = Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.POSITIVE_INT).xmap(
           Object2IntOpenHashMap::new,
           Function.identity()

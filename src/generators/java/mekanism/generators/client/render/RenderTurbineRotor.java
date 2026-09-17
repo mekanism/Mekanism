@@ -48,12 +48,12 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
         UUID multiblockUUID = rotor.getMultiblockUUID();
         if (multiblockUUID != null) {
             //We are rendering inside the multiblock, use full-bright for the textures
-            //TODO - 26.2: Should this calculate the light coords like MultiblockContentsRenderState
+            //TODO - 26.3: Should this calculate the light coords like MultiblockContentsRenderState
             state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
         }
 
         int baseIndex = rotor.getPosition() * 2;
-        if (isTickingNormally(rotor)) {//TODO - 26.2: Re-evaluate where these calculations should be done
+        if (isTickingNormally(rotor)) {//TODO - 26.3: Re-evaluate where these calculations should be done
             if (multiblockUUID != null && TurbineMultiblockData.clientRotationMap.containsKey(multiblockUUID)) {
                 float rotateSpeed = TurbineMultiblockData.clientRotationMap.getFloat(multiblockUUID) * BASE_SPEED;
                 rotor.rotationLower += rotateSpeed / (baseIndex + 1);

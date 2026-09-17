@@ -28,7 +28,7 @@ public class ChemicalUtils {
 
     public static final int DEFAULT_HYDROGEN_ENERGY_DENSITY = 2;
 
-    //TODO - 26.2: Evaluate callers and see if we can cache any of them
+    //TODO - 26.3: Evaluate callers and see if we can cache any of them
     public static ChemicalResource getResource(RegistryAccess registryAccess, ResourceKey<Chemical> key) {
         return registryAccess.get(key).map(ChemicalResource::of).orElse(ChemicalResource.EMPTY);
     }
@@ -50,7 +50,7 @@ public class ChemicalUtils {
         return false;
     }
 
-    //TODO - 26.2: Re-evaluate this method and the fact it falls back due to not having a registry access
+    //TODO - 26.3: Re-evaluate this method and the fact it falls back due to not having a registry access
     @Deprecated
     public static int hydrogenEnergyDensity() {
         RegistryAccess registryAccess;

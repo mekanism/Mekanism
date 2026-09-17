@@ -42,7 +42,7 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
     public void extractRenderState(TileEntityFusionReactorController controller, FusionReactorMultiblockData multiblock, FusionRenderState state, float partialTick,
           Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         state.scaledTemp = Math.round(multiblock.getLastPlasmaTemp() / SCALE);
-        //TODO - 26.2: Is this what we should be using in BERs or should we use the game time?
+        //TODO - 26.3: Is this what we should be using in BERs or should we use the game time?
         state.ticks = Minecraft.getInstance().gameRenderer.gameRenderState().levelRenderState.gameTime + partialTick;
     }
 

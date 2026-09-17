@@ -39,7 +39,7 @@ import org.jspecify.annotations.Nullable;
 
 public class Meltdown {
 
-    //TODO - 26.2: Should we have validation bounds on any of these things?
+    //TODO - 26.3: Should we have validation bounds on any of these things?
     public static final Codec<Meltdown> CODEC = RecordCodecBuilder.create(in -> in.group(
           VoxelCuboid.MAP_CODEC.forGetter(meltdown -> meltdown.bounds),
           Codec.DOUBLE.fieldOf(SerializationConstants.MAGNITUDE).forGetter(meltdown -> meltdown.magnitude),

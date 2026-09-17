@@ -16,7 +16,7 @@ public class MekanismModDisplayInfo extends DefaultModDisplayInfo {
     public MekanismModDisplayInfo(ModContainer container, ILangEntry translatableDisplayName) {
         super(container);
         this.translatableDisplayName = translatableDisplayName;
-        //TODO - 26.2: Do we want to set licenseURL in the mod files? If so do we care we might forget to update what branch it is pointing at when we change branches?
+        //TODO - 26.3: Do we want to set licenseURL in the mod files? If so do we care we might forget to update what branch it is pointing at when we change branches?
     }
 
     @Override

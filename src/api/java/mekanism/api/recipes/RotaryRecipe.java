@@ -146,7 +146,7 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
 
     @Override
     public List<RecipeDisplay> display() {
-        //TODO - 26.2: Do we need to have a custom display that we then pass a boolean parameter to for which direction it is going?
+        //TODO - 26.3: Do we need to have a custom display that we then pass a boolean parameter to for which direction it is going?
         return Stream.<RecipeDisplay>of(
                     hasChemicalToFluid() ? new SimpleMachineRecipeDisplay(
                           getChemicalInput().display(),

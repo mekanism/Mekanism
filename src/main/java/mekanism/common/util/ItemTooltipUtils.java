@@ -49,7 +49,7 @@ public class ItemTooltipUtils {
         return TooltipDisplayType.of(level.isClientSide());
     }
 
-    //TODO - 26.2: Do we maybe want to add a client config to control if the key actually needs to be pressed?
+    //TODO - 26.3: Do we maybe want to add a client config to control if the key actually needs to be pressed?
     private static boolean shouldHideDetails(TooltipHideType hideType, ItemStack stack, Item.TooltipContext context, TooltipDisplay display, @Nullable Player player, TooltipFlag flag) {
         //Treat all information as not hiding details
         if (hideType.checkDetails() && !flag.shouldDisplayAllInformation() && stack.has(MekanismDataComponents.DETAILS)) {
@@ -96,7 +96,7 @@ public class ItemTooltipUtils {
     public enum TooltipHideType {
         NONE,
         DETAILS,
-        DESCRIPTION,//TODO - 26.2: Figure out how we want to handle hiding of things when displaying the description
+        DESCRIPTION,//TODO - 26.3: Figure out how we want to handle hiding of things when displaying the description
         ANY;
 
         public boolean checkDetails() {

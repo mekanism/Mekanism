@@ -51,7 +51,7 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
     @Override
     public void load(ValueInput input) {
         super.load(input);
-        //TODO - 26.2: These used to just get instead of only getting if present, should the fallback be zero or the existing value?
+        //TODO - 26.3: These used to just get instead of only getting if present, should the fallback be zero or the existing value?
         plasmaTemperature = input.getDoubleOr(SerializationConstants.PLASMA_TEMP, plasmaTemperature);
         injectionRate = input.getIntOr(SerializationConstants.INJECTION_RATE, injectionRate);
         burning = input.getBooleanOr(SerializationConstants.BURNING, burning);

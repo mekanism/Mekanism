@@ -82,7 +82,7 @@ public class RobitSkinManager {
     private RobitSkinManager(ModelBakery bakery, ModelBakery.MissingModels missingModels) {
         this.resolvedModelMap = bakery.resolvedModels;
         missingModelPart = missingModels.blockPart();
-        //TODO - 26.2: Validate this render sheet
+        //TODO - 26.3: Validate this render sheet
         this.bakedMissingModel = new BakeResult(Collections.singletonList(missingModelPart), Sheets.cutoutBlockItemSheet());
         modelBaker = bakery.new ModelBakerImpl(new RobitLateMaterialBaker(), new ModelBakery.InternerImpl(), missingModels);
     }

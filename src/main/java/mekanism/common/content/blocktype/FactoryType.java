@@ -24,7 +24,7 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipProvider;
 
-//TODO - 26.2: Do we want to make this into a registry to simplify some things for addons that add custom factory types?
+//TODO - 26.3: Do we want to make this into a registry to simplify some things for addons that add custom factory types?
 public enum FactoryType implements IHasEnumNameTranslationKey, StringRepresentable, TooltipProvider {
     SMELTING("smelting", MekanismLang.SMELTING, () -> MekanismBlockTypes.ENERGIZED_SMELTER, () -> MekanismBlocks.ENERGIZED_SMELTER),
     ENRICHING("enriching", MekanismLang.ENRICHING, () -> MekanismBlockTypes.ENRICHMENT_CHAMBER, () -> MekanismBlocks.ENRICHMENT_CHAMBER),

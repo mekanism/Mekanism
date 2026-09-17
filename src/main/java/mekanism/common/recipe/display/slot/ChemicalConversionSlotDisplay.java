@@ -32,7 +32,7 @@ public record ChemicalConversionSlotDisplay(SlotDisplay chemicalSource) implemen
     public <T> Stream<T> resolve(ContextMap context, DisplayContentsFactory<T> factory) {
         if (factory instanceof DisplayContentsFactory.ForStacks<T>) {
             List<SlotDisplay> displays = new ArrayList<>();
-            //TODO - 26.2: Can we simplify this
+            //TODO - 26.3: Can we simplify this
             Set<Holder<Chemical>> supportedTypes = chemicalSource.resolve(context, CHEMICAL_TYPES).collect(Collectors.toSet());
             for (RecipeHolder<? extends ItemStackToChemicalRecipe> recipeHolder : MekanismRecipeType.CHEMICAL_CONVERSION.getRecipes()) {
                 ItemStackToChemicalRecipe recipe = recipeHolder.value();

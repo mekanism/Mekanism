@@ -149,7 +149,7 @@ public class CommonPlayerTickHandler {
                 ChemicalResource oxygen = ChemicalUtils.getResource(registryAccess, ChemicalIds.OXYGEN);
                 if (!oxygen.isEmpty()) {
                     try (Transaction transaction = Transaction.openRoot()) {
-                        //TODO - 26.2: Re-evaluate this single usage on its own
+                        //TODO - 26.3: Re-evaluate this single usage on its own
                         chemicalHandler.extract(oxygen, 1, transaction);
                         int extracted = chemicalHandler.extract(oxygen, max - player.getAirSupply(), transaction);
                         if (extracted > 0) {
@@ -269,7 +269,7 @@ public class CommonPlayerTickHandler {
         if (info != null && info.energyHandler != null) {
             float absorption = info.damageRatio.getAsFloat();
             float amount = fallDamage * absorption;
-            //TODO - 26.2: Re-evaluate the Mth.ceil calls, is there a chance that it doesn't handle overflow correctly?
+            //TODO - 26.3: Re-evaluate the Mth.ceil calls, is there a chance that it doesn't handle overflow correctly?
             int energyRequirement = Mth.ceil(info.energyCost.getAsInt() * amount);
             float ratioAbsorbed;
             if (energyRequirement == 0) {
@@ -316,7 +316,7 @@ public class CommonPlayerTickHandler {
                 int usage = Mth.ceil(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F);
                 //Protect against any mods that might be doing transactional logic around an entity jumping. Most likely this will never be necessary
                 try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
-                    //TODO - 26.2: Why did this used to check if it can use energy from the boots but then actually use it from the legs?
+                    //TODO - 26.3: Why did this used to check if it can use energy from the boots but then actually use it from the legs?
                     // Is it that it was meant to use it from both, but instead just wasn't? (And that we still need to have the legs add their energy?)
                     if (propulsionModule.useAllEnergy(player, boots, usage, transaction)) {
                         // if we're sprinting with the boost module, limit the height

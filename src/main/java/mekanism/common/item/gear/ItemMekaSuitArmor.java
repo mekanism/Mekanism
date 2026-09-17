@@ -84,7 +84,7 @@ import org.jspecify.annotations.Nullable;
 
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IComponentAware, ICapabilityAware {
 
-    //TODO - 26.2: Expand this system so that modules can maybe define needed tanks?
+    //TODO - 26.3: Expand this system so that modules can maybe define needed tanks?
     // Maybe we can define some of the things via a datapack registry, and then have modules declare what types of tanks they need?
     private final List<GenericTankSpec<ChemicalResource>> chemicalTankSpecs = new ArrayList<>();
     private final List<GenericTankSpec<ChemicalResource>> chemicalTankSpecsView = Collections.unmodifiableList(chemicalTankSpecs);
@@ -209,7 +209,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
             if (container != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    //TODO - 26.2: Re-evaluate this item access
+                    //TODO - 26.3: Re-evaluate this item access
                     ItemAccess itemAccess = ItemAccess.forStack(stack);
                     for (Module<?> module : container.modules()) {
                         module.tick(itemAccess, player, transaction);
@@ -327,7 +327,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return 0;
     }
 
-    /*TODO - 26.2: check that these are handled by the item props
+    /*TODO - 26.3: check that these are handled by the item props
     @Override
     public int getDefense() {
         return getMaterial().value().getDefense(getType());

@@ -349,7 +349,7 @@ public class ClientRegistration {
                 } else if (chest instanceof ItemJetpack || chest instanceof ItemScubaTank) {
                     if (state instanceof AvatarRenderState avatarState) {
                         //Hide the player's cape if they have a thick armor piece on that would clip with it
-                        //TODO - 26.2: Look into the translations that CapeLayer does if the chest equipment has the humanoid layer type
+                        //TODO - 26.3: Look into the translations that CapeLayer does if the chest equipment has the humanoid layer type
                         avatarState.showCape = false;
                     }
                 }

@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public interface IWireFrameRenderer {
 
-    //TODO - 26.2: convert this to a separate extract?
+    //TODO - 26.3: convert this to a separate extract?
     default Collection<Line> applyTransformAndGetFrame(BlockEntity tile, float partialTick, PoseStack poseStack, LevelRenderState levelRenderState) {
         return Collections.emptyList();
     }

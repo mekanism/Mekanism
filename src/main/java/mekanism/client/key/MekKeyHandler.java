@@ -10,7 +10,7 @@ public class MekKeyHandler {
     private MekKeyHandler() {
     }
 
-    //TODO - 26.2: I think in theory we will eventually be able to replace this with: https://github.com/neoforged/NeoForge/pull/3331
+    //TODO - 26.3: I think in theory we will eventually be able to replace this with: https://github.com/neoforged/NeoForge/pull/3331
     public static boolean isKeyPressed(KeyMapping keyBinding) {
         if (keyBinding.isDown()) {
             return true;
@@ -34,7 +34,7 @@ public class MekKeyHandler {
                 //TODO - 26.3: Figure out if this is necessary and how to implement it
                 /*else if (key.getType() == InputConstants.Type.MOUSE) {
                     Window window = Minecraft.getInstance().getWindow();
-                    //TODO - 26.2: Figure out how to replace this so that it doesn't need to directly access GLFW
+                    //TODO - 26.3: Figure out how to replace this so that it doesn't need to directly access GLFW
                     return GLFW.glfwGetMouseButton(window.handle(), keyCode) == InputConstants.PRESS;
                 }*/
             } catch (Exception _) {

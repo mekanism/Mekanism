@@ -48,7 +48,7 @@ class PaintingRecipeProvider extends BaseSubRecipeProvider {
         //TODO: Eventually we may want to consider taking patterns into account
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_BANNERS, oneAtATime, BlockItemIds.BANNER, basePath + "banner/");
         //TODO: Shulker boxes?
-        //TODO - 26.2: Glazed terracotta?
+        //TODO - 26.3: Glazed terracotta?
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CONCRETE, eightAtATime, BlockItemIds.CONCRETE, basePath + "concrete/");
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CONCRETE_POWDER, eightAtATime, BlockItemIds.CONCRETE_POWDER, basePath + "concrete_powder/");
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CANDLE, oneAtATime, BlockItemIds.DYED_CANDLE, basePath + "candle/");

@@ -20,12 +20,12 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.2: Test all our renderers, and figure out if/how to get profiling per type working again
+//TODO - 26.3: Test all our renderers, and figure out if/how to get profiling per type working again
 public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity, STATE extends BlockEntityRenderState> implements BlockEntityRenderer<TILE, STATE> {
 
     protected final BlockEntityRendererProvider.Context context;
 
-    //TODO - 26.2: do we want to be passing context all the way up, or just grab what we need where we need it? I think probably the latter
+    //TODO - 26.3: do we want to be passing context all the way up, or just grab what we need where we need it? I think probably the latter
     protected MekanismTileEntityRenderer(BlockEntityRendererProvider.Context context) {
         this.context = context;
     }

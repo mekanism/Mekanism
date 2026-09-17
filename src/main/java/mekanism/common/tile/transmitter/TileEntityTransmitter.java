@@ -164,7 +164,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (level != null) {//TODO - 26.2: Re-evaluate this check
+        if (level != null) {//TODO - 26.3: Re-evaluate this check
             onWorldSeparate(level, false);
         }
         getTransmitter().remove();
@@ -384,7 +384,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             if (upgraded > 0) {
                 //Invalidate the network so that it properly has new references to everything
                 transmitterNetwork.invalidate(null);
-                //TODO - 26.2: Figure out what other uses of ItemStack#shrink should be replaced with ItemStack#consume
+                //TODO - 26.3: Figure out what other uses of ItemStack#shrink should be replaced with ItemStack#consume
                 stack.consume(1, player);
                 if (player instanceof ServerPlayer serverPlayer) {
                     MekanismCriteriaTriggers.ALLOY_UPGRADE.value().trigger(serverPlayer);

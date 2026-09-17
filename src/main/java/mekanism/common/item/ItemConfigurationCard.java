@@ -62,7 +62,7 @@ public class ItemConfigurationCard extends Item {
         } else if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos)) {
             return InteractionResult.FAIL;
         }
-        //TODO - 26.2: Figure out if there is any other information we want to include in the problem path
+        //TODO - 26.3: Figure out if there is any other information we want to include in the problem path
         ProblemReporter.PathElement problemPath = new ConfigurationCardPathElement(blockState.getBlock(), pos);
         ItemStack stack = context.getItemInHand();
         if (player.isShiftKeyDown()) {
@@ -122,7 +122,7 @@ public class ItemConfigurationCard extends Item {
         }
         ItemStack configCard = player.getItemInHand(usedHand);
         configCard.set(MekanismDataComponents.CONFIGURATION_DATA, ConfigurationData.NONE);
-        //TODO - 26.2: Does this need to use a copy of the stack rather than directly removing the component above? Check other implementations of use as well
+        //TODO - 26.3: Does this need to use a copy of the stack rather than directly removing the component above? Check other implementations of use as well
         return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(configCard);
     }
 

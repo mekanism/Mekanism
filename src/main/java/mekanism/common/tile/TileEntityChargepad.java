@@ -63,7 +63,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
             List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, new AABB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
                   worldPosition.getX() + 1, worldPosition.getY() + 0.4, worldPosition.getZ() + 1), CHARGE_PREDICATE);
             try (Transaction transaction = Transaction.openRoot()) {
-                //TODO - 26.2: We are using this as a energy per target per tick limit rather than an overall transfer rate limit.
+                //TODO - 26.3: We are using this as a energy per target per tick limit rather than an overall transfer rate limit.
                 // Do we want to somehow document that fact for the chargepad's limit
                 int energyToGive = energyContainer.getEnergyPerTick();
                 for (LivingEntity entity : entities) {

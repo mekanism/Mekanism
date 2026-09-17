@@ -204,8 +204,8 @@ public class MekanismJEI implements IModPlugin {
               .setTagKey(display.tag())
               .setWildcardForSubtypes(true)
         );
-        //TODO - 26.2: Add a setTooltipHeader for ChanceDisplay?, and maybe also addChildDisplay
-        //TODO - 26.2: Do we want to add a setTooltipHeader for ChemicalConversionSlotDisplay/ChemicalTankSlotDisplay??
+        //TODO - 26.3: Add a setTooltipHeader for ChanceDisplay?, and maybe also addChildDisplay
+        //TODO - 26.3: Do we want to add a setTooltipHeader for ChemicalConversionSlotDisplay/ChemicalTankSlotDisplay??
     }
 
     @Override
@@ -304,7 +304,7 @@ public class MekanismJEI implements IModPlugin {
         //Note: Use a "full" bucket's worth of heavy water, so that JEI renders it as desired in the info page
         registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.asStack(FluidType.BUCKET_VOLUME), NeoForgeTypes.FLUID_STACK,
               MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get()));
-        //TODO - 26.2: Can we just add this to the base module item?
+        //TODO - 26.3: Can we just add this to the base module item?
         registry.addIngredientInfo(MekanismRegistries.MODULES.stream().map(data -> IModuleHelper.INSTANCE.asStack(MekanismRegistries.MODULES.wrapAsHolder(data))).toList(),
               VanillaTypes.ITEM_STACK, MekanismLang.RECIPE_VIEWER_INFO_MODULE_INSTALLATION.translate());
     }

@@ -138,7 +138,7 @@ public class ClientRegistrationUtil {
     }
 
     public static void registerIColoredBlockHandler(RegisterColorHandlersEvent event, BlockRegistryObject<?, ?>... blocks) {
-        //TODO - 26.2: Should we move plastic blocks to a custom model that handles the tinting?
+        //TODO - 26.3: Should we move plastic blocks to a custom model that handles the tinting?
         if (event instanceof RegisterColorHandlersEvent.BlockTintSources blockEvent) {
             registerBlockColorHandler(blockEvent, COLORED_BLOCK_COLOR, blocks);
         }
@@ -164,7 +164,7 @@ public class ClientRegistrationUtil {
 
                     @Override
                     public void modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector4f fluidFogColor) {
-                        //TODO - 26.2: is alpha needed?
+                        //TODO - 26.3: is alpha needed?
                         fluidFogColor.set(ARGB.redFloat(fluidType.color), ARGB.greenFloat(fluidType.color), ARGB.blueFloat(fluidType.color));
                     }
 

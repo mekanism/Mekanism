@@ -78,7 +78,7 @@ public class MekanismRegistries {
 
         //Data pack registry keys
         /// Gets the [ResourceKey] representing the name of the Datapack Registry for [`chemicals`][Chemical].
-        public static final ResourceKey<Registry<Chemical>> CHEMICAL = key("chemical");//TODO - 26.2: Docs on how to register chemicals
+        public static final ResourceKey<Registry<Chemical>> CHEMICAL = key("chemical");//TODO - 26.3: Docs on how to register chemicals
 
         /// Gets the [ResourceKey] representing the name of the Datapack Registry for [`robit skins`][RobitSkin].
         public static final ResourceKey<Registry<RobitSkin>> ROBIT_SKINS = key("robit_skin");

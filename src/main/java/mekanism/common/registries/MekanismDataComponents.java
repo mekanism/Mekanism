@@ -185,7 +185,7 @@ public class MekanismDataComponents {
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Unit>> WASTE_DECAY = DATA_COMPONENTS.registerUnit("waste_decay");
 
-    //TODO - 26.2: Do we want to rename these components to: mode/<type>
+    //TODO - 26.3: Do we want to rename these components to: mode/<type>
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<DisassemblerMode>> DISASSEMBLER_MODE = DATA_COMPONENTS.simple("disassembler_mode",
           DisassemblerMode.CODEC, DisassemblerMode.STREAM_CODEC
     );
@@ -376,7 +376,7 @@ public class MekanismDataComponents {
                 // has one in reality it is always private
                 return;
             }
-            //TODO - 26.2: Re-evaluate this and how we bypass the capabilities for it
+            //TODO - 26.3: Re-evaluate this and how we bypass the capabilities for it
             boolean override = false;
             if (MekanismConfig.general.allowProtection.get()) {
                 UUID owner = stack.get(OWNER);
@@ -454,7 +454,7 @@ public class MekanismDataComponents {
             }
         }));
         event.registerComponentAppenderAfter(UPGRADES, MODULE_TYPE.get(), ItemTooltipUtils.createSimpleAppender(UPGRADES, (_, upgradeAware, _, _, _, _, builder) -> {
-            //TODO - 26.2: Add a header for upgrades?
+            //TODO - 26.3: Add a header for upgrades?
             for (ObjectIterator<Object2IntMap.Entry<Holder<Upgrade>>> iterator = Object2IntMaps.fastIterator(upgradeAware.upgrades()); iterator.hasNext(); ) {
                 Object2IntMap.Entry<Holder<Upgrade>> entry = iterator.next();
                 builder.accept(UpgradeDisplay.of(entry.getKey().value(), entry.getIntValue()).getTextComponent());

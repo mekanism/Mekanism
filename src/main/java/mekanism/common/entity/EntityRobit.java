@@ -701,7 +701,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         return MekanismRobitSkins.get(registryAccess(), getSkinId());
     }
 
-    //TODO - 26.2: cache the skin instance and index
+    //TODO - 26.3: cache the skin instance and index
 
     @Override
     public boolean setSkin(ResourceKey<RobitSkin> skinKey, @Nullable Player player) {

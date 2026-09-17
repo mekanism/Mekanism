@@ -160,7 +160,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         MekanismConfigTranslations.GENERAL_DYNAMIC_TANK.applyToBuilder(builder).push("dynamic_tank");
         int maxVolume = 18 * 18 * 18;
-        //TODO - 26.2: Re-evaluate this default value
+        //TODO - 26.3: Re-evaluate this default value
         dynamicTankFluidPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_DYNAMIC_TANK_CAPACITY.applyToBuilder(builder)
               .defineInRange("mBPerTank", 16_000L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
         builder.pop();
@@ -225,7 +225,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_OREDICTIONIFICATOR.applyToBuilder(builder).push("oredictionificator");
-        //TODO - 26.2: add blacklist too, e.g. for `c:nuggets/brass_like`
+        //TODO - 26.3: add blacklist too, e.g. for `c:nuggets/brass_like`
         validOredictionificatorFilters = CachedOredictionificatorConfigValue.define(this, MekanismConfigTranslations.GENERAL_OREDICTIONIFICATOR_VALID_ITEMS.applyToBuilder(builder),
               "validItemFilters", () -> Collections.singletonMap("c", List.of("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/", "raw_materials/")));
         builder.pop();

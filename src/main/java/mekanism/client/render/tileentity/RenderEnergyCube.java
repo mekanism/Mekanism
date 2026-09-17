@@ -63,7 +63,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
     public void extractRenderState(TileEntityEnergyCube cube, EnergyCubeRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(cube, state, partialTick, cameraPosition, breakProgress);
         state.coreTint = cube.getTier().getBaseTier().getPackedColor(ARGB.as8BitChannel(cube.getEnergyScale()));
-        //TODO - 26.2: Do we want to use game time as a basis or some other value?
+        //TODO - 26.3: Do we want to use game time as a basis or some other value?
         state.ticks = cube.getGameTime() + partialTick;
     }
 

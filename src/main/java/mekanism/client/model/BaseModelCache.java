@@ -97,7 +97,7 @@ public class BaseModelCache {
         }
     }
 
-    //TODO - 26.2: Move this into MekaSuitArmor?
+    //TODO - 26.3: Move this into MekaSuitArmor?
     public static class OBJModelData extends MekanismModelData {
 
         private final StandaloneModelKey<ObjModelSettings> key;
@@ -124,19 +124,19 @@ public class BaseModelCache {
             event.register(key, new SimpleUnbakedStandaloneModel<>(rl, (model, baker, _) -> new ObjModelSettings(model, baker)));
         }
 
-        //TODO - 26.2: Can we precalculate the various part combinations that we sometimes have and just bake them?
+        //TODO - 26.3: Can we precalculate the various part combinations that we sometimes have and just bake them?
         public List<BlockStateModelPart> getParts(Set<String> partNames) {
             if (settings == null || partNames.isEmpty()) {
                 return Collections.emptyList();
             }
-            //TODO - 26.2: Cache the result of this method? May not fully matter because it is used from a cache within MekaSuitArmor, but might still be worth it
+            //TODO - 26.3: Cache the result of this method? May not fully matter because it is used from a cache within MekaSuitArmor, but might still be worth it
             ResolvedModel resolvedModel = settings.resolvedModel();
             Map<String, Boolean> visibility = new HashMap<>();
             for (String part : getPartNames()) {
                 visibility.put(part, partNames.contains(part));
             }
             try {
-                //TODO - 26.2: More useful debug name that takes into account what parts we are getting the results for?
+                //TODO - 26.3: More useful debug name that takes into account what parts we are getting the results for?
                 QuadCollection quadCollection = resolvedModel.getTopGeometry().bake(resolvedModel.getTopTextureSlots(), settings.baker, modelState, resolvedModel, ModelUtil.partVisibility(resolvedModel, visibility));
                 //we don't intend to use the particle, so no point resolving it
                 BlockStateModelPart bakedModel = new SimpleModelWrapper(quadCollection, resolvedModel.getTopAmbientOcclusion(), settings.baker.missingBlockModelPart().particleMaterial());

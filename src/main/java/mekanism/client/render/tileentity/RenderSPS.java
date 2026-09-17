@@ -105,7 +105,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
             state.coreState.color = 0xF0FFFFFF;
             state.coreState.gridSize = 4;
             state.coreState.scale = state.lerpEnergy(0.1F, 4F);
-            //TODO - 26.2: Re-evaluate this, ConduitBlockEntity#tickCount?
+            //TODO - 26.3: Re-evaluate this, ConduitBlockEntity#tickCount?
             state.coreState.renderTick =  (int) gameTime;
         }
 

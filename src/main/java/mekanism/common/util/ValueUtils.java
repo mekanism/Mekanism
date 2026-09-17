@@ -14,7 +14,7 @@ public class ValueUtils {
     private ValueUtils() {
     }
 
-    //TODO - 26.2: Re-evaluate all these enum related methods and what cases should be replaced to use names instead of ordinals
+    //TODO - 26.3: Re-evaluate all these enum related methods and what cases should be replaced to use names instead of ordinals
     @Nullable
     public static <ENUM extends Enum<ENUM>> ENUM getEnum(ValueInput input, String key, IntFunction<ENUM> indexLookup) {
         Optional<Integer> value = input.getInt(key);

@@ -18,7 +18,7 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
     private final String group;
 
     protected MekanismRecipe() {
-        this(NO_DISPLAY, "");//TODO - 26.2: Remove this constructor and force usage of groups
+        this(NO_DISPLAY, "");//TODO - 26.3: Remove this constructor and force usage of groups
     }
 
     protected MekanismRecipe(Recipe.CommonInfo commonInfo, String group) {
@@ -39,8 +39,8 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
     }
 
     //Force implementation of this method as our ingredients is always empty so the super implementation would have all ours as incomplete
-    //@Override//TODO - 26.2: Re-evaluate this, we might want to keep some form of it?
-    public abstract boolean isIncomplete();//TODO - 26.2: This is now part of PlacementInfo#isImpossibleToPlace ??
+    //@Override//TODO - 26.3: Re-evaluate this, we might want to keep some form of it?
+    public abstract boolean isIncomplete();//TODO - 26.3: This is now part of PlacementInfo#isImpossibleToPlace ??
 
     public abstract void logMissingTags();
 

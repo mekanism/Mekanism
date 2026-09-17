@@ -26,7 +26,7 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
     /// Gets a tier by index, wrapping for out of bounds indices.
     ///
     /// @since 10.6.0
-    public static final IntFunction<BaseTier> BY_ID = ByIdMap.continuous(BaseTier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);//TODO - 26.2: Re-evaluate the various out of bounds strategies we use
+    public static final IntFunction<BaseTier> BY_ID = ByIdMap.continuous(BaseTier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);//TODO - 26.3: Re-evaluate the various out of bounds strategies we use
     /// Stream codec for syncing tiers by index.
     ///
     /// @since 10.6.0

@@ -36,12 +36,12 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLOCK> implements ICapabilityAware, IComponentAware {
 
-    //TODO - 26.2: Re-evaluate what callers should even be using this, vs just using ItemBlockMekanism now that we moved the description elsewhere
+    //TODO - 26.3: Re-evaluate what callers should even be using this, vs just using ItemBlockMekanism now that we moved the description elsewhere
     public ItemBlockTooltip(BLOCK block, Item.Properties properties) {
         super(block, properties);
     }
 
-    @Override//TODO - 26.2: Should we move this impl into ItemBlockMekanism? Then the only thing this class would do other than the super one is handling energy caps, components, and security
+    @Override//TODO - 26.3: Should we move this impl into ItemBlockMekanism? Then the only thing this class would do other than the super one is handling energy caps, components, and security
     public void onDestroyed(ItemEntity item, DamageSource damageSource) {
         //Try to drop the inventory contents if we are a block item that persists our inventory
         InventoryUtils.dropItemContents(item, damageSource);
@@ -51,7 +51,7 @@ public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLO
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         if (exposesEnergyCap()) {
             //Ignore NBT for energized items causing re-equip animations
-            //TODO - 26.2: Only ignore the energy attachment?
+            //TODO - 26.3: Only ignore the energy attachment?
             // return slotChanged || !ItemStack.matchesIgnoringComponents(oldStack, newStack, );
             return slotChanged || oldStack.getItem() != newStack.getItem();
         }
@@ -62,7 +62,7 @@ public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLO
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
         if (exposesEnergyCap()) {
             //Ignore NBT for energized items causing block break reset
-            //TODO - 26.2: Only ignore the energy attachment?
+            //TODO - 26.3: Only ignore the energy attachment?
             return oldStack.getItem() != newStack.getItem();
         }
         return super.shouldCauseBlockBreakReset(oldStack, newStack);

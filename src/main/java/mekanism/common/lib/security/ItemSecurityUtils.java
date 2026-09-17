@@ -49,7 +49,7 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
 
     @Override
     public void addOwnerTooltip(ItemAccess itemAccess, Item.TooltipContext context, @Nullable Player player, Consumer<Component> builder) {
-        //TODO - 26.2: Instead of this method and the addSecurityTooltip method, should we just expose the data component to the API?
+        //TODO - 26.3: Instead of this method and the addSecurityTooltip method, should we just expose the data component to the API?
         // If not then we may want to update the docs or add comments here to convey how this functions vs how the internal data component functions(?)
         Objects.requireNonNull(itemAccess, "Item access to add tooltip for may not be null.");
         Objects.requireNonNull(builder, "Tooltip consumer may not be null.");

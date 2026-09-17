@@ -36,7 +36,7 @@ public class LightLevelUtils {
     /// Calculates the max light level along the surface of the bounds, ignoring [net.minecraft.world.level.block.state.BlockState#emissiveRendering()] and
     /// [net.neoforged.neoforge.common.extensions.IBlockStateExtension#getLightEmission] as our multiblocks are not made up of blocks that give off light.
     public static int getMaxLightCoordsBounds(Level level, BlockPos minPos, BlockPos maxPos) {
-        //TODO - 26.2: Evaluate the performance of this and potentially try to do something like Flywheel where we read from the raw light arrays for a single section
+        //TODO - 26.3: Evaluate the performance of this and potentially try to do something like Flywheel where we read from the raw light arrays for a single section
         // https://github.com/Engine-Room/Flywheel/blob/26.1.2/dev/common/src/backend/java/dev/engine_room/flywheel/backend/engine/LightDataCollector.java
         //Similar to BrightnessGetter.DEFAULT, but only looks up the layers once
         LevelLightEngine lightEngine = level.getLightEngine();

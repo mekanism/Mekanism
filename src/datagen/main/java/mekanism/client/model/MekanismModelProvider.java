@@ -146,7 +146,7 @@ public class MekanismModelProvider extends BaseModelProvider {
         //Items
         registerBuckets(MekanismFluids.FLUIDS, itemModels);
 
-        //TODO - 26.2: Can we have the missing model instead default to MODULE_BASE?
+        //TODO - 26.3: Can we have the missing model instead default to MODULE_BASE?
         addComponentBacked(itemModels, MekanismItems.MODULE, MekanismRegistries.Keys.MODULES);
         addComponentBacked(itemModels, MekanismItems.UPGRADE, MekanismRegistries.Keys.UPGRADES);
 
@@ -211,7 +211,7 @@ public class MekanismModelProvider extends BaseModelProvider {
         simpleISTER(itemModels, MekanismItems.SCUBA_TANK, RenderScubaTank.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismItems.ROBIT, RenderRobitItem.Unbaked.INSTANCE, existingModel("item/robit_transforms"));
 
-        //TODO - 26.2: we could possibly merge the base item models to one now? Assuming the perspective translations are the same
+        //TODO - 26.3: we could possibly merge the base item models to one now? Assuming the perspective translations are the same
         simpleISTER(itemModels, MekanismBlocks.ADVANCED_FLUID_TANK.getItemHolder(), RenderFluidTankItem.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismBlocks.BASIC_FLUID_TANK.getItemHolder(), RenderFluidTankItem.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismBlocks.ELITE_FLUID_TANK.getItemHolder(), RenderFluidTankItem.Unbaked.INSTANCE);

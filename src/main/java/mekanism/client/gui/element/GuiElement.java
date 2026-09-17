@@ -301,7 +301,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         //If there is a tooltip, update it for the next render pass
         // We also call it regardless of whether the backing tooltip is null so that we properly mark wasDisplayed as false
         //Note: We only call this method if we are hovering the proper spot
-        //TODO - 26.2: Is this the correct mouse x and mouse y to be passing? Do we still need to be calling updateTooltip above?
+        //TODO - 26.3: Is this the correct mouse x and mouse y to be passing? Do we still need to be calling updateTooltip above?
         tooltip.refreshTooltipForNextRenderPass(guiGraphics, mouseX, mouseY, true, isFocused(), getTooltipRectangle(mouseX, mouseY));
         //We do this before child renders so that if one has a tooltip then they can override the target tooltip
         for (GuiElement child : children) {
@@ -317,7 +317,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     @Override
     protected void extractTooltipForNextRenderPass(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        //TODO - 26.2: Can we move the logic from renderTooltip and GuiMekanism#extractTooltip here?
+        //TODO - 26.3: Can we move the logic from renderTooltip and GuiMekanism#extractTooltip here?
         //tooltip.refreshTooltipForNextRenderPass(graphics, mouseX, mouseY, isMouseOverCheckWindows(mouseX, mouseY), isFocused(), getTooltipRectangle(mouseX, mouseY));
     }
 
@@ -482,7 +482,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         this.buttonBackground = buttonBackground;
     }
 
-    //TODO - 26.2: I am guessing mojang removed the duplicate behavior and made it so that it just checks the one method. Validate that there isn't anything else we are meant to override instead
+    //TODO - 26.3: I am guessing mojang removed the duplicate behavior and made it so that it just checks the one method. Validate that there isn't anything else we are meant to override instead
     /*@Override
     protected boolean clicked(double mouseX, double mouseY) {
         //The code for clicked and isMouseOver is the same. Overriding it here lets us override isMouseOver in subclasses
@@ -519,7 +519,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     /// Does the same as [#isMouseOver(double, double)], but validates there is no window in the way
     public final boolean isMouseOverCheckWindows(double mouseX, double mouseY) {
         //TODO: Ideally we would have the various places that call this instead check isHovered if we can properly override setting that
-        //TODO - 26.2: Override and reimplement AbstractWidget#extractRenderState ? And replace what it sets the isHovered check to be?
+        //TODO - 26.3: Override and reimplement AbstractWidget#extractRenderState ? And replace what it sets the isHovered check to be?
         boolean isHovering = isMouseOver(mouseX, mouseY);
         return checkWindows(mouseX, mouseY, isHovering);
     }
@@ -558,7 +558,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     public final void renderShifted(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Copy of super.extractRenderState, except doesn't update the tooltip for the next render pass, as we handle that via renderTooltip
         if (this.visible) {
-            //TODO - 26.2: Do we need to add support for guiGraphics.containsPointInScissor(mouseX, mouseY) to more places where we do adhoc mouse over checks?
+            //TODO - 26.3: Do we need to add support for guiGraphics.containsPointInScissor(mouseX, mouseY) to more places where we do adhoc mouse over checks?
             this.isHovered = guiGraphics.containsPointInScissor(mouseX, mouseY) && mouseX >= this.getX() && mouseY >= this.getY() &&
                              mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
             renderWidget(guiGraphics, mouseX, mouseY, partialTicks);

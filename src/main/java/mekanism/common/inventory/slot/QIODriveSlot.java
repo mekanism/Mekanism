@@ -28,7 +28,7 @@ public class QIODriveSlot extends BasicInventorySlot {
         super(ConstantPredicates.notExternal(), ConstantPredicates.notExternal(), IS_QIO_ITEM, null, null, listener, x, y);
         this.driveHolder = driveHolder;
         this.levelSupplier = levelSupplier;
-        //TODO - 26.2: Re-evaluate nullability
+        //TODO - 26.3: Re-evaluate nullability
         this.key = new QIODriveKey(this.driveHolder, slot);
     }
 

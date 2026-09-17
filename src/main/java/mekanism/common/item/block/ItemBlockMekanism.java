@@ -24,7 +24,7 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
 
     @Override
     public Component getName(ItemStack stack) {
-        //TODO - 26.2: Can this be moved into the corresponding component or somewhere better?
+        //TODO - 26.3: Can this be moved into the corresponding component or somewhere better?
         BLOCK block = getBlock();
         if (block instanceof IColoredBlock coloredBlock) {
             return TextComponentUtil.build(coloredBlock.getColor(), super.getName(stack));

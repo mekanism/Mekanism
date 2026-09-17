@@ -34,7 +34,7 @@ public class ChemicalTankChemicalTank extends BasicChemicalTank {
 
     private ChemicalTankChemicalTank(ChemicalTankTier tier, @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter,
           @Nullable IContentsListener listener) {
-        //TODO - 26.2: Should this and the one for fluid tanks and energy cubes be variable capacity instead of just caching the capacity at time of creation?
+        //TODO - 26.3: Should this and the one for fluid tanks and energy cubes be variable capacity instead of just caching the capacity at time of creation?
         super(tier.getCapacity(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), insertionRateLimiter,
               extractionRateLimiter, tier.isCreative() ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
         isCreative = tier.isCreative();

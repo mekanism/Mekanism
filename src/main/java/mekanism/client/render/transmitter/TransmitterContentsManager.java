@@ -30,7 +30,7 @@ import org.jspecify.annotations.Nullable;
 
 public class TransmitterContentsManager {
 
-    //TODO - 26.2: Evaluate if we want to change any of the properties defined in the model
+    //TODO - 26.3: Evaluate if we want to change any of the properties defined in the model
     private static final Identifier MODEL_LOCATION = Mekanism.rl("transmitter_contents");
     @Nullable
     private static TransmitterContentsManager INSTANCE = null;

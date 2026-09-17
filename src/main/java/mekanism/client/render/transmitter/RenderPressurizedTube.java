@@ -30,7 +30,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
         ChemicalNetwork network = tube.getTransmitter().getTransmitterNetworkNN();
         ChemicalResource chemical = network.getLastType();
         float currentScale = Math.max(0.2F, network.currentScale);
-        //TODO - 26.2: Figure out the tint better
+        //TODO - 26.3: Figure out the tint better
         setContentsModel(tube, state, chemical.value().icon(), ARGB.color(currentScale, chemical.value().tint()));
         state.lightCoords = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, chemical.value().lightLevel());
     }

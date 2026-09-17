@@ -59,7 +59,7 @@ public class MekanismRenderer {
     @Nullable
     public static TextureAtlasSprite GUNPOWDER_SPRITE;
 
-    //TODO - 26.2: all usages of this likely do NOT need to use RenderResizableCuboid in its current form, as tiling a blank texture is... questionable
+    //TODO - 26.3: all usages of this likely do NOT need to use RenderResizableCuboid in its current form, as tiling a blank texture is... questionable
     public static RenderResizableCuboid.TexturePicker WHITE_ICON_GETTER;
     public static RenderResizableCuboid.TexturePicker teleporterPortal;
     public static final Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
@@ -72,7 +72,7 @@ public class MekanismRenderer {
     /// @param type  Still or Flowing
     ///
     /// @return the sprite, or missing sprite if not found
-    //TODO - 26.2 - is this still what should be done?
+    //TODO - 26.3 - is this still what should be done?
     public static TextureAtlasSprite getBaseFluidTexture(Fluid fluid, FluidTextureType type) {
         FluidModel fluidModel = getFluidModel(fluid);
         if (type == FluidTextureType.STILL) {
@@ -115,7 +115,7 @@ public class MekanismRenderer {
     }
 
     //Color
-    //TODO - 26.2: review usages to ensure it's actually used (all color() methods)
+    //TODO - 26.3: review usages to ensure it's actually used (all color() methods)
     public static int color(FluidResource fluid) {
         if (!fluid.isEmpty()) {
             return getColorARGB(fluid);
@@ -176,7 +176,7 @@ public class MekanismRenderer {
     }
 
     public static void renderColorOverlay(GuiGraphicsExtractor guiGraphics, int x, int y, int color) {
-        //TODO - 26.2: Go through all our GUIs and make sure that our things that previously used gui overlay render as expected
+        //TODO - 26.3: Go through all our GUIs and make sure that our things that previously used gui overlay render as expected
         guiGraphics.fill(x, y, guiGraphics.guiWidth(), guiGraphics.guiHeight(), color);
     }
 
@@ -186,7 +186,7 @@ public class MekanismRenderer {
     }
 
     public static float getPartialTick() {
-        //TODO - 26.2: Re-evaluate callers and see if any have access to the delta tracker through non static means
+        //TODO - 26.3: Re-evaluate callers and see if any have access to the delta tracker through non static means
         return Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
     }
 
@@ -231,7 +231,7 @@ public class MekanismRenderer {
 
             //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
             //Reset any cached models now that the atlases are built
-            //TODO - 26.2: Move model cache clearing to the baking complete event?
+            //TODO - 26.3: Move model cache clearing to the baking complete event?
             RenderPigmentMixer.resetCached();
             RenderSeismicVibrator.resetCached();
             SINGLE_TEXTURE_PICKERS.clear();

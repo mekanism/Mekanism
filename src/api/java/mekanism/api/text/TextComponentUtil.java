@@ -321,7 +321,7 @@ public class TextComponentUtil {
         };
     }
 
-    //TODO - 26.2: find and remove these?
+    //TODO - 26.3: find and remove these?
     private static MutableComponent logLiteralItemUsage(Item item) {
         if (!FMLEnvironment.isProduction()) {
             MekanismAPI.logger.error("Item instance ({}) passed directly to translate method", item, new Exception());
@@ -329,7 +329,7 @@ public class TextComponentUtil {
         return item.getName(new ItemStack(item)).copy();
     }
 
-    //TODO - 26.2: find and remove these?
+    //TODO - 26.3: find and remove these?
     private static MutableComponent logLiteralChemicalUsage(Chemical chemical) {
         if (!FMLEnvironment.isProduction()) {
             MekanismAPI.logger.error("Chemical instance ({}) passed directly to translate method", chemical, new Exception());

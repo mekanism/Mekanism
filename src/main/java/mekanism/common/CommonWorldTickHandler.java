@@ -57,7 +57,7 @@ public class CommonWorldTickHandler {
         //Note: The level should always be an instance of Level based on what is passed to the constructor of BreakBlockEvent,
         // but we instance check it just to be safe
         if (!state.isAir() && event.getLevel() instanceof Level level && !IBlockSecurityUtils.INSTANCE.canAccess(event.getPlayer(), level, event.getPos())) {
-            //TODO - 26.2 Do we need to use event.setNotifyClient ?
+            //TODO - 26.3 Do we need to use event.setNotifyClient ?
             //If they don't because it is something that is locked, then cancel the event
             event.setCanceled(true);
         }

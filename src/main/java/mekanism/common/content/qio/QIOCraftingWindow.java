@@ -711,7 +711,7 @@ public class QIOCraftingWindow implements IContentsListener {
             }
         }
 
-        //TODO - 26.2: Re-evaluate callers
+        //TODO - 26.3: Re-evaluate callers
         public boolean isStackStillValid(Level world, ItemStack stack, int index) {
             return isStackStillValid(world, ItemResource.of(stack), index);
         }

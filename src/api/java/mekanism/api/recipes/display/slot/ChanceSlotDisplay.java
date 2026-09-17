@@ -28,7 +28,7 @@ public record ChanceSlotDisplay(SlotDisplay source, double chance) implements Sl
 
     @Override
     public <T> Stream<T> resolve(ContextMap context, DisplayContentsFactory<T> factory) {
-        //TODO - 26.2: Figure out how we want to represent the chance
+        //TODO - 26.3: Figure out how we want to represent the chance
         return source.resolve(context, factory);
     }
 

@@ -84,14 +84,14 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, FluidS
 
     @Override
     public boolean hasNoMatchingInstances() {
-        //TODO - 26.2: Figure out how to reimplement this, or if the entire concept should go away
+        //TODO - 26.3: Figure out how to reimplement this, or if the entire concept should go away
         //return ingredient.ingredient().hasNoFluids();
         return false;
     }
 
     @Override
     public void logMissingTags() {
-        //TODO - 26.2: Re-evaluate this implementation
+        //TODO - 26.3: Re-evaluate this implementation
         if (hasNoMatchingInstances()) {
             FluidIngredient fluidIngredient = ingredient.ingredient();
             if (fluidIngredient instanceof SimpleFluidIngredient simple) {

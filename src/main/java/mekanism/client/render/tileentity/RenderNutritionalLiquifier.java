@@ -117,9 +117,9 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             }
             state.item.submit(poseStack, nodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();
-            //TODO - 26.2: rendering
+            //TODO - 26.3: rendering
             /*if (state.active && Minecraft.getInstance().options.particles().get() != ParticleStatus.MINIMAL) {
-                //TODO - 26.2: Can this be transitioned to being a nodeCollector.submitParticleGroup call?
+                //TODO - 26.3: Can this be transitioned to being a nodeCollector.submitParticleGroup call?
                 //Render eating particles
                 PseudoParticleData pseudoParticles = particles.computeIfAbsent(tile, t -> new PseudoParticleData());
                 if (isTickingNormally(tile)) {

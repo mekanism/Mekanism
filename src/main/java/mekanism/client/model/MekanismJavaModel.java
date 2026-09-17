@@ -16,7 +16,7 @@ import net.minecraft.util.Unit;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.2: review if any of these can be converted back to regular java models - needs rendertype without texture & only single rendertype/light coords
+//TODO - 26.3: review if any of these can be converted back to regular java models - needs rendertype without texture & only single rendertype/light coords
 public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
 
     protected final ModelPart root;

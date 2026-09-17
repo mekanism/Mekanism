@@ -57,7 +57,7 @@ public class UpgradeUtils implements IUpgradeHelper {
             // that use this that are not statistical and have gas upgrades so would go through this code path
             Holder.Reference<Upgrade> speedUpgrade = upgrades.get(UpgradeIds.SPEED).orElse(null);
             if (speedUpgrade != null) {
-                //TODO - 26.2: Re-evaluate this cast
+                //TODO - 26.3: Re-evaluate this cast
                 return Ints.saturatedCast(Math.round(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(),
                       fractionUpgrades(tile, speedUpgrade) - fractionUpgrades(tile, chemicalUpgrade))));
             }

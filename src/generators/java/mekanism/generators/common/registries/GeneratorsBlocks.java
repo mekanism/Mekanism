@@ -70,7 +70,7 @@ public class GeneratorsBlocks {
                       ).addAttachmentOnlyContainers(ContainerType.HEAT, () -> HeatCapacitorBuilder.basicCreator(
                             TileEntityHeatGenerator.HEAT_CAPACITY, TileEntityHeatGenerator.INVERSE_CONDUCTION_COEFFICIENT, TileEntityHeatGenerator.INVERSE_INSULATION_COEFFICIENT
                       )).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                            .addBasic(1)//todo - 26.2: is this really needed? .addFluidFuelSlot(0, itemType -> itemType.toStack().getBurnTime(null) != 0)
+                            .addBasic(1)//TODO - 26.3: is this really needed? .addFluidFuelSlot(0, itemType -> itemType.toStack().getBurnTime(null) != 0)
                             .addEnergy()
                             .build()
                       )

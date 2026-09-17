@@ -58,7 +58,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        //TODO - 26.2: Theoretically a datapack could make it food by adding a component, so we may want to check if it is?
+        //TODO - 26.3: Theoretically a datapack could make it food by adding a component, so we may want to check if it is?
         //Like super.onItemUse, except we validate the player is not null, and pass the onItemRightClick regardless of if
         // we are consumable or not (as we know the personal chest is never food). This allows us to open the personal chest's
         // GUI if we didn't interact with a block that caused something to happen like opening a GUI.

@@ -45,7 +45,7 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
           ChemicalRadioactivity.CODEC, ChemicalRadioactivity.RADIOACTIVITY_CODEC);
     private static final DataMapType<Chemical, CooledCoolant> COOLED_CHEMICAL_COOLANT = REGISTER.registerSimpleSynced(CooledCoolant.ID, MekanismRegistries.Keys.CHEMICAL, CooledCoolant.CODEC);
     private static final DataMapType<Chemical, HeatedCoolant> HEATED_CHEMICAL_COOLANT = REGISTER.registerSimpleSynced(HeatedCoolant.ID, MekanismRegistries.Keys.CHEMICAL, HeatedCoolant.CODEC);
-    //TODO - 26.2: Figure out how to make this extensible. Maybe just loop after the data map registry finishes being populated and do instance checks?
+    //TODO - 26.3: Figure out how to make this extensible. Maybe just loop after the data map registry finishes being populated and do instance checks?
     private static final List<DataMapType<Chemical, ? extends IChemicalAttribute>> ATTRIBUTE_TYPES = List.of(
           CHEMICAL_RADIOACTIVITY,
           CHEMICAL_FUEL,

@@ -14,7 +14,7 @@ import net.minecraft.util.CommonColors;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.2: Do we want to override fillCrashReportCategory to add more details to it?
+//TODO - 26.3: Do we want to override fillCrashReportCategory to add more details to it?
 public class TransmitterRenderState extends BlockEntityRenderState {
 
     public List<BlockStateModelPart> contentsModel = Collections.emptyList();

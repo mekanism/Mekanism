@@ -61,7 +61,7 @@ public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
         List<ItemStackTemplate> list = new ArrayList<>();
         for (RecipeDisplay display : wrapped.display()) {
             for (ItemStack stack : display.result().resolveForStacks(contextMap)) {
-                if (!stack.isEmpty()) {//TODO - 26.2: Can resolved stacks ever be empty?
+                if (!stack.isEmpty()) {//TODO - 26.3: Can resolved stacks ever be empty?
                     list.add(ItemStackTemplate.fromNonEmptyStack(stack));
                 }
             }

@@ -77,7 +77,7 @@ public class RenderTickHandler {
         boltRenderer.update(renderer, bolt, gameTime, MekanismRenderer.getPartialTick());
     }
 
-    //TODO - 26.2: Figure out if we need this any more
+    //TODO - 26.3: Figure out if we need this any more
     /*@SubscribeEvent(priority = EventPriority.HIGHEST)
     public void renderPostHighest(ScreenEvent.Render.Post event) {
         if (event.getScreen() instanceof GuiMekanism) {
@@ -268,10 +268,10 @@ public class RenderTickHandler {
         return true;
     }
 
-    //TODO - 26.2 CustomBlockOutlineRenderer
+    //TODO - 26.3 CustomBlockOutlineRenderer
     @SubscribeEvent
     public void onBlockHover(ExtractBlockOutlineRenderStateEvent event) {
-        //TODO - 26.2: ExtractBlockOutlineRenderStateEvent and CustomBlockOutlineRenderer?
+        //TODO - 26.3: ExtractBlockOutlineRenderStateEvent and CustomBlockOutlineRenderer?
         LocalPlayer player = minecraft.player;
         if (player == null) {
             return;
@@ -282,7 +282,7 @@ public class RenderTickHandler {
         ProfilerFiller profiler = Profiler.get();
         BlockState blockState = event.getBlockState();
 
-        //TODO - 26.2: blasting unit. don't forget translucency check
+        //TODO - 26.3: blasting unit. don't forget translucency check
         /*profiler.push(ProfilerConstants.AREA_MINE_OUTLINE);
         // Draw outlines for area mining blocks
         if (!outliningArea) {
@@ -296,7 +296,7 @@ public class RenderTickHandler {
                     for (Map.Entry<BlockPos, BlockState> block : blocks.entrySet()) {
                         BlockPos blastingTarget = block.getKey();
                         // simulate ray tracing results for all block positions
-                        if (!pos.equals(blastingTarget) && TODO - 26.2: also move out of here. !ClientHooks.onDrawHighlight(levelRenderer, camera, rayTraceResult.withPosition(blastingTarget), event.getDeltaTracker(), matrix, renderer)) {
+                        if (!pos.equals(blastingTarget) && TODO - 26.3: also move out of here. !ClientHooks.onDrawHighlight(levelRenderer, camera, rayTraceResult.withPosition(blastingTarget), event.getDeltaTracker(), matrix, renderer)) {
                             levelRenderer.renderHitOutline(matrix, renderer.getBuffer(RenderTypes.lines()), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
                         }
                     }

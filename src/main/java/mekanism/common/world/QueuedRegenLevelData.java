@@ -62,7 +62,7 @@ public class QueuedRegenLevelData {
                 //Credit to E. Beef
                 int version = MekanismConfig.world.userGenVersion.get();
                 long startTime = Util.getNanos();
-                //TODO - 26.2: Do we want to check event.hasTime()?
+                //TODO - 26.3: Do we want to check event.hasTime()?
                 while (Util.getNanos() - startTime < maximumDeltaTimeNanoSecs && !queuedRegenData.chunksToGen.isEmpty()) {
                     ChunkPos nextChunk = queuedRegenData.chunksToGen.poll();
                     //Ensure the chunk actually exists and is still loaded before trying to retrogen it

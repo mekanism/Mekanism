@@ -58,7 +58,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return te == null ? null : te.getMainPos();
     }
 
-    //TODO - 26.2: When breaking it doesn't display the break progress outline if a bounding block is the primary target
+    //TODO - 26.3: When breaking it doesn't display the break progress outline if a bounding block is the primary target
     public BlockBounding(BlockBehaviour.Properties properties) {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the bounding block
         // Torches cannot be placed on the sides due to vanilla checking the incorrect shape
@@ -322,7 +322,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     protected VoxelShape getOcclusionShape(BlockState state) {
-        //TODO - 26.2: perhaps override getAppearance?
+        //TODO - 26.3: perhaps override getAppearance?
         //return proxyShape(world, pos, null, (s, level, p, ctx) -> s.getOcclusionShape(level, p));
         return super.getOcclusionShape(state);
     }

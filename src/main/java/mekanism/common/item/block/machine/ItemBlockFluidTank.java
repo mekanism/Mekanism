@@ -142,7 +142,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
             if (ItemSecurityUtils.get().tryClaimItem(level, player, itemAccess, transaction)) {
                 transaction.commit();
-                //TODO - 26.2: Re-evaluate SUCCESS vs SUCCESS_SERVER for our use impls
+                //TODO - 26.3: Re-evaluate SUCCESS vs SUCCESS_SERVER for our use impls
                 return InteractionResult.SUCCESS.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
             } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, itemAccess)) {
                 return InteractionResult.FAIL;

@@ -337,7 +337,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             boolean cacheHasContainer = container(cache) == null;
             boolean mergeHasContainer = container(merge) == null;
             if (cacheHasContainer != mergeHasContainer) {
-                //TODO - 26.2: Re-evaluate this
+                //TODO - 26.3: Re-evaluate this
                 prefab(cacheHasContainer ? merge : cache, 1);
             }
         }

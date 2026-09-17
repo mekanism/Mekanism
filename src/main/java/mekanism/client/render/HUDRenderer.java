@@ -37,7 +37,7 @@ public class HUDRenderer {
     private static final EquipmentSlot[] EQUIPMENT_ORDER = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND,
                                                             EquipmentSlot.OFFHAND};
     private static final EquipmentSlot[] ARMOR_SLOTS = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
-    //TODO - 26.2: Remove padding gui sprites so they don't take as much space on the atlas?
+    //TODO - 26.3: Remove padding gui sprites so they don't take as much space on the atlas?
     private static final Identifier[] ARMOR_ICONS = {Mekanism.rl("hud/mekasuit_helmet"), Mekanism.rl("hud/mekasuit_chest"),
                                                      Mekanism.rl("hud/mekasuit_leggings"), Mekanism.rl("hud/mekasuit_boots")};
     private static final Identifier TOOL_ICON = Mekanism.rl("hud/mekatool");
@@ -87,7 +87,7 @@ public class HUDRenderer {
             prevRotationYaw = player.getYRot();
             prevRotationPitch = player.getXRot();
         }
-        //TODO - 26.2: Can we do this via DeltaTracker#getGameTimeDeltaTicks or DeltaTracker#getRealtimeDeltaTicks?
+        //TODO - 26.3: Can we do this via DeltaTracker#getGameTimeDeltaTicks or DeltaTracker#getRealtimeDeltaTicks?
         lastTick = level.getGameTime();
         float yawDiff = player.yHeadRot - prevRotationYaw;
         float pitchDiff = player.getXRot() - prevRotationPitch;

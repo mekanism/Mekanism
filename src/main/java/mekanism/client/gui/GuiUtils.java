@@ -34,7 +34,7 @@ public class GuiUtils {
         int backgroundColor = minecraft.options.getBackgroundColor(0.0F);
         if (backgroundColor != 0) {
             int argb = ARGB.white(alpha);
-            //TODO - 26.2: Can we merge the multiply and argb calls into one?
+            //TODO - 26.3: Can we merge the multiply and argb calls into one?
             guiGraphics.fill(x - 2, y - 2, x + width + 2, y + height + 2, ARGB.multiply(backgroundColor, argb));
         }
     }

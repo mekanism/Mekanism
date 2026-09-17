@@ -48,7 +48,7 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
     public void copyToContainer(IEnergyContainer container, Long stored) {
         //Clamp contents to the max amount of energy that can be stored
         container.setEnergy(Math.min(stored, container.getCapacityAsLong()), null);
-        //TODO - 26.2: Should we clamp on pick up as well?
+        //TODO - 26.3: Should we clamp on pick up as well?
     }
 
     @Override
@@ -104,7 +104,7 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
     ///
     /// @implNote If the capacity is zero, and the container is of variable size, this will skip clamping the container.
     public void clampContents(IEnergyContainer container, @Nullable TransactionContext transaction) {
-        //TODO - 26.2: Evaluate what other spots should be clamped
+        //TODO - 26.3: Evaluate what other spots should be clamped
         if (!container.isEmpty()) {
             long capacity = container.getCapacityAsLong();
             if (capacity == 0 && container instanceof VariableCapacityEnergyContainer) {

@@ -45,7 +45,7 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
     @Override
     @Deprecated
     public List<ChanceOutput> getOutputDefinition(ContextMap contextMap) {
-        //TODO - 26.2: Re-evaluate should we throw instead?
+        //TODO - 26.3: Re-evaluate should we throw instead?
         return Collections.emptyList();
     }
 

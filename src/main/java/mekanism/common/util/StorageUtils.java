@@ -29,7 +29,7 @@ import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-public class StorageUtils {//TODO - 26.2: Re-evaluate which of these methods are the same and can be deduplicated and moved to ResourceUtils or the corresponding container type
+public class StorageUtils {//TODO - 26.3: Re-evaluate which of these methods are the same and can be deduplicated and moved to ResourceUtils or the corresponding container type
 
     private StorageUtils() {
     }
@@ -63,7 +63,7 @@ public class StorageUtils {//TODO - 26.2: Re-evaluate which of these methods are
         return handler == null ? 0 : ContainerType.ENERGY.divideToLevel(handler);
     }
 
-    //TODO - 26.2: Should this method be used anywhere? Or is coloring happening elsewhere
+    //TODO - 26.3: Should this method be used anywhere? Or is coloring happening elsewhere
     public static Component getEnergyPercent(TypedInstance<Item> stack, boolean colorText) {
         return getStoragePercent(getEnergyRatio(stack), colorText);
     }
@@ -93,7 +93,7 @@ public class StorageUtils {//TODO - 26.2: Re-evaluate which of these methods are
     }
 
     public static boolean isBarVisible(ItemStack stack) {
-        //TODO - 26.2: Re-evaluate this, we now expose the capability when stacked, so we should potentially have the energy bar display
+        //TODO - 26.3: Re-evaluate this, we now expose the capability when stacked, so we should potentially have the energy bar display
         //If we are currently stacked, don't display the bar as it will overlap the stack count
         if (stack.count() == 1) {
             //We also don't display the bar if there is nothing stored in any of the containers
@@ -127,7 +127,7 @@ public class StorageUtils {//TODO - 26.2: Re-evaluate which of these methods are
     }
 
     public static boolean isEnergyBarVisible(ItemStack stack) {
-        //TODO - 26.2: Re-evaluate this, we now expose the capability when stacked, so we should potentially have the energy bar display
+        //TODO - 26.3: Re-evaluate this, we now expose the capability when stacked, so we should potentially have the energy bar display
         //If we are currently stacked, don't display the bar as it will overlap the stack count
         if (stack.count() == 1) {
             //We also don't display the bar if there is nothing stored in any of the containers

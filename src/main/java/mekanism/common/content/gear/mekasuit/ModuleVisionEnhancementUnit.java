@@ -25,7 +25,7 @@ public class ModuleVisionEnhancementUnit implements ICustomModule<ModuleVisionEn
     @Override
     public void tickServer(IModule<ModuleVisionEnhancementUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         if (module.useAllEnergy(player, itemAccess, MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get(), transaction)) {
-            //TODO - 26.2: Evaluate making the night vision module properly server side declarative?
+            //TODO - 26.3: Evaluate making the night vision module properly server side declarative?
         }
     }
 

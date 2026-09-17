@@ -97,7 +97,7 @@ public abstract class BaseEmiDefaults implements DataProvider {
     }
 
     public boolean recipeExists(Identifier location) {
-        //TODO - 26.2: Figure out how to reimplement this
+        //TODO - 26.3: Figure out how to reimplement this
         return true;//return serverResources.getResource(location.withPrefix("recipe/").withSuffix(".json")).isPresent();
     }
 }

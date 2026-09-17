@@ -358,7 +358,7 @@ public class TransmitterNetworkRegistry {
                     boolean loaded = entry.getBooleanValue();
                     Collection<Transmitter<?, ?, ?>> chunkTransmitters = transmitters.get(chunk);
                     int transmitterCount;
-                    if (chunkTransmitters != null) {//TODO - 26.2: Is this supposed to be able to be null, or is this check masking a bug?
+                    if (chunkTransmitters != null) {//TODO - 26.3: Is this supposed to be able to be null, or is this check masking a bug?
                         transmitterCount = chunkTransmitters.size();
                         for (Transmitter<?, ?, ?> transmitter : chunkTransmitters) {
                             transmitter.getTransmitterTile().chunkAccessibilityChange(loaded);

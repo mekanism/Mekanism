@@ -14,20 +14,20 @@ import net.minecraft.util.Util;
 
 public class MekanismRenderType {
 
-    //TODO - 26.2 render types
+    //TODO - 26.3 render types
     /*
     private static final RenderStateShard.TransparencyStateShard PARTICLE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("mek_particle_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
     }, RenderSystem::disableBlend);
     private static final RenderStateShard.ShaderStateShard PARTICLE_SHADER = new RenderStateShard.ShaderStateShard(GameRenderer::getParticleShader);*/
-    //TODO - 26.2: Can this just be replaced with LIGHTNING? Only difference is the output target
+    //TODO - 26.3: Can this just be replaced with LIGHTNING? Only difference is the output target
     public static final RenderType MEK_LIGHTNING = RenderType.create("mekanism_lightning", RenderSetup.builder(RenderPipelines.LIGHTNING)
           .sortOnUpload()
           .createRenderSetup()
     );
 
-    //TODO - 26.2: Re-evaluate this
+    //TODO - 26.3: Re-evaluate this
     public static final RenderType GUI_SPRITES = RenderType.create("mekanism_gui_sprite", RenderSetup.builder(RenderPipelines.GUI_TEXTURED)
           .withTexture("Sampler0", AtlasIds.GUI.withPrefix("textures/atlas/").withSuffix(".png"))
           .sortOnUpload()
@@ -75,9 +75,9 @@ public class MekanismRenderType {
     public static final RenderType MEKASUIT = RenderType.create("mekanism_mekasuit", RenderSetup.builder(MekanismRenderPipelines.MEKASUIT)
           .withTexture("Sampler0", TextureAtlas.LOCATION_ITEMS)
           .useLightmap()
-          .useOverlay()//TODO - 26.2: I don't think we want the overlay?
+          .useOverlay()//TODO - 26.3: I don't think we want the overlay?
           .affectsCrumbling()
-          .setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE)//TODO - 26.2?: affectsOutline ? RenderSetup.OutlineProperty.AFFECTS_OUTLINE : RenderSetup.OutlineProperty.NONE)
+          .setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE)//TODO - 26.3?: affectsOutline ? RenderSetup.OutlineProperty.AFFECTS_OUTLINE : RenderSetup.OutlineProperty.NONE)
           .createRenderSetup()
     );
 

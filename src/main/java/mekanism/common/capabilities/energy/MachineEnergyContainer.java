@@ -92,7 +92,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
         Reference<Upgrade> energyUpgrade = upgrades.get(UpgradeIds.ENERGY).orElse(null);
         if (speedUpgrade != null && tile.supportsUpgrade(speedUpgrade)) {
             long bufferMultipler = AttributeEnergy.STORAGE_MULTIPLIER;
-            //TODO - 26.2: Take this into account for the item's defined max energy so that it doesn't display 1 kFE / 20 FE for an energized smelter
+            //TODO - 26.3: Take this into account for the item's defined max energy so that it doesn't display 1 kFE / 20 FE for an energized smelter
             if (tile instanceof TileEntityProgressMachine<?> progressMachine) {
                 bufferMultipler = Math.max(bufferMultipler, progressMachine.ticksRequired);
             }

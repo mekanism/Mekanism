@@ -29,9 +29,9 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
         super.extractRenderState(cable, state, partialTick, cameraPosition, breakProgress);
         //Note: We validated in shouldRender(Transmitter) that the cable has a network, which is two lines above the call to this method
         EnergyNetwork network = cable.getTransmitter().getTransmitterNetworkNN();
-        //TODO - 26.2: What threshold do we want to cut this off at?
+        //TODO - 26.3: What threshold do we want to cut this off at?
         setContentsModel(cable, state, MekanismRenderer.ENERGY_ICON_LOCATION, ARGB.white(network.currentScale));
-        //TODO - 26.2: What do we want to use for the light level
+        //TODO - 26.3: What do we want to use for the light level
         state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
     }
 

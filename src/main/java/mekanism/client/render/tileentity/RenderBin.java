@@ -73,7 +73,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
                     state.displayColor = EnumColor.AQUA.getPackedColor();
                 }
             } else {
-                //TODO - 26.2: Re-evaluate how we want to do this. This just makes it so that we don't actually submit any rendering,
+                //TODO - 26.3: Re-evaluate how we want to do this. This just makes it so that we don't actually submit any rendering,
                 // but we should see if we can just put some of this stuff in the should render?
                 state.facing = null;
             }

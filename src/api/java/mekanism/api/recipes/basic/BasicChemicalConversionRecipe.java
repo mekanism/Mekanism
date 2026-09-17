@@ -34,7 +34,7 @@ public class BasicChemicalConversionRecipe extends BasicItemStackToChemicalRecip
         return List.of(new SimpleMachineRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
-              //TODO - 26.2: What do we want to display as the work stations here
+              //TODO - 26.3: What do we want to display as the work stations here
               new SlotDisplay.ItemSlotDisplay(CREATIVE_CHEMICAL_TANK)
         ));
     }

@@ -23,7 +23,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ITileFilterHolder<QIOFilter<?>> {
 
-    //TODO - 26.2: Do we want to up this to Item.ABSOLUTE_MAX_STACK_SIZE? Even if not, should we switch this to Item.DEFAULT_MAX_STACK_SIZE?
+    //TODO - 26.3: Do we want to up this to Item.ABSOLUTE_MAX_STACK_SIZE? Even if not, should we switch this to Item.DEFAULT_MAX_STACK_SIZE?
     private static final int BASE_TRANSIT_COUNT = 64;
 
     @SuppressWarnings({"unchecked", "rawtypes"})

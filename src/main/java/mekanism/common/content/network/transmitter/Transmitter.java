@@ -169,7 +169,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     public boolean isClientSide() {
         Level level = getLevel();
-        //TODO - 26.2: Re-evaluate this
+        //TODO - 26.3: Re-evaluate this
         return level == null || level.isClientSide();
     }
 
@@ -648,7 +648,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             //If we can't handle redstone, just refresh the side the connection changed on so that if a transmitter is removed
             // or is set to none then we stop trying to be connected to it
             //TODO - 1.20.2: See if we can come up with a better way to handle this as there are definitely better ways
-            if (side == null) {//TODO - 26.2: Re-evaluate
+            if (side == null) {//TODO - 26.3: Re-evaluate
                 refreshConnections();
             } else {
                 refreshConnections(side);

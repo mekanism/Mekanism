@@ -149,7 +149,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         }
     }
 
-    //TODO - 26.2 review this - currently anything outside the BMP is not allowed
+    //TODO - 26.3 review this - currently anything outside the BMP is not allowed
     private boolean isValidSearchChar(int c) {
         return (Character.isBmpCodePoint(c) && ALLOWED_SPECIAL_CHARS.contains((char) c)) || Character.isDigit(c) || Character.isAlphabetic(c);
     }
@@ -188,7 +188,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         GuiQIOItemViewer<CONTAINER> s = recreate(c);
         //Skip loading pinned windows for now on the new viewer as we will transfer any open windows manually (pinned or not)
         s.loadPinned = false;
-        //TODO - 26.2: Should we AT this so that it doesn't run the "on close logic" for the previous viewer? Or can we get away with just setting a boolean on the viewer
+        //TODO - 26.3: Should we AT this so that it doesn't run the "on close logic" for the previous viewer? Or can we get away with just setting a boolean on the viewer
         // and then skipping actually closing it in those cases
         //minecraft.gui.screen = null;
         minecraft.player.containerMenu = s.getMenu();

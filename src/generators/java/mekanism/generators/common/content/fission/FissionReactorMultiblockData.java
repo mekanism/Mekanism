@@ -496,7 +496,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         double toBurn = Math.min(Math.min(rateLimit, storedFuel), getMaxBurnRate());
         storedFuel -= toBurn;
         ChemicalResource fuel = fuelTank.resource();
-        //TODO - 26.2: Re-evaluate this.. it seems weird
+        //TODO - 26.3: Re-evaluate this.. it seems weird
         fuelTank.setContents(fuel, Math.min(MathUtils.clampToLong(storedFuel), fuelTank.capacityAsLong(fuel)), transaction);
         burnRemaining = storedFuel % 1;
         heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get(), transaction);
@@ -679,7 +679,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     @ComputerMethod
     public double getHeatCapacity() {
-        //TODO - 26.2 (heat): Should we expose this via the method wrapper so that all the blocks that have heat can report their heat capacity?
+        //TODO - 26.3 (heat): Should we expose this via the method wrapper so that all the blocks that have heat can report their heat capacity?
         return heatCapacitor.getHeatCapacity();
     }
     //End computer related methods

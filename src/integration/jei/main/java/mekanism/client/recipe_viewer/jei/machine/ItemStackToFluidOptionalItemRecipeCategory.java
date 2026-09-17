@@ -57,7 +57,7 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
     @Nullable
     @Override
     public Identifier getIdentifier(BasicItemStackToFluidOptionalItemRecipe recipe) {
-        //TODO - 26.2: Can we grab the context map from jei?
+        //TODO - 26.3: Can we grab the context map from jei?
         ContextMap contextMap = SlotDisplayContext.fromLevel(Objects.requireNonNull(Minecraft.getInstance().level));
         List<ItemStack> representations = recipe.getInput().getRepresentations(contextMap);
         if (representations.size() == 1) {

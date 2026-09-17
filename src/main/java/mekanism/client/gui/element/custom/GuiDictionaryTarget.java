@@ -92,7 +92,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
     public void renderToolTip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderToolTip(guiGraphics, mouseX, mouseY);
         if (target instanceof ItemStack stack) {
-            //TODO - 26.2: Validate this (and all other places we now use setTooltipForNextFrame) is an acceptable replacement for the old setTooltip,
+            //TODO - 26.3: Validate this (and all other places we now use setTooltipForNextFrame) is an acceptable replacement for the old setTooltip,
             // and we don't have to do something to allow it to be this frame
             guiGraphics.setTooltipForNextFrame(font(), stack, mouseX, mouseY);
         }
