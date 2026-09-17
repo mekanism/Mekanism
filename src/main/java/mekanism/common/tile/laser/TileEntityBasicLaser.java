@@ -323,7 +323,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         diggingProgress = 0;
                     } else {
                         //Note: If this has a significant network performance, we could instead convert this to a start/stop packet
-                        PacketUtils.sendToAllTracking(new PacketHitBlockEffect(result.getBlockPos(), result.getDirection(), true), this);
+                        PacketUtils.sendToAllTracking(new PacketHitBlockEffect(result.getBlockPos(), result.getDirection(), false), this);
                     }
                 }
             }
