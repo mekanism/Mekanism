@@ -11,6 +11,8 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.WorldConfig.OreVeinConfig;
+import mekanism.common.config.value.CachedFloatValue;
+import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.registries.MekanismFeatureTypes;
 import mekanism.common.resource.ore.OreType.OreVeinType;
 import net.minecraft.core.BlockPos;
@@ -43,8 +45,8 @@ public class ResizableOreFeature extends AbstractOreFeature {
     private final FloatSupplier discardChanceOnAirExposure;
     private final boolean retrogen;
 
-    public ResizableOreFeature(List<BlockReplacement> targetStates, OreVeinType oreVeinType, IntSupplier size, FloatSupplier discardChanceOnAirExposure, boolean retrogen) {
-        super(targetStates, size.getAsInt(), discardChanceOnAirExposure.getAsFloat());
+    public ResizableOreFeature(List<BlockReplacement> targetStates, OreVeinType oreVeinType, CachedIntValue size, CachedFloatValue discardChanceOnAirExposure, boolean retrogen) {
+        super(targetStates, size.getOrDefault(), discardChanceOnAirExposure.getOrDefault());
         this.oreVeinType = oreVeinType;
         this.size = size;
         this.discardChanceOnAirExposure = discardChanceOnAirExposure;

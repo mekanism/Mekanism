@@ -36,6 +36,9 @@ public record BabyEntitySpawnBiomeModifier(BabyType babyType, AdditionsConfig.Sp
             if (!biome.is(babyType.biomeBlacklist())) {
                 MobSpawnSettingsBuilder mobSpawnSettings = builder.getMobSpawnSettings();
                 Builder<SpawnerData> monsterSpawns = mobSpawnSettings.getSpawner(MobCategory.MONSTER);
+                if (monsterSpawns == null) {//Nothing to modify
+                    return;
+                }
                 List<Weighted<MobSpawnSettings.SpawnerData>> spawnersToAdd = spawnConfig.getSpawnersToAdd(monsterSpawns.getList());
                 if (!spawnersToAdd.isEmpty()) {
                     EntityType<?> parentType = BuiltInRegistries.ENTITY_TYPE.get(spawnConfig.parentType).map(Holder::value).orElse(null);

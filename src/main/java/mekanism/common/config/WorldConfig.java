@@ -5,8 +5,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
-import java.util.function.IntSupplier;
-import mekanism.api.functions.FloatSupplier;
 import mekanism.common.config.MekanismConfigTranslations.OreConfigTranslations;
 import mekanism.common.config.MekanismConfigTranslations.OreVeinConfigTranslations;
 import mekanism.common.config.value.CachedBooleanValue;
@@ -69,7 +67,7 @@ public class WorldConfig extends BaseMekanismConfig {
         return ores.get(oreVeinType.type()).veinConfigs.get(oreVeinType.index());
     }
 
-    public record OreVeinConfig(BooleanSupplier shouldGenerate, CachedIntValue perChunk, IntSupplier maxVeinSize, FloatSupplier discardChanceOnAirExposure,
+    public record OreVeinConfig(BooleanSupplier shouldGenerate, CachedIntValue perChunk, CachedIntValue maxVeinSize, CachedFloatValue discardChanceOnAirExposure,
                                 ConfigurableHeightRange range) {
     }
 
