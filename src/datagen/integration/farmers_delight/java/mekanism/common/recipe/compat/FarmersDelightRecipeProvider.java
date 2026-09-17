@@ -4,8 +4,8 @@ import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.worldgen.BootstrapContextAccess;
 import net.minecraft.references.ItemIds;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -13,12 +13,12 @@ import vectorwing.farmersdelight.common.registry.ModItems;
 
 public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
 
-    public FarmersDelightRecipeProvider(HolderLookup.Provider registries, String modid) {
-        super(registries, modid);
+    public FarmersDelightRecipeProvider(BootstrapContextAccess contextAccess, String modid) {
+        super(contextAccess, modid);
     }
 
     @Override
-    protected void registerRecipes(RecipeOutput consumer, String basePath, HolderLookup.Provider registries) {
+    protected void registerRecipes(RecipeOutput consumer, String basePath) {
         addPrecisionSawmillRecipes(consumer, basePath + "sawing/");
     }
 

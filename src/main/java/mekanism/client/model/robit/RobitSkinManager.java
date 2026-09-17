@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.SpriteLoader;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -139,8 +140,22 @@ public class RobitSkinManager {
 
     public static class RobitLateMaterialBaker extends MaterialBaker {
 
+        private final Material.Baked missingSprite;
+        private final Material.Baked missingSpriteForceTranslucent;
+
         public RobitLateMaterialBaker() {
-            super(RobitSpriteUploader.getAtlas().missingSprite());
+            //TODO - 26.3: Test this and figure out a more appropriate way to handle this
+            TextureAtlasSprite missingSprite = RobitSpriteUploader.getAtlas().missingSprite();
+            SpriteLoader.Preparations fakePreparations = new SpriteLoader.Preparations(
+                  16, 16, 4, missingSprite, Collections.emptyMap(), CompletableFuture.completedFuture(null)
+            );
+            super(fakePreparations, fakePreparations);
+            this.missingSprite = new Material.Baked(missingSprite, false);
+            this.missingSpriteForceTranslucent = new Material.Baked(missingSprite, true);
+        }
+
+        private Material.Baked replacementForMissingMaterial(Material material) {
+            return material.forceTranslucent() ? this.missingSpriteForceTranslucent : this.missingSprite;
         }
 
         @Override

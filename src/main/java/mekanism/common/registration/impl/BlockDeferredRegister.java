@@ -34,8 +34,14 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
     }
 
     public BlockRegistryObject<Block, BlockItem> registerSimple(String name, UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
+        return registerSimple(name, propertyModifier, UnaryOperator.identity());
+    }
+
+    public BlockRegistryObject<Block, BlockItem> registerSimple(String name, UnaryOperator<BlockBehaviour.Properties> propertyModifier,
+          UnaryOperator<Item.Properties> itemPropertyModifier) {
         //TODO: Do we care about always trying to apply light level adjustments here given none of our callers are fluid loggable?
-        return register(name, properties -> new Block(BlockStateHelper.applyLightLevelAdjustments(propertyModifier.apply(properties))), BlockItem::new);
+        return register(name, properties -> new Block(BlockStateHelper.applyLightLevelAdjustments(propertyModifier.apply(properties))),
+              (block, properties) -> new BlockItem(block, itemPropertyModifier.apply(properties)));
     }
 
     public <BLOCK extends Block> BlockRegistryObject<BLOCK, BlockItem> register(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator) {

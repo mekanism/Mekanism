@@ -88,7 +88,7 @@ public class EnergyCubeBaseGeometry implements ExtendedUnbakedGeometry {
                         unlit.to(),
                         remapLedUVs(unlit, ledUShift, ledVShift),
                         unlit.rotation(),
-                        false,
+                        null,//TODO - 26.3: Validate this; this used to pass false, I believe null is the correct replacement as we don't want any direction
                         15,
                         unlit.faceData()
                   ))

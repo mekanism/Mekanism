@@ -6,7 +6,6 @@ import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuild
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
@@ -18,7 +17,7 @@ class ChemicalInfuserRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "chemical_infusing/";
         //Hydrogen Chloride
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(

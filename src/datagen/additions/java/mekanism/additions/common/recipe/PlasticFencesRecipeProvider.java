@@ -13,7 +13,6 @@ import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -34,7 +33,7 @@ class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "plastic/";
         registerPlasticFences(consumer, basePath + "fence/");
         registerPlasticFenceGates(consumer, basePath + "fence_gate/");

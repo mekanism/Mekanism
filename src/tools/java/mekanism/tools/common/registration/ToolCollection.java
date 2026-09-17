@@ -7,36 +7,30 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
-import mekanism.tools.common.item.ItemMekanismPaxel;
 import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ShieldItem;
-import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.component.BlocksAttacks;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 
-public record ToolCollection(ItemRegistryObject<AxeItem> axe, ItemRegistryObject<HoeItem> hoe, ItemRegistryObject<ItemMekanismPaxel> paxel,
-                             ItemRegistryObject<Item> pickaxe, ItemRegistryObject<ShieldItem> shield, ItemRegistryObject<ShovelItem> shovel,
+public record ToolCollection(ItemRegistryObject<Item> axe, ItemRegistryObject<Item> hoe, ItemRegistryObject<Item> paxel,
+                             ItemRegistryObject<Item> pickaxe, ItemRegistryObject<ShieldItem> shield, ItemRegistryObject<Item> shovel,
                              ItemRegistryObject<Item> sword, ItemRegistryObject<Item> spear) {
 
     public static ToolCollection create(ItemDeferredRegister registry, MaterialCreator material) {
         return new ToolCollection(
-              registry.registerItem(material.getRegistryPrefix() + "_axe", properties -> new AxeItem(
-                    material.toToolMaterial(), material.getAxeDamage(), material.getAxeAtkSpeed(), ToolsItems.setCommonProperties(properties, material))
+              registry.registerSimple(material.getRegistryPrefix() + "_axe", properties -> ToolsItems.setCommonProperties(properties, material)
+                    .axe(material.toToolMaterial(), material.getAxeDamage(), material.getAxeAtkSpeed())
               ),
-              registry.registerItem(material.getRegistryPrefix() + "_hoe", properties -> new HoeItem(
-                    material.toToolMaterial(), material.getHoeDamage(), material.getHoeAtkSpeed(), ToolsItems.setCommonProperties(properties, material))
+              registry.registerSimple(material.getRegistryPrefix() + "_hoe", properties -> ToolsItems.setCommonProperties(properties, material)
+                    .hoe(material.toToolMaterial(), material.getHoeDamage(), material.getHoeAtkSpeed())
               ),
-              registry.registerItem(material.getRegistryPrefix() + "_paxel", properties -> new ItemMekanismPaxel(
-                    material, ToolsItems.setCommonProperties(properties, material))
-              ),
+              registry.registerSimple(material.getRegistryPrefix() + "_paxel", properties -> ToolsItems.paxel(ToolsItems.setCommonProperties(properties, material), material)),
               registry.registerSimple(material.getRegistryPrefix() + "_pickaxe", properties -> ToolsItems.setCommonProperties(properties, material)
                     .pickaxe(material.toToolMaterial(), material.getPickaxeDamage(), material.getPickaxeAtkSpeed())
               ),
@@ -60,8 +54,8 @@ public record ToolCollection(ItemRegistryObject<AxeItem> axe, ItemRegistryObject
                     )
                     .component(DataComponents.BREAK_SOUND, SoundEvents.SHIELD_BREAK)
               )),
-              registry.registerItem(material.getRegistryPrefix() + "_shovel", properties -> new ShovelItem(
-                    material.toToolMaterial(), material.getShovelDamage(), material.getShovelAtkSpeed(), ToolsItems.setCommonProperties(properties, material))
+              registry.registerSimple(material.getRegistryPrefix() + "_shovel", properties -> ToolsItems.setCommonProperties(properties, material)
+                    .shovel(material.toToolMaterial(), material.getShovelDamage(), material.getShovelAtkSpeed())
               ),
               registry.registerSimple(material.getRegistryPrefix() + "_sword", properties -> ToolsItems.setCommonProperties(properties, material)
                     .sword(material.toToolMaterial(), material.getSwordDamage(), material.getSwordAtkSpeed())

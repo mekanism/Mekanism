@@ -116,7 +116,7 @@ public final class TagCache {
                 matchingTargets = MatchingStacks.NONE;
             } else if (matchingTags.size() == 1) {
                 Named<Item> tag = matchingTags.getFirst();
-                matchingTargets = tag.isBound() && tag.size() > 0 ? new MatchingStacks(true, new TagSlotDisplay(tag.key())) : MatchingStacks.NONE;
+                matchingTargets = tag.isBound() && tag.size() > 0 ? new MatchingStacks(true, new TagSlotDisplay(tag)) : MatchingStacks.NONE;
             } else {
                 List<SlotDisplay> displays = matchingTags
                       .stream()

@@ -13,7 +13,6 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
@@ -37,7 +36,7 @@ class UpgradeRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "upgrade/";
         addUpgradeRecipe(consumer, UpgradeIds.ANCHOR, MekanismTags.Items.DUSTS_DIAMOND, basePath);
         addUpgradeRecipe(consumer, UpgradeIds.ENERGY, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD), basePath);

@@ -1,4 +1,4 @@
-// 26.2	2026-09-05T16:30:40.5913938	Tags: mekanism
+// 26.3	2026-09-17T15:06:10.8657794	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -283,7 +283,7 @@ de553df919805fc95387f706f17508a32b20c3ca data/minecraft/tags/block/mineable/pick
 b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/block/mineable/shovel.json
 a2316de7395edfd30bb8271ff596240f453f2986 data/minecraft/tags/block/needs_diamond_tool.json
 d38d7e371e2b8bbf34fb9050178a8db980f242fe data/minecraft/tags/block/needs_stone_tool.json
-126bb288e656325f718c704f6e9d414c37adbc2a data/minecraft/tags/block/overworld_carver_replaceables.json
+a2316de7395edfd30bb8271ff596240f453f2986 data/minecraft/tags/block/nether_portal_frame.json
 eb49540974a606ef95d77f140b9b9bdd083e1549 data/minecraft/tags/block/replaceable.json
 b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/block/sculk_replaceable.json
 126bb288e656325f718c704f6e9d414c37adbc2a data/minecraft/tags/block/snaps_goat_horn.json

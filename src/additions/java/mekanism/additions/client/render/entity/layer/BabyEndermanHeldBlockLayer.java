@@ -22,13 +22,13 @@ public class BabyEndermanHeldBlockLayer extends RenderLayer<EndermanRenderState,
         if (!carriedBlock.isEmpty()) {
             poseStack.pushPose();
             poseStack.translate(0.0F, 0.6875F, -0.75F);
-            poseStack.mulPose(Axis.XP.rotationDegrees(20.0F));
-            poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
+            poseStack.rotateDegrees(Axis.XP, 20.0F);
+            poseStack.rotateDegrees(Axis.YP, 45.0F);
             poseStack.translate(0.25F, 0.1875F, 0.25F);
             //Modify scale of block to be 3/4 of what it is for the adult enderman
             float scale = 0.375F;
             poseStack.scale(-scale, -scale, scale);
-            poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+            poseStack.rotateDegrees(Axis.YP, 90.0F);
             carriedBlock.submit(poseStack, submitNodeCollector, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
             poseStack.popPose();
         }

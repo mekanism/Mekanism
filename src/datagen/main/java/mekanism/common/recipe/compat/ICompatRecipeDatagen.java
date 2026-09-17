@@ -1,9 +1,13 @@
 package mekanism.common.recipe.compat;
 
-import net.minecraft.core.HolderLookup;
+import java.util.Map;
+import mekanism.api.MekanismAPI;
+import mekanism.api.ModBasedService;
+import net.minecraft.data.worldgen.BootstrapContextAccess;
 
-@FunctionalInterface
-public interface ICompatRecipeDatagen {
+public interface ICompatRecipeDatagen extends ModBasedService {
 
-    CompatRecipeProvider recipeProvider(HolderLookup.Provider registries, String modid);
+    Map<String, ICompatRecipeDatagen> INSTANCES = MekanismAPI.getModBasedServices(ICompatRecipeDatagen.class);
+
+    CompatRecipeProvider recipeProvider(BootstrapContextAccess contextAccess);
 }

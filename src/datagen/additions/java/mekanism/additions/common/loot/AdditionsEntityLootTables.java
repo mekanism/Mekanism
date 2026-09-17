@@ -1,11 +1,10 @@
 package mekanism.additions.common.loot;
 
 import mekanism.additions.common.registries.AdditionsEntityTypes;
-import mekanism.common.loot.table.BaseEntityLootTables;
+import mekanism.common.loot.BaseEntityLootTables;
 import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
@@ -22,13 +21,13 @@ import net.minecraft.world.level.storage.loot.functions.SetPotionFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemKilledByPlayerCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithEnchantedBonusCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProviders;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 public class AdditionsEntityLootTables extends BaseEntityLootTables {
 
-    public AdditionsEntityLootTables(HolderLookup.Provider provider) {
-        super(provider);
+    public AdditionsEntityLootTables(LootTableSubProvider.Context context) {
+        super(context);
     }
 
     @Override
@@ -42,25 +41,25 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
               .withPool(
                     LootPool.lootPool()
                           .name("gunpowder")
-                          .setRolls(ConstantValue.exactly(1))
+                          .setRolls(ContextIntProviders.exactly(1))
                           .add(LootItem.lootTableItem(Items.GUNPOWDER)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                                .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
+                                .apply(SetItemCountFunction.setCount(ContextIntProviders.between(0, 2)))
+                                .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.enchantments, ContextFloatProviders.between(0.0F, 1.0F)))
                           )
               ).withPool(LootPool.lootPool()
                     .name("music_discs")
-                    .add(TagEntry.expandTag(ItemTags.CREEPER_DROP_MUSIC_DISCS))
-                    .when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.ATTACKER, EntityPredicate.Builder.entity().of(this.registries.lookupOrThrow(Registries.ENTITY_TYPE), EntityTypeTags.SKELETONS)))
+                    .add(TagEntry.expandTag(this.items.getOrThrow(ItemTags.CREEPER_DROP_MUSIC_DISCS)))
+                    .when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.ATTACKER, EntityPredicate.Builder.entity().of(this.entityTypes, EntityTypeTags.SKELETONS)))
               )
         );
         //Copy of vanilla's enderman drops
         add(AdditionsEntityTypes.BABY_ENDERMAN, LootTable.lootTable()
               .withPool(LootPool.lootPool()
                     .name("pearls")
-                    .setRolls(ConstantValue.exactly(1))
+                    .setRolls(ContextIntProviders.exactly(1))
                     .add(LootItem.lootTableItem(Items.ENDER_PEARL)
-                          .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
-                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
+                          .apply(SetItemCountFunction.setCount(ContextIntProviders.between(0, 1)))
+                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.enchantments, ContextFloatProviders.between(0.0F, 1.0F)))
                     )
               )
         );
@@ -78,23 +77,23 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
         add(AdditionsEntityTypes.BABY_WITHER_SKELETON, LootTable.lootTable()
               .withPool(LootPool.lootPool()
                     .name("coal")
-                    .setRolls(ConstantValue.exactly(1))
+                    .setRolls(ContextIntProviders.exactly(1))
                     .add(LootItem.lootTableItem(Items.COAL)
-                          .apply(SetItemCountFunction.setCount(UniformGenerator.between(-1.0F, 1.0F)))
-                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F))))
+                          .apply(SetItemCountFunction.setCount(ContextIntProviders.between(-1, 1)))
+                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.enchantments, ContextFloatProviders.between(0.0F, 1.0F))))
               ).withPool(LootPool.lootPool()
                     .name("bones")
-                    .setRolls(ConstantValue.exactly(1))
+                    .setRolls(ContextIntProviders.exactly(1))
                     .add(LootItem.lootTableItem(Items.BONE)
-                          .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F))))
+                          .apply(SetItemCountFunction.setCount(ContextIntProviders.between(0, 2)))
+                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.enchantments, ContextFloatProviders.between(0.0F, 1.0F))))
               ).withPool(LootPool.lootPool()
                     .name("skulls")
-                    .setRolls(ConstantValue.exactly(1))
+                    .setRolls(ContextIntProviders.exactly(1))
                     .add(LootItem.lootTableItem(Items.WITHER_SKELETON_SKULL))
                     .when(LootItemKilledByPlayerCondition.killedByPlayer())
                     //Double vanilla's skull drop chance due to being "younger and less brittle"
-                    .when(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(this.registries, 0.05F, 0.01F))
+                    .when(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(this.enchantments, 0.05F, 0.01F))
               )
         );
     }
@@ -102,10 +101,10 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
     private LootPool.Builder tippedArrow(Holder<Potion> potion) {
         return LootPool.lootPool()
               .name("tipped_arrows")
-              .setRolls(ConstantValue.exactly(1))
+              .setRolls(ContextIntProviders.exactly(1))
               .add(LootItem.lootTableItem(Items.TIPPED_ARROW)
-                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
-                    .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)).setLimit(1))
+                    .apply(SetItemCountFunction.setCount(ContextIntProviders.between(0, 1)))
+                    .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.enchantments, ContextFloatProviders.between(0.0F, 1.0F)).setLimit(1))
                     .apply(SetPotionFunction.setPotion(potion))
               ).when(LootItemKilledByPlayerCondition.killedByPlayer());
     }
@@ -115,16 +114,16 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
         return LootTable.lootTable()
               .withPool(LootPool.lootPool()
                     .name("arrows")
-                    .setRolls(ConstantValue.exactly(1))
+                    .setRolls(ContextIntProviders.exactly(1))
                     .add(LootItem.lootTableItem(Items.ARROW)
-                          .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F))))
+                          .apply(SetItemCountFunction.setCount(ContextIntProviders.between(0, 2)))
+                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.enchantments, ContextFloatProviders.between(0.0F, 1.0F))))
               ).withPool(LootPool.lootPool()
                     .name("bones")
-                    .setRolls(ConstantValue.exactly(1))
+                    .setRolls(ContextIntProviders.exactly(1))
                     .add(LootItem.lootTableItem(Items.BONE)
-                          .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
+                          .apply(SetItemCountFunction.setCount(ContextIntProviders.between(0, 2)))
+                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.enchantments, ContextFloatProviders.between(0.0F, 1.0F)))
                     )
               );
     }

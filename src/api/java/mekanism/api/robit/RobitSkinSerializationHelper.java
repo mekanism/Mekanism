@@ -9,9 +9,8 @@ import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.registries.codec.RegistryCodecs;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.util.ExtraCodecs;
 
 /// Helper class for dealing with [`Robit Skin`][RobitSkin] (de)serialization.
@@ -26,10 +25,10 @@ public class RobitSkinSerializationHelper {
     public static final Codec<RobitSkin> DIRECT_CODEC = MekanismRegistries.ROBIT_SKIN_SERIALIZERS.byNameCodec().dispatch(RobitSkin::codec, Function.identity());
 
     /// Codec for referring to robit skins by id in other datapack registry files. Can only be used with [net.minecraft.resources.RegistryOps].
-    public static final Codec<Holder<RobitSkin>> REFERENCE_CODEC = RegistryFileCodec.create(MekanismRegistries.Keys.ROBIT_SKINS, DIRECT_CODEC);
+    public static final Codec<Holder<RobitSkin>> REFERENCE_CODEC = RegistryCodecs.holder(MekanismRegistries.Keys.ROBIT_SKINS, DIRECT_CODEC);
 
     /// Codec for referring to robit skins by id, list of id, or tags. Can only be used with [net.minecraft.resources.RegistryOps].
-    public static final Codec<HolderSet<RobitSkin>> LIST_CODEC = RegistryCodecs.homogeneousList(MekanismRegistries.Keys.ROBIT_SKINS, DIRECT_CODEC);
+    public static final Codec<HolderSet<RobitSkin>> LIST_CODEC = RegistryCodecs.holderSet(MekanismRegistries.Keys.ROBIT_SKINS, DIRECT_CODEC);
 
     /// Codec for sending [RobitSkin]'s over the network.
     ///

@@ -14,8 +14,8 @@ import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.worldgen.BootstrapContextAccess;
 import net.minecraft.references.ItemIds;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
@@ -33,12 +33,12 @@ import net.potionstudios.biomeswevegone.world.level.block.wood.BWGWoodSet;
 
 public class BWGRecipeProvider extends CompatRecipeProvider {
 
-    public BWGRecipeProvider(HolderLookup.Provider registries, String modid) {
-        super(registries, modid);
+    public BWGRecipeProvider(BootstrapContextAccess contextAccess, String modid) {
+        super(contextAccess, modid);
     }
 
     @Override
-    protected void registerRecipes(RecipeOutput consumer, String basePath, HolderLookup.Provider registries) {
+    protected void registerRecipes(RecipeOutput consumer, String basePath) {
         addDyeRecipes(consumer, basePath);
         addCrushingRecipes(consumer, basePath + "crushing/");
         addEnrichingRecipes(consumer, basePath + "enriching/");

@@ -20,6 +20,7 @@ import net.minecraft.advancements.triggers.InventoryChangeTrigger;
 import net.minecraft.core.ClientAsset.ResourceTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
@@ -149,7 +150,7 @@ public class ExtendedAdvancementBuilder {
         return this;
     }
 
-    public AdvancementHolder save(Consumer<AdvancementHolder> consumer) {
-        return internal.save(consumer, advancement.name());
+    public AdvancementHolder save(BootstrapContext<Advancement> output) {
+        return internal.save(output, advancement.name());
     }
 }

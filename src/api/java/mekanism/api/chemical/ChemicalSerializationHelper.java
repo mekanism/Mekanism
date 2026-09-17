@@ -8,9 +8,8 @@ import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.registries.codec.RegistryCodecs;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.Level;
 
@@ -26,10 +25,10 @@ public class ChemicalSerializationHelper {
     public static final Codec<Chemical> DIRECT_CODEC = MekanismRegistries.CHEMICAL_SERIALIZERS.byNameCodec().dispatch(Chemical::serializer, ChemicalSerializer::codec);
 
     /// Codec for referring to chemicals by id in other datapack registry files. Can only be used with [net.minecraft.resources.RegistryOps].
-    public static final Codec<Holder<Chemical>> REFERENCE_CODEC = RegistryFileCodec.create(MekanismRegistries.Keys.CHEMICAL, DIRECT_CODEC);
+    public static final Codec<Holder<Chemical>> REFERENCE_CODEC = RegistryCodecs.holder(MekanismRegistries.Keys.CHEMICAL, DIRECT_CODEC);
 
     /// Codec for referring to chemicals by id, list of id, or tags. Can only be used with [net.minecraft.resources.RegistryOps].
-    public static final Codec<HolderSet<Chemical>> LIST_CODEC = RegistryCodecs.homogeneousList(MekanismRegistries.Keys.CHEMICAL, DIRECT_CODEC);
+    public static final Codec<HolderSet<Chemical>> LIST_CODEC = RegistryCodecs.holderSet(MekanismRegistries.Keys.CHEMICAL, DIRECT_CODEC);
 
     /// Default codec for sending [Chemical]'s over the network.
     ///

@@ -239,7 +239,7 @@ public class SoundHandler {
         Sound s = sound.getSound();
         if (s == null) {
             //If the sound hasn't been initialized yet for some reason try initializing it
-            sound.resolve(Minecraft.getInstance().getSoundManager());
+            sound.getOrResolve(Minecraft.getInstance().getSoundManager());
             s = sound.getSound();
         }
         //Attenuation distance, defaults to 16 blocks
@@ -371,7 +371,7 @@ public class SoundHandler {
         @Override
         public float getVolume() {
             if (this.sound == null) {
-                this.resolve(Minecraft.getInstance().getSoundManager());
+                this.getOrResolve(Minecraft.getInstance().getSoundManager());
             }
             return super.getVolume();
         }

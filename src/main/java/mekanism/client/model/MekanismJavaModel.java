@@ -8,10 +8,10 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.UvMapping;
 import net.minecraft.util.Unit;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
@@ -44,11 +44,11 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
     }
 
     protected static int collectParts(List<ModelPart> parts, PoseStack poseStack, RenderType renderType, SubmitNodeCollector collector, int light, int overlayLight,
-          int argb, @Nullable TextureAtlasSprite sprite, @UnknownNullability FoilRendering foil, int outlineColor, int nextOrder) {
+          int argb, @Nullable UvMapping uvMapping, @UnknownNullability FoilRendering foil, int outlineColor, int nextOrder) {
         for (ModelPart part : parts) {
-            collector.order(nextOrder++).submitModelPart(part, poseStack, renderType, light, overlayLight, sprite, argb, null, outlineColor);
+            collector.order(nextOrder++).submitModelPart(part, poseStack, renderType, light, overlayLight, uvMapping, argb, outlineColor);
             if (foil != FoilRendering.NONE) {
-                collector.order(nextOrder++).submitModelPart(part, poseStack, foil.renderType(), light, overlayLight, sprite, argb, null, outlineColor);
+                collector.order(nextOrder++).submitModelPart(part, poseStack, foil.renderType(), light, overlayLight, uvMapping, argb, outlineColor);
             }
         }
         return nextOrder;
@@ -96,7 +96,8 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
 
         public RenderType renderType() {
             return switch (this) {
-                case ITEM -> RenderTypes.entityGlint();
+                //TODO - 26.3: Test if this works and if we can use a more specific one that might not be translucent?
+                case ITEM -> Sheets.translucentBlockItemGlintSheet();
                 case ARMOR -> MekanismRenderType.ARMOR_GLINT;
                 default -> throw new IllegalStateException("No glint render type");
             };

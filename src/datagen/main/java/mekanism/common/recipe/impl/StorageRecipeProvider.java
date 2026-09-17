@@ -15,7 +15,6 @@ import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.ItemIds;
 import net.minecraft.tags.TagKey;
@@ -29,7 +28,7 @@ class StorageRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
+    public void addRecipes(RecipeOutput consumer) {
         addNuggetRecipes(consumer);
         addStorageBlockRecipes(consumer);
     }

@@ -3,99 +3,85 @@
   "criteria": {
     "baby_bogged": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "mekanismadditions:baby_bogged"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mekanismadditions:baby_bogged"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "baby_creeper": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "mekanismadditions:baby_creeper"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mekanismadditions:baby_creeper"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "baby_enderman": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "mekanismadditions:baby_enderman"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mekanismadditions:baby_enderman"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "baby_parched": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "mekanismadditions:baby_parched"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mekanismadditions:baby_parched"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "baby_skeleton": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "mekanismadditions:baby_skeleton"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mekanismadditions:baby_skeleton"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "baby_stray": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "mekanismadditions:baby_stray"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mekanismadditions:baby_stray"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     },
     "baby_wither_skeleton": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "mekanismadditions:baby_wither_skeleton"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mekanismadditions:baby_wither_skeleton"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     }

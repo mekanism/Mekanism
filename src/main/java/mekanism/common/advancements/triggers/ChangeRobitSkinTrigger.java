@@ -8,12 +8,12 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.advancements.triggers.ChangeRobitSkinTrigger.TriggerInstance;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<TriggerInstance> {
 
@@ -26,13 +26,12 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<TriggerInstan
         this.trigger(player, instance -> instance.skin.isEmpty() || instance.skin.get() == skin);
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player, Optional<ResourceKey<RobitSkin>> skin) implements SimpleCriterionTrigger.SimpleInstance {
+    public record TriggerInstance(Optional<Holder<LootItemCondition>> player, Optional<ResourceKey<RobitSkin>> skin) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(SerializationConstants.PLAYER).forGetter(TriggerInstance::player),
-                    ResourceKey.codec(MekanismRegistries.Keys.ROBIT_SKINS).optionalFieldOf(SerializationConstants.SKIN).forGetter(TriggerInstance::skin)
-              ).apply(instance, TriggerInstance::new)
-        );
+              LootItemCondition.CODEC.optionalFieldOf(SerializationConstants.PLAYER).forGetter(TriggerInstance::player),
+              ResourceKey.codec(MekanismRegistries.Keys.ROBIT_SKINS).optionalFieldOf(SerializationConstants.SKIN).forGetter(TriggerInstance::skin)
+        ).apply(instance, TriggerInstance::new));
 
         public static Criterion<TriggerInstance> toAny() {
             return MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.createCriterion(new TriggerInstance(Optional.empty(), Optional.empty()));

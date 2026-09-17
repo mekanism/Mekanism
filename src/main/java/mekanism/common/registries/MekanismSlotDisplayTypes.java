@@ -15,9 +15,9 @@ import mekanism.common.recipe.display.slot.ChemicalConversionSlotDisplay;
 import mekanism.common.recipe.display.slot.ChemicalSolidTagSlotDisplay;
 import mekanism.common.recipe.display.slot.ChemicalTankSlotDisplay;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.codec.RegistryCodecs;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
@@ -30,7 +30,7 @@ public class MekanismSlotDisplayTypes {
 
     public static final DeferredHolder<SlotDisplay.Type<?>, SlotDisplay.Type<ChemicalSlotDisplay>> CHEMICAL = SLOT_DISPLAY_TYPES.register("chemical",
           () -> new SlotDisplay.Type<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
-                RegistryFixedCodec.create(MekanismRegistries.Keys.CHEMICAL).fieldOf(SerializationConstants.CHEMICAL).forGetter(ChemicalSlotDisplay::chemical)
+                RegistryCodecs.holder(MekanismRegistries.Keys.CHEMICAL).fieldOf(SerializationConstants.CHEMICAL).forGetter(ChemicalSlotDisplay::chemical)
           ).apply(instance, ChemicalSlotDisplay::new)), StreamCodec.composite(
                 ByteBufCodecs.holderRegistry(MekanismRegistries.Keys.CHEMICAL), ChemicalSlotDisplay::chemical,
                 ChemicalSlotDisplay::new

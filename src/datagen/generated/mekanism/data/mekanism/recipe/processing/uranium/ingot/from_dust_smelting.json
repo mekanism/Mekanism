@@ -1,5 +1,6 @@
 {
   "type": "minecraft:smelting",
+  "cookingtime": 200,
   "experience": 0.3,
   "ingredient": "mekanism:dust_uranium",
   "result": {

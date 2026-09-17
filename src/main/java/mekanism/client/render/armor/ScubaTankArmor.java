@@ -40,9 +40,9 @@ public class ScubaTankArmor implements ICustomArmor, ResourceManagerReloadListen
         poseStack.pushPose();
         baseModel.body.translateAndRotate(poseStack);
         poseStack.translate(0, 0, 0.06);
-        nodeCollector.order(0).submitModel(this.model, Unit.INSTANCE, poseStack, model.RENDER_TYPE, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+        nodeCollector.submitModel(this.model, Unit.INSTANCE, poseStack, model.RENDER_TYPE, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
         if (stack.hasFoil()) {
-            nodeCollector.order(1).submitModel(this.model, Unit.INSTANCE, poseStack, MekanismRenderType.ARMOR_GLINT, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, null);
+            nodeCollector.order(1).submitModel(this.model, Unit.INSTANCE, poseStack, MekanismRenderType.ARMOR_GLINT, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
         }
         poseStack.popPose();
     }

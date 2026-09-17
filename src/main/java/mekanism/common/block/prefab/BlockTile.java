@@ -129,8 +129,8 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side) {
-        return type.has(AttributeRedstoneEmitter.class) || super.canConnectRedstone(state, world, pos, side);
+    public boolean shouldRedstoneWireConnectTo(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side) {
+        return type.has(AttributeRedstoneEmitter.class) || super.shouldRedstoneWireConnectTo(state, world, pos, side);
     }
 
     @Override

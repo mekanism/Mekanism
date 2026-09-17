@@ -10,8 +10,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.worldgen.BootstrapContextAccess;
 import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
@@ -19,12 +19,12 @@ import net.minecraft.world.item.ItemStackTemplate;
 
 public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
 
-    public BiomesOPlentyRecipeProvider(HolderLookup.Provider registries, String modid) {
-        super(registries, modid);
+    public BiomesOPlentyRecipeProvider(BootstrapContextAccess contextAccess, String modid) {
+        super(contextAccess, modid);
     }
 
     @Override
-    protected void registerRecipes(RecipeOutput consumer, String basePath, HolderLookup.Provider registries) {
+    protected void registerRecipes(RecipeOutput consumer, String basePath) {
         addDyeRecipes(consumer, basePath);
         addPrecisionSawmillRecipes(consumer, basePath + "sawing/");
         addSandRecipes(consumer, basePath + "sandstone_to_sand/");

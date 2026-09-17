@@ -6,17 +6,14 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalInstance;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.AdvancementRequirements;
-import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.triggers.Criterion;
-import net.minecraft.advancements.triggers.RecipeUnlockedTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeUnlockAdvancementBuilder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
@@ -109,13 +106,11 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         ensureValid(id);
         AdvancementHolder advancementHolder = null;
         if (!this.criteria.isEmpty()) {
-            Advancement.Builder advancementBuilder = recipeOutput.advancement()
-                  .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
-                  .rewards(AdvancementRewards.Builder.recipe(id))
-                  .requirements(AdvancementRequirements.Strategy.OR);
             //If there is a way to "unlock" this recipe then add an advancement with the criteria
-            this.criteria.forEach(advancementBuilder::addCriterion);
-            advancementHolder = advancementBuilder.build(id.identifier().withPrefix("recipes/"));
+            RecipeUnlockAdvancementBuilder advancementBuilder = new RecipeUnlockAdvancementBuilder();
+            this.criteria.forEach(advancementBuilder::unlockedBy);
+            //TODO - 26.3: Do we care about being able to specify a category?
+            advancementHolder = advancementBuilder.build(recipeOutput, id, (String) null);
         }
         recipeOutput.accept(id, asRecipe(), advancementHolder, conditions.toArray(new ICondition[0]));
     }

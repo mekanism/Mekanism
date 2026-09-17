@@ -77,7 +77,7 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, Enti
 
     private void submitRobitSkin(RobitRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
         poseStack.pushPose();
-        poseStack.mulPose(Axis.XP.rotation(Mth.PI));
+        poseStack.rotate(Axis.XP, Mth.PI);
         poseStack.translate(-0.5, -1.5, -0.5);
         submitRobitSkin(state.model, poseStack, nodeCollector, getOverlayCoords(state, this.getWhiteOverlayProgress(state)), state.lightCoords, state.outlineColor);
         poseStack.popPose();

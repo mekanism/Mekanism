@@ -118,7 +118,7 @@ public class Meltdown {
             if (player.distanceToSqr(explosion.center()) < 4096.0) {
                 Optional<Vec3> playerKnockback = Optional.ofNullable(explosion.getHitPlayers().get(player));
                 player.connection.send(new ClientboundExplodePacket(explosion.center(), explosion.radius(), blockCount, playerKnockback, explosionParticle,
-                      SoundEvents.GENERIC_EXPLODE, Level.DEFAULT_EXPLOSION_BLOCK_PARTICLES));
+                      SoundEvents.GENERIC_EXPLODE, Level.DEFAULT_EXPLOSION_BLOCK_PARTICLES, true));
             }
         }
     }

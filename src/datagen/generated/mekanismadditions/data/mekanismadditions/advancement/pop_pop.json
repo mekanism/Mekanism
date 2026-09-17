@@ -3,15 +3,13 @@
   "criteria": {
     "pop": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "mekanismadditions:balloon"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mekanismadditions:balloon"
           }
-        ]
+        }
       },
       "trigger": "minecraft:player_killed_entity"
     }

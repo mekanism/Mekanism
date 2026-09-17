@@ -3,25 +3,30 @@ package mekanism.common.recipe;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.function.BiFunction;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.MultiRegistryBootstrap;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
@@ -29,24 +34,38 @@ import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
 public abstract class BaseRecipeProvider extends RecipeProvider {
 
+    public static MultiRegistryBootstrap registerRecipes(BiFunction<BootstrapContext<Recipe<?>>, BootstrapContext<Advancement>, BaseRecipeProvider> recipeProvider) {
+        return new MultiRegistryBootstrap() {
+            @Override
+            public Set<ResourceKey<? extends Registry<?>>> requestedRegistries() {
+                return Set.of(Registries.RECIPE, Registries.ADVANCEMENT);
+            }
+
+            @Override
+            public void run(MultiRegistryBootstrap.BootstrapGetter registries) {
+                recipeProvider.apply(registries.get(Registries.RECIPE), registries.get(Registries.ADVANCEMENT)).buildRecipes();
+            }
+        };
+    }
+
     protected final HolderGetter<Fluid> fluids;
     protected final HolderGetter<Chemical> chemicals;
 
-    protected BaseRecipeProvider(RecipeOutput output, HolderLookup.Provider registries) {
-        super(registries, output);
-        this.fluids = this.registries.lookupOrThrow(Registries.FLUID);
-        this.chemicals = this.registries.lookupOrThrow(MekanismRegistries.Keys.CHEMICAL);
+    protected BaseRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
+        this.fluids = this.output.lookup(Registries.FLUID);
+        this.chemicals = this.output.lookup(MekanismRegistries.Keys.CHEMICAL);
     }
 
     @Override
     protected final void buildRecipes() {
-        addRecipes(registries);
+        addRecipes();
         for (ISubRecipeProvider subRecipeProvider : getSubRecipeProviders()) {
-            subRecipeProvider.addRecipes(output, registries);
+            subRecipeProvider.addRecipes(output);
         }
     }
 
-    protected abstract void addRecipes(HolderLookup.Provider registries);
+    protected abstract void addRecipes();
 
     /// Gets all the sub/offloaded recipe providers that this recipe provider has.
     ///

@@ -1,7 +1,18 @@
 package mekanism.common.world;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.BitSet;
+import java.util.List;
 import java.util.function.Function;
+import java.util.function.IntSupplier;
+import mekanism.api.SerializationConstants;
+import mekanism.api.functions.FloatSupplier;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.WorldConfig.OreVeinConfig;
+import mekanism.common.registries.MekanismFeatureTypes;
+import mekanism.common.resource.ore.OreType.OreVeinType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
@@ -9,133 +20,179 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
+import net.minecraft.world.level.levelgen.feature.AbstractOreFeature;
+import net.minecraft.world.level.levelgen.feature.BlockReplacement;
 
 //Modified copy of vanilla's OreFeature but to support ResizableOreFeatureConfig
-public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
+public class ResizableOreFeature extends AbstractOreFeature {
 
-    public ResizableOreFeature() {
-        super(ResizableOreFeatureConfig.CODEC);
+    public static final MapCodec<ResizableOreFeature> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+          Codec.list(BlockReplacement.CODEC).fieldOf(SerializationConstants.TARGETS).forGetter(feature -> feature.targetStates),
+          OreVeinType.CODEC.fieldOf(SerializationConstants.ORE_TYPE).forGetter(feature -> feature.oreVeinType),
+          Codec.BOOL.optionalFieldOf(SerializationConstants.RETRO_GEN, false).forGetter(feature -> feature.retrogen)
+    ).apply(builder, (targetStates, oreVeinType, retrogen) -> {
+        OreVeinConfig veinConfig = MekanismConfig.world.getVeinConfig(oreVeinType);
+        return new ResizableOreFeature(targetStates, oreVeinType, veinConfig.maxVeinSize(), veinConfig.discardChanceOnAirExposure(), retrogen);
+    }));
+
+    private final OreVeinType oreVeinType;
+    private final IntSupplier size;
+    private final FloatSupplier discardChanceOnAirExposure;
+    private final boolean retrogen;
+
+    public ResizableOreFeature(List<BlockReplacement> targetStates, OreVeinType oreVeinType, IntSupplier size, FloatSupplier discardChanceOnAirExposure, boolean retrogen) {
+        super(targetStates, size.getAsInt(), discardChanceOnAirExposure.getAsFloat());
+        this.oreVeinType = oreVeinType;
+        this.size = size;
+        this.discardChanceOnAirExposure = discardChanceOnAirExposure;
+        this.retrogen = retrogen;
     }
 
-    protected Heightmap.Types getHeightmapType() {
-        return Heightmap.Types.OCEAN_FLOOR_WG;
+    private Heightmap.Types getHeightmapType() {
+        //Use OCEAN_FLOOR instead of OCEAN_FLOOR_WG as the chunks are already generated
+        return retrogen ? Heightmap.Types.OCEAN_FLOOR : Heightmap.Types.OCEAN_FLOOR_WG;
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<ResizableOreFeatureConfig> context) {
-        RandomSource random = context.random();
-        BlockPos pos = context.origin();
-        WorldGenLevel world = context.level();
-        ResizableOreFeatureConfig config = context.config();
-        float angle = random.nextFloat() * Mth.PI;
-        float adjustedSize = config.size().getAsInt() / 8.0F;
-        int i = Mth.ceil((adjustedSize + 1.0F) / 2.0F);
-        double sin = Math.sin(angle) * adjustedSize;
-        double cos = Math.cos(angle) * adjustedSize;
-        double xMin = pos.getX() + sin;
-        double xMax = pos.getX() - sin;
-        double zMin = pos.getZ() + cos;
-        double zMax = pos.getZ() - cos;
-        double yMin = pos.getY() + random.nextInt(3) - 2;
-        double yMax = pos.getY() + random.nextInt(3) - 2;
-        int minXStart = pos.getX() - Mth.ceil(adjustedSize) - i;
-        int minYStart = pos.getY() - 2 - i;
-        int minZStart = pos.getZ() - Mth.ceil(adjustedSize) - i;
-        int width = 2 * (Mth.ceil(adjustedSize) + i);
-        int height = 2 * (2 + i);
-        for (int x = minXStart; x <= minXStart + width; ++x) {
-            for (int z = minZStart; z <= minZStart + width; ++z) {
-                if (minYStart <= world.getHeight(getHeightmapType(), x, z)) {
-                    return doPlace(world, random, config, xMin, xMax, zMin, zMax, yMin, yMax, minXStart, minYStart, minZStart, width, height);
+    public MapCodec<ResizableOreFeature> codec() {
+        return MekanismFeatureTypes.ORE.get();
+    }
+
+    @Override
+    public final int size() {
+        return this.size.getAsInt();
+    }
+
+    @Override
+    public final float discardChanceOnAirExposure() {
+        return this.discardChanceOnAirExposure.getAsFloat();
+    }
+
+    @Override
+    public boolean canPlaceOre(BlockState state, Function<BlockPos, BlockState> blockGetter, RandomSource random, BlockReplacement targetState, BlockPos.MutableBlockPos orePos) {
+        if (!targetState.target().test(state, orePos, random)) {
+            return false;
+        }
+        return shouldSkipAirCheck(random, discardChanceOnAirExposure()) || !isAdjacentToAir(blockGetter, orePos);
+    }
+
+    /// Copy of [net.minecraft.world.level.levelgen.feature.OreFeature#place] but modified to query our adjustable size and heightmap
+    @Override
+    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
+        float dir = random.nextFloat() * (float) Math.PI;
+        int size = size();
+        float spreadXY = size / 8.0F;
+        int maxRadius = Mth.ceil((size / 16.0F * 2.0F + 1.0F) / 2.0F);
+        double x0 = origin.getX() + Math.sin(dir) * spreadXY;
+        double x1 = origin.getX() - Math.sin(dir) * spreadXY;
+        double z0 = origin.getZ() + Math.cos(dir) * spreadXY;
+        double z1 = origin.getZ() - Math.cos(dir) * spreadXY;
+        int spreadY = 2;
+        double y0 = origin.getY() + random.nextInt(3) - spreadY;
+        double y1 = origin.getY() + random.nextInt(3) - spreadY;
+        int xStart = origin.getX() - Mth.ceil(spreadXY) - maxRadius;
+        int yStart = origin.getY() - spreadY - maxRadius;
+        int zStart = origin.getZ() - Mth.ceil(spreadXY) - maxRadius;
+        int sizeXZ = 2 * (Mth.ceil(spreadXY) + maxRadius);
+        int sizeY = spreadY * (spreadY + maxRadius);
+
+        for (int xprobe = xStart; xprobe <= xStart + sizeXZ; xprobe++) {
+            for (int zprobe = zStart; zprobe <= zStart + sizeXZ; zprobe++) {
+                if (yStart <= level.getHeight(getHeightmapType(), xprobe, zprobe)) {
+                    return this.doPlace(level, random, x0, x1, z0, z1, y0, y1, xStart, yStart, zStart, sizeXZ, sizeY);
                 }
             }
         }
         return false;
     }
 
-    protected boolean doPlace(WorldGenLevel world, RandomSource random, ResizableOreFeatureConfig config, double xMin, double xMax, double zMin, double zMax, double yMin,
-          double yMax, int minXStart, int minYStart, int minZStart, int width, int height) {
-        BitSet bitset = new BitSet(width * height * width);
-        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
-        int size = config.size().getAsInt();
-        double[] adouble = new double[size * 4];
-        for (int k = 0; k < size; ++k) {
-            float f = k / (float) size;
-            int k4 = k * 4;
-            adouble[k4] = Mth.lerp(f, xMin, xMax);
-            adouble[k4 + 1] = Mth.lerp(f, yMin, yMax);
-            adouble[k4 + 2] = Mth.lerp(f, zMin, zMax);
-            double d3 = random.nextDouble() * size / 16D;
-            adouble[k4 + 3] = ((Mth.sin(Mth.PI * f) + 1) * d3 + 1) / 2D;
-        }
-        for (int i = 0; i < size - 1; ++i) {
+    /// Copy of [net.minecraft.world.level.levelgen.feature.OreFeature#doPlace] but modified to query our adjustable size
+    protected boolean doPlace(WorldGenLevel level, RandomSource random, double x0, double x1, double z0, double z1, double y0, double y1, int xStart, int yStart,
+          int zStart, int sizeXZ, int sizeY) {
+        int placed = 0;
+        BitSet tested = new BitSet(sizeXZ * sizeY * sizeXZ);
+        BlockPos.MutableBlockPos orePos = new BlockPos.MutableBlockPos();
+        int size = size();
+        double[] data = new double[size * 4];
+
+        for (int i = 0; i < size; i++) {
+            float step = (float) i / size;
+            double xx = Mth.lerp(step, x0, x1);
+            double yy = Mth.lerp(step, y0, y1);
+            double zz = Mth.lerp(step, z0, z1);
+            double ss = random.nextDouble() * size / 16D;
+            double r = ((Mth.sin(Mth.PI * step) + 1) * ss + 1) / 2D;
             int i4 = i * 4;
-            if (adouble[i4 + 3] > 0) {
-                for (int j = i + 1; j < size; ++j) {
+            data[i4] = xx;
+            data[i4 + 1] = yy;
+            data[i4 + 2] = zz;
+            data[i4 + 3] = r;
+        }
+
+        for (int i = 0; i < size - 1; i++) {
+            int i4 = i * 4;
+            if (data[i4 + 3] > 0.0) {
+                for (int j = i + 1; j < size; j++) {
                     int j4 = j * 4;
-                    if (adouble[j4 + 3] > 0) {
-                        double d1 = adouble[i4] - adouble[j4];
-                        double d2 = adouble[i4 + 1] - adouble[j4 + 1];
-                        double d3 = adouble[i4 + 2] - adouble[j4 + 2];
-                        double d4 = adouble[i4 + 3] - adouble[j4 + 3];
-                        if (d4 * d4 > d1 * d1 + d2 * d2 + d3 * d3) {
-                            if (d4 > 0) {
-                                adouble[j4 + 3] = -1;
+                    if (data[j4 + 3] > 0.0) {
+                        double dx = data[i4] - data[j4];
+                        double dy = data[i4 + 1] - data[j4 + 1];
+                        double dz = data[i4 + 2] - data[j4 + 2];
+                        double dr = data[i4 + 3] - data[j4 + 3];
+                        if (dr * dr > dx * dx + dy * dy + dz * dz) {
+                            if (dr > 0.0) {
+                                data[j4 + 3] = -1.0;
                             } else {
-                                adouble[i4 + 3] = -1;
+                                data[i4 + 3] = -1;
                             }
                         }
                     }
                 }
             }
         }
-        int i = 0;
-        try (BulkSectionAccess bulkSectionAccess = new BulkSectionAccess(world)) {
-            float discardChanceOnAirExposure = config.discardChanceOnAirExposure().getAsFloat();
-            for (int j = 0; j < size; ++j) {
-                int j4 = j * 4;
-                double d1 = adouble[j4 + 3];
-                if (d1 >= 0) {
-                    double d2 = adouble[j4];
-                    double d3 = adouble[j4 + 1];
-                    double d4 = adouble[j4 + 2];
-                    int xStart = Math.max(Mth.floor(d2 - d1), minXStart);
-                    int yStart = Math.max(Mth.floor(d3 - d1), minYStart);
-                    int zStart = Math.max(Mth.floor(d4 - d1), minZStart);
-                    int xEnd = Math.max(Mth.floor(d2 + d1), xStart);
-                    int yEnd = Math.max(Mth.floor(d3 + d1), yStart);
-                    int zEnd = Math.max(Mth.floor(d4 + d1), zStart);
-                    for (int x = xStart; x <= xEnd; ++x) {
-                        double d5 = (x + 0.5D - d2) / d1;
-                        double d5_squared = d5 * d5;
-                        if (d5_squared < 1) {
-                            for (int y = yStart; y <= yEnd; ++y) {
-                                double d6 = (y + 0.5D - d3) / d1;
-                                double d6_squared = d6 * d6;
-                                if (d5_squared + d6_squared < 1) {
-                                    for (int z = zStart; z <= zEnd; ++z) {
-                                        double d7 = (z + 0.5D - d4) / d1;
-                                        if (d5_squared + d6_squared + d7 * d7 < 1.0D && !world.isOutsideBuildHeight(y)) {
-                                            int l2 = x - minXStart + (y - minYStart) * width + (z - minZStart) * width * height;
-                                            if (!bitset.get(l2)) {
-                                                bitset.set(l2);
-                                                mutablePos.set(x, y, z);
-                                                if (world.ensureCanWrite(mutablePos)) {
-                                                    LevelChunkSection section = bulkSectionAccess.getSection(mutablePos);
+
+        try (BulkSectionAccess sectionGetter = new BulkSectionAccess(level)) {
+            for (int i = 0; i < size; i++) {
+                double r = data[i * 4 + 3];
+                if (!(r < 0.0)) {
+                    double xx = data[i * 4];
+                    double yy = data[i * 4 + 1];
+                    double zz = data[i * 4 + 2];
+                    int xMin = Math.max(Mth.floor(xx - r), xStart);
+                    int yMin = Math.max(Mth.floor(yy - r), yStart);
+                    int zMin = Math.max(Mth.floor(zz - r), zStart);
+                    int xMax = Math.max(Mth.floor(xx + r), xMin);
+                    int yMax = Math.max(Mth.floor(yy + r), yMin);
+                    int zMax = Math.max(Mth.floor(zz + r), zMin);
+
+                    for (int x = xMin; x <= xMax; x++) {
+                        double xd = (x + 0.5 - xx) / r;
+                        if (xd * xd < 1.0) {
+                            for (int y = yMin; y <= yMax; y++) {
+                                double yd = (y + 0.5 - yy) / r;
+                                if (xd * xd + yd * yd < 1.0) {
+                                    for (int z = zMin; z <= zMax; z++) {
+                                        double zd = (z + 0.5 - zz) / r;
+                                        if (xd * xd + yd * yd + zd * zd < 1.0 && !level.isOutsideBuildHeight(y)) {
+                                            int bitSetIndex = x - xStart + (y - yStart) * sizeXZ + (z - zStart) * sizeXZ * sizeY;
+                                            if (!tested.get(bitSetIndex)) {
+                                                tested.set(bitSetIndex);
+                                                orePos.set(x, y, z);
+                                                if (level.ensureCanWrite(orePos)) {
+                                                    LevelChunkSection section = sectionGetter.getSection(orePos);
                                                     if (section != null) {
-                                                        int sectionX = SectionPos.sectionRelative(x);
-                                                        int sectionY = SectionPos.sectionRelative(y);
-                                                        int sectionZ = SectionPos.sectionRelative(z);
-                                                        BlockState state = section.getBlockState(sectionX, sectionY, sectionZ);
-                                                        for (TargetBlockState targetState : config.targetStates()) {
-                                                            if (canPlaceOre(state, bulkSectionAccess::getBlockState, random, discardChanceOnAirExposure, targetState, mutablePos)) {
-                                                                section.setBlockState(sectionX, sectionY, sectionZ, targetState.state, false);
-                                                                ++i;
+                                                        int sectionRelativeX = SectionPos.sectionRelative(x);
+                                                        int sectionRelativeY = SectionPos.sectionRelative(y);
+                                                        int sectionRelativeZ = SectionPos.sectionRelative(z);
+                                                        BlockState blockState = section.getBlockState(sectionRelativeX, sectionRelativeY, sectionRelativeZ);
+
+                                                        for (BlockReplacement targetState : this.targetStates) {
+                                                            if (canPlaceOre(blockState, sectionGetter::getBlockState, random, targetState, orePos)) {
+                                                                section.setBlockState(sectionRelativeX, sectionRelativeY, sectionRelativeZ, targetState.state(), false);
+                                                                placed++;
                                                                 break;
                                                             }
                                                         }
@@ -151,26 +208,7 @@ public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
                 }
             }
         }
-        return i > 0;
-    }
 
-    private static boolean canPlaceOre(BlockState state, Function<BlockPos, BlockState> adjacentStateAccessor, RandomSource random, float discardChanceOnAirExposure,
-          TargetBlockState targetState, BlockPos.MutableBlockPos mutablePos) {
-        if (!targetState.target.test(state, random)) {
-            return false;
-        } else if (shouldSkipAirCheck(random, discardChanceOnAirExposure)) {
-            return true;
-        } else {
-            return !isAdjacentToAir(adjacentStateAccessor, mutablePos);
-        }
-    }
-
-    private static boolean shouldSkipAirCheck(RandomSource random, float discardChanceOnAirExposure) {
-        if (discardChanceOnAirExposure <= 0.0F) {
-            return true;
-        } else if (discardChanceOnAirExposure >= 1.0F) {
-            return false;
-        }
-        return random.nextFloat() >= discardChanceOnAirExposure;
+        return placed > 0;
     }
 }

@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:crafting_special_shielddecoration",
-  "banner": "#minecraft:banners",
-  "result": {
-    "id": "mekanismtools:refined_obsidian_shield"
-  },
-  "target": "mekanismtools:refined_obsidian_shield"
-}

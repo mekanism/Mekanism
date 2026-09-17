@@ -21,7 +21,6 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.SectionPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
@@ -35,7 +34,6 @@ import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.connection.ConnectionType;
@@ -51,7 +49,6 @@ public class PacketUtils {
     //Note: This might be longer as if the name can't be found we have two characters plus an uuid (36)
     public static final int LAST_USERNAME_LENGTH = Math.max(SharedConstants.MAX_PLAYER_NAME_LENGTH, 38);
 
-    public static final StreamCodec<FriendlyByteBuf, BlockHitResult> BLOCK_HIT_RESULT_STREAM_CODEC = StreamCodec.of(FriendlyByteBuf::writeBlockHitResult, FriendlyByteBuf::readBlockHitResult);
     public static final StreamCodec<ByteBuf, OptionalDouble> OPTIONAL_DOUBLE_STREAM_CODEC = new StreamCodec<>() {
         @Override
         public OptionalDouble decode(ByteBuf buffer) {

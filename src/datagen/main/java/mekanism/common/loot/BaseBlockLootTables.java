@@ -1,0 +1,333 @@
+package mekanism.common.loot;
+
+import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import mekanism.common.Mekanism;
+import mekanism.common.block.BlockPersonalStorage;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.Attributes.AttributeInventory;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
+import mekanism.common.component.containers.type.IListContainerType;
+import mekanism.common.component.containers.type.ISingleContainerType;
+import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.IFrequencyHandler;
+import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.resource.ore.OreBlockType;
+import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.TileEntityUpdateable;
+import net.minecraft.advancements.predicates.StatePropertiesPredicate;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.LootTableSubProvider;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.storage.loot.LootContext.BlockEntityTarget;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.LootTable.Builder;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
+import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
+import net.minecraft.world.level.storage.loot.functions.FunctionUserBuilder;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.predicates.ConditionUserBuilder;
+import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.MatchBlock;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
+public abstract class BaseBlockLootTables extends BlockLootSubProvider {
+
+    private final Set<Block> knownBlocks = new ReferenceOpenHashSet<>();
+    //Note: We use an array set as we never expect this to have more than a few elements (in reality it only ever has one)
+    private final Set<Block> toSkip = new ReferenceArraySet<>();
+
+    protected BaseBlockLootTables(LootTableSubProvider.Context context) {
+        //Note: We manually handle explosion resistance on a case by case basis dynamically
+        super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), context);
+    }
+
+    @Override
+    protected void add(Block block, LootTable.Builder table) {
+        //Overwrite the core register method to add to our list of known blocks
+        super.add(block, table);
+        knownBlocks.add(block);
+    }
+
+    @Override
+    protected Iterable<Block> getKnownBlocks() {
+        return knownBlocks;
+    }
+
+    @SafeVarargs
+    protected final void skip(Holder<Block>... blockProviders) {
+        for (Holder<Block> blockProvider : blockProviders) {
+            toSkip.add(blockProvider.value());
+        }
+    }
+
+    protected boolean skipBlock(Holder<Block> holder) {
+        Block block = holder.value();
+        //Skip any blocks that we already registered a table for or have marked to skip
+        return knownBlocks.contains(block) || toSkip.contains(block);
+    }
+
+    protected void add(Holder<Block> block, Function<Block, LootTable.Builder> factory) {
+        add(block.value(), factory);
+    }
+
+    protected LootTable.Builder createOreDrop(Block block, Holder<Item> item) {
+        return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.value())
+              .apply(ApplyBonusCount.addOreBonusCount(enchantments.getOrThrow(Enchantments.FORTUNE)))
+        ));
+    }
+
+    protected LootTable.Builder droppingWithFortuneOrRandomly(Block block, Holder<Item> item, Holder<ContextIntProvider> count) {
+        return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.value())
+              .apply(SetItemCountFunction.setCount(count))
+              .apply(ApplyBonusCount.addOreBonusCount(enchantments.getOrThrow(Enchantments.FORTUNE)))
+        ));
+    }
+
+    //Holder versions of BlockLootTable methods, modified to support varargs/lists
+    protected void dropSelf(Collection<? extends Holder<Block>> blocks) {
+        for (Holder<Block> block : blocks) {
+            if (!skipBlock(block)) {
+                dropSelf(block.value());
+            }
+        }
+    }
+
+    protected void add(Function<Block, Builder> factory, Collection<? extends Holder<Block>> blockProviders) {
+        for (Holder<Block> blockProvider : blockProviders) {
+            add(blockProvider.value(), factory);
+        }
+    }
+
+    @SafeVarargs
+    protected final void add(Function<Block, Builder> factory, Holder<Block>... blockProviders) {
+        for (Holder<Block> blockProvider : blockProviders) {
+            add(blockProvider.value(), factory);
+        }
+    }
+
+    protected void add(Function<Block, Builder> factory, OreBlockType... oreTypes) {
+        for (OreBlockType oreType : oreTypes) {
+            add(oreType.stone(), factory);
+            add(oreType.deepslate(), factory);
+        }
+    }
+
+    protected void dropSelfWithContents(Collection<? extends DeferredHolder<Block, ?>> blockProviders) {
+        //TODO: See if there is other stuff we want to be transferring which we currently do not
+        // For example, when writing this we added dump mode for chemical tanks to getting transferred to the item
+        for (DeferredHolder<Block, ?> blockProvider : blockProviders) {
+            if (skipBlock(blockProvider)) {
+                continue;
+            }
+            Block block = blockProvider.value();
+            boolean hasComponents = false;
+            CopyComponentsFunction.Builder componentsBuilder = CopyComponentsFunction.copyComponentsFromBlockEntity(BlockEntityTarget.BLOCK_ENTITY.contextParam());
+            boolean hasContents = false;
+            Item blockItem = block.asItem();
+            LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
+            //delayed items until after other copies are added, for cases like referencing the owner
+            DelayedLootItemBuilder delayedPool = new DelayedLootItemBuilder();
+            BlockEntity tile = null;
+            if (block instanceof EntityBlock entityBlock) {
+                tile = entityBlock.newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
+            }
+            if (tile instanceof IFrequencyHandler frequencyHandler) {
+                Set<FrequencyType<?>> customFrequencies = frequencyHandler.getFrequencyComponent().getCustomFrequencies();
+                if (!customFrequencies.isEmpty() && blockItem instanceof IFrequencyItem frequencyItem) {
+                    FrequencyType<?> frequencyType = frequencyItem.getFrequencyType();
+                    if (!customFrequencies.contains(frequencyType)) {
+                        Mekanism.logger.warn("Block missing frequency type '{}' expected by item: {}", frequencyType.getName(), blockProvider.getId());
+                    }
+                }
+            }
+            if (tile instanceof TileEntityUpdateable tileEntity) {
+                List<DataComponentType<?>> components = tileEntity.getRemapEntries();
+                if (!components.isEmpty()) {
+                    Set<DataComponentType<?>> skipTypes = ContainerType.TYPES.stream().map(type -> type.getComponentType().get()).collect(Collectors.toSet());
+                    hasComponents = true;
+                    //Sort the components so that the order is consistent when writing to json
+                    components.sort(Comparator.comparing(BuiltInRegistries.DATA_COMPONENT_TYPE::getKey, Identifier::compareNamespaced));
+                    for (DataComponentType<?> remapEntry : components) {
+                        //Allow containers to be handled below where we do extra validation that the stack actually supports it
+                        if (!skipTypes.contains(remapEntry)) {
+                            componentsBuilder.include(remapEntry);
+                        }
+                    }
+                }
+            }
+            if (tile instanceof TileEntityMekanism tileEntity) {
+                if (tileEntity.isNameable()) {
+                    itemLootPool.apply(CopyNameFunction.copyName(BlockEntityTarget.BLOCK_ENTITY));
+                }
+                for (IContainerType<?, ?> type : ContainerType.TYPES) {
+                    int containers = 0;
+                    if (tileEntity.persists(type)) {
+                        if (type instanceof IListContainerType<?, ?, ?> listType) {
+                            containers = listType.getContainers(tileEntity).size();
+                        } else if (type instanceof ISingleContainerType<?, ?> singleType && singleType.getContainer(tileEntity) != null) {
+                            containers = 1;
+                        }
+                    }
+                    int attachmentContainers = type.getContainerCount(blockItem);
+                    if (containers == attachmentContainers) {
+                        if (containers > 0) {
+                            componentsBuilder.include(type.getComponentType().get());
+                            hasComponents = true;
+                            if (type != ContainerType.ENERGY && type != ContainerType.HEAT) {
+                                hasContents = true;
+                            }
+                        }
+                    } else if (attachmentContainers == 0) {
+                        //TODO: Improve how we handle skipping warnings for known missing types
+                        if (type == ContainerType.ITEM && block instanceof BlockPersonalStorage<?, ?>) {
+                            //We don't want explosions causing personal storage items to be directly destroyed. It is also known that the attachment is missing
+                            hasContents = true;
+                        } else if (type != ContainerType.CHEMICAL || !MekanismBlocks.RADIOACTIVE_WASTE_BARREL.keyMatches(blockProvider)) {
+                            Mekanism.logger.warn("Container type: {}, item missing attachments: {}", type.getComponentName(), blockProvider.getId());
+                        }
+                    } else if (containers == 0) {
+                        Mekanism.logger.warn("Container type: {}, item has attachments but block doesn't have containers: {}", type.getComponentName(), blockProvider.getId());
+                    } else {
+                        Mekanism.logger.warn("Container type: {}, has {} item attachments and block has {} containers: {}", type.getComponentName(), attachmentContainers,
+                              containers, blockProvider.getId());
+                    }
+                }
+            }
+            @SuppressWarnings("unchecked")
+            AttributeInventory<DelayedLootItemBuilder> attributeInventory = Attribute.get(blockProvider, AttributeInventory.class);
+            if (attributeInventory != null) {
+                hasContents |= attributeInventory.applyLoot(delayedPool);
+            }
+            if (hasComponents) {
+                itemLootPool.apply(componentsBuilder);
+            }
+            //apply the delayed ones last, so that NBT funcs have happened first
+            for (Holder<LootItemFunction> function : delayedPool.functions) {
+                itemLootPool.apply(function);
+            }
+            for (Holder<LootItemCondition> condition : delayedPool.conditions) {
+                itemLootPool.when(condition);
+            }
+            add(block, LootTable.lootTable().withPool(applyExplosionCondition(hasContents, LootPool.lootPool()
+                  .name("main")
+                  .setRolls(ContextIntProviders.exactly(1))
+                  .add(itemLootPool)
+            )));
+        }
+    }
+
+    /// Like vanilla's [BlockLootSubProvider#applyExplosionCondition(ItemLike, ConditionUserBuilder)] except with a boolean for if it is explosion resistant.
+    private static <T extends ConditionUserBuilder<T>> T applyExplosionCondition(boolean explosionResistant, ConditionUserBuilder<T> condition) {
+        return explosionResistant ? condition.unwrap() : condition.when(ExplosionCondition.survivesExplosion());
+    }
+
+    /// Like vanilla's [BlockLootSubProvider#createSlabItemTable(Block)] except with a named pool
+    @Override
+    protected LootTable.Builder createSlabItemTable(Block slab) {
+        return LootTable.lootTable().withPool(LootPool.lootPool()
+              .name("main")
+              .setRolls(ContextIntProviders.exactly(1))
+              .add(applyExplosionDecay(slab, LootItem.lootTableItem(slab)
+                          .apply(SetItemCountFunction.setCount(ContextIntProviders.exactly(2))
+                                .when(MatchBlock.blockMatches(this.blocks, slab, StatePropertiesPredicate.Builder.properties().hasProperty(SlabBlock.TYPE, SlabType.DOUBLE)))
+                          )
+                    )
+              )
+        );
+    }
+
+    /// Like vanilla's [BlockLootSubProvider#dropOther(Block, ItemLike)] except with a named pool
+    @Override
+    public void dropOther(Block block, ItemLike drop) {
+        add(block, createSingleItemTable(drop));
+    }
+
+    /// Like vanilla's [BlockLootSubProvider#createSingleItemTable(ItemLike)] except with a named pool
+    @Override
+    public LootTable.Builder createSingleItemTable(ItemLike item) {
+        return LootTable.lootTable().withPool(applyExplosionCondition(item, LootPool.lootPool()
+              .name("main")
+              .setRolls(ContextIntProviders.exactly(1))
+              .add(LootItem.lootTableItem(item))
+        ));
+    }
+
+    /// Like vanilla's [BlockLootSubProvider#createSingleItemTableWithSilkTouch(Block, ItemLike, Holder)] except with a named pool
+    @Override
+    protected LootTable.Builder createSingleItemTableWithSilkTouch(Block block, ItemLike item, Holder<ContextIntProvider> count) {
+        return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(count))));
+    }
+
+    /// Like vanilla's [BlockLootSubProvider#createSilkTouchDispatchTable(Block, LootPoolEntryContainer.Builder)] except with a named pool
+    @Override
+    protected LootTable.Builder createSilkTouchDispatchTable(Block block, LootPoolEntryContainer.Builder<?> builder) {
+        return createSelfDropDispatchTable(block, hasSilkTouch(), builder);
+    }
+
+    /// Like vanilla's [BlockLootSubProvider#createSelfDropDispatchTable(Block, Holder, LootPoolEntryContainer.Builder)] except with a named pool
+    protected static LootTable.Builder createSelfDropDispatchTable(Block block, Holder<LootItemCondition> condition, LootPoolEntryContainer.Builder<?> entry) {
+        return LootTable.lootTable().withPool(LootPool.lootPool()
+              .name("main")
+              .setRolls(ContextIntProviders.exactly(1))
+              .add(LootItem.lootTableItem(block)
+                    .when(condition)
+                    .otherwise(entry)
+              )
+        );
+    }
+
+    public static class DelayedLootItemBuilder implements ConditionUserBuilder<DelayedLootItemBuilder>, FunctionUserBuilder<DelayedLootItemBuilder> {
+
+        private final List<Holder<LootItemFunction>> functions = new ArrayList<>();
+        private final List<Holder<LootItemCondition>> conditions = new ArrayList<>();
+
+        @Override
+        public DelayedLootItemBuilder apply(Holder<LootItemFunction> function) {
+            functions.add(function);
+            return this;
+        }
+
+        @Override
+        public DelayedLootItemBuilder when(Holder<LootItemCondition> condition) {
+            conditions.add(condition);
+            return this;
+        }
+
+        @Override
+        public DelayedLootItemBuilder unwrap() {
+            return this;
+        }
+    }
+}

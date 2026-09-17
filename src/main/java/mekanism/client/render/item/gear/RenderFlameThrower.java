@@ -28,10 +28,11 @@ public class RenderFlameThrower implements NoDataSpecialModelRenderer {
     public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(Axis.ZP.rotation(Mth.PI));
-        nodeCollector.order(0).submitModel(flamethrower, Unit.INSTANCE, poseStack, flamethrower.RENDER_TYPE, lightCoords, overlayCoords, outlineColor, null);
+        poseStack.rotate(Axis.ZP, Mth.PI);
+        nodeCollector.submitModel(flamethrower, Unit.INSTANCE, poseStack, flamethrower.RENDER_TYPE, lightCoords, overlayCoords, outlineColor);
         if (hasFoil) {
-            nodeCollector.order(1).submitModel(flamethrower, Unit.INSTANCE, poseStack, RenderTypes.entityGlint(), lightCoords, overlayCoords, EntityRenderState.NO_OUTLINE, null);
+            //TODO - 26.3: Test if this works for the glint
+            nodeCollector.order(1).submitModel(flamethrower, Unit.INSTANCE, poseStack, RenderTypes.entitySolidGlint(ModelFlamethrower.FLAMETHROWER_TEXTURE), lightCoords, overlayCoords, EntityRenderState.NO_OUTLINE);
         }
         poseStack.popPose();
     }

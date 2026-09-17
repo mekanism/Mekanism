@@ -49,8 +49,8 @@ public class RenderFlame extends EntityRenderer<EntityFlame, FlameRenderState> {
     @Override
     public void submit(FlameRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot - 90.0F));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(state.xRot));
+        poseStack.rotateDegrees(Axis.YP, state.yRot - 90.0F);
+        poseStack.rotateDegrees(Axis.ZP, state.xRot);
 
         poseStack.scale(state.scale, state.scale, state.scale);
 
@@ -63,18 +63,17 @@ public class RenderFlame extends EntityRenderer<EntityFlame, FlameRenderState> {
               OverlayTexture.NO_OVERLAY,
               state.tintColor,
               null,
-              state.outlineColor,
-              null
+              state.outlineColor
         );
         poseStack.popPose();
         super.submit(state, poseStack, nodeCollector, camera);
     }
 
     @Override
-    public boolean shouldRender(EntityFlame flame, Frustum camera, double camX, double camY, double camZ) {
+    public boolean shouldRender(EntityFlame flame, Frustum culler, double camX, double camY, double camZ, float partialTicks) {
         float alpha = flame.tickCount / (float) EntityFlame.LIFESPAN;
         float actualAlpha = 1 - alpha;
-        return actualAlpha > 0 && super.shouldRender(flame, camera, camX, camY, camZ);
+        return actualAlpha > 0 && super.shouldRender(flame, culler, camX, camY, camZ, partialTicks);
     }
 
     public static class FlameRenderState extends EntityRenderState {

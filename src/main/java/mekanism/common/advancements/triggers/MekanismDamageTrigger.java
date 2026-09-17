@@ -7,14 +7,14 @@ import mekanism.api.SerializationConstants;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.advancements.triggers.MekanismDamageTrigger.TriggerInstance;
 import mekanism.common.registration.impl.MekanismDamageType;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 public class MekanismDamageTrigger extends SimpleCriterionTrigger<TriggerInstance> {
 
@@ -34,15 +34,14 @@ public class MekanismDamageTrigger extends SimpleCriterionTrigger<TriggerInstanc
         });
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player, ResourceKey<DamageType> damageType, boolean killed)
+    public record TriggerInstance(Optional<Holder<LootItemCondition>> player, ResourceKey<DamageType> damageType, boolean killed)
           implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(SerializationConstants.PLAYER).forGetter(TriggerInstance::player),
-                    ResourceKey.codec(Registries.DAMAGE_TYPE).fieldOf(SerializationConstants.DAMAGE).forGetter(TriggerInstance::damageType),
-                    Codec.BOOL.fieldOf(SerializationConstants.KILLED).forGetter(TriggerInstance::killed)
-              ).apply(instance, TriggerInstance::new)
-        );
+              LootItemCondition.CODEC.optionalFieldOf(SerializationConstants.PLAYER).forGetter(TriggerInstance::player),
+              ResourceKey.codec(Registries.DAMAGE_TYPE).fieldOf(SerializationConstants.DAMAGE).forGetter(TriggerInstance::damageType),
+              Codec.BOOL.fieldOf(SerializationConstants.KILLED).forGetter(TriggerInstance::killed)
+        ).apply(instance, TriggerInstance::new));
 
         public static Criterion<TriggerInstance> damaged(MekanismDamageType damageType) {
             return MekanismCriteriaTriggers.DAMAGE.createCriterion(new TriggerInstance(Optional.empty(), damageType.key(), false));

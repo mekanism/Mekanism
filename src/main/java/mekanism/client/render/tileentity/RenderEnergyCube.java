@@ -74,8 +74,8 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
         poseStack.translate(0.5, 0.5, 0.5);
         poseStack.scale(0.4F, 0.4F, 0.4F);
         poseStack.translate(0, Math.sin(Math.toRadians(3 * state.ticks)) / 7, 0);
-        poseStack.mulPose(Axis.YP.rotationDegrees(scaledTicks));
-        poseStack.mulPose(coreVec.rotationDegrees(36F + scaledTicks));
+        poseStack.rotateDegrees(Axis.YP, scaledTicks);
+        poseStack.rotateDegrees(coreVec, 36F + scaledTicks);
         nodeCollector.submitModelPart(
               this.energyCore,
               poseStack,
@@ -83,8 +83,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
               LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
               null,
-              state.coreTint,
-              null//No break overlay for the core
+              state.coreTint
         );
         poseStack.popPose();
     }

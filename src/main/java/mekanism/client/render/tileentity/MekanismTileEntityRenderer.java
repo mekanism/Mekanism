@@ -5,13 +5,18 @@ import java.util.List;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jspecify.annotations.Nullable;
 
@@ -37,11 +42,33 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity, STATE
 
     protected abstract String getProfilerSection();
 
+    protected void submitBreakableBlockModel(SubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts, STATE state) {
+        submitBreakableBlockModel(nodeCollector, poseStack, renderType, parts, BlockModelRenderState.EMPTY_TINTS, state.lightCoords, OverlayTexture.NO_OVERLAY,
+              EntityRenderState.NO_OUTLINE, state.breakProgress);
+    }
+
     protected void submitBreakableBlockModel(SubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts, int[] tintLayers,
           int lightCoords, int overlayCoords, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         nodeCollector.submitBlockModel(poseStack, renderType, parts, tintLayers, lightCoords, overlayCoords, outlineColor);
         if (breakProgress != null) {
-            nodeCollector.submitBreakingBlockModel(poseStack, parts, breakProgress.progress());
+            //TODO - 26.3: Figure out what to pass for isBlockTranslucent. I think for all our calls the part is solid, so false technically works,
+            // but we should future proof if possible
+            nodeCollector.submitBreakingBlockModel(poseStack, parts, breakProgress.progress(), false);
+        }
+    }
+
+    protected <MODEL_STATE> void submitCrumblingModel(SubmitNodeCollector nodeCollector, Model<? super MODEL_STATE> model, MODEL_STATE modelState, PoseStack poseStack,
+          RenderType renderType, STATE state) {
+        submitCrumblingModel(nodeCollector, model, modelState, poseStack, renderType, state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE,
+              state.breakProgress);
+    }
+
+    protected <MODEL_STATE> void submitCrumblingModel(SubmitNodeCollector nodeCollector, Model<? super MODEL_STATE> model, MODEL_STATE modelState, PoseStack poseStack,
+          RenderType renderType, int lightCoords, int overlayCoords, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        nodeCollector.submitModel(model, modelState, poseStack, renderType, lightCoords, overlayCoords, outlineColor);
+        if (breakProgress != null) {
+            nodeCollector.order(1)
+                  .submitCrumblingOverlay(model, modelState, poseStack, renderType, lightCoords, outlineColor, CommonColors.WHITE, breakProgress);
         }
     }
 }

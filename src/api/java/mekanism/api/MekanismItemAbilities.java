@@ -7,11 +7,6 @@ import net.neoforged.neoforge.common.ItemAbility;
 /// @since 10.7.0
 public final class MekanismItemAbilities {
 
-    /// Represents the action of a paxel digging.
-    ///
-    /// @apiNote This is only used by Mekanism: Tools.
-    public static final ItemAbility PAXEL_DIG = ItemAbility.get("paxel_dig");
-
     /// Exposed by wrenches that can currently configure a block.
     ///
     /// @apiNote Configuring in this case means something different then [#WRENCH_DISMANTLE], [#WRENCH_EMPTY], or [#WRENCH_ROTATE]

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:smelting",
+  "cookingtime": 200,
   "experience": 1.0,
   "ingredient": "mekanism:dust_netherite",
   "result": {

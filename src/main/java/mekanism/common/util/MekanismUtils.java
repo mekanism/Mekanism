@@ -42,10 +42,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.stats.Stat;
@@ -60,6 +62,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.ChunkPos;
@@ -69,10 +72,16 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BubbleColumnBlock;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.redstone.Redstone;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -81,6 +90,7 @@ import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.UsernameCache;
+import net.neoforged.neoforge.common.loot.NeoForgeLootContextParams;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -447,6 +457,33 @@ public final class MekanismUtils {
         return false;
     }
 
+    public static int getBurnTime(BlockEntity blockEntity, ItemResource fuelType) {
+        Level level = blockEntity.getLevel();
+        if (level == null || level.isClientSide()) {
+            //TODO - 26.3: Figure out how to return a result for client side?
+            return 0;
+        }
+        return getBurnTime((ServerLevel) level, blockEntity, fuelType);
+    }
+
+    public static int getBurnTime(ServerLevel level, BlockEntity blockEntity, ItemResource fuelType) {
+        ItemStack fuelItem = fuelType.toStack();
+        return ResolvableInt.getFromItem(fuelItem, DataComponents.COOKING_FUEL, CookingFuel::burnTime, getLootContext(level, blockEntity, fuelItem), 0);
+    }
+
+    /// Copy of [BaseContainerBlockEntity#getLootContext(ServerLevel, ItemStack)]
+    private static LootContext getLootContext(ServerLevel level, BlockEntity blockEntity, ItemStack queriedStack) {
+        return new LootContext.Builder(new LootParams.Builder(level)
+              .withParameter(LootContextParams.BLOCK_STATE, blockEntity.getBlockState())
+              .withParameter(LootContextParams.BLOCK_ENTITY, blockEntity)
+              .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockEntity.getBlockPos()))
+              //TODO - 26.3: How important is this context for cooking fuel time
+              //.withParameter(LootContextParams.CONTAINER, blockEntity)
+              .withOptionalParameter(NeoForgeLootContextParams.QUERIED_STACK, queriedStack.isEmpty() ? null : queriedStack)
+              .create(LootContextParamSets.CONTAINER_PROCESS)
+        ).create(Optional.empty());
+    }
+
     /// @param amount   Amount currently stored
     /// @param capacity Total amount that can be stored.
     ///
@@ -541,7 +578,7 @@ public final class MekanismUtils {
         return fluidsIn;
     }
 
-    public static void veinMineArea(EnergyHandler energyHandler, int baseBlastEnergy, int baseVeinEnergy, Level world, BlockPos pos, ServerPlayer player,
+    public static void veinMineArea(EnergyHandler energyHandler, int baseBlastEnergy, int baseVeinEnergy, ServerLevel world, BlockPos pos, ServerPlayer player,
           ItemStack stack, Item usedTool, Object2IntMap<BlockPos> found, TransactionContext transaction, BlastEnergyFunction blastEnergy, VeinEnergyFunction veinEnergy) {
         Stat<Item> itemStat = Stats.ITEM_USED.get(usedTool);
         for (ObjectIterator<Object2IntMap.Entry<BlockPos>> iterator = Object2IntMaps.fastIterator(found); iterator.hasNext(); ) {

@@ -1,11 +1,16 @@
 package mekanism.common.recipe.compat;
 
-import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.data.worldgen.BootstrapContextAccess;
 
-public class MekAe2Datagen implements IMekAe2Datagen {
+public class MekAe2Datagen implements ICompatRecipeDatagen {
 
     @Override
-    public CompatRecipeProvider recipeProvider(Provider registries, String modid) {
-        return new AE2RecipeProvider(registries, modid);
+    public CompatRecipeProvider recipeProvider(BootstrapContextAccess contextAccess) {
+        return new AE2RecipeProvider(contextAccess, modid());
+    }
+
+    @Override
+    public String modid() {
+        return "ae2";
     }
 }

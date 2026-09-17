@@ -8,7 +8,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
@@ -23,7 +22,7 @@ class MetallurgicInfuserRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "metallurgic_infusing/";
         addMetallurgicInfuserAlloyRecipes(consumer, basePath + "alloy/");
         addMetallurgicInfuserMossyRecipes(consumer, basePath + "mossy/");

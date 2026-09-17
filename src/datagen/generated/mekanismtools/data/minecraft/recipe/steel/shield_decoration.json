@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:crafting_special_shielddecoration",
-  "banner": "#minecraft:banners",
-  "result": {
-    "id": "mekanismtools:steel_shield"
-  },
-  "target": "mekanismtools:steel_shield"
-}

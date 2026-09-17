@@ -323,7 +323,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         diggingProgress = 0;
                     } else {
                         //Note: If this has a significant network performance, we could instead convert this to a start/stop packet
-                        PacketUtils.sendToAllTracking(new PacketHitBlockEffect(result), this);
+                        PacketUtils.sendToAllTracking(new PacketHitBlockEffect(result.getBlockPos(), result.getDirection(), true), this);
                     }
                 }
             }
@@ -359,7 +359,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 //Convert TNT that can be lit on fire into a tnt entity
                 //Note: We don't mark the fake player as the igniter as then when the tnt explodes if it hits a player
                 // there will be a crash as our fake player's level will be null
-                hitState.onCaughtFire(level, hitPos, hitSide, null);
+                hitState.onCaughtFire(level, hitPos, hitSide, null, ItemStack.EMPTY);
                 level.removeBlock(hitPos, false);
             } else {
                 //Use the disassembler as the item to break the block with as that is marked as being the correct tool for drops

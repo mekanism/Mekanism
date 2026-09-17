@@ -19,7 +19,6 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -77,26 +76,26 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
         switch (state.direction) {
             case DOWN -> {
                 poseStack.translate(0, 1, 0);
-                poseStack.mulPose(Axis.XP.rotation(Mth.PI));
+                poseStack.rotate(Axis.XP, Mth.PI);
             }
             case NORTH -> {
                 poseStack.translate(0, 0.5, 0.5);
-                poseStack.mulPose(Axis.XN.rotation(Mth.HALF_PI));
+                poseStack.rotate(Axis.XN, Mth.HALF_PI);
             }
             case SOUTH -> {
                 poseStack.translate(0, 0.5, -0.5);
-                poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
+                poseStack.rotate(Axis.XP, Mth.HALF_PI);
             }
             case EAST -> {
                 poseStack.translate(-0.5, 0.5, 0);
-                poseStack.mulPose(Axis.ZN.rotation(Mth.HALF_PI));
+                poseStack.rotate(Axis.ZN, Mth.HALF_PI);
             }
             case WEST -> {
                 poseStack.translate(0.5, 0.5, 0);
-                poseStack.mulPose(Axis.ZP.rotation(Mth.HALF_PI));
+                poseStack.rotate(Axis.ZP, Mth.HALF_PI);
             }
         }
-        nodeCollector.submitModel(this.model, state.modelState, poseStack, this.model.getRenderType(), state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, state.breakProgress);
+        submitCrumblingModel(nodeCollector, this.model, state.modelState, poseStack, this.model.getRenderType(), state);
         RenderType renderType = this.model.getRenderType();
         nodeCollector.submitModelPart(this.lightBox, poseStack, renderType, state.lightCoords, OverlayTexture.NO_OVERLAY, null);
         poseStack.popPose();

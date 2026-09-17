@@ -57,7 +57,7 @@ public class MekKeyBindingBuilder {
     }
 
     public MekKeyBindingBuilder keyCode(int keyCode) {
-        return keyCode(InputConstants.Type.KEYSYM, keyCode);
+        return keyCode(InputConstants.Type.KEYBOARD, keyCode);
     }
 
     public MekKeyBindingBuilder keyCode(InputConstants.Type keyType, int keyCode) {

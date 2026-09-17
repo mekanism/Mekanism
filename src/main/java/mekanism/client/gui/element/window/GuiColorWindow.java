@@ -1,8 +1,8 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;

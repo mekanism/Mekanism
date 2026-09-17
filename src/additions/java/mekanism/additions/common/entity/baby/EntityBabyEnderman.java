@@ -5,10 +5,10 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.level.Level;
 
-public class EntityBabyEnderman extends EnderMan {
+public class EntityBabyEnderman extends Enderman {
 
     public EntityBabyEnderman(EntityType<EntityBabyEnderman> type, Level world) {
         super(type, world);

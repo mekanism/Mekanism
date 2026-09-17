@@ -53,6 +53,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
@@ -179,7 +180,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                     if (hasEnergyToVeinMine && ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                         Object2IntMap<BlockPos> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos, state), 0,
                               Reference2BooleanMaps.singleton(state.getBlock(), true));
-                        MekanismUtils.veinMineArea(energyHandler, 0, baseDestroyEnergy, world, pos, player, stack, this, found, transaction,
+                        MekanismUtils.veinMineArea(energyHandler, 0, baseDestroyEnergy, (ServerLevel) world, pos, player, stack, this, found, transaction,
                               (_, _) -> 0,
                               (base, hardness, distance, _) -> Mth.ceil(getDestroyEnergy(base, hardness) * (0.5 * Math.pow(distance, 1.5))));
                     }

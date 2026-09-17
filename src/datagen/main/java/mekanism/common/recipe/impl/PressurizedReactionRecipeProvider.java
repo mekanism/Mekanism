@@ -10,7 +10,6 @@ import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.tags.FluidTags;
@@ -26,7 +25,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "reaction/";
         addCoalGasificationRecipes(consumer, basePath + "coal_gasification/");
         addWoodGasificationRecipes(consumer, basePath + "wood_gasification/");

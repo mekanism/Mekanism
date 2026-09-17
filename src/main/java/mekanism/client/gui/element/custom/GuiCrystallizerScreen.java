@@ -2,6 +2,7 @@ package mekanism.client.gui.element.custom;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
@@ -12,7 +13,10 @@ import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
+import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay.TagSlotDisplay;
@@ -64,9 +68,14 @@ public class GuiCrystallizerScreen extends GuiInnerScreen {
                     prevSlurry = chemical;
                     iterStacks = SlotDisplay.Empty.INSTANCE;
                     if (!prevSlurry.isEmpty()) {
-                        ChemicalSolidTag tag = prevSlurry.getSolidTag(gui().registryAccess());
+                        RegistryAccess registryAccess = gui().registryAccess();
+                        ChemicalSolidTag tag = prevSlurry.getSolidTag(registryAccess);
                         if (tag != null) {
-                            iterStacks = new TagSlotDisplay(tag.solidRepresentation());
+                            Optional<Named<Item>> holder = registryAccess.get(tag.solidRepresentation());
+                            //noinspection OptionalIsPresent
+                            if (holder.isPresent()) {
+                                iterStacks = new TagSlotDisplay(holder.get());
+                            }
                         }
                     }
                     slotDisplay.updateStackList();

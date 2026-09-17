@@ -22,7 +22,7 @@ public record ChemicalSolidTagSlotDisplay(SlotDisplay chemicalSource) implements
     @Override
     public <T> Stream<T> resolve(ContextMap context, DisplayContentsFactory<T> factory) {
         if (factory instanceof DisplayContentsFactory.ForStacks<T> items) {
-            HolderLookup.Provider registries = context.getOptional(SlotDisplayContext.REGISTRIES);
+            HolderLookup.Provider registries = context.get(SlotDisplayContext.REGISTRIES);
             if (registries != null) {
                 return chemicalSource.resolve(context, ChemicalStackContentsFactory.INSTANCE)
                       .flatMap(chemical -> {

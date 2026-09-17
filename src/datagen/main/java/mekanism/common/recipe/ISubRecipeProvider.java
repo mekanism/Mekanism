@@ -3,7 +3,6 @@ package mekanism.common.recipe;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.ResourceKey;
@@ -15,7 +14,7 @@ import net.neoforged.neoforge.fluids.FluidStackTemplate;
 /// Interface for helping split the recipe provider over multiple classes to make it a bit easier to interact with
 public interface ISubRecipeProvider {
 
-    void addRecipes(RecipeOutput output, HolderLookup.Provider registries);
+    void addRecipes(RecipeOutput output);
 
     HolderGetter<Item> items();
 

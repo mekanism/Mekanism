@@ -23,7 +23,7 @@ public class BlockLaserFocusMatrix extends BlockBasicMultiblock<TileEntityLaserF
 
     public BlockLaserFocusMatrix(BlockBehaviour.Properties properties) {
         super(GeneratorsBlockTypes.LASER_FOCUS_MATRIX, properties.sound(SoundType.GLASS).strength(3.5F, 4.8F)
-              .requiresCorrectToolForDrops().noOcclusion().isSuffocating(BlockStateHelper.NEVER_PREDICATE).isViewBlocking(BlockStateHelper.NEVER_PREDICATE)
+              .requiresCorrectToolForDrops().noOcclusion().isSuffocating(BlockStateHelper.NEVER_PREDICATE).isViewBlocking(BlockStateHelper.NEVER_VIEW_BLOCKING)
               .instrument(NoteBlockInstrument.HAT));
     }
     

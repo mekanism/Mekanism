@@ -21,7 +21,8 @@ public class BlockPlasticTransparent extends BlockPlastic {
         super(properties.strength(5, 6)
                     .noOcclusion()
                     .isValidSpawn(AttributeMobSpawn.NEVER_PREDICATE)
-                    .isSuffocating(BlockStateHelper.NEVER_PREDICATE).isViewBlocking(BlockStateHelper.NEVER_PREDICATE),
+                    .isSuffocating(BlockStateHelper.NEVER_PREDICATE)
+                    .isViewBlocking(BlockStateHelper.NEVER_VIEW_BLOCKING),
               color);
     }
 

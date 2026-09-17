@@ -45,10 +45,10 @@ public class ModelUtil {
     }
 
     public static ContextMap partVisibility(ResolvedModel resolvedModel, Map<String, Boolean> visibilityMap) {
-        ContextMap.Builder builder = new ContextMap.Builder();
+        ContextMap.Builder builder = ContextMap.builder();
         fillAdditionalProperties(resolvedModel, builder);
-        builder.withParameter(NeoForgeModelProperties.PART_VISIBILITY, visibilityMap);
-        return builder.create(ContextKeySet.EMPTY);
+        builder.set(NeoForgeModelProperties.PART_VISIBILITY, visibilityMap);
+        return builder.buildAndValidate(ContextKeySet.EMPTY);
     }
 
     /// copied from Neo [net.neoforged.neoforge.client.extensions.ResolvedModelExtension] as it's private

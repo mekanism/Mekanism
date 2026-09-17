@@ -12,9 +12,12 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
@@ -23,7 +26,9 @@ import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -82,10 +87,16 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
     }
 
     @Override
-    public boolean onCaughtFire(BlockState state, Level world, BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
-        if (!world.isClientSide() && createAndAddEntity(world, pos, igniter)) {
-            world.gameEvent(igniter, GameEvent.PRIME_FUSE, pos);
-            return true;
+    public boolean onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction side, @Nullable LivingEntity source, ItemStack ignitionItem) {
+        //TODO - 26.3: Double check that we updated this correctly
+        if (level instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.TNT_EXPLODES)) {
+            if (source instanceof Player player && player.gameMode() == GameType.ADVENTURE
+                && !ignitionItem.canBreakBlockInAdventureMode(new BlockInWorld(level, pos, false))) {
+                return false;
+            } else if (createAndAddEntity(level, pos, source)) {
+                level.gameEvent(source, GameEvent.PRIME_FUSE, pos);
+                return true;
+            }
         }
         return false;
     }

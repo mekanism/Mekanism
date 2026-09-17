@@ -9,8 +9,10 @@ import mekanism.api.IContentsListener;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.transaction.RateLimitTracker;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.level.block.entity.FuelValues;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -29,9 +31,9 @@ public class FuelInventorySlot extends BasicInventorySlot {
         super(canExtract, canInsert, validator, insertionRateLimiter, extractionRateLimiter, listener, x, y);
     }
 
-    public int burn(FuelValues fuelValues, @Nullable TransactionContext transaction) {
+    public int burn(ServerLevel level, BlockEntity blockEntity, @Nullable TransactionContext transaction) {
         if (!isEmpty()) {
-            int burnTime = resource().toStack().getBurnTime(null, fuelValues) / 2;
+            int burnTime = MekanismUtils.getBurnTime(level, blockEntity, resource()) / 2;
             if (burnTime > 0) {
                 try (Transaction subTransaction = Transaction.open(transaction)) {
                     if (consumeAndReplace(this, subTransaction)) {

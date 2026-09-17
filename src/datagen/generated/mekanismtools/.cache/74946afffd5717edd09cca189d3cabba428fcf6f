@@ -1,4 +1,4 @@
-// 26.2	2026-09-14T10:59:06.6286354	Tags: mekanismtools
+// 26.3	2026-09-17T15:06:11.3036187	Tags: mekanismtools
 13cf1fe06cf159d32d074144254a0d375f6b20e7 data/c/tags/block/mineable/paxel.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/c/tags/item/tools.json
 a9b1406d28741b06bb1aff0b175adc726effbba7 data/c/tags/item/tools/melee_weapon.json
@@ -15,6 +15,7 @@ b40db251330dcd4da692dd4047bf54363ee0f379 data/minecraft/tags/item/axes.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/breaks_decorated_pots.json
 cf56f9aea1d1e35302b87399545199f9945e4509 data/minecraft/tags/item/chest_armor.json
 d60a2c6cb5c303e3c4e84510470de0191ea0f0df data/minecraft/tags/item/cluster_max_harvestables.json
+ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/douses_campfires.json
 fd8819751169c6f6051010b39b57d5081ca22086 data/minecraft/tags/item/enchantable/durability.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/mining.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/mining_loot.json

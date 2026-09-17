@@ -35,6 +35,7 @@ import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -86,8 +87,7 @@ public record QIODriveArrayItemModel(
         layer.setExtents(this.extents);
         layer.setLocalTransform(this.transformation);
         this.properties.applyToLayer(layer, displayContext);
-        List<BakedQuad> bakedQuads = layer.prepareQuadList();
-        bakedQuads.addAll(allQuads(blockStateModel.basePart()));
+        List<BakedQuad> bakedQuads = new ArrayList<>(allQuads(blockStateModel.basePart()));
         long driveStatus = getDriveStatus(item);
         if (driveStatus != 0) {
             output.appendModelIdentityElement(driveStatus);
@@ -97,6 +97,8 @@ public record QIODriveArrayItemModel(
                 bakedQuads.addAll(allQuads(drivePart));
             }
         }
+        //TODO - 26.3: Test this works appropriately
+        layer.setQuads(ItemQuads.split(bakedQuads));
         //noinspection deprecation
         if (this.blockStateModel.hasMaterialFlag(BakedQuad.FLAG_ANIMATED)) {
             output.setAnimated();

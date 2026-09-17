@@ -23,11 +23,10 @@ public record ArmorCollection(ItemRegistryObject<Item> helmet, ItemRegistryObjec
     }
 
     private static ItemRegistryObject<Item> registerArmor(ItemDeferredRegister registry, MaterialCreator material, ArmorType armorType) {
-        return registry.registerSimple(material.getRegistryPrefix() + "_" + armorType.getName(), properties ->
-              ToolsItems.setCommonProperties(properties, material)
-                    .humanoidArmor(material.toArmorMaterial(armorType), armorType)
-                    //Durability must go after humanoidArmor to set it to the correct value, rather than one that scales it based on the armor type
-                    .durability(material.getDurabilityForType(armorType))
+        return registry.registerSimple(material.getRegistryPrefix() + "_" + armorType.getName(), properties -> ToolsItems.setCommonProperties(properties, material)
+              .humanoidArmor(material.toArmorMaterial(armorType), armorType)
+              //Durability must go after humanoidArmor to set it to the correct value, rather than one that scales it based on the armor type
+              .durability(material.getDurabilityForType(armorType))
         );
     }
 

@@ -12,7 +12,6 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.BlockItemId;
@@ -32,7 +31,7 @@ class PaintingRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "painting/";
         addDyeRecipes(consumer, basePath);
         int oneAtATime = PigmentExtractingRecipeProvider.DYE_RATE;

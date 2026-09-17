@@ -1,0 +1,24 @@
+{
+  "type": "mekanism:ore",
+  "ore_type": {
+    "type": "tin",
+    "index": 1
+  },
+  "retro_gen": true,
+  "targets": [
+    {
+      "state": "mekanism:tin_ore",
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "minecraft:stone_ore_replaceables"
+      }
+    },
+    {
+      "state": "mekanism:deepslate_tin_ore",
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "minecraft:deepslate_ore_replaceables"
+      }
+    }
+  ]
+}

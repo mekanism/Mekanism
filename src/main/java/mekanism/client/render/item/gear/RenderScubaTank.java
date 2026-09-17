@@ -6,9 +6,9 @@ import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
 import mekanism.client.model.ModelScubaTank;
 import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.util.Mth;
@@ -28,10 +28,11 @@ public class RenderScubaTank implements NoDataSpecialModelRenderer {
     public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(Axis.ZP.rotation(Mth.PI));
-        nodeCollector.order(0).submitModel(this.scubaTank, Unit.INSTANCE, poseStack, scubaTank.RENDER_TYPE, lightCoords, overlayCoords, outlineColor, null);
+        poseStack.rotate(Axis.ZP, Mth.PI);
+        nodeCollector.submitModel(this.scubaTank, Unit.INSTANCE, poseStack, scubaTank.RENDER_TYPE, lightCoords, overlayCoords, outlineColor);
         if (hasFoil) {
-            nodeCollector.order(1).submitModel(scubaTank, Unit.INSTANCE, poseStack, RenderTypes.entityGlint(), lightCoords, overlayCoords, EntityRenderState.NO_OUTLINE, null);
+            //TODO - 26.3: Test if this works
+            nodeCollector.order(1).submitModel(scubaTank, Unit.INSTANCE, poseStack, Sheets.translucentBlockItemGlintSheet(), lightCoords, overlayCoords, EntityRenderState.NO_OUTLINE);
         }
         poseStack.popPose();
     }

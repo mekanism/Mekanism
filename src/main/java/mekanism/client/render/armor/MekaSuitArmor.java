@@ -6,7 +6,6 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.datafixers.util.Either;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
@@ -25,7 +24,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -47,7 +45,6 @@ import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.registries.MekanismModules;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
@@ -68,12 +65,10 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.context.ContextKey;
-import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.ElytraAnimationState;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
 import net.neoforged.neoforge.client.submit.RenderPhaseKeys;
@@ -96,7 +91,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     public static final MekaSuitArmor PANTS = new MekaSuitArmor(EquipmentSlot.LEGS, EquipmentSlot.FEET);
     public static final MekaSuitArmor BOOTS = new MekaSuitArmor(EquipmentSlot.FEET, EquipmentSlot.LEGS);
 
-    private static final Table<EquipmentSlot, Holder<ModuleData<?>>, ModuleModelSpec<?>> moduleModelSpec = HashBasedTable.create();
+    private static final Table<EquipmentSlot, Holder<ModuleData<?>>, ModuleModelSpec> moduleModelSpec = HashBasedTable.create();
 
     private static final Map<UUID, BoltRenderer> boltRenderMap = new Object2ObjectOpenHashMap<>();
     private static final BoltEffect LEFT_GRAV_BOLT = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vector3f(-0.01F, 0.35F, 0.37F),
@@ -114,7 +109,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         @Override
         @SuppressWarnings("unchecked")
         public ArmorQuads load(QuickHash key) {
-            return createQuads((Object2BooleanMap<ModuleModelSpec<?>>) key.objs()[0], (Set<EquipmentSlot>) key.objs()[1], (boolean) key.objs()[2], (boolean) key.objs()[3]);
+            return createQuads((Object2BooleanMap<ModuleModelSpec>) key.objs()[0], (Set<EquipmentSlot>) key.objs()[1], (boolean) key.objs()[2], (boolean) key.objs()[3]);
         }
     });
 
@@ -132,22 +127,21 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         return colorUnit == null ? CommonColors.WHITE : colorUnit.getCustomInstance().color();
     }
 
-    public <AVATAR extends Avatar & ClientAvatarEntity> void renderArm(AVATAR avatar, ModelPart armPart, PoseStack poseStack, SubmitNodeCollector nodeCollector,
-          int lightCoords, int outlineColor, ItemStack stack, boolean rightHand) {
+    public void renderArm(AvatarRenderState avatarRenderState, ModelPart armPart, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, boolean rightHand) {
         ModelPos armPos = rightHand ? ModelPos.RIGHT_ARM : ModelPos.LEFT_ARM;
-        ArmorQuads armorQuads = cache.getUnchecked(key(Either.right(avatar), avatar.getMainArm(), avatar, LivingEntity::getItemBySlot));
+        ArmorQuads armorQuads = cache.getUnchecked(key(avatarRenderState));
         boolean hasOpaqueArm = armorQuads.opaqueParts().containsKey(armPos);
         boolean hasTransparentArm = armorQuads.transparentParts().containsKey(armPos);
         if (hasOpaqueArm || hasTransparentArm) {
             poseStack.pushPose();
             armPart.translateAndRotate(poseStack);
             armPos.translateModel(poseStack);
-            boolean hasFoil = stack.hasFoil();
+            boolean hasFoil = avatarRenderState.chestEquipment.hasFoil();
             //Same as what HumanoidArmorLayer does for the starting order index
             int nextOrder = 1;
             if (hasOpaqueArm) {
                 List<BlockStateModelPart> opaqueParts = armorQuads.opaqueParts().get(armPos);
-                submitModel(nodeCollector.order(nextOrder++), poseStack, opaqueParts, lightCoords, outlineColor, getColor(stack));
+                submitModel(nodeCollector.order(nextOrder++), poseStack, opaqueParts, lightCoords, avatarRenderState.outlineColor, getColor(avatarRenderState.chestEquipment));
                 if (hasFoil) {
                     nodeCollector.order(nextOrder++).submitBlockModel(poseStack, MekanismRenderType.ARMOR_GLINT, opaqueParts, BlockModelRenderState.EMPTY_TINTS, lightCoords,
                           OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
@@ -156,7 +150,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             if (hasTransparentArm) {
                 List<BlockStateModelPart> transparentParts = armorQuads.transparentParts().get(armPos);
                 nodeCollector.order(nextOrder++).submitBlockModel(poseStack, TRANSLUCENT, transparentParts, BlockModelRenderState.EMPTY_TINTS,
-                      lightCoords, OverlayTexture.NO_OVERLAY, outlineColor);
+                      lightCoords, OverlayTexture.NO_OVERLAY, avatarRenderState.outlineColor);
                 if (hasFoil) {
                     nodeCollector.order(nextOrder).submitBlockModel(poseStack, MekanismRenderType.ARMOR_GLINT, transparentParts, BlockModelRenderState.EMPTY_TINTS,
                           lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
@@ -170,7 +164,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     public <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
           STATE state, ItemStack stack) {
         baseModel.setupAnim(state);
-        ArmorQuads armorQuads = cache.getUnchecked(key(Either.left(state), state.mainArm, state, MekaSuitArmor::getItemBySlot));
+        ArmorQuads armorQuads = cache.getUnchecked(key(state));
         boolean renderFoil = stack.hasFoil();
         //Same as what HumanoidArmorLayer does for the starting order index
         int nextOrder = render(baseModel, nodeCollector, poseStack, lightCoords, renderFoil, 1, getColor(stack), state, armorQuads.opaqueParts(), false);
@@ -370,10 +364,10 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             }
             poseStack.translate(x / 16, y / 16, z / 16);
             if (yRot != 0.0F) {
-                poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+                poseStack.rotateDegrees(Axis.YP, yRot);
             }
             if (zRot != 0.0F) {
-                poseStack.mulPose(Axis.ZP.rotationDegrees(zRot));
+                poseStack.rotateDegrees(Axis.ZP, zRot);
             }
 
         }
@@ -382,7 +376,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     private record OverrideData(OBJModelData modelData, String name) {
     }
 
-    private ArmorQuads createQuads(Object2BooleanMap<ModuleModelSpec<?>> modules, Set<EquipmentSlot> wornParts, boolean hasMekaToolLeft, boolean hasMekaToolRight) {
+    private ArmorQuads createQuads(Object2BooleanMap<ModuleModelSpec> modules, Set<EquipmentSlot> wornParts, boolean hasMekaToolLeft, boolean hasMekaToolRight) {
         Map<OBJModelData, Map<ModelPos, Set<String>>> specialQuadsToRender = new Object2ObjectOpenHashMap<>();
         // map of normal model part name to overwritten model part name (i.e. helmet_head_center1 -> override_solar_helmet_helmet_head_center1)
         Map<String, OverrideData> overrides = new Object2ObjectOpenHashMap<>();
@@ -392,9 +386,9 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             Map<OBJModelData, Set<String>> allMatchedParts = new Object2ObjectOpenHashMap<>();
             for (ModuleOBJModelData modelData : MekanismModelCache.INSTANCE.MEKASUIT_MODULES) {
                 Set<String> matchedParts = allMatchedParts.computeIfAbsent(modelData, _ -> new HashSet<>());
-                for (ObjectIterator<Object2BooleanMap.Entry<ModuleModelSpec<?>>> iterator = Object2BooleanMaps.fastIterator(modules); iterator.hasNext(); ) {
-                    Object2BooleanMap.Entry<ModuleModelSpec<?>> entry = iterator.next();
-                    ModuleModelSpec<?> spec = entry.getKey();
+                for (ObjectIterator<Object2BooleanMap.Entry<ModuleModelSpec>> iterator = Object2BooleanMaps.fastIterator(modules); iterator.hasNext(); ) {
+                    Object2BooleanMap.Entry<ModuleModelSpec> entry = iterator.next();
+                    ModuleModelSpec spec = entry.getKey();
                     for (String name : modelData.getPartsForSpec(spec, entry.getBooleanValue())) {
                         if (name.contains(OVERRIDDEN_TAG)) {
                             overrides.put(spec.processOverrideName(name), new OverrideData(modelData, name));
@@ -535,14 +529,14 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         }
     }
 
-    private record ModuleModelSpec<AVATAR extends Avatar & ClientAvatarEntity>(ModuleData<?> module, EquipmentSlot slotType, String name, Predicate<Either<HumanoidRenderState, AVATAR>> isActive) {
+    private record ModuleModelSpec(ModuleData<?> module, EquipmentSlot slotType, String name, Predicate<HumanoidRenderState> isActive) {
 
         /// Score closest to zero is considered best, negative one for no match at all.
         public int score(String name) {
             return name.indexOf(this.name + "_");
         }
 
-        public boolean isActive(Either<HumanoidRenderState, AVATAR> state) {
+        public boolean isActive(HumanoidRenderState state) {
             return isActive.test(state);
         }
 
@@ -557,8 +551,8 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
     /// Call via [mekanism.api.gear.IClientModuleHelper#addMekaSuitModuleModelSpec(String, Holder, EquipmentSlot, Predicate)].
     @Internal
-    public static <AVATAR extends Avatar & ClientAvatarEntity> void registerModule(String name, Holder<ModuleData<?>> moduleData, EquipmentSlot slotType, Predicate<Either<HumanoidRenderState, AVATAR>> isActive) {
-        moduleModelSpec.put(slotType, moduleData, new ModuleModelSpec<>(moduleData.value(), slotType, name, isActive));
+    public static void registerModule(String name, Holder<ModuleData<?>> moduleData, EquipmentSlot slotType, Predicate<HumanoidRenderState> isActive) {
+        moduleModelSpec.put(slotType, moduleData, new ModuleModelSpec(moduleData.value(), slotType, name, isActive));
     }
 
     private static ItemStack getItemBySlot(HumanoidRenderState state, EquipmentSlot slot) {
@@ -573,27 +567,27 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         };
     }
 
-    public <STATE, AVATAR extends Avatar & ClientAvatarEntity> QuickHash key(Either<HumanoidRenderState, AVATAR> either, HumanoidArm mainArm, STATE state, BiFunction<STATE, EquipmentSlot, ItemStack> itemBySlot) {
-        Object2BooleanMap<ModuleModelSpec<AVATAR>> modules = new Object2BooleanOpenHashMap<>();
+    public QuickHash key(HumanoidRenderState state) {
+        Object2BooleanMap<ModuleModelSpec> modules = new Object2BooleanOpenHashMap<>();
         Set<EquipmentSlot> wornParts = EnumSet.noneOf(EquipmentSlot.class);
         for (EquipmentSlot slotType : EquipmentSlotGroup.ARMOR) {
-            ItemStack stack = itemBySlot.apply(state, slotType);
+            ItemStack stack = getItemBySlot(state, slotType);
             if (stack.getItem() instanceof ItemMekaSuitArmor) {
                 IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
                 if (container != null) {
                     wornParts.add(slotType);
-                    for (Entry<Holder<ModuleData<?>>, ModuleModelSpec<?>> entry : moduleModelSpec.row(slotType).entrySet()) {
+                    for (Entry<Holder<ModuleData<?>>, ModuleModelSpec> entry : moduleModelSpec.row(slotType).entrySet()) {
                         if (container.hasEnabled(entry.getKey())) {
-                            ModuleModelSpec<AVATAR> spec = (ModuleModelSpec<AVATAR>) entry.getValue();
-                            modules.put(spec, spec.isActive(either));
+                            ModuleModelSpec spec = entry.getValue();
+                            modules.put(spec, spec.isActive(state));
                         }
                     }
                 }
             }
         }
         return new QuickHash(modules.isEmpty() ? Object2BooleanMaps.emptyMap() : modules, wornParts.isEmpty() ? Collections.emptySet() : wornParts,
-              itemBySlot.apply(state, mainArm == HumanoidArm.LEFT ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND).getItem() instanceof ItemMekaTool,
-              itemBySlot.apply(state, mainArm == HumanoidArm.RIGHT ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND).getItem() instanceof ItemMekaTool);
+              getItemBySlot(state, state.mainArm == HumanoidArm.LEFT ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND).getItem() instanceof ItemMekaTool,
+              getItemBySlot(state, state.mainArm == HumanoidArm.RIGHT ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND).getItem() instanceof ItemMekaTool);
     }
 
     public static class ModuleOBJModelData extends OBJModelData {
@@ -601,13 +595,13 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         private record SpecData(Set<String> active, Set<String> inactive) {
         }
 
-        private final Map<ModuleModelSpec<?>, SpecData> specParts = new Object2ObjectOpenHashMap<>();
+        private final Map<ModuleModelSpec, SpecData> specParts = new Object2ObjectOpenHashMap<>();
 
         public ModuleOBJModelData(Identifier rl) {
             super(rl);
         }
 
-        private Set<String> getPartsForSpec(ModuleModelSpec<?> spec, boolean active) {
+        private Set<String> getPartsForSpec(ModuleModelSpec spec, boolean active) {
             SpecData specData = specParts.get(spec);
             if (specData == null) {
                 return Collections.emptySet();
@@ -618,14 +612,14 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         @Override
         protected void reload(BakingCompleted evt) {
             super.reload(evt);
-            Collection<ModuleModelSpec<?>> modules = moduleModelSpec.values();
+            Collection<ModuleModelSpec> modules = moduleModelSpec.values();
             for (String name : getPartNames()) {
                 //Find the "best" spec by checking all the specs and finding out which one is listed first
                 // this way if we are overriding another module, then we just put the module that is overriding
                 // the other one first in the name so that it gets the spec matched to it
-                ModuleModelSpec<?> matchingSpec = null;
+                ModuleModelSpec matchingSpec = null;
                 int bestScore = -1;
-                for (ModuleModelSpec<?> spec : modules) {
+                for (ModuleModelSpec spec : modules) {
                     int score = spec.score(name);
                     if (score != -1 && (bestScore == -1 || score < bestScore)) {
                         bestScore = score;
@@ -642,7 +636,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                 }
             }
             //Update entries to reclaim some memory for empty sets
-            for (Map.Entry<ModuleModelSpec<?>, SpecData> entry : specParts.entrySet()) {
+            for (Map.Entry<ModuleModelSpec, SpecData> entry : specParts.entrySet()) {
                 SpecData specData = entry.getValue();
                 if (specData.active().isEmpty()) {
                     entry.setValue(new SpecData(Collections.emptySet(), specData.inactive()));

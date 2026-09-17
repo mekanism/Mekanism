@@ -8,12 +8,12 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.advancements.triggers.UseTierInstallerTrigger.TriggerInstance;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import org.jspecify.annotations.Nullable;
 
 public class UseTierInstallerTrigger extends SimpleCriterionTrigger<TriggerInstance> {
@@ -47,13 +47,12 @@ public class UseTierInstallerTrigger extends SimpleCriterionTrigger<TriggerInsta
         }
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player, TierUsed action) implements SimpleCriterionTrigger.SimpleInstance {
+    public record TriggerInstance(Optional<Holder<LootItemCondition>> player, TierUsed action) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(SerializationConstants.PLAYER).forGetter(TriggerInstance::player),
-                    TierUsed.CODEC.fieldOf(SerializationConstants.ACTION).forGetter(TriggerInstance::action)
-              ).apply(instance, TriggerInstance::new)
-        );
+              LootItemCondition.CODEC.optionalFieldOf(SerializationConstants.PLAYER).forGetter(TriggerInstance::player),
+              TierUsed.CODEC.fieldOf(SerializationConstants.ACTION).forGetter(TriggerInstance::action)
+        ).apply(instance, TriggerInstance::new));
 
         public static Criterion<TriggerInstance> any() {
             return MekanismCriteriaTriggers.USE_TIER_INSTALLER.createCriterion(new TriggerInstance(Optional.empty(), TierUsed.ANY));

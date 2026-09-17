@@ -1,11 +1,16 @@
 package mekanism.common.recipe.compat;
 
-import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.data.worldgen.BootstrapContextAccess;
 
-public class MekBWGDatagen implements IMekBWGDatagen {
+public class MekBWGDatagen implements ICompatRecipeDatagen {
 
     @Override
-    public CompatRecipeProvider recipeProvider(Provider registries, String modid) {
-        return new BWGRecipeProvider(registries, modid);
+    public CompatRecipeProvider recipeProvider(BootstrapContextAccess contextAccess) {
+        return new BWGRecipeProvider(contextAccess, modid());
+    }
+
+    @Override
+    public String modid() {
+        return "biomeswevegone";
     }
 }

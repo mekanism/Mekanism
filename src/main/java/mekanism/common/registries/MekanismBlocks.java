@@ -978,12 +978,17 @@ public class MekanismBlocks {
 
     public static final BlockRegistryObject<BlockCardboardBox, ItemBlockCardboardBox> CARDBOARD_BOX = BLOCKS.register("cardboard_box", BlockCardboardBox::new, ItemBlockCardboardBox::new);
     public static final BlockRegistryObject<Block, BlockItem> SALT_BLOCK = BLOCKS.registerSimple("block_salt", properties -> properties.strength(0.5F).sound(SoundType.SAND).instrument(NoteBlockInstrument.SNARE));
-    public static final BlockRegistryObject<Block, BlockItem> BIO_FUEL_BLOCK = BLOCKS.registerSimple("block_bio_fuel", properties -> properties.mapColor(MapColor.COLOR_BROWN).strength(0.5F).sound(SoundType.GRASS).instrument(NoteBlockInstrument.BANJO));
+    public static final BlockRegistryObject<Block, BlockItem> BIO_FUEL_BLOCK = BLOCKS.registerSimple("block_bio_fuel", properties -> properties.mapColor(MapColor.COLOR_BROWN).strength(0.5F).sound(SoundType.GRASS).instrument(NoteBlockInstrument.BANJO),
+          properties -> properties.cookingFuel(MekanismContextIntProviders.COOKING_TIME_BIO_FUEL_BLOCK));
 
     private static BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> registerResourceBlock(BlockResourceInfo resource) {
         return BLOCKS.register("block_" + resource.getRegistrySuffix(), properties -> new BlockResource(properties, resource), (block, properties) -> {
             if (!block.getResourceInfo().burnsInFire()) {
                 properties = properties.fireResistant();
+            }
+            if (resource == BlockResourceInfo.CHARCOAL) {
+                //TODO - 26.3: Figure out a better way to do this
+                properties = properties.cookingFuel(MekanismContextIntProviders.COOKING_TIME_CHARCOAL_BLOCK);
             }
             return new ItemBlockMekanism<>(block, properties);
         });

@@ -13,7 +13,6 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
@@ -35,7 +34,7 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "crushing/";
         addCrusherBioFuelRecipes(consumer, basePath + "biofuel/");
         addCrusherDewaxingRecipes(consumer, basePath + "dewax/");

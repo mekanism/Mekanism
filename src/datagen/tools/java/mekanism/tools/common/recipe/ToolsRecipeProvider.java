@@ -20,12 +20,12 @@ import mekanism.tools.common.material.MaterialType;
 import mekanism.tools.common.registration.ArmorCollection;
 import mekanism.tools.common.registration.ToolCollection;
 import mekanism.tools.common.registries.ToolsItems;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
@@ -35,6 +35,7 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShieldDecorationRecipe;
 import net.neoforged.neoforge.common.Tags;
 import org.jspecify.annotations.Nullable;
@@ -89,12 +90,12 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY),
           TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY));
 
-    public ToolsRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
-        super(output, registries);
+    public ToolsRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override
-    protected void addRecipes(HolderLookup.Provider registries) {
+    protected void addRecipes() {
         registerRecipeSet(MaterialType.BRONZE, MekanismTags.Items.INGOTS_BRONZE, MekanismItems.BRONZE_NUGGET);
         registerRecipeSet(MaterialType.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, null);
         registerRecipeSet(MaterialType.OSMIUM, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM),

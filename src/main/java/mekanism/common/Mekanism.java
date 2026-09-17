@@ -76,7 +76,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
-import mekanism.common.registries.MekanismFeatures;
+import mekanism.common.registries.MekanismFeatureTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismHeightProviderTypes;
@@ -237,7 +237,7 @@ public class Mekanism {
         MekanismHeightProviderTypes.HEIGHT_PROVIDER_TYPES.register(modEventBus);
         MekanismIntProviderTypes.INT_PROVIDER_TYPES.register(modEventBus);
         MekanismPlacementModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
-        MekanismFeatures.FEATURES.register(modEventBus);
+        MekanismFeatureTypes.FEATURE_TYPES.register(modEventBus);
         MekanismRecipeType.RECIPE_TYPES.register(modEventBus);
         MekanismRecipeSerializersInternal.RECIPE_SERIALIZERS.register(modEventBus);
         MekanismRecipeDisplays.RECIPE_DISPLAY_TYPE.register(modEventBus);

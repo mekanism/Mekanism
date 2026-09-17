@@ -3,7 +3,6 @@ package mekanism.common.recipe.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
@@ -20,10 +19,6 @@ import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.compat.ICompatRecipeDatagen;
-import mekanism.common.recipe.compat.IMekAe2Datagen;
-import mekanism.common.recipe.compat.IMekBWGDatagen;
-import mekanism.common.recipe.compat.IMekBoPDatagen;
-import mekanism.common.recipe.compat.IMekFarmersDatagen;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
@@ -36,17 +31,18 @@ import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.Tags;
 
@@ -79,34 +75,36 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.HDPE_CHAR, Pattern.HDPE_CHAR, Pattern.HDPE_CHAR));
 
     private final List<ISubRecipeProvider> compatProviders = new ArrayList<>();
-    private final Set<String> disabledCompats;
 
-    public MekanismRecipeProvider(HolderLookup.Provider registries, RecipeOutput output, Set<String> disabledCompats) {
-        super(output, registries);
+    public MekanismRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput, Set<String> disabledCompats) {
+        super(recipeOutput, advancementOutput);
 
         //Mod Compat Recipe providers
-        this.disabledCompats = disabledCompats;
-        checkCompat("ae2", () -> IMekAe2Datagen.INSTANCE);
-        checkCompat("biomesoplenty", () -> IMekBoPDatagen.INSTANCE);
-        checkCompat("biomeswevegone", () -> IMekBWGDatagen.INSTANCE);
-        checkCompat("farmersdelight", () -> IMekFarmersDatagen.INSTANCE);
+        checkCompat(disabledCompats, "ae2");
+        checkCompat(disabledCompats, "biomesoplenty");
+        checkCompat(disabledCompats, "biomeswevegone");
+        checkCompat(disabledCompats, "farmersdelight");
     }
 
-    private void checkCompat(String modid, Supplier<ICompatRecipeDatagen> providerCreator) {
+    private void checkCompat(Set<String> disabledCompats, String modid) {
         if (ModList.get().isLoaded(modid)) {
-            compatProviders.add(providerCreator.get().recipeProvider(this.registries, modid));
+            ICompatRecipeDatagen compatRecipeDatagen = ICompatRecipeDatagen.INSTANCES.get(modid);
+            if (compatRecipeDatagen == null) {
+                throw new IllegalStateException("Mod: " + modid + " does not have a compat recipe service present");
+            }
+            compatProviders.add(compatRecipeDatagen.recipeProvider(output));
         } else {
             disabledCompats.add(modid);
         }
     }
 
     @Override
-    protected void addRecipes(HolderLookup.Provider registries) {
+    protected void addRecipes() {
         addMiscRecipes();
         addGearModuleRecipes();
         addLateGameRecipes();
         for (ISubRecipeProvider compatProvider : compatProviders) {
-            compatProvider.addRecipes(output, registries);
+            compatProvider.addRecipes(output);
         }
     }
 
@@ -145,7 +143,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               new ThermalEvaporationRecipeProvider(this.items, this.fluids, this.chemicals),
               new TierInstallerRecipeProvider(this.items, this.fluids, this.chemicals),
               new TransmitterRecipeProvider(this.items, this.fluids, this.chemicals),
-              new UpgradeRecipeProvider(this.items, this.fluids, this.chemicals, this.registries.lookupOrThrow(MekanismRegistries.Keys.UPGRADES))
+              new UpgradeRecipeProvider(this.items, this.fluids, this.chemicals, this.output.lookup(MekanismRegistries.Keys.UPGRADES))
         );
     }
 

@@ -1,7 +1,5 @@
 package mekanism.common.recipe;
 
-import java.util.Map;
-import java.util.Optional;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
@@ -30,8 +28,8 @@ public class ClearConfigurationRecipe extends CustomRecipe {
             return false;
         }
         //Only match the recipe if it has at least one data component that we can clear
-        for (Map.Entry<DataComponentType<?>, Optional<?>> entry : target.getComponentsPatch().entrySet()) {
-            if (BuiltInRegistries.DATA_COMPONENT_TYPE.wrapAsHolder(entry.getKey()).is(MekanismTags.DataComponents.CLEARABLE_CONFIG)) {
+        for (DataComponentType<?> key : target.getComponentsPatch().keySet()) {
+            if (BuiltInRegistries.DATA_COMPONENT_TYPE.wrapAsHolder(key).is(MekanismTags.DataComponents.CLEARABLE_CONFIG)) {
                 return true;
             }
         }
@@ -47,8 +45,7 @@ public class ClearConfigurationRecipe extends CustomRecipe {
         }
         ItemStack output = target.copyWithCount(1);
         DataComponentMap prototype = output.getPrototype();
-        for (Map.Entry<DataComponentType<?>, Optional<?>> entry : output.getComponentsPatch().entrySet()) {
-            DataComponentType<?> component = entry.getKey();
+        for (DataComponentType<?> component : output.getComponentsPatch().keySet()) {
             Holder<DataComponentType<?>> componentHolder = BuiltInRegistries.DATA_COMPONENT_TYPE.wrapAsHolder(component);
             if (componentHolder.is(MekanismTags.DataComponents.CLEARABLE_CONFIG)) {
                 resetComponent(output, prototype, component);

@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:ore",
+  "ore_type": {
+    "type": "osmium",
+    "index": 0
+  },
+  "targets": [
+    {
+      "state": "mekanism:osmium_ore",
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "minecraft:stone_ore_replaceables"
+      }
+    },
+    {
+      "state": "mekanism:deepslate_osmium_ore",
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "minecraft:deepslate_ore_replaceables"
+      }
+    }
+  ]
+}

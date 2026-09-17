@@ -13,10 +13,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementFilter;
-import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import org.jspecify.annotations.Nullable;
 
-public class DisableableFeaturePlacement extends PlacementFilter {
+public class DisableableFeaturePlacement implements PlacementFilter {
 
     public static final MapCodec<DisableableFeaturePlacement> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
           OreVeinType.CODEC.optionalFieldOf(SerializationConstants.ORE_TYPE).forGetter(config -> Optional.ofNullable(config.oreVeinType)),
@@ -41,7 +40,7 @@ public class DisableableFeaturePlacement extends PlacementFilter {
     }
 
     @Override
-    protected boolean shouldPlace(PlacementContext context, RandomSource random, BlockPos pos) {
+    public boolean shouldPlace(PlacementContext context, RandomSource random, BlockPos origin) {
         if (enabledSupplier.getAsBoolean()) {
             //If we are enabled, and we are either not a retrogen feature or retrogen is enabled, generate
             return !retroGen || MekanismConfig.world.enableRegeneration.get();
@@ -50,7 +49,7 @@ public class DisableableFeaturePlacement extends PlacementFilter {
     }
 
     @Override
-    public PlacementModifierType<?> type() {
+    public MapCodec<DisableableFeaturePlacement> codec() {
         return MekanismPlacementModifiers.DISABLEABLE.get();
     }
 }

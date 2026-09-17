@@ -18,6 +18,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.random.Weighted;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData;
@@ -129,9 +131,11 @@ public class AdditionsConfig extends BaseMekanismConfig {
 
         public Weighted<MobSpawnSettings.SpawnerData> getSpawner(Weighted<MobSpawnSettings.SpawnerData> parentEntry) {
             int weight = Mth.ceil(parentEntry.weight() * weightPercentage.get());
-            int minSize = Mth.ceil(parentEntry.value().minCount() * minSizePercentage.get());
-            int maxSize = Mth.ceil(parentEntry.value().maxCount() * maxSizePercentage.get());
-            return new Weighted<>(new MobSpawnSettings.SpawnerData(entityType.value(), minSize, Math.max(minSize, maxSize)), weight);
+            IntProvider count = parentEntry.value().count();
+            int minSize = Mth.ceil(count.minInclusive() * minSizePercentage.get());
+            int maxSize = Mth.ceil(count.maxInclusive() * maxSizePercentage.get());
+            //TODO - 26.3: Make this not have to be uniform
+            return new Weighted<>(new MobSpawnSettings.SpawnerData(entityType.value(), new UniformInt(minSize, Math.max(minSize, maxSize))), weight);
         }
 
         public List<Weighted<MobSpawnSettings.SpawnerData>> getSpawnersToAdd(List<Weighted<MobSpawnSettings.SpawnerData>> monsterSpawns) {

@@ -5,13 +5,13 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:copy_name",
+              "type": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
-              "function": "minecraft:copy_components",
+              "type": "minecraft:copy_components",
               "include": [
                 "mekanism:owner",
                 "mekanism:security"
@@ -19,14 +19,14 @@
               "source": "block_entity"
             },
             {
-              "function": "mekanism:personal_storage_contents"
+              "type": "mekanism:personal_storage_contents"
             }
           ],
           "name": "mekanism:personal_barrel"
         }
       ],
       "name": "main",
-      "rolls": 1.0
+      "rolls": 1
     }
   ],
   "random_sequence": "mekanism:blocks/personal_barrel"

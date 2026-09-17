@@ -277,7 +277,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                         if (!veinedBlocks.isEmpty()) {
                             //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
                             int baseDestroyEnergy = getDestroyEnergy(silk);
-                            MekanismUtils.veinMineArea(energyHandler, modDestroyEnergy, baseDestroyEnergy, world, pos, player, stack, this, veinedBlocks,
+                            MekanismUtils.veinMineArea(energyHandler, modDestroyEnergy, baseDestroyEnergy, (ServerLevel) world, pos, player, stack, this, veinedBlocks,
                                   transaction, ItemMekaTool::getDestroyEnergy, (base, hardness, distance, bs) -> {
                                       double multiplier = 0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2);
                                       return Mth.ceil(getDestroyEnergy(base, hardness) * multiplier);

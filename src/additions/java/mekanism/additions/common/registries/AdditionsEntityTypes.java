@@ -37,7 +37,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.skeleton.AbstractSkeleton;
 import net.minecraft.world.entity.monster.skeleton.Bogged;
@@ -60,7 +60,7 @@ public class AdditionsEntityTypes {
     public static final Map<BabyType, MekanismDeferredHolder<EntityType<?>, ? extends EntityType<? extends Monster>>> BABIES = Collections.unmodifiableMap(Util.make(new EnumMap<>(BabyType.class), map -> {
         registerBaby(BabyType.BOGGED, map, () -> baby(EntityBabyBogged::new, EntityTypes.BOGGED), Bogged::createAttributes);
         registerBaby(BabyType.CREEPER, map, () -> baby(EntityBabyCreeper::new, EntityTypes.CREEPER, 0.625F), Creeper::createAttributes);
-        registerBaby(BabyType.ENDERMAN, map, () -> baby(EntityBabyEnderman::new, EntityTypes.ENDERMAN, 0.525F), EnderMan::createAttributes);
+        registerBaby(BabyType.ENDERMAN, map, () -> baby(EntityBabyEnderman::new, EntityTypes.ENDERMAN, 0.525F), Enderman::createAttributes);
         registerBaby(BabyType.PARCHED, map, () -> baby(EntityBabyParched::new, EntityTypes.PARCHED), Parched::createAttributes);
         registerBaby(BabyType.SKELETON, map, () -> baby(EntityBabySkeleton::new, EntityTypes.SKELETON), AbstractSkeleton::createAttributes);
         registerBaby(BabyType.STRAY, map, () -> baby(EntityBabyStray::new, EntityTypes.STRAY), AbstractSkeleton::createAttributes, Stray::checkStraySpawnRules);

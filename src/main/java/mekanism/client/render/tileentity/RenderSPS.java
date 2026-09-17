@@ -131,7 +131,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
             poseStack.pushPose();
             //Render from the center position instead of from the block's position
             poseStack.translate(state.center.x() - state.blockPos.getX(), state.center.y() - state.blockPos.getY(), state.center.z() - state.blockPos.getZ());
-            poseStack.mulPose(camera.orientation);
+            poseStack.rotate(camera.orientation);
 
             if (state.coreState != null) {
                 submitBillboard(poseStack, nodeCollector, CORE_RENDER_TYPE, state.coreState);

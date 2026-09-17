@@ -10,7 +10,6 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
@@ -27,7 +26,7 @@ class RotaryRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "rotary/";
         addRotaryCondensentratorRecipe(consumer, basePath, ChemicalIds.BRINE, MekanismFluids.BRINE, MekanismTags.Fluids.BRINE);
         addRotaryCondensentratorRecipe(consumer, basePath, ChemicalIds.CHLORINE, MekanismFluids.CHLORINE, MekanismTags.Fluids.CHLORINE);

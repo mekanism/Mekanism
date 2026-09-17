@@ -3,15 +3,13 @@
   "criteria": {
     "summon": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "mekanism:robit"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mekanism:robit"
           }
-        ]
+        }
       },
       "trigger": "minecraft:summoned_entity"
     }

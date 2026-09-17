@@ -50,13 +50,13 @@ public record BabyEntitySpawnBiomeModifier(BabyType babyType, AdditionsConfig.Sp
                         MobSpawnSettings.MobSpawnCost parentCost = parentType == null ? null : mobSpawnSettings.getCost(parentType);
                         if (parentCost == null) {
                             Mekanism.logger.debug("Adding spawn rate for '{}' in biome '{}', with weight: {}, minSize: {}, maxSize: {}",
-                                  babyType.id(), biome.getRegisteredName(), weight, spawner.minCount(), spawner.maxCount());
+                                  babyType.id(), biome.getRegisteredName(), weight, spawner.count().minInclusive(), spawner.count().maxInclusive());
                         } else {
                             double spawnCostPerEntity = parentCost.charge() * spawnConfig.spawnCostPerEntityPercentage.get();
                             double maxSpawnCost = parentCost.energyBudget() * spawnConfig.maxSpawnCostPercentage.get();
-                            mobSpawnSettings.addMobCharge(spawner.type(), spawnCostPerEntity, maxSpawnCost);
+                            mobSpawnSettings.addMobSpawnCost(spawner.type(), spawnCostPerEntity, maxSpawnCost);
                             Mekanism.logger.debug("Adding spawn rate for '{}' in biome '{}', with weight: {}, minSize: {}, maxSize: {}, spawnCostPerEntity: {}, maxSpawnCost: {}",
-                                  babyType.id(), biome.getRegisteredName(), weight, spawner.minCount(), spawner.maxCount(), spawnCostPerEntity, maxSpawnCost);
+                                  babyType.id(), biome.getRegisteredName(), weight, spawner.count().minInclusive(), spawner.count().maxInclusive(), spawnCostPerEntity, maxSpawnCost);
                         }
                     }
                 }

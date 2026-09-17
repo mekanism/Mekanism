@@ -31,8 +31,9 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.RandomSupport;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
+import net.minecraft.world.level.levelgen.feature.FeatureCountTracker;
+import net.minecraft.world.level.levelgen.placement.FeaturePlacer;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import org.jspecify.annotations.Nullable;
 
 public class GenHandler {
@@ -52,37 +53,42 @@ public class GenHandler {
     ///
     /// @apiNote Only call this method if the chunk at the given position is loaded.
     /// @implNote Adapted from [ChunkGenerator#applyBiomeDecoration(WorldGenLevel, ChunkAccess, StructureManager)].
-    public static boolean generate(ServerLevel world, ChunkPos chunkPos) {
+    public static boolean generate(ServerLevel level, ChunkPos centerPos) {
         boolean generated = false;
-        if (!SharedConstants.debugVoidTerrain(chunkPos)) {
-            SectionPos sectionPos = SectionPos.of(chunkPos, world.getMinSectionY());
+        if (!SharedConstants.debugVoidTerrain(centerPos)) {
+            SectionPos sectionPos = SectionPos.of(centerPos, level.getMinSectionY());
             BlockPos origin = sectionPos.origin();
-            ChunkGenerator chunkGenerator = world.getChunkSource().getGenerator();
-            WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(RandomSupport.generateUniqueSeed()));
-            long decorationSeed = random.setDecorationSeed(world.getSeed(), origin.getX(), origin.getZ());
-            int decorationStep = GenerationStep.Decoration.UNDERGROUND_ORES.ordinal() - 1;
-            ToIntFunction<PlacedFeature> featureIndex;
+            //Note: Skip structures as we only have features to regenerate
+            ChunkGenerator chunkGenerator = level.getChunkSource().getGenerator();
             List<FeatureSorter.StepFeatureData> featureList = chunkGenerator.featuresPerStep.get();
-            if (decorationStep < featureList.size()) {
+            WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(RandomSupport.generateUniqueSeed()));
+            long decorationSeed = random.setDecorationSeed(level.getSeed(), origin.getX(), origin.getZ());
+            FeaturePlacer placer = new FeaturePlacer(level, chunkGenerator);
+            int stepIndex = GenerationStep.Decoration.UNDERGROUND_ORES.ordinal() - 1;
+            ToIntFunction<PlacedFeature> featureIndex;
+            if (stepIndex < featureList.size()) {
                 //Use the feature index lookup mapping. We can skip a lot of vanilla's logic here that is needed
                 // for purposes of getting all the features we want to be doing, as we know which features we want
                 // to generate and only lookup those. We also don't need to worry about if the biome can actually
                 // support our feature as that is validated via the placement context and allows us to drastically
                 // cut down on calculating it here
-                featureIndex = featureList.get(decorationStep).indexMapping();
+                featureIndex = featureList.get(stepIndex).indexMapping();
             } else {
                 featureIndex = _ -> -1;
             }
-            List<MekFeature> features = getMekanismFeatures(world.registryAccess());
+            List<MekFeature> features = getMekanismFeatures(level.registryAccess());
             for (MekFeature feature : features) {
-                generated |= place(world, chunkGenerator, origin, random, decorationSeed, decorationStep, featureIndex, feature);
+                generated |= place(level, chunkGenerator, placer, origin, random, decorationSeed, stepIndex, featureIndex, feature);
             }
-            world.setCurrentlyGenerating(null);
+            level.setCurrentlyGenerating(null);
+            if (SharedConstants.DEBUG_FEATURE_COUNT) {
+                FeatureCountTracker.chunkDecorated(level.getLevel());
+            }
         }
         return generated;
     }
 
-    private static boolean place(WorldGenLevel world, ChunkGenerator chunkGenerator, BlockPos blockPos, WorldgenRandom random,
+    private static boolean place(WorldGenLevel world, ChunkGenerator chunkGenerator, FeaturePlacer placer, BlockPos origin, WorldgenRandom random,
           long decorationSeed, int decorationStep, ToIntFunction<PlacedFeature> featureIndex, MekFeature feature) {
         PlacedFeature baseFeature = feature.feature().value();
         //Check the index of the source feature instead of the retrogen feature
@@ -91,7 +97,9 @@ public class GenHandler {
         try {
             //Note: We call placeWithContext directly to allow for doing a placeWithBiomeCheck, except by having the context pretend
             // it is the non retrogen feature which actually is added to the various biomes
-            return feature.retrogen().value().placeWithContext(new PlacementContext(world, chunkGenerator, Optional.of(baseFeature)), random, blockPos);
+            //TODO - 26.3: I don't think this is using the correct context?
+            //return feature.retrogen().value().placeWithContext(new PlacementContext(world, chunkGenerator, Optional.of(baseFeature)), random, origin);
+            return placer.placeWithBiomeCheck(feature.retrogen().value(), random, origin);
         } catch (Exception e) {
             CrashReport report = CrashReport.forThrowable(e, "Mekanism Retrogen Feature placement");
             report.addCategory("Feature").setDetail("Description", feature.retrogenKey());

@@ -22,7 +22,7 @@ import net.minecraft.util.Mth;
 public class ModelWindGenerator extends Model<WindGeneratorRotationRenderState> {
 
     public static final ModelLayerLocation GENERATOR_LAYER = new ModelLayerLocation(MekanismGenerators.rl("wind_generator"), "main");
-    private static final Identifier GENERATOR_TEXTURE = MekanismGenerators.rl("render/wind_generator.png");
+    public static final Identifier GENERATOR_TEXTURE = MekanismGenerators.rl("render/wind_generator.png");
 
     private static final ModelPartData HEAD = new ModelPartData("head", CubeListBuilder.create()
           .texOffs(20, 0)

@@ -15,6 +15,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -66,7 +67,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         //Note: We explicitly set the push reaction to protect against mods like Quark that allow blocks with TEs to be moved
         super(BlockStateHelper.applyLightLevelAdjustments(properties.mapColor(BlockResourceInfo.STEEL.getMapColor())
               .strength(3.5F, 4.8F).requiresCorrectToolForDrops().dynamicShape().noOcclusion()
-              .isViewBlocking(BlockStateHelper.NEVER_PREDICATE).pushReaction(PushReaction.BLOCK)));
+              .isViewBlocking(BlockStateHelper.NEVER_VIEW_BLOCKING).pushReaction(PushReaction.IMMOVEABLE)));
         registerDefaultState(BlockStateHelper.getDefaultState(stateDefinition.any()));
     }
 
@@ -219,7 +220,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    public void playerDestroy(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity te, ItemStack stack) {
+    public void playerDestroy(ServerLevel world, ServerPlayer player, BlockPos pos, BlockState state, @Nullable BlockEntity te, ItemStack stack) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {
             BlockState mainState = world.getBlockState(mainPos);

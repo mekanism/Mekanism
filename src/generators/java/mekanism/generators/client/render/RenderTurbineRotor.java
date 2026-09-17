@@ -13,10 +13,8 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
@@ -80,22 +78,18 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
         //Bottom blade
         poseStack.pushPose();
         poseStack.translate(0.5, -1, 0.5);
-        poseStack.mulPose(Axis.YP.rotationDegrees(state.lowerBlade.rotation));
-        submitBlade(state, state.lowerBlade, poseStack, nodeCollector);
+        poseStack.rotateDegrees(Axis.YP, state.lowerBlade.rotation);
+        submitCrumblingModel(nodeCollector, this.model, state.lowerBlade, poseStack, this.model.getRenderType(), state);
         poseStack.popPose();
 
         //Top blade
         if (state.housedBlades == 2) {
             poseStack.pushPose();
             poseStack.translate(0.5, -0.5, 0.5);
-            poseStack.mulPose(Axis.YP.rotationDegrees(state.upperBlade.rotation));
-            submitBlade(state, state.upperBlade, poseStack, nodeCollector);
+            poseStack.rotateDegrees(Axis.YP, state.upperBlade.rotation);
+            submitCrumblingModel(nodeCollector, this.model, state.upperBlade, poseStack, this.model.getRenderType(), state);
             poseStack.popPose();
         }
-    }
-
-    private void submitBlade(TurbineRotorRenderState state, TurbineBladeRenderState bladeState, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
-        nodeCollector.submitModel(this.model, bladeState, poseStack, this.model.getRenderType(), state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, state.breakProgress);
     }
 
     @Override

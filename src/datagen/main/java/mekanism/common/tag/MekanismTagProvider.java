@@ -137,6 +137,8 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismTags.Blocks.FARMING_OVERRIDE).add(BlockItemIds.PINK_PETALS.block());
         getBuilder(BlockTags.CAMEL_SAND_STEP_SOUND_BLOCKS).add(MekanismBlocks.SALT_BLOCK);
 
+        getBuilder(BlockTags.NETHER_PORTAL_FRAME).add(MekanismBlocks.REFINED_OBSIDIAN_BLOCK);
+
         getBuilder(Tags.Blocks.HIDDEN_FROM_RECIPE_VIEWERS).add(MekanismBlocks.BOUNDING_BLOCK);
 
         getBuilder(BlockTags.CANNOT_SUPPORT_SNOW_LAYER).add(
@@ -448,7 +450,6 @@ public class MekanismTagProvider extends BaseTagProvider {
             }
             addToTags(Tags.Items.ORES_IN_GROUND_DEEPSLATE, Tags.Blocks.ORES_IN_GROUND_DEEPSLATE, oreBlockType.deepslate());
             addToTags(Tags.Items.ORES_IN_GROUND_STONE, Tags.Blocks.ORES_IN_GROUND_STONE, oreBlockType.stone());
-            getBuilder(BlockTags.OVERWORLD_CARVER_REPLACEABLES).add(oreBlockType.stone(), oreBlockType.deepslate());
             getBuilder(BlockTags.SNAPS_GOAT_HORN).add(oreBlockType.stone(), oreBlockType.deepslate());
         }
     }

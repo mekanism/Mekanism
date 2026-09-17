@@ -1,11 +1,16 @@
 package mekanism.common.recipe.compat;
 
-import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.data.worldgen.BootstrapContextAccess;
 
-public class MekBoPDatagen implements IMekBoPDatagen {
+public class MekBoPDatagen implements ICompatRecipeDatagen {
 
     @Override
-    public CompatRecipeProvider recipeProvider(Provider registries, String modid) {
-        return new BiomesOPlentyRecipeProvider(registries, modid);
+    public CompatRecipeProvider recipeProvider(BootstrapContextAccess contextAccess) {
+        return new BiomesOPlentyRecipeProvider(contextAccess, modid());
+    }
+
+    @Override
+    public String modid() {
+        return "biomesoplenty";
     }
 }

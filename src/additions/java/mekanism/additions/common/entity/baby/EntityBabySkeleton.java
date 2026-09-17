@@ -4,7 +4,6 @@ import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.ConversionParams;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
@@ -14,7 +13,6 @@ import net.minecraft.world.entity.monster.skeleton.Skeleton;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.LevelEvent;
 import org.jspecify.annotations.Nullable;
 
 public class EntityBabySkeleton extends Skeleton {
@@ -22,6 +20,8 @@ public class EntityBabySkeleton extends Skeleton {
     public EntityBabySkeleton(EntityType<EntityBabySkeleton> type, Level world) {
         super(type, world);
         this.xpReward = (int) (this.xpReward * 2.5);
+        //Make freezing a baby skeleton convert it to a baby stray instead
+        freezingTracker.convertsTo = AdditionsEntityTypes.BABY_STRAY::get;
         AdditionsEntityTypes.setupBabyModifiers(this);
     }
 
@@ -37,19 +37,6 @@ public class EntityBabySkeleton extends Skeleton {
     }
 
     @Override
-    protected void doFreezeConversion() {
-        convertTo(AdditionsEntityTypes.BABY_STRAY.value(), ConversionParams.single(this, true, true), stray -> {
-            net.neoforged.neoforge.event.EventHooks.onLivingConvert(this, stray);
-            if (!isSilent()) {
-                level().levelEvent(null, 1048, blockPosition(), 0);
-            }
-        });
-        if (!isSilent()) {
-            level().levelEvent(null, LevelEvent.SOUND_SKELETON_TO_STRAY, blockPosition(), 0);
-        }
-    }
-
-    @Override
     protected AbstractArrow getArrow(ItemStack arrow, float velocity, @Nullable ItemStack weapon) {
         AbstractArrow projectile = super.getArrow(arrow, velocity, weapon);
         projectile.setBaseDamage(projectile.baseDamage * MekanismAdditionsConfig.additions.babyArrowDamageMultiplier.get());
@@ -59,6 +46,7 @@ public class EntityBabySkeleton extends Skeleton {
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(random, difficulty);
+        //TODO - 26.3: Does this still exist for whatever part of vanilla we were mirroring?
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
                 setItemSlot(slot, ItemStack.EMPTY);

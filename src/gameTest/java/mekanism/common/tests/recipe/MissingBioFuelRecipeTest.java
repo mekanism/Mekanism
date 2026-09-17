@@ -8,6 +8,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tests.helpers.RecipeTestHelper;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -16,7 +17,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.data.ItemTagsProvider;
-import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 import net.neoforged.testframework.DynamicTest;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
@@ -36,7 +36,7 @@ public class MissingBioFuelRecipeTest {
 
         //TODO: Decide if we want to have things like the biome mods load during game tests as well for purposes of checking if we want to add
         // compat with any of their organic items for making bio-fuel
-        reg.addClientProvider(event -> new ItemTagsProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(), reg.modId()) {
+        reg.addClientProvider(event -> new ItemTagsProvider(event.getGenerator().getPackOutput(), event.getWorldLookupProvider(), reg.modId()) {
             @Override
             @SuppressWarnings("unchecked")
             protected void addTags(HolderLookup.Provider provider) {
@@ -55,8 +55,7 @@ public class MissingBioFuelRecipeTest {
                     helper.collectInputs(bioFuelRecipeInputs, basicRecipe.getInput(), KNOWN_MISSING, "bio fuel");
                 }
             }
-            Set<ResourceKey<Item>> missingRecipes = helper.collectMissingRecipes(BuiltInRegistries.ITEM, NeoForgeDataMaps.COMPOSTABLES, bioFuelRecipeInputs);
-            helper.checkForMissing(missingRecipes);
+            helper.checkForMissing(helper.collectMissingRecipes(DataComponents.COMPOSTABLE, bioFuelRecipeInputs));
         }));
     }
 }

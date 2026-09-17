@@ -1,13 +1,13 @@
 package mekanism.generators.common.loot;
 
-import mekanism.common.loot.table.BaseBlockLootTables;
+import mekanism.common.loot.BaseBlockLootTables;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.data.loot.LootTableSubProvider;
 
 public class GeneratorsBlockLootTables extends BaseBlockLootTables {
 
-    public GeneratorsBlockLootTables(HolderLookup.Provider provider) {
-        super(provider);
+    public GeneratorsBlockLootTables(LootTableSubProvider.Context context) {
+        super(context);
     }
 
     @Override

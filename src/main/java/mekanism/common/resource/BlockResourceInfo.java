@@ -21,13 +21,12 @@ public enum BlockResourceInfo implements IResource {
     BRONZE("bronze", 5, 9, MapColor.COLOR_ORANGE),
     //Note: Deepslate is closer to steel than stone or metal
     STEEL("steel", 5, 9, MapColor.DEEPSLATE),
-    REFINED_OBSIDIAN("refined_obsidian", 50, 2_400, MapColor.COLOR_PURPLE, NoteBlockInstrument.BASEDRUM, 8, false, true, PushReaction.BLOCK),
+    REFINED_OBSIDIAN("refined_obsidian", 50, 2_400, MapColor.COLOR_PURPLE, NoteBlockInstrument.BASEDRUM, 8, false, PushReaction.IMMOVEABLE),
     REFINED_GLOWSTONE("refined_glowstone", 5, 6, MapColor.COLOR_YELLOW, NoteBlockInstrument.BASEDRUM, Level.MAX_BRIGHTNESS);
 
     private final String registrySuffix;
     private final MapColor mapColor;
     private final PushReaction pushReaction;
-    private final boolean portalFrame;
     private final boolean burnsInFire;
     @Nullable
     private final NoteBlockInstrument instrument;
@@ -45,14 +44,13 @@ public enum BlockResourceInfo implements IResource {
     }
 
     BlockResourceInfo(String registrySuffix, float hardness, float resistance, MapColor mapColor, @Nullable NoteBlockInstrument instrument, int lightValue) {
-        this(registrySuffix, hardness, resistance, mapColor, instrument, lightValue, true, false, PushReaction.NORMAL);
+        this(registrySuffix, hardness, resistance, mapColor, instrument, lightValue, true, PushReaction.PUSH_PULL);
     }
 
     BlockResourceInfo(String registrySuffix, float hardness, float resistance, MapColor mapColor, @Nullable NoteBlockInstrument instrument, int lightValue,
-          boolean burnsInFire, boolean portalFrame, PushReaction pushReaction) {
+          boolean burnsInFire, PushReaction pushReaction) {
         this.registrySuffix = registrySuffix;
         this.pushReaction = pushReaction;
-        this.portalFrame = portalFrame;
         this.burnsInFire = burnsInFire;
         this.lightValue = lightValue;
         this.resistance = resistance;
@@ -64,10 +62,6 @@ public enum BlockResourceInfo implements IResource {
     @Override
     public String getRegistrySuffix() {
         return registrySuffix;
-    }
-
-    public boolean isPortalFrame() {
-        return portalFrame;
     }
 
     public boolean burnsInFire() {

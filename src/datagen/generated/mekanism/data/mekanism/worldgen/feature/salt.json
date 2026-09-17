@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:disk",
+  "radius": {
+    "type": "mekanism:configurable_uniform"
+  },
+  "state_provider": {
+    "id": "mekanism:block_salt"
+  },
+  "target": {
+    "type": "minecraft:matching_blocks",
+    "blocks": [
+      "minecraft:dirt",
+      "minecraft:clay"
+    ]
+  }
+}

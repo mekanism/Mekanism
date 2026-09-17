@@ -16,7 +16,6 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,7 +29,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ByIdMap;
@@ -59,15 +57,17 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
 
     public static final Identifier FARMING_RADIUS = Mekanism.rl("farming_radius");
     private static final List<ToolFunction> TOOL_FUNCTIONS = List.of(
+          ModuleFarmingUnit::douseBlock
+          //TODO - 26.3: Reimplement this
           //First try to use the meka-tool as an axe
-          ModuleFarmingUnit::useAxeStripAOE,
+          /*ModuleFarmingUnit::useAxeStripAOE,
           ModuleFarmingUnit::useAxeScrapeAOE,
           ModuleFarmingUnit::useAxeWaxOffAOE,
           //Then as a shovel
           ModuleFarmingUnit::flattenAOE,
           ModuleFarmingUnit::douseBlock,
           //Finally, as a hoe
-          ModuleFarmingUnit::tillAOE
+          ModuleFarmingUnit::tillAOE*/
     );
 
     public ModuleFarmingUnit(IModule<ModuleFarmingUnit> module) {
@@ -113,7 +113,9 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     @Override
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean canPerformAction(IModule<ModuleFarmingUnit> module, IModuleContainer moduleContainer,
           ITEM instance, ItemAbility action) {
-        if (action == ItemAbilities.AXE_STRIP || action == ItemAbilities.AXE_SCRAPE || action == ItemAbilities.AXE_WAX_OFF) {
+        //TODO - 26.3: Figure out item abilities/energy cost
+        return false;
+        /*if (action == ItemAbilities.AXE_STRIP || action == ItemAbilities.AXE_SCRAPE || action == ItemAbilities.AXE_WAX_OFF) {
             return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageAxe);
         } else if (action == ItemAbilities.SHOVEL_FLATTEN) {
             return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageShovel);
@@ -123,7 +125,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         //Note: In general when we get here there will be no tool actions known unless mods add more default tool actions
         // This is because we special case the known vanilla types above and the dig variants are already handled by the Meka-Tool itself before
         // it even checks the installed modules
-        return ItemAbilities.DEFAULT_AXE_ACTIONS.contains(action) || ItemAbilities.DEFAULT_SHOVEL_ACTIONS.contains(action) || ItemAbilities.DEFAULT_HOE_ACTIONS.contains(action);
+        return ItemAbilities.DEFAULT_AXE_ACTIONS.contains(action) || ItemAbilities.DEFAULT_SHOVEL_ACTIONS.contains(action) || ItemAbilities.DEFAULT_HOE_ACTIONS.contains(action);*/
     }
 
     public enum FarmingRadius implements IHasTextComponent, StringRepresentable {
@@ -167,7 +169,8 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
               MekanismConfig.gear.mekaToolEnergyUsageShovel.get(), new SimpleToolAOEData());
     }
 
-    private static InteractionResult tillAOE(UseOnContext context, BlockState clickedState, EnergyHandler energyHandler, int diameter, TransactionContext transaction) {
+    //TODO - 26.3: Reimplement AOE tool usage
+    /*private static InteractionResult tillAOE(UseOnContext context, BlockState clickedState, EnergyHandler energyHandler, int diameter, TransactionContext transaction) {
         return useAOE(context, clickedState, energyHandler, diameter, transaction, ItemAbilities.HOE_TILL, SoundEvents.HOE_TILL, -1,
               MekanismConfig.gear.mekaToolEnergyUsageHoe.get(), new SimpleToolAOEData());
     }
@@ -192,7 +195,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
 
     private static InteractionResult useAxeWaxOffAOE(UseOnContext context, BlockState clickedState, EnergyHandler energyHandler, int diameter, TransactionContext transaction) {
         return useAxeAOE(context, clickedState, energyHandler, diameter, transaction, ItemAbilities.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF, LevelEvent.PARTICLES_WAX_OFF);
-    }
+    }*/
 
     private static InteractionResult useAxeAOE(UseOnContext context, BlockState clickedState, EnergyHandler energyHandler, int diameter, TransactionContext transaction,
           ItemAbility action, SoundEvent sound, int particle) {

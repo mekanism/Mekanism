@@ -7,12 +7,12 @@ import java.util.Optional;
 import mekanism.api.SerializationConstants;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.advancements.triggers.UseGaugeDropperTrigger.TriggerInstance;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<TriggerInstance> {
 
@@ -39,13 +39,12 @@ public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<TriggerInstan
         }
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player, UseDropperAction action) implements SimpleCriterionTrigger.SimpleInstance {
+    public record TriggerInstance(Optional<Holder<LootItemCondition>> player, UseDropperAction action) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(SerializationConstants.PLAYER).forGetter(TriggerInstance::player),
-                    UseDropperAction.CODEC.fieldOf(SerializationConstants.ACTION).forGetter(TriggerInstance::action)
-              ).apply(instance, TriggerInstance::new)
-        );
+              LootItemCondition.CODEC.optionalFieldOf(SerializationConstants.PLAYER).forGetter(TriggerInstance::player),
+              UseDropperAction.CODEC.fieldOf(SerializationConstants.ACTION).forGetter(TriggerInstance::action)
+        ).apply(instance, TriggerInstance::new));
 
         public static Criterion<TriggerInstance> any() {
             return MekanismCriteriaTriggers.USE_GAUGE_DROPPER.createCriterion(new TriggerInstance(Optional.empty(), UseDropperAction.ANY));

@@ -9,7 +9,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
@@ -27,7 +26,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "combining/";
         addCombinerDyeRecipes(consumer, basePath + "dye/");
         addCombinerGlowRecipes(consumer, basePath + "glow/");

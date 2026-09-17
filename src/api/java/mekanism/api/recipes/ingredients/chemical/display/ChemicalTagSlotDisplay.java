@@ -36,7 +36,7 @@ public record ChemicalTagSlotDisplay(TagKey<Chemical> tag) implements SlotDispla
     @Override
     public <T> Stream<T> resolve(ContextMap context, DisplayContentsFactory<T> factory) {
         if (factory instanceof ForChemicalStacks<T> chemicals) {
-            HolderLookup.Provider registries = context.getOptional(SlotDisplayContext.REGISTRIES);
+            HolderLookup.Provider registries = context.get(SlotDisplayContext.REGISTRIES);
             if (registries != null) {
                 return registries.get(this.tag)
                       .map(tag -> tag.stream().map(chemicals::forStack))

@@ -41,7 +41,7 @@ public record BabyEntitySpawnStructureModifier(BabyType babyType, AdditionsConfi
                     ResourceKey<Structure> structureKey = structure.getKey();
                     Mekanism.logger.debug("Adding spawn rate for '{}' in structure '{}', with weight: {}, minSize: {}, maxSize: {}",
                           Util.getRegisteredName(BuiltInRegistries.ENTITY_TYPE, spawner.value().type()), structureKey == null ? null : structureKey.identifier(), spawner.weight(),
-                          spawner.value().minCount(), spawner.value().maxCount());
+                          spawner.value().count().minInclusive(), spawner.value().count().maxInclusive());
                 }
             }
         }

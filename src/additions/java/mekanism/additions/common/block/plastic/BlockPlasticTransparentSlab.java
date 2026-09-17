@@ -16,7 +16,7 @@ public class BlockPlasticTransparentSlab extends BlockPlasticSlab {
         super(properties.noOcclusion()
                     .isValidSpawn(AttributeMobSpawn.NEVER_PREDICATE)
                     .isSuffocating(BlockStateHelper.NEVER_PREDICATE)
-                    .isViewBlocking(BlockStateHelper.NEVER_PREDICATE),
+                    .isViewBlocking(BlockStateHelper.NEVER_VIEW_BLOCKING),
               color);
     }
 

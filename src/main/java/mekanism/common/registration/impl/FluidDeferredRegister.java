@@ -135,7 +135,7 @@ public class FluidDeferredRegister {
         //Note: The block properties used here is a copy of the ones for water
         DeferredHolder<Block, LiquidBlock> block = blockRegister.register(name, key -> new LiquidBlock(stillFluid.get(), BlockBehaviour.Properties.of()
               .setId(ResourceKey.create(blockRegister.getRegistryKey(), key))
-              .noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().mapColor(color)));
+              .noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.POPPED).liquid().mapColor(color)));
         FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, BUCKET> registryObject = new FluidRegistryObject<>(fluidType, stillFluid, flowingFluid, bucket, block);
         allRegistered.add(registryObject);
         return registryObject;

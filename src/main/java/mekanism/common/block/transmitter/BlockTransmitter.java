@@ -59,7 +59,7 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
         if (mapColor != null) {
             properties.mapColor(mapColor);
         }
-        super(type, properties.strength(1, 6).pushReaction(PushReaction.BLOCK));
+        super(type, properties.strength(1, 6).pushReaction(PushReaction.IMMOVEABLE));
     }
 
     @Override

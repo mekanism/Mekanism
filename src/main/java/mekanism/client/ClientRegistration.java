@@ -229,8 +229,7 @@ public class ClientRegistration {
         moduleHelper.addMekaSuitModuleModels(Mekanism.rl("entity/mekasuit_modules"));
         moduleHelper.addMekaSuitModuleModelSpec("jetpack", MekanismModules.JETPACK_UNIT, EquipmentSlot.CHEST);
         moduleHelper.addMekaSuitModuleModelSpec("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlot.CHEST);
-        moduleHelper.addMekaSuitModuleModelSpec("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, either ->
-              either.map(state -> state.isFallFlying, LivingEntity::isFallFlying));
+        moduleHelper.addMekaSuitModuleModelSpec("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, state -> state.isFallFlying);
     }
 
     @SubscribeEvent

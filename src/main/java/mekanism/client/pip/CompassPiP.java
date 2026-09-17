@@ -42,8 +42,8 @@ public class CompassPiP extends PictureInPictureRenderer<CompassPiP.State> {
               color, 0, EntityRenderState.NO_OUTLINE);
         poseStack.popPose();
 
-        poseStack.mulPose(Axis.XN.rotation(ONE_THIRD_PI));
-        poseStack.mulPose(Axis.ZP.rotation(state.angle()));
+        poseStack.rotate(Axis.XN, ONE_THIRD_PI);
+        poseStack.rotate(Axis.ZP, state.angle());
 
         rotateStr(poseStack, nodeCollector, MekanismLang.NORTH_SHORT, state.angle(), 0, color);
         rotateStr(poseStack, nodeCollector, MekanismLang.EAST_SHORT, state.angle(), Mth.HALF_PI, color);
@@ -64,9 +64,9 @@ public class CompassPiP extends PictureInPictureRenderer<CompassPiP.State> {
 
     private void rotateStr(PoseStack pose, SubmitNodeCollector nodeCollector, ILangEntry langEntry, float rotation, float shift, int color) {
         pose.pushPose();
-        pose.mulPose(Axis.ZP.rotation(shift));
+        pose.rotate(Axis.ZP, shift);
         pose.translate(0, -50, 0);
-        pose.mulPose(Axis.ZN.rotation(rotation + shift));
+        pose.rotate(Axis.ZN, rotation + shift);
         nodeCollector.submitText(pose, -2.5F, -4, langEntry.translate().getVisualOrderText(), false, Font.DisplayMode.NORMAL, LightCoordsUtil.FULL_BRIGHT,
               color, 0, EntityRenderState.NO_OUTLINE);
         pose.popPose();

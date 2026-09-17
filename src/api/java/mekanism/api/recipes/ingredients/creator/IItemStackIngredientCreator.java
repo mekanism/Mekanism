@@ -5,7 +5,6 @@ import java.util.Objects;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentPatch;
@@ -229,7 +228,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
     ///
     /// @param lookup Holder getter to find the tags in.
     /// @param amount Amount needed.
-    /// @param tags Tag to match.
+    /// @param tags   Tag to match.
     ///
     /// @throws NullPointerException     if the list of tags is null.
     /// @throws IllegalArgumentException if the list of tags is empty.
@@ -276,14 +275,14 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
 
     /// Creates an Item Stack Ingredient from a holder lookup given the item's id.
     ///
-    /// @param registries Holder lookup to find the item in.
-    /// @param itemId     Item ID of the item to look up.
+    /// @param lookup Holder getter to find the tags in.
+    /// @param itemId Item ID of the item to look up.
     ///
     /// @throws NullPointerException  if the given registries or item id are null.
     /// @throws IllegalStateException if the item does not exist.
     /// @since 10.6.7
-    default ItemStackIngredient from(HolderLookup.Provider registries, Identifier itemId) {
-        return fromHolder(registries.getOrThrow(ResourceKey.create(Registries.ITEM, itemId)));
+    default ItemStackIngredient from(HolderGetter<Item> lookup, Identifier itemId) {
+        return fromHolder(lookup.getOrThrow(ResourceKey.create(Registries.ITEM, itemId)));
     }
 
     @Override

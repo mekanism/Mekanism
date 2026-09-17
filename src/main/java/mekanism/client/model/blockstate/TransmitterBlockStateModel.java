@@ -290,7 +290,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         private final MaterialBaker upstream;
 
         private DelegateMaterialBaker(MaterialBaker upstream) {
-            super(upstream.missingSprite.sprite());
+            super(upstream.blockAtlas, upstream.itemAtlas);
             this.upstream = upstream;
         }
 

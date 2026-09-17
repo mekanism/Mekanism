@@ -62,21 +62,21 @@ ext {
     //Integrations that we sometimes have to disable compilation of when porting to newer mc versions
     integrations = [
             'ae2'             : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.DATA_ONLY),
-            'biomes_o_plenty' : new IntegrationSettings(shouldCompile: true, scope: IntegrationScope.DATA_ONLY),
+            'biomes_o_plenty' : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.DATA_ONLY),
             'biomes_weve_gone': new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.DATA_ONLY),
             'computer_craft'  : new IntegrationSettings(shouldCompile: true),
             'crafttweaker'    : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL),
-            'curios'          : new IntegrationSettings(shouldCompile: true),
+            'curios'          : new IntegrationSettings(shouldCompile: false),
             'emi'             : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL, perModule: PerModule.MODULE_ONLY),
             'farmers_delight' : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.DATA_ONLY),
-            'framedblocks'    : new IntegrationSettings(shouldCompile: true),
+            'framedblocks'    : new IntegrationSettings(shouldCompile: false),
             'gender'          : new IntegrationSettings(shouldCompile: true, scope: IntegrationScope.DATA_ONLY, perModule: PerModule.ALL),
             'jade'            : new IntegrationSettings(shouldCompile: true),
             'jei'             : new IntegrationSettings(shouldCompile: true, perModule: PerModule.MODULE_ONLY),
             'projecte'        : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL),
             'recipe_stages'   : new IntegrationSettings(shouldCompile: false),
-            'the_one_probe'   : new IntegrationSettings(shouldCompile: true),
-            'wthit'           : new IntegrationSettings(shouldCompile: true)
+            'the_one_probe'   : new IntegrationSettings(shouldCompile: false),
+            'wthit'           : new IntegrationSettings(shouldCompile: false)
     ]
 }
 

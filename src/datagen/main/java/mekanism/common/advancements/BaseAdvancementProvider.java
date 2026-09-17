@@ -7,6 +7,7 @@ import java.util.Optional;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.common.component.predicate.UpgradeTypeComponentPredicate;
 import mekanism.common.registries.MekanismDataComponentPredicates;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.predicates.DataComponentMatchers;
 import net.minecraft.advancements.predicates.ItemPredicate;
 import net.minecraft.advancements.predicates.MinMaxBounds;
@@ -16,11 +17,16 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.advancements.AdvancementSubProvider;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
-public abstract class BaseAdvancementProvider implements AdvancementSubProvider {
+public abstract class BaseAdvancementProvider extends AdvancementSubProvider {
+
+    protected BaseAdvancementProvider(BootstrapContext<Advancement> output) {
+        super(output);
+    }
 
     protected ExtendedAdvancementBuilder advancement(MekanismAdvancement advancement) {
         return ExtendedAdvancementBuilder.advancement(advancement);

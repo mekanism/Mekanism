@@ -70,7 +70,7 @@ public abstract class BlockMekanism extends Block {
             //Protect against mods like Quark that allow blocks with TEs to be moved
             //TODO: Eventually it would be nice to go through this and maybe even allow some TEs to be moved if they don't strongly
             // care about the world, but for now it is safer to just block them from being moved
-            return PushReaction.BLOCK;
+            return PushReaction.IMMOVEABLE;
         }
         return super.getPistonPushReaction(state);
     }

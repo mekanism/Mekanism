@@ -105,7 +105,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
                     float scaledVolume = Math.max(volume, 1.0F) * sound.getAttenuationDistance();
                     float range = !relative && attenuation != SoundInstance.Attenuation.NONE ? scaledVolume : Float.POSITIVE_INFINITY;
                     for (SoundEventListener soundEventListener : soundHandler.soundEngine.listeners) {
-                        WeighedSoundEvents soundEventAccessor = resolve(soundHandler);
+                        WeighedSoundEvents soundEventAccessor = getOrResolve(soundHandler);
                         if (soundEventAccessor != null) {
                             soundEventListener.onPlaySound(this, soundEventAccessor, range);
                         }

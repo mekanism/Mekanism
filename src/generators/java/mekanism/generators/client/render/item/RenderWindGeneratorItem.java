@@ -72,10 +72,11 @@ public class RenderWindGeneratorItem implements SpecialModelRenderer<WindGenerat
         windGenerator.setupAnim(argument);
         matrix.pushPose();
         matrix.translate(0.5, 0.5, 0.5);
-        matrix.mulPose(Axis.ZP.rotation(Mth.PI));
-        submitNodeCollector.order(0).submitModel(windGenerator, argument, matrix, ModelWindGenerator.RENDER_TYPE, lightCoords, overlayCoords, outlineColor, null);
+        matrix.rotate(Axis.ZP, Mth.PI);
+        submitNodeCollector.submitModel(windGenerator, argument, matrix, ModelWindGenerator.RENDER_TYPE, lightCoords, overlayCoords, outlineColor);
         if (hasFoil) {
-            submitNodeCollector.order(1).submitModel(windGenerator, argument, matrix, RenderTypes.entityGlint(), lightCoords, overlayCoords, EntityRenderState.NO_OUTLINE, null);
+            //TODO - 26.3: Test this glint
+            submitNodeCollector.order(1).submitModel(windGenerator, argument, matrix, RenderTypes.entitySolidGlint(ModelWindGenerator.GENERATOR_TEXTURE), lightCoords, overlayCoords, EntityRenderState.NO_OUTLINE);
         }
         matrix.popPose();
     }

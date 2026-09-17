@@ -20,7 +20,7 @@ public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockT
 
     public BlockTileGlass(TYPE type, BlockBehaviour.Properties properties) {
         super(type, properties.sound(SoundType.GLASS).strength(3.5F, 9.6F).noOcclusion().requiresCorrectToolForDrops()
-              .isSuffocating(BlockStateHelper.NEVER_PREDICATE).isViewBlocking(BlockStateHelper.NEVER_PREDICATE).instrument(NoteBlockInstrument.HAT));
+              .isSuffocating(BlockStateHelper.NEVER_PREDICATE).isViewBlocking(BlockStateHelper.NEVER_VIEW_BLOCKING).instrument(NoteBlockInstrument.HAT));
     }
 
     @Override

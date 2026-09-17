@@ -15,7 +15,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
@@ -36,7 +35,7 @@ class BinRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
+    public void addRecipes(RecipeOutput consumer) {
         //Special recipes (bins)
         SpecialRecipeBuilder.special(BinInsertRecipe::new).save(consumer, ResourceKey.create(Registries.RECIPE, MekanismRecipeSerializersInternal.BIN_INSERT.getId()));
         SpecialRecipeBuilder.special(BinExtractRecipe::new).save(consumer, ResourceKey.create(Registries.RECIPE, MekanismRecipeSerializersInternal.BIN_EXTRACT.getId()));

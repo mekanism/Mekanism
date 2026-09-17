@@ -192,10 +192,10 @@ public class MekanismRenderer {
 
     public static void rotate(PoseStack matrix, Direction facing, float north, float south, float west, float east) {
         switch (facing) {
-            case NORTH -> matrix.mulPose(Axis.YP.rotationDegrees(north));
-            case SOUTH -> matrix.mulPose(Axis.YP.rotationDegrees(south));
-            case WEST -> matrix.mulPose(Axis.YP.rotationDegrees(west));
-            case EAST -> matrix.mulPose(Axis.YP.rotationDegrees(east));
+            case NORTH -> matrix.rotateDegrees(Axis.YP, north);
+            case SOUTH -> matrix.rotateDegrees(Axis.YP, south);
+            case WEST -> matrix.rotateDegrees(Axis.YP, west);
+            case EAST -> matrix.rotateDegrees(Axis.YP, east);
         }
     }
 

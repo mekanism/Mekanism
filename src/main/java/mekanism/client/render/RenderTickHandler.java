@@ -33,17 +33,15 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
+import net.minecraft.client.renderer.state.level.PlayerRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
@@ -130,16 +128,14 @@ public class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public void renderArm(RenderArmEvent<?> event) {
-        Avatar avatar = event.getAvatar();
-        ItemStack chestStack = avatar.getItemBySlot(EquipmentSlot.CHEST);
-        if (chestStack.getItem() instanceof ItemMekaSuitArmor armorItem) {
+    public void renderArm(RenderArmEvent event) {
+        PlayerRenderState state = event.getPlayerRenderState();
+        if (state.avatarRenderState != null && state.avatarRenderState.chestEquipment.getItem() instanceof ItemMekaSuitArmor armorItem) {
             ModelPart arm = event.getArmPart();
             //Reset the arm's pose like AvatarRenderer#renderHand does
             arm.resetPose();
-            int outlineColor = minecraft.shouldEntityAppearGlowing(avatar) ? ARGB.opaque(avatar.getTeamColor()) : 0;
             MekaSuitArmor armor = (MekaSuitArmor) ((ISpecialGear) IClientItemExtensions.of(armorItem)).gearModel();
-            armor.renderArm(event.getAvatar(), arm, event.getPoseStack(), event.getSubmitNodeCollector(), event.getLightCoords(), outlineColor, chestStack, event.getArm() == HumanoidArm.RIGHT);
+            armor.renderArm(state.avatarRenderState, arm, event.getPoseStack(), event.getSubmitNodeCollector(), event.getLightCoords(), event.getArm() == HumanoidArm.RIGHT);
             event.setCanceled(true);
         }
     }
@@ -167,7 +163,7 @@ public class RenderTickHandler {
                     }
 
                     //Traverse players and do animations for idle flamethrowers
-                    if (!p.swinging) {
+                    if (!p.isSwinging()) {
                         if (p.isUsingItem()) {
                             InteractionHand usedHand = p.getUsedItemHand();
                             if (!(p.getItemInHand(usedHand).getItem() instanceof ItemFlamethrower)) {

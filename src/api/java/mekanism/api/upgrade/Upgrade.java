@@ -12,13 +12,13 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.codec.RegistryCodecs;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.ExtraCodecs;
@@ -42,7 +42,7 @@ public record Upgrade(Component displayName, Component description, Either<EnumC
           NeoForgeExtraCodecs.optionalFieldAlwaysWrite(ExtraCodecs.POSITIVE_INT, SerializationConstants.MAX, 1).forGetter(Upgrade::max)
     ).apply(builder, Upgrade::new));
     /// Codec for referencing an upgrade by name
-    public static final Codec<Holder<Upgrade>> CODEC = RegistryFixedCodec.create(MekanismRegistries.Keys.UPGRADES);
+    public static final Codec<Holder<Upgrade>> CODEC = RegistryCodecs.holder(MekanismRegistries.Keys.UPGRADES);
     /// Stream codec for referencing an upgrade by name
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Upgrade>> STREAM_CODEC = ByteBufCodecs.holderRegistry(MekanismRegistries.Keys.UPGRADES);
 

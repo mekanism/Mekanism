@@ -18,10 +18,10 @@ import mekanism.api.recipes.ingredients.chemical.IntersectionChemicalIngredient;
 import mekanism.api.recipes.ingredients.chemical.SimpleChemicalIngredient;
 import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.codec.HolderSetCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.HolderSetCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 

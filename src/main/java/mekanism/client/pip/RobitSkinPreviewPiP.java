@@ -22,7 +22,7 @@ public class RobitSkinPreviewPiP extends PictureInPictureRenderer<RobitSkinPrevi
     @Override
     protected void renderToTexture(RobitSkinPreviewPiP.State state, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
         Minecraft.getInstance().gameRenderer.lighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
-        poseStack.mulPose(Axis.ZP.rotation(Mth.PI));
+        poseStack.rotate(Axis.ZP, Mth.PI);
         poseStack.rotateAround(state.rotation, 0.5F, 0.0F, 0.5F);
         BakeResult model = state.model();
         nodeCollector.submitBlockModel(poseStack, model.renderType(), model.model(), BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);

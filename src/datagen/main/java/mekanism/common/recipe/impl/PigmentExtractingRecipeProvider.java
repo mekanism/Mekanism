@@ -9,7 +9,6 @@ import mekanism.api.text.EnumColorCollection;
 import mekanism.common.Mekanism;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.resources.ResourceKey;
@@ -39,7 +38,7 @@ public class PigmentExtractingRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "pigment_extracting/";
         addExtractionRecipes(consumer, basePath);
         addFlowerExtractionRecipes(consumer, basePath);

@@ -169,7 +169,8 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
                         tryPlace(owner, sidePos, hitSide, BaseFireBlock.getState(level(), sidePos));
                     } else if (hitState.isFlammable(level(), hitPos, hitSide)) {
                         //TODO: Is there some event we should/can be firing here?
-                        hitState.onCaughtFire(level(), hitPos, hitSide, owner instanceof LivingEntity livingEntity ? livingEntity : null);
+                        //TODO - 26.3: Should we pass the flamethrower as the igniting stack?
+                        hitState.onCaughtFire(level(), hitPos, hitSide, owner instanceof LivingEntity livingEntity ? livingEntity : null, ItemStack.EMPTY);
                         if (hitState.getBlock() instanceof TntBlock) {
                             level().removeBlock(hitPos, false);
                         }

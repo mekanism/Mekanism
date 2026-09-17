@@ -2,11 +2,9 @@ package mekanism.common.block.basic;
 
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.resource.BlockResourceInfo;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 
+//TODO - 26.3: Can we remove this specific subclass?
 public class BlockResource extends BlockMekanism {
 
     private final BlockResourceInfo resource;
@@ -19,10 +17,5 @@ public class BlockResource extends BlockMekanism {
 
     public BlockResourceInfo getResourceInfo() {
         return resource;
-    }
-
-    @Override
-    public boolean isPortalFrame(BlockState state, BlockGetter world, BlockPos pos) {
-        return resource.isPortalFrame();
     }
 }

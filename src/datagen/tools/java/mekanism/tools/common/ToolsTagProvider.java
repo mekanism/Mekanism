@@ -72,6 +72,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addPaxels() {
+        getBuilder(ItemTags.DOUSES_CAMPFIRES).add(ToolsTags.Items.TOOLS_PAXEL);
         getBuilder(ItemTags.BREAKS_DECORATED_POTS).add(ToolsTags.Items.TOOLS_PAXEL);
         getBuilder(ItemTags.WEAPON_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);
         getBuilder(ItemTags.SHARP_WEAPON_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);

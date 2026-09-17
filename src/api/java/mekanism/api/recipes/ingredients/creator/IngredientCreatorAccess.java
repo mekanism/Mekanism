@@ -1,7 +1,5 @@
 package mekanism.api.recipes.ingredients.creator;
 
-import java.util.Map;
-import java.util.Optional;
 import mekanism.api.IMekanismAccess;
 import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.component.DataComponentPatch;
@@ -47,17 +45,19 @@ public class IngredientCreatorAccess {
     static DataComponentExactPredicate getComponentPatchPredicate(DataComponentPatch patch) {
         if (!patch.isEmpty()) {
             DataComponentExactPredicate.Builder builder = DataComponentExactPredicate.builder();
-            for (Map.Entry<DataComponentType<?>, Optional<?>> entry : patch.entrySet()) {
-                Optional<?> value = entry.getValue();
-                //Note: We only add if the value is added, we don't check ones that have been removed from default, as that isn't easily feasible
-                //noinspection OptionalIsPresent - Capturing lambda
-                if (value.isPresent()) {
-                    //noinspection rawtypes,unchecked
-                    builder.expect((DataComponentType) entry.getKey(), value.get());
-                }
+            for (DataComponentType<?> type : patch.keySet()) {
+                expectComponent(patch, type, builder);
             }
             return builder.build();
         }
         return null;
+    }
+
+    private static <TYPE> void expectComponent(DataComponentPatch patch, DataComponentType<TYPE> type, DataComponentExactPredicate.Builder builder) {
+        TYPE value = patch.getPatch(type);
+        //Note: We only add if the value is added, we don't check ones that have been removed from default, as that isn't easily feasible
+        if (value != null) {
+            builder.expect(type, value);
+        }
     }
 }

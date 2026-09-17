@@ -20,10 +20,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.SingleQuadParticle.FacingCameraMode;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -104,10 +102,9 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             //Render the blade at the correct rotation if we are active
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
-            poseStack.mulPose(Axis.YP.rotationDegrees(state.bladeRotation));
+            poseStack.rotateDegrees(Axis.YP, state.bladeRotation);
             poseStack.translate(-0.5, -0.5, -0.5);
-            submitBreakableBlockModel(nodeCollector, poseStack, Sheets.cutoutBlockItemSheet(), MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getBakedModel(),
-                  BlockModelRenderState.EMPTY_TINTS, state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, state.breakProgress);
+            submitBreakableBlockModel(nodeCollector, poseStack, Sheets.cutoutBlockItemSheet(), MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getBakedModel(), state);
             poseStack.popPose();
         }
         //Render the item and particle
@@ -116,7 +113,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             poseStack.translate(0.5, 0.6, 0.5);
             if (state.active) {
                 //Make the item rotate if the liquifier is active
-                poseStack.mulPose(Axis.YP.rotationDegrees(state.itemRotation));
+                poseStack.rotateDegrees(Axis.YP, state.itemRotation);
             }
             state.item.submit(poseStack, nodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();

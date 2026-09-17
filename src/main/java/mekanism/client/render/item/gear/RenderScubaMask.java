@@ -26,7 +26,7 @@ public class RenderScubaMask implements NoDataSpecialModelRenderer {
     public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(Axis.ZP.rotation(Mth.PI));
+        poseStack.rotate(Axis.ZP, Mth.PI);
         scubaMask.collect(poseStack, nodeCollector, lightCoords, overlayCoords, FoilRendering.ITEM.foil(hasFoil), outlineColor);
         poseStack.popPose();
     }

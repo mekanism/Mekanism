@@ -1,0 +1,24 @@
+{
+  "type": "mekanism:ore",
+  "ore_type": {
+    "type": "fluorite",
+    "index": 0
+  },
+  "retro_gen": true,
+  "targets": [
+    {
+      "state": "mekanism:fluorite_ore",
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "minecraft:stone_ore_replaceables"
+      }
+    },
+    {
+      "state": "mekanism:deepslate_fluorite_ore",
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "minecraft:deepslate_ore_replaceables"
+      }
+    }
+  ]
+}

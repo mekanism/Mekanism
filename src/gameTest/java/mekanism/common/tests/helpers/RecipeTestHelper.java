@@ -11,6 +11,8 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -19,7 +21,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
-import net.neoforged.neoforge.registries.datamaps.DataMapType;
 
 public class RecipeTestHelper extends MekGameTestHelper {
 
@@ -58,11 +59,15 @@ public class RecipeTestHelper extends MekGameTestHelper {
         }
     }
 
-    public <TYPE> Set<ResourceKey<TYPE>> collectMissingRecipes(Registry<TYPE> registry, DataMapType<TYPE, ?> dataMapType, Set<ResourceKey<Item>> recipeInputs) {
-        Set<ResourceKey<TYPE>> missingRecipes = new ReferenceLinkedOpenHashSet<>();
-        for (ResourceKey<TYPE> compostable : registry.getDataMap(dataMapType).keySet()) {
-            if (!recipeInputs.contains(compostable)) {
-                missingRecipes.add(compostable);
+    public <TYPE> Set<ResourceKey<Item>> collectMissingRecipes(DataComponentType<TYPE> component, Set<ResourceKey<Item>> recipeInputs) {
+        Set<ResourceKey<Item>> missingRecipes = new ReferenceLinkedOpenHashSet<>();
+        for (Item item : BuiltInRegistries.ITEM) {
+            TYPE value = item.components().get(component);
+            if (value != null) {
+                ResourceKey<Item> compostable = BuiltInRegistries.ITEM.getResourceKey(item).orElseThrow();
+                if (!recipeInputs.contains(compostable)) {
+                    missingRecipes.add(compostable);
+                }
             }
         }
         return missingRecipes;

@@ -9,6 +9,7 @@ import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -56,7 +57,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
             if (!level.isClientSide() && tile.removeBlade(level)) {
                 ItemStack stack = GeneratorsItems.TURBINE_BLADE.asStack();
                 if (!player.addItem(stack)) {
-                    player.drop(stack, false);
+                    player.drop(stack, false, Prediction.SERVER_ONLY);
                 }
                 level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
             }

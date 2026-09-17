@@ -6,27 +6,11 @@ import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.registries.MekanismItems;
-import net.minecraft.advancements.predicates.DataComponentMatchers;
-import net.minecraft.advancements.predicates.ItemPredicate;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.predicates.DataComponentPredicate;
-import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class FullCanteenItemPredicate implements DataComponentPredicate {
-
-    public static ItemPredicate build(HolderLookup.Provider registry) {
-        return ItemPredicate.Builder.item()
-              .of(registry.lookupOrThrow(Registries.ITEM), MekanismItems.CANTEEN)
-              .withComponents(
-                    DataComponentMatchers.Builder.components()
-                          .partial(TYPE, INSTANCE)
-                          .build()
-              )
-              .build();
-    }
 
     public static final FullCanteenItemPredicate INSTANCE = new FullCanteenItemPredicate();
     public static DataComponentPredicate.Type<FullCanteenItemPredicate> TYPE = new ConcreteType<>(MapCodec.unitCodec(INSTANCE));

@@ -75,8 +75,8 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
           int shift1, int shift2) {
         poseStack.pushPose();
         poseStack.scale(scale, scale, scale);
-        poseStack.mulPose(Axis.YP.rotationDegrees(state.ticks * mult1 + shift1));
-        poseStack.mulPose(RenderEnergyCube.coreVec.rotationDegrees(state.ticks * mult2 + shift2));
+        poseStack.rotateDegrees(Axis.YP, state.ticks * mult1 + shift1);
+        poseStack.rotateDegrees(RenderEnergyCube.coreVec, state.ticks * mult2 + shift2);
         nodeCollector.submitModelPart(
               this.energyCore,
               poseStack,
@@ -84,8 +84,7 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
               LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
               null,
-              color.getPackedColor(),
-              null//No break overlay for the core
+              color.getPackedColor()
         );
         poseStack.popPose();
     }

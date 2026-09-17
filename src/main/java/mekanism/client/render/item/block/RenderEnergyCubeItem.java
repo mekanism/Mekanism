@@ -66,8 +66,8 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
             poseStack.translate(0.5, 0.5, 0.5);
             poseStack.scale(0.4F, 0.4F, 0.4F);
             poseStack.translate(0, Math.sin(Math.toRadians(3 * state.ticks())) / 7, 0);
-            poseStack.mulPose(Axis.YP.rotationDegrees(scaledTicks));
-            poseStack.mulPose(RenderEnergyCube.coreVec.rotationDegrees(36F + scaledTicks));
+            poseStack.rotateDegrees(Axis.YP, scaledTicks);
+            poseStack.rotateDegrees(RenderEnergyCube.coreVec, 36F + scaledTicks);
             submitNodeCollector.submitModelPart(
                   this.energyCore,
                   poseStack,
@@ -75,8 +75,7 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
                   LightCoordsUtil.FULL_BRIGHT,
                   OverlayTexture.NO_OVERLAY,
                   null,
-                  state.coreTint,
-                  null//No break overlay for the core
+                  state.coreTint
             );
             poseStack.popPose();
         }

@@ -1,16 +1,13 @@
 package mekanism.api.gear;
 
-import com.mojang.datafixers.util.Either;
 import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.gear.IHUDElement.HUDColor;
-import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -76,9 +73,7 @@ public interface IClientModuleHelper {
     /// @param moduleData [ModuleData] to associate this spec with.
     /// @param slotType   Equipment position the spec will be used for.
     /// @param isActive   Predicate to check if an entity should use the active or inactive model.
-    /// @param <AVATAR>   Client player or similar, for use by the first person hand render. **Do not** require a specific implementation of this generic or things may
-    /// crash.
     ///
     /// @apiNote Must only be called on the client side and from [FMLClientSetupEvent].
-    <AVATAR extends Avatar & ClientAvatarEntity> void addMekaSuitModuleModelSpec(String name, Holder<ModuleData<?>> moduleData, EquipmentSlot slotType, Predicate<Either<HumanoidRenderState, AVATAR>> isActive);
+    void addMekaSuitModuleModelSpec(String name, Holder<ModuleData<?>> moduleData, EquipmentSlot slotType, Predicate<HumanoidRenderState> isActive);
 }

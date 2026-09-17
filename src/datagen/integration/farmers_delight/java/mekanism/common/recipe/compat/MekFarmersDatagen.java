@@ -1,11 +1,16 @@
 package mekanism.common.recipe.compat;
 
-import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.data.worldgen.BootstrapContextAccess;
 
-public class MekFarmersDatagen implements IMekFarmersDatagen {
+public class MekFarmersDatagen implements ICompatRecipeDatagen {
 
     @Override
-    public CompatRecipeProvider recipeProvider(Provider registries, String modid) {
-        return new FarmersDelightRecipeProvider(registries, modid);
+    public CompatRecipeProvider recipeProvider(BootstrapContextAccess contextAccess) {
+        return new FarmersDelightRecipeProvider(contextAccess, modid());
+    }
+
+    @Override
+    public String modid() {
+        return "farmersdelight";
     }
 }

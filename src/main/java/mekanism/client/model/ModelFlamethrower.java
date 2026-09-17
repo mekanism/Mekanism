@@ -16,7 +16,7 @@ import net.minecraft.util.Unit;
 public class ModelFlamethrower extends Model<Unit> {
 
     public static final ModelLayerLocation FLAMETHROWER_LAYER = new ModelLayerLocation(Mekanism.rl("flamethrower"), "main");
-    private static final Identifier FLAMETHROWER_TEXTURE = MekanismUtils.getRenderResource("flamethrower.png");
+    public static final Identifier FLAMETHROWER_TEXTURE = MekanismUtils.getRenderResource("flamethrower.png");
 
     private static final ModelPartData RING_BOTTOM = new ModelPartData("RingBottom", CubeListBuilder.create()
           .texOffs(19, 14)

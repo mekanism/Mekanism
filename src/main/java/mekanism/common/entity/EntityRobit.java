@@ -404,7 +404,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
                     drop();
                 }
                 discard();
-                player.swing(hand);
+                player.swing(hand, stack.getInteractAnimation(), false);
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.PASS;

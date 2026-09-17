@@ -1,7 +1,9 @@
 package mekanism.tools.client;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import mekanism.client.model.BaseModelProvider;
 import mekanism.common.Mekanism;
@@ -30,8 +32,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
+import net.minecraft.world.item.equipment.trim.TrimMaterials.Palette;
 
 public class ToolsModelProvider extends BaseModelProvider {
 
@@ -59,11 +62,10 @@ public class ToolsModelProvider extends BaseModelProvider {
             handheld(itemModels, material.tools.sword());
             spear(itemModels, material.tools.spear());
 
-            ResourceKey<EquipmentAsset> armorAssetId = material.material.equipmentAsset();
-            generateTrimmableItem(itemModels, material.armor.helmet(), armorAssetId, ItemModelGenerators.TRIM_PREFIX_HELMET);
-            generateTrimmableItem(itemModels, material.armor.chestplate(), armorAssetId, ItemModelGenerators.TRIM_PREFIX_CHESTPLATE);
-            generateTrimmableItem(itemModels, material.armor.leggings(), armorAssetId, ItemModelGenerators.TRIM_PREFIX_LEGGINGS);
-            generateTrimmableItem(itemModels, material.armor.boots(), armorAssetId, ItemModelGenerators.TRIM_PREFIX_BOOTS);
+            generateTrimmableItem(itemModels, material.armor.helmet(), ItemModelGenerators.TRIM_PREFIX_HELMET, Collections.emptyMap());
+            generateTrimmableItem(itemModels, material.armor.chestplate(), ItemModelGenerators.TRIM_PREFIX_CHESTPLATE, Collections.emptyMap());
+            generateTrimmableItem(itemModels, material.armor.leggings(), ItemModelGenerators.TRIM_PREFIX_LEGGINGS, Collections.emptyMap());
+            generateTrimmableItem(itemModels, material.armor.boots(), ItemModelGenerators.TRIM_PREFIX_BOOTS, Collections.emptyMap());
 
         }
         ToolsItems.vanillaPaxels().forEach(paxel -> handheld(itemModels, paxel, new Material(itemTexture(paxel))));
@@ -102,14 +104,15 @@ public class ToolsModelProvider extends BaseModelProvider {
     }
 
     /// Inlined and adapted from [net.minecraft.client.data.models.ItemModelGenerators#generateTrimmableItem], to take in custom base item texture
-    private void generateTrimmableItem(ItemModelGenerators itemModels, ItemRegistryObject<?> armorItem, ResourceKey<EquipmentAsset> equipmentAssetId, Identifier slotTrimPrefix) {
+    private void generateTrimmableItem(ItemModelGenerators itemModels, ItemRegistryObject<?> armorItem, Identifier slotTrimPrefix, Map<Palette, Palette> trimPaletteReplacements) {
         Material itemTexture = getTexture(armorItem);
         Identifier modelLocation = armorItem.getId().withPrefix("item/");
         List<SelectItemModel.SwitchCase<ResourceKey<TrimMaterial>>> cases = new ArrayList<>(ItemModelGenerators.TRIM_MATERIAL_MODELS.size());
 
         for (ItemModelGenerators.TrimMaterialData material : ItemModelGenerators.TRIM_MATERIAL_MODELS) {
-            Identifier trimModelLocation = modelLocation.withSuffix("_" + material.assets().base().suffix() + "_trim");
-            Material trimOverlayTexture = new Material(slotTrimPrefix.withSuffix("_" + material.assets().assetId(equipmentAssetId).suffix()));
+            Identifier trimModelLocation = modelLocation.withSuffix("_" + material.palette().suffix() + "_trim");
+            TrimMaterials.Palette palette = trimPaletteReplacements.getOrDefault(material.palette(), material.palette());
+            Material trimOverlayTexture = new Material(slotTrimPrefix.withSuffix("_" + palette.suffix()));
             itemModels.generateLayeredItem(trimModelLocation, itemTexture, trimOverlayTexture);
             ItemModel.Unbaked trimModel = ItemModelUtils.plainModel(trimModelLocation);
 
