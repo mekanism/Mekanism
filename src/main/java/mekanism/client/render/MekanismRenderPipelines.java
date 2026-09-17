@@ -36,23 +36,28 @@ public class MekanismRenderPipelines {
           .withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP)
           .build();
 
+    //TODO - 26.3: Double check we updated this from 26.2 properly
     public static final RenderPipeline MEKASUIT = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_LIGHT_DIR_SNIPPET)
           .withLocation(Mekanism.rl("pipeline/mekasuit"))
           .withVertexShader(Mekanism.rl("core/mekasuit"))
           .withFragmentShader(Mekanism.rl("core/mekasuit"))
-          .withBindGroupLayout(BindGroupLayouts.SAMPLER0_SAMPLER2)
+          .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
           .withVertexBinding(0, DefaultVertexFormat.ENTITY)
           .withPrimitiveTopology(PrimitiveTopology.QUADS)
           .withDepthStencilState(DepthStencilState.DEFAULT)
+          .withBindGroupLayout(BindGroupLayouts.LIGHTING)
+          .withBindGroupLayout(BindGroupLayouts.SAMPLER2)
           //The above is from ENTITY_SNIPPET, the below is from ENTITY_CUTOUT
           //Note: Don't limit the alpha of the passed tint, we skip using this if the tint is fully transparent anyway
           //.withShaderDefine("ALPHA_CUTOUT", 0.1F)
           .withShaderDefine("PER_FACE_LIGHTING")
           .withBindGroupLayout(BindGroupLayouts.SAMPLER1)
           .withCull(false)
+          .withColorTargetState(ColorTargetState.DEFAULT)
           .build();
 
     //Pipeline is from lightning
+    //TODO - 26.3: OIT_LIGHTNING ??
     public static final RenderPipeline SPS = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
           .withLocation(Mekanism.rl("pipeline/sps"))
           .withVertexShader(Mekanism.rl("core/sps"))
