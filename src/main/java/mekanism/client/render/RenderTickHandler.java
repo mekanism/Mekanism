@@ -306,50 +306,49 @@ public class RenderTickHandler {
         }
         profiler.pop();*/
 
+        boolean showingConfiguratorOverlay = false;
         ItemStack stack = player.getMainHandItem();
         if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
             //If we are not holding a configurator, look if we are in the offhand
             stack = player.getOffhandItem();
-            if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
-                return;
-            }
         }
-        boolean showingConfiguratorOverlay = false;
-        profiler.push(ProfilerConstants.CONFIGURABLE_MACHINE);
-        ItemConfigurator.ConfiguratorMode state = ((ItemConfigurator) stack.getItem()).getMode(stack);
-        if (blockState.is(MekanismBlocks.DIVERSION_TRANSPORTER)) {
-            TileEntityDiversionTransporter transporter = WorldUtils.getTileEntity(TileEntityDiversionTransporter.class, world, pos);
-            if (transporter != null) {
-                Direction face = transporter.getSideLookingAt(player, rayTraceResult.getDirection());
-                TextureAtlasSprite sprite = switch (transporter.getTransmitter().modes[face.ordinal()]) {
-                    case DISABLED -> MekanismRenderer.GUNPOWDER_SPRITE;
-                    case HIGH -> MekanismRenderer.REDSTONE_TORCH_SPRITE;
-                    case LOW -> MekanismRenderer.REDSTONE_TORCH_OFF_SPRITE;
-                };
-                if (sprite != null) {
-                    event.addCustomRenderer(new ConfiguratorOverlayHandler(pos, sprite, face));
+        if (stack.getItem() instanceof ItemConfigurator configurator) {
+            profiler.push(ProfilerConstants.CONFIGURABLE_MACHINE);
+            ItemConfigurator.ConfiguratorMode state = configurator.getMode(stack);
+            if (blockState.is(MekanismBlocks.DIVERSION_TRANSPORTER)) {
+                TileEntityDiversionTransporter transporter = WorldUtils.getTileEntity(TileEntityDiversionTransporter.class, world, pos);
+                if (transporter != null) {
+                    Direction face = transporter.getSideLookingAt(player, rayTraceResult.getDirection());
+                    TextureAtlasSprite sprite = switch (transporter.getTransmitter().modes[face.ordinal()]) {
+                        case DISABLED -> MekanismRenderer.GUNPOWDER_SPRITE;
+                        case HIGH -> MekanismRenderer.REDSTONE_TORCH_SPRITE;
+                        case LOW -> MekanismRenderer.REDSTONE_TORCH_OFF_SPRITE;
+                    };
+                    if (sprite != null) {
+                        event.addCustomRenderer(new ConfiguratorOverlayHandler(pos, sprite, face));
+                    }
                 }
-            }
-        } else if (state.isConfigurating()) {
-            TransmissionType type = Objects.requireNonNull(state.getTransmission(), "Configurating state requires transmission type");
-            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-            if (tile instanceof ISideConfiguration configurable) {
-                TileComponentConfig config = configurable.getConfig();
-                if (config.supports(type)) {
-                    Direction face = rayTraceResult.getDirection();
-                    ConfigInfo configInfo = config.getConfig(type);
-                    if (configInfo != null) {
-                        RelativeSide side = RelativeSide.fromDirections(configurable.getDirection(), face);
-                        if (configInfo.isSideEnabled(side)) {
-                            int transmissionColor = MekanismRenderer.getColorARGB(configInfo.getDataType(side).getColor(), 0.6F);
-                            event.addCustomRenderer(new ConfiguratorOverlayHandler(pos, type, face, transmissionColor));
-                            showingConfiguratorOverlay = true;
+            } else if (state.isConfigurating()) {
+                TransmissionType type = Objects.requireNonNull(state.getTransmission(), "Configurating state requires transmission type");
+                BlockEntity tile = WorldUtils.getTileEntity(world, pos);
+                if (tile instanceof ISideConfiguration configurable) {
+                    TileComponentConfig config = configurable.getConfig();
+                    if (config.supports(type)) {
+                        Direction face = rayTraceResult.getDirection();
+                        ConfigInfo configInfo = config.getConfig(type);
+                        if (configInfo != null) {
+                            RelativeSide side = RelativeSide.fromDirections(configurable.getDirection(), face);
+                            if (configInfo.isSideEnabled(side)) {
+                                int transmissionColor = MekanismRenderer.getColorARGB(configInfo.getDataType(side).getColor(), 0.6F);
+                                event.addCustomRenderer(new ConfiguratorOverlayHandler(pos, type, face, transmissionColor));
+                                showingConfiguratorOverlay = true;
+                            }
                         }
                     }
                 }
             }
+            profiler.pop();
         }
-        profiler.pop();
         if (!showingConfiguratorOverlay) {
             //Only do normal outline rendering if we aren't displaying the configurator overlay
             Outlines.onBlockHover(event, profiler);
