@@ -1,4 +1,4 @@
-// 26.3	2026-09-17T15:06:10.8657794	Tags: mekanism
+// 26.3	2026-09-18T16:29:44.5188929	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -276,6 +276,8 @@ b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/block/axolotls_spaw
 8702bbea19451a114725d603fecfd2359f3fcb5b data/minecraft/tags/block/beacon_base_blocks.json
 b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/block/camel_sand_step_sound_blocks.json
 77057c97184a9efc4bf336a1947832a6362b3761 data/minecraft/tags/block/cannot_support_snow_layer.json
+98c1fde17a9712192f509cd3c840a72fc2b687f7 data/minecraft/tags/block/cats_can_lie_on.json
+98c1fde17a9712192f509cd3c840a72fc2b687f7 data/minecraft/tags/block/cats_can_sit_on.json
 76c3b1172e0f737e9f67a7801456e83390a59a66 data/minecraft/tags/block/guarded_by_piglins.json
 6324664c1a0daf8a605a37765c2c09be7f0117eb data/minecraft/tags/block/hoglin_repellents.json
 82609011027adf63a2c28a29af5035bafcbca56e data/minecraft/tags/block/impermeable.json

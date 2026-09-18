@@ -63,10 +63,9 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     @Override
     protected void registerTags(HolderLookup.Provider registries) {
-        //TODO - 26.3: Make it so that cats sit/lay on cardboard boxes
         addProcessedResources();
         addBeaconTags();
-        addBoxBlacklist();
+        addCardboardBoxTags();
         addGear();
         addRods();
         addFuels();
@@ -255,7 +254,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         );
     }
 
-    private void addBoxBlacklist() {
+    private void addCardboardBoxTags() {
         getBuilder(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(
               //Don't allow other transmitters that have a buffer due to dupe bugs
               //TODO: Maybe some better way of doing this can be thought of? But there isn't a great way to make it so transmitters push their contents
@@ -279,6 +278,9 @@ public class MekanismTagProvider extends BaseTagProvider {
               //Don't allow cardboard boxes to pick up other cardboard boxes
               .add(MekanismBlocks.CARDBOARD_BOX)
               .add(BlockItemIds.TRIAL_SPAWNER.block(), BlockItemIds.VAULT.block());
+
+        getBuilder(BlockTags.CATS_CAN_SIT_ON).add(MekanismBlocks.CARDBOARD_BOX);
+        getBuilder(BlockTags.CATS_CAN_LIE_ON).add(MekanismBlocks.CARDBOARD_BOX);
     }
 
     private void addGear() {
