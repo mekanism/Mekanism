@@ -324,7 +324,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             for (ValueInput coilInput : coilsInput) {
                 Optional<BlockPos> pos = coilInput.read(SerializationConstants.POSITION, BlockPos.CODEC);
                 if (pos.isPresent()) {
-                    Direction side = Direction.from3DDataValue(coilInput.getIntOr(SerializationConstants.SIDE, 0));
+                    Direction side = coilInput.read(SerializationConstants.SIDE, Direction.CODEC).orElse(Direction.DOWN);
                     CoilData data = new CoilData(pos.get(), side);
                     data.prevLevel = coilInput.getIntOr(SerializationConstants.LEVEL, data.prevLevel);
                     coilMap.put(data.coilPos, data);
