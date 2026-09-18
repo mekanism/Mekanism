@@ -107,7 +107,7 @@
 			"name": "torch",
 			"from": [7, 5, 7],
 			"to": [9, 11, 9],
-			"shade": false,
+			"shade_direction_override": "up",
 			"faces": {
 				"north": {"uv": [7, 6, 9, 12], "texture": "#1"},
 				"east": {"uv": [7, 6, 9, 12], "texture": "#1"},

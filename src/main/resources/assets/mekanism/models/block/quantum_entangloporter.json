@@ -529,7 +529,7 @@
 					"name": "core_led",
 					"from": [5.5, 5.5, 5.5],
 					"to": [10.5, 10.5, 10.5],
-					"shade": false,
+					"shade_direction_override": "up",
 					"faces": {
 						"north": {"uv": [15, 15, 16, 16], "texture": "#0"},
 						"east": {"uv": [15, 15, 16, 16], "texture": "#0"},

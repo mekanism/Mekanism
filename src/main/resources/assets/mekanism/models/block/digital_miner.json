@@ -670,7 +670,7 @@
 			"name": "led1",
 			"from": [17, 16.5, -12.005],
 			"to": [18, 17.5, -11.005],
-			"shade": false,
+			"shade_direction_override": "up",
 			"faces": {
 				"north": {"uv": [2, 0, 3, 1], "texture": "#5"},
 				"east": {"uv": [2, 0, 3, 1], "texture": "#5"},
@@ -683,7 +683,7 @@
 			"name": "led2",
 			"from": [2, 16.5, -12.005],
 			"to": [3, 17.5, -11.005],
-			"shade": false,
+			"shade_direction_override": "up",
 			"faces": {
 				"north": {"uv": [2, 0, 3, 1], "texture": "#5"},
 				"east": {"uv": [2, 0, 3, 1], "texture": "#5"},
@@ -696,7 +696,7 @@
 			"name": "led3",
 			"from": [-13, 16.5, -12.005],
 			"to": [-12, 17.5, -11.005],
-			"shade": false,
+			"shade_direction_override": "up",
 			"faces": {
 				"north": {"uv": [2, 0, 3, 1], "texture": "#5"},
 				"east": {"uv": [2, 0, 3, 1], "texture": "#5"},

@@ -280,7 +280,7 @@
 			"name": "bulb1",
 			"from": [11.5, 7.5, 8],
 			"to": [12.5, 8.5, 9],
-			"shade": false,
+			"shade_direction_override": "up",
 			"faces": {
 				"north": {"uv": [2, 0, 3, 1], "texture": "#leds"},
 				"east": {"uv": [2, 0, 3, 1], "texture": "#leds"},
@@ -293,7 +293,7 @@
 			"name": "bulb2",
 			"from": [3.5, 7.5, 8],
 			"to": [4.5, 8.5, 9],
-			"shade": false,
+			"shade_direction_override": "up",
 			"faces": {
 				"north": {"uv": [2, 0, 3, 1], "texture": "#leds"},
 				"south": {"uv": [2, 0, 3, 1], "texture": "#leds"},
@@ -306,7 +306,7 @@
 			"name": "bulb3",
 			"from": [3.5, 7.5, 6],
 			"to": [4.5, 8.5, 7],
-			"shade": false,
+			"shade_direction_override": "up",
 			"faces": {
 				"north": {"uv": [2, 0, 3, 1], "texture": "#leds"},
 				"south": {"uv": [2, 0, 3, 1], "texture": "#leds"},
@@ -319,7 +319,7 @@
 			"name": "bulb4",
 			"from": [11.5, 7.5, 6],
 			"to": [12.5, 8.5, 7],
-			"shade": false,
+			"shade_direction_override": "up",
 			"faces": {
 				"north": {"uv": [2, 0, 3, 1], "texture": "#leds"},
 				"east": {"uv": [2, 0, 3, 1], "texture": "#leds"},
