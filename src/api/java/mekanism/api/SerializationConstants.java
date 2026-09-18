@@ -36,6 +36,8 @@ public final class SerializationConstants {
 
     //Recipes
     public static final String TYPE = "type";
+    /// @since 10.8.0
+    public static final String TYPE_DISPLAY = "typeDisplay";
     public static final String ENERGY_MULTIPLIER = "energy_multiplier";
     public static final String ENERGY_REQUIRED = "energy_required";
     public static final String DURATION = "duration";

@@ -1,22 +1,16 @@
 package mekanism.common;
 
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
-import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
-import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.resource.PrimaryResource;
 import mekanism.common.util.ChemicalUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
@@ -51,11 +45,6 @@ public class MekanismDataMapsProvider extends DataMapProvider {
         ;
 
         gatherSupportedUnits();
-
-        Builder<ChemicalSolidTag, Chemical> chemicalSolidTagBuilder = builder(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
-        for (Map.Entry<PrimaryResource, CleanDirtySlurryId> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
-            chemicalSolidTagBuilder.add(entry.getValue().clean(), new ChemicalSolidTag(entry.getKey().getOreTag()), false);
-        }
 
         builder(IMekanismDataMapTypes.INSTANCE.chemicalFuel())
               //GENERAL_ENERGY_CONVERSION_HYDROGEN("general.energy_conversion.hydrogen", "Hydrogen Energy Density",

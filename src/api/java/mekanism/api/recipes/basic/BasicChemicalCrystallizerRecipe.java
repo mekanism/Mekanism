@@ -20,12 +20,14 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
 
     protected final ChemicalStackIngredient input;
     protected final ItemStackTemplate output;
+    protected final SlotDisplay typeDisplay;
 
     /// @param input  Input.
     /// @param output Output.
-    public BasicChemicalCrystallizerRecipe(ChemicalStackIngredient input, ItemStackTemplate output) {
+    public BasicChemicalCrystallizerRecipe(ChemicalStackIngredient input, SlotDisplay typeDisplay, ItemStackTemplate output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
+        this.typeDisplay = Objects.requireNonNull(typeDisplay, "Type display cannot be null, to not have a type display pass empty.");
     }
 
     @Override
@@ -57,6 +59,11 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
     }
 
     @Override
+    public SlotDisplay getTypeDisplay() {
+        return typeDisplay;
+    }
+
+    @Override
     public RecipeSerializer<BasicChemicalCrystallizerRecipe> getSerializer() {
         return MekanismRecipeSerializers.CRYSTALLIZING.get();
     }
@@ -69,13 +76,14 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
             return false;
         }
         BasicChemicalCrystallizerRecipe other = (BasicChemicalCrystallizerRecipe) o;
-        return input.equals(other.input) && output.equals(other.output);
+        return input.equals(other.input) && output.equals(other.output) && typeDisplay.equals(other.typeDisplay);
     }
 
     @Override
     public int hashCode() {
         int hash = input.hashCode();
         hash = 31 * hash + output.hashCode();
+        hash = 31 * hash + typeDisplay.hashCode();
         return hash;
     }
 }

@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
-import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
@@ -75,11 +74,6 @@ public interface ChemicalInstance extends TypedInstance<Chemical>, IHasTranslati
     @Nullable
     default HeatedCoolant getHeatedCoolant(@Nullable RegistryAccess registryAccess) {
         return getData(registryAccess, IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
-    }
-
-    @Nullable
-    default ChemicalSolidTag getSolidTag(@Nullable RegistryAccess registryAccess) {
-        return getData(registryAccess, IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
     }
 
     @Nullable

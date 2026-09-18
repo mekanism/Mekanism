@@ -6,5 +6,9 @@
   },
   "output": {
     "id": "mekanism:crystal_lead"
+  },
+  "typeDisplay": {
+    "type": "minecraft:tag",
+    "tag": "#c:ores/lead"
   }
 }

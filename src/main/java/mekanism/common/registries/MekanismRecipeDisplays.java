@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.SerializationConstants;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.display.CombiningRecipeDisplay;
+import mekanism.api.recipes.display.CrystallizerRecipeDisplay;
 import mekanism.api.recipes.display.MixingRecipeDisplay;
 import mekanism.api.recipes.display.NucleosynthesizingRecipeDisplay;
 import mekanism.api.recipes.display.PerTickCombiningRecipeDisplay;
@@ -38,6 +39,21 @@ public class MekanismRecipeDisplays extends MekanismRecipeSerializers {
                 SlotDisplay.STREAM_CODEC, RecipeDisplay::result,
                 SlotDisplay.STREAM_CODEC, RecipeDisplay::craftingStation,
                 SimpleMachineRecipeDisplay::new
+          )
+    ));
+    public static final DeferredHolder<RecipeDisplay.Type<?>, RecipeDisplay.Type<CrystallizerRecipeDisplay>> CRYSTALLIZER = RECIPE_DISPLAY_TYPE.register("crystallizer", () -> new RecipeDisplay.Type<>(
+          RecordCodecBuilder.mapCodec(i -> i.group(
+                SlotDisplay.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(CrystallizerRecipeDisplay::input),
+                SlotDisplay.CODEC.optionalFieldOf(SerializationConstants.TYPE_DISPLAY, SlotDisplay.Empty.INSTANCE).forGetter(CrystallizerRecipeDisplay::typeDisplay),
+                SlotDisplay.CODEC.fieldOf(SerializationConstants.RESULT).forGetter(RecipeDisplay::result),
+                SlotDisplay.CODEC.fieldOf(SerializationConstants.CRAFTING_STATION).forGetter(RecipeDisplay::craftingStation)
+          ).apply(i, CrystallizerRecipeDisplay::new)),
+          StreamCodec.composite(
+                SlotDisplay.STREAM_CODEC, CrystallizerRecipeDisplay::input,
+                SlotDisplay.STREAM_CODEC, CrystallizerRecipeDisplay::typeDisplay,
+                SlotDisplay.STREAM_CODEC, RecipeDisplay::result,
+                SlotDisplay.STREAM_CODEC, RecipeDisplay::craftingStation,
+                CrystallizerRecipeDisplay::new
           )
     ));
     public static final DeferredHolder<RecipeDisplay.Type<?>, RecipeDisplay.Type<MixingRecipeDisplay>> MIXING = RECIPE_DISPLAY_TYPE.register("mixing", () -> new RecipeDisplay.Type<>(

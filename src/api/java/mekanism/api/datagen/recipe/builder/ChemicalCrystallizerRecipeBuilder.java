@@ -9,15 +9,18 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<ChemicalCrystallizerRecipeBuilder> {
 
     private final ChemicalStackIngredient input;
     private final ItemStackTemplate output;
+    private final SlotDisplay typeDisplay;
 
-    protected ChemicalCrystallizerRecipeBuilder(ChemicalStackIngredient input, ItemStackTemplate output) {
+    protected ChemicalCrystallizerRecipeBuilder(ChemicalStackIngredient input, SlotDisplay typeDisplay, ItemStackTemplate output) {
         this.input = input;
         this.output = output;
+        this.typeDisplay = typeDisplay;
     }
 
     @Override
@@ -30,12 +33,24 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
     /// @param input  Input.
     /// @param output Output.
     public static ChemicalCrystallizerRecipeBuilder crystallizing(ChemicalStackIngredient input, ItemStackTemplate output) {
-        return new ChemicalCrystallizerRecipeBuilder(input, output);
+        return crystallizing(input, SlotDisplay.Empty.INSTANCE, output);
+    }
+
+    /// Creates a Chemical Crystallizing recipe builder.
+    ///
+    /// @param input       Input.
+    /// @param typeDisplay Extra items that should be displayed in the UI to convey the type of crystallization
+    /// @param output      Output.
+    ///
+    /// @since 10.8.0
+
+    public static ChemicalCrystallizerRecipeBuilder crystallizing(ChemicalStackIngredient input, SlotDisplay typeDisplay, ItemStackTemplate output) {
+        return new ChemicalCrystallizerRecipeBuilder(input, typeDisplay, output);
     }
 
     @Override
     protected ChemicalCrystallizerRecipe asRecipe() {
-        return new BasicChemicalCrystallizerRecipe(input, output);
+        return new BasicChemicalCrystallizerRecipe(input, typeDisplay, output);
     }
 
     /// Builds this recipe using the output item's name as the recipe name.

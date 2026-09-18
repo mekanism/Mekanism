@@ -6,5 +6,9 @@
   },
   "output": {
     "id": "mekanism:crystal_osmium"
+  },
+  "typeDisplay": {
+    "type": "minecraft:tag",
+    "tag": "#c:ores/osmium"
   }
 }

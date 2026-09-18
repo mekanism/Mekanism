@@ -11,6 +11,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -38,7 +39,8 @@ public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<Sin
     /// @param input  [ChemicalStackIngredient] representing the input of the recipe.
     /// @param output [IItemStack] representing the output of the recipe. Will be validated as not empty.
     public final BasicChemicalCrystallizerRecipe makeRecipe(ChemicalStackIngredient input, IItemStack output) {
-        return new BasicChemicalCrystallizerRecipe(input, getAndValidateNotEmpty(output));
+        //TODO - CrT: Allow specifying a slot display?
+        return new BasicChemicalCrystallizerRecipe(input, SlotDisplay.Empty.INSTANCE, getAndValidateNotEmpty(output));
     }
 
     @Override

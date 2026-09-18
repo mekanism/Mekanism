@@ -42,6 +42,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.display.SlotDisplay.TagSlotDisplay;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
@@ -262,8 +263,11 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
               true
         ).save(consumer, Mekanism.rl(basePath + "shard/from_crystal"));
         // Crystal from Clean Slurry
-        ChemicalCrystallizerRecipeBuilder.crystallizing(IngredientCreatorAccess.chemicalStack().from(chemicals, slurry.clean(), 200), new ItemStackTemplate(crystal))
-              .save(consumer, Mekanism.rl(basePath + "crystal/from_slurry"));
+        ChemicalCrystallizerRecipeBuilder.crystallizing(
+              IngredientCreatorAccess.chemicalStack().from(chemicals, slurry.clean(), 200),
+              new TagSlotDisplay(this.items.getOrThrow(oreTag)),
+              new ItemStackTemplate(crystal)
+        ).save(consumer, Mekanism.rl(basePath + "crystal/from_slurry"));
         // Clean Slurry from Dirty Slurry
         FluidChemicalToChemicalRecipeBuilder.washing(
               IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 5),

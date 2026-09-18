@@ -6,7 +6,6 @@ import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
-import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
@@ -36,9 +35,6 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
     private static final AdvancedDataMapType<Item, HolderSet<ModuleData<?>>, DataMapHolderSetRemover<Item, ModuleData<?>>> SUPPORTED_MODULES = REGISTER.registerSyncedHolderSet(
           Mekanism.rl("supported_modules"), Registries.ITEM, MekanismRegistries.Keys.MODULES, MekanismRegistries.MODULES.holderByNameCodec());
 
-    private static final DataMapType<Chemical, ChemicalSolidTag> CHEMICAL_SOLID_TAG = REGISTER.registerSynced(ChemicalSolidTag.ID, MekanismRegistries.Keys.CHEMICAL,
-          ChemicalSolidTag.CODEC, ChemicalSolidTag.SOLID_TAG_CODEC);
-
     //Chemical Attributes
     private static final DataMapType<Chemical, ChemicalFuel> CHEMICAL_FUEL = REGISTER.registerSimpleSynced(ChemicalFuel.ID, MekanismRegistries.Keys.CHEMICAL, ChemicalFuel.CODEC);
     private static final DataMapType<Chemical, ChemicalRadioactivity> CHEMICAL_RADIOACTIVITY = REGISTER.registerSynced(ChemicalRadioactivity.ID, MekanismRegistries.Keys.CHEMICAL,
@@ -61,11 +57,6 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
     @Override
     public AdvancedDataMapType<Item, HolderSet<ModuleData<?>>, DataMapHolderSetRemover<Item, ModuleData<?>>> supportedModules() {
         return SUPPORTED_MODULES;
-    }
-
-    @Override
-    public DataMapType<Chemical, ChemicalSolidTag> chemicalSolidTag() {
-        return CHEMICAL_SOLID_TAG;
     }
 
     @Override

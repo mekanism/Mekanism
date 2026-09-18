@@ -3,7 +3,6 @@ package mekanism.api.datamaps;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
@@ -74,14 +73,6 @@ public interface IMekanismDataMapTypes {
     /// @implNote This data map is synced to the client.
     /// @since 10.8.0
     AdvancedDataMapType<Item, HolderSet<ModuleData<?>>, DataMapHolderSetRemover<Item, ModuleData<?>>> supportedModules();
-
-    /// The [Chemical][Chemical] data map that defines how radioactive a chemical is.
-    ///
-    /// The location of this data map is `mekanism/data_maps/mekanism/chemical/chemical_solid_tag.json`, and the values are objects with 1 field:
-    /// - `representation`, an item tag key - the item representations of a chemical for display in a chemical crystallizer
-    ///
-    /// The use of a tag key as the value is also possible, though discouraged in case more options are added in the future.
-    DataMapType<Chemical, ChemicalSolidTag> chemicalSolidTag();
 
     /// The [Chemical][Chemical] data map that defines fuel properties of a chemical.
     ///

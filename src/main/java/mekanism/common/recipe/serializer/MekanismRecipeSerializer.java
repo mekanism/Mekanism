@@ -15,6 +15,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.CombinerRecipe;
@@ -52,6 +53,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
 public class MekanismRecipeSerializer {
@@ -71,12 +73,14 @@ public class MekanismRecipeSerializer {
         ));
     }
 
-    public static RecipeSerializer<BasicChemicalCrystallizerRecipe> crystallizing(BiFunction<ChemicalStackIngredient, ItemStackTemplate, BasicChemicalCrystallizerRecipe> factory) {
+    public static RecipeSerializer<BasicChemicalCrystallizerRecipe> crystallizing(Function3<ChemicalStackIngredient, SlotDisplay, ItemStackTemplate, BasicChemicalCrystallizerRecipe> factory) {
         return new RecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
-              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.INPUT).forGetter(BasicChemicalCrystallizerRecipe::getInput),
+              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.INPUT).forGetter(ChemicalCrystallizerRecipe::getInput),
+              SlotDisplay.CODEC.optionalFieldOf(SerializationConstants.TYPE_DISPLAY, SlotDisplay.Empty.INSTANCE).forGetter(ChemicalCrystallizerRecipe::getTypeDisplay),
               ItemStackTemplate.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicChemicalCrystallizerRecipe::getOutputRaw)
         ).apply(instance, factory)), StreamCodec.composite(
-              IngredientCreatorAccess.chemicalStack().streamCodec(), BasicChemicalCrystallizerRecipe::getInput,
+              IngredientCreatorAccess.chemicalStack().streamCodec(), ChemicalCrystallizerRecipe::getInput,
+              SlotDisplay.STREAM_CODEC, ChemicalCrystallizerRecipe::getTypeDisplay,
               ItemStackTemplate.STREAM_CODEC, BasicChemicalCrystallizerRecipe::getOutputRaw,
               factory
         ));

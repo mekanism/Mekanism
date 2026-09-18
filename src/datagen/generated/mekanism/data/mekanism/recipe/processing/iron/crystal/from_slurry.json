@@ -6,5 +6,9 @@
   },
   "output": {
     "id": "mekanism:crystal_iron"
+  },
+  "typeDisplay": {
+    "type": "minecraft:tag",
+    "tag": "#c:ores/iron"
   }
 }

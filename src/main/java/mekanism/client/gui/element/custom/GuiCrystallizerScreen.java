@@ -2,9 +2,7 @@ package mekanism.client.gui.element.custom;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
@@ -13,13 +11,9 @@ import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
-import net.minecraft.core.HolderSet.Named;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
-import net.minecraft.world.item.crafting.display.SlotDisplay.TagSlotDisplay;
 import org.jspecify.annotations.Nullable;
 
 public class GuiCrystallizerScreen extends GuiInnerScreen {
@@ -29,7 +23,6 @@ public class GuiCrystallizerScreen extends GuiInnerScreen {
     private final IOreInfo oreInfo;
     private final GuiSlot slot;
 
-    private SlotDisplay iterStacks = SlotDisplay.Empty.INSTANCE;
     private ChemicalResource prevSlurry = ChemicalResource.EMPTY;
 
     public GuiCrystallizerScreen(IGuiWrapper gui, int x, int y, int width, int height, IOreInfo oreInfo) {
@@ -38,7 +31,7 @@ public class GuiCrystallizerScreen extends GuiInnerScreen {
         int slotX = relativeX + this.width - 18;
         this.slot = addChild(new GuiSlot(SlotType.DARK, gui, slotX, relativeY));
         if (this.oreInfo.usesSequencedDisplay()) {
-            this.slotDisplay = addChild(new GuiSequencedSlotDisplay(gui, slotX + 1, relativeY + 1, () -> this.iterStacks));
+            this.slotDisplay = addChild(new GuiSequencedSlotDisplay(gui, slotX + 1, relativeY + 1, this.oreInfo::slotDisplay));
             updateSlotContents();
         } else {
             this.slotDisplay = null;
@@ -63,26 +56,8 @@ public class GuiCrystallizerScreen extends GuiInnerScreen {
     private void updateSlotContents() {
         if (slotDisplay != null) {
             ChemicalResource chemical = oreInfo.getInputChemical();
-            if (!chemical.isEmpty()) {
-                if (!chemical.equals(prevSlurry)) {
-                    prevSlurry = chemical;
-                    iterStacks = SlotDisplay.Empty.INSTANCE;
-                    if (!prevSlurry.isEmpty()) {
-                        RegistryAccess registryAccess = gui().registryAccess();
-                        ChemicalSolidTag tag = prevSlurry.getSolidTag(registryAccess);
-                        if (tag != null) {
-                            Optional<Named<Item>> holder = registryAccess.get(tag.solidRepresentation());
-                            //noinspection OptionalIsPresent
-                            if (holder.isPresent()) {
-                                iterStacks = new TagSlotDisplay(holder.get());
-                            }
-                        }
-                    }
-                    slotDisplay.updateStackList();
-                }
-            } else if (!prevSlurry.isEmpty()) {
-                prevSlurry = ChemicalResource.EMPTY;
-                iterStacks = SlotDisplay.Empty.INSTANCE;
+            if (!prevSlurry.equals(chemical)) {
+                prevSlurry = chemical;
                 slotDisplay.updateStackList();
             }
         }
@@ -93,8 +68,7 @@ public class GuiCrystallizerScreen extends GuiInnerScreen {
         ChemicalResource chemical = oreInfo.getInputChemical();
         if (!chemical.isEmpty()) {
             Component recipeComponent;
-            //Note: If we use the sequenced display, slotDisplay should never be null
-            ItemStack renderStack = oreInfo.usesSequencedDisplay() && slotDisplay != null ? slotDisplay.getRenderStack() : oreInfo.getRenderStack();
+            ItemStack renderStack = slotDisplay == null ? oreInfo.getRenderStack() : slotDisplay.getRenderStack();
             if (!renderStack.isEmpty()) {
                 recipeComponent = MekanismLang.GENERIC_PARENTHESIS.translate(renderStack);
             } else {
@@ -131,6 +105,11 @@ public class GuiCrystallizerScreen extends GuiInnerScreen {
 
         default boolean usesSequencedDisplay() {
             return true;
+        }
+
+        default SlotDisplay slotDisplay() {
+            ChemicalCrystallizerRecipe recipe = getRecipe();
+            return recipe == null ? SlotDisplay.Empty.INSTANCE : recipe.getTypeDisplay();
         }
     }
 }

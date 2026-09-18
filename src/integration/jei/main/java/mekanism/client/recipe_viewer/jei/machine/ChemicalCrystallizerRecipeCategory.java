@@ -15,7 +15,6 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.recipe.display.slot.ChemicalSolidTagSlotDisplay;
 import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -74,7 +73,7 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
         ChemicalStackIngredient input = recipe.getInput();
         initChemical(builder, RecipeIngredientRole.INPUT, gauge, input.display())
               .setSlotName(CHEMICAL_INPUT);
-        initItem(builder, RecipeIngredientRole.RENDER_ONLY, screen.getSlotX(), screen.getSlotY(), new ChemicalSolidTagSlotDisplay(input.display()))
+        initItem(builder, RecipeIngredientRole.RENDER_ONLY, screen.getSlotX(), screen.getSlotY(), recipe.getTypeDisplay())
               .setSlotName(DISPLAYED_ITEM);
     }
 
