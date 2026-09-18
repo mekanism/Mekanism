@@ -62,7 +62,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     /// accurate of checks that get done against this as there is no way to tell if the state actually changed or if the block changed entirely, but assuming no one is
     /// replacing the blocks inside a multiblock (which is unsupported) it will handle it fine, and we can easily special-case it becoming air as having been "broken"
     public Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
-    public Map<BlockPos, ValveData> valves = new HashMap<>();
+    public Map<BlockPos, ValveData> valves = new HashMap<>();//TODO - 26.3: When rendering all these entries, are they always active? (when not empty) Should they be?
 
     @ContainerSync(getter = "getVolume", setter = "setVolume")
     private int volume;
