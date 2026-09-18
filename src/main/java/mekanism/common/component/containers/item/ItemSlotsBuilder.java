@@ -2,13 +2,16 @@ package mekanism.common.component.containers.item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.component.FilterAware;
 import mekanism.common.component.containers.ContainsRecipe;
 import mekanism.common.component.containers.creator.BaseContainerCreator;
@@ -17,7 +20,6 @@ import mekanism.common.component.containers.resource.AttachedResources;
 import mekanism.common.component.containers.resource.ResourceContainersBuilder.BaseContainerBuilder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.ResourceContainerType;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.slot.BasicInventorySlot;
@@ -34,6 +36,7 @@ import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
@@ -52,11 +55,8 @@ public class ItemSlotsBuilder {
           new ComponentBackedInventorySlot(attachedAccess, containerIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.internalOnly(), ConstantPredicates.alwaysTrue());
 
     //Copy of predicates from FuelInventorySlot
-    //TODO - 26.3: this now needs world access. Does it really matter as it's only used on the Fuelwood heater's item inv, which we don't expose?
-    /*private static final BiPredicate<ItemResource, AutomationType> FUEL_CAN_EXTRACT = (itemType, automationType) -> !automationType.isExternal() || itemType.toStack().getBurnTime(null) == 0;
-    private static final BiPredicate<ItemResource, AutomationType> FUEL_CAN_INSERT = (itemType, automationType) -> automationType.isInternal() || itemType.toStack().getBurnTime(null) != 0;
-    private static final IBasicContainerCreator<IInventorySlot> FUEL_SLOT_CREATOR = (attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess,
-          containerIndex, FUEL_CAN_EXTRACT, FUEL_CAN_INSERT, ConstantPredicates.alwaysTrue());*/
+    private static final BiPredicate<ItemResource, AutomationType> FUEL_CAN_EXTRACT = (itemType, automationType) -> !automationType.isExternal() || !itemType.has(DataComponents.COOKING_FUEL);
+    private static final BiPredicate<ItemResource, AutomationType> FUEL_CAN_INSERT = (itemType, automationType) -> automationType.isInternal() || itemType.has(DataComponents.COOKING_FUEL);
 
     //Security Inventory Slot
     private static final IBasicContainerCreator<IInventorySlot> SECURITY_LOCK_SLOT_CREATOR = (attachedAccess, containerIndex) ->
@@ -203,9 +203,10 @@ public class ItemSlotsBuilder {
         return this;
     }
 
-    /*public ItemSlotsBuilder addFuelSlot() {
-        return addSlot(FUEL_SLOT_CREATOR);
-    }*/
+    public ItemSlotsBuilder addFuelSlot() {
+        return addSlot((attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess,
+              containerIndex, FUEL_CAN_EXTRACT, FUEL_CAN_INSERT, ConstantPredicates.alwaysTrue()));
+    }
 
     public ItemSlotsBuilder addOredictionificatorInput() {
         return addSlot((attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(),

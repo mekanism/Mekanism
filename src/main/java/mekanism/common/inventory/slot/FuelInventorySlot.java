@@ -1,15 +1,14 @@
 package mekanism.common.inventory.slot;
 
-import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -20,10 +19,10 @@ import org.jspecify.annotations.Nullable;
 
 public class FuelInventorySlot extends BasicInventorySlot {
 
-    public static FuelInventorySlot forFuel(ToIntFunction<ItemResource> fuelValue, @Nullable IContentsListener listener, int x, int y) {
-        Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
-        return new FuelInventorySlot((itemType, automationType) -> !automationType.isExternal() || fuelValue.applyAsInt(itemType) == 0,
-              (itemType, automationType) -> automationType.isInternal() || fuelValue.applyAsInt(itemType) != 0, ConstantPredicates.alwaysTrue(), null, null, listener, x, y);
+    public static FuelInventorySlot forFuel(@Nullable IContentsListener listener, int x, int y) {
+        return new FuelInventorySlot((itemType, automationType) -> !automationType.isExternal() || !itemType.has(DataComponents.COOKING_FUEL),
+              (itemType, automationType) -> automationType.isInternal() || itemType.has(DataComponents.COOKING_FUEL),
+              ConstantPredicates.alwaysTrue(), null, null, listener, x, y);
     }
 
     private FuelInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator,

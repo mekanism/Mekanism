@@ -83,7 +83,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.drainContainerIntoSlot(null);
-        fuelSlot.fillOrBurn(null);
+        fuelSlot.fillOrBurn(level, this, null);
         boolean isActive = false;
         if (canFunction() && !bioFuelTank.isEmpty()) {
             try (Transaction transaction = Transaction.openRoot()) {

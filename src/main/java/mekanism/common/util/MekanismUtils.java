@@ -59,6 +59,8 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.SlotProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -123,6 +125,13 @@ public final class MekanismUtils {
             level = server == null ? null : server.overworld();
         }
         return level == null ? 0 : level.getGameTime();
+    };
+    private static final SlotProvider EMPTY_SLOT_PROVIDER = new SlotProvider() {
+
+        @Override
+        public @Nullable SlotAccess getSlot(int slot) {
+            return null;
+        }
     };
 
     private static final Set<UUID> warnedFails = new HashSet<>();
@@ -457,17 +466,11 @@ public final class MekanismUtils {
         return false;
     }
 
-    public static int getBurnTime(BlockEntity blockEntity, ItemResource fuelType) {
-        Level level = blockEntity.getLevel();
-        if (level == null || level.isClientSide()) {
-            //TODO - 26.3: Figure out how to return a result for client side?
-            return 0;
-        }
-        return getBurnTime((ServerLevel) level, blockEntity, fuelType);
+    public static int getBurnTime(ServerLevel level, BlockEntity blockEntity, ItemResource fuelType) {
+        return getBurnTime(level, blockEntity, fuelType.toStack());
     }
 
-    public static int getBurnTime(ServerLevel level, BlockEntity blockEntity, ItemResource fuelType) {
-        ItemStack fuelItem = fuelType.toStack();
+    public static int getBurnTime(ServerLevel level, BlockEntity blockEntity, ItemStack fuelItem) {
         return ResolvableInt.getFromItem(fuelItem, DataComponents.COOKING_FUEL, CookingFuel::burnTime, getLootContext(level, blockEntity, fuelItem), 0);
     }
 
@@ -477,8 +480,8 @@ public final class MekanismUtils {
               .withParameter(LootContextParams.BLOCK_STATE, blockEntity.getBlockState())
               .withParameter(LootContextParams.BLOCK_ENTITY, blockEntity)
               .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockEntity.getBlockPos()))
-              //TODO - 26.3: How important is this context for cooking fuel time
-              //.withParameter(LootContextParams.CONTAINER, blockEntity)
+              //TODO - 26.3: How important is this context for cooking fuel time in terms of actually returning a furnace like container?
+              .withParameter(LootContextParams.CONTAINER, EMPTY_SLOT_PROVIDER)
               .withOptionalParameter(NeoForgeLootContextParams.QUERIED_STACK, queriedStack.isEmpty() ? null : queriedStack)
               .create(LootContextParamSets.CONTAINER_PROCESS)
         ).create(Optional.empty());

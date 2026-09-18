@@ -1,10 +1,13 @@
 package mekanism.common.resource;
 
+import mekanism.common.registries.MekanismContextIntProviders;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
 import org.jspecify.annotations.Nullable;
 
 public enum BlockResourceInfo implements IResource {
@@ -16,7 +19,12 @@ public enum BlockResourceInfo implements IResource {
     RAW_LEAD("raw_lead", 5, 9, MapColor.COLOR_LIGHT_GRAY, NoteBlockInstrument.BASEDRUM),
     URANIUM("uranium", 5, 9, MapColor.GRASS),
     RAW_URANIUM("raw_uranium", 5, 9, MapColor.GRASS, NoteBlockInstrument.BASEDRUM),
-    CHARCOAL("charcoal", 5, 6, MapColor.COLOR_BLACK, NoteBlockInstrument.BASEDRUM),
+    CHARCOAL("charcoal", 5, 6, MapColor.COLOR_BLACK, NoteBlockInstrument.BASEDRUM) {
+        @Override
+        public ResourceKey<ContextIntProvider> cookingTime() {
+            return MekanismContextIntProviders.COOKING_TIME_CHARCOAL_BLOCK;
+        }
+    },
     FLUORITE("fluorite", 5, 9, MapColor.SNOW),
     BRONZE("bronze", 5, 9, MapColor.COLOR_ORANGE),
     //Note: Deepslate is closer to steel than stone or metal
@@ -66,6 +74,11 @@ public enum BlockResourceInfo implements IResource {
 
     public boolean burnsInFire() {
         return burnsInFire;
+    }
+
+    @Nullable
+    public ResourceKey<ContextIntProvider> cookingTime() {
+        return null;
     }
 
     public MapColor getMapColor() {

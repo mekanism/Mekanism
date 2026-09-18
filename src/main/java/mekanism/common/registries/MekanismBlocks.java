@@ -180,6 +180,7 @@ import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.BlockItem;
@@ -192,6 +193,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
@@ -780,7 +782,7 @@ public class MekanismBlocks {
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.HEAT, () -> HeatCapacitorBuilder.basicCreator(
                             TileEntityFuelwoodHeater.HEAT_CAPACITY, TileEntityFuelwoodHeater.INVERSE_CONDUCTION_COEFFICIENT, TileEntityFuelwoodHeater.INVERSE_INSULATION_COEFFICIENT
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addBasic(1).build())
+                      )).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addFuelSlot().build())
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>, ItemBlockTooltip<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>>> MODIFICATION_STATION =
           BLOCKS.registerDetails("modification_station", properties -> new BlockTileModel<>(MekanismBlockTypes.MODIFICATION_STATION, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
@@ -986,9 +988,9 @@ public class MekanismBlocks {
             if (!block.getResourceInfo().burnsInFire()) {
                 properties = properties.fireResistant();
             }
-            if (resource == BlockResourceInfo.CHARCOAL) {
-                //TODO - 26.3: Figure out a better way to do this
-                properties = properties.cookingFuel(MekanismContextIntProviders.COOKING_TIME_CHARCOAL_BLOCK);
+            ResourceKey<ContextIntProvider> cookingTime = block.getResourceInfo().cookingTime();
+            if (cookingTime != null) {
+                properties = properties.cookingFuel(cookingTime);
             }
             return new ItemBlockMekanism<>(block, properties);
         });

@@ -2,6 +2,7 @@ package mekanism.generators.common.slot;
 
 import java.util.Objects;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -14,6 +15,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -26,11 +29,19 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
 
     private static final ResourceKey<Fluid> EMPTY_KEY = ResourceKey.create(Registries.FLUID, Identifier.withDefaultNamespace("empty"));
 
-    public static FluidFuelInventorySlot forFuel(IFluidTank fluidTank, ToIntFunction<ItemResource> fuelValue,
-          Holder<Fluid> fuelType, @Nullable IContentsListener listener, int x, int y) {
+    public static FluidFuelInventorySlot forFuel(IFluidTank fluidTank, ToIntFunction<ItemResource> fuelValue, Holder<Fluid> fuelType, @Nullable IContentsListener listener,
+          int x, int y) {
+        Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
+        return forFuel(fluidTank, (_, _, itemType) -> fuelValue.applyAsInt(itemType), itemType -> fuelValue.applyAsInt(itemType) > 0,
+              fuelType, listener, x, y);
+    }
+
+    public static FluidFuelInventorySlot forFuel(IFluidTank fluidTank, FluidFuelCalculator fuelValue, Predicate<ItemResource> isFuel, Holder<Fluid> fuelType,
+          @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(fuelType, "Fuel fluid type cannot be null");
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
+        Objects.requireNonNull(isFuel, "Fuel detection check cannot be null");
         if (fuelType.is(EMPTY_KEY)) {
             throw new IllegalArgumentException("Fuel fluid type cannot be empty");
         }
@@ -41,19 +52,19 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             }
             //Always allow extraction if something went horribly wrong, and we are not a fluid item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
-            return fuelValue.applyAsInt(itemType) == 0 && !canFill(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item());
+            return !isFuel.test(itemType) && !canFill(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item());
         }, (itemType, automationType) -> {
-            if (automationType.isInternal() || fuelValue.applyAsInt(itemType) > 0) {
+            if (automationType.isInternal() || isFuel.test(itemType)) {
                 return true;
             }
             return canFill(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item());
         }, listener, x, y);
     }
 
-    private final ToIntFunction<ItemResource> fuelValue;
+    private final FluidFuelCalculator fuelValue;
     private final Holder<Fluid> fuelType;
 
-    private FluidFuelInventorySlot(IFluidTank fluidTank, Holder<Fluid> fuelType, ToIntFunction<ItemResource> fuelValue, BiPredicate<ItemResource, AutomationType> canExtract,
+    private FluidFuelInventorySlot(IFluidTank fluidTank, Holder<Fluid> fuelType, FluidFuelCalculator fuelValue, BiPredicate<ItemResource, AutomationType> canExtract,
           BiPredicate<ItemResource, AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
         super(fluidTank, canExtract, canInsert, null, null, listener, x, y);
         this.fuelType = fuelType;
@@ -61,13 +72,13 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
     }
 
     /// Fills tank from slot, allowing for the item to also be converted to fluid if need be
-    public void fillOrBurn(@Nullable TransactionContext transaction) {
+    public void fillOrBurn(ServerLevel level, BlockEntity blockEntity, @Nullable TransactionContext transaction) {
         if (!isEmpty()) {
             int needed = fluidTank.getNeededAsInt(FluidResource.EMPTY);
             //Fill the tank from the item
             if (needed > 0 && !fillTankFromSlot(transaction)) {
                 //If filling from item failed, try doing it by conversion
-                int fuel = fuelValue.applyAsInt(resource());
+                int fuel = fuelValue.calculate(level, blockEntity, resource());
                 if (fuel > 0 && fuel <= needed) {
                     try (Transaction subTransaction = Transaction.open(transaction)) {
                         if (FuelInventorySlot.consumeAndReplace(this, subTransaction)) {
@@ -80,5 +91,11 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                 }
             }
         }
+    }
+
+    @FunctionalInterface
+    public interface FluidFuelCalculator {
+
+        int calculate(ServerLevel level, BlockEntity blockEntity, ItemResource fuelType);
     }
 }

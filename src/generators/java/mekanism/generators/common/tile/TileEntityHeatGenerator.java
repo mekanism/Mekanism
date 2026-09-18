@@ -42,11 +42,15 @@ import mekanism.generators.common.slot.FluidFuelInventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -103,9 +107,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
         //Divide the burn time by 20 as that is the ratio of how much a bucket of lava would burn for
-        //TODO: Eventually we may want to grab the 20 dynamically in case some mod is changing the burn time of a lava bucket
-        builder.addContainer(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, itemType -> MekanismUtils.getBurnTime(this, itemType) / 20,
-              Fluids.LAVA.builtInRegistryHolder(), listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
+        builder.addContainer(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, (serverLevel, be, itemType) ->
+                    FluidType.BUCKET_VOLUME * MekanismUtils.getBurnTime(serverLevel, be, itemType) /
+                    MekanismUtils.getBurnTime(serverLevel, be, new ItemStack(Items.LAVA_BUCKET)), itemType -> itemType.has(DataComponents.COOKING_FUEL),
+              Fluids.LAVA.builtInRegistryHolder(), listener, 17, 35
+        ), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         builder.addContainer(energySlot = EnergyInventorySlot.drain(energyContainer(), listener, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
@@ -126,7 +132,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         boolean sendUpdatePacket = super.onUpdateServer(level);
         try (Transaction transaction = Transaction.openRoot()) {
             energySlot.drainContainerIntoSlot(transaction);
-            fuelSlot.fillOrBurn(transaction);
+            fuelSlot.fillOrBurn(level, this, transaction);
             long prev = energyContainer().getAmountAsLong();
             heatCapacitor.handleHeat(getBoost(), transaction);
             FluidResource lavaResource = lavaTank.resource();

@@ -21,7 +21,6 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
@@ -56,7 +55,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(fuelSlot = FuelInventorySlot.forFuel(itemType -> MekanismUtils.getBurnTime(this, itemType), listener, 15, 29));
+        builder.addContainer(fuelSlot = FuelInventorySlot.forFuel(listener, 15, 29));
         return builder.build();
     }
 
