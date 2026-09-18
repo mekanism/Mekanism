@@ -1,10 +1,8 @@
 package mekanism.api.recipes.ingredients;
 
-import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import net.minecraft.core.TypedInstance;
-import net.minecraft.util.context.ContextMap;
 
 /// Interface describing the base methods common to all inputs of our recipes.
 public interface InputIngredient<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>> extends Predicate<STACK> {
@@ -36,13 +34,6 @@ public interface InputIngredient<HOLDER_TYPE, STACK extends TypedInstance<HOLDER
     boolean hasNoMatchingInstances();
 
     void logMissingTags();
-
-    /// Primarily for JEI, a list of valid instances of the type
-    ///
-    /// @return List (empty means no valid registrations found and recipe is to be hidden)
-    ///
-    /// @apiNote Do not modify any of the values returned by the representations
-    List<STACK> getRepresentations(ContextMap context);
 
     /// {@return the slot display for this ingredient}
     ///

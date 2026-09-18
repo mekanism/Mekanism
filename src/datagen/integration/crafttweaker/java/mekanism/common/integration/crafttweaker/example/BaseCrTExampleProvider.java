@@ -31,6 +31,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.SimpleChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -255,7 +256,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
                       return CrTUtils.chemicalTags().tag(named.key()).withAmount(ingredient.amount()).getCommandString();
                   }
                   //TODO - CrT: ContextMap
-                  List<ChemicalStack> chemicals = ingredient.getRepresentations(ContextMap.EMPTY);
+                  List<ChemicalStack> chemicals = ingredient.display().resolve(ContextMap.EMPTY, ChemicalStackContentsFactory.INSTANCE).toList();
                   if (chemicals.size() == 1) {
                       return new CrTChemicalStack(chemicals.getFirst()).getCommandString();
                   }
@@ -270,7 +271,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             return ingredientType + ".from(" + tagRepresentation + ", " + ingredient.amount() + ")";
         }
         //TODO - CrT: ContextMap
-        List<ChemicalStack> chemicals = ingredient.getRepresentations(ContextMap.EMPTY);
+        List<ChemicalStack> chemicals = ingredient.display().resolve(ContextMap.EMPTY, ChemicalStackContentsFactory.INSTANCE).toList();
         if (chemicals.size() == 1) {
             String stackRepresentation = singleDescription.apply(chemicals.getFirst()).getCommandString();
             return ingredientType + ".from(" + stackRepresentation + ")";

@@ -5,6 +5,7 @@ import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.integration.projecte.NSSChemical;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -14,6 +15,8 @@ import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.display.SlotDisplay.ItemStackContentsFactory;
+import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 
 @RecipeTypeMapper
 public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<PressurizedReactionRecipe> {
@@ -42,8 +45,11 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
                   recipe.getInputChemical()
             ));
         }
-        return addConversions(mapper, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputChemical(), recipe::getOutput, fakeGroupHelper::forItems,
-              fakeGroupHelper::forFluids, fakeGroupHelper::forChemicals, PressurizedReactionRecipeMapper::addConversions, contextMap);
+        return addConversions(mapper, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputChemical(), recipe::getOutput,
+              fakeGroupHelper::forItems, ItemStackContentsFactory.INSTANCE,
+              fakeGroupHelper::forFluids, FluidStackContentsFactory.INSTANCE,
+              fakeGroupHelper::forChemicals, ChemicalStackContentsFactory.INSTANCE,
+              PressurizedReactionRecipeMapper::addConversions, contextMap);
     }
 
     private static boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, PressurizedReactionRecipeOutput output,

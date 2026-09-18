@@ -61,7 +61,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
 
     protected ContextMap contextMap(RegistryAccess registryAccess) {
         //TODO - CrT: ContextMap
-        return new ContextMap.Builder().withParameter(SlotDisplayContext.REGISTRIES, registryAccess).create(SlotDisplayContext.CONTEXT);
+        return ContextMap.builder().set(SlotDisplayContext.REGISTRIES, registryAccess).buildAndValidate(SlotDisplayContext.CONTEXT);
     }
 
     protected boolean chemicalIngredientConflicts(ChemicalStackIngredient a,

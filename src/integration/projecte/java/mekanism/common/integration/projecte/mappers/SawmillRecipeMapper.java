@@ -16,6 +16,7 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.display.SlotDisplay.ItemStackContentsFactory;
 import org.apache.commons.lang3.math.Fraction;
 import org.jspecify.annotations.Nullable;
 
@@ -75,7 +76,7 @@ public class SawmillRecipeMapper extends TypedMekanismRecipeMapper<SawmillRecipe
             };
         }
         return addConversions(mapper, contextMap, recipe.getInput(), input -> SawmillOutput.create(recipe.getOutput(input), primaryMultiplier, secondaryMultiplier),
-              output -> output.mainOutput() == null, representationGetter, SawmillRecipeMapper::addConversions);
+              output -> output.mainOutput() == null, representationGetter, ItemStackContentsFactory.INSTANCE, SawmillRecipeMapper::addConversions);
     }
 
     private static boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, SawmillOutput output, Object2IntMap<NormalizedSimpleStack> inputs) {

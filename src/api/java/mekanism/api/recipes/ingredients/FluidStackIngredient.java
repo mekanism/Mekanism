@@ -1,7 +1,6 @@
 package mekanism.api.recipes.ingredients;
 
 import com.mojang.serialization.Codec;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
@@ -12,13 +11,11 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SimpleFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
-import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.Nullable;
 
@@ -54,8 +51,6 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, FluidS
     }
 
     private final SizedFluidIngredient ingredient;
-    @Nullable
-    private List<FluidStack> representations;
 
     private FluidStackIngredient(SizedFluidIngredient ingredient) {
         this.ingredient = ingredient;
@@ -105,14 +100,6 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, FluidS
                 MekanismAPI.logger.error("Empty FluidStackIngredient: {}", SerializerHelper.stringify(FluidIngredient.CODEC, fluidIngredient));
             }
         }
-    }
-
-    @Override
-    public List<FluidStack> getRepresentations(ContextMap context) {
-        if (this.representations == null) {
-            this.representations = display().resolve(context, FluidStackContentsFactory.INSTANCE).toList();
-        }
-        return representations;
     }
 
     @Override

@@ -48,7 +48,7 @@ public class RecipeTestHelper extends MekGameTestHelper {
     }
 
     public void collectInputs(Set<ResourceKey<Item>> inputs, ItemStackIngredient input, TagKey<Item> knownMissingTag, String type) {
-        for (ItemStack representation : input.getRepresentations(recipeContext())) {
+        for (ItemStack representation : input.display().resolveForStacks(recipeContext())) {
             if (representation.is(knownMissingTag)) {
                 fail("Item " + representation.getItem() + " is marked as being known to be missing, but has a " + type + " recipe.");
             }

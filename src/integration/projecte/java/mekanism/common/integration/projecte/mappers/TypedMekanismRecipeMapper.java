@@ -26,6 +26,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.common.config.IConfigTranslation;
 import mekanism.common.integration.projecte.NSSChemical;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -45,11 +46,13 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.DisplayContentsFactory;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.fluids.FluidInstance;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
 
@@ -110,7 +113,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
             return false;
         }
         //TODO - ProjectE: Pass a ContextMap to handleRecipe?
-        ContextMap contextMap = new ContextMap.Builder().withParameter(SlotDisplayContext.REGISTRIES, registryAccess).create(SlotDisplayContext.CONTEXT);
+        ContextMap contextMap = ContextMap.builder().set(SlotDisplayContext.REGISTRIES, registryAccess).buildAndValidate(SlotDisplayContext.CONTEXT);
         return handleRecipe(mapper, typedRecipe, new MekFakeGroupHelper(fakeGroupManager), contextMap);
     }
 
@@ -139,18 +142,18 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
     }
 
     protected static <HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper,
-          ContextMap contextMap, InputIngredient<HOLDERTYPE, STACK> inputs,
-          Function<STACK, OUTPUT> recipe, Function<SequencedCollection<STACK>, Object2IntMap<NormalizedSimpleStack>> toIngredient,
+          ContextMap contextMap, InputIngredient<HOLDERTYPE, STACK> inputs, Function<STACK, OUTPUT> recipe,
+          Function<SequencedCollection<STACK>, Object2IntMap<NormalizedSimpleStack>> toIngredient,  DisplayContentsFactory<STACK> contentsFactory,
           TriPredicate<IMappingCollector<NormalizedSimpleStack, Long>, OUTPUT, Object2IntMap<NormalizedSimpleStack>> conversionAdder) {
-        return addConversions(mapper, contextMap, inputs, recipe, ConstantPredicates.alwaysFalse(), toIngredient, conversionAdder);
+        return addConversions(mapper, contextMap, inputs, recipe, ConstantPredicates.alwaysFalse(), toIngredient, contentsFactory, conversionAdder);
     }
 
     protected static <HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper,
           ContextMap contextMap, InputIngredient<HOLDERTYPE, STACK> inputs, Function<STACK, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker,
-          Function<SequencedCollection<STACK>, Object2IntMap<NormalizedSimpleStack>> toIngredient,
+          Function<SequencedCollection<STACK>, Object2IntMap<NormalizedSimpleStack>> toIngredient, DisplayContentsFactory<STACK> contentsFactory,
           TriPredicate<IMappingCollector<NormalizedSimpleStack, Long>, OUTPUT, Object2IntMap<NormalizedSimpleStack>> conversionAdder) {
         Map<OUTPUT, List<STACK>> reverseLookup = new HashMap<>();
-        for (STACK representation : inputs.getRepresentations(contextMap)) {
+        for (STACK representation : inputs.display().resolve(contextMap, contentsFactory).toList()) {
             OUTPUT output = recipe.apply(representation);
             if (!emptyChecker.test(output)) {
                 reverseLookup.computeIfAbsent(output, _ -> new ArrayList<>()).add(representation);
@@ -165,17 +168,18 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
 
     protected static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT> boolean addConversions(
           IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDER_A, INPUT_A> inputA, InputIngredient<HOLDER_B, INPUT_B> inputB,
-          BiFunction<INPUT_A, INPUT_B, OUTPUT> recipe, Function<SequencedCollection<INPUT_A>, Object2IntMap<NormalizedSimpleStack>> toIngredientA,
-          Function<SequencedCollection<INPUT_B>, Object2IntMap<NormalizedSimpleStack>> toIngredientB,
+          BiFunction<INPUT_A, INPUT_B, OUTPUT> recipe,
+          Function<SequencedCollection<INPUT_A>, Object2IntMap<NormalizedSimpleStack>> toIngredientA, DisplayContentsFactory<INPUT_A> aContentsFactory,
+          Function<SequencedCollection<INPUT_B>, Object2IntMap<NormalizedSimpleStack>> toIngredientB, DisplayContentsFactory<INPUT_B> bContentsFactory,
           TriPredicate<IMappingCollector<NormalizedSimpleStack, Long>, OUTPUT, Object2IntMap<NormalizedSimpleStack>> conversionAdder, ContextMap contextMap) {
-        return addConversions(mapper, inputA, inputB, recipe, toIngredientA, toIngredientB, conversionAdder, 1, contextMap);
+        return addConversions(mapper, inputA, inputB, recipe, toIngredientA, aContentsFactory, toIngredientB, bContentsFactory, conversionAdder, 1, contextMap);
     }
 
     protected static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT> boolean addConversions(
           IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDER_A, INPUT_A> inputA,
           InputIngredient<HOLDER_B, INPUT_B> inputB, BiFunction<INPUT_A, INPUT_B, OUTPUT> recipe,
-          Function<SequencedCollection<INPUT_A>, Object2IntMap<NormalizedSimpleStack>> toIngredientA,
-          Function<SequencedCollection<INPUT_B>, Object2IntMap<NormalizedSimpleStack>> toIngredientB,
+          Function<SequencedCollection<INPUT_A>, Object2IntMap<NormalizedSimpleStack>> toIngredientA, DisplayContentsFactory<INPUT_A> aContentsFactory,
+          Function<SequencedCollection<INPUT_B>, Object2IntMap<NormalizedSimpleStack>> toIngredientB, DisplayContentsFactory<INPUT_B> bContentsFactory,
           TriPredicate<IMappingCollector<NormalizedSimpleStack, Long>, OUTPUT, Object2IntMap<NormalizedSimpleStack>> conversionAdder, int secondaryInputScale, ContextMap contextMap) {
         record InputDetails<INPUT_A, INPUT_B>(SequencedCollection<INPUT_A> aInputs, SequencedCollection<INPUT_B> bInputs) {
 
@@ -184,8 +188,8 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
             }
         }
         Map<OUTPUT, InputDetails<INPUT_A, INPUT_B>> reverseLookup = new HashMap<>();
-        List<INPUT_A> aRepresentations = inputA.getRepresentations(contextMap);
-        List<INPUT_B> bRepresentations = inputB.getRepresentations(contextMap);
+        List<INPUT_A> aRepresentations = inputA.display().resolve(contextMap, aContentsFactory).toList();
+        List<INPUT_B> bRepresentations = inputB.display().resolve(contextMap, bContentsFactory).toList();
         for (INPUT_A aRepresentation : aRepresentations) {
             for (INPUT_B bRepresentation : bRepresentations) {
                 OUTPUT output = recipe.apply(aRepresentation, bRepresentation);
@@ -209,9 +213,9 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
     protected static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, HOLDER_C, INPUT_C extends TypedInstance<HOLDER_C>, OUTPUT> boolean addConversions(
           IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDER_A, INPUT_A> inputA,
           InputIngredient<HOLDER_B, INPUT_B> inputB, InputIngredient<HOLDER_C, INPUT_C> inputC, Function3<INPUT_A, INPUT_B, INPUT_C, OUTPUT> recipe,
-          Function<SequencedCollection<INPUT_A>, Object2IntMap<NormalizedSimpleStack>> toIngredientA,
-          Function<SequencedCollection<INPUT_B>, Object2IntMap<NormalizedSimpleStack>> toIngredientB,
-          Function<SequencedCollection<INPUT_C>, Object2IntMap<NormalizedSimpleStack>> toIngredientC,
+          Function<SequencedCollection<INPUT_A>, Object2IntMap<NormalizedSimpleStack>> toIngredientA, DisplayContentsFactory<INPUT_A> aContentsFactory,
+          Function<SequencedCollection<INPUT_B>, Object2IntMap<NormalizedSimpleStack>> toIngredientB, DisplayContentsFactory<INPUT_B> bContentsFactory,
+          Function<SequencedCollection<INPUT_C>, Object2IntMap<NormalizedSimpleStack>> toIngredientC, DisplayContentsFactory<INPUT_C> cContentsFactory,
           TriPredicate<IMappingCollector<NormalizedSimpleStack, Long>, OUTPUT, Object2IntMap<NormalizedSimpleStack>> conversionAdder, ContextMap contextMap) {
         record InputDetails<INPUT_A, INPUT_B, INPUT_C>(SequencedCollection<INPUT_A> aInputs, SequencedCollection<INPUT_B> bInputs, SequencedCollection<INPUT_C> cInputs) {
 
@@ -220,9 +224,9 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
             }
         }
         Map<OUTPUT, InputDetails<INPUT_A, INPUT_B, INPUT_C>> reverseLookup = new HashMap<>();
-        List<INPUT_A> aRepresentations = inputA.getRepresentations(contextMap);
-        List<INPUT_B> bRepresentations = inputB.getRepresentations(contextMap);
-        List<INPUT_C> cRepresentations = inputC.getRepresentations(contextMap);
+        List<INPUT_A> aRepresentations = inputA.display().resolve(contextMap, aContentsFactory).toList();
+        List<INPUT_B> bRepresentations = inputB.display().resolve(contextMap, bContentsFactory).toList();
+        List<INPUT_C> cRepresentations = inputC.display().resolve(contextMap, cContentsFactory).toList();
         for (INPUT_A aRepresentation : aRepresentations) {
             for (INPUT_B bRepresentation : bRepresentations) {
                 for (INPUT_C cRepresentation : cRepresentations) {
@@ -310,7 +314,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
         }
 
         public Object2IntMap<NormalizedSimpleStack> forIngredient(ItemStackIngredient ingredient, ContextMap contextMap) {
-            return forItems(ingredient.getRepresentations(contextMap));
+            return forItems(ingredient.display().resolveForStacks(contextMap));
         }
 
         public Object2IntMap<NormalizedSimpleStack> forItems(SequencedCollection<ItemStack> representations) {
@@ -318,7 +322,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
         }
 
         public Object2IntMap<NormalizedSimpleStack> forIngredient(FluidStackIngredient ingredient, ContextMap contextMap) {
-            return forFluids(ingredient.getRepresentations(contextMap));
+            return forFluids(ingredient.display().resolve(contextMap, FluidStackContentsFactory.INSTANCE).toList());
         }
 
         public Object2IntMap<NormalizedSimpleStack> forFluids(SequencedCollection<FluidStack> representations) {
@@ -326,7 +330,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
         }
 
         public Object2IntMap<NormalizedSimpleStack> forIngredient(ChemicalStackIngredient ingredient, ContextMap contextMap) {
-            return forChemicals(ingredient.getRepresentations(contextMap));
+            return forChemicals(ingredient.display().resolve(contextMap, ChemicalStackContentsFactory.INSTANCE).toList());
         }
 
         public Object2IntMap<NormalizedSimpleStack> forChemicals(SequencedCollection<ChemicalStack> representations) {

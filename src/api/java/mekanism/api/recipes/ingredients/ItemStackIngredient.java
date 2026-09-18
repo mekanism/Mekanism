@@ -1,7 +1,6 @@
 package mekanism.api.recipes.ingredients;
 
 import com.mojang.serialization.Codec;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
@@ -12,11 +11,9 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.Nullable;
@@ -53,8 +50,6 @@ public final class ItemStackIngredient implements InputIngredient<Item, ItemStac
     }
 
     private final SizedIngredient ingredient;
-    @Nullable
-    private List<ItemStack> representations;
 
     private ItemStackIngredient(SizedIngredient ingredient) {
         this.ingredient = ingredient;
@@ -109,14 +104,6 @@ public final class ItemStackIngredient implements InputIngredient<Item, ItemStac
                 }
             }
         }
-    }
-
-    @Override
-    public List<ItemStack> getRepresentations(ContextMap context) {
-        if (this.representations == null) {
-            this.representations = display().resolve(context, SlotDisplay.ItemStackContentsFactory.INSTANCE).toList();
-        }
-        return representations;
     }
 
     @Override

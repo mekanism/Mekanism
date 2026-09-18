@@ -2,6 +2,7 @@ package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -26,7 +27,9 @@ public class ChemicalChemicalToChemicalRecipeMapper extends TypedMekanismRecipeM
                   recipe.getRightInput()
             ));
         }
-        return addConversions(mapper, recipe.getLeftInput(), recipe.getRightInput(), recipe::getOutput, fakeGroupHelper::forChemicals, fakeGroupHelper::forChemicals,
+        return addConversions(mapper, recipe.getLeftInput(), recipe.getRightInput(), recipe::getOutput,
+              fakeGroupHelper::forChemicals, ChemicalStackContentsFactory.INSTANCE,
+              fakeGroupHelper::forChemicals, ChemicalStackContentsFactory.INSTANCE,
               TypedMekanismRecipeMapper::addConversion, contextMap);
     }
 }

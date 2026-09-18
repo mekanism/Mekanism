@@ -2,7 +2,6 @@ package mekanism.api.recipes.ingredients;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.List;
 import java.util.Objects;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
@@ -10,7 +9,6 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
-import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
@@ -18,7 +16,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.context.ContextMap;
 import org.jspecify.annotations.Nullable;
 
 /// Base implementation for a ChemicalIngredient with an amount.
@@ -92,9 +89,6 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
         this.amount = amount;
     }
 
-    @Nullable
-    private List<ChemicalStack> representations;
-
     @Override
     public boolean test(ChemicalStack stack) {
         return testType(stack) && stack.amount() >= amount;
@@ -139,15 +133,6 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
     @Override
     public void logMissingTags() {
         ingredient.logMissingTags();
-    }
-
-    @Override
-    public List<ChemicalStack> getRepresentations(ContextMap context) {
-        //TODO - 26.3: Should we still be caching the representations in all our stack ingredients? What if different ContextMaps are passed
-        if (this.representations == null) {
-            this.representations = display().resolve(context, ChemicalStackContentsFactory.INSTANCE).toList();
-        }
-        return representations;
     }
 
     @Override

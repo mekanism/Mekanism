@@ -109,6 +109,6 @@ public class SerializerHelper {
         return codec.encodeStart(JsonOps.INSTANCE, value)
               .result()
               .map(JsonElement::toString)
-              .orElse(value.toString());
+              .orElseGet(value::toString);
     }
 }

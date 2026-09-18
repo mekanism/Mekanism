@@ -2,6 +2,7 @@ package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
@@ -9,6 +10,7 @@ import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.display.SlotDisplay.ItemStackContentsFactory;
 
 @RecipeTypeMapper
 public class ChemicalDissolutionRecipeMapper extends TypedMekanismRecipeMapper<ChemicalDissolutionRecipe> {
@@ -28,7 +30,9 @@ public class ChemicalDissolutionRecipeMapper extends TypedMekanismRecipeMapper<C
                   scale
             ));
         }
-        return addConversions(mapper, recipe.getItemInput(), recipe.getChemicalInput(), recipe::getOutput, fakeGroupHelper::forItems, fakeGroupHelper::forChemicals,
+        return addConversions(mapper, recipe.getItemInput(), recipe.getChemicalInput(), recipe::getOutput,
+              fakeGroupHelper::forItems, ItemStackContentsFactory.INSTANCE,
+              fakeGroupHelper::forChemicals, ChemicalStackContentsFactory.INSTANCE,
               TypedMekanismRecipeMapper::addConversion, scale, contextMap);
     }
 }

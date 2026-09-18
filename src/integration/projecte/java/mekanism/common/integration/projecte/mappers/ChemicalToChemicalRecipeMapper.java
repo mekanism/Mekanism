@@ -2,6 +2,7 @@ package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicChemicalToChemicalRecipe;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -22,6 +23,6 @@ public class ChemicalToChemicalRecipeMapper extends TypedMekanismRecipeMapper<Ch
             //This will be the case for the majority of our recipes
             return addConversion(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }
-        return addConversions(mapper, contextMap, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forChemicals, TypedMekanismRecipeMapper::addConversion);
+        return addConversions(mapper, contextMap, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forChemicals, ChemicalStackContentsFactory.INSTANCE, TypedMekanismRecipeMapper::addConversion);
     }
 }

@@ -8,6 +8,7 @@ import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.display.SlotDisplay.ItemStackContentsFactory;
 
 @RecipeTypeMapper
 public class ItemStackToChemicalRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToChemicalRecipe> {
@@ -23,6 +24,6 @@ public class ItemStackToChemicalRecipeMapper extends TypedMekanismRecipeMapper<I
             //This will be the case for the majority of our recipes
             return addConversion(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }
-        return addConversions(mapper, contextMap, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forItems, TypedMekanismRecipeMapper::addConversion);
+        return addConversions(mapper, contextMap, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forItems, ItemStackContentsFactory.INSTANCE, TypedMekanismRecipeMapper::addConversion);
     }
 }

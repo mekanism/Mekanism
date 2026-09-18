@@ -2,12 +2,14 @@ package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicWashingRecipe;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.util.context.ContextMap;
+import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 
 @RecipeTypeMapper
 public class FluidChemicalToChemicalRecipeMapper extends TypedMekanismRecipeMapper<FluidChemicalToChemicalRecipe> {
@@ -25,7 +27,9 @@ public class FluidChemicalToChemicalRecipeMapper extends TypedMekanismRecipeMapp
                   recipe.getChemicalInput()
             ));
         }
-        return addConversions(mapper, recipe.getFluidInput(), recipe.getChemicalInput(), recipe::getOutput, fakeGroupHelper::forFluids, fakeGroupHelper::forChemicals,
+        return addConversions(mapper, recipe.getFluidInput(), recipe.getChemicalInput(), recipe::getOutput,
+              fakeGroupHelper::forFluids, FluidStackContentsFactory.INSTANCE,
+              fakeGroupHelper::forChemicals, ChemicalStackContentsFactory.INSTANCE,
               TypedMekanismRecipeMapper::addConversion, contextMap);
     }
 }

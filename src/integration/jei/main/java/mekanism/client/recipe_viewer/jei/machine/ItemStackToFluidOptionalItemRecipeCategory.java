@@ -24,10 +24,9 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.display.DisplayContentsFactory.ForStacks;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import org.jspecify.annotations.Nullable;
@@ -59,12 +58,11 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
     public Identifier getIdentifier(BasicItemStackToFluidOptionalItemRecipe recipe) {
         //TODO - 26.3: Can we grab the context map from jei?
         ContextMap contextMap = SlotDisplayContext.fromLevel(Objects.requireNonNull(Minecraft.getInstance().level));
-        List<ItemStack> representations = recipe.getInput().getRepresentations(contextMap);
-        if (representations.size() == 1) {
-            Identifier itemId = BuiltInRegistries.ITEM.getKeyOrNull(representations.getFirst().getItem());
-            if (itemId != null) {
-                return RegistryUtils.synthetic(itemId, "liquification", Mekanism.MODID);
-            }
+        List<Identifier> ids = recipe.getInput().display()
+              .resolve(contextMap, (ForStacks<Identifier>) stack -> stack.getItem().builtInRegistryHolder().key().identifier())
+              .toList();
+        if (ids.size() == 1) {
+            return RegistryUtils.synthetic(ids.getFirst(), "liquification", Mekanism.MODID);
         }
         return null;
     }

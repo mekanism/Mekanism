@@ -4,6 +4,7 @@ import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.basic.BasicItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
@@ -13,6 +14,7 @@ import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.display.SlotDisplay.ItemStackContentsFactory;
 
 @RecipeTypeMapper
 public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecipeMapper<ItemStackChemicalToItemStackRecipe> {
@@ -48,7 +50,9 @@ public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecip
                   scale
             ));
         }
-        return addConversions(mapper, recipe.getItemInput(), recipe.getChemicalInput(), recipe::getOutput, fakeGroupHelper::forItems, fakeGroupHelper::forChemicals,
+        return addConversions(mapper, recipe.getItemInput(), recipe.getChemicalInput(), recipe::getOutput,
+              fakeGroupHelper::forItems, ItemStackContentsFactory.INSTANCE,
+              fakeGroupHelper::forChemicals, ChemicalStackContentsFactory.INSTANCE,
               TypedMekanismRecipeMapper::addConversion, scale, contextMap);
     }
 }

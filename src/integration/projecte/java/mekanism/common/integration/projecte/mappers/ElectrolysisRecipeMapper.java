@@ -12,6 +12,7 @@ import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.util.context.ContextMap;
+import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 
 @RecipeTypeMapper
 public class ElectrolysisRecipeMapper extends TypedMekanismRecipeMapper<ElectrolysisRecipe> {
@@ -28,7 +29,7 @@ public class ElectrolysisRecipeMapper extends TypedMekanismRecipeMapper<Electrol
             ChemicalStackTemplate rightOutput = basicRecipe.getRightChemicalOutput();
             return addConversions(mapper, new ElectrolysisRecipeOutput(leftOutput, rightOutput), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }
-        return addConversions(mapper, contextMap, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forFluids, ElectrolysisRecipeMapper::addConversions);
+        return addConversions(mapper, contextMap, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forFluids, FluidStackContentsFactory.INSTANCE, ElectrolysisRecipeMapper::addConversions);
     }
 
     private static boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, ElectrolysisRecipeOutput output, Object2IntMap<NormalizedSimpleStack> inputs) {
