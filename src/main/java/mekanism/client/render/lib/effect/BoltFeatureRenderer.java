@@ -4,11 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.client.render.MekanismRenderType;
 import net.minecraft.client.renderer.feature.FeatureFrameContext;
 import net.minecraft.client.renderer.feature.FeatureRendererType;
 import net.minecraft.client.renderer.feature.RenderTypeFeatureRenderer;
 import net.minecraft.client.renderer.feature.submit.SubmitNode;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.CommonColors;
 import org.joml.Vector3fc;
 
@@ -18,7 +18,7 @@ public class BoltFeatureRenderer extends RenderTypeFeatureRenderer<BoltFeatureRe
 
     @Override
     protected void buildGroup(FeatureFrameContext context, List<BoltFeatureRenderer.Submit> submits) {
-        VertexConsumer builder = getVertexBuilder(MekanismRenderType.MEK_LIGHTNING);
+        VertexConsumer builder = getVertexBuilder(RenderTypes.lightning());
         for (BoltFeatureRenderer.Submit submit : submits) {
             for (Vector3fc vertex : submit.state.vertices) {
                 builder.addVertex(submit.pose, vertex).setColor(submit.state.color);

@@ -21,11 +21,6 @@ public class MekanismRenderType {
         RenderSystem.defaultBlendFunc();
     }, RenderSystem::disableBlend);
     private static final RenderStateShard.ShaderStateShard PARTICLE_SHADER = new RenderStateShard.ShaderStateShard(GameRenderer::getParticleShader);*/
-    //TODO - 26.3: Can this just be replaced with LIGHTNING? Only difference is the output target
-    public static final RenderType MEK_LIGHTNING = RenderType.create("mekanism_lightning", RenderSetup.builder(RenderPipelines.LIGHTNING)
-          .sortOnUpload()
-          .createRenderSetup()
-    );
 
     //TODO - 26.3: Re-evaluate this
     public static final RenderType GUI_SPRITES = RenderType.create("mekanism_gui_sprite", RenderSetup.builder(RenderPipelines.GUI_TEXTURED)
@@ -34,43 +29,14 @@ public class MekanismRenderType {
           .createRenderSetup()
     );
 
-    public static final Function<Identifier, RenderType> STANDARD = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation ->
-          createStandard("mek_standard", resourceLocation, UnaryOperator.identity(), false));*/
-    public static final Function<Identifier, RenderType> ALARM = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation ->
-          createStandard("mek_alarm", resourceLocation, state -> state.setCullState(RenderType.NO_CULL).setOutputState(RenderType.TRANSLUCENT_TARGET), true));*/
+    public static final Function<Identifier, RenderType> STANDARD = RenderTypes::entityTranslucent;
+    public static final Function<Identifier, RenderType> ALARM = RenderTypes::entityTranslucent;
     //Similar to mekStandard but blurs the texture
-    public static final Function<Identifier, RenderType> JETPACK_GLASS = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation -> createStandard("mek_jetpack_glass", resourceLocation,
-          state -> state.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, true, false)), false));*/
+    public static final Function<Identifier, RenderType> JETPACK_GLASS = RenderTypes::entityTranslucent;
 
-    /*private static RenderType createStandard(String name, Identifier resourceLocation, UnaryOperator<RenderType.CompositeState.CompositeStateBuilder> stateModifier,
-          boolean sortOnUpload) {
-        RenderType.CompositeState state = stateModifier.apply(RenderType.CompositeState.builder()
-              //Note: We use the eyes shader as it is effectively equivalent to NEW_ENTITY except takes fog into account for purposes of
-              // things like blindness and darkness
-              .setShaderState(RenderType.RENDERTYPE_EYES_SHADER)
-              .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-              .setTransparencyState(RenderType.TRANSLUCENT_TRANSPARENCY)
-        ).createCompositeState(true);
-        return RenderType.create(name, DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 256, true, sortOnUpload, state);
-    }*/
+    public static final Function<Identifier, RenderType> FLAME = RenderTypes::entityTranslucent;
 
-    public static final Function<Identifier, RenderType> FLAME = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation -> {
-        RenderType.CompositeState state = RenderType.CompositeState.builder()
-              .setShaderState(MekanismShaders.FLAME.shard)
-              .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-              .setTransparencyState(RenderType.TRANSLUCENT_TRANSPARENCY)
-              .createCompositeState(true);
-        return RenderType.create("mek_flame", DefaultVertexFormat.POSITION_TEX_COLOR, Mode.QUADS, 256, true, false, state);
-    });*/
-
-    public static final RenderType NUTRITIONAL_PARTICLE = null;/*RenderType.create("mek_nutritional_particle", DefaultVertexFormat.PARTICLE, Mode.QUADS,
-          256, false, false, RenderType.CompositeState.builder()
-                .setShaderState(PARTICLE_SHADER)
-                .setTextureState(RenderType.BLOCK_SHEET)
-                .setTransparencyState(PARTICLE_TRANSPARENCY)
-                .setLightmapState(RenderType.LIGHTMAP)
-                .createCompositeState(false)
-    );*/
+    public static final RenderType NUTRITIONAL_PARTICLE = null;
 
     public static final RenderType MEKASUIT = RenderType.create("mekanism_mekasuit", RenderSetup.builder(MekanismRenderPipelines.MEKASUIT)
           .withTexture("Sampler0", TextureAtlas.LOCATION_ITEMS)
@@ -81,16 +47,18 @@ public class MekanismRenderType {
           .createRenderSetup()
     );
 
-    ///Copy of [RenderTypes#ARMOR_ENTITY_GLINT] but without the view offset layering
+    ///Copy of [RenderTypes#TRIMMED_ARMOR_GLINT] but without the view offset layering
     public static final RenderType ARMOR_GLINT = RenderType.create("mekanism_armor_entity_glint", RenderSetup.builder(RenderPipelines.GLINT)
           .withTexture("Sampler0", ItemFeatureRenderer.ENCHANTED_GLINT_ARMOR)
           .setTextureTransform(TextureTransform.ARMOR_ENTITY_GLINT_TEXTURING)
           //.setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+          .withForcedSolidModelPhase()
           .createRenderSetup()
     );
 
     public static final Function<Identifier, RenderType> SPS = Util.memoize(resourceLocation -> RenderType.create("mekanism_sps", RenderSetup.builder(MekanismRenderPipelines.SPS)
           .withTexture("Sampler0", resourceLocation)
+          .setOitPipelines(MekanismRenderPipelines.OIT_SPS)
           .sortOnUpload()
           .createRenderSetup()
     ));

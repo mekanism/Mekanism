@@ -10,6 +10,7 @@ import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.oit.OitPipelineSet;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -57,18 +58,26 @@ public class MekanismRenderPipelines {
           .build();
 
     //Pipeline is from lightning
-    //TODO - 26.3: OIT_LIGHTNING ??
-    public static final RenderPipeline SPS = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
-          .withLocation(Mekanism.rl("pipeline/sps"))
+    private static final RenderPipeline.Snippet SPS_SNIPPET = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
           .withVertexShader(Mekanism.rl("core/sps"))
           .withFragmentShader(Mekanism.rl("core/sps"))
           .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
-          .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
           .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
           .withPrimitiveTopology(PrimitiveTopology.QUADS)
           //From lightning
           .withDepthStencilState(DepthStencilState.DEFAULT)
+          .buildSnippet();
+
+    public static final RenderPipeline SPS = RenderPipeline.builder(SPS_SNIPPET)
+          .withLocation(Mekanism.rl("pipeline/sps"))
+          .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
           .build();
+
+    public static final OitPipelineSet OIT_SPS = OitPipelineSet.builder(Mekanism.rl("pipeline/sps"), RenderPipeline.builder(SPS_SNIPPET)
+                .withShaderDefine("OIT_ADDITIVE")
+          ).withAccumulateModifier(accumulate -> accumulate.withBindGroupLayout(BindGroupLayouts.SAMPLER0))
+          .build();
+
 
     @SubscribeEvent
     public static void registerPipelines(RegisterRenderPipelinesEvent event) {
@@ -77,5 +86,6 @@ public class MekanismRenderPipelines {
         event.registerPipeline(GUI_TRIANGLE_STRIP);
         event.registerPipeline(MEKASUIT);
         event.registerPipeline(SPS);
+        event.registerOitPipelineSet(OIT_SPS);
     }
 }
