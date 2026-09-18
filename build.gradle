@@ -732,7 +732,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
             //Add optional deps
             addOptional(
                     //Computers
-                    'cc-tweaked', 'oc2', 'opencomputers',
+                    'cc-tweaked', 'oc2', 'opencomputers-rebooted',
                     //Looking at mods
                     'jade', 'the-one-probe', 'wthit-forge',
                     //Recipe viewers
