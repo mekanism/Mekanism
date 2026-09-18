@@ -28,7 +28,6 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.data.HashCache.ProviderCache;
 import net.minecraft.data.PackOutput;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.jspecify.annotations.Nullable;
@@ -44,12 +43,10 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         globalCache = cache;
     }
 
-    public static void addDisableableProviders(GatherDataEvent event, CompletableFuture<HolderLookup.Provider> lookupProvider, Set<String> disabledCompats) {
-        DataGenerator gen = event.getGenerator();
+    public static void addDisableableProviders(DataGenerator gen, CompletableFuture<HolderLookup.Provider> lookupProvider, Set<String> disabledCompats) {
         PackOutput output = gen.getPackOutput();
         Set<String> pathsToSkip = new HashSet<>();
         List<String> fakeProviders = new ArrayList<>();
-        ResourceManager serverResources = event.getResourceManager(PackType.SERVER_DATA);
         if (Mekanism.hooks.emi.isLoaded()) {
             gen.addProvider(true, IMekEmiDatagen.INSTANCE.aliasProvider(output, lookupProvider, Mekanism.MODID, MekanismAliasMapping::new));
         } else {
@@ -64,7 +61,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
             fakeProviders.add("Custom EMC Conversions: mekanism");
         }
         if (Mekanism.hooks.craftTweaker.isLoaded()) {
-            gen.addProvider(true, IMekCrTDatagen.INSTANCE.exampleProvider(output, serverResources, lookupProvider));
+            gen.addProvider(true, IMekCrTDatagen.INSTANCE.exampleProvider(output, lookupProvider));
         } else {
             Mekanism.logger.warn("Skipping and persisting existing {} data generated files for CraftTweaker", Mekanism.MODID);
             pathsToSkip.add("scripts");

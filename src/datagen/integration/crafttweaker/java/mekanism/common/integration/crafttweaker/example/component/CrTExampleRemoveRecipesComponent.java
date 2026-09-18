@@ -4,19 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider;
 import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 
 public class CrTExampleRemoveRecipesComponent extends CrTBaseExampleRecipeComponent {
 
     private final List<Identifier> recipesToRemove = new ArrayList<>();
 
-    public CrTExampleRemoveRecipesComponent(BaseCrTExampleProvider exampleProvider, MekanismRecipeManager<?, ?> recipeManager, Identifier... recipeNames) {
+    public CrTExampleRemoveRecipesComponent(BaseCrTExampleProvider exampleProvider, MekanismRecipeManager<?, ?> recipeManager,
+          HolderLookup.Provider reloadableLookupProvider, Identifier... recipeNames) {
         super(recipeManager);
         if (recipeNames == null || recipeNames.length == 0) {
             throw new IllegalArgumentException("No recipes to remove specified.");
         }
         for (Identifier recipeName : recipeNames) {
-            if (exampleProvider.recipeExists(recipeName)) {
+            if (exampleProvider.recipeExists(reloadableLookupProvider, recipeName)) {
                 if (recipesToRemove.contains(recipeName)) {
                     //Note: This isn't the most accurate already removing example check as it doesn't check other removing components
                     // with the same recipe manager, but it should be fine as it is mainly to help try and prevent copy-paste errors

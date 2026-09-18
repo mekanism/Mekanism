@@ -17,144 +17,143 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class MekanismEmiDefaults extends BaseEmiDefaults {
 
-    public MekanismEmiDefaults(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, serverResources, registries, Mekanism.MODID);
+    public MekanismEmiDefaults(PackOutput output, CompletableFuture<HolderLookup.Provider> reloadableLookupProvider) {
+        super(output, reloadableLookupProvider, Mekanism.MODID);
     }
 
     @Override
-    protected void addDefaults(HolderLookup.Provider lookupProvider) {
-        addMiscRecipes();
-        addGearModuleRecipes();
-        addLateGameRecipes(lookupProvider);
-        addInfusingRecipes();
-        addCrushingRecipes();
-        addEnrichingRecipes();
-        addEvaporationRecipes();
-        addInductionRecipes();
+    protected void addDefaults(HolderLookup.Provider reloadableLookupProvider) {
+        addMiscRecipes(reloadableLookupProvider);
+        addGearModuleRecipes(reloadableLookupProvider);
+        addLateGameRecipes(reloadableLookupProvider);
+        addInfusingRecipes(reloadableLookupProvider);
+        addCrushingRecipes(reloadableLookupProvider);
+        addEnrichingRecipes(reloadableLookupProvider);
+        addEvaporationRecipes(reloadableLookupProvider);
+        addInductionRecipes(reloadableLookupProvider);
         addRotaryRecipes();
-        addFactoryRecipes();
-        addTransmitterRecipes();
-        addStorageRecipes();
-        addTieredRecipes("bin/");
-        addTieredRecipes("chemical_tank/");
-        addTieredRecipes("energy_cube/");
-        addTieredRecipes("fluid_tank/");
-        addTieredRecipes("tier_installer/");
-        lookupProvider.lookupOrThrow(MekanismRegistries.Keys.UPGRADES).listElementIds().forEach(id -> addRecipe(id.identifier().withPrefix("upgrade/")));
+        addFactoryRecipes(reloadableLookupProvider);
+        addTransmitterRecipes(reloadableLookupProvider);
+        addStorageRecipes(reloadableLookupProvider);
+        addTieredRecipes(reloadableLookupProvider, "bin/");
+        addTieredRecipes(reloadableLookupProvider, "chemical_tank/");
+        addTieredRecipes(reloadableLookupProvider, "energy_cube/");
+        addTieredRecipes(reloadableLookupProvider, "fluid_tank/");
+        addTieredRecipes(reloadableLookupProvider, "tier_installer/");
+        reloadableLookupProvider.lookupOrThrow(MekanismRegistries.Keys.UPGRADES).listElementIds().forEach(id -> addRecipe(reloadableLookupProvider, id.identifier().withPrefix("upgrade/")));
         //Note: We intentionally skip basic circuits as they are considered a "base" material
-        addRecipe("control_circuit/" + BaseTier.ADVANCED.getLowerName());
-        addRecipe("control_circuit/" + BaseTier.ELITE.getLowerName());
-        addRecipe("control_circuit/" + BaseTier.ULTIMATE.getLowerName());
+        addRecipe(reloadableLookupProvider, "control_circuit/" + BaseTier.ADVANCED.getLowerName());
+        addRecipe(reloadableLookupProvider, "control_circuit/" + BaseTier.ELITE.getLowerName());
+        addRecipe(reloadableLookupProvider, "control_circuit/" + BaseTier.ULTIMATE.getLowerName());
 
-        addRecipe("crystallizing/lithium");
-        addRecipe("separator/brine");
+        addRecipe(reloadableLookupProvider, "crystallizing/lithium");
+        addRecipe(reloadableLookupProvider, "separator/brine");
         //Note: We intentionally don't add the water -> hydrogen and oxygen as they are "base" enough materials
         // that it is probably more beneficial to users to default by showing how much of that they need than how much water
-        addRecipe("chemical_infusing/hydrogen_chloride");
-        addRecipe("chemical_infusing/sulfur_trioxide");
-        addRecipe("chemical_infusing/sulfuric_acid");
-        addRecipe("reaction/substrate/water_hydrogen");
-        addRecipe("reaction/substrate/ethene_oxygen");
+        addRecipe(reloadableLookupProvider, "chemical_infusing/hydrogen_chloride");
+        addRecipe(reloadableLookupProvider, "chemical_infusing/sulfur_trioxide");
+        addRecipe(reloadableLookupProvider, "chemical_infusing/sulfuric_acid");
+        addRecipe(reloadableLookupProvider, "reaction/substrate/water_hydrogen");
+        addRecipe(reloadableLookupProvider, "reaction/substrate/ethene_oxygen");
         //Note: We intentionally don't cover the other gas conversions as there are better defaults for them
-        addRecipe("chemical_conversion/osmium_from_ingot");
+        addRecipe(reloadableLookupProvider, "chemical_conversion/osmium_from_ingot");
 
         //Custom pigments that only exist by mixing
-        addPigmentMix(EnumColor.DARK_AQUA, EnumColor.WHITE, EnumColor.AQUA);
-        addPigmentMix(EnumColor.BLACK, EnumColor.RED, EnumColor.DARK_RED);
+        addPigmentMix(reloadableLookupProvider, EnumColor.DARK_AQUA, EnumColor.WHITE, EnumColor.AQUA);
+        addPigmentMix(reloadableLookupProvider, EnumColor.BLACK, EnumColor.RED, EnumColor.DARK_RED);
     }
 
-    private void addPigmentMix(EnumColor leftInput, EnumColor rightInput, EnumColor output) {
-        addRecipe("pigment_mixing/" + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix());
+    private void addPigmentMix(HolderLookup.Provider reloadableLookupProvider, EnumColor leftInput, EnumColor rightInput, EnumColor output) {
+        addRecipe(reloadableLookupProvider, "pigment_mixing/" + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix());
     }
 
-    private void addStorageRecipes() {
+    private void addStorageRecipes(HolderLookup.Provider reloadableLookupProvider) {
         String nuggetPath = "nuggets/";
-        addRecipe(nuggetPath + "bronze");
-        addRecipe(nuggetPath + "refined_glowstone");
-        addRecipe(nuggetPath + "refined_obsidian");
-        addRecipe(nuggetPath + "steel");
+        addRecipe(reloadableLookupProvider, nuggetPath + "bronze");
+        addRecipe(reloadableLookupProvider, nuggetPath + "refined_glowstone");
+        addRecipe(reloadableLookupProvider, nuggetPath + "refined_obsidian");
+        addRecipe(reloadableLookupProvider, nuggetPath + "steel");
 
         String storagePath = "storage_blocks/";
-        addStorageBlockRecipe(storagePath, MekanismBlocks.BRONZE_BLOCK);
-        addStorageBlockRecipe(storagePath, MekanismBlocks.REFINED_GLOWSTONE_BLOCK);
-        addStorageBlockRecipe(storagePath, MekanismBlocks.REFINED_OBSIDIAN_BLOCK);
-        addStorageBlockRecipe(storagePath, MekanismBlocks.STEEL_BLOCK);
-        addStorageBlockRecipe(storagePath, MekanismBlocks.FLUORITE_BLOCK);
-        addStorageBlockRecipe(storagePath, MekanismBlocks.CHARCOAL_BLOCK);
-        addRecipe(storagePath + "bio_fuel");
-        addRecipe(storagePath + "salt");
+        addStorageBlockRecipe(reloadableLookupProvider, storagePath, MekanismBlocks.BRONZE_BLOCK);
+        addStorageBlockRecipe(reloadableLookupProvider, storagePath, MekanismBlocks.REFINED_GLOWSTONE_BLOCK);
+        addStorageBlockRecipe(reloadableLookupProvider, storagePath, MekanismBlocks.REFINED_OBSIDIAN_BLOCK);
+        addStorageBlockRecipe(reloadableLookupProvider, storagePath, MekanismBlocks.STEEL_BLOCK);
+        addStorageBlockRecipe(reloadableLookupProvider, storagePath, MekanismBlocks.FLUORITE_BLOCK);
+        addStorageBlockRecipe(reloadableLookupProvider, storagePath, MekanismBlocks.CHARCOAL_BLOCK);
+        addRecipe(reloadableLookupProvider, storagePath + "bio_fuel");
+        addRecipe(reloadableLookupProvider, storagePath + "salt");
 
     }
 
-    private void addStorageBlockRecipe(String basePath, DeferredHolder<Block, BlockResource> block) {
-        addRecipe(basePath + block.value().getResourceInfo().getRegistrySuffix());
+    private void addStorageBlockRecipe(HolderLookup.Provider reloadableLookupProvider, String basePath, DeferredHolder<Block, BlockResource> block) {
+        addRecipe(reloadableLookupProvider, basePath + block.value().getResourceInfo().getRegistrySuffix());
     }
 
-    private void addFactoryRecipes() {
+    private void addFactoryRecipes(HolderLookup.Provider reloadableLookupProvider) {
         String basePath = "factory/";
         for (FactoryTier factoryTier : EnumUtils.FACTORY_TIERS) {
             String tieredPath = basePath + factoryTier.getBaseTier().getLowerName() + "/";
             for (FactoryType type : EnumUtils.FACTORY_TYPES) {
-                addRecipe(tieredPath + type.getRegistryNameComponent());
+                addRecipe(reloadableLookupProvider, tieredPath + type.getRegistryNameComponent());
             }
         }
     }
 
-    private void addTransmitterRecipes() {
-        addTieredRecipes("transmitter/logistical_transporter/");
-        addTieredRecipes("transmitter/mechanical_pipe/");
-        addTieredRecipes("transmitter/pressurized_tube/");
-        addTieredRecipes("transmitter/thermodynamic_conductor/");
-        addTieredRecipes("transmitter/universal_cable/");
-        addRecipe("transmitter/diversion_transporter");
-        addRecipe("transmitter/restrictive_transporter");
+    private void addTransmitterRecipes(HolderLookup.Provider reloadableLookupProvider) {
+        addTieredRecipes(reloadableLookupProvider, "transmitter/logistical_transporter/");
+        addTieredRecipes(reloadableLookupProvider, "transmitter/mechanical_pipe/");
+        addTieredRecipes(reloadableLookupProvider, "transmitter/pressurized_tube/");
+        addTieredRecipes(reloadableLookupProvider, "transmitter/thermodynamic_conductor/");
+        addTieredRecipes(reloadableLookupProvider, "transmitter/universal_cable/");
+        addRecipe(reloadableLookupProvider, "transmitter/diversion_transporter");
+        addRecipe(reloadableLookupProvider, "transmitter/restrictive_transporter");
     }
 
-    private void addInfusingRecipes() {
+    private void addInfusingRecipes(HolderLookup.Provider reloadableLookupProvider) {
         String conversionPath = "chemical_conversion/";
-        addRecipe(conversionPath + "bio/from_bio_fuel");
-        addRecipe(conversionPath + "carbon/from_enriched");
-        addRecipe(conversionPath + "diamond/from_enriched");
-        addRecipe(conversionPath + "fungi/from_mushrooms");
-        addRecipe(conversionPath + "redstone/from_enriched");
-        addRecipe(conversionPath + "refined_obsidian/from_enriched");
-        addRecipe(conversionPath + "gold/from_enriched");
-        addRecipe(conversionPath + "tin/from_enriched");
+        addRecipe(reloadableLookupProvider, conversionPath + "bio/from_bio_fuel");
+        addRecipe(reloadableLookupProvider, conversionPath + "carbon/from_enriched");
+        addRecipe(reloadableLookupProvider, conversionPath + "diamond/from_enriched");
+        addRecipe(reloadableLookupProvider, conversionPath + "fungi/from_mushrooms");
+        addRecipe(reloadableLookupProvider, conversionPath + "redstone/from_enriched");
+        addRecipe(reloadableLookupProvider, conversionPath + "refined_obsidian/from_enriched");
+        addRecipe(reloadableLookupProvider, conversionPath + "gold/from_enriched");
+        addRecipe(reloadableLookupProvider, conversionPath + "tin/from_enriched");
     }
 
-    private void addCrushingRecipes() {
+    private void addCrushingRecipes(HolderLookup.Provider reloadableLookupProvider) {
         String basePath = "crushing/";
-        addRecipe(basePath + "pointed_dripstone_from_block");
-        addRecipe(basePath + "charcoal_dust");
-        addRecipe(basePath + "obsidian_to_dust");
+        addRecipe(reloadableLookupProvider, basePath + "pointed_dripstone_from_block");
+        addRecipe(reloadableLookupProvider, basePath + "charcoal_dust");
+        addRecipe(reloadableLookupProvider, basePath + "obsidian_to_dust");
     }
 
-    private void addEnrichingRecipes() {
+    private void addEnrichingRecipes(HolderLookup.Provider reloadableLookupProvider) {
         String basePath = "enriching/";
-        addRecipe(basePath + "hdpe_sheet");
+        addRecipe(reloadableLookupProvider, basePath + "hdpe_sheet");
     }
 
-    private void addEvaporationRecipes() {
+    private void addEvaporationRecipes(HolderLookup.Provider reloadableLookupProvider) {
         String basePath = "thermal_evaporation/";
-        addRecipe(basePath + "block");
-        addRecipe(basePath + "controller");
-        addRecipe(basePath + "valve");
+        addRecipe(reloadableLookupProvider, basePath + "block");
+        addRecipe(reloadableLookupProvider, basePath + "controller");
+        addRecipe(reloadableLookupProvider, basePath + "valve");
         //Note: We intentionally don't bother converting brine to water for showing amounts by default
-        addRecipe("evaporating/lithium");
+        addRecipe(reloadableLookupProvider, "evaporating/lithium");
     }
 
-    private void addInductionRecipes() {
+    private void addInductionRecipes(HolderLookup.Provider reloadableLookupProvider) {
         String basePath = "induction/";
-        addTieredRecipes(basePath + "cell/");
-        addTieredRecipes(basePath + "provider/");
-        addRecipe(basePath + "casing");
-        addRecipe(basePath + "port");
+        addTieredRecipes(reloadableLookupProvider, basePath + "cell/");
+        addTieredRecipes(reloadableLookupProvider, basePath + "provider/");
+        addRecipe(reloadableLookupProvider, basePath + "casing");
+        addRecipe(reloadableLookupProvider, basePath + "port");
     }
 
     private void addRotaryRecipes() {
@@ -176,131 +175,131 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
         addRotaryRecipe(ChemicalIds.URANIUM_HEXAFLUORIDE);
     }
 
-    private void addMiscRecipes() {
-        addRecipe(MekanismItems.CANTEEN);
-        addRecipe(MekanismItems.CONFIGURATION_CARD);
-        addRecipe(MekanismItems.CONFIGURATOR);
-        addRecipe(MekanismItems.CRAFTING_FORMULA);
-        addRecipe(MekanismItems.DICTIONARY);
-        addRecipe(MekanismItems.DOSIMETER);
-        addRecipe(MekanismItems.GEIGER_COUNTER);
-        addRecipe(MekanismItems.DYE_BASE);
-        addRecipe(MekanismItems.ELECTRIC_BOW);
-        addRecipe(MekanismItems.ELECTROLYTIC_CORE);
-        addRecipe(MekanismItems.ENERGY_TABLET);
-        addRecipe(MekanismItems.GAUGE_DROPPER);
-        addRecipe(MekanismItems.HDPE_ROD);
-        addRecipe(MekanismItems.HDPE_STICK);
-        addRecipe(MekanismItems.HDPE_REINFORCED_ELYTRA);
-        addRecipe(MekanismItems.NETWORK_READER);
-        addRecipe(MekanismItems.PORTABLE_TELEPORTER);
-        addRecipe(MekanismItems.ROBIT);
-        addRecipe(MekanismItems.SEISMIC_READER);
-        addRecipe(MekanismItems.TELEPORTATION_CORE);
-        addRecipe(MekanismItems.BASE_QIO_DRIVE);
-        addRecipe(MekanismItems.HYPER_DENSE_QIO_DRIVE);
-        addRecipe(MekanismItems.TIME_DILATING_QIO_DRIVE);
-        addRecipe(MekanismItems.SUPERMASSIVE_QIO_DRIVE);
-        addRecipe(MekanismItems.PORTABLE_QIO_DASHBOARD);
-        addRecipe(MekanismItems.ATOMIC_DISASSEMBLER);
-        addRecipe(MekanismItems.FLAMETHROWER);
-        addRecipe(MekanismItems.FREE_RUNNERS);
-        addRecipe(MekanismItems.ARMORED_FREE_RUNNERS);
-        addRecipe(MekanismItems.SCUBA_MASK);
-        addRecipe(MekanismItems.SCUBA_TANK);
-        addRecipe(MekanismItems.JETPACK);
-        addRecipe(MekanismItems.ARMORED_JETPACK);
-        addRecipe(MekanismItems.HAZMAT_MASK);
-        addRecipe(MekanismItems.HAZMAT_GOWN);
-        addRecipe(MekanismItems.HAZMAT_PANTS);
-        addRecipe(MekanismItems.HAZMAT_BOOTS);
-        addRecipe(MekanismItems.MEKA_TOOL);
-        addRecipe(MekanismItems.MEKASUIT_HELMET);
-        addRecipe(MekanismItems.MEKASUIT_BODYARMOR);
-        addRecipe(MekanismItems.MEKASUIT_PANTS);
-        addRecipe(MekanismItems.MEKASUIT_BOOTS);
+    private void addMiscRecipes(HolderLookup.Provider reloadableLookupProvider) {
+        addRecipe(reloadableLookupProvider, MekanismItems.CANTEEN);
+        addRecipe(reloadableLookupProvider, MekanismItems.CONFIGURATION_CARD);
+        addRecipe(reloadableLookupProvider, MekanismItems.CONFIGURATOR);
+        addRecipe(reloadableLookupProvider, MekanismItems.CRAFTING_FORMULA);
+        addRecipe(reloadableLookupProvider, MekanismItems.DICTIONARY);
+        addRecipe(reloadableLookupProvider, MekanismItems.DOSIMETER);
+        addRecipe(reloadableLookupProvider, MekanismItems.GEIGER_COUNTER);
+        addRecipe(reloadableLookupProvider, MekanismItems.DYE_BASE);
+        addRecipe(reloadableLookupProvider, MekanismItems.ELECTRIC_BOW);
+        addRecipe(reloadableLookupProvider, MekanismItems.ELECTROLYTIC_CORE);
+        addRecipe(reloadableLookupProvider, MekanismItems.ENERGY_TABLET);
+        addRecipe(reloadableLookupProvider, MekanismItems.GAUGE_DROPPER);
+        addRecipe(reloadableLookupProvider, MekanismItems.HDPE_ROD);
+        addRecipe(reloadableLookupProvider, MekanismItems.HDPE_STICK);
+        addRecipe(reloadableLookupProvider, MekanismItems.HDPE_REINFORCED_ELYTRA);
+        addRecipe(reloadableLookupProvider, MekanismItems.NETWORK_READER);
+        addRecipe(reloadableLookupProvider, MekanismItems.PORTABLE_TELEPORTER);
+        addRecipe(reloadableLookupProvider, MekanismItems.ROBIT);
+        addRecipe(reloadableLookupProvider, MekanismItems.SEISMIC_READER);
+        addRecipe(reloadableLookupProvider, MekanismItems.TELEPORTATION_CORE);
+        addRecipe(reloadableLookupProvider, MekanismItems.BASE_QIO_DRIVE);
+        addRecipe(reloadableLookupProvider, MekanismItems.HYPER_DENSE_QIO_DRIVE);
+        addRecipe(reloadableLookupProvider, MekanismItems.TIME_DILATING_QIO_DRIVE);
+        addRecipe(reloadableLookupProvider, MekanismItems.SUPERMASSIVE_QIO_DRIVE);
+        addRecipe(reloadableLookupProvider, MekanismItems.PORTABLE_QIO_DASHBOARD);
+        addRecipe(reloadableLookupProvider, MekanismItems.ATOMIC_DISASSEMBLER);
+        addRecipe(reloadableLookupProvider, MekanismItems.FLAMETHROWER);
+        addRecipe(reloadableLookupProvider, MekanismItems.FREE_RUNNERS);
+        addRecipe(reloadableLookupProvider, MekanismItems.ARMORED_FREE_RUNNERS);
+        addRecipe(reloadableLookupProvider, MekanismItems.SCUBA_MASK);
+        addRecipe(reloadableLookupProvider, MekanismItems.SCUBA_TANK);
+        addRecipe(reloadableLookupProvider, MekanismItems.JETPACK);
+        addRecipe(reloadableLookupProvider, MekanismItems.ARMORED_JETPACK);
+        addRecipe(reloadableLookupProvider, MekanismItems.HAZMAT_MASK);
+        addRecipe(reloadableLookupProvider, MekanismItems.HAZMAT_GOWN);
+        addRecipe(reloadableLookupProvider, MekanismItems.HAZMAT_PANTS);
+        addRecipe(reloadableLookupProvider, MekanismItems.HAZMAT_BOOTS);
+        addRecipe(reloadableLookupProvider, MekanismItems.MEKA_TOOL);
+        addRecipe(reloadableLookupProvider, MekanismItems.MEKASUIT_HELMET);
+        addRecipe(reloadableLookupProvider, MekanismItems.MEKASUIT_BODYARMOR);
+        addRecipe(reloadableLookupProvider, MekanismItems.MEKASUIT_PANTS);
+        addRecipe(reloadableLookupProvider, MekanismItems.MEKASUIT_BOOTS);
 
-        addRecipe(MekanismBlocks.BOILER_CASING);
-        addRecipe(MekanismBlocks.BOILER_VALVE);
-        addRecipe(MekanismBlocks.CARDBOARD_BOX);
-        addRecipe(MekanismBlocks.CHARGEPAD);
-        addRecipe(MekanismBlocks.CHEMICAL_CRYSTALLIZER);
-        addRecipe(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER);
-        addRecipe(MekanismBlocks.CHEMICAL_INFUSER);
-        addRecipe(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER);
-        addRecipe(MekanismBlocks.CHEMICAL_OXIDIZER);
-        addRecipe(MekanismBlocks.CHEMICAL_WASHER);
-        addRecipe(MekanismBlocks.COMBINER);
-        addRecipe(MekanismBlocks.CRUSHER);
-        addRecipe(MekanismBlocks.DIGITAL_MINER);
-        addRecipe(MekanismBlocks.DYNAMIC_TANK);
-        addRecipe(MekanismBlocks.DYNAMIC_VALVE);
-        addRecipe(MekanismBlocks.ELECTRIC_PUMP);
-        addRecipe(MekanismBlocks.ELECTROLYTIC_SEPARATOR);
-        addRecipe(MekanismBlocks.ENERGIZED_SMELTER);
-        addRecipe(MekanismBlocks.ENRICHMENT_CHAMBER);
-        addRecipe(MekanismBlocks.FLUIDIC_PLENISHER);
-        addRecipe(MekanismBlocks.FORMULAIC_ASSEMBLICATOR);
-        addRecipe(MekanismBlocks.FUELWOOD_HEATER);
-        addRecipe(MekanismBlocks.INDUSTRIAL_ALARM);
-        addRecipe(MekanismBlocks.ISOTOPIC_CENTRIFUGE);
-        addRecipe(MekanismBlocks.LASER);
-        addRecipe(MekanismBlocks.LASER_AMPLIFIER);
-        addRecipe(MekanismBlocks.LASER_TRACTOR_BEAM);
-        addRecipe(MekanismBlocks.LOGISTICAL_SORTER);
-        addRecipe(MekanismBlocks.METALLURGIC_INFUSER);
-        addRecipe(MekanismBlocks.OREDICTIONIFICATOR);
-        addRecipe(MekanismBlocks.OSMIUM_COMPRESSOR);
-        addRecipe(MekanismBlocks.PERSONAL_BARREL);
-        addRecipe(MekanismBlocks.PERSONAL_CHEST);
-        addRecipe(MekanismBlocks.PRECISION_SAWMILL);
-        addRecipe(MekanismBlocks.PRESSURE_DISPERSER);
-        addRecipe(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
-        addRecipe(MekanismBlocks.PURIFICATION_CHAMBER);
-        addRecipe(MekanismBlocks.QUANTUM_ENTANGLOPORTER);
-        addRecipe(MekanismBlocks.RESISTIVE_HEATER);
-        addRecipe(MekanismBlocks.ROTARY_CONDENSENTRATOR);
-        addRecipe(MekanismBlocks.SECURITY_DESK);
-        addRecipe(MekanismBlocks.SEISMIC_VIBRATOR);
-        addRecipe(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
-        addRecipe(MekanismBlocks.STEEL_CASING);
-        addRecipe(MekanismBlocks.STRUCTURAL_GLASS);
-        addRecipe(MekanismBlocks.SUPERHEATING_ELEMENT);
-        addRecipe(MekanismBlocks.TELEPORTER);
-        addRecipe(MekanismBlocks.TELEPORTER_FRAME);
-        addRecipe(MekanismBlocks.QIO_DRIVE_ARRAY);
-        addRecipe(MekanismBlocks.QIO_REDSTONE_ADAPTER);
-        addRecipe(MekanismBlocks.QIO_EXPORTER);
-        addRecipe(MekanismBlocks.QIO_IMPORTER);
-        addRecipe(MekanismBlocks.QIO_DASHBOARD);
-        addRecipe(MekanismBlocks.SPS_CASING);
-        addRecipe(MekanismBlocks.SPS_PORT);
-        addRecipe(MekanismBlocks.SUPERCHARGED_COIL);
-        addRecipe(MekanismBlocks.NUTRITIONAL_LIQUIFIER);
-        addRecipe(MekanismBlocks.PIGMENT_EXTRACTOR);
-        addRecipe(MekanismBlocks.PIGMENT_MIXER);
-        addRecipe(MekanismBlocks.PAINTING_MACHINE);
-        addRecipe(MekanismBlocks.MODIFICATION_STATION);
-        addRecipe(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
-        addRecipe(MekanismBlocks.RADIOACTIVE_WASTE_BARREL);
-        addRecipe(MekanismBlocks.DIMENSIONAL_STABILIZER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.BOILER_CASING);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.BOILER_VALVE);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.CARDBOARD_BOX);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.CHARGEPAD);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.CHEMICAL_INFUSER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.CHEMICAL_OXIDIZER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.CHEMICAL_WASHER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.COMBINER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.CRUSHER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.DIGITAL_MINER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.DYNAMIC_TANK);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.DYNAMIC_VALVE);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.ELECTRIC_PUMP);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.ELECTROLYTIC_SEPARATOR);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.ENERGIZED_SMELTER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.ENRICHMENT_CHAMBER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.FLUIDIC_PLENISHER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.FORMULAIC_ASSEMBLICATOR);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.FUELWOOD_HEATER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.INDUSTRIAL_ALARM);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.LASER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.LASER_AMPLIFIER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.LASER_TRACTOR_BEAM);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.LOGISTICAL_SORTER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.METALLURGIC_INFUSER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.OREDICTIONIFICATOR);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.OSMIUM_COMPRESSOR);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.PERSONAL_BARREL);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.PERSONAL_CHEST);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.PRECISION_SAWMILL);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.PRESSURE_DISPERSER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.PURIFICATION_CHAMBER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.QUANTUM_ENTANGLOPORTER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.RESISTIVE_HEATER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.ROTARY_CONDENSENTRATOR);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.SECURITY_DESK);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.SEISMIC_VIBRATOR);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.STEEL_CASING);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.STRUCTURAL_GLASS);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.SUPERHEATING_ELEMENT);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.TELEPORTER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.TELEPORTER_FRAME);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.QIO_DRIVE_ARRAY);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.QIO_REDSTONE_ADAPTER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.QIO_EXPORTER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.QIO_IMPORTER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.QIO_DASHBOARD);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.SPS_CASING);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.SPS_PORT);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.SUPERCHARGED_COIL);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.NUTRITIONAL_LIQUIFIER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.PIGMENT_EXTRACTOR);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.PIGMENT_MIXER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.PAINTING_MACHINE);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.MODIFICATION_STATION);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.RADIOACTIVE_WASTE_BARREL);
+        addRecipe(reloadableLookupProvider, MekanismBlocks.DIMENSIONAL_STABILIZER);
     }
 
-    private void addGearModuleRecipes() {
-        addRecipe(MekanismItems.MODULE_BASE);
+    private void addGearModuleRecipes(HolderLookup.Provider reloadableLookupProvider) {
+        addRecipe(reloadableLookupProvider, MekanismItems.MODULE_BASE);
         for (DeferredHolder<ModuleData<?>, ? extends ModuleData<?>> module : MekanismModules.MODULES.getEntries()) {
-            addRecipe(module);
+            addRecipe(reloadableLookupProvider, module);
         }
     }
 
-    private void addLateGameRecipes(HolderLookup.Provider lookupProvider) {
+    private void addLateGameRecipes(HolderLookup.Provider reloadableLookupProvider) {
         String basePath = "processing/lategame/";
-        addRecipe(basePath + "plutonium");
-        addRecipe(basePath + "polonium");
-        addRecipe(basePath + "plutonium_pellet/from_reaction");
-        addRecipe(basePath + "polonium_pellet/from_reaction");
-        addRecipe(basePath + "antimatter_pellet/from_gas");
-        for (SPSRecipeViewerRecipe recipe : SPSRecipeViewerRecipe.getSPSRecipes(lookupProvider)) {
+        addRecipe(reloadableLookupProvider, basePath + "plutonium");
+        addRecipe(reloadableLookupProvider, basePath + "polonium");
+        addRecipe(reloadableLookupProvider, basePath + "plutonium_pellet/from_reaction");
+        addRecipe(reloadableLookupProvider, basePath + "polonium_pellet/from_reaction");
+        addRecipe(reloadableLookupProvider, basePath + "antimatter_pellet/from_gas");
+        for (SPSRecipeViewerRecipe recipe : SPSRecipeViewerRecipe.getSPSRecipes(reloadableLookupProvider)) {
             addUncheckedRecipe(recipe.id());
         }
     }

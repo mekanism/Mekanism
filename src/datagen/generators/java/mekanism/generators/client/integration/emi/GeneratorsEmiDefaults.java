@@ -11,25 +11,24 @@ import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.registries.GeneratorsModules;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class GeneratorsEmiDefaults extends BaseEmiDefaults {
 
-    public GeneratorsEmiDefaults(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, serverResources, registries, MekanismGenerators.MODID);
+    public GeneratorsEmiDefaults(PackOutput output, CompletableFuture<HolderLookup.Provider> reloadableLookupProvider) {
+        super(output, reloadableLookupProvider, MekanismGenerators.MODID);
     }
 
     @Override
-    protected void addDefaults(HolderLookup.Provider lookupProvider) {
-        addGeneratorRecipes();
-        addFissionReactorRecipes();
-        addFusionReactorRecipes();
-        addTurbineRecipes();
-        addChemicalInfuserRecipes();
-        addElectrolyticSeparatorRecipes();
-        addSolarNeutronActivatorRecipes();
-        addGearModuleRecipes();
+    protected void addDefaults(HolderLookup.Provider reloadableLookupProvider) {
+        addGeneratorRecipes(reloadableLookupProvider);
+        addFissionReactorRecipes(reloadableLookupProvider);
+        addFusionReactorRecipes(reloadableLookupProvider);
+        addTurbineRecipes(reloadableLookupProvider);
+        addChemicalInfuserRecipes(reloadableLookupProvider);
+        addElectrolyticSeparatorRecipes(reloadableLookupProvider);
+        addSolarNeutronActivatorRecipes(reloadableLookupProvider);
+        addGearModuleRecipes(reloadableLookupProvider);
         addRotaryRecipes();
         addUncheckedRecipe(RegistryUtils.synthetic(MekanismGenerators.rl("water"), "fission"));
     }
@@ -40,63 +39,63 @@ public class GeneratorsEmiDefaults extends BaseEmiDefaults {
         addRotaryRecipe(ChemicalIds.TRITIUM);
     }
 
-    private void addElectrolyticSeparatorRecipes() {
+    private void addElectrolyticSeparatorRecipes(HolderLookup.Provider reloadableLookupProvider) {
         String basePath = "separator/";
-        addRecipe(basePath + "heavy_water");
+        addRecipe(reloadableLookupProvider, basePath + "heavy_water");
     }
 
-    private void addChemicalInfuserRecipes() {
+    private void addChemicalInfuserRecipes(HolderLookup.Provider reloadableLookupProvider) {
         String basePath = "chemical_infusing/";
-        addRecipe(basePath + "fusion_fuel");
+        addRecipe(reloadableLookupProvider, basePath + "fusion_fuel");
     }
 
-    private void addSolarNeutronActivatorRecipes() {
+    private void addSolarNeutronActivatorRecipes(HolderLookup.Provider reloadableLookupProvider) {
         String basePath = "activating/";
-        addRecipe(basePath + "tritium");
+        addRecipe(reloadableLookupProvider, basePath + "tritium");
     }
 
-    private void addGeneratorRecipes() {
-        addRecipe(GeneratorsItems.SOLAR_PANEL);
-        addRecipe("generator/solar");
-        addRecipe("generator/advanced_solar");
-        addRecipe("generator/bio");
-        addRecipe("generator/gas_burning");
-        addRecipe("generator/heat");
-        addRecipe("generator/wind");
+    private void addGeneratorRecipes(HolderLookup.Provider reloadableLookupProvider) {
+        addRecipe(reloadableLookupProvider, GeneratorsItems.SOLAR_PANEL);
+        addRecipe(reloadableLookupProvider, "generator/solar");
+        addRecipe(reloadableLookupProvider, "generator/advanced_solar");
+        addRecipe(reloadableLookupProvider, "generator/bio");
+        addRecipe(reloadableLookupProvider, "generator/gas_burning");
+        addRecipe(reloadableLookupProvider, "generator/heat");
+        addRecipe(reloadableLookupProvider, "generator/wind");
     }
 
-    private void addFissionReactorRecipes() {
-        addRecipe("fission_reactor/casing");
-        addRecipe("fission_reactor/port");
-        addRecipe("fission_reactor/logic_adapter");
-        addRecipe("fission_reactor/fuel_assembly");
-        addRecipe("fission_reactor/control_rod_assembly");
+    private void addFissionReactorRecipes(HolderLookup.Provider reloadableLookupProvider) {
+        addRecipe(reloadableLookupProvider, "fission_reactor/casing");
+        addRecipe(reloadableLookupProvider, "fission_reactor/port");
+        addRecipe(reloadableLookupProvider, "fission_reactor/logic_adapter");
+        addRecipe(reloadableLookupProvider, "fission_reactor/fuel_assembly");
+        addRecipe(reloadableLookupProvider, "fission_reactor/control_rod_assembly");
     }
 
-    private void addFusionReactorRecipes() {
-        addRecipe(GeneratorsItems.HOHLRAUM);
-        addRecipe(GeneratorsBlocks.LASER_FOCUS_MATRIX);
-        addRecipe("reactor/frame");
-        addRecipe("reactor/glass");
-        addRecipe("reactor/port");
-        addRecipe("reactor/logic_adapter");
-        addRecipe("reactor/controller");
+    private void addFusionReactorRecipes(HolderLookup.Provider reloadableLookupProvider) {
+        addRecipe(reloadableLookupProvider, GeneratorsItems.HOHLRAUM);
+        addRecipe(reloadableLookupProvider, GeneratorsBlocks.LASER_FOCUS_MATRIX);
+        addRecipe(reloadableLookupProvider, "reactor/frame");
+        addRecipe(reloadableLookupProvider, "reactor/glass");
+        addRecipe(reloadableLookupProvider, "reactor/port");
+        addRecipe(reloadableLookupProvider, "reactor/logic_adapter");
+        addRecipe(reloadableLookupProvider, "reactor/controller");
     }
 
-    private void addTurbineRecipes() {
-        addRecipe(GeneratorsBlocks.ELECTROMAGNETIC_COIL);
-        addRecipe(GeneratorsBlocks.ROTATIONAL_COMPLEX);
-        addRecipe(GeneratorsBlocks.SATURATING_CONDENSER);
-        addRecipe("turbine/blade");
-        addRecipe("turbine/rotor");
-        addRecipe("turbine/casing");
-        addRecipe("turbine/valve");
-        addRecipe("turbine/vent");
+    private void addTurbineRecipes(HolderLookup.Provider reloadableLookupProvider) {
+        addRecipe(reloadableLookupProvider, GeneratorsBlocks.ELECTROMAGNETIC_COIL);
+        addRecipe(reloadableLookupProvider, GeneratorsBlocks.ROTATIONAL_COMPLEX);
+        addRecipe(reloadableLookupProvider, GeneratorsBlocks.SATURATING_CONDENSER);
+        addRecipe(reloadableLookupProvider, "turbine/blade");
+        addRecipe(reloadableLookupProvider, "turbine/rotor");
+        addRecipe(reloadableLookupProvider, "turbine/casing");
+        addRecipe(reloadableLookupProvider, "turbine/valve");
+        addRecipe(reloadableLookupProvider, "turbine/vent");
     }
 
-    private void addGearModuleRecipes() {
+    private void addGearModuleRecipes(HolderLookup.Provider reloadableLookupProvider) {
         for (DeferredHolder<ModuleData<?>, ? extends ModuleData<?>> module : GeneratorsModules.MODULES.getEntries()) {
-            addRecipe(module);
+            addRecipe(reloadableLookupProvider, module);
         }
     }
 }

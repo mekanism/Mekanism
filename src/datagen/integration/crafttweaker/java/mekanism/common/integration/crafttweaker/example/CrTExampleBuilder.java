@@ -10,6 +10,7 @@ import mekanism.common.integration.crafttweaker.example.component.CrTExampleRemo
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.example.component.ICrTExampleComponent;
 import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
@@ -67,8 +68,8 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
         return recipeComponentBuilder;
     }
 
-    public BUILDER_TYPE removeRecipes(MekanismRecipeManager<?, ?> recipeManager, Identifier... recipeNames) {
-        return addComponent(new CrTExampleRemoveRecipesComponent(exampleProvider, recipeManager, recipeNames));
+    public BUILDER_TYPE removeRecipes(MekanismRecipeManager<?, ?> recipeManager, HolderLookup.Provider reloadableLookupProvider, Identifier... recipeNames) {
+        return addComponent(new CrTExampleRemoveRecipesComponent(exampleProvider, recipeManager, reloadableLookupProvider, recipeNames));
     }
 
     public CrTExampleSnipComponentBuilder<BUILDER_TYPE> modLoadedSnip(String modid) {

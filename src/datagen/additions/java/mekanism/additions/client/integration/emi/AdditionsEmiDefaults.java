@@ -9,56 +9,55 @@ import mekanism.client.integration.emi.BaseEmiDefaults;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.server.packs.resources.ResourceManager;
 
 public class AdditionsEmiDefaults extends BaseEmiDefaults {
 
-    public AdditionsEmiDefaults(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, serverResources, registries, MekanismAdditions.MODID);
+    public AdditionsEmiDefaults(PackOutput output, CompletableFuture<HolderLookup.Provider> reloadableLookupProvider) {
+        super(output, reloadableLookupProvider, MekanismAdditions.MODID);
     }
 
     @Override
-    protected void addDefaults(HolderLookup.Provider lookupProvider) {
-        addRecipe(AdditionsItems.WALKIE_TALKIE);
-        addRecipe(AdditionsBlocks.OBSIDIAN_TNT);
-        addColoredRecipes("balloon/", true);
-        addColoredRecipes("glow_panel/", true);
-        addPlasticBlocks();
+    protected void addDefaults(HolderLookup.Provider reloadableLookupProvider) {
+        addRecipe(reloadableLookupProvider, AdditionsItems.WALKIE_TALKIE);
+        addRecipe(reloadableLookupProvider, AdditionsBlocks.OBSIDIAN_TNT);
+        addColoredRecipes(reloadableLookupProvider, "balloon/", true);
+        addColoredRecipes(reloadableLookupProvider, "glow_panel/", true);
+        addPlasticBlocks(reloadableLookupProvider);
     }
 
-    private void addColoredRecipes(String basePath, boolean requiresDye) {
+    private void addColoredRecipes(HolderLookup.Provider reloadableLookupProvider, String basePath, boolean requiresDye) {
         for (EnumColor color : EnumUtils.COLORS) {
             if (!requiresDye || color.getDyeColor() != null) {
-                addRecipe(basePath + color.getRegistryPrefix());
+                addRecipe(reloadableLookupProvider, basePath + color.getRegistryPrefix());
             }
         }
     }
 
-    private void addPlasticBlocks() {
+    private void addPlasticBlocks(HolderLookup.Provider reloadableLookupProvider) {
         String basePath = "plastic/";
-        addColoredRecipes(basePath + "fence/", false);
-        addColoredRecipes(basePath + "fence_gate/", false);
-        addPlasticSlabs(basePath);
-        addPlasticStairs(basePath);
-        addColoredRecipes(basePath + "block/", true);
-        addColoredRecipes(basePath + "glow/", false);
-        addColoredRecipes(basePath + "reinforced/", false);
-        addColoredRecipes(basePath + "road/", false);
-        addColoredRecipes(basePath + "slick/enriching/", false);
-        addColoredRecipes(basePath + "transparent/", true);
+        addColoredRecipes(reloadableLookupProvider, basePath + "fence/", false);
+        addColoredRecipes(reloadableLookupProvider, basePath + "fence_gate/", false);
+        addPlasticSlabs(reloadableLookupProvider, basePath);
+        addPlasticStairs(reloadableLookupProvider, basePath);
+        addColoredRecipes(reloadableLookupProvider, basePath + "block/", true);
+        addColoredRecipes(reloadableLookupProvider, basePath + "glow/", false);
+        addColoredRecipes(reloadableLookupProvider, basePath + "reinforced/", false);
+        addColoredRecipes(reloadableLookupProvider, basePath + "road/", false);
+        addColoredRecipes(reloadableLookupProvider, basePath + "slick/enriching/", false);
+        addColoredRecipes(reloadableLookupProvider, basePath + "transparent/", true);
     }
 
-    private void addPlasticSlabs(String basePath) {
+    private void addPlasticSlabs(HolderLookup.Provider reloadableLookupProvider, String basePath) {
         basePath += "slab/";
-        addColoredRecipes(basePath, false);
-        addColoredRecipes(basePath + "transparent/", false);
-        addColoredRecipes(basePath + "glow/", false);
+        addColoredRecipes(reloadableLookupProvider, basePath, false);
+        addColoredRecipes(reloadableLookupProvider, basePath + "transparent/", false);
+        addColoredRecipes(reloadableLookupProvider, basePath + "glow/", false);
     }
 
-    private void addPlasticStairs(String basePath) {
+    private void addPlasticStairs(HolderLookup.Provider reloadableLookupProvider, String basePath) {
         basePath += "stairs/";
-        addColoredRecipes(basePath, false);
-        addColoredRecipes(basePath + "transparent/", false);
-        addColoredRecipes(basePath + "glow/", false);
+        addColoredRecipes(reloadableLookupProvider, basePath, false);
+        addColoredRecipes(reloadableLookupProvider, basePath + "transparent/", false);
+        addColoredRecipes(reloadableLookupProvider, basePath + "glow/", false);
     }
 }

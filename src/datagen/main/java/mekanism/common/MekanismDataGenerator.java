@@ -101,10 +101,10 @@ public class MekanismDataGenerator {
         gen.addProvider(true, reloadableRegistryProvider);
         gen.addProvider(true, new MekanismDataMapsProvider(output, reloadableLookupProvider));
         gen.addProvider(true, new ComputerHelpProvider(output, reloadableLookupProvider, Mekanism.MODID));
-        gen.addProvider(true, new MekanismEmiDefaults(output, event.getResourceManager(PackType.SERVER_DATA), reloadableLookupProvider));
+        gen.addProvider(true, new MekanismEmiDefaults(output, reloadableLookupProvider));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        PersistingDisabledProvidersProvider.addDisableableProviders(event, reloadableLookupProvider, disabledCompats);
+        PersistingDisabledProvidersProvider.addDisableableProviders(gen, reloadableLookupProvider, disabledCompats);
     }
 
     public static CompletableFuture<HolderLookup.Provider> getReloadableLookupProvider() {

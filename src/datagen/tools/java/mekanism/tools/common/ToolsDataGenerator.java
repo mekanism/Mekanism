@@ -44,7 +44,7 @@ public class ToolsDataGenerator {
         gen.addProvider(true, new ToolsTagProvider(output, reloadableLookupProvider));
         gen.addProvider(true, worldRegistryProvider);
         gen.addProvider(true, reloadableRegistryProvider);
-        gen.addProvider(true, new ToolsEmiDefaults(output, event.getResourceManager(PackType.SERVER_DATA), reloadableLookupProvider));
+        gen.addProvider(true, new ToolsEmiDefaults(output, reloadableLookupProvider));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, reloadableLookupProvider, MekanismTools.MODID, ToolsAliasMapping::new);

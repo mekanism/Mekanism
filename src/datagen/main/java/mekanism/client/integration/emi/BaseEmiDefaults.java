@@ -13,6 +13,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -20,7 +21,6 @@ import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -28,16 +28,14 @@ public abstract class BaseEmiDefaults implements DataProvider {
 
     private static final Codec<List<Identifier>> CODEC = ExtraCodecs.nonEmptyList(Identifier.CODEC.listOf()).fieldOf("added").codec();
 
-    private final CompletableFuture<HolderLookup.Provider> registries;
+    private final CompletableFuture<HolderLookup.Provider> reloadableLookupProvider;
     private final Set<Identifier> recipes = new HashSet<>();
-    private final ResourceManager serverResources;
     private final PathProvider pathProvider;
     private final String modid;
 
-    protected BaseEmiDefaults(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries, String modid) {
+    protected BaseEmiDefaults(PackOutput output, CompletableFuture<HolderLookup.Provider> reloadableLookupProvider, String modid) {
         this.pathProvider = output.createPathProvider(Target.RESOURCE_PACK, "recipe/defaults");
-        this.serverResources = serverResources;
-        this.registries = registries;
+        this.reloadableLookupProvider = reloadableLookupProvider;
         this.modid = modid;
     }
 
@@ -48,7 +46,7 @@ public abstract class BaseEmiDefaults implements DataProvider {
 
     @Override
     public final CompletableFuture<?> run(CachedOutput cachedOutput) {
-        return this.registries.thenCompose(lookupProvider -> {
+        return this.reloadableLookupProvider.thenCompose(lookupProvider -> {
             addDefaults(lookupProvider);
             //Sort to make the output more stable
             List<Identifier> sortedRecipes = new ArrayList<>(recipes);
@@ -58,18 +56,18 @@ public abstract class BaseEmiDefaults implements DataProvider {
         });
     }
 
-    protected abstract void addDefaults(HolderLookup.Provider lookupProvider);
+    protected abstract void addDefaults(HolderLookup.Provider reloadableLookupProvider);
 
-    protected void addTieredRecipes(String basePath) {
+    protected void addTieredRecipes(HolderLookup.Provider reloadableLookupProvider, String basePath) {
         for (BaseTier tier : EnumUtils.TIERS) {
             if (tier != BaseTier.CREATIVE) {
-                addRecipe(basePath + tier.getLowerName());
+                addRecipe(reloadableLookupProvider, basePath + tier.getLowerName());
             }
         }
     }
 
-    protected void addRecipe(DeferredHolder<?, ?> output) {
-        addRecipe(output.getId());
+    protected void addRecipe(HolderLookup.Provider reloadableLookupProvider, DeferredHolder<?, ?> output) {
+        addRecipe(reloadableLookupProvider, output.getId());
     }
 
     protected void addRotaryRecipe(ResourceKey<Chemical> chemical) {
@@ -78,12 +76,12 @@ public abstract class BaseEmiDefaults implements DataProvider {
         addUncheckedRecipe(RegistryUtils.synthetic(Identifier.fromNamespaceAndPath(modid, "rotary/" + chemical.identifier().getPath()), "condensentrating"));
     }
 
-    protected void addRecipe(String recipePath) {
-        addRecipe(Identifier.fromNamespaceAndPath(modid, recipePath));
+    protected void addRecipe(HolderLookup.Provider reloadableLookupProvider, String recipePath) {
+        addRecipe(reloadableLookupProvider, Identifier.fromNamespaceAndPath(modid, recipePath));
     }
 
-    protected void addRecipe(Identifier recipe) {
-        if (recipeExists(recipe)) {
+    protected void addRecipe(HolderLookup.Provider reloadableLookupProvider, Identifier recipe) {
+        if (recipeExists(reloadableLookupProvider, recipe)) {
             addUncheckedRecipe(recipe);
         } else {
             throw new IllegalArgumentException("Recipe '" + recipe + "' does not exist.");
@@ -96,8 +94,7 @@ public abstract class BaseEmiDefaults implements DataProvider {
         }
     }
 
-    public boolean recipeExists(Identifier location) {
-        //TODO - 26.3: Figure out how to reimplement this
-        return true;//return serverResources.getResource(location.withPrefix("recipe/").withSuffix(".json")).isPresent();
+    private boolean recipeExists(HolderLookup.Provider reloadableLookupProvider, Identifier location) {
+        return reloadableLookupProvider.get(ResourceKey.create(Registries.RECIPE, location)).isPresent();
     }
 }

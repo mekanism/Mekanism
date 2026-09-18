@@ -6,43 +6,42 @@ import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.server.packs.resources.ResourceManager;
 
 public class ToolsEmiDefaults extends BaseEmiDefaults {
 
-    public ToolsEmiDefaults(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, serverResources, registries, MekanismTools.MODID);
+    public ToolsEmiDefaults(PackOutput output, CompletableFuture<HolderLookup.Provider> reloadableLookupProvider) {
+        super(output, reloadableLookupProvider, MekanismTools.MODID);
     }
 
     @Override
-    protected void addDefaults(HolderLookup.Provider lookupProvider) {
-        addDefaults("bronze");
-        addDefaults("lapis_lazuli");
-        addDefaults("osmium");
-        addDefaults("refined_glowstone");
-        addDefaults("refined_obsidian");
-        addDefaults("steel");
+    protected void addDefaults(HolderLookup.Provider reloadableLookupProvider) {
+        addDefaults(reloadableLookupProvider, "bronze");
+        addDefaults(reloadableLookupProvider, "lapis_lazuli");
+        addDefaults(reloadableLookupProvider, "osmium");
+        addDefaults(reloadableLookupProvider, "refined_glowstone");
+        addDefaults(reloadableLookupProvider, "refined_obsidian");
+        addDefaults(reloadableLookupProvider, "steel");
         ToolsItems.vanillaPaxels().forEach(paxel -> {
             if (paxel != ToolsItems.NETHERITE_PAXEL) {
-                addRecipe(paxel);
+                addRecipe(reloadableLookupProvider, paxel);
             }
         });
     }
 
-    private void addDefaults(String name) {
+    private void addDefaults(HolderLookup.Provider reloadableLookupProvider, String name) {
         //Emi adds default for all vanilla tools and armor crafting recipes (not smelting)
         String baseArmorPath = name + "/armor/";
-        addRecipe(baseArmorPath + "helmet");
-        addRecipe(baseArmorPath + "chestplate");
-        addRecipe(baseArmorPath + "leggings");
-        addRecipe(baseArmorPath + "boots");
-        addRecipe(name + "/shield");
+        addRecipe(reloadableLookupProvider, baseArmorPath + "helmet");
+        addRecipe(reloadableLookupProvider, baseArmorPath + "chestplate");
+        addRecipe(reloadableLookupProvider, baseArmorPath + "leggings");
+        addRecipe(reloadableLookupProvider, baseArmorPath + "boots");
+        addRecipe(reloadableLookupProvider, name + "/shield");
         String baseToolsPath = name + "/tools/";
-        addRecipe(baseToolsPath + "sword");
-        addRecipe(baseToolsPath + "pickaxe");
-        addRecipe(baseToolsPath + "axe");
-        addRecipe(baseToolsPath + "shovel");
-        addRecipe(baseToolsPath + "hoe");
-        addRecipe(baseToolsPath + "paxel");
+        addRecipe(reloadableLookupProvider, baseToolsPath + "sword");
+        addRecipe(reloadableLookupProvider, baseToolsPath + "pickaxe");
+        addRecipe(reloadableLookupProvider, baseToolsPath + "axe");
+        addRecipe(reloadableLookupProvider, baseToolsPath + "shovel");
+        addRecipe(reloadableLookupProvider, baseToolsPath + "hoe");
+        addRecipe(reloadableLookupProvider, baseToolsPath + "paxel");
     }
 }

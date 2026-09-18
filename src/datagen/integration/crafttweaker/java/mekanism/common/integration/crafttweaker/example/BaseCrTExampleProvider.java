@@ -41,13 +41,14 @@ import mekanism.common.integration.crafttweaker.example.component.CrTImportsComp
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
@@ -63,15 +64,13 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     private final Map<Class<?>, ConversionTracker> supportedConversions = new HashMap<>();
     private final Map<String, CrTExampleBuilder<?>> examples = new LinkedHashMap<>();
     private final Map<Class<?>, String> nameLookupOverrides = new HashMap<>();
-    private final CompletableFuture<HolderLookup.Provider> registries;
-    private final ResourceManager serverResources;
+    private final CompletableFuture<HolderLookup.Provider> reloadableLookupProvider;
     private final PackOutput output;
     private final String modid;
 
-    protected BaseCrTExampleProvider(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries, String modid) {
+    protected BaseCrTExampleProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> reloadableLookupProvider, String modid) {
         this.output = output;
-        this.serverResources = serverResources;
-        this.registries = registries;
+        this.reloadableLookupProvider = reloadableLookupProvider;
         this.modid = modid;
         addNameLookupOverride(String.class, "string");
         addPrimitiveInfo(Byte.TYPE, Byte.class, "byte");
@@ -203,11 +202,11 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         return nameLookupOverrides.getOrDefault(clazz, clazz.getSimpleName());
     }
 
-    public boolean recipeExists(Identifier location) {
-        return serverResources.getResource(location.withPrefix("recipe/").withSuffix(".json")).isPresent();
+    public boolean recipeExists(HolderLookup.Provider reloadableLookupProvider, Identifier location) {
+        return reloadableLookupProvider.get(ResourceKey.create(Registries.RECIPE, location)).isPresent();
     }
 
-    protected abstract void addExamples(HolderLookup.Provider registries);
+    protected abstract void addExamples(HolderLookup.Provider reloadableLookupProvider);
 
     /// Creates and adds a CraftTweaker example script builder with the file located by data/modid/scripts/fileName.json
     ///
@@ -229,7 +228,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
-        return this.registries.thenCompose(lookup -> {
+        return this.reloadableLookupProvider.thenCompose(lookup -> {
             examples.clear();
             addExamples(lookup);
             PathProvider pathProvider = output.createPathProvider(Target.DATA_PACK, "scripts");

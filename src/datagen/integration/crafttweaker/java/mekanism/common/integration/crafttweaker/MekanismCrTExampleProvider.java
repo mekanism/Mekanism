@@ -57,7 +57,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -70,15 +69,15 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
 
     private static final String EXPANSION_TARGET_JEITWEAKER = "mods.jeitweaker.Jei";
 
-    public MekanismCrTExampleProvider(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, serverResources, registries, Mekanism.MODID);
+    public MekanismCrTExampleProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> reloadableLookupProvider) {
+        super(output, reloadableLookupProvider, Mekanism.MODID);
     }
 
     @Override
-    protected void addExamples(HolderLookup.Provider registries) {
-        HolderGetter<Chemical> chemicals = registries.lookupOrThrow(MekanismRegistries.Keys.CHEMICAL);
+    protected void addExamples(HolderLookup.Provider reloadableLookupProvider) {
+        HolderGetter<Chemical> chemicals = reloadableLookupProvider.lookupOrThrow(MekanismRegistries.Keys.CHEMICAL);
         //Recipes
-        addRecipeExamples(registries);
+        addRecipeExamples(reloadableLookupProvider);
         //JEITweaker integration
         exampleBuilder("mekanism/jeitweaker_integration")
               .addComponent(() -> "#modloaded " + Mekanism.hooks.jeiTweaker.modid())
@@ -109,10 +108,10 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         ;
     }
 
-    private void addRecipeExamples(HolderLookup.Provider registries) {
-        HolderGetter<Item> items = registries.lookupOrThrow(Registries.ITEM);
-        HolderGetter<Fluid> fluids = registries.lookupOrThrow(Registries.FLUID);
-        HolderGetter<Chemical> chemicals = registries.lookupOrThrow(MekanismRegistries.Keys.CHEMICAL);
+    private void addRecipeExamples(HolderLookup.Provider reloadableLookupProvider) {
+        HolderGetter<Item> items = reloadableLookupProvider.lookupOrThrow(Registries.ITEM);
+        HolderGetter<Fluid> fluids = reloadableLookupProvider.lookupOrThrow(Registries.FLUID);
+        HolderGetter<Chemical> chemicals = reloadableLookupProvider.lookupOrThrow(MekanismRegistries.Keys.CHEMICAL);
         exampleBuilder("mekanism/crystallizer")
               .comment("Adds two Crystallizing Recipes that do the following:",
                     "1) Adds a recipe that produces one Osmium Ingot out of 200 mB of Osmium.",
@@ -127,7 +126,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "1) The recipe for producing Lithium Dust.",
                     "2) The recipe for producing Antimatter Pellets."
               ).blankLine()
-              .removeRecipes(ChemicalCrystallizerRecipeManager.INSTANCE,
+              .removeRecipes(ChemicalCrystallizerRecipeManager.INSTANCE, reloadableLookupProvider, 
                     Mekanism.rl("crystallizing/lithium"),
                     Mekanism.rl("processing/lategame/antimatter_pellet/from_gas")
               )
@@ -143,7 +142,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "1) The recipe for producing Hydrofluoric Acid from Fluorite.",
                     "2) The recipe for producing Dirty Lead Slurry from Lead Ore."
               ).blankLine()
-              .removeRecipes(ChemicalDissolutionRecipeManager.INSTANCE,
+              .removeRecipes(ChemicalDissolutionRecipeManager.INSTANCE, reloadableLookupProvider, 
                     Mekanism.rl("processing/uranium/hydrofluoric_acid"),
                     Mekanism.rl("processing/lead/slurry/dirty/from_ore")
               )
@@ -157,7 +156,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Chemical Infusing Recipe for producing Sulfur Trioxide from Oxygen and Sulfur Dioxide.")
               .blankLine()
-              .removeRecipes(ChemicalInfuserRecipeManager.INSTANCE, Mekanism.rl("chemical_infusing/sulfur_trioxide"))
+              .removeRecipes(ChemicalInfuserRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("chemical_infusing/sulfur_trioxide"))
         ;
         exampleBuilder("mekanism/combining")
               .comment("Adds two Combining Recipes that do the following:",
@@ -174,7 +173,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "1) The recipe for producing Fluorite Ore.",
                     "2) The recipe for producing Light Blue Dye from Blue Dye and White Dye."
               ).blankLine()
-              .removeRecipes(CombinerRecipeManager.INSTANCE,
+              .removeRecipes(CombinerRecipeManager.INSTANCE, reloadableLookupProvider, 
                     Mekanism.rl("processing/fluorite/to_ore"),
                     Mekanism.rl("combining/dye/light_blue")
               )
@@ -195,12 +194,12 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Separating Recipe for separating Brine into Sodium and Chlorine.")
               .blankLine()
-              .removeRecipes(ElectrolysisRecipeManager.INSTANCE, Mekanism.rl("separator/brine"))
+              .removeRecipes(ElectrolysisRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("separator/brine"))
         ;
         exampleBuilder("mekanism/washing")
               .comment("Removes the Washing Recipe for cleaning Dirty Uranium Slurry.")
               .blankLine()
-              .removeRecipes(ChemicalWasherRecipeManager.INSTANCE, Mekanism.rl("processing/uranium/slurry/clean"))
+              .removeRecipes(ChemicalWasherRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("processing/uranium/slurry/clean"))
               .comment("Add back the Washing Recipe that was removed above, this time having it require 10 mB of water to clean 1 mB of Dirty Uranium Slurry instead of 5 mB:")
               .blankLine()
               .recipe(ChemicalWasherRecipeManager.INSTANCE)
@@ -216,7 +215,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Evaporating Recipe for producing Lithium from Brine.")
               .blankLine()
-              .removeRecipes(EvaporatingRecipeManager.INSTANCE, Mekanism.rl("evaporating/lithium"))
+              .removeRecipes(EvaporatingRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("evaporating/lithium"))
         ;
         exampleBuilder("mekanism/activating")
               .comment("Adds an Activating Recipe that converts 1 mB of Water Vapor to 1 mB of Gaseous Brine.")
@@ -227,7 +226,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Activating Recipe for producing Polonium from Nuclear Waste.")
               .blankLine()
-              .removeRecipes(SolarNeutronActivatorRecipeManager.INSTANCE, Mekanism.rl("processing/lategame/polonium"))
+              .removeRecipes(SolarNeutronActivatorRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("processing/lategame/polonium"))
         ;
         exampleBuilder("mekanism/centrifuging")
               .comment("Adds a Centrifuging Recipe that converts 1 mB of Gaseous Brine into 1 mB of Hydrogen Chloride.")
@@ -238,7 +237,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Centrifuging Recipe for producing Plutonium from Nuclear Waste.")
               .blankLine()
-              .removeRecipes(IsotopicCentrifugeRecipeManager.INSTANCE, Mekanism.rl("processing/lategame/plutonium"))
+              .removeRecipes(IsotopicCentrifugeRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("processing/lategame/plutonium"))
         ;
         exampleBuilder("mekanism/compressing")
               .comment("Adds a Compressing Recipe that compresses Emerald Dust into an Emerald.")
@@ -249,7 +248,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Compressing Recipe that creates Refined Obsidian Ingots.")
               .blankLine()
-              .removeRecipes(OsmiumCompressorRecipeManager.INSTANCE, Mekanism.rl("processing/refined_obsidian/ingot/from_dust"))
+              .removeRecipes(OsmiumCompressorRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("processing/refined_obsidian/ingot/from_dust"))
         ;
         exampleBuilder("mekanism/injecting")
               .comment("Adds an Injecting Recipe that injects 1,000 mB of Water Vapor (5 mB per tick) into a Dry Sponge to make it Wet.")
@@ -260,7 +259,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Injecting Recipe that creates Gold Shards from Gold Ore.")
               .blankLine()
-              .removeRecipes(ChemicalInjectionRecipeManager.INSTANCE, Mekanism.rl("processing/gold/shard/from_ore"))
+              .removeRecipes(ChemicalInjectionRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("processing/gold/shard/from_ore"))
         ;
         exampleBuilder("mekanism/purifying")
               .comment("Adds a Purifying Recipe that uses 200 mB of Oxygen (1 mB per tick) Basalt into Polished Basalt.")
@@ -271,7 +270,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Purifying Recipe that creates Gold Clumps from Gold Ore.")
               .blankLine()
-              .removeRecipes(PurificationRecipeManager.INSTANCE, Mekanism.rl("processing/gold/clump/from_ore"))
+              .removeRecipes(PurificationRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("processing/gold/clump/from_ore"))
         ;
         exampleBuilder("mekanism/metallurgic_infusing")
               .comment("Adds a Metallurgic Infusing Recipe that uses 10 mB of Fungi Infuse Type to convert any Oak Planks into Crimson Planks.")
@@ -282,7 +281,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Metallurgic Infusing Recipe that allows creating Dirt from Sand.")
               .blankLine()
-              .removeRecipes(MetallurgicInfuserRecipeManager.INSTANCE, Mekanism.rl("metallurgic_infusing/sand_to_dirt"))
+              .removeRecipes(MetallurgicInfuserRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("metallurgic_infusing/sand_to_dirt"))
         ;
         exampleBuilder("mekanism/painting")
               .comment("Adds a Painting Recipe that uses 256 mB Red Pigment to convert Clear Sand into Red Sand.")
@@ -294,7 +293,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Painting Recipe that allows creating White Dye.")
               .blankLine()
-              .removeRecipes(PaintingRecipeManager.INSTANCE, Mekanism.rl("painting/dye/white"))
+              .removeRecipes(PaintingRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("painting/dye/white"))
         ;
         exampleBuilder("mekanism/energy_conversion")
               .comment("Adds an Energy Conversion Recipe that allows converting Redstone Ore into 45 kJ of power.")
@@ -304,7 +303,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Energy Conversion Recipe that allows converting Redstone Blocks into Power.")
               .blankLine()
-              .removeRecipes(EnergyConversionRecipeManager.INSTANCE, Mekanism.rl("energy_conversion/redstone_block"))
+              .removeRecipes(EnergyConversionRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("energy_conversion/redstone_block"))
         ;
         exampleBuilder("mekanism/gas_conversion")
               .comment("Adds a Gas Conversion Recipe that allows converting Osmium Nuggets into 22 mB of Osmium.")
@@ -315,7 +314,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Gas Conversion Recipe that allows converting Osmium Blocks into Osmium.")
               .blankLine()
-              .removeRecipes(ChemicalConversionRecipeManager.INSTANCE, Mekanism.rl("chemical_conversion/osmium_from_block"))
+              .removeRecipes(ChemicalConversionRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("chemical_conversion/osmium_from_block"))
         ;
         exampleBuilder("mekanism/oxidizing")
               .comment("Adds an Oxidizing Recipe that allows converting Salt Blocks into 60 mB of Gaseous Brine.")
@@ -325,7 +324,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Oxidizing Recipe that allows Sulfur Dioxide from Sulfur Dust.")
               .blankLine()
-              .removeRecipes(ChemicalOxidizerRecipeManager.INSTANCE, Mekanism.rl("oxidizing/sulfur_dioxide"))
+              .removeRecipes(ChemicalOxidizerRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("oxidizing/sulfur_dioxide"))
         ;
         exampleBuilder("mekanism/infusion_conversion")
               .comment("Adds an Infusion Conversion Recipe that allows converting Gold Ingots into 10 mB Gold Infuse Type.")
@@ -335,7 +334,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Infusion Conversion Recipe that allows converting Bio Fuel into the Bio Infuse Type.")
               .blankLine()
-              .removeRecipes(ChemicalConversionRecipeManager.INSTANCE, Mekanism.rl("chemical_conversion/bio/from_bio_fuel"))
+              .removeRecipes(ChemicalConversionRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("chemical_conversion/bio/from_bio_fuel"))
         ;
         exampleBuilder("mekanism/crushing")
               .comment("Adds a Crushing Recipe to crush Brick Blocks into four Bricks.")
@@ -345,7 +344,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Crushing Recipe that produces String from Wool.")
               .blankLine()
-              .removeRecipes(CrusherRecipeManager.INSTANCE, Mekanism.rl("crushing/wool_to_string"))
+              .removeRecipes(CrusherRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("crushing/wool_to_string"))
         ;
         exampleBuilder("mekanism/enriching")
               .comment("Adds an Enriching Recipe to convert 20 Oak Leaves into an Oak Sapling.")
@@ -355,7 +354,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Enriching Recipe that creates Gold Dust from Gold Ore.")
               .blankLine()
-              .removeRecipes(EnrichmentChamberRecipeManager.INSTANCE, Mekanism.rl("processing/gold/dust/from_ore"))
+              .removeRecipes(EnrichmentChamberRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("processing/gold/dust/from_ore"))
         ;
         exampleBuilder("mekanism/smelting")
               .comment("Adds a Smelting Recipe that works in Mekanism machines but won't work in a regular furnace to smelt Stone Slabs into Smooth Stone Slabs.")
@@ -373,7 +372,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Pigment Extracting Recipe that extracts Brown Pigment from Brown Dye.")
               .blankLine()
-              .removeRecipes(PigmentExtractingRecipeManager.INSTANCE, Mekanism.rl("pigment_extracting/dye/brown"))
+              .removeRecipes(PigmentExtractingRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("pigment_extracting/dye/brown"))
         ;
         exampleBuilder("mekanism/nucleosynthesizing")
               .comment("Adds a Nucleosynthesizing Recipe that converts a Block of Coal to a Block of Diamond in 9,000 ticks (7 minutes 30 seconds).")
@@ -384,7 +383,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Nucleosynthesizing Recipe that converts Tin Ingots into Iron Ingots.")
               .blankLine()
-              .removeRecipes(NucleosynthesizingRecipeManager.INSTANCE, Mekanism.rl("nucleosynthesizing/iron"))
+              .removeRecipes(NucleosynthesizingRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("nucleosynthesizing/iron"))
         ;
         exampleBuilder("mekanism/pigment_mixing")
               .comment("Adds a Pigment Mixing Recipe that mixes 1 mB of White Pigment with 4 mB of Dark Red Pigment to produce 5 mB of Red Pigment.")
@@ -396,7 +395,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Pigment Mixing Recipe that produces Dark Red Pigment from Black and Red Pigment.")
               .blankLine()
-              .removeRecipes(PigmentMixingRecipeManager.INSTANCE, Mekanism.rl("pigment_mixing/black_red_to_dark_red"))
+              .removeRecipes(PigmentMixingRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("pigment_mixing/black_red_to_dark_red"))
         ;
         exampleBuilder("mekanism/reaction")
               .comment("Adds six Reaction Recipes that do the following:",
@@ -426,7 +425,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Reaction Recipe for producing Substrate from Bio Fuel.")
               .blankLine()
-              .removeRecipes(PressurizedReactionRecipeManager.INSTANCE, Mekanism.rl("reaction/substrate/water_hydrogen"))
+              .removeRecipes(PressurizedReactionRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("reaction/substrate/water_hydrogen"))
         ;
         exampleBuilder("mekanism/rotary")
               .comment("Removes three Rotary Recipes:",
@@ -434,7 +433,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "2) The recipe for converting between Liquid Sulfur Dioxide and Sulfur Dioxide.",
                     "3) The recipe for converting between Liquid Sulfur Trioxide and Sulfur Trioxide."
               ).blankLine()
-              .removeRecipes(RotaryRecipeManager.INSTANCE,
+              .removeRecipes(RotaryRecipeManager.INSTANCE, reloadableLookupProvider, 
                     Mekanism.rl("rotary/lithium"),
                     Mekanism.rl("rotary/sulfur_dioxide"),
                     Mekanism.rl("rotary/sulfur_trioxide")
@@ -476,7 +475,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Sawing Recipe for producing Oak Planks from Oak Logs.")
               .blankLine()
-              .removeRecipes(SawmillRecipeManager.INSTANCE, Mekanism.rl("sawing/log/oak"))
+              .removeRecipes(SawmillRecipeManager.INSTANCE, reloadableLookupProvider,  Mekanism.rl("sawing/log/oak"))
         ;
     }
 

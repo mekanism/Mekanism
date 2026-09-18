@@ -43,7 +43,7 @@ public class GeneratorsDataGenerator {
         gen.addProvider(true, worldRegistryProvider);
         gen.addProvider(true, reloadableRegistryProvider);
         gen.addProvider(true, new GeneratorsDataMapsProvider(output, reloadableLookupProvider));
-        gen.addProvider(true, new GeneratorsEmiDefaults(output, event.getResourceManager(PackType.SERVER_DATA), reloadableLookupProvider));
+        gen.addProvider(true, new GeneratorsEmiDefaults(output, reloadableLookupProvider));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, reloadableLookupProvider, MekanismGenerators.MODID, GeneratorsAliasMapping::new);
