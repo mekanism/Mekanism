@@ -57,8 +57,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     public GuiSecurityDesk(MekanismTileContainer<TileEntitySecurityDesk> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 64);
-        inventoryLabelY = imageHeight - 94;
-        titleLabelY = 4;
+        titleLabelY -= 2;
         dynamicSlots = true;
     }
 

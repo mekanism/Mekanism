@@ -26,7 +26,7 @@ public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusion
         super(container, inv, title, DEFAULT_IMAGE_WIDTH + 10, DEFAULT_IMAGE_HEIGHT);
         dynamicSlots = true;
         inventoryLabelX += 5;
-        titleLabelY = 5;
+        titleLabelY -= 1;
     }
 
     @Override

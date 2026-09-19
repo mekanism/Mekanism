@@ -18,7 +18,7 @@ public class GuiSolarNeutronActivator extends GuiConfigurableTile<TileEntitySola
     public GuiSolarNeutronActivator(MekanismTileContainer<TileEntitySolarNeutronActivator> container, Inventory inv, Component title) {
         super(container, inv, title);
         inventoryLabelY += 2;
-        titleLabelY = 4;
+        titleLabelY -= 2;
         dynamicSlots = true;
     }
 

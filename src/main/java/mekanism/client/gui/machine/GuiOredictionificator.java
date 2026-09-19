@@ -33,7 +33,6 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
 
     public GuiOredictionificator(MekanismTileContainer<TileEntityOredictionificator> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH + 60, DEFAULT_IMAGE_HEIGHT + 64);
-        inventoryLabelY = imageHeight - 94;
         inventoryLabelX += 30;
         dynamicSlots = true;
     }

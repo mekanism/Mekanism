@@ -2,10 +2,10 @@ package mekanism.client.gui.machine;
 
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
-import mekanism.client.gui.element.button.GuiDumpButton;
 import mekanism.client.gui.element.bar.GuiChemicalBar;
 import mekanism.client.gui.element.bar.GuiTankBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
+import mekanism.client.gui.element.button.GuiDumpButton;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
@@ -49,17 +49,15 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
 
     public GuiFactory(MekanismTileContainer<TileEntityFactory<?>> container, Inventory inv, Component title) {
         super(container, inv, title, calcWidth(container), calcHeight(container));
-        if (tile.hasSecondaryResourceBar()) {
-            inventoryLabelY = 85;
-        } else if (tile instanceof TileEntitySawingFactory) {
-            inventoryLabelY = 95;
+        if (tile.hasSecondaryResourceBar() || tile instanceof TileEntitySawingFactory) {
+            inventoryLabelY += 2;
         } else {
-            inventoryLabelY = 75;
+            inventoryLabelY += 3;
         }
         if (tile.tier == FactoryTier.ULTIMATE) {
-            inventoryLabelX = 26;
+            inventoryLabelX += 18;
         }
-        titleLabelY = 4;
+        titleLabelY -= 2;
         dynamicSlots = true;
     }
 

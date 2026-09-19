@@ -24,7 +24,7 @@ public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWas
     public GuiChemicalWasher(MekanismTileContainer<TileEntityChemicalWasher> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
-        titleLabelY = 4;
+        titleLabelY -= 2;
     }
 
     @Override

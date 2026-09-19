@@ -22,7 +22,7 @@ public class GuiPaintingMachine extends GuiConfigurableTile<TileEntityPaintingMa
     public GuiPaintingMachine(MekanismTileContainer<TileEntityPaintingMachine> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
-        titleLabelY = 4;
+        titleLabelY -= 2;
         inventoryLabelY += 2;
     }
 

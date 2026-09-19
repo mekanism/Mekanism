@@ -37,7 +37,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     public GuiPortableTeleporter(PortableTeleporterContainer container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 6);
-        titleLabelY = 4;
+        titleLabelY -= 2;
     }
 
     @Override

@@ -34,7 +34,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         super(container, inv, title, DEFAULT_IMAGE_WIDTH + 14, DEFAULT_IMAGE_HEIGHT);
         inventoryLabelX += 7;
         inventoryLabelY += 2;
-        titleLabelY = 5;
+        titleLabelY -= 1;
         dynamicSlots = true;
     }
 

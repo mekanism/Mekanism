@@ -71,7 +71,6 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
     public GuiQIOFilterHandler(MekanismTileContainer<TILE> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH + 60, DEFAULT_IMAGE_HEIGHT + 74);
         dynamicSlots = true;
-        inventoryLabelY = imageHeight - 94;
         inventoryLabelX += 30;
     }
 

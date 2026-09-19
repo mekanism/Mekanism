@@ -25,7 +25,7 @@ public class GuiChemicalDissolutionChamber extends GuiConfigurableTile<TileEntit
     public GuiChemicalDissolutionChamber(MekanismTileContainer<TileEntityChemicalDissolutionChamber> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
-        titleLabelY = 4;
+        titleLabelY -= 2;
     }
 
     @Override

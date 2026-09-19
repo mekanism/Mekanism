@@ -32,7 +32,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
     public GuiRotaryCondensentrator(MekanismTileContainer<TileEntityRotaryCondensentrator> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
-        titleLabelY = 4;
+        titleLabelY -= 2;
     }
 
     @Override

@@ -25,8 +25,8 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
 
     public GuiQuantumEntangloporter(MekanismTileContainer<TileEntityQuantumEntangloporter> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 74);
-        titleLabelY = 4;
-        inventoryLabelY = imageHeight - 93;
+        titleLabelY -= 2;
+        inventoryLabelY += 1;
         dynamicSlots = true;
     }
 

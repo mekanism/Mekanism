@@ -22,7 +22,7 @@ public class GuiChemicalInfuser extends GuiConfigurableTile<TileEntityChemicalIn
     public GuiChemicalInfuser(MekanismTileContainer<TileEntityChemicalInfuser> container, Inventory inv, Component title) {
         super(container, inv, title);
         inventoryLabelY += 2;
-        titleLabelY = 5;
+        titleLabelY -= 1;
         dynamicSlots = true;
     }
 

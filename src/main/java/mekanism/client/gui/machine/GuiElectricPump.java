@@ -25,7 +25,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
 
     public GuiElectricPump(MekanismTileContainer<TileEntityElectricPump> container, Inventory inv, Component title) {
         super(container, inv, title);
-        titleLabelY = 5;
+        titleLabelY -= 1;
         inventoryLabelY += 2;
         dynamicSlots = true;
     }

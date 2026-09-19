@@ -24,7 +24,7 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
     public GuiSPS(MekanismTileContainer<TileEntitySPSCasing> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 16);
         dynamicSlots = true;
-        inventoryLabelY = imageHeight - 92;
+        inventoryLabelY += 2;
     }
 
     @Override

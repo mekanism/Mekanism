@@ -60,8 +60,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     protected GuiQIOItemViewer(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title, calcWidth(), calcHeight());
         this.inv = inv;
-        inventoryLabelY = imageHeight - 93;
-        titleLabelY = 5;
+        inventoryLabelY += 1;
+        titleLabelY -= 1;
         dynamicSlots = true;
         searchDropdownX = imageWidth - 63;
     }

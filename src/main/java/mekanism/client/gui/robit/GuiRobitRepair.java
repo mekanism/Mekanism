@@ -92,7 +92,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     @Override
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, ITEM_NAME_X, ITEM_NAME_X + ITEM_NAME_WIDTH + 4, 0, TextAlignment.CENTER);
-        renderInventoryText(guiGraphics, 60);
+        renderInventoryText(guiGraphics);
         int maximumCost = menu.getCost();
         if (maximumCost > 0) {
             if (msDisplayCost == 0) {

@@ -9,7 +9,7 @@ public class GuiRobitInventory extends GuiRobit<RobitContainer> {
 
     public GuiRobitInventory(RobitContainer container, Inventory inv, Component title) {
         super(container, inv, title);
-        inventoryLabelY = imageHeight - 93;
+        inventoryLabelY += 1;
         dynamicSlots = true;
     }
 

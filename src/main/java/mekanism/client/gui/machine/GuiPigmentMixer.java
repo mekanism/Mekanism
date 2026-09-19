@@ -29,7 +29,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
     public GuiPigmentMixer(MekanismTileContainer<TileEntityPigmentMixer> container, Inventory inv, Component title) {
         super(container, inv, title);
         inventoryLabelY += 2;
-        titleLabelY = 5;
+        titleLabelY -= 1;
         dynamicSlots = true;
     }
 

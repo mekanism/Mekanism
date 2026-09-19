@@ -21,7 +21,6 @@ public class GuiPRC extends GuiConfigurableTile<TileEntityPressurizedReactionCha
     public GuiPRC(MekanismTileContainer<TileEntityPressurizedReactionChamber> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 5);
         dynamicSlots = true;
-        inventoryLabelY += 5;
     }
 
     @Override

@@ -22,7 +22,7 @@ public class GuiChemicalOxidizer extends GuiConfigurableTile<TileEntityChemicalO
     public GuiChemicalOxidizer(MekanismTileContainer<TileEntityChemicalOxidizer> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
-        titleLabelY = 5;
+        titleLabelY -= 1;
     }
 
     @Override

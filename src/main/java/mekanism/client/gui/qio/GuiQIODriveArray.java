@@ -14,7 +14,6 @@ public class GuiQIODriveArray extends GuiMekanismTile<TileEntityQIODriveArray, M
     public GuiQIODriveArray(MekanismTileContainer<TileEntityQIODriveArray> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 40);
         dynamicSlots = true;
-        inventoryLabelY = imageHeight - 94;
     }
 
     @Override

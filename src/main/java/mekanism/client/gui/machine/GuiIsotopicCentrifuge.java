@@ -22,7 +22,7 @@ public class GuiIsotopicCentrifuge extends GuiConfigurableTile<TileEntityIsotopi
     public GuiIsotopicCentrifuge(MekanismTileContainer<TileEntityIsotopicCentrifuge> container, Inventory inv, Component title) {
         super(container, inv, title);
         inventoryLabelY += 2;
-        titleLabelY = 4;
+        titleLabelY -= 2;
         dynamicSlots = true;
     }
 

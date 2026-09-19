@@ -29,7 +29,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
     public GuiModificationStation(MekanismTileContainer<TileEntityModificationStation> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 64);
         dynamicSlots = true;
-        inventoryLabelY = imageHeight - 92;
+        inventoryLabelY += 2;
     }
 
     @Override

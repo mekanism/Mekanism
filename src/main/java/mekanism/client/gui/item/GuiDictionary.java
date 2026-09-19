@@ -30,8 +30,8 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     public GuiDictionary(DictionaryContainer container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 5);
-        inventoryLabelY = imageHeight - 96;
-        titleLabelY = 5;
+        inventoryLabelY -= 2;
+        titleLabelY -= 1;
         dynamicSlots = true;
     }
 

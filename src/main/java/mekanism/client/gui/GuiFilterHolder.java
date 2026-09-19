@@ -31,7 +31,6 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     protected GuiFilterHolder(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH + 100, DEFAULT_IMAGE_HEIGHT + 88);
         inventoryLabelX += 50;
-        inventoryLabelY = imageHeight - 94;
         dynamicSlots = true;
     }
 

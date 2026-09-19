@@ -40,9 +40,9 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
 
     public GuiFissionReactor(MekanismTileContainer<TileEntityFissionReactorCasing> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH + 19, DEFAULT_IMAGE_HEIGHT + 89);
-        inventoryLabelX = 6;
-        inventoryLabelY = imageHeight - 92;
-        titleLabelY = 5;
+        inventoryLabelX -= 2;
+        inventoryLabelY += 2;
+        titleLabelY -= 1;
         dynamicSlots = true;
     }
 

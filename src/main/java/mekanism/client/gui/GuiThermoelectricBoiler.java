@@ -35,7 +35,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
         dynamicSlots = true;
         inventoryLabelX += 21;
         inventoryLabelY += 2;
-        titleLabelY = 5;
+        titleLabelY -= 1;
     }
 
     @Override
