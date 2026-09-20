@@ -58,7 +58,7 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
             } else {
                 actualValue = (float) val;
             }
-            float baseDamage = toToolMaterial().attackDamageBonus();
+            float baseDamage = vanillaMaterial.attackDamageBonus();
             return actualValue >= -baseDamage && actualValue <= Float.MAX_VALUE - baseDamage;
         }
         return false;
@@ -69,7 +69,7 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
             if (validateDamageModifier(defaultModifier)) {
                 return defaultModifier;
             }
-            return (double) -toToolMaterial().attackDamageBonus();
+            return (double) -vanillaMaterial.attackDamageBonus();
         };
     }
 
@@ -102,8 +102,13 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
         return paxelEnchantability.get();
     }
 
+    public boolean isFireResistant() {
+        return vanillaMaterial == ToolMaterial.NETHERITE;
+    }
+
     @Override
-    public ToolMaterial toToolMaterial() {
-        return vanillaMaterial;
+    public ToolMaterial toPaxelToolMaterial() {
+        return new ToolMaterial(vanillaMaterial.incorrectBlocksForDrops(), getPaxelDurability(), vanillaMaterial.speed(), vanillaMaterial.attackDamageBonus(),
+              getPaxelEnchantability(), vanillaMaterial.repairItems());
     }
 }

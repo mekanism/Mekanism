@@ -15,7 +15,6 @@ import mekanism.tools.common.registration.ToolCollection;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ToolMaterial;
 
 public class ToolsItems {
 
@@ -52,8 +51,8 @@ public class ToolsItems {
 
     private static ItemRegistryObject<Item> registerPaxel(VanillaPaxelMaterialCreator material) {
         return ITEMS.registerSimple(material.getRegistryPrefix() + "_paxel", properties -> {
-            if (material.toToolMaterial() == ToolMaterial.NETHERITE) {
-                properties.fireResistant();
+            if (material.isFireResistant()) {
+                properties = properties.fireResistant();
             }
             return paxel(properties, material).component(ToolsDataComponents.DISPLAY_HP, Unit.INSTANCE);
         });
@@ -69,10 +68,8 @@ public class ToolsItems {
 
     public static Item.Properties paxel(Item.Properties properties, IPaxelMaterial material) {
         //TODO - 26.3: This should probably disable for the same duration as an axe
-        return properties.tool(material.toToolMaterial(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, material.getPaxelDamage(), material.getPaxelAtkSpeed(), 0)
-              .delayedComponent(DataComponents.BLOCK_TRANSFORMER, context -> context.getOrThrow(MekanismBlockTransformers.PAXEL))
-              //Durability must go after tool to set it to the correct value, rather than one that goes off of the base tool material
-              .durability(material.getPaxelDurability());
+        return properties.tool(material.toPaxelToolMaterial(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, material.getPaxelDamage(), material.getPaxelAtkSpeed(), 0)
+              .delayedComponent(DataComponents.BLOCK_TRANSFORMER, context -> context.getOrThrow(MekanismBlockTransformers.PAXEL));
     }
 
     public static Stream<ItemRegistryObject<Item>> vanillaPaxels() {

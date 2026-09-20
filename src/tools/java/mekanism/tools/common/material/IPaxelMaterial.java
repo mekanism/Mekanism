@@ -16,5 +16,5 @@ public interface IPaxelMaterial {
 
     int getPaxelEnchantability();
 
-    ToolMaterial toToolMaterial();
+    ToolMaterial toPaxelToolMaterial();
 }
