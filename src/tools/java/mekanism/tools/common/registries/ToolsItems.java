@@ -67,8 +67,7 @@ public class ToolsItems {
     }
 
     public static Item.Properties paxel(Item.Properties properties, IPaxelMaterial material) {
-        //TODO - 26.3: This should probably disable for the same duration as an axe
-        return properties.tool(material.toPaxelToolMaterial(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, material.getPaxelDamage(), material.getPaxelAtkSpeed(), 0)
+        return properties.tool(material.toPaxelToolMaterial(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, material.getPaxelDamage(), material.getPaxelAtkSpeed(), material.paxelDisableBlockingSeconds())
               .delayedComponent(DataComponents.BLOCK_TRANSFORMER, context -> context.getOrThrow(MekanismBlockTransformers.PAXEL));
     }
 

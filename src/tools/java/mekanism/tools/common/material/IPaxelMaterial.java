@@ -16,5 +16,10 @@ public interface IPaxelMaterial {
 
     int getPaxelEnchantability();
 
+    default float paxelDisableBlockingSeconds() {
+        //Mirror the default value that an axe has
+        return 5;
+    }
+
     ToolMaterial toPaxelToolMaterial();
 }

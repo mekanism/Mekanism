@@ -18,6 +18,7 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
     private final CachedFloatValue paxelEfficiency;
     private final CachedIntValue paxelEnchantability;
     private final CachedIntValue paxelDurability;
+    private final CachedFloatValue paxelDisableBlockingSeconds;
 
     public VanillaPaxelMaterialCreator(IMekanismConfig config, ModConfigSpec.Builder builder, String registryPrefix, ToolMaterial vanillaMaterial, float axeAttackDamageBaseline) {
         this.registryPrefix = registryPrefix;
@@ -42,6 +43,9 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
         paxelDurability = CachedIntValue.wrap(config, translations.durability().applyToBuilder(builder)
               .gameRestart()
               .defineInRange(toolKey + "PaxelDurability", 2 * this.vanillaMaterial.durability(), 1, Integer.MAX_VALUE));
+        paxelDisableBlockingSeconds = CachedFloatValue.wrap(config, translations.disableBlockingSeconds().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "DisableBlockingSeconds", (double) IPaxelMaterial.super.paxelDisableBlockingSeconds(), MaterialCreator::nonNegativeFloat));
         builder.pop();
     }
 
@@ -100,6 +104,11 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
     @Override
     public int getPaxelEnchantability() {
         return paxelEnchantability.get();
+    }
+
+    @Override
+    public float paxelDisableBlockingSeconds() {
+        return paxelDisableBlockingSeconds.get();
     }
 
     public boolean isFireResistant() {

@@ -131,11 +131,12 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
           IConfigTranslation attackSpeed,
           IConfigTranslation efficiency,
           IConfigTranslation enchantability,
-          IConfigTranslation durability
+          IConfigTranslation durability,
+          IConfigTranslation disableBlockingSeconds
     ) {
 
         public IConfigTranslation[] toArray() {
-            return new IConfigTranslation[]{topLevel, damage, attackSpeed, efficiency, enchantability, durability};
+            return new IConfigTranslation[]{topLevel, damage, attackSpeed, efficiency, enchantability, durability, disableBlockingSeconds};
         }
 
         private static String getKey(String name, String path) {
@@ -152,7 +153,8 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
                   new ConfigTranslation(getKey(registryPrefix, "attack_speed"), "Attack Speed", "Attack speed of " + name + " paxels."),
                   new ConfigTranslation(getKey(registryPrefix, "efficiency"), "Efficiency", "Efficiency of " + name + " paxels."),
                   new ConfigTranslation(getKey(registryPrefix, "enchantability"), "Enchantability", "Natural enchantability factor of " + name + " paxels."),
-                  new ConfigTranslation(getKey(registryPrefix, "durability"), "Durability", "Maximum durability of " + name + " paxels.")
+                  new ConfigTranslation(getKey(registryPrefix, "durability"), "Durability", "Maximum durability of " + name + " paxels."),
+                  new ConfigTranslation(getKey(registryPrefix, "disable_blocking_time"), "Disable Blocking Time", "The time in seconds that " + name + " paxels will disable a blocking shield on a successful attack. If set to 0, " + name + " paxels will not disable a blocking shield.")
             );
         }
     }
@@ -170,7 +172,7 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
           IConfigTranslation hoeDamage, IConfigTranslation hoeAtkSpeed,
           //Paxels
           IConfigTranslation paxelDamage, IConfigTranslation paxelAtkSpeed, IConfigTranslation paxelEfficiency, IConfigTranslation paxelEnchantability,
-          IConfigTranslation paxelDurability,
+          IConfigTranslation paxelDurability, IConfigTranslation paxelDisableBlockingSeconds,
           //Spears
           IConfigTranslation spearAttackDuration, IConfigTranslation spearDamageMultiplier, IConfigTranslation spearDelay, IConfigTranslation spearDismountTime,
           IConfigTranslation spearDismountThreshold, IConfigTranslation spearKnockbackTime, IConfigTranslation spearKnockbackThreshold,
@@ -194,7 +196,7 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
                                             axeDamage, axeAtkSpeed,
                                             pickaxeDamage, pickaxeAtkSpeed,
                                             hoeDamage, hoeAtkSpeed,
-                                            paxelDamage, paxelAtkSpeed, paxelEfficiency, paxelEnchantability, paxelDurability,
+                                            paxelDamage, paxelAtkSpeed, paxelEfficiency, paxelEnchantability, paxelDurability, paxelDisableBlockingSeconds,
                                             spearAttackDuration, spearDamageMultiplier, spearDelay, spearDismountTime, spearDismountThreshold, spearKnockbackTime,
                                             spearKnockbackThreshold, spearDamageTime, spearDamageThreshold,
                                             shieldDurability, shieldBlockDelay, shieldDisableCooldownScale, shieldHorizontalBlockingAngle, shieldDamageReductionBase,
@@ -240,6 +242,7 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
                   new ConfigTranslation(getKey(registryPrefix, "efficiency.paxel"), "Paxel Efficiency", "Efficiency of " + name + " paxels."),
                   new ConfigTranslation(getKey(registryPrefix, "enchantability.paxel"), "Paxel Enchantability", "Natural enchantability factor of " + name + " paxels."),
                   new ConfigTranslation(getKey(registryPrefix, "durability.paxel"), "Paxel Durability", "Maximum durability of " + name + " paxels."),
+                  new ConfigTranslation(getKey(registryPrefix, "disable_blocking_time.paxel"), "Paxel Disable Blocking Time", "The time in seconds that " + name + " paxels will disable a blocking shield on a successful attack. If set to 0, " + name + " paxels will not disable a blocking shield."),
                   //Spears
                   new ConfigTranslation(getKey(registryPrefix, "attack_duration.spear"), "Spear Attack Duration", "The duration that jab attacks with " + name + " spears take. The jab attack speed of a spear is equal to (1 / attack_duration) - 4"),
                   new ConfigTranslation(getKey(registryPrefix, "damage_multiplier.spear"), "Spear Damage Multiplier", "Amount to multiply the damage that was calculated from the relative speed of charge-type attacks performed by " + name + " spears."),

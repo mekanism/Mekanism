@@ -52,6 +52,7 @@ public class MaterialCreator implements BaseMekanismMaterial {
     private final CachedFloatValue paxelEfficiency;
     private final CachedIntValue paxelEnchantability;
     private final CachedIntValue paxelDurability;
+    private final CachedFloatValue paxelDisableBlockingSeconds;
 
     private final CachedFloatValue spearAttackDuration;
     private final CachedFloatValue spearDamageMultiplier;
@@ -151,6 +152,9 @@ public class MaterialCreator implements BaseMekanismMaterial {
         paxelDurability = CachedIntValue.wrap(config, translations.paxelDurability().applyToBuilder(builder)
               .gameRestart()
               .defineInRange(toolKey + "PaxelDurability", materialDefaults.getPaxelDurability(), 1, Integer.MAX_VALUE));
+        paxelDisableBlockingSeconds = CachedFloatValue.wrap(config, translations.paxelDisableBlockingSeconds().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "PaxelDisableBlockingSeconds", (double) materialDefaults.paxelDisableBlockingSeconds(), MaterialCreator::nonNegativeFloat));
 
         spearAttackDuration = CachedFloatValue.wrap(config, translations.spearAttackDuration().applyToBuilder(builder)
               .gameRestart()
@@ -274,11 +278,11 @@ public class MaterialCreator implements BaseMekanismMaterial {
         };
     }
 
-    private static boolean nonNegativeFloat(Object value) {
+    public static boolean nonNegativeFloat(Object value) {
         return value instanceof Double && getActualValue((double) value) >= 0;
     }
 
-    private static boolean positiveFloat(Object value) {
+    public static boolean positiveFloat(Object value) {
         return value instanceof Double && getActualValue((double) value) > 0;
     }
 
@@ -350,6 +354,16 @@ public class MaterialCreator implements BaseMekanismMaterial {
     @Override
     public float getPaxelAtkSpeed() {
         return paxelAtkSpeed.get();
+    }
+
+    @Override
+    public int getPaxelEnchantability() {
+        return paxelEnchantability.get();
+    }
+
+    @Override
+    public float paxelDisableBlockingSeconds() {
+        return paxelDisableBlockingSeconds.get();
     }
 
     @Override
@@ -516,11 +530,6 @@ public class MaterialCreator implements BaseMekanismMaterial {
     @Override
     public String getRegistryPrefix() {
         return fallBack.getRegistryPrefix();
-    }
-
-    @Override
-    public int getPaxelEnchantability() {
-        return paxelEnchantability.get();
     }
 
     @Override
