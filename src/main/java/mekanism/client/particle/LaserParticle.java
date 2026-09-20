@@ -8,6 +8,7 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -27,7 +28,7 @@ public class LaserParticle extends Particle {
         this.sprite = sprite;
         Vec3 distanceAdjustment = direction.getUnitVec3().scale(distance / 2);
         super(level, startX + distanceAdjustment.x(), startY + distanceAdjustment.y(), startZ + distanceAdjustment.z());
-        lifetime = 5;
+        setLifetime(5);
     }
 
     public Direction direction() {
@@ -53,12 +54,23 @@ public class LaserParticle extends Particle {
 
     @Override
     protected void setSize(float particleWidth, float particleHeight) {
-        if (particleWidth != this.bbWidth || particleHeight != this.bbHeight) {
-            //Note: We don't actually have width or height affect our bounding box
-            //TODO: Eventually we maybe should have it affect it at least to an extent?
-            this.bbWidth = particleWidth;
-            this.bbHeight = particleHeight;
-        }
+        //Ignore calls to setSize
+    }
+
+    @Override
+    public Particle setPower(float power) {
+        //Ignore calls to setPower
+        return this;
+    }
+
+    @Override
+    public void setParticleSpeed(double xd, double yd, double zd) {
+        //Ignore calls to setParticleSpeed
+    }
+
+    @Override
+    protected int getLightCoords(float a) {
+        return LightCoordsUtil.FULL_BRIGHT;
     }
 
     @Override
@@ -66,17 +78,17 @@ public class LaserParticle extends Particle {
         this.x = x;
         this.y = y;
         this.z = z;
-        updateBoundingBox();
-    }
-
-    //TODO - 26.3: Re-evaluate how we do the bounding box
-    private void updateBoundingBox() {
         float halfDiameter = energyScale / 2;
         setBoundingBox(switch (direction) {
             case DOWN, UP -> new AABB(x - halfDiameter, y - halfLength, z - halfDiameter, x + halfDiameter, y + halfLength, z + halfDiameter);
             case NORTH, SOUTH -> new AABB(x - halfDiameter, y - halfDiameter, z - halfLength, x + halfDiameter, y + halfDiameter, z + halfLength);
             case WEST, EAST -> new AABB(x - halfLength, y - halfDiameter, z - halfDiameter, x + halfLength, y + halfDiameter, z + halfDiameter);
         });
+    }
+
+    @Override
+    public void move(double xa, double ya, double za) {
+        //Laser particles don't move, just no-op behavior
     }
 
     public static class Factory implements ParticleProvider<LaserParticleData> {

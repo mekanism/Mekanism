@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.state.level.ParticleGroupRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.submit.RenderPhaseKeys;
-import org.joml.Quaternionf;
 
 public class LaserParticleGroup extends ParticleGroup<LaserParticle> {
 
@@ -37,16 +36,12 @@ public class LaserParticleGroup extends ParticleGroup<LaserParticle> {
                   Vec3 shift = particle.getPos().subtract(camera.position());
                   poseStack.translate(shift.x, shift.y, shift.z);
                   poseStack.rotate(particle.direction().getRotation());
-                  poseStack.rotate(Axis.YP, RADIAN_45);
 
-                  Quaternionf quaternion = particle.direction().getRotation();
-                  quaternion.mul(Axis.YP.rotation(RADIAN_45));
+                  poseStack.rotate(Axis.YP, RADIAN_45);
                   consumer.accept(new LaserFeatureRenderer.Submit(poseStack, particle));
 
                   poseStack.pushPose();
                   poseStack.rotate(Axis.YP, Mth.HALF_PI);
-                  Quaternionf quaternion2 = new Quaternionf(quaternion);
-                  quaternion2.mul(Axis.YP.rotation(Mth.HALF_PI));
                   consumer.accept(new LaserFeatureRenderer.Submit(poseStack, particle));
               }).toList()
         );
