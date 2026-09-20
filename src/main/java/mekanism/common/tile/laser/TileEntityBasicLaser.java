@@ -280,7 +280,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     if (laserEnergyScale - energyScale > 0.01) {
                         //Otherwise, send the laser between the two positions and update the energy scale
                         Vec3 entityPos = from.with(axis, entity.position().get(axis));
-                        sendLaserDataToPlayers(level, new LaserParticleData(direction, entityPos.distanceTo(from), laserEnergyScale), from);
+                        sendLaserDataToPlayers(level, new LaserParticleData(direction, (float) entityPos.distanceTo(from), laserEnergyScale), from);
                         laserEnergyScale = energyScale;
                         //Update the from position to be where the entity is
                         from = entityPos;
@@ -292,7 +292,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             }
         }
         //Tell the clients to render the laser
-        sendLaserDataToPlayers(level, new LaserParticleData(direction, to.distanceTo(from), laserEnergyScale), from);
+        sendLaserDataToPlayers(level, new LaserParticleData(direction, (float) to.distanceTo(from), laserEnergyScale), from);
 
         if (remainingEnergy == 0 || result.getType() == Type.MISS) {
             //If all the energy was spent on damaging entities or if we aren't actively digging a block,

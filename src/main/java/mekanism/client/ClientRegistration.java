@@ -95,6 +95,7 @@ import mekanism.client.model.props.CraftingFormulaStatus;
 import mekanism.client.particle.JetpackFlameParticle;
 import mekanism.client.particle.JetpackSmokeParticle;
 import mekanism.client.particle.LaserParticle;
+import mekanism.client.particle.LaserParticleGroup;
 import mekanism.client.particle.RadiationParticle;
 import mekanism.client.particle.ScubaBubbleParticle;
 import mekanism.client.pip.CompassPiP;
@@ -127,6 +128,7 @@ import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.lib.effect.BillboardingEffectFeatureRenderer;
 import mekanism.client.render.lib.effect.BoltFeatureRenderer;
+import mekanism.client.render.lib.effect.LaserFeatureRenderer;
 import mekanism.client.render.outline.MekanismOutlineFeatureRender;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
@@ -207,6 +209,7 @@ import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleGroupsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
@@ -247,7 +250,13 @@ public class ClientRegistration {
     public static void registerFeatures(RegisterFeatureRenderersEvent event) {
         event.register(BillboardingEffectFeatureRenderer.TYPE, new BillboardingEffectFeatureRenderer());
         event.register(BoltFeatureRenderer.TYPE, new BoltFeatureRenderer());
+        event.register(LaserFeatureRenderer.TYPE, new LaserFeatureRenderer());
         event.register(MekanismOutlineFeatureRender.TYPE, new MekanismOutlineFeatureRender());
+    }
+
+    @SubscribeEvent
+    public static void registerParticleGroups(RegisterParticleGroupsEvent event) {
+        event.register(LaserParticleGroup.TYPE, LaserParticleGroup::new);
     }
 
     @SubscribeEvent
