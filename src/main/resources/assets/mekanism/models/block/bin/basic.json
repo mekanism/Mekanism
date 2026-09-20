@@ -2,10 +2,8 @@
     "parent": "mekanism:block/bin/base",
     "textures": {
         "led": "mekanism:block/bin/basic_led",
-        "front": "mekanism:block/bin/front",
         "side": "mekanism:block/bin/side",
         "top": "mekanism:block/bin/top",
-        "back": "mekanism:block/bin/back",
-        "bottom": "mekanism:block/bin/bottom"
+        "back": "mekanism:block/bin/back"
     }
 }

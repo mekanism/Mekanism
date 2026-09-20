@@ -3,12 +3,12 @@
 	"render_type": "minecraft:cutout",
 	"textures": {
 		"#led": "#led",
-		"#front": "#front",
+		"front": "mekanism:block/bin/front",
 		"#side": "#side",
 		"#top": "#top",
 		"#back": "#back",
-		"#bottom": "#bottom",
-		"particle": "#front"
+		"bottom": "mekanism:block/bin/bottom_active",
+		"particle": "#back"
 	},
 	"elements": [
 		{
