@@ -67,7 +67,7 @@ public class ToolsItems {
     }
 
     public static Item.Properties paxel(Item.Properties properties, IPaxelMaterial material) {
-        return properties.tool(material.toPaxelToolMaterial(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, material.getPaxelDamage(), material.getPaxelAtkSpeed(), material.paxelDisableBlockingSeconds())
+        return properties.tool(material.toPaxelToolMaterial(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, material.paxelDamage(), material.paxelAtkSpeed(), material.paxelDisableBlockingSeconds())
               .delayedComponent(DataComponents.BLOCK_TRANSFORMER, context -> context.getOrThrow(MekanismBlockTransformers.PAXEL));
     }
 

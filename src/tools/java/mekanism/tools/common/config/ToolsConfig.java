@@ -81,7 +81,7 @@ public class ToolsConfig extends BaseMekanismConfig {
         public final CachedFloatValue armorEnchantmentChance;
 
         private ArmorSpawnChanceConfig(IMekanismConfig config, ModConfigSpec.Builder builder, MaterialCreator material) {
-            this(config, builder, material.getRegistryPrefix(), 0.33, 1, 1, 1, 1, 0.25, 0.5);
+            this(config, builder, material.registryPrefix(), 0.33, 1, 1, 1, 1, 0.25, 0.5);
         }
 
         private ArmorSpawnChanceConfig(IMekanismConfig config, ModConfigSpec.Builder builder, String key, double swordChance, double helmetChance,

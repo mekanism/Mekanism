@@ -14,47 +14,47 @@ import net.minecraft.world.level.block.Block;
 public class SteelMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
-    public float getAxeDamage() {
+    public float axeDamage() {
         return 7;
     }
 
     @Override
-    public float getAxeAtkSpeed() {
+    public float axeAtkSpeed() {
         return -3.0F;
     }
 
     @Override
-    public int getDurability() {
+    public int durability() {
         return 500;
     }
 
     @Override
-    public float getSpeed() {
+    public float speed() {
         return 8;
     }
 
     @Override
-    public float getAttackDamageBonus() {
+    public float attackDamageBonus() {
         return 3;
     }
 
     @Override
-    public int getEnchantmentValue() {
+    public int enchantmentValue() {
         return 16;
     }
 
     @Override
-    public int getShieldDurability() {
+    public int shieldDurability() {
         return 448;
     }
 
     @Override
-    public float getShieldBlockDelay() {
+    public float shieldBlockDelay() {
         return 0.3F;
     }
 
     @Override
-    public float getShieldDamageThreshold() {
+    public float shieldDamageThreshold() {
         return 4;
     }
 
@@ -64,7 +64,7 @@ public class SteelMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForType(ArmorType armorType) {
+    public int durability(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 260;
             case LEGGINGS -> 300;
@@ -74,7 +74,7 @@ public class SteelMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefense(ArmorType armorType) {
+    public int defense(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS, HELMET -> 3;
             case LEGGINGS -> 6;
@@ -84,7 +84,7 @@ public class SteelMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public String getRegistryPrefix() {
+    public String registryPrefix() {
         return "steel";
     }
 
@@ -99,42 +99,42 @@ public class SteelMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public TagKey<Item> getRepairItems() {
+    public TagKey<Item> repairItems() {
         return MekanismTags.Items.INGOTS_STEEL;
     }
 
     @Override
-    public float getSpearAttackDuration() {
+    public float spearAttackDuration() {
         return 1.05F;
     }
 
     @Override
-    public float getSpearDamageMultiplier() {
+    public float spearDamageMultiplier() {
         return 1.075F;
     }
 
     @Override
-    public float getSpearDelay() {
+    public float spearDelay() {
         return 0.55F;
     }
 
     @Override
-    public float getSpearDismountTime() {
+    public float spearDismountTime() {
         return 2.75F;
     }
 
     @Override
-    public float getSpearDismountThreshold() {
+    public float spearDismountThreshold() {
         return 10.5F;
     }
 
     @Override
-    public float getSpearKnockbackTime() {
+    public float spearKnockbackTime() {
         return 6.5F;
     }
 
     @Override
-    public float getSpearDamageTime() {
+    public float spearDamageTime() {
         return 10.5F;
     }
 }

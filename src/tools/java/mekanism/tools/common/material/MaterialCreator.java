@@ -88,130 +88,130 @@ public class MaterialCreator implements BaseMekanismMaterial {
 
     public MaterialCreator(IMekanismConfig config, ModConfigSpec.Builder builder, BaseMekanismMaterial materialDefaults) {
         fallBack = materialDefaults;
-        String toolKey = getRegistryPrefix();
+        String toolKey = registryPrefix();
         equipmentAsset = ResourceKey.create(EquipmentAssets.ROOT_ID, MekanismTools.rl(toolKey));
         MaterialTranslations translations = MaterialTranslations.create(toolKey);
         translations.topLevel().applyToBuilder(builder).push(toolKey);
         toolDurability = CachedIntValue.wrap(config, translations.toolDurability().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "ToolDurability", materialDefaults.getDurability(), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ToolDurability", materialDefaults.durability(), 1, Integer.MAX_VALUE));
         efficiency = CachedFloatValue.wrap(config, translations.efficiency().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "Efficiency", (double) materialDefaults.getSpeed()));
+              .define(toolKey + "Efficiency", (double) materialDefaults.speed()));
         attackDamage = CachedFloatValue.wrap(config, translations.damage().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "AttackDamage", materialDefaults.getAttackDamageBonus(), 0, Float.MAX_VALUE));
+              .defineInRange(toolKey + "AttackDamage", materialDefaults.attackDamageBonus(), 0, Float.MAX_VALUE));
         enchantability = CachedIntValue.wrap(config, translations.enchantability().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "Enchantability", materialDefaults.getEnchantmentValue(), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "Enchantability", materialDefaults.enchantmentValue(), 0, Integer.MAX_VALUE));
         //Note: Damage predicate to allow for tools to go negative to the value of the base tier so that a tool
         // can effectively have zero damage for things like the hoe
         Predicate<Object> damageModifierPredicate = this::validateDamageModifier;
         swordDamage = CachedFloatValue.wrap(config, translations.swordDamage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SwordDamage", validateDefaultModifier(materialDefaults.getSwordDamage()), damageModifierPredicate));
+              .define(toolKey + "SwordDamage", validateDefaultModifier(materialDefaults.swordDamage()), damageModifierPredicate));
         swordAtkSpeed = CachedFloatValue.wrap(config, translations.swordAtkSpeed().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SwordAtkSpeed", (double) materialDefaults.getSwordAtkSpeed()));
+              .define(toolKey + "SwordAtkSpeed", (double) materialDefaults.swordAtkSpeed()));
         shovelDamage = CachedFloatValue.wrap(config, translations.shovelDamage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "ShovelDamage", validateDefaultModifier(materialDefaults.getShovelDamage()), damageModifierPredicate));
+              .define(toolKey + "ShovelDamage", validateDefaultModifier(materialDefaults.shovelDamage()), damageModifierPredicate));
         shovelAtkSpeed = CachedFloatValue.wrap(config, translations.shovelAtkSpeed().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "ShovelAtkSpeed", (double) materialDefaults.getShovelAtkSpeed()));
+              .define(toolKey + "ShovelAtkSpeed", (double) materialDefaults.shovelAtkSpeed()));
         axeDamage = CachedFloatValue.wrap(config, translations.axeDamage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "AxeDamage", validateDefaultModifier(materialDefaults.getAxeDamage()), damageModifierPredicate));
+              .define(toolKey + "AxeDamage", validateDefaultModifier(materialDefaults.axeDamage()), damageModifierPredicate));
         axeAtkSpeed = CachedFloatValue.wrap(config, translations.axeAtkSpeed().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "AxeAtkSpeed", (double) materialDefaults.getAxeAtkSpeed()));
+              .define(toolKey + "AxeAtkSpeed", (double) materialDefaults.axeAtkSpeed()));
         pickaxeDamage = CachedFloatValue.wrap(config, translations.pickaxeDamage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "PickaxeDamage", validateDefaultModifier(materialDefaults.getPickaxeDamage()), damageModifierPredicate));
+              .define(toolKey + "PickaxeDamage", validateDefaultModifier(materialDefaults.pickaxeDamage()), damageModifierPredicate));
         pickaxeAtkSpeed = CachedFloatValue.wrap(config, translations.pickaxeAtkSpeed().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "PickaxeAtkSpeed", (double) materialDefaults.getPickaxeAtkSpeed()));
+              .define(toolKey + "PickaxeAtkSpeed", (double) materialDefaults.pickaxeAtkSpeed()));
         hoeDamage = CachedFloatValue.wrap(config, translations.hoeDamage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "HoeDamage", validateDefaultModifier(materialDefaults.getHoeDamage()), damageModifierPredicate));
+              .define(toolKey + "HoeDamage", validateDefaultModifier(materialDefaults.hoeDamage()), damageModifierPredicate));
         hoeAtkSpeed = CachedFloatValue.wrap(config, translations.hoeAtkSpeed().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "HoeAtkSpeed", (double) materialDefaults.getHoeAtkSpeed()));
+              .define(toolKey + "HoeAtkSpeed", (double) materialDefaults.hoeAtkSpeed()));
         paxelDamage = CachedFloatValue.wrap(config, translations.paxelDamage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "PaxelDamage", validateDefaultModifier(materialDefaults.getPaxelDamage()), damageModifierPredicate));
+              .define(toolKey + "PaxelDamage", validateDefaultModifier(materialDefaults.paxelDamage()), damageModifierPredicate));
         paxelAtkSpeed = CachedFloatValue.wrap(config, translations.paxelAtkSpeed().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "PaxelAtkSpeed", (double) materialDefaults.getPaxelAtkSpeed()));
+              .define(toolKey + "PaxelAtkSpeed", (double) materialDefaults.paxelAtkSpeed()));
         paxelEfficiency = CachedFloatValue.wrap(config, translations.paxelEfficiency().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "PaxelEfficiency", (double) materialDefaults.getPaxelEfficiency()));
+              .define(toolKey + "PaxelEfficiency", (double) materialDefaults.paxelEfficiency()));
         paxelEnchantability = CachedIntValue.wrap(config, translations.paxelEnchantability().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "PaxelEnchantability", materialDefaults.getPaxelEnchantability(), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "PaxelEnchantability", materialDefaults.paxelEnchantability(), 0, Integer.MAX_VALUE));
         paxelDurability = CachedIntValue.wrap(config, translations.paxelDurability().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "PaxelDurability", materialDefaults.getPaxelDurability(), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "PaxelDurability", materialDefaults.paxelDurability(), 1, Integer.MAX_VALUE));
         paxelDisableBlockingSeconds = CachedFloatValue.wrap(config, translations.paxelDisableBlockingSeconds().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "PaxelDisableBlockingSeconds", (double) materialDefaults.paxelDisableBlockingSeconds(), MaterialCreator::nonNegativeFloat));
 
         spearAttackDuration = CachedFloatValue.wrap(config, translations.spearAttackDuration().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SpearAttackDuration", (double) materialDefaults.getSpearAttackDuration(),
+              .define(toolKey + "SpearAttackDuration", (double) materialDefaults.spearAttackDuration(),
                     value -> value instanceof Double && (int) (getActualValue((double) value) * SharedConstants.TICKS_PER_SECOND) > 0));
         spearDamageMultiplier = CachedFloatValue.wrap(config, translations.spearDamageMultiplier().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SpearDamageMultiplier", (double) materialDefaults.getSpearDamageMultiplier()));
+              .define(toolKey + "SpearDamageMultiplier", (double) materialDefaults.spearDamageMultiplier()));
         spearDelay = CachedFloatValue.wrap(config, translations.spearDelay().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SpearDelay", (double) materialDefaults.getSpearDelay(), MaterialCreator::nonNegativeFloat));
+              .define(toolKey + "SpearDelay", (double) materialDefaults.spearDelay(), MaterialCreator::nonNegativeFloat));
         spearDismountTime = CachedFloatValue.wrap(config, translations.spearDismountTime().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SpearDismountTime", (double) materialDefaults.getSpearDismountTime(), MaterialCreator::nonNegativeFloat));
+              .define(toolKey + "SpearDismountTime", (double) materialDefaults.spearDismountTime(), MaterialCreator::nonNegativeFloat));
         spearDismountThreshold = CachedFloatValue.wrap(config, translations.spearDismountThreshold().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SpearDismountThreshold", (double) materialDefaults.getSpearDismountThreshold()));
+              .define(toolKey + "SpearDismountThreshold", (double) materialDefaults.spearDismountThreshold()));
         spearKnockbackTime = CachedFloatValue.wrap(config, translations.spearKnockbackTime().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SpearKnockbackTime", (double) materialDefaults.getSpearKnockbackTime(), MaterialCreator::nonNegativeFloat));
+              .define(toolKey + "SpearKnockbackTime", (double) materialDefaults.spearKnockbackTime(), MaterialCreator::nonNegativeFloat));
         spearKnockbackThreshold = CachedFloatValue.wrap(config, translations.spearKnockbackThreshold().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SpearKnockbackThreshold", (double) materialDefaults.getSpearKnockbackThreshold()));
+              .define(toolKey + "SpearKnockbackThreshold", (double) materialDefaults.spearKnockbackThreshold()));
         spearDamageTime = CachedFloatValue.wrap(config, translations.spearDamageTime().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SpearDamageTime", (double) materialDefaults.getSpearDamageTime(), MaterialCreator::nonNegativeFloat));
+              .define(toolKey + "SpearDamageTime", (double) materialDefaults.spearDamageTime(), MaterialCreator::nonNegativeFloat));
         spearDamageThreshold = CachedFloatValue.wrap(config, translations.spearDamageThreshold().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SpearDamageThreshold", (double) materialDefaults.getSpearDamageThreshold()));
+              .define(toolKey + "SpearDamageThreshold", (double) materialDefaults.spearDamageThreshold()));
 
         shieldDurability = CachedIntValue.wrap(config, translations.shieldDurability().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "ShieldDurability", materialDefaults.getShieldDurability(), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ShieldDurability", materialDefaults.shieldDurability(), 0, Integer.MAX_VALUE));
         shieldBlockDelay = CachedFloatValue.wrap(config, translations.shieldBlockDelay().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "ShieldBlockDelay", (double) materialDefaults.getShieldBlockDelay(), MaterialCreator::nonNegativeFloat));
+              .define(toolKey + "ShieldBlockDelay", (double) materialDefaults.shieldBlockDelay(), MaterialCreator::nonNegativeFloat));
         shieldDisableCooldownScale = CachedFloatValue.wrap(config, translations.shieldDisableCooldownScale().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "ShieldDisableCooldownScale", (double) materialDefaults.getShieldDisableCooldownScale(), MaterialCreator::nonNegativeFloat));
+              .define(toolKey + "ShieldDisableCooldownScale", (double) materialDefaults.shieldDisableCooldownScale(), MaterialCreator::nonNegativeFloat));
         shieldHorizontalBlockingAngle = CachedFloatValue.wrap(config, translations.shieldHorizontalBlockingAngle().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "ShieldHorizontalBlockingAngle", (double) materialDefaults.getShieldHorizontalBlockingAngle(), MaterialCreator::positiveFloat));
+              .define(toolKey + "ShieldHorizontalBlockingAngle", (double) materialDefaults.shieldHorizontalBlockingAngle(), MaterialCreator::positiveFloat));
         shieldDamageReductionBase = CachedFloatValue.wrap(config, translations.shieldDamageReductionBase().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "ShieldDamageReductionBase", (double) materialDefaults.getShieldDamageReductionBase()));
+              .define(toolKey + "ShieldDamageReductionBase", (double) materialDefaults.shieldDamageReductionBase()));
         shieldDamageReductionFactor = CachedFloatValue.wrap(config, translations.shieldDamageReductionFactor().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "ShieldDamageReductionFactor", (double) materialDefaults.getShieldDamageReductionFactor()));
+              .define(toolKey + "ShieldDamageReductionFactor", (double) materialDefaults.shieldDamageReductionFactor()));
         shieldDamageThreshold = CachedFloatValue.wrap(config, translations.shieldDamageThreshold().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "ShieldDamageThreshold", (double) materialDefaults.getShieldDamageThreshold(), MaterialCreator::nonNegativeFloat));
+              .define(toolKey + "ShieldDamageThreshold", (double) materialDefaults.shieldDamageThreshold(), MaterialCreator::nonNegativeFloat));
         shieldItemDamageBase = CachedFloatValue.wrap(config, translations.shieldItemDamageBase().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "ShieldItemDamageBase", (double) materialDefaults.getShieldItemDamageBase()));
+              .define(toolKey + "ShieldItemDamageBase", (double) materialDefaults.shieldItemDamageBase()));
         shieldItemDamageFactor = CachedFloatValue.wrap(config, translations.shieldItemDamageFactor().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "ShieldItemDamageFactor", (double) materialDefaults.getShieldItemDamageFactor()));
+              .define(toolKey + "ShieldItemDamageFactor", (double) materialDefaults.shieldItemDamageFactor()));
 
         toughness = CachedFloatValue.wrap(config, translations.toughness().applyToBuilder(builder)
               .gameRestart()
@@ -221,31 +221,31 @@ public class MaterialCreator implements BaseMekanismMaterial {
               .defineInRange(toolKey + "KnockbackResistance", materialDefaults.knockbackResistance(), 0, Float.MAX_VALUE));
         armorEnchantability = CachedIntValue.wrap(config, translations.armorEnchantability().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "ArmorEnchantability", materialDefaults.getArmorEnchantmentValue(), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ArmorEnchantability", materialDefaults.armorEnchantmentValue(), 0, Integer.MAX_VALUE));
         bootDurability = CachedIntValue.wrap(config, translations.bootDurability().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "BootDurability", materialDefaults.getDurabilityForType(ArmorType.BOOTS), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "BootDurability", materialDefaults.durability(ArmorType.BOOTS), 1, Integer.MAX_VALUE));
         bootArmor = CachedIntValue.wrap(config, translations.bootArmor().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "BootArmor", materialDefaults.getDefense(ArmorType.BOOTS), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "BootArmor", materialDefaults.defense(ArmorType.BOOTS), 0, Integer.MAX_VALUE));
         leggingDurability = CachedIntValue.wrap(config, translations.leggingDurability().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "LeggingDurability", materialDefaults.getDurabilityForType(ArmorType.LEGGINGS), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "LeggingDurability", materialDefaults.durability(ArmorType.LEGGINGS), 1, Integer.MAX_VALUE));
         leggingArmor = CachedIntValue.wrap(config, translations.leggingArmor().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "LeggingArmor", materialDefaults.getDefense(ArmorType.LEGGINGS), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "LeggingArmor", materialDefaults.defense(ArmorType.LEGGINGS), 0, Integer.MAX_VALUE));
         chestplateDurability = CachedIntValue.wrap(config, translations.chestplateDurability().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "ChestplateDurability", materialDefaults.getDurabilityForType(ArmorType.CHESTPLATE), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ChestplateDurability", materialDefaults.durability(ArmorType.CHESTPLATE), 1, Integer.MAX_VALUE));
         chestplateArmor = CachedIntValue.wrap(config, translations.chestplateArmor().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "ChestplateArmor", materialDefaults.getDefense(ArmorType.CHESTPLATE), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ChestplateArmor", materialDefaults.defense(ArmorType.CHESTPLATE), 0, Integer.MAX_VALUE));
         helmetDurability = CachedIntValue.wrap(config, translations.helmetDurability().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "HelmetDurability", materialDefaults.getDurabilityForType(ArmorType.HELMET), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "HelmetDurability", materialDefaults.durability(ArmorType.HELMET), 1, Integer.MAX_VALUE));
         helmetArmor = CachedIntValue.wrap(config, translations.helmetArmor().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "HelmetArmor", materialDefaults.getDefense(ArmorType.HELMET), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "HelmetArmor", materialDefaults.defense(ArmorType.HELMET), 0, Integer.MAX_VALUE));
         builder.pop();
     }
 
@@ -287,77 +287,77 @@ public class MaterialCreator implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getSwordDamage() {
+    public float swordDamage() {
         return swordDamage.get();
     }
 
     @Override
-    public float getSwordAtkSpeed() {
+    public float swordAtkSpeed() {
         return swordAtkSpeed.get();
     }
 
     @Override
-    public float getShovelDamage() {
+    public float shovelDamage() {
         return shovelDamage.get();
     }
 
     @Override
-    public float getShovelAtkSpeed() {
+    public float shovelAtkSpeed() {
         return shovelAtkSpeed.get();
     }
 
     @Override
-    public float getAxeDamage() {
+    public float axeDamage() {
         return axeDamage.get();
     }
 
     @Override
-    public float getAxeAtkSpeed() {
+    public float axeAtkSpeed() {
         return axeAtkSpeed.get();
     }
 
     @Override
-    public float getPickaxeDamage() {
+    public float pickaxeDamage() {
         return pickaxeDamage.get();
     }
 
     @Override
-    public float getPickaxeAtkSpeed() {
+    public float pickaxeAtkSpeed() {
         return pickaxeAtkSpeed.get();
     }
 
     @Override
-    public float getHoeDamage() {
+    public float hoeDamage() {
         return hoeDamage.get();
     }
 
     @Override
-    public float getHoeAtkSpeed() {
+    public float hoeAtkSpeed() {
         return hoeAtkSpeed.get();
     }
 
     @Override
-    public int getPaxelDurability() {
+    public int paxelDurability() {
         return paxelDurability.get();
     }
 
     @Override
-    public float getPaxelEfficiency() {
+    public float paxelEfficiency() {
         return paxelEfficiency.get();
     }
 
     @Override
-    public float getPaxelDamage() {
+    public float paxelDamage() {
         return paxelDamage.get();
     }
 
     @Override
-    public float getPaxelAtkSpeed() {
+    public float paxelAtkSpeed() {
         return paxelAtkSpeed.get();
     }
 
     @Override
-    public int getPaxelEnchantability() {
+    public int paxelEnchantability() {
         return paxelEnchantability.get();
     }
 
@@ -367,107 +367,107 @@ public class MaterialCreator implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getSpearAttackDuration() {
+    public float spearAttackDuration() {
         return spearAttackDuration.get();
     }
 
     @Override
-    public float getSpearDamageMultiplier() {
+    public float spearDamageMultiplier() {
         return spearDamageMultiplier.get();
     }
 
     @Override
-    public float getSpearDelay() {
+    public float spearDelay() {
         return spearDelay.get();
     }
 
     @Override
-    public float getSpearDismountTime() {
+    public float spearDismountTime() {
         return spearDismountTime.get();
     }
 
     @Override
-    public float getSpearDismountThreshold() {
+    public float spearDismountThreshold() {
         return spearDismountThreshold.get();
     }
 
     @Override
-    public float getSpearKnockbackTime() {
+    public float spearKnockbackTime() {
         return spearKnockbackTime.get();
     }
 
     @Override
-    public float getSpearKnockbackThreshold() {
+    public float spearKnockbackThreshold() {
         return spearKnockbackThreshold.get();
     }
 
     @Override
-    public float getSpearDamageTime() {
+    public float spearDamageTime() {
         return spearDamageTime.get();
     }
 
     @Override
-    public float getSpearDamageThreshold() {
+    public float spearDamageThreshold() {
         return spearDamageThreshold.get();
     }
 
     @Override
-    public int getShieldDurability() {
+    public int shieldDurability() {
         return shieldDurability.get();
     }
 
     @Override
-    public float getShieldBlockDelay() {
+    public float shieldBlockDelay() {
         return shieldBlockDelay.get();
     }
 
     @Override
-    public float getShieldDisableCooldownScale() {
+    public float shieldDisableCooldownScale() {
         return shieldDisableCooldownScale.get();
     }
 
     @Override
-    public float getShieldHorizontalBlockingAngle() {
+    public float shieldHorizontalBlockingAngle() {
         return shieldHorizontalBlockingAngle.get();
     }
 
     @Override
-    public float getShieldDamageReductionBase() {
+    public float shieldDamageReductionBase() {
         return shieldDamageReductionBase.get();
     }
 
     @Override
-    public float getShieldDamageReductionFactor() {
+    public float shieldDamageReductionFactor() {
         return shieldDamageReductionFactor.get();
     }
 
     @Override
-    public float getShieldDamageThreshold() {
+    public float shieldDamageThreshold() {
         return shieldDamageThreshold.get();
     }
 
     @Override
-    public float getShieldItemDamageBase() {
+    public float shieldItemDamageBase() {
         return shieldItemDamageBase.get();
     }
 
     @Override
-    public float getShieldItemDamageFactor() {
+    public float shieldItemDamageFactor() {
         return shieldItemDamageFactor.get();
     }
 
     @Override
-    public int getDurability() {
+    public int durability() {
         return toolDurability.get();
     }
 
     @Override
-    public float getSpeed() {
+    public float speed() {
         return efficiency.get();
     }
 
     @Override
-    public float getAttackDamageBonus() {
+    public float attackDamageBonus() {
         return attackDamage.get();
     }
 
@@ -477,7 +477,7 @@ public class MaterialCreator implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForType(ArmorType armorType) {
+    public int durability(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> bootDurability.get();
             case LEGGINGS -> leggingDurability.get();
@@ -487,7 +487,7 @@ public class MaterialCreator implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefense(ArmorType armorType) {
+    public int defense(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> bootArmor.get();
             case LEGGINGS -> leggingArmor.get();
@@ -498,7 +498,7 @@ public class MaterialCreator implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getEnchantmentValue() {
+    public int enchantmentValue() {
         return enchantability.get();
     }
 
@@ -513,7 +513,7 @@ public class MaterialCreator implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getArmorEnchantmentValue() {
+    public int armorEnchantmentValue() {
         return armorEnchantability.get();
     }
 
@@ -523,13 +523,13 @@ public class MaterialCreator implements BaseMekanismMaterial {
     }
 
     @Override
-    public TagKey<Item> getRepairItems() {
-        return fallBack.getRepairItems();
+    public TagKey<Item> repairItems() {
+        return fallBack.repairItems();
     }
 
     @Override
-    public String getRegistryPrefix() {
-        return fallBack.getRegistryPrefix();
+    public String registryPrefix() {
+        return fallBack.registryPrefix();
     }
 
     @Override
@@ -544,13 +544,13 @@ public class MaterialCreator implements BaseMekanismMaterial {
     public ArmorMaterial toArmorMaterial(ArmorType type) {
         return new ArmorMaterial(
               //Best effort durability multiplier
-              Mth.ceil(getDurabilityForType(type) / (float) type.getDurability(1)),
-              Map.of(type, getDefense(type)),
-              getArmorEnchantmentValue(),
+              Mth.ceil(durability(type) / (float) type.getDurability(1)),
+              Map.of(type, defense(type)),
+              armorEnchantmentValue(),
               equipSound(),
               toughness(),
               knockbackResistance(),
-              getRepairItems(),
+              repairItems(),
               equipmentAsset()
         );
     }

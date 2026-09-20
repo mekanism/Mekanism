@@ -14,57 +14,57 @@ import net.neoforged.neoforge.common.Tags;
 public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
-    public float getAxeDamage() {
+    public float axeDamage() {
         return 4;
     }
 
     @Override
-    public float getAxeAtkSpeed() {
+    public float axeAtkSpeed() {
         return -2.9F;
     }
 
     @Override
-    public int getDurability() {
+    public int durability() {
         return 128;
     }
 
     @Override
-    public float getSpeed() {
+    public float speed() {
         return 9;
     }
 
     @Override
-    public float getAttackDamageBonus() {
+    public float attackDamageBonus() {
         return 1;
     }
 
     @Override
-    public int getEnchantmentValue() {
+    public int enchantmentValue() {
         return 32;
     }
 
     @Override
-    public int getArmorEnchantmentValue() {
-        return getEnchantmentValue() + 3;
+    public int armorEnchantmentValue() {
+        return enchantmentValue() + 3;
     }
 
     @Override
-    public int getShieldDurability() {
+    public int shieldDurability() {
         return 224;
     }
 
     @Override
-    public float getShieldBlockDelay() {
+    public float shieldBlockDelay() {
         return 0.1F;
     }
 
     @Override
-    public float getShieldDamageReductionFactor() {
+    public float shieldDamageReductionFactor() {
         return 0.8F;
     }
 
     @Override
-    public float getShieldDamageThreshold() {
+    public float shieldDamageThreshold() {
         return 1;
     }
 
@@ -74,7 +74,7 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForType(ArmorType armorType) {
+    public int durability(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 130;
             case LEGGINGS -> 150;
@@ -84,7 +84,7 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefense(ArmorType armorType) {
+    public int defense(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS, HELMET -> 1;
             case LEGGINGS -> 3;
@@ -94,7 +94,7 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public String getRegistryPrefix() {
+    public String registryPrefix() {
         return "lapis_lazuli";
     }
 
@@ -109,42 +109,42 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public TagKey<Item> getRepairItems() {
+    public TagKey<Item> repairItems() {
         return Tags.Items.GEMS_LAPIS;
     }
 
     @Override
-    public float getSpearAttackDuration() {
+    public float spearAttackDuration() {
         return 0.8F;
     }
 
     @Override
-    public float getSpearDamageMultiplier() {
+    public float spearDamageMultiplier() {
         return 0.82F;
     }
 
     @Override
-    public float getSpearDelay() {
+    public float spearDelay() {
         return 0.65F;
     }
 
     @Override
-    public float getSpearDismountTime() {
+    public float spearDismountTime() {
         return 4;
     }
 
     @Override
-    public float getSpearDismountThreshold() {
+    public float spearDismountThreshold() {
         return 13;
     }
 
     @Override
-    public float getSpearKnockbackTime() {
+    public float spearKnockbackTime() {
         return 8.75F;
     }
 
     @Override
-    public float getSpearDamageTime() {
+    public float spearDamageTime() {
         return 13.25F;
     }
 }

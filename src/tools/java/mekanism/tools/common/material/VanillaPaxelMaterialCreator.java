@@ -33,7 +33,7 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
               .define(toolKey + "PaxelDamage", validateDefaultModifier(axeAttackDamageBaseline + 1), this::validateDamageModifier));
         paxelAtkSpeed = CachedFloatValue.wrap(config, translations.attackSpeed().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "PaxelAtkSpeed", (double) IPaxelMaterial.super.getPaxelAtkSpeed()));
+              .define(toolKey + "PaxelAtkSpeed", (double) IPaxelMaterial.super.paxelAtkSpeed()));
         paxelEfficiency = CachedFloatValue.wrap(config, translations.efficiency().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "PaxelEfficiency", (double) this.vanillaMaterial.speed()));
@@ -82,27 +82,27 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
     }
 
     @Override
-    public int getPaxelDurability() {
+    public int paxelDurability() {
         return paxelDurability.getOrDefault();
     }
 
     @Override
-    public float getPaxelEfficiency() {
+    public float paxelEfficiency() {
         return paxelEfficiency.get();
     }
 
     @Override
-    public float getPaxelDamage() {
+    public float paxelDamage() {
         return paxelDamage.getOrDefault();
     }
 
     @Override
-    public float getPaxelAtkSpeed() {
+    public float paxelAtkSpeed() {
         return paxelAtkSpeed.getOrDefault();
     }
 
     @Override
-    public int getPaxelEnchantability() {
+    public int paxelEnchantability() {
         return paxelEnchantability.get();
     }
 
@@ -117,7 +117,7 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
 
     @Override
     public ToolMaterial toPaxelToolMaterial() {
-        return new ToolMaterial(vanillaMaterial.incorrectBlocksForDrops(), getPaxelDurability(), vanillaMaterial.speed(), vanillaMaterial.attackDamageBonus(),
-              getPaxelEnchantability(), vanillaMaterial.repairItems());
+        return new ToolMaterial(vanillaMaterial.incorrectBlocksForDrops(), paxelDurability(), vanillaMaterial.speed(), vanillaMaterial.attackDamageBonus(),
+              paxelEnchantability(), vanillaMaterial.repairItems());
     }
 }

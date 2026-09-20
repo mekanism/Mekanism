@@ -64,8 +64,8 @@ public class ToolsLangProvider extends BaseLanguageProvider {
     }
 
     private void addConfigs(MaterialCreator config) {
-        addConfigs(MaterialTranslations.create(config.getRegistryPrefix()).toArray());
-        addConfigs(ArmorSpawnChanceTranslations.create(config.getRegistryPrefix()).toArray());
+        addConfigs(MaterialTranslations.create(config.registryPrefix()).toArray());
+        addConfigs(ArmorSpawnChanceTranslations.create(config.registryPrefix()).toArray());
     }
 
     private void addTags() {

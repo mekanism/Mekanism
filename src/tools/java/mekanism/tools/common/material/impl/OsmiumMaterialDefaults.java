@@ -16,47 +16,47 @@ import net.minecraft.world.level.block.Block;
 public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
-    public float getAxeDamage() {
+    public float axeDamage() {
         return 8;
     }
 
     @Override
-    public float getAxeAtkSpeed() {
+    public float axeAtkSpeed() {
         return -3.3F;
     }
 
     @Override
-    public int getDurability() {
+    public int durability() {
         return 1_024;
     }
 
     @Override
-    public float getSpeed() {
+    public float speed() {
         return 4;
     }
 
     @Override
-    public float getAttackDamageBonus() {
+    public float attackDamageBonus() {
         return 4;
     }
 
     @Override
-    public int getEnchantmentValue() {
+    public int enchantmentValue() {
         return 14;
     }
 
     @Override
-    public int getShieldDurability() {
+    public int shieldDurability() {
         return 672;
     }
 
     @Override
-    public float getShieldBlockDelay() {
+    public float shieldBlockDelay() {
         return 0.5F;
     }
 
     @Override
-    public float getShieldDamageThreshold() {
+    public float shieldDamageThreshold() {
         return 4.5F;
     }
 
@@ -66,7 +66,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForType(ArmorType armorType) {
+    public int durability(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 390;
             case LEGGINGS -> 450;
@@ -76,7 +76,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefense(ArmorType armorType) {
+    public int defense(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 3;
             case LEGGINGS -> 6;
@@ -87,7 +87,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public String getRegistryPrefix() {
+    public String registryPrefix() {
         return "osmium";
     }
 
@@ -102,7 +102,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public TagKey<Item> getRepairItems() {
+    public TagKey<Item> repairItems() {
         return MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM);
     }
 
@@ -112,37 +112,37 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getSpearAttackDuration() {
+    public float spearAttackDuration() {
         return 1.15F;
     }
 
     @Override
-    public float getSpearDamageMultiplier() {
+    public float spearDamageMultiplier() {
         return 1.2F;
     }
 
     @Override
-    public float getSpearDelay() {
+    public float spearDelay() {
         return 0.7F;
     }
 
     @Override
-    public float getSpearDismountTime() {
+    public float spearDismountTime() {
         return 2.5F;
     }
 
     @Override
-    public float getSpearDismountThreshold() {
+    public float spearDismountThreshold() {
         return 8.25F;
     }
 
     @Override
-    public float getSpearKnockbackTime() {
+    public float spearKnockbackTime() {
         return 5.5F;
     }
 
     @Override
-    public float getSpearDamageTime() {
+    public float spearDamageTime() {
         return 8.5F;
     }
 }

@@ -14,47 +14,47 @@ import net.minecraft.world.level.block.Block;
 public class BronzeMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
-    public float getAxeDamage() {
+    public float axeDamage() {
         return 7;
     }
 
     @Override
-    public float getAxeAtkSpeed() {
+    public float axeAtkSpeed() {
         return -3.0F;
     }
 
     @Override
-    public int getDurability() {
+    public int durability() {
         return 375;
     }
 
     @Override
-    public float getSpeed() {
+    public float speed() {
         return 7;
     }
 
     @Override
-    public float getAttackDamageBonus() {
+    public float attackDamageBonus() {
         return 2;
     }
 
     @Override
-    public int getEnchantmentValue() {
+    public int enchantmentValue() {
         return 10;
     }
 
     @Override
-    public int getShieldDurability() {
+    public int shieldDurability() {
         return 403;
     }
 
     @Override
-    public float getShieldBlockDelay() {
+    public float shieldBlockDelay() {
         return 0.2F;
     }
 
     @Override
-    public float getShieldDamageThreshold() {
+    public float shieldDamageThreshold() {
         return 2.5F;
     }
 
@@ -64,7 +64,7 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForType(ArmorType armorType) {
+    public int durability(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 234;
             case LEGGINGS -> 270;
@@ -74,7 +74,7 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefense(ArmorType armorType) {
+    public int defense(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 2;
             case LEGGINGS -> 6;
@@ -85,7 +85,7 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public String getRegistryPrefix() {
+    public String registryPrefix() {
         return "bronze";
     }
 
@@ -100,42 +100,42 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public TagKey<Item> getRepairItems() {
+    public TagKey<Item> repairItems() {
         return MekanismTags.Items.INGOTS_BRONZE;
     }
 
     @Override
-    public float getSpearAttackDuration() {
+    public float spearAttackDuration() {
         return 0.9F;
     }
 
     @Override
-    public float getSpearDamageMultiplier() {
+    public float spearDamageMultiplier() {
         return 0.88F;
     }
 
     @Override
-    public float getSpearDelay() {
+    public float spearDelay() {
         return 0.65F;
     }
 
     @Override
-    public float getSpearDismountTime() {
+    public float spearDismountTime() {
         return 3.25F;
     }
 
     @Override
-    public float getSpearDismountThreshold() {
+    public float spearDismountThreshold() {
         return 11.5F;
     }
 
     @Override
-    public float getSpearKnockbackTime() {
+    public float spearKnockbackTime() {
         return 7.5F;
     }
 
     @Override
-    public float getSpearDamageTime() {
+    public float spearDamageTime() {
         return 11.75F;
     }
 }

@@ -24,47 +24,47 @@ public record ToolCollection(ItemRegistryObject<Item> axe, ItemRegistryObject<It
 
     public static ToolCollection create(ItemDeferredRegister registry, MaterialCreator material) {
         return new ToolCollection(
-              registry.registerSimple(material.getRegistryPrefix() + "_axe", properties -> ToolsItems.setCommonProperties(properties, material)
-                    .axe(material.toToolMaterial(), material.getAxeDamage(), material.getAxeAtkSpeed())
+              registry.registerSimple(material.registryPrefix() + "_axe", properties -> ToolsItems.setCommonProperties(properties, material)
+                    .axe(material.toToolMaterial(), material.axeDamage(), material.axeAtkSpeed())
               ),
-              registry.registerSimple(material.getRegistryPrefix() + "_hoe", properties -> ToolsItems.setCommonProperties(properties, material)
-                    .hoe(material.toToolMaterial(), material.getHoeDamage(), material.getHoeAtkSpeed())
+              registry.registerSimple(material.registryPrefix() + "_hoe", properties -> ToolsItems.setCommonProperties(properties, material)
+                    .hoe(material.toToolMaterial(), material.hoeDamage(), material.hoeAtkSpeed())
               ),
-              registry.registerSimple(material.getRegistryPrefix() + "_paxel", properties -> ToolsItems.paxel(ToolsItems.setCommonProperties(properties, material), material)),
-              registry.registerSimple(material.getRegistryPrefix() + "_pickaxe", properties -> ToolsItems.setCommonProperties(properties, material)
-                    .pickaxe(material.toToolMaterial(), material.getPickaxeDamage(), material.getPickaxeAtkSpeed())
+              registry.registerSimple(material.registryPrefix() + "_paxel", properties -> ToolsItems.paxel(ToolsItems.setCommonProperties(properties, material), material)),
+              registry.registerSimple(material.registryPrefix() + "_pickaxe", properties -> ToolsItems.setCommonProperties(properties, material)
+                    .pickaxe(material.toToolMaterial(), material.pickaxeDamage(), material.pickaxeAtkSpeed())
               ),
-              registry.registerItem(material.getRegistryPrefix() + "_shield", properties -> new ShieldItem(ToolsItems.setCommonProperties(properties, material)
-                    .durability(material.getShieldDurability())
+              registry.registerItem(material.registryPrefix() + "_shield", properties -> new ShieldItem(ToolsItems.setCommonProperties(properties, material)
+                    .durability(material.shieldDurability())
                     .component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)
-                    .repairable(material.getRepairItems())
+                    .repairable(material.repairItems())
                     .equippableUnswappable(EquipmentSlot.OFFHAND)
                     .delayedComponent(DataComponents.BLOCKS_ATTACKS, context -> new BlocksAttacks(
-                          material.getShieldBlockDelay(),
-                          material.getShieldDisableCooldownScale(),
+                          material.shieldBlockDelay(),
+                          material.shieldDisableCooldownScale(),
                           List.of(new BlocksAttacks.DamageReduction(
-                                material.getShieldHorizontalBlockingAngle(),
+                                material.shieldHorizontalBlockingAngle(),
                                 Optional.empty(),
-                                material.getShieldDamageReductionBase(),
-                                material.getShieldDamageReductionFactor()
+                                material.shieldDamageReductionBase(),
+                                material.shieldDamageReductionFactor()
                           )),
-                          new BlocksAttacks.ItemDamageFunction(material.getShieldDamageThreshold(), material.getShieldItemDamageBase(), material.getShieldItemDamageFactor()),
+                          new BlocksAttacks.ItemDamageFunction(material.shieldDamageThreshold(), material.shieldItemDamageBase(), material.shieldItemDamageFactor()),
                           Optional.of(context.getOrThrow(DamageTypeTags.BYPASSES_SHIELD)),
                           Optional.of(SoundEvents.SHIELD_BLOCK),
                           Optional.of(SoundEvents.SHIELD_BREAK)
                     ))
                     .component(DataComponents.BREAK_SOUND, SoundEvents.SHIELD_BREAK)
               )),
-              registry.registerSimple(material.getRegistryPrefix() + "_shovel", properties -> ToolsItems.setCommonProperties(properties, material)
-                    .shovel(material.toToolMaterial(), material.getShovelDamage(), material.getShovelAtkSpeed())
+              registry.registerSimple(material.registryPrefix() + "_shovel", properties -> ToolsItems.setCommonProperties(properties, material)
+                    .shovel(material.toToolMaterial(), material.shovelDamage(), material.shovelAtkSpeed())
               ),
-              registry.registerSimple(material.getRegistryPrefix() + "_sword", properties -> ToolsItems.setCommonProperties(properties, material)
-                    .sword(material.toToolMaterial(), material.getSwordDamage(), material.getSwordAtkSpeed())
+              registry.registerSimple(material.registryPrefix() + "_sword", properties -> ToolsItems.setCommonProperties(properties, material)
+                    .sword(material.toToolMaterial(), material.swordDamage(), material.swordAtkSpeed())
               ),
-              registry.registerSimple(material.getRegistryPrefix() + "_spear", properties -> ToolsItems.setCommonProperties(properties, material)
-                    .spear(material.toToolMaterial(), material.getSpearAttackDuration(), material.getSpearDamageMultiplier(), material.getSpearDelay(),
-                          material.getSpearDismountTime(), material.getSpearDismountThreshold(), material.getSpearKnockbackTime(), material.getSpearKnockbackThreshold(),
-                          material.getSpearDamageTime(), material.getSpearDamageThreshold())
+              registry.registerSimple(material.registryPrefix() + "_spear", properties -> ToolsItems.setCommonProperties(properties, material)
+                    .spear(material.toToolMaterial(), material.spearAttackDuration(), material.spearDamageMultiplier(), material.spearDelay(),
+                          material.spearDismountTime(), material.spearDismountThreshold(), material.spearKnockbackTime(), material.spearKnockbackThreshold(),
+                          material.spearDamageTime(), material.spearDamageThreshold())
               )
         );
     }

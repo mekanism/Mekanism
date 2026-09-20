@@ -13,133 +13,133 @@ public interface BaseMekanismMaterial extends IPaxelMaterial {
     //begin from ToolMaterial
     TagKey<Block> incorrectBlocksForDrops();
 
-    int getDurability();
+    int durability();
 
-    float getSpeed();
+    float speed();
 
-    int getEnchantmentValue();
+    int enchantmentValue();
 
-    TagKey<Item> getRepairItems();
+    TagKey<Item> repairItems();
     //end from ToolMaterial
 
-    default float getSwordDamage() {
+    default float swordDamage() {
         return 3;
     }
 
-    default float getSwordAtkSpeed() {
+    default float swordAtkSpeed() {
         return -2.4F;
     }
 
-    default float getShovelDamage() {
+    default float shovelDamage() {
         return 1.5F;
     }
 
-    default float getShovelAtkSpeed() {
+    default float shovelAtkSpeed() {
         return -3.0F;
     }
 
-    float getAxeDamage();
+    float axeDamage();
 
-    float getAxeAtkSpeed();
+    float axeAtkSpeed();
 
-    default float getPickaxeDamage() {
+    default float pickaxeDamage() {
         return 1;
     }
 
-    default float getPickaxeAtkSpeed() {
+    default float pickaxeAtkSpeed() {
         return -2.8F;
     }
 
-    float getAttackDamageBonus();
+    float attackDamageBonus();
 
-    default float getHoeDamage() {
+    default float hoeDamage() {
         //Default to match the vanilla hoe's implementation of being negative the attack damage of the material
-        return -getAttackDamageBonus();
+        return -attackDamageBonus();
     }
 
-    default float getHoeAtkSpeed() {
-        return getAttackDamageBonus() - 3.0F;
-    }
-
-    @Override
-    default float getPaxelDamage() {
-        return getAxeDamage() + 1;
+    default float hoeAtkSpeed() {
+        return attackDamageBonus() - 3.0F;
     }
 
     @Override
-    default int getPaxelDurability() {
-        return 2 * getDurability();
+    default float paxelDamage() {
+        return axeDamage() + 1;
     }
 
     @Override
-    default float getPaxelEfficiency() {
-        return getSpeed();
+    default int paxelDurability() {
+        return 2 * durability();
     }
 
     @Override
-    default int getPaxelEnchantability() {
-        return getEnchantmentValue();
+    default float paxelEfficiency() {
+        return speed();
     }
 
-    float getSpearAttackDuration();
+    @Override
+    default int paxelEnchantability() {
+        return enchantmentValue();
+    }
 
-    float getSpearDamageMultiplier();
+    float spearAttackDuration();
 
-    float getSpearDelay();
+    float spearDamageMultiplier();
 
-    float getSpearDismountTime();
+    float spearDelay();
 
-    float getSpearDismountThreshold();
+    float spearDismountTime();
 
-    float getSpearKnockbackTime();
+    float spearDismountThreshold();
 
-    default float getSpearKnockbackThreshold() {
+    float spearKnockbackTime();
+
+    default float spearKnockbackThreshold() {
         return 5.1F;
     }
 
-    float getSpearDamageTime();
+    float spearDamageTime();
 
-    default float getSpearDamageThreshold() {
+    default float spearDamageThreshold() {
         return 4.6F;
     }
 
-    String getRegistryPrefix();
+    String registryPrefix();
 
     default boolean burnsInFire() {
         return true;
     }
 
-    int getShieldDurability();
+    int shieldDurability();
 
-    default float getShieldBlockDelay() {
+    default float shieldBlockDelay() {
         return 0.25F;
     }
 
-    default float getShieldDisableCooldownScale() {
+    default float shieldDisableCooldownScale() {
         return 1;
     }
 
-    default float getShieldHorizontalBlockingAngle() {
+    default float shieldHorizontalBlockingAngle() {
         return 90;
     }
 
-    default float getShieldDamageReductionBase() {
+    default float shieldDamageReductionBase() {
         return 0;
     }
 
-    default float getShieldDamageReductionFactor() {
+    default float shieldDamageReductionFactor() {
         return 1;
     }
 
-    default float getShieldDamageThreshold() {
+    default float shieldDamageThreshold() {
         return 3;
     }
 
-    default float getShieldItemDamageBase() {
+    default float shieldItemDamageBase() {
         return 1;
     }
 
-    default float getShieldItemDamageFactor() {
+    default float shieldItemDamageFactor() {
         return 1;
     }
 
@@ -150,22 +150,22 @@ public interface BaseMekanismMaterial extends IPaxelMaterial {
         return 0;
     }
 
-    default int getArmorEnchantmentValue() {
-        return getEnchantmentValue() - 5;
+    default int armorEnchantmentValue() {
+        return enchantmentValue() - 5;
     }
 
     Holder<SoundEvent> equipSound();
 
-    int getDefense(ArmorType type);
+    int defense(ArmorType type);
 
-    int getDurabilityForType(ArmorType type);
+    int durability(ArmorType type);
 
     default ToolMaterial toToolMaterial() {
-        return new ToolMaterial(incorrectBlocksForDrops(), getDurability(), getSpeed(), getAttackDamageBonus(), getEnchantmentValue(), getRepairItems());
+        return new ToolMaterial(incorrectBlocksForDrops(), durability(), speed(), attackDamageBonus(), enchantmentValue(), repairItems());
     }
 
     @Override
     default ToolMaterial toPaxelToolMaterial() {
-        return new ToolMaterial(incorrectBlocksForDrops(), getPaxelDurability(), getSpeed(), getAttackDamageBonus(), getPaxelEnchantability(), getRepairItems());
+        return new ToolMaterial(incorrectBlocksForDrops(), paxelDurability(), speed(), attackDamageBonus(), paxelEnchantability(), repairItems());
     }
 }

@@ -14,32 +14,32 @@ import net.minecraft.world.level.block.Block;
 public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
-    public float getAxeDamage() {
+    public float axeDamage() {
         return 7;
     }
 
     @Override
-    public float getAxeAtkSpeed() {
+    public float axeAtkSpeed() {
         return -2.9F;
     }
 
     @Override
-    public int getDurability() {
+    public int durability() {
         return 4_096;
     }
 
     @Override
-    public float getSpeed() {
+    public float speed() {
         return 12;
     }
 
     @Override
-    public float getAttackDamageBonus() {
+    public float attackDamageBonus() {
         return 8;
     }
 
     @Override
-    public int getEnchantmentValue() {
+    public int enchantmentValue() {
         return 18;
     }
 
@@ -49,17 +49,17 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getShieldDurability() {
+    public int shieldDurability() {
         return 1_680;
     }
 
     @Override
-    public float getShieldBlockDelay() {
+    public float shieldBlockDelay() {
         return 0.6F;
     }
 
     @Override
-    public float getShieldDamageThreshold() {
+    public float shieldDamageThreshold() {
         return 6;
     }
 
@@ -69,7 +69,7 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForType(ArmorType armorType) {
+    public int durability(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 975;
             case LEGGINGS -> 1_125;
@@ -79,7 +79,7 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefense(ArmorType armorType) {
+    public int defense(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 5;
             case LEGGINGS -> 8;
@@ -90,7 +90,7 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public String getRegistryPrefix() {
+    public String registryPrefix() {
         return "refined_obsidian";
     }
 
@@ -105,7 +105,7 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public TagKey<Item> getRepairItems() {
+    public TagKey<Item> repairItems() {
         return MekanismTags.Items.INGOTS_REFINED_OBSIDIAN;
     }
 
@@ -115,37 +115,37 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getSpearAttackDuration() {
+    public float spearAttackDuration() {
         return 1.55F;
     }
 
     @Override
-    public float getSpearDamageMultiplier() {
+    public float spearDamageMultiplier() {
         return 1.7F;
     }
 
     @Override
-    public float getSpearDelay() {
+    public float spearDelay() {
         return 0.2F;
     }
 
     @Override
-    public float getSpearDismountTime() {
+    public float spearDismountTime() {
         return 1.5F;
     }
 
     @Override
-    public float getSpearDismountThreshold() {
+    public float spearDismountThreshold() {
         return 5;
     }
 
     @Override
-    public float getSpearKnockbackTime() {
+    public float spearKnockbackTime() {
         return 2.75F;
     }
 
     @Override
-    public float getSpearDamageTime() {
+    public float spearDamageTime() {
         return 3.75F;
     }
 }

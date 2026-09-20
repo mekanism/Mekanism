@@ -4,17 +4,17 @@ import net.minecraft.world.item.ToolMaterial;
 
 public interface IPaxelMaterial {
 
-    float getPaxelDamage();
+    float paxelDamage();
 
-    default float getPaxelAtkSpeed() {
+    default float paxelAtkSpeed() {
         return -2.4F;
     }
 
-    int getPaxelDurability();
+    int paxelDurability();
 
-    float getPaxelEfficiency();
+    float paxelEfficiency();
 
-    int getPaxelEnchantability();
+    int paxelEnchantability();
 
     default float paxelDisableBlockingSeconds() {
         //Mirror the default value that an axe has

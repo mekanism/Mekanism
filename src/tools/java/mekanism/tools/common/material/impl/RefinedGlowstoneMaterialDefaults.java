@@ -14,57 +14,57 @@ import net.minecraft.world.level.block.Block;
 public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
-    public float getAxeDamage() {
+    public float axeDamage() {
         return 6;
     }
 
     @Override
-    public float getAxeAtkSpeed() {
+    public float axeAtkSpeed() {
         return -2.9F;
     }
 
     @Override
-    public int getDurability() {
+    public int durability() {
         return 384;
     }
 
     @Override
-    public float getSpeed() {
+    public float speed() {
         return 15;
     }
 
     @Override
-    public float getAttackDamageBonus() {
+    public float attackDamageBonus() {
         return 2;
     }
 
     @Override
-    public int getEnchantmentValue() {
+    public int enchantmentValue() {
         return 20;
     }
 
     @Override
-    public int getArmorEnchantmentValue() {
-        return getEnchantmentValue() + 3;
+    public int armorEnchantmentValue() {
+        return enchantmentValue() + 3;
     }
 
     @Override
-    public int getShieldDurability() {
+    public int shieldDurability() {
         return 381;
     }
 
     @Override
-    public float getShieldBlockDelay() {
+    public float shieldBlockDelay() {
         return 0.15F;
     }
 
     @Override
-    public float getShieldDamageReductionFactor() {
+    public float shieldDamageReductionFactor() {
         return 0.9F;
     }
 
     @Override
-    public float getShieldDamageThreshold() {
+    public float shieldDamageThreshold() {
         return 2F;
     }
 
@@ -74,7 +74,7 @@ public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForType(ArmorType armorType) {
+    public int durability(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 221;
             case LEGGINGS -> 255;
@@ -84,7 +84,7 @@ public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefense(ArmorType armorType) {
+    public int defense(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS, HELMET -> 3;
             case LEGGINGS -> 6;
@@ -94,7 +94,7 @@ public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public String getRegistryPrefix() {
+    public String registryPrefix() {
         return "refined_glowstone";
     }
 
@@ -109,42 +109,42 @@ public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public TagKey<Item> getRepairItems() {
+    public TagKey<Item> repairItems() {
         return MekanismTags.Items.INGOTS_REFINED_GLOWSTONE;
     }
 
     @Override
-    public float getSpearAttackDuration() {
+    public float spearAttackDuration() {
         return 0.95F;
     }
 
     @Override
-    public float getSpearDamageMultiplier() {
+    public float spearDamageMultiplier() {
         return 0.95F;
     }
 
     @Override
-    public float getSpearDelay() {
+    public float spearDelay() {
         return 0.6F;
     }
 
     @Override
-    public float getSpearDismountTime() {
+    public float spearDismountTime() {
         return 3;
     }
 
     @Override
-    public float getSpearDismountThreshold() {
+    public float spearDismountThreshold() {
         return 12;
     }
 
     @Override
-    public float getSpearKnockbackTime() {
+    public float spearKnockbackTime() {
         return 7.5F;
     }
 
     @Override
-    public float getSpearDamageTime() {
+    public float spearDamageTime() {
         return 12.5F;
     }
 }
