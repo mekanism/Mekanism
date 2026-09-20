@@ -1,5 +1,6 @@
 {
   "type": "mekanism:basic",
+  "color_representation": "#ff5a4630",
   "icon": "mekanism:mek_chemical/infuse_type/bio",
-  "tint": "#ff5a4630"
+  "tint": "#ffffffff"
 }

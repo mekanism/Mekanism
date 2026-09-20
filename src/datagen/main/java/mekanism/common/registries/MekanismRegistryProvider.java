@@ -173,8 +173,8 @@ public class MekanismRegistryProvider extends BaseRegistryProvider {
               .add(MekanismRegistries.Keys.CHEMICAL, context -> {
                   context.register(ChemicalIds.EMPTY, BasicChemical.builder().build());
                   //Infuse Types
-                  context.register(ChemicalIds.BIO, BasicChemical.builder(Mekanism.rl("mek_chemical/infuse_type/bio")).tint(0xFF5A4630).build());
-                  context.register(ChemicalIds.FUNGI, BasicChemical.builder(Mekanism.rl("mek_chemical/infuse_type/fungi")).tint(0xFF74656A).lightLevel(1).build());
+                  context.register(ChemicalIds.BIO, BasicChemical.builder(Mekanism.rl("mek_chemical/infuse_type/bio")).colorRepresentation(0xFF5A4630).build());
+                  context.register(ChemicalIds.FUNGI, BasicChemical.builder(Mekanism.rl("mek_chemical/infuse_type/fungi")).colorRepresentation(0xFF74656A).lightLevel(1).build());
                   context.register(ChemicalIds.TIN, BasicChemical.infuseType().tint(0xFFCCCCD9).build());
                   context.register(ChemicalIds.GOLD, BasicChemical.infuseType().tint(0xFFF2CD67).build());
                   context.register(ChemicalIds.REFINED_OBSIDIAN, BasicChemical.infuseType().tint(0xFF7C00ED).build());

@@ -1,11 +1,11 @@
-// 26.3	2026-09-17T15:06:10.8882968	Registries for mekanism-world
+// 26.3	2026-09-20T15:52:04.3786666	Registries for mekanism-world
 52821c8942920c69142705aae7c0b11038d53cdd data/mekanism/damage_type/flamethrower.json
 3569c860b35530ba451e7442db81f25f1491a9c9 data/mekanism/damage_type/laser.json
 3d56d26f6e58ced8680ed0cde116e2b4f3850aef data/mekanism/damage_type/radiation.json
 e64bec7d4e6f2fd3b9d80f0327f46e70a39f19d1 data/mekanism/damage_type/sps.json
 17036add6f40ae9d024000b6aa1db98b2f24fbeb data/mekanism/mekanism/chemical/antimatter.json
 d90f28ae24283510d06a00262e6bc81f2c7508e2 data/mekanism/mekanism/chemical/aqua.json
-669d871f4855c3a5df768f47e653bd21fb4417b8 data/mekanism/mekanism/chemical/bio.json
+265afde62f1840cea87138c7b9b060b0d1320e82 data/mekanism/mekanism/chemical/bio.json
 91e51eb0cb608a35f0df7ecdeccd3ae469d2ac63 data/mekanism/mekanism/chemical/black.json
 74b0e673706a400e6d0a4628e5496a2e660ab7ea data/mekanism/mekanism/chemical/blue.json
 0a30098ef057b4cb30bfa14f198942588a40f66f data/mekanism/mekanism/chemical/brine.json
@@ -32,7 +32,7 @@ a03991857ea96c2d7fc6ebebb4b1a5fdbdacb7b8 data/mekanism/mekanism/chemical/dirty_o
 84be082bcea5270082116e1debc04d17f427b6da data/mekanism/mekanism/chemical/empty.json
 4bbe4645718ee43334c380db9449ab07a2636e39 data/mekanism/mekanism/chemical/ethene.json
 1d722c3bd6a72d9e37ab5e4865dd3784ab157a0f data/mekanism/mekanism/chemical/fissile_fuel.json
-aa0496f68939bc40fa36d16fbb8ea0b9783216a1 data/mekanism/mekanism/chemical/fungi.json
+508c01beabde56d42ce513736b29bdfb91b4b791 data/mekanism/mekanism/chemical/fungi.json
 d84bc1cbe578cbaf09a0e07fbddc905cf7cdcbea data/mekanism/mekanism/chemical/gold.json
 046d4e7a5f9eb7cc406b15a26a000528f2c75671 data/mekanism/mekanism/chemical/gray.json
 aeae362eb6011de5a05b3e0c8d3247d4e7dc02d5 data/mekanism/mekanism/chemical/green.json

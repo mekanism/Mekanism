@@ -1,6 +1,7 @@
 {
   "type": "mekanism:basic",
+  "color_representation": "#ff74656a",
   "icon": "mekanism:mek_chemical/infuse_type/fungi",
   "light_level": 1,
-  "tint": "#ff74656a"
+  "tint": "#ffffffff"
 }
