@@ -218,7 +218,9 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
             if (blockEntity instanceof TileEntityBoundingBlock bounding) {
                 IBoundingBlock main = bounding.getMain();
                 if (main != null && bounding.mainPosOffset != null) {
-                    return main.getOffsetCapability(capability, context, bounding.mainPosOffset);
+                    //Note: We need to negate the offset, as the main block is expecting to receive the offset of the bounding block in relation to it
+                    // rather than the offset of it from the bounding block
+                    return main.getOffsetCapability(capability, context, bounding.mainPosOffset.multiply(-1));
                 }
             }
             return null;
