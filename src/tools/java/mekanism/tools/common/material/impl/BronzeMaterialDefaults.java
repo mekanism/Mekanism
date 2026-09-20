@@ -14,11 +14,6 @@ import net.minecraft.world.level.block.Block;
 public class BronzeMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
-    public int getShieldDurability() {
-        return 403;
-    }
-
-    @Override
     public float getAxeDamage() {
         return 7;
     }
@@ -46,6 +41,21 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
     @Override
     public int getEnchantmentValue() {
         return 10;
+    }
+
+    @Override
+    public int getShieldDurability() {
+        return 403;
+    }
+
+    @Override
+    public float getShieldBlockDelay() {
+        return 0.2F;
+    }
+
+    @Override
+    public float getShieldDamageThreshold() {
+        return 2.5F;
     }
 
     @Override

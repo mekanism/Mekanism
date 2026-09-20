@@ -14,11 +14,6 @@ import net.minecraft.world.level.block.Block;
 public class SteelMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
-    public int getShieldDurability() {
-        return 448;
-    }
-
-    @Override
     public float getAxeDamage() {
         return 7;
     }
@@ -46,6 +41,21 @@ public class SteelMaterialDefaults implements BaseMekanismMaterial {
     @Override
     public int getEnchantmentValue() {
         return 16;
+    }
+
+    @Override
+    public int getShieldDurability() {
+        return 448;
+    }
+
+    @Override
+    public float getShieldBlockDelay() {
+        return 0.3F;
+    }
+
+    @Override
+    public float getShieldDamageThreshold() {
+        return 4;
     }
 
     @Override

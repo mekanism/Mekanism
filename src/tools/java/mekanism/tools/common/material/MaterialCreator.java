@@ -31,22 +31,28 @@ public class MaterialCreator implements BaseMekanismMaterial {
     private final CachedFloatValue efficiency;
     private final CachedFloatValue attackDamage;
     private final CachedIntValue enchantability;
-    private final CachedIntValue shieldDurability;
+
     private final CachedFloatValue swordDamage;
     private final CachedFloatValue swordAtkSpeed;
+
     private final CachedFloatValue shovelDamage;
     private final CachedFloatValue shovelAtkSpeed;
+
     private final CachedFloatValue axeDamage;
     private final CachedFloatValue axeAtkSpeed;
+
     private final CachedFloatValue pickaxeDamage;
     private final CachedFloatValue pickaxeAtkSpeed;
+
     private final CachedFloatValue hoeDamage;
     private final CachedFloatValue hoeAtkSpeed;
+
     private final CachedFloatValue paxelDamage;
     private final CachedFloatValue paxelAtkSpeed;
     private final CachedFloatValue paxelEfficiency;
     private final CachedIntValue paxelEnchantability;
     private final CachedIntValue paxelDurability;
+
     private final CachedFloatValue spearAttackDuration;
     private final CachedFloatValue spearDamageMultiplier;
     private final CachedFloatValue spearDelay;
@@ -56,6 +62,17 @@ public class MaterialCreator implements BaseMekanismMaterial {
     private final CachedFloatValue spearKnockbackThreshold;
     private final CachedFloatValue spearDamageTime;
     private final CachedFloatValue spearDamageThreshold;
+
+    private final CachedIntValue shieldDurability;
+    private final CachedFloatValue shieldBlockDelay;
+    private final CachedFloatValue shieldDisableCooldownScale;
+    private final CachedFloatValue shieldHorizontalBlockingAngle;
+    private final CachedFloatValue shieldDamageReductionBase;
+    private final CachedFloatValue shieldDamageReductionFactor;
+    private final CachedFloatValue shieldDamageThreshold;
+    private final CachedFloatValue shieldItemDamageBase;
+    private final CachedFloatValue shieldItemDamageFactor;
+
     private final CachedFloatValue toughness;
     private final CachedFloatValue knockbackResistance;
     private final CachedIntValue armorEnchantability;
@@ -89,9 +106,6 @@ public class MaterialCreator implements BaseMekanismMaterial {
         //Note: Damage predicate to allow for tools to go negative to the value of the base tier so that a tool
         // can effectively have zero damage for things like the hoe
         Predicate<Object> damageModifierPredicate = this::validateDamageModifier;
-        shieldDurability = CachedIntValue.wrap(config, translations.shieldDurability().applyToBuilder(builder)
-              .gameRestart()
-              .defineInRange(toolKey + "ShieldDurability", materialDefaults.getShieldDurability(), 0, Integer.MAX_VALUE));
         swordDamage = CachedFloatValue.wrap(config, translations.swordDamage().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "SwordDamage", validateDefaultModifier(materialDefaults.getSwordDamage()), damageModifierPredicate));
@@ -138,7 +152,6 @@ public class MaterialCreator implements BaseMekanismMaterial {
               .gameRestart()
               .defineInRange(toolKey + "PaxelDurability", materialDefaults.getPaxelDurability(), 1, Integer.MAX_VALUE));
 
-        Predicate<Object> ticksValidator = this::validateTicks;
         spearAttackDuration = CachedFloatValue.wrap(config, translations.spearAttackDuration().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "SpearAttackDuration", (double) materialDefaults.getSpearAttackDuration(),
@@ -148,25 +161,53 @@ public class MaterialCreator implements BaseMekanismMaterial {
               .define(toolKey + "SpearDamageMultiplier", (double) materialDefaults.getSpearDamageMultiplier()));
         spearDelay = CachedFloatValue.wrap(config, translations.spearDelay().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SpearDelay", (double) materialDefaults.getSpearDelay(), ticksValidator));
+              .define(toolKey + "SpearDelay", (double) materialDefaults.getSpearDelay(), MaterialCreator::nonNegativeFloat));
         spearDismountTime = CachedFloatValue.wrap(config, translations.spearDismountTime().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SpearDismountTime", (double) materialDefaults.getSpearDismountTime(), ticksValidator));
+              .define(toolKey + "SpearDismountTime", (double) materialDefaults.getSpearDismountTime(), MaterialCreator::nonNegativeFloat));
         spearDismountThreshold = CachedFloatValue.wrap(config, translations.spearDismountThreshold().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "SpearDismountThreshold", (double) materialDefaults.getSpearDismountThreshold()));
         spearKnockbackTime = CachedFloatValue.wrap(config, translations.spearKnockbackTime().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SpearKnockbackTime", (double) materialDefaults.getSpearKnockbackTime(), ticksValidator));
+              .define(toolKey + "SpearKnockbackTime", (double) materialDefaults.getSpearKnockbackTime(), MaterialCreator::nonNegativeFloat));
         spearKnockbackThreshold = CachedFloatValue.wrap(config, translations.spearKnockbackThreshold().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "SpearKnockbackThreshold", (double) materialDefaults.getSpearKnockbackThreshold()));
         spearDamageTime = CachedFloatValue.wrap(config, translations.spearDamageTime().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SpearDamageTime", (double) materialDefaults.getSpearDamageTime(), ticksValidator));
+              .define(toolKey + "SpearDamageTime", (double) materialDefaults.getSpearDamageTime(), MaterialCreator::nonNegativeFloat));
         spearDamageThreshold = CachedFloatValue.wrap(config, translations.spearDamageThreshold().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "SpearDamageThreshold", (double) materialDefaults.getSpearDamageThreshold()));
+
+        shieldDurability = CachedIntValue.wrap(config, translations.shieldDurability().applyToBuilder(builder)
+              .gameRestart()
+              .defineInRange(toolKey + "ShieldDurability", materialDefaults.getShieldDurability(), 0, Integer.MAX_VALUE));
+        shieldBlockDelay = CachedFloatValue.wrap(config, translations.shieldBlockDelay().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "ShieldBlockDelay", (double) materialDefaults.getShieldBlockDelay(), MaterialCreator::nonNegativeFloat));
+        shieldDisableCooldownScale = CachedFloatValue.wrap(config, translations.shieldDisableCooldownScale().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "ShieldDisableCooldownScale", (double) materialDefaults.getShieldDisableCooldownScale(), MaterialCreator::nonNegativeFloat));
+        shieldHorizontalBlockingAngle = CachedFloatValue.wrap(config, translations.shieldHorizontalBlockingAngle().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "ShieldHorizontalBlockingAngle", (double) materialDefaults.getShieldHorizontalBlockingAngle(), MaterialCreator::positiveFloat));
+        shieldDamageReductionBase = CachedFloatValue.wrap(config, translations.shieldDamageReductionBase().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "ShieldDamageReductionBase", (double) materialDefaults.getShieldDamageReductionBase()));
+        shieldDamageReductionFactor = CachedFloatValue.wrap(config, translations.shieldDamageReductionFactor().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "ShieldDamageReductionFactor", (double) materialDefaults.getShieldDamageReductionFactor()));
+        shieldDamageThreshold = CachedFloatValue.wrap(config, translations.shieldDamageThreshold().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "ShieldDamageThreshold", (double) materialDefaults.getShieldDamageThreshold(), MaterialCreator::nonNegativeFloat));
+        shieldItemDamageBase = CachedFloatValue.wrap(config, translations.shieldItemDamageBase().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "ShieldItemDamageBase", (double) materialDefaults.getShieldItemDamageBase()));
+        shieldItemDamageFactor = CachedFloatValue.wrap(config, translations.shieldItemDamageFactor().applyToBuilder(builder)
+              .gameRestart()
+              .define(toolKey + "ShieldItemDamageFactor", (double) materialDefaults.getShieldItemDamageFactor()));
 
         toughness = CachedFloatValue.wrap(config, translations.toughness().applyToBuilder(builder)
               .gameRestart()
@@ -204,7 +245,7 @@ public class MaterialCreator implements BaseMekanismMaterial {
         builder.pop();
     }
 
-    private float getActualValue(double val) {
+    private static float getActualValue(double val) {
         if (val > Float.MAX_VALUE) {
             return Float.MAX_VALUE;
         } else if (val < -Float.MAX_VALUE) {
@@ -233,13 +274,12 @@ public class MaterialCreator implements BaseMekanismMaterial {
         };
     }
 
-    private boolean validateTicks(Object value) {
+    private static boolean nonNegativeFloat(Object value) {
         return value instanceof Double && getActualValue((double) value) >= 0;
     }
 
-    @Override
-    public int getShieldDurability() {
-        return shieldDurability.get();
+    private static boolean positiveFloat(Object value) {
+        return value instanceof Double && getActualValue((double) value) > 0;
     }
 
     @Override
@@ -355,6 +395,51 @@ public class MaterialCreator implements BaseMekanismMaterial {
     @Override
     public float getSpearDamageThreshold() {
         return spearDamageThreshold.get();
+    }
+
+    @Override
+    public int getShieldDurability() {
+        return shieldDurability.get();
+    }
+
+    @Override
+    public float getShieldBlockDelay() {
+        return shieldBlockDelay.get();
+    }
+
+    @Override
+    public float getShieldDisableCooldownScale() {
+        return shieldDisableCooldownScale.get();
+    }
+
+    @Override
+    public float getShieldHorizontalBlockingAngle() {
+        return shieldHorizontalBlockingAngle.get();
+    }
+
+    @Override
+    public float getShieldDamageReductionBase() {
+        return shieldDamageReductionBase.get();
+    }
+
+    @Override
+    public float getShieldDamageReductionFactor() {
+        return shieldDamageReductionFactor.get();
+    }
+
+    @Override
+    public float getShieldDamageThreshold() {
+        return shieldDamageThreshold.get();
+    }
+
+    @Override
+    public float getShieldItemDamageBase() {
+        return shieldItemDamageBase.get();
+    }
+
+    @Override
+    public float getShieldItemDamageFactor() {
+        return shieldItemDamageFactor.get();
     }
 
     @Override

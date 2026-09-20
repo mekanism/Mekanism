@@ -163,17 +163,23 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
           IConfigTranslation efficiency,
           IConfigTranslation damage,
           IConfigTranslation enchantability,
-          IConfigTranslation shieldDurability,
           IConfigTranslation swordDamage, IConfigTranslation swordAtkSpeed,
           IConfigTranslation shovelDamage, IConfigTranslation shovelAtkSpeed,
           IConfigTranslation axeDamage, IConfigTranslation axeAtkSpeed,
           IConfigTranslation pickaxeDamage, IConfigTranslation pickaxeAtkSpeed,
           IConfigTranslation hoeDamage, IConfigTranslation hoeAtkSpeed,
+          //Paxels
           IConfigTranslation paxelDamage, IConfigTranslation paxelAtkSpeed, IConfigTranslation paxelEfficiency, IConfigTranslation paxelEnchantability,
           IConfigTranslation paxelDurability,
+          //Spears
           IConfigTranslation spearAttackDuration, IConfigTranslation spearDamageMultiplier, IConfigTranslation spearDelay, IConfigTranslation spearDismountTime,
           IConfigTranslation spearDismountThreshold, IConfigTranslation spearKnockbackTime, IConfigTranslation spearKnockbackThreshold,
           IConfigTranslation spearDamageTime, IConfigTranslation spearDamageThreshold,
+          //Shields
+          IConfigTranslation shieldDurability, IConfigTranslation shieldBlockDelay, IConfigTranslation shieldDisableCooldownScale,
+          IConfigTranslation shieldHorizontalBlockingAngle, IConfigTranslation shieldDamageReductionBase, IConfigTranslation shieldDamageReductionFactor,
+          IConfigTranslation shieldDamageThreshold, IConfigTranslation shieldItemDamageBase, IConfigTranslation shieldItemDamageFactor,
+          //Armor
           IConfigTranslation toughness, IConfigTranslation knockbackResistance, IConfigTranslation armorEnchantability,
           IConfigTranslation bootDurability, IConfigTranslation bootArmor,
           IConfigTranslation leggingDurability, IConfigTranslation leggingArmor,
@@ -183,7 +189,6 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
 
         public IConfigTranslation[] toArray() {
             return new IConfigTranslation[]{topLevel, toolDurability, efficiency, damage, enchantability,
-                                            shieldDurability,
                                             swordDamage, swordAtkSpeed,
                                             shovelDamage, shovelAtkSpeed,
                                             axeDamage, axeAtkSpeed,
@@ -192,6 +197,8 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
                                             paxelDamage, paxelAtkSpeed, paxelEfficiency, paxelEnchantability, paxelDurability,
                                             spearAttackDuration, spearDamageMultiplier, spearDelay, spearDismountTime, spearDismountThreshold, spearKnockbackTime,
                                             spearKnockbackThreshold, spearDamageTime, spearDamageThreshold,
+                                            shieldDurability, shieldBlockDelay, shieldDisableCooldownScale, shieldHorizontalBlockingAngle, shieldDamageReductionBase,
+                                            shieldDamageReductionFactor, shieldDamageThreshold, shieldItemDamageBase, shieldItemDamageFactor,
                                             toughness, knockbackResistance, armorEnchantability,
                                             bootDurability, bootArmor,
                                             leggingDurability, leggingArmor,
@@ -212,8 +219,6 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
                   new ConfigTranslation(getKey(registryPrefix, "efficiency"), "Efficiency", "Efficiency of " + name + " tools."),
                   new ConfigTranslation(getKey(registryPrefix, "damage"), "Base Damage", "Base attack damage of " + name + " items."),
                   new ConfigTranslation(getKey(registryPrefix, "enchantability"), "Enchantability", "Natural enchantability factor of " + name + " items."),
-                  //Shields
-                  new ConfigTranslation(getKey(registryPrefix, "durability.shield"), "Shield Durability", "Maximum durability of " + name + " shields."),
                   //Swords
                   new ConfigTranslation(getKey(registryPrefix, "damage.sword"), "Sword Damage", "Attack damage modifier of " + name + " swords. Must be less than or equal to Base Damage."),
                   new ConfigTranslation(getKey(registryPrefix, "attack_speed.sword"), "Sword Attack Speed", "Attack speed of " + name + " swords."),
@@ -245,6 +250,16 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
                   new ConfigTranslation(getKey(registryPrefix, "knockback.threshold.spear"), "Spear Knockback Threshold", "Minimum speed in blocks per second of the entity attacking with " + name + " spears to have the attack knock back the attacked entity."),
                   new ConfigTranslation(getKey(registryPrefix, "damage.time.spear"), "Spear Damage Time", "The time in seconds (rounded to the nearest number of ticks) that " + name + " spears can perform charge-type attacks."),
                   new ConfigTranslation(getKey(registryPrefix, "damage.threshold.spear"), "Spear Damage Threshold", "Minimum relative speed in blocks per second to consider the entity attacking with " + name + " spears to be charging the attacked entity."),
+                  //Shields
+                  new ConfigTranslation(getKey(registryPrefix, "durability.shield"), "Shield Durability", "Maximum durability of " + name + " shields."),
+                  new ConfigTranslation(getKey(registryPrefix, "block_delay.shield"), "Shield Block Delay", "The amount of time (in seconds) that " + name + " shields must be actively used before being able to block an attack."),
+                  new ConfigTranslation(getKey(registryPrefix, "disable_cooldown_scale.shield"), "Shield Disable Cooldown Scale", "The multiplier applied to the cooldown time for " + name + " shields when attacked by a disabling attack (the multiplier for disable_blocking_for_seconds on the minecraft:weapon component). If set to 0, " + name + " shields can never be disabled by attacks."),
+                  new ConfigTranslation(getKey(registryPrefix, "horizontal_blocking_angle.shield"), "Shield Blocking Angle", "The maximum horizontal angle between the " + name + " shield's user's facing direction and the direction of the incoming attack to be blocked."),
+                  new ConfigTranslation(getKey(registryPrefix, "damage_reduction.base.shield"), "Shield Damage Reduction Base", "The base amount of damage " + name + " shields will block regardless of the amount of damage being dealt."),
+                  new ConfigTranslation(getKey(registryPrefix, "damage_reduction.factor.shield"), "Shield Dmg Reduction Factor", "The fraction of damage dealt that " + name + " shields will attempt to block."),
+                  new ConfigTranslation(getKey(registryPrefix, "damage_threshold.shield"), "Shield Damage Threshold", "The minimum amount of damage dealt by the attack before item damage is applied to " + name + " shields. Damage under this amount will be blocked without damaging the shield."),
+                  new ConfigTranslation(getKey(registryPrefix, "item_damage.base.shield"), "Shield Item Damage Base", "The flat amount of item damage applied to " + name + " shields if their damage threshold is passed."),
+                  new ConfigTranslation(getKey(registryPrefix, "item_damage.factor.shield"), "Shield Item Damage Factor", "The fraction of dealt damage that should be applied as item damage to " + name + " shields if their damage threshold is passed."),
                   //Armor
                   new ConfigTranslation(getKey(registryPrefix, "toughness"), "Armor Toughness", "Base armor toughness value of " + name + " armor."),
                   new ConfigTranslation(getKey(registryPrefix, "knockback_resistance"), "Knockback Resistance", "Base armor knockback resistance value of " + name + " armor."),

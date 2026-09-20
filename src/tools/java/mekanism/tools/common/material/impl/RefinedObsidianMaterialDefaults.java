@@ -14,11 +14,6 @@ import net.minecraft.world.level.block.Block;
 public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
-    public int getShieldDurability() {
-        return 1_680;
-    }
-
-    @Override
     public float getAxeDamage() {
         return 7;
     }
@@ -51,6 +46,21 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
     @Override
     public boolean burnsInFire() {
         return false;
+    }
+
+    @Override
+    public int getShieldDurability() {
+        return 1_680;
+    }
+
+    @Override
+    public float getShieldBlockDelay() {
+        return 0.6F;
+    }
+
+    @Override
+    public float getShieldDamageThreshold() {
+        return 6;
     }
 
     @Override

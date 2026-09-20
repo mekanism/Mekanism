@@ -39,19 +39,20 @@ public record ToolCollection(ItemRegistryObject<Item> axe, ItemRegistryObject<It
                     .component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)
                     .repairable(material.getRepairItems())
                     .equippableUnswappable(EquipmentSlot.OFFHAND)
-                    .delayedComponent(
-                          DataComponents.BLOCKS_ATTACKS,
-                          context -> new BlocksAttacks(
-                                0.25F,
-                                1.0F,
-                                List.of(new BlocksAttacks.DamageReduction(90.0F, Optional.empty(), 0.0F, 1.0F)),
-                                //TODO - 26.3: should different shields block more damage?
-                                new BlocksAttacks.ItemDamageFunction(3.0F, 1.0F, 1.0F),
-                                Optional.of(context.getOrThrow(DamageTypeTags.BYPASSES_SHIELD)),
-                                Optional.of(SoundEvents.SHIELD_BLOCK),
-                                Optional.of(SoundEvents.SHIELD_BREAK)
-                          )
-                    )
+                    .delayedComponent(DataComponents.BLOCKS_ATTACKS, context -> new BlocksAttacks(
+                          material.getShieldBlockDelay(),
+                          material.getShieldDisableCooldownScale(),
+                          List.of(new BlocksAttacks.DamageReduction(
+                                material.getShieldHorizontalBlockingAngle(),
+                                Optional.empty(),
+                                material.getShieldDamageReductionBase(),
+                                material.getShieldDamageReductionFactor()
+                          )),
+                          new BlocksAttacks.ItemDamageFunction(material.getShieldDamageThreshold(), material.getShieldItemDamageBase(), material.getShieldItemDamageFactor()),
+                          Optional.of(context.getOrThrow(DamageTypeTags.BYPASSES_SHIELD)),
+                          Optional.of(SoundEvents.SHIELD_BLOCK),
+                          Optional.of(SoundEvents.SHIELD_BREAK)
+                    ))
                     .component(DataComponents.BREAK_SOUND, SoundEvents.SHIELD_BREAK)
               )),
               registry.registerSimple(material.getRegistryPrefix() + "_shovel", properties -> ToolsItems.setCommonProperties(properties, material)

@@ -16,11 +16,6 @@ import net.minecraft.world.level.block.Block;
 public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
-    public int getShieldDurability() {
-        return 672;
-    }
-
-    @Override
     public float getAxeDamage() {
         return 8;
     }
@@ -48,6 +43,21 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     @Override
     public int getEnchantmentValue() {
         return 14;
+    }
+
+    @Override
+    public int getShieldDurability() {
+        return 672;
+    }
+
+    @Override
+    public float getShieldBlockDelay() {
+        return 0.5F;
+    }
+
+    @Override
+    public float getShieldDamageThreshold() {
+        return 4.5F;
     }
 
     @Override

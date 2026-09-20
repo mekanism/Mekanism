@@ -22,8 +22,6 @@ public interface BaseMekanismMaterial extends IPaxelMaterial {
     TagKey<Item> getRepairItems();
     //end from ToolMaterial
 
-    int getShieldDurability();
-
     default float getSwordDamage() {
         return 3;
     }
@@ -109,6 +107,40 @@ public interface BaseMekanismMaterial extends IPaxelMaterial {
 
     default boolean burnsInFire() {
         return true;
+    }
+
+    int getShieldDurability();
+
+    default float getShieldBlockDelay() {
+        return 0.25F;
+    }
+
+    default float getShieldDisableCooldownScale() {
+        return 1;
+    }
+
+    default float getShieldHorizontalBlockingAngle() {
+        return 90;
+    }
+
+    default float getShieldDamageReductionBase() {
+        return 0;
+    }
+
+    default float getShieldDamageReductionFactor() {
+        return 1;
+    }
+
+    default float getShieldDamageThreshold() {
+        return 3;
+    }
+
+    default float getShieldItemDamageBase() {
+        return 1;
+    }
+
+    default float getShieldItemDamageFactor() {
+        return 1;
     }
 
     //Armor material related helpers

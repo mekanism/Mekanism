@@ -14,11 +14,6 @@ import net.minecraft.world.level.block.Block;
 public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
-    public int getShieldDurability() {
-        return 381;
-    }
-
-    @Override
     public float getAxeDamage() {
         return 6;
     }
@@ -51,6 +46,26 @@ public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
     @Override
     public int getArmorEnchantmentValue() {
         return getEnchantmentValue() + 3;
+    }
+
+    @Override
+    public int getShieldDurability() {
+        return 381;
+    }
+
+    @Override
+    public float getShieldBlockDelay() {
+        return 0.15F;
+    }
+
+    @Override
+    public float getShieldDamageReductionFactor() {
+        return 0.9F;
+    }
+
+    @Override
+    public float getShieldDamageThreshold() {
+        return 2F;
     }
 
     @Override

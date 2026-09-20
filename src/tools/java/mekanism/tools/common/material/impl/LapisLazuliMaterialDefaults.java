@@ -14,11 +14,6 @@ import net.neoforged.neoforge.common.Tags;
 public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
-    public int getShieldDurability() {
-        return 224;
-    }
-
-    @Override
     public float getAxeDamage() {
         return 4;
     }
@@ -51,6 +46,26 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
     @Override
     public int getArmorEnchantmentValue() {
         return getEnchantmentValue() + 3;
+    }
+
+    @Override
+    public int getShieldDurability() {
+        return 224;
+    }
+
+    @Override
+    public float getShieldBlockDelay() {
+        return 0.1F;
+    }
+
+    @Override
+    public float getShieldDamageReductionFactor() {
+        return 0.8F;
+    }
+
+    @Override
+    public float getShieldDamageThreshold() {
+        return 1;
     }
 
     @Override
