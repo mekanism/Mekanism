@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:pale_oak_shelf"
+  },
+  "main_output": {
+    "id": "minecraft:stripped_pale_oak_log"
+  }
+}

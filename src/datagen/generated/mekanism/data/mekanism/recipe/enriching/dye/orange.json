@@ -3,6 +3,7 @@
   "input": {
     "count": 1,
     "ingredient": [
+      "minecraft:open_eyeblossom",
       "minecraft:orange_tulip",
       "minecraft:torchflower"
     ]

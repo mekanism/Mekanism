@@ -4,10 +4,10 @@
     "#": "mekanism:laser",
     "A": "#c:pellets/polonium",
     "C": "#c:circuits/ultimate",
-    "c": "#c:ingots/copper"
+    "I": "#c:ingots/copper"
   },
   "pattern": [
-    "ccc",
+    "III",
     "C#C",
     "AAA"
   ],

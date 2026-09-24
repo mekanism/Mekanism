@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "ingredient": "#c:dusts/sulfur"
+  },
+  "output": {
+    "id": "minecraft:sulfur_spike"
+  }
+}

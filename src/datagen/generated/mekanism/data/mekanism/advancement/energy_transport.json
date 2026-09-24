@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:steel_ingot",
   "criteria": {
-    "basic_universal_cable": {
+    "has_cable": {
       "conditions": {
         "items": [
           {
-            "items": "mekanism:basic_universal_cable"
+            "items": "#mekanism:transmitters/energy"
           }
         ]
       },
@@ -26,7 +26,7 @@
   },
   "requirements": [
     [
-      "basic_universal_cable"
+      "has_cable"
     ]
   ],
   "sends_telemetry_event": true

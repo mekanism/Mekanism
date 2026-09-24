@@ -74,7 +74,7 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(Holder<Item> item, int quantity) {
-        return addIngredient(Ingredient.of(item.value()), quantity);
+        return addIngredient(ingredient(item), quantity);
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(Ingredient ingredient) {

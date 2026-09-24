@@ -23,6 +23,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
@@ -101,6 +102,10 @@ public class ExtendedAdvancementBuilder {
             throw new IllegalArgumentException("No items specified");
         }
         return addCriterion(key, InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(lookup, items).build()));
+    }
+
+    public ExtendedAdvancementBuilder orCriteria(String key, HolderGetter<Item> lookup, TagKey<Item> tag) {
+        return addCriterion(key, InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(lookup, tag).build()));
     }
 
     public ExtendedAdvancementBuilder orCriteria(RecipeCriterion... criteria) {

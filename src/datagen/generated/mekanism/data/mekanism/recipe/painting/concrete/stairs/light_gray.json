@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 32,
+    "ingredient": "mekanism:light_gray"
+  },
+  "item_input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/concrete/stairs",
+      "subtracted": "minecraft:light_gray_concrete_stairs"
+    }
+  },
+  "output": {
+    "id": "minecraft:light_gray_concrete_stairs"
+  },
+  "per_tick_usage": false
+}

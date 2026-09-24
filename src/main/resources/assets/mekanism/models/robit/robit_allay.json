@@ -89,7 +89,7 @@
 			"name": "rightWing",
 			"from": [7.5, 1, -1],
 			"to": [7.5, 6, 7],
-			"rotation": {"angle": 22.5, "axis": "y", "origin": [7.5, 6, 7]},
+			"rotation": {"y": 22.5, "origin": [7.5, 6, 7]},
 			"faces": {
 				"east": {"uv": [16, 13.5, 12, 16], "texture": "#robit"},
 				"west": {"uv": [12, 13.5, 16, 16], "texture": "#robit"}
@@ -100,7 +100,7 @@
 			"name": "leftWing",
 			"from": [8.5, 1, -1],
 			"to": [8.5, 6, 7],
-			"rotation": {"angle": -22.5, "axis": "y", "origin": [8.5, 6, 7]},
+			"rotation": {"y": -22.5, "origin": [8.5, 6, 7]},
 			"faces": {
 				"east": {"uv": [16, 13.5, 12, 16], "texture": "#robit"},
 				"west": {"uv": [12, 13.5, 16, 16], "texture": "#robit"}
@@ -111,7 +111,7 @@
 			"name": "rightArm",
 			"from": [5.5, 3, 7],
 			"to": [6.5, 7, 9],
-			"rotation": {"angle": -22.5, "axis": "z", "origin": [6.5, 7, 8]},
+			"rotation": {"z": -22.5, "origin": [6.5, 7, 8]},
 			"faces": {
 				"north": {"uv": [9, 14, 9.5, 16], "texture": "#robit"},
 				"east": {"uv": [8, 14, 9, 16], "texture": "#robit"},
@@ -126,7 +126,7 @@
 			"name": "leftArm",
 			"from": [9.5, 3, 7],
 			"to": [10.5, 7, 9],
-			"rotation": {"angle": 22.5, "axis": "z", "origin": [9.5, 7, 8]},
+			"rotation": {"z": 22.5, "origin": [9.5, 7, 8]},
 			"faces": {
 				"north": {"uv": [9, 11, 9.5, 13], "texture": "#robit"},
 				"east": {"uv": [8, 11, 9, 13], "texture": "#robit"},

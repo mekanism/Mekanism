@@ -1,0 +1,14 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:pale_oak_chest_boat"
+  },
+  "main_output": {
+    "id": "minecraft:pale_oak_boat"
+  },
+  "secondary_chance": 1.0,
+  "secondary_output": {
+    "id": "minecraft:chest"
+  }
+}

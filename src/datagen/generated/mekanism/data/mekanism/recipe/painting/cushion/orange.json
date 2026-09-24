@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 256,
+    "ingredient": "mekanism:orange"
+  },
+  "item_input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/cushions",
+      "subtracted": "minecraft:orange_cushion"
+    }
+  },
+  "output": {
+    "id": "minecraft:orange_cushion"
+  },
+  "per_tick_usage": false
+}

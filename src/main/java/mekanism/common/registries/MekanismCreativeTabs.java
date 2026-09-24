@@ -15,6 +15,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister;
+import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tier.TransporterTier;
@@ -76,8 +77,9 @@ public class MekanismCreativeTabs {
             CreativeTabDeferredRegister.addToDisplay(event, MekanismBlocks.SALT_BLOCK, MekanismBlocks.BRONZE_BLOCK, MekanismBlocks.STEEL_BLOCK,
                   MekanismBlocks.CHARCOAL_BLOCK, MekanismBlocks.REFINED_OBSIDIAN_BLOCK, MekanismBlocks.REFINED_GLOWSTONE_BLOCK);
             for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
-                if (resource.getResourceBlockInfo() != null) {
-                    CreativeTabDeferredRegister.addToDisplay(event, MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource));
+                BlockResourceInfo resourceInfo = resource.getResourceBlockInfo();
+                if (resourceInfo != null) {
+                    CreativeTabDeferredRegister.addToDisplay(event, MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resourceInfo));
                 }
             }
         } else if (tabKey == CreativeModeTabs.NATURAL_BLOCKS) {

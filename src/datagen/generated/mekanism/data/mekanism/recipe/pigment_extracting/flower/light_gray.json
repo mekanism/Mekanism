@@ -3,8 +3,8 @@
   "input": {
     "count": 1,
     "ingredient": [
-      "minecraft:oxeye_daisy",
       "minecraft:azure_bluet",
+      "minecraft:oxeye_daisy",
       "minecraft:white_tulip"
     ]
   },

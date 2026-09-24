@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:resin_block"
+  },
+  "output": {
+    "count": 9,
+    "id": "minecraft:resin_clump"
+  }
+}

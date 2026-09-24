@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 32,
+    "ingredient": "mekanism:blue"
+  },
+  "item_input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/concrete/stairs",
+      "subtracted": "minecraft:blue_concrete_stairs"
+    }
+  },
+  "output": {
+    "id": "minecraft:blue_concrete_stairs"
+  },
+  "per_tick_usage": false
+}

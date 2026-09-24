@@ -1,0 +1,13 @@
+{
+  "values": [
+    "#mekanism:factories/smelting",
+    "#mekanism:factories/enriching",
+    "#mekanism:factories/crushing",
+    "#mekanism:factories/compressing",
+    "#mekanism:factories/combining",
+    "#mekanism:factories/purifying",
+    "#mekanism:factories/injecting",
+    "#mekanism:factories/infusing",
+    "#mekanism:factories/sawing"
+  ]
+}

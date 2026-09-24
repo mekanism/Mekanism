@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:saddle"
+  },
+  "main_output": {
+    "count": 3,
+    "id": "minecraft:leather"
+  },
+  "secondary_chance": 0.05,
+  "secondary_output": {
+    "id": "minecraft:iron_ingot"
+  }
+}

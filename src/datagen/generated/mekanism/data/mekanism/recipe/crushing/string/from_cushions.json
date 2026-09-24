@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "#minecraft:cushions"
+  },
+  "output": {
+    "count": 6,
+    "id": "minecraft:string"
+  }
+}

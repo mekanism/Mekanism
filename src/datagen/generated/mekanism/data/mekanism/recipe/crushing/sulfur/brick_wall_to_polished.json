@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:sulfur_brick_wall"
+  },
+  "output": {
+    "id": "minecraft:polished_sulfur_wall"
+  }
+}

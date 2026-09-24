@@ -265,6 +265,7 @@ public class FluidDeferredRegister {
         public final int color;
 
         //TODO - 26.3: Do we want to copy various settings of water to have it push things and allow swimming in the fluids again?
+        // And do any need to be added to FluidTags.ENTITY_FLOATABLE
         public MekanismFluidType(FluidType.Properties properties, FluidTypeRenderProperties renderProperties) {
             super(properties);
             this.stillTexture = renderProperties.stillTexture;

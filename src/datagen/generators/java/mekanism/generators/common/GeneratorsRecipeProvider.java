@@ -32,6 +32,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.Recipe;
@@ -42,7 +43,7 @@ import net.neoforged.neoforge.fluids.FluidStackTemplate;
 public class GeneratorsRecipeProvider extends BaseRecipeProvider {
 
     private static final char GLASS_CHAR = 'G';
-    private static final char IRON_BARS_CHAR = 'B';
+    private static final char BARS_CHAR = 'B';
     private static final char BIO_FUEL_CHAR = 'B';
     private static final char FRAME_CHAR = 'F';
     private static final char ELECTROLYTIC_CORE_CHAR = 'C';
@@ -401,10 +402,10 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.TURBINE_VENT, 2)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
-                    TripleLine.of(Pattern.CONSTANT, IRON_BARS_CHAR, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.CONSTANT, BARS_CHAR, Pattern.CONSTANT),
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CONSTANT, GeneratorsBlocks.TURBINE_CASING)
-              .key(IRON_BARS_CHAR, this.items, BlockItemIds.IRON_BARS)
+              .key(BARS_CHAR, this.items, BlockItemTags.BARS)
               .save(output, MekanismGenerators.rl("turbine/vent"));
     }
 }

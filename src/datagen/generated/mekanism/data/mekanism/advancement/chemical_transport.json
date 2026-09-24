@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:steel_ingot",
   "criteria": {
-    "basic_pressurized_tube": {
+    "has_tube": {
       "conditions": {
         "items": [
           {
-            "items": "mekanism:basic_pressurized_tube"
+            "items": "#mekanism:transmitters/chemical"
           }
         ]
       },
@@ -26,7 +26,7 @@
   },
   "requirements": [
     [
-      "basic_pressurized_tube"
+      "has_tube"
     ]
   ],
   "sends_telemetry_event": true

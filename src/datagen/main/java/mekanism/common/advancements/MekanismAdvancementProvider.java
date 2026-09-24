@@ -31,6 +31,7 @@ import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.tags.MekanismTags.BlockItems;
 import mekanism.common.tier.FactoryTier;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementType;
@@ -148,7 +149,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               ).save(output);
         advancement(MekanismAdvancements.FACTORY)
               .display(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.SMELTING).getItemHolder(), AdvancementType.GOAL, true)
-              .orCriteria("factory", items, MekanismBlocks.getFactoryBlocks().stream().map(ro -> ro.getItemHolder().get()).toArray(Item[]::new))
+              .orCriteria("factory", items, MekanismTags.BlockItems.FACTORIES.item())
               .orCriteria("tier_installer", UseTierInstallerTrigger.TriggerInstance.any())
               .save(output);
         advancement(MekanismAdvancements.CONFIGURATION_COPYING)
@@ -356,19 +357,24 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               )).save(output);
 
         advancement(MekanismAdvancements.FLUID_TRANSPORT)
-              .displayAndCriterion(MekanismBlocks.BASIC_MECHANICAL_PIPE, AdvancementType.TASK, false)
+              .display(MekanismBlocks.BASIC_MECHANICAL_PIPE.getItemHolder(), AdvancementType.TASK, false)
+              .orCriteria("has_pipe", items, BlockItems.FLUID_TRANSMITTERS.item())
               .save(output);
         advancement(MekanismAdvancements.CHEMICAL_TRANSPORT)
-              .displayAndCriterion(MekanismBlocks.BASIC_PRESSURIZED_TUBE, AdvancementType.TASK, false)
+              .display(MekanismBlocks.BASIC_PRESSURIZED_TUBE.getItemHolder(), AdvancementType.TASK, false)
+              .orCriteria("has_tube", items, BlockItems.CHEMICAL_TRANSMITTERS.item())
               .save(output);
         advancement(MekanismAdvancements.ENERGY_TRANSPORT)
-              .displayAndCriterion(MekanismBlocks.BASIC_UNIVERSAL_CABLE, AdvancementType.TASK, false)
+              .display(MekanismBlocks.BASIC_UNIVERSAL_CABLE.getItemHolder(), AdvancementType.TASK, false)
+              .orCriteria("has_cable", items, BlockItems.ENERGY_TRANSMITTERS.item())
               .save(output);
         advancement(MekanismAdvancements.HEAT_TRANSPORT)
-              .displayAndCriterion(MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR, AdvancementType.TASK, false)
+              .display(MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR.getItemHolder(), AdvancementType.TASK, false)
+              .orCriteria("has_conductor", items, BlockItems.HEAT_TRANSMITTERS.item())
               .save(output);
         advancement(MekanismAdvancements.ITEM_TRANSPORT)
-              .displayAndCriterion(MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, AdvancementType.TASK, false)
+              .display(MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getItemHolder(), AdvancementType.TASK, false)
+              .orCriteria("has_transporter", items, BlockItems.TIERED_ITEM_TRANSMITTERS.item())
               .save(output);
         advancement(MekanismAdvancements.RESTRICTIVE_ITEM_TRANSPORT)
               .displayAndCriterion(MekanismBlocks.RESTRICTIVE_TRANSPORTER, AdvancementType.TASK, false)

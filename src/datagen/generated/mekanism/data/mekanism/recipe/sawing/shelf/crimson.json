@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:crimson_shelf"
+  },
+  "main_output": {
+    "id": "minecraft:stripped_crimson_stem"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "values": [
+    "#mekanism:structures/tank",
+    "#mekanism:structures/matrix",
+    "#mekanism:structures/boiler",
+    "#mekanism:structures/evaporation",
+    "#mekanism:structures/sps"
+  ]
+}

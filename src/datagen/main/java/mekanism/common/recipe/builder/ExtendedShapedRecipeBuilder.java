@@ -85,7 +85,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> lookup, ResourceKey<Item> id) {
-        return key(symbol, lookup.getOrThrow(id));
+        return key(symbol, ingredient(lookup, id));
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> lookup, BlockItemTagId id) {
@@ -105,7 +105,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, Holder<Item> item) {
-        return key(symbol, Ingredient.of(item.value()));
+        return key(symbol, ingredient(item));
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, Ingredient ingredient) {

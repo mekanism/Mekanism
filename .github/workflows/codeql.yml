@@ -2,9 +2,9 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "26.2" ]
+    branches: [ "26.3" ]
   pull_request:
-    branches: [ "26.2" ]
+    branches: [ "26.3" ]
     types:
       - synchronize
       - opened

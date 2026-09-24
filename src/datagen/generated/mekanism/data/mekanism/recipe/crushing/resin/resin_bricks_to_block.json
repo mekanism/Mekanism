@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:resin_bricks"
+  },
+  "output": {
+    "id": "minecraft:resin_block"
+  }
+}

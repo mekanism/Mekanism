@@ -137,7 +137,7 @@
 			"name": "monitor",
 			"from": [1, 17.5, 10.5],
 			"to": [15, 25.5, 12.5],
-			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 21, 11.5]},
+			"rotation": {"x": 22.5, "origin": [8, 21, 11.5]},
 			"faces": {
 				"north": {"uv": [0, 0, 3.5, 2], "rotation": 180, "texture": "#2"},
 				"east": {"uv": [4, 0, 3.5, 2], "texture": "#2"},
@@ -152,7 +152,7 @@
 			"from": [2, 17, 11],
 			"to": [3, 18, 12],
 			"shade_direction_override": "up",
-			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 21, 11.5]},
+			"rotation": {"x": 22.5, "origin": [8, 21, 11.5]},
 			"faces": {
 				"north": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3"},
 				"east": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3"},

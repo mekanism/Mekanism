@@ -93,7 +93,7 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
                     .add(LootItem.lootTableItem(Items.WITHER_SKELETON_SKULL))
                     .when(LootItemKilledByPlayerCondition.killedByPlayer())
                     //Double vanilla's skull drop chance due to being "younger and less brittle"
-                    .when(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(this.enchantments, 0.05F, 0.01F))
+                    .when(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(this.enchantments, 0.05F, 0.02F))
               )
         );
     }

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:dried_ghast"
+  },
+  "output": {
+    "count": 3,
+    "id": "minecraft:ghast_tear"
+  }
+}

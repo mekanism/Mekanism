@@ -1,0 +1,7 @@
+{
+  "values": [
+    "#mekanism:transmitters/energy",
+    "#mekanism:transmitters/chemical",
+    "#mekanism:transmitters/fluid"
+  ]
+}

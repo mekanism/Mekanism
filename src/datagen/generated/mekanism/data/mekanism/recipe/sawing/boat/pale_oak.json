@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:pale_oak_boat"
+  },
+  "main_output": {
+    "count": 5,
+    "id": "minecraft:pale_oak_planks"
+  }
+}

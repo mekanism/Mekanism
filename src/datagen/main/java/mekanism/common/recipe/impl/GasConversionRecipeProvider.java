@@ -5,6 +5,7 @@ import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
@@ -30,7 +31,7 @@ class GasConversionRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "flint_to_oxygen"));
         //Osmium block -> osmium
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM)),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.OSMIUM)),
               chemicalTemplate(ChemicalIds.OSMIUM, 1_800)
         ).save(consumer, Mekanism.rl(basePath + "osmium_from_block"));
         //Osmium ingot -> osmium

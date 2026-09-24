@@ -108,8 +108,8 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     protected <TYPE> MekanismTagBuilder<TYPE> getBuilder(TagKey<TYPE> tag) {
-        Map<TagKey<?>, TagBuilder> tagTypeMap = supportedTagTypes.computeIfAbsent(tag.registry(), type -> new Object2ObjectLinkedOpenHashMap<>());
-        return new MekanismTagBuilder<>(tagTypeMap.computeIfAbsent(tag, _ -> TagBuilder.create()));
+        Map<TagKey<?>, TagBuilder> tagTypeMap = supportedTagTypes.computeIfAbsent(tag.registry(), _ -> new Object2ObjectLinkedOpenHashMap<>());
+        return new MekanismTagBuilder<>(tag.registry(), tagTypeMap.computeIfAbsent(tag, _ -> TagBuilder.create()));
     }
 
     @SafeVarargs
@@ -135,9 +135,20 @@ public abstract class BaseTagProvider implements DataProvider {
         }
     }
 
+    protected void addToTagsAndMarkKnown(BlockItemTagId tag, BlockRegistryObject<?, ?>... blockProviders) {
+        addToTags(tag, blockProviders);
+        for (Holder<Block> block : blockProviders) {
+            knownHarvestRequirements.add(block.value());
+        }
+    }
+
     protected void addToTags(TagKey<Item> itemTag, TagKey<Block> blockTag, BlockItemTagId... tags) {
-        getBuilder(itemTag).add(Arrays.stream(tags).map(BlockItemTagId::item).toList());
-        getBuilder(blockTag).add(Arrays.stream(tags).map(BlockItemTagId::block).toList());
+        getBuilder(itemTag).addAsItems(tags);
+        getBuilder(blockTag).addAsBlocks(tags);
+    }
+
+    protected void addTagsToTags(BlockItemTagId tag, Collection<BlockItemTagId> tags) {
+        addToTags(tag, tags.toArray(BlockItemTagId[]::new));
     }
 
     protected void addToTags(BlockItemTagId tag, BlockItemTagId... tags) {

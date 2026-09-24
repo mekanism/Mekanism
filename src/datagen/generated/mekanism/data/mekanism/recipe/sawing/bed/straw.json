@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:straw_bed"
+  },
+  "main_output": {
+    "count": 6,
+    "id": "minecraft:wheat"
+  },
+  "secondary_chance": 0.75,
+  "secondary_output": {
+    "id": "minecraft:wheat"
+  }
+}

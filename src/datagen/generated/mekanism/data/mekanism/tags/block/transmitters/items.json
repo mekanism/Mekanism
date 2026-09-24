@@ -1,0 +1,7 @@
+{
+  "values": [
+    "#mekanism:transmitters/items/tiered",
+    "mekanism:diversion_transporter",
+    "mekanism:restrictive_transporter"
+  ]
+}

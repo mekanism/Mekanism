@@ -1,7 +1,6 @@
 package mekanism.client;
 
 import com.google.common.reflect.TypeToken;
-import java.util.Map;
 import mekanism.api.gear.IClientModuleHelper;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.gui.GuiBoilerStats;
@@ -156,7 +155,6 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaTank;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -165,10 +163,11 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
-import mekanism.common.resource.IResource;
+import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.tile.qio.QIOBlockTintSource;
 import mekanism.common.tile.transmitter.LogisticalTransporterBlockTintSource;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.client.model.object.armorstand.ArmorStandModel;
@@ -556,10 +555,11 @@ public class ClientRegistration {
               MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER);
         ClientRegistrationUtil.registerBlockColorHandler(event, LogisticalTransporterBlockTintSource.INSTANCE, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER,
               MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
-        for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            if (entry.getKey() instanceof PrimaryResource primaryResource) {
+        for (PrimaryResource primaryResource : EnumUtils.PRIMARY_RESOURCES) {
+            BlockResourceInfo resourceInfo = primaryResource.getResourceBlockInfo();
+            if (resourceInfo != null) {
                 int tint = primaryResource.getTint();
-                ClientRegistrationUtil.registerBlockColorHandler(event, _ -> tint, entry.getValue());
+                ClientRegistrationUtil.registerBlockColorHandler(event, _ -> tint, MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resourceInfo));
             }
         }
     }

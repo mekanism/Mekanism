@@ -100,7 +100,7 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
         for (FactoryTier factoryTier : EnumUtils.FACTORY_TIERS) {
             String tieredPath = basePath + factoryTier.getBaseTier().getLowerName() + "/";
             for (FactoryType type : EnumUtils.FACTORY_TYPES) {
-                addRecipe(reloadableLookupProvider, tieredPath + type.getRegistryNameComponent());
+                addRecipe(reloadableLookupProvider, tieredPath + type.getSerializedName());
             }
         }
     }

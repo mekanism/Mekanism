@@ -28,6 +28,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
+import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
@@ -39,6 +40,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -192,9 +194,11 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Cardboard box
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CARDBOARD_BOX)
               .pattern(RecipePattern.createPattern(
-                    DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT),
-                    DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT))
+                    TripleLine.of(Pattern.CONSTANT, Pattern.EMPTY, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.RESIN, Pattern.EMPTY, Pattern.RESIN),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.RESIN, Pattern.CONSTANT))
               ).key(Pattern.CONSTANT, this.items, MekanismTags.Items.DUSTS_WOOD)
+              .key(Pattern.RESIN, this.items, Tags.Items.CLUMPS_RESIN)
               .save(output);
         //Bio Fuel
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.BIO_FUEL, 9)
@@ -809,7 +813,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL),
                     TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.CONSTANT),
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL))
-              ).key(Pattern.CONSTANT, this.items, BlockItemIds.IRON_BARS)
+              ).key(Pattern.CONSTANT, this.items, BlockItemTags.BARS)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .save(output);
@@ -974,7 +978,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY),
                     TripleLine.of(Pattern.INGOT, Pattern.STEEL_CASING, Pattern.INGOT),
                     TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY))
-              ).key(Pattern.INGOT, this.items, Tags.Items.INGOTS_COPPER)
+              ).key(Pattern.INGOT, this.items, BlockItemIds.COPPER_CHAIN.weathering().unaffected())
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .save(output);
@@ -1205,12 +1209,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Supercharged Coil
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SUPERCHARGED_COIL)
               .pattern(RecipePattern.createPattern(
-                    TripleLine.of('c', 'c', 'c'),
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.ALLOY, Pattern.ALLOY, Pattern.ALLOY))
               ).key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.CONSTANT, MekanismBlocks.LASER)
-              .key('c', this.items, Tags.Items.INGOTS_COPPER)
+              .key(Pattern.INGOT, this.items, Tags.Items.INGOTS_COPPER)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .save(output);
         //Nutritional Liquifier
@@ -1366,7 +1370,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
-              .key(Pattern.CONSTANT, this.items, MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.LEAD))
+              .key(Pattern.CONSTANT, this.items, MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.LEAD))
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
               .save(output, MekanismModules.RADIATION_SHIELDING_UNIT.getId());
         //Color Modulation Module

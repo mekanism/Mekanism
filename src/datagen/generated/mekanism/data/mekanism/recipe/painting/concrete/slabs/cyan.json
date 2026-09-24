@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 32,
+    "ingredient": "mekanism:cyan"
+  },
+  "item_input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/concrete/slabs",
+      "subtracted": "minecraft:cyan_concrete_slab"
+    }
+  },
+  "output": {
+    "id": "minecraft:cyan_concrete_slab"
+  },
+  "per_tick_usage": false
+}

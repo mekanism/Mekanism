@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:poplar_boat"
+  },
+  "main_output": {
+    "count": 5,
+    "id": "minecraft:poplar_planks"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "values": [
+    "mekanism:block_bronze",
+    "mekanism:block_refined_obsidian",
+    "mekanism:block_refined_glowstone",
+    "mekanism:block_steel",
+    "mekanism:steel_casing",
+    "mekanism:block_osmium",
+    "mekanism:block_raw_osmium",
+    "mekanism:block_tin",
+    "mekanism:block_raw_tin",
+    "mekanism:block_lead",
+    "mekanism:block_raw_lead",
+    "mekanism:block_uranium",
+    "mekanism:block_raw_uranium",
+    "#c:ores/tin",
+    "#c:ores/osmium",
+    "#c:ores/uranium",
+    "#c:ores/lead"
+  ]
+}

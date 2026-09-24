@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "#": "minecraft:iron_bars",
+    "#": "#minecraft:bars",
     "A": "#mekanism:alloys/infused",
     "S": "#c:ingots/steel"
   },

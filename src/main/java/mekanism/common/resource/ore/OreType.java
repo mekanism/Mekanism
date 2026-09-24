@@ -86,6 +86,10 @@ public enum OreType implements StringRepresentable {
         return resource.getRegistrySuffix();
     }
 
+    public boolean isMetal() {
+        return this != FLUORITE;
+    }
+
     public record OreVeinType(OreType type, int index) {
 
         public static final Codec<OreVeinType> CODEC = RecordCodecBuilder.create(builder -> builder.group(

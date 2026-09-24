@@ -45,7 +45,7 @@
       "name": "panel_right",
       "from": [11, 28, 0],
       "to": [17, 28.95, 16],
-      "rotation": {"angle": 22.5, "axis": "z", "origin": [11, 28, 16]},
+      "rotation": {"z": 22.5, "origin": [11, 28, 16]},
       "faces": {
         "north": {"uv": [0, 0, 3, 0.5], "texture": "#1"},
         "east": {"uv": [0, 0, 3, 0.5], "texture": "#1"},
@@ -58,7 +58,7 @@
       "name": "panel_left",
       "from": [-1, 28, 0],
       "to": [5, 28.95, 16],
-      "rotation": {"angle": -22.5, "axis": "z", "origin": [5, 28, 16]},
+      "rotation": {"z": -22.5, "origin": [5, 28, 16]},
       "faces": {
         "north": {"uv": [5, 0, 8, 0.5], "texture": "#1"},
         "south": {"uv": [5, 0, 8, 0.5], "texture": "#1"},

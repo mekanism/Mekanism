@@ -2,7 +2,10 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "ingredient": "minecraft:bush"
+    "ingredient": [
+      "minecraft:bush",
+      "minecraft:red_shrub"
+    ]
   },
   "output": {
     "id": "mekanism:bio_fuel"

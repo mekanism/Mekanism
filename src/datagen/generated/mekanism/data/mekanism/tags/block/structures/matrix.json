@@ -1,0 +1,9 @@
+{
+  "values": [
+    "mekanism:induction_casing",
+    "mekanism:induction_port",
+    "#mekanism:induction_cells",
+    "#mekanism:induction_providers",
+    "#mekanism:structures/common"
+  ]
+}

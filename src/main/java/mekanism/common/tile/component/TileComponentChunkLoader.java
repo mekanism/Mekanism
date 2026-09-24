@@ -42,7 +42,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     /// TileEntity implementing this component.
     private final T tile;
     private final LongSet chunkSet = new LongOpenHashSet();
-    private final boolean forceTicks;
+    private final boolean forceNaturalSpawning;
     @Nullable
     private ServerLevel prevWorld;
     @Nullable
@@ -53,10 +53,10 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         this(tile, false);
     }
 
-    public TileComponentChunkLoader(T tile, boolean forceTicks) {
+    public TileComponentChunkLoader(T tile, boolean forceNaturalSpawning) {
         this.tile = tile;
         this.tile.addComponent(this);
-        this.forceTicks = forceTicks;
+        this.forceNaturalSpawning = forceNaturalSpawning;
     }
 
     public boolean canOperate(@Nullable Holder<Upgrade> anchorUpgrade) {
@@ -68,7 +68,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         LOGGER.debug("Attempting to remove {} chunk tickets. Pos: {} World: {}", tickets, pos, world.dimension().identifier());
         if (tickets > 0) {
             for (long chunkPos : chunkSet) {
-                boolean success = TICKET_CONTROLLER.forceChunk(world, pos, ChunkPos.getX(chunkPos), ChunkPos.getZ(chunkPos), false, forceTicks);
+                boolean success = TICKET_CONTROLLER.forceChunk(world, pos, ChunkPos.getX(chunkPos), ChunkPos.getZ(chunkPos), false, forceNaturalSpawning);
                 if (!success) {
                     LOGGER.warn("Failed to release chunk ticket for {}", chunkPos);
                 }
@@ -88,7 +88,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         LOGGER.debug("Attempting to add {} chunk tickets. Pos: {} World: {}", tickets, prevPos, world.dimension().identifier());
         if (tickets > 0) {
             for (ChunkPos chunkPos : chunks) {
-                boolean success = TICKET_CONTROLLER.forceChunk(world, prevPos, chunkPos.x(), chunkPos.z(), true, forceTicks);
+                boolean success = TICKET_CONTROLLER.forceChunk(world, prevPos, chunkPos.x(), chunkPos.z(), true, forceNaturalSpawning);
                 chunkSet.add(chunkPos.pack());
                 if (!success) {
                     LOGGER.error("Failed to force chunk during registration {}", chunkPos);
@@ -158,7 +158,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                             if (!newChunks.contains(chunkPos)) {
                                 //If the chunk is no longer in our chunks we want loaded
                                 // then we need to unforce the chunk and remove it
-                                boolean success = TICKET_CONTROLLER.forceChunk(world, pos, ChunkPos.getX(chunkPos), ChunkPos.getZ(chunkPos), false, forceTicks);
+                                boolean success = TICKET_CONTROLLER.forceChunk(world, pos, ChunkPos.getX(chunkPos), ChunkPos.getZ(chunkPos), false, forceNaturalSpawning);
                                 if (!success) {
                                     LOGGER.warn("Failed to remove forced chunk {}", chunkPos);
                                 }
@@ -171,7 +171,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                             if (chunkSet.add(chunkPos)) {
                                 //If we didn't already have it in our chunk set and added actually added it as it is new
                                 // then we also need to force the chunk
-                                boolean success = TICKET_CONTROLLER.forceChunk(world, pos, ChunkPos.getX(chunkPos), ChunkPos.getZ(chunkPos), true, forceTicks);
+                                boolean success = TICKET_CONTROLLER.forceChunk(world, pos, ChunkPos.getX(chunkPos), ChunkPos.getZ(chunkPos), true, forceNaturalSpawning);
                                 if (!success) {
                                     LOGGER.error("Failed to force chunk during refresh {}", chunkPos);
                                 }
@@ -333,7 +333,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                             LongIterator chunkIt = chunkLoader.chunkSet.iterator();
                             while (chunkIt.hasNext()) {
                                 long chunkPos = chunkIt.nextLong();
-                                if (!chunks.contains(chunkPos) || ticking != chunkLoader.forceTicks) {
+                                if (!chunks.contains(chunkPos) || ticking != chunkLoader.forceNaturalSpawning) {
                                     //If the chunk is no longer in our chunks we want loaded or restarting changed how it should tick,
                                     // then we mark it for removal
                                     ticketHelper.removeTicket(pos, chunkPos, ticking);
@@ -346,10 +346,10 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                             // Note: We can safely call forceChunk here as nothing is iterating the list of forced chunks
                             // as the loading validators get past a
                             for (long chunkPos : chunks) {
-                                if (chunkLoader.chunkSet.add(chunkPos) || ticking != chunkLoader.forceTicks) {
+                                if (chunkLoader.chunkSet.add(chunkPos) || ticking != chunkLoader.forceNaturalSpawning) {
                                     //If we didn't already have it in our chunk set and added, or we had removed it due to it fully ticking changing,
                                     // then we also need to force the chunk
-                                    TICKET_CONTROLLER.forceChunk(world, pos, ChunkPos.getX(chunkPos), ChunkPos.getZ(chunkPos), true, chunkLoader.forceTicks);
+                                    TICKET_CONTROLLER.forceChunk(world, pos, ChunkPos.getX(chunkPos), ChunkPos.getZ(chunkPos), true, chunkLoader.forceNaturalSpawning);
                                     added++;
                                 }
                             }

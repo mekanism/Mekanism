@@ -1,4 +1,4 @@
-// 26.3	2026-09-17T15:06:11.1914569	Registries for mekanismadditions-reloadable
+// 26.3	2026-09-21T14:35:44.2124129	Registries for mekanismadditions-reloadable
 e8a2d02f36d898a3a57c9cf60fb55ec9e992ec7f data/mekanismadditions/advancement/balloon.json
 9ea4175a9a144f9005470eb2a34078e7ac9b8856 data/mekanismadditions/advancement/glow_in_the_dark.json
 fe61dc7ebe7cb3476bf46fba2e6a73fbd8559e94 data/mekanismadditions/advancement/hurt_by_babies.json
@@ -281,7 +281,7 @@ a5a17753184010f2079fafaac88d2663eaeff75b data/mekanismadditions/loot_table/entit
 4710972aabce1279e9a23ed1852bc16c591d9a3e data/mekanismadditions/loot_table/entities/baby_parched.json
 98674ab2d4b1420a5bb32a48e89525e2b5b0f10a data/mekanismadditions/loot_table/entities/baby_skeleton.json
 30f72ef75d9e6fdd41692d7e41b28c5baf2116d4 data/mekanismadditions/loot_table/entities/baby_stray.json
-235f50bae429777bba361fafd41bee7b2417f7d0 data/mekanismadditions/loot_table/entities/baby_wither_skeleton.json
+58cd854023ba085484e76740e35f905eaeed8bd5 data/mekanismadditions/loot_table/entities/baby_wither_skeleton.json
 6b40b4e72b038455d5ae5b6bbf4c30a0dd964d97 data/mekanismadditions/recipe/balloon/black.json
 e55299a1ab1d3eb9a8574cd40d19ca5ee2acd5f3 data/mekanismadditions/recipe/balloon/blue.json
 8d33640932fdda1b2154bb31aa51739ac77ed48e data/mekanismadditions/recipe/balloon/brown.json

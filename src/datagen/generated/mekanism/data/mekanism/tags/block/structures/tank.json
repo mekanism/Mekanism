@@ -1,0 +1,7 @@
+{
+  "values": [
+    "mekanism:dynamic_tank",
+    "mekanism:dynamic_valve",
+    "#mekanism:structures/common"
+  ]
+}

@@ -3,6 +3,7 @@
   "input": {
     "count": 1,
     "ingredient": [
+      "minecraft:cactus_flower",
       "minecraft:pink_tulip",
       "minecraft:pink_petals"
     ]

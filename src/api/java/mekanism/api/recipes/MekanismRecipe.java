@@ -18,7 +18,9 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
     private final String group;
 
     protected MekanismRecipe() {
-        this(NO_DISPLAY, "");//TODO - 26.3: Remove this constructor and force usage of groups
+        this(NO_DISPLAY, "");
+        //TODO - 26.3: Vanilla no longer requires group fields for recipes without a recipe book
+        // We should evaluate our recipes for if a group makes sense, and either remove this constructor, or the one that takes a group
     }
 
     protected MekanismRecipe(Recipe.CommonInfo commonInfo, String group) {

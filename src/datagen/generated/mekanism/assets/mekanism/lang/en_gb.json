@@ -119,5 +119,7 @@
   "sound_event.mekanism.tile.machine.antiprotonic_nucleosynthesizer": "Nucleosynthesiser hums",
   "sound_event.mekanism.tile.machine.chemical_crystallizer": "Crystalliser hums",
   "sound_event.mekanism.tile.machine.chemical_oxidizer": "Oxidiser hums",
-  "tag.item.mekanism.module_containers.armor": "Armour Module Containers"
+  "tag.block.mekanism.transmitters.chemical": "Pressurised Tubes",
+  "tag.item.mekanism.module_containers.armor": "Armour Module Containers",
+  "tag.item.mekanism.transmitters.chemical": "Pressurised Tubes"
 }

@@ -57,7 +57,7 @@ class NucleosynthesizingRecipeProvider extends BaseSubRecipeProvider {
               false
         ).save(consumer, Mekanism.rl(basePath + "emerald"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(this.items, ItemIds.EGG),
+              IngredientCreatorAccess.item().from(this.items, ItemTags.EGGS),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 4),
               template(BlockItemIds.DRAGON_EGG),
               1_000,
@@ -137,6 +137,20 @@ class NucleosynthesizingRecipeProvider extends BaseSubRecipeProvider {
               500,
               false
         ).save(consumer, Mekanism.rl(basePath + "quartz_block"));
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.WOOL_SLAB.lightGray()),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 1),
+              template(BlockItemIds.QUARTZ_SLAB),
+              250,
+              false
+        ).save(consumer, Mekanism.rl(basePath + "quartz_slab"));
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.WOOL_STAIRS.lightGray()),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 2),
+              template(BlockItemIds.QUARTZ_STAIRS),
+              500,
+              false
+        ).save(consumer, Mekanism.rl(basePath + "quartz_stairs"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, BlockItemTags.SMALL_FLOWERS),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 2),

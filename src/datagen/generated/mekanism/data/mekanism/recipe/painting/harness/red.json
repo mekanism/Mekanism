@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 256,
+    "ingredient": "mekanism:red"
+  },
+  "item_input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/harnesses",
+      "subtracted": "minecraft:red_harness"
+    }
+  },
+  "output": {
+    "id": "minecraft:red_harness"
+  },
+  "per_tick_usage": false
+}

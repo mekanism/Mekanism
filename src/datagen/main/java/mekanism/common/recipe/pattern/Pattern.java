@@ -21,7 +21,7 @@ public class Pattern {
     public static final char NUGGET = 'N';
     public static final char OSMIUM = 'O', OTHER = 'O';
     public static final char PREVIOUS = 'P', PLASTIC = 'P';
-    public static final char REDSTONE = 'R';
+    public static final char REDSTONE = 'R', RESIN = 'R';
     public static final char STEEL = 'S';
     public static final char TANK = 'T';
     public static final char WOOD = 'W';

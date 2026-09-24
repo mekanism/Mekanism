@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:intersection",
+      "children": [
+        "#mekanism:colorable/glazed_terracotta",
+        "#c:dyed/white"
+      ]
+    }
+  },
+  "output": {
+    "amount": 18,
+    "id": "mekanism:white"
+  }
+}

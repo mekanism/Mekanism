@@ -56,6 +56,7 @@ public class IngredientCreatorAccess {
     private static <TYPE> void expectComponent(DataComponentPatch patch, DataComponentType<TYPE> type, DataComponentExactPredicate.Builder builder) {
         TYPE value = patch.getPatch(type);
         //Note: We only add if the value is added, we don't check ones that have been removed from default, as that isn't easily feasible
+        // We also assume that the patch is present as we are going off the keyset from the patched elements
         if (value != null) {
             builder.expect(type, value);
         }

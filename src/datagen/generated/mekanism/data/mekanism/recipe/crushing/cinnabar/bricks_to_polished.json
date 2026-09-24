@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:cinnabar_bricks"
+  },
+  "output": {
+    "id": "minecraft:polished_cinnabar"
+  }
+}

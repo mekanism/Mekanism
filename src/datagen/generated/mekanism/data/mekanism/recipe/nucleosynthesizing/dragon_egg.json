@@ -7,7 +7,7 @@
   "duration": 1000,
   "item_input": {
     "count": 1,
-    "ingredient": "minecraft:egg"
+    "ingredient": "#minecraft:eggs"
   },
   "output": {
     "id": "minecraft:dragon_egg"

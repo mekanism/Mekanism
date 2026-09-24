@@ -12,7 +12,7 @@
 			"name": "cardboard_box_flap1",
 			"from": [8, 16, 0],
 			"to": [16, 16, 16],
-			"rotation": {"angle": -22.5, "axis": "z", "origin": [16, 16, 8]},
+			"rotation": {"z": -22.5, "origin": [16, 16, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 8, 1], "texture": "#side_plain"},
 				"east": {"uv": [0, 0, 16, 1], "rotation": 180, "texture": "#side_plain"},
@@ -26,7 +26,7 @@
 			"name": "cardboard_box_flap2",
 			"from": [0, 16, 0],
 			"to": [8, 16, 16],
-			"rotation": {"angle": 22.5, "axis": "z", "origin": [0, 16, 8]},
+			"rotation": {"z": 22.5, "origin": [0, 16, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 8, 1], "rotation": 180, "texture": "#side_plain"},
 				"east": {"uv": [0, 0, 16, 1], "texture": "#side_plain"},

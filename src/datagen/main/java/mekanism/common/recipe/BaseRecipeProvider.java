@@ -75,17 +75,17 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
     }
 
     @SafeVarargs
-    public static Ingredient createIngredient(HolderGetter<Item> lookup, TagKey<Item> itemTag, ResourceKey<Item>... items) {
+    public static Ingredient ingredient(HolderGetter<Item> lookup, TagKey<Item> itemTag, ResourceKey<Item>... items) {
         return Ingredient.of(new OrHolderSet<>(lookup.getOrThrow(itemTag), HolderSet.direct(Arrays.stream(items).map(lookup::getOrThrow).toList())));
     }
 
     @SafeVarargs
-    public static Ingredient createIngredient(Holder<Item>... items) {
+    public static Ingredient ingredient(Holder<Item>... items) {
         return Ingredient.of(HolderSet.direct(Arrays.stream(items).toList()));
     }
 
     public static Ingredient difference(HolderSet<Item> base, Holder<Item> subtracted) {
-        return DifferenceIngredient.of(Ingredient.of(base), Ingredient.of(subtracted.value()));
+        return DifferenceIngredient.of(Ingredient.of(base), ingredient(subtracted));
     }
 
     public static HolderSet<Item> osmiumIngot(HolderGetter<Item> lookup) {

@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "chemical_input": {
+    "amount": 2,
+    "ingredient": "mekanism:antimatter"
+  },
+  "duration": 500,
+  "item_input": {
+    "count": 1,
+    "ingredient": "minecraft:light_gray_wool_stairs"
+  },
+  "output": {
+    "id": "minecraft:quartz_stairs"
+  },
+  "per_tick_usage": false
+}

@@ -503,6 +503,9 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
 
     public void setHome(GlobalPos home) {
         homeLocation = home;
+        //TODO - 26.3: Add support for getHomePosition (new as of 1.21.6)? It might limit pathfinding so maybe we shouldn't,
+        // though we could have it for pickup items allow setting a home radius around the chargepad?
+        // setHomeTo(home.pos(), 1);
     }
 
     @Nullable

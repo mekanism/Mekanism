@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "chemical_input": {
+    "amount": 1,
+    "ingredient": "mekanism:antimatter"
+  },
+  "duration": 250,
+  "item_input": {
+    "count": 1,
+    "ingredient": "minecraft:light_gray_wool_slab"
+  },
+  "output": {
+    "id": "minecraft:quartz_slab"
+  },
+  "per_tick_usage": false
+}

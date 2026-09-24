@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:chiseled_sulfur"
+  },
+  "output": {
+    "id": "minecraft:sulfur_bricks"
+  }
+}

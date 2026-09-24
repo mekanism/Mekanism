@@ -32,6 +32,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -168,9 +169,9 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
     }
 
     public Player makeMockPlayerLookingAt(BlockPos relativePos, Direction direction) {
-        Player player = makeMockPlayer();
+        Player player = makeTickingMockServerPlayerInLevel(GameType.CREATIVE);
         BlockPos targetPos = absolutePos(relativePos);
-        player.setPos(Vec3.upFromBottomCenterOf(targetPos.relative(direction.getOpposite()), -player.getEyeHeight()));
+        player.snapTo(Vec3.upFromBottomCenterOf(targetPos.relative(direction.getOpposite()), -player.getEyeHeight()));
         player.lookAt(EntityAnchorArgument.Anchor.EYES, Vec3.atCenterOf(targetPos));
         return player;
     }

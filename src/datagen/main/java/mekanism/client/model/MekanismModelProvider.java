@@ -43,12 +43,13 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.resource.IResource;
+import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tier.FactoryTier;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -283,7 +284,7 @@ public class MekanismModelProvider extends BaseModelProvider {
               )
         );
 
-        for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
+        for (Map.Entry<BlockResourceInfo, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             String registrySuffix = entry.getKey().getRegistrySuffix();
             Block block = entry.getValue().value();
             Material texture = modTexture("block/block_" + registrySuffix);
@@ -300,12 +301,11 @@ public class MekanismModelProvider extends BaseModelProvider {
                 //If the texture does not exist fallback to the default texture and use a colorable base model
                 textureMapping = TextureMapping.cube(modTexture("block/resource_block"));
                 modelTemplate = COLORED_CUBE;
-                int tint;
-                if (entry.getKey() instanceof PrimaryResource primaryResource) {
-                    tint = primaryResource.getTint();
-                } else {
-                    throw new UnsupportedOperationException("Need tint wired in");
-                }
+                int tint = Arrays.stream(EnumUtils.PRIMARY_RESOURCES)
+                      .filter(resource -> resource.getRegistrySuffix().equals(registrySuffix))
+                      .mapToInt(PrimaryResource::getTint)
+                      .findFirst()
+                      .orElseThrow(() -> new UnsupportedOperationException("Need tint wired in"));
                 itemModel = ItemModelUtils.tintedModel(targetModelPath, new Constant(tint));
             }
             simpleCustomModel(blockModels, block, targetModelPath, modelTemplate, textureMapping, itemModel);
@@ -382,7 +382,7 @@ public class MekanismModelProvider extends BaseModelProvider {
                 plainBlockItemModel(
                       blockModels,
                       MekanismBlocks.getFactory(tier, factoryType),
-                      "block/factory/%s/%s".formatted(factoryType.getRegistryNameComponent(), tier.getBaseTier().getLowerName())
+                      "block/factory/%s/%s".formatted(factoryType.getSerializedName(), tier.getBaseTier().getLowerName())
                 );
             }
         }

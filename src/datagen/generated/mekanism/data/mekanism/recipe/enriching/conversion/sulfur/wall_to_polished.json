@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:sulfur_wall"
+  },
+  "output": {
+    "id": "minecraft:polished_sulfur_wall"
+  }
+}

@@ -26,7 +26,7 @@ public class BlockIndustrialAlarm extends BlockTileModel<TileEntityIndustrialAla
     private static final VoxelShape[] MIN_SHAPES = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {
-        VoxelShapeUtils.setShape(box(5, 0, 5, 11, 16, 11), MIN_SHAPES, true);
+        VoxelShapeUtils.setShape(box(5, 11, 5, 11, 16, 11), MIN_SHAPES, true);
     }
 
     public BlockIndustrialAlarm(BlockBehaviour.Properties properties) {
@@ -34,27 +34,30 @@ public class BlockIndustrialAlarm extends BlockTileModel<TileEntityIndustrialAla
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos currentPos,
-          Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
-        if (facing.getOpposite() == Attribute.getFacing(state) && !state.canSurvive(level, currentPos)) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour, BlockPos neighborPos,
+          BlockState neighborState, RandomSource random) {
+        if (directionToNeighbour.getOpposite() == Attribute.getFacing(state) && !state.canSurvive(level, pos)) {
             return Blocks.AIR.defaultBlockState();
         }
-        return super.updateShape(state, level, scheduledTickAccess, currentPos, facing, facingPos, facingState, random);
+        return super.updateShape(state, level, ticks, pos, directionToNeighbour, neighborPos, neighborState, random);
     }
 
     @Override
-    protected boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         Direction side = Attribute.getFacing(state);
         if (side == null) {
             //Something went wrong, and we were passed an invalid state, return that we can't survive
             return false;
         }
-        Direction sideOn = side.getOpposite();
-        BlockPos offsetPos = pos.relative(sideOn);
-        VoxelShape projected = world.getBlockState(offsetPos).getBlockSupportShape(world, offsetPos).getFaceShape(side);
-        //hasEnoughSolidSide does not quite work for us, as the shape is incorrect
-        //Don't allow placing on leaves or a block that is too small
-        // same restrictions as vanilla except we have a better check for placing against the side
-        return !state.is(BlockTags.LEAVES) && !Shapes.joinIsNotEmpty(projected, MIN_SHAPES[sideOn.ordinal()], BooleanOp.ONLY_SECOND);
+        BlockPos offsetPos = pos.relative(side.getOpposite());
+        BlockState offsetState = level.getBlockState(offsetPos);
+        if (side == Direction.DOWN && offsetState.is(BlockTags.UNSTABLE_BOTTOM_CENTER)) {
+            //Mirror vanilla's canSupportCenter check
+            return false;
+        }
+        //Like SupportType and BlockState#isFaceSturdy except without support for the block state cache and with our own custom shapes
+        VoxelShape projected = offsetState.getBlockSupportShape(level, offsetPos).getFaceShape(side);
+        //Don't allow placing on blocks that are too small; same restrictions as vanilla except we have a better check for placing against the side
+        return !Shapes.joinIsNotEmpty(projected, MIN_SHAPES[side.ordinal()], BooleanOp.ONLY_SECOND);
     }
 }

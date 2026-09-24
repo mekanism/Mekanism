@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:intersection",
+      "children": [
+        "#mekanism:colorable/wool_slabs",
+        "#c:dyed/blue"
+      ]
+    }
+  },
+  "output": {
+    "amount": 96,
+    "id": "mekanism:blue"
+  }
+}

@@ -25,6 +25,7 @@ import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
 import net.minecraft.core.Direction;
 
+//TODO - 26.3: Move a good number of these into their own enums
 public class EnumUtils {
 
     private EnumUtils() {

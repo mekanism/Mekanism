@@ -1,0 +1,8 @@
+{
+  "values": [
+    "mekanism:thermal_evaporation_controller",
+    "mekanism:thermal_evaporation_valve",
+    "mekanism:thermal_evaporation_block",
+    "#mekanism:structures/common"
+  ]
+}

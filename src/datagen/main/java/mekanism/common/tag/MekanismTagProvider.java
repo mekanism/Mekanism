@@ -1,15 +1,18 @@
 package mekanism.common.tag;
 
 import com.google.common.collect.Table.Cell;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.CleanDirtySlurryId;
 import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
+import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
@@ -21,21 +24,23 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.BlockResourceInfo;
-import mekanism.common.resource.IResource;
 import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.references.BlockItemId;
 import net.minecraft.references.BlockItemIds;
+import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockItemTagId;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
@@ -63,6 +68,8 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     @Override
     protected void registerTags(HolderLookup.Provider registries) {
+        //TODO - 26.3: BlockTags.CUSHION_USES_COLLISION_SHAPE ???
+        addCompat();
         addProcessedResources();
         addBeaconTags();
         addCardboardBoxTags();
@@ -71,7 +78,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         addFuels();
         addAlloys();
         addCircuits();
-        addEndermanBlacklist();
         addEnriched();
         addStorage();
         addOres();
@@ -92,6 +98,11 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
         getBuilder(MekanismTags.Blocks.INCORRECT_FOR_DISASSEMBLER);
         getBuilder(MekanismTags.Blocks.INCORRECT_FOR_MEKA_TOOL);
+
+        getBuilder(Tags.Blocks.ENDERMAN_PLACE_ON_BLACKLIST).addAsBlocks(MekanismTags.BlockItems.STRUCTURES);
+        getBuilder(BlockTags.ENDERMAN_DOES_NOT_TELEPORT_TO).addAsBlocks(MekanismTags.BlockItems.STRUCTURES);
+        getBuilder(BlockTags.DANGEROUS_FOR_TELEPORTATION).addAsBlocks(MekanismTags.BlockItems.STRUCTURES_SPS);
+
         getBuilder(BlockTags.GUARDED_BY_PIGLINS).add(MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismBlocks.PERSONAL_BARREL, MekanismBlocks.PERSONAL_CHEST);
         getBuilder(BlockTags.HOGLIN_REPELLENTS).add(MekanismBlocks.TELEPORTER, MekanismBlocks.QUANTUM_ENTANGLOPORTER);
         getBuilder(ItemTags.PIGLIN_LOVED).add(
@@ -118,7 +129,9 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Items.GEMS_FLUORITE
         );
         addEntities();
+        addSulfurCubeArchetypes();
         getBuilder(MekanismTags.Blocks.MINER_BLACKLIST);
+        addGroupings();
         addHarvestRequirements();
         getBuilder(BlockTags.IMPERMEABLE).add(MekanismBlocks.STRUCTURAL_GLASS);
         //Note: Axolotls live in a brackish water (mix between fresh and salt), so it is reasonable there may be salt nearby
@@ -133,44 +146,81 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(BlockTags.SCULK_REPLACEABLE).add(MekanismBlocks.SALT_BLOCK);
         getBuilder(MekanismAPITags.MobEffects.SPEED_UP_BLACKLIST);
 
-        getBuilder(MekanismTags.Blocks.FARMING_OVERRIDE).add(BlockItemIds.PINK_PETALS.block());
+        getBuilder(MekanismTags.Blocks.FARMING_OVERRIDE).add(
+              BlockItemIds.LEAF_LITTER.block(),
+              BlockItemIds.PINK_PETALS.block(),
+              BlockItemIds.WILDFLOWERS.block()
+        );
         getBuilder(BlockTags.CAMEL_SAND_STEP_SOUND_BLOCKS).add(MekanismBlocks.SALT_BLOCK);
+        getBuilder(BlockTags.CAMELS_SPAWNABLE_ON).add(MekanismBlocks.SALT_BLOCK);
+        getBuilder(BlockTags.TRIGGERS_AMBIENT_DESERT_SAND_BLOCK_SOUNDS).add(MekanismBlocks.SALT_BLOCK);
 
         getBuilder(BlockTags.NETHER_PORTAL_FRAME).add(MekanismBlocks.REFINED_OBSIDIAN_BLOCK);
 
+        getBuilder(BlockTags.WALL_POST_OVERRIDE).add(MekanismBlocks.INDUSTRIAL_ALARM);
+
         getBuilder(Tags.Blocks.HIDDEN_FROM_RECIPE_VIEWERS).add(MekanismBlocks.BOUNDING_BLOCK);
 
-        getBuilder(BlockTags.CANNOT_SUPPORT_SNOW_LAYER).add(
-              MekanismBlocks.STRUCTURAL_GLASS,
+        getBuilder(BlockTags.CANNOT_SUPPORT_SNOW_LAYER).addAsBlocks(MekanismTags.BlockItems.STRUCTURES);
 
-              MekanismBlocks.BOILER_CASING,
-              MekanismBlocks.BOILER_VALVE,
-              MekanismBlocks.PRESSURE_DISPERSER,
-              MekanismBlocks.SUPERHEATING_ELEMENT,
+        getBuilder(BlockTags.BLOCKS_MOTION_NO_LEAVES)
+              //Note: We intentionally don't add our ores, as vanilla already adds the base ore tag to this
+              .addAsBlocks(
+                    MekanismTags.BlockItems.BINS,
+                    MekanismTags.BlockItems.CHEMICAL_TANKS,
+                    MekanismTags.BlockItems.FLUID_TANKS,
+                    MekanismTags.BlockItems.ENERGY_CUBES,
+                    MekanismTags.BlockItems.TRANSMITTERS,
+                    MekanismTags.BlockItems.PERSONAL_STORAGE,
+                    MekanismTags.BlockItems.HEATERS,
+                    MekanismTags.BlockItems.BASE_FACTORY_SUPPORTED,
+                    MekanismTags.BlockItems.STRUCTURES
+              )
+              .add(MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.values())
+              .add(
+                    MekanismBlocks.SALT_BLOCK,
+                    MekanismBlocks.BIO_FUEL_BLOCK,
+                    MekanismBlocks.CHARCOAL_BLOCK, MekanismBlocks.BRONZE_BLOCK, MekanismBlocks.STEEL_BLOCK, MekanismBlocks.FLUORITE_BLOCK,
+                    MekanismBlocks.REFINED_OBSIDIAN_BLOCK, MekanismBlocks.REFINED_GLOWSTONE_BLOCK,
+                    MekanismBlocks.CARDBOARD_BOX,
+                    MekanismBlocks.STEEL_CASING,
+                    MekanismBlocks.TELEPORTER_FRAME, MekanismBlocks.TELEPORTER,
+                    MekanismBlocks.SECURITY_DESK,
+                    MekanismBlocks.RADIOACTIVE_WASTE_BARREL,
+                    MekanismBlocks.INDUSTRIAL_ALARM,
+                    MekanismBlocks.DIGITAL_MINER,
+                    MekanismBlocks.ELECTRIC_PUMP, MekanismBlocks.FLUIDIC_PLENISHER,
+                    MekanismBlocks.CHARGEPAD,
+                    MekanismBlocks.LOGISTICAL_SORTER,
+                    MekanismBlocks.ROTARY_CONDENSENTRATOR,
+                    MekanismBlocks.CHEMICAL_OXIDIZER,
+                    MekanismBlocks.CHEMICAL_INFUSER,
+                    MekanismBlocks.ELECTROLYTIC_SEPARATOR,
+                    MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER,
+                    MekanismBlocks.CHEMICAL_WASHER,
+                    MekanismBlocks.CHEMICAL_CRYSTALLIZER,
+                    MekanismBlocks.SEISMIC_VIBRATOR,
+                    MekanismBlocks.PRESSURIZED_REACTION_CHAMBER,
+                    MekanismBlocks.ISOTOPIC_CENTRIFUGE,
+                    MekanismBlocks.NUTRITIONAL_LIQUIFIER,
+                    MekanismBlocks.LASER, MekanismBlocks.LASER_AMPLIFIER, MekanismBlocks.LASER_TRACTOR_BEAM,
+                    MekanismBlocks.QUANTUM_ENTANGLOPORTER,
+                    MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR,
+                    MekanismBlocks.OREDICTIONIFICATOR,
+                    MekanismBlocks.FORMULAIC_ASSEMBLICATOR,
+                    MekanismBlocks.MODIFICATION_STATION,
+                    MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER,
+                    MekanismBlocks.PIGMENT_EXTRACTOR, MekanismBlocks.PIGMENT_MIXER, MekanismBlocks.PAINTING_MACHINE,
+                    MekanismBlocks.DIMENSIONAL_STABILIZER,
+                    MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,
+                    MekanismBlocks.QIO_REDSTONE_ADAPTER,
+                    //Note: We add the bounding block as most of the time it will block motion, even though sometimes it doesn't
+                    MekanismBlocks.BOUNDING_BLOCK
+              )
+              ;
+    }
 
-              MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER,
-              MekanismBlocks.THERMAL_EVAPORATION_BLOCK,
-              MekanismBlocks.THERMAL_EVAPORATION_VALVE,
-
-              MekanismBlocks.INDUCTION_CASING,
-              MekanismBlocks.INDUCTION_PORT,
-              MekanismBlocks.BASIC_INDUCTION_CELL,
-              MekanismBlocks.BASIC_INDUCTION_PROVIDER,
-              MekanismBlocks.ADVANCED_INDUCTION_CELL,
-              MekanismBlocks.ADVANCED_INDUCTION_PROVIDER,
-              MekanismBlocks.ELITE_INDUCTION_CELL,
-              MekanismBlocks.ELITE_INDUCTION_PROVIDER,
-              MekanismBlocks.ULTIMATE_INDUCTION_CELL,
-              MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER,
-
-              MekanismBlocks.SPS_CASING,
-              MekanismBlocks.SPS_PORT,
-              MekanismBlocks.SUPERCHARGED_COIL,
-
-              MekanismBlocks.DYNAMIC_TANK,
-              MekanismBlocks.DYNAMIC_VALVE
-        );
-
+    private void addCompat() {
         getBuilder(FRAMEABLE).add(MekanismBlocks.STRUCTURAL_GLASS);
         getBuilder(FB_BE_WHITELIST).add(MekanismBlocks.STRUCTURAL_GLASS);
         getBuilder(PE_VEIN_SHOVEL).add(MekanismBlocks.SALT_BLOCK);
@@ -199,6 +249,10 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(EntityTypeTags.CAN_BREATHE_UNDER_WATER).add(MekanismEntityTypes.ROBIT);
         //Robit's are not scary, they are friends!
         getBuilder(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH).add(MekanismEntityTypes.ROBIT);
+        //Robits are friendly!
+        getBuilder(EntityTypeTags.FOLLOWABLE_FRIENDLY_MOBS).add(MekanismEntityTypes.ROBIT);
+        //Golem's love robits
+        getBuilder(EntityTypeTags.CANDIDATE_FOR_IRON_GOLEM_GIFT).add(MekanismEntityTypes.ROBIT);
         getBuilder(EntityTypeTags.ILLAGER_FRIENDS).add(MekanismEntityTypes.ROBIT);
         getBuilder(EntityTypeTags.WITHER_FRIENDS).add(MekanismEntityTypes.ROBIT);
 
@@ -209,6 +263,29 @@ public class MekanismTagProvider extends BaseTagProvider {
         ).add(
               MekanismTags.Entities.CREEPERS//Becomes charged
         );
+    }
+
+    private void addSulfurCubeArchetypes() {
+        getBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_REGULAR)
+              .add(MekanismBlocks.CHARCOAL_BLOCK.getItemHolder());
+
+        getBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_BOUNCY)
+              .add(MekanismBlocks.FLUORITE_BLOCK.getItemHolder(), MekanismBlocks.SALT_BLOCK.getItemHolder())
+              .addAsItems(MekanismTags.BlockItems.ORES.get(OreType.FLUORITE));
+
+        getBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_FLAT)
+              .add(
+                    MekanismBlocks.BRONZE_BLOCK.getItemHolder(),
+                    MekanismBlocks.REFINED_OBSIDIAN_BLOCK.getItemHolder(),
+                    MekanismBlocks.REFINED_GLOWSTONE_BLOCK.getItemHolder(),
+                    MekanismBlocks.STEEL_BLOCK.getItemHolder(),
+                    MekanismBlocks.STEEL_CASING.getItemHolder()
+              )
+              .add(MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.values().stream().map(BlockRegistryObject::getItemHolder))
+              .add(Arrays.stream(EnumUtils.ORE_TYPES).filter(OreType::isMetal).map(MekanismTags.BlockItems.ORES::get).map(BlockItemTagId::item).toList());
+
+        getBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_FAST_FLAT)
+              .add(MekanismBlocks.BIO_FUEL_BLOCK.getItemHolder());
     }
 
     private void addProcessedResources() {
@@ -232,10 +309,10 @@ public class MekanismTagProvider extends BaseTagProvider {
     private void addBeaconTags() {
         //Beacon bases
         getBuilder(BlockTags.BEACON_BASE_BLOCKS).add(
-              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM),
-              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.TIN),
-              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.LEAD),
-              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.URANIUM),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.OSMIUM),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.TIN),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.LEAD),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.URANIUM),
               MekanismBlocks.BRONZE_BLOCK,
               MekanismBlocks.REFINED_OBSIDIAN_BLOCK,
               MekanismBlocks.REFINED_GLOWSTONE_BLOCK,
@@ -255,24 +332,11 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addCardboardBoxTags() {
-        getBuilder(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(
-              //Don't allow other transmitters that have a buffer due to dupe bugs
-              //TODO: Maybe some better way of doing this can be thought of? But there isn't a great way to make it so transmitters push their contents
-              // into remaining network when removed except for when they are removed by a mod that saved their contents first
-              // In theory one solution might be to save the contents of the network on the network level but that would introduce other issues
-              MekanismBlocks.BASIC_PRESSURIZED_TUBE,
-              MekanismBlocks.ADVANCED_PRESSURIZED_TUBE,
-              MekanismBlocks.ELITE_PRESSURIZED_TUBE,
-              MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE,
-              MekanismBlocks.BASIC_MECHANICAL_PIPE,
-              MekanismBlocks.ADVANCED_MECHANICAL_PIPE,
-              MekanismBlocks.ELITE_MECHANICAL_PIPE,
-              MekanismBlocks.ULTIMATE_MECHANICAL_PIPE,
-              MekanismBlocks.BASIC_UNIVERSAL_CABLE,
-              MekanismBlocks.ADVANCED_UNIVERSAL_CABLE,
-              MekanismBlocks.ELITE_UNIVERSAL_CABLE,
-              MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE
-        );
+        //Don't allow other transmitters that have a buffer due to dupe bugs
+        //TODO: Maybe some better way of doing this can be thought of? But there isn't a great way to make it so transmitters push their contents
+        // into remaining network when removed except for when they are removed by a mod that saved their contents first
+        // In theory one solution might be to save the contents of the network on the network level but that would introduce other issues
+        getBuilder(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(MekanismTags.BlockItems.BUFFERED_TRANSMITTERS.block());
         getBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST)
               .add(Tags.Blocks.RELOCATION_NOT_SUPPORTED)
               //Don't allow cardboard boxes to pick up other cardboard boxes
@@ -311,6 +375,8 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR,
               MekanismAPITags.Items.MODULE_CONTAINERS_HELD
         );
+
+        getBuilder(ItemTags.WITHER_SKELETON_DISLIKED_WEAPONS).add(MekanismItems.ELECTRIC_BOW);
     }
 
     private void addTools() {
@@ -396,26 +462,6 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Items.CIRCUITS_ULTIMATE);
     }
 
-    private void addEndermanBlacklist() {
-        getBuilder(Tags.Blocks.ENDERMAN_PLACE_ON_BLACKLIST).add(
-              MekanismBlocks.DYNAMIC_TANK,
-              MekanismBlocks.DYNAMIC_VALVE,
-              MekanismBlocks.BOILER_CASING,
-              MekanismBlocks.BOILER_VALVE,
-              MekanismBlocks.PRESSURE_DISPERSER,
-              MekanismBlocks.SUPERHEATING_ELEMENT,
-              MekanismBlocks.INDUCTION_CASING,
-              MekanismBlocks.INDUCTION_PORT,
-              MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER,
-              MekanismBlocks.THERMAL_EVAPORATION_VALVE,
-              MekanismBlocks.THERMAL_EVAPORATION_BLOCK,
-              MekanismBlocks.STRUCTURAL_GLASS,
-              MekanismBlocks.SPS_CASING,
-              MekanismBlocks.SPS_PORT,
-              MekanismBlocks.SUPERCHARGED_COIL
-        );
-    }
-
     private void addEnriched() {
         getBuilder(MekanismTags.Items.ENRICHED_CARBON).add(MekanismItems.ENRICHED_CARBON);
         getBuilder(MekanismTags.Items.ENRICHED_DIAMOND).add(MekanismItems.ENRICHED_DIAMOND);
@@ -443,8 +489,8 @@ public class MekanismTagProvider extends BaseTagProvider {
             OreBlockType oreBlockType = entry.getValue();
             BlockItemTagId tag = MekanismTags.BlockItems.ORES.get(type);
             addToTags(tag, oreBlockType.stone(), oreBlockType.deepslate());
-            getBuilder(Tags.Items.ORES).add(tag.item());
-            getBuilder(Tags.Blocks.ORES).add(tag.block());
+            //Note: Neo ore tag has this tag added automatically so we can skip adding to it manually
+            addToTags(BlockItemTags.ORES, tag);
             if (type.getResource() == MiscResource.FLUORITE) {
                 addToTags(Tags.Items.ORE_RATES_DENSE, Tags.Blocks.ORE_RATES_DENSE, oreBlockType.stone(), oreBlockType.deepslate());
             } else {
@@ -468,11 +514,11 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_OBSIDIAN, MekanismTags.BlockItems.STORAGE_BLOCKS_STEEL, MekanismTags.BlockItems.STORAGE_BLOCKS_FLUORITE
         );
         // Dynamic storage blocks
-        for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
+        for (Map.Entry<BlockResourceInfo, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             BlockItemTagId tag = MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(entry.getKey());
             addToTags(tag, entry.getValue());
-            getBuilder(Tags.Items.STORAGE_BLOCKS).add(tag.item());
-            getBuilder(Tags.Blocks.STORAGE_BLOCKS).add(tag.block());
+            getBuilder(Tags.Items.STORAGE_BLOCKS).addAsItems(tag);
+            getBuilder(Tags.Blocks.STORAGE_BLOCKS).addAsBlocks(tag);
         }
     }
 
@@ -490,8 +536,16 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismTags.Items.NUGGETS_REFINED_GLOWSTONE).add(MekanismItems.REFINED_GLOWSTONE_NUGGET);
         getBuilder(MekanismTags.Items.NUGGETS_REFINED_OBSIDIAN).add(MekanismItems.REFINED_OBSIDIAN_NUGGET);
         getBuilder(MekanismTags.Items.NUGGETS_STEEL).add(MekanismItems.STEEL_NUGGET);
-        getBuilder(Tags.Items.NUGGETS).add(MekanismTags.Items.NUGGETS_BRONZE,
-              MekanismTags.Items.NUGGETS_REFINED_GLOWSTONE, MekanismTags.Items.NUGGETS_REFINED_OBSIDIAN, MekanismTags.Items.NUGGETS_STEEL);
+        getBuilder(Tags.Items.NUGGETS).add(MekanismTags.Items.NUGGETS_BRONZE, MekanismTags.Items.NUGGETS_REFINED_GLOWSTONE, MekanismTags.Items.NUGGETS_REFINED_OBSIDIAN,
+              MekanismTags.Items.NUGGETS_STEEL);
+        MekanismTagBuilder<Item> metalNuggets = getBuilder(ItemTags.METAL_NUGGETS);
+        for (Map.Entry<PrimaryResource, ? extends Holder<Item>> entry : MekanismItems.PROCESSED_RESOURCES.row(ResourceType.NUGGET).entrySet()) {
+            if (!entry.getKey().isVanilla()) {
+                metalNuggets.add(entry.getValue());
+            }
+        }
+        metalNuggets.add(MekanismItems.BRONZE_NUGGET, MekanismItems.REFINED_GLOWSTONE_NUGGET, MekanismItems.REFINED_OBSIDIAN_NUGGET,
+              MekanismItems.STEEL_NUGGET);
     }
 
     private void addDusts() {
@@ -554,15 +608,22 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addColorableItems() {
         getBuilder(MekanismTags.Items.COLORABLE_WOOL).add(BlockItemIds.WOOL, BlockItemId::item);
+        getBuilder(MekanismTags.Items.COLORABLE_WOOL_SLABS).add(BlockItemIds.WOOL_SLAB, BlockItemId::item);
+        getBuilder(MekanismTags.Items.COLORABLE_WOOL_STAIRS).add(BlockItemIds.WOOL_STAIRS, BlockItemId::item);
         getBuilder(MekanismTags.Items.COLORABLE_CARPETS).add(BlockItemIds.CARPET, BlockItemId::item);
         getBuilder(MekanismTags.Items.COLORABLE_BEDS).add(BlockItemIds.BED, BlockItemId::item);
         getBuilder(MekanismTags.Items.COLORABLE_GLASS).add(BlockItemIds.STAINED_GLASS, BlockItemId::item);
         getBuilder(MekanismTags.Items.COLORABLE_GLASS_PANES).add(BlockItemIds.STAINED_GLASS_PANE, BlockItemId::item);
         getBuilder(MekanismTags.Items.COLORABLE_TERRACOTTA).add(BlockItemIds.DYED_TERRACOTTA, BlockItemId::item);
+        getBuilder(MekanismTags.Items.COLORABLE_GLAZED_TERRACOTTA).add(BlockItemIds.GLAZED_TERRACOTTA, BlockItemId::item);
         getBuilder(MekanismTags.Items.COLORABLE_CANDLE).add(BlockItemIds.DYED_CANDLE, BlockItemId::item);
         getBuilder(MekanismTags.Items.COLORABLE_CONCRETE).add(BlockItemIds.CONCRETE, BlockItemId::item);
+        getBuilder(MekanismTags.Items.COLORABLE_CONCRETE_SLABS).add(BlockItemIds.CONCRETE_SLAB, BlockItemId::item);
+        getBuilder(MekanismTags.Items.COLORABLE_CONCRETE_STAIRS).add(BlockItemIds.CONCRETE_STAIRS, BlockItemId::item);
         getBuilder(MekanismTags.Items.COLORABLE_CONCRETE_POWDER).add(BlockItemIds.CONCRETE_POWDER, BlockItemId::item);
         getBuilder(MekanismTags.Items.COLORABLE_BANNERS).add(BlockItemIds.BANNER, BlockItemId::item);
+        getBuilder(MekanismTags.Items.COLORABLE_HARNESSES).add(ItemIds.HARNESS, Function.identity());
+        getBuilder(MekanismTags.Items.COLORABLE_CUSHIONS).add(ItemIds.CUSHION, Function.identity());
     }
 
     private void addBiomes() {
@@ -592,6 +653,8 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(DamageTypeTags.PANIC_CAUSES).add(flamethrower, laser);
         getBuilder(DamageTypeTags.PANIC_ENVIRONMENTAL_CAUSES).add(radiation, sps);
 
+        //TODO - 26.3: Update this list of always supported tags, as a variety of ones have been added such as SULFUR_CUBE_HOT
+        // but also there are things that should probably be added like CAMPFIRE
         getBuilder(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED).add(DamageTypes.FALLING_ANVIL, DamageTypes.CACTUS, DamageTypes.CRAMMING,
               DamageTypes.DRAGON_BREATH, DamageTypes.DRY_OUT, DamageTypes.FALL, DamageTypes.FALLING_BLOCK, DamageTypes.FLY_INTO_WALL, DamageTypes.GENERIC,
               DamageTypes.HOT_FLOOR, DamageTypes.IN_FIRE, DamageTypes.IN_WALL, DamageTypes.LAVA, DamageTypes.LIGHTNING_BOLT, DamageTypes.ON_FIRE,
@@ -730,39 +793,100 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismAPITags.Chemicals.BIO).add(ChemicalIds.BIO);
     }
 
+    private void addGroupings() {
+        addMultiblocks();
+
+        addToTagsAndMarkKnown(MekanismTags.BlockItems.HEATERS, MekanismBlocks.FUELWOOD_HEATER, MekanismBlocks.RESISTIVE_HEATER);
+
+        addToTagsAndMarkKnown(MekanismTags.BlockItems.BINS, MekanismBlocks.BASIC_BIN, MekanismBlocks.ADVANCED_BIN,
+              MekanismBlocks.ELITE_BIN, MekanismBlocks.ULTIMATE_BIN, MekanismBlocks.CREATIVE_BIN);
+        addToTagsAndMarkKnown(MekanismTags.BlockItems.CHEMICAL_TANKS, MekanismBlocks.BASIC_CHEMICAL_TANK,
+              MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismBlocks.ULTIMATE_CHEMICAL_TANK, MekanismBlocks.CREATIVE_CHEMICAL_TANK);
+        addToTagsAndMarkKnown(MekanismTags.BlockItems.FLUID_TANKS, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK,
+              MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK);
+        addToTagsAndMarkKnown(MekanismTags.BlockItems.ENERGY_CUBES, MekanismBlocks.BASIC_ENERGY_CUBE,
+              MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismBlocks.CREATIVE_ENERGY_CUBE);
+        addToTagsAndMarkKnown(MekanismTags.BlockItems.INDUCTION_CELLS, MekanismBlocks.BASIC_INDUCTION_CELL,
+              MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_INDUCTION_CELL);
+        addToTagsAndMarkKnown(MekanismTags.BlockItems.INDUCTION_PROVIDERS, MekanismBlocks.BASIC_INDUCTION_PROVIDER,
+              MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER);
+
+        addToTags(MekanismTags.BlockItems.ENERGY_TRANSMITTERS, MekanismBlocks.BASIC_UNIVERSAL_CABLE, MekanismBlocks.ADVANCED_UNIVERSAL_CABLE,
+              MekanismBlocks.ELITE_UNIVERSAL_CABLE, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE);
+        addToTags(MekanismTags.BlockItems.CHEMICAL_TRANSMITTERS, MekanismBlocks.BASIC_PRESSURIZED_TUBE, MekanismBlocks.ADVANCED_PRESSURIZED_TUBE,
+              MekanismBlocks.ELITE_PRESSURIZED_TUBE, MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE);
+        addToTags(MekanismTags.BlockItems.FLUID_TRANSMITTERS, MekanismBlocks.BASIC_MECHANICAL_PIPE, MekanismBlocks.ADVANCED_MECHANICAL_PIPE,
+              MekanismBlocks.ELITE_MECHANICAL_PIPE, MekanismBlocks.ULTIMATE_MECHANICAL_PIPE);
+        addToTags(MekanismTags.BlockItems.HEAT_TRANSMITTERS, MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR, MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR,
+              MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR, MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
+
+        addToTags(MekanismTags.BlockItems.TIERED_ITEM_TRANSMITTERS, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER,
+              MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
+        addToTags(MekanismTags.BlockItems.ITEM_TRANSMITTERS, MekanismTags.BlockItems.TIERED_ITEM_TRANSMITTERS);
+        addToTags(MekanismTags.BlockItems.ITEM_TRANSMITTERS, MekanismBlocks.DIVERSION_TRANSPORTER, MekanismBlocks.RESTRICTIVE_TRANSPORTER);
+
+        addToTags(MekanismTags.BlockItems.BUFFERED_TRANSMITTERS, MekanismTags.BlockItems.ENERGY_TRANSMITTERS, MekanismTags.BlockItems.CHEMICAL_TRANSMITTERS,
+              MekanismTags.BlockItems.FLUID_TRANSMITTERS);
+        addToTags(MekanismTags.BlockItems.TRANSMITTERS, MekanismTags.BlockItems.BUFFERED_TRANSMITTERS, MekanismTags.BlockItems.HEAT_TRANSMITTERS,
+              MekanismTags.BlockItems.ITEM_TRANSMITTERS);
+
+        addTagsToTags(MekanismTags.BlockItems.FACTORIES, MekanismTags.BlockItems.TIERED_FACTORIES.values());
+        addTagsToTags(MekanismTags.BlockItems.BASE_FACTORY_SUPPORTED, MekanismTags.BlockItems.FACTORY_SUPPORTED.values());
+        for (FactoryType factoryType : EnumUtils.FACTORY_TYPES) {
+            BlockItemTagId factories = MekanismTags.BlockItems.TIERED_FACTORIES.get(factoryType);
+            BlockItemTagId factorySupported = MekanismTags.BlockItems.FACTORY_SUPPORTED.get(factoryType);
+            addToTagsAndMarkKnown(factories, MekanismBlocks.getFactoryBlocks(factoryType).toArray(new BlockRegistryObject[0]));
+            addToTagsAndMarkKnown(factorySupported, factoryType.getBaseBlock());
+            addToTags(factorySupported, factories);
+        }
+    }
+
+    private void addMultiblocks() {
+        addToTagsAndMarkKnown(MekanismTags.BlockItems.STRUCTURES_COMMON, MekanismBlocks.STRUCTURAL_GLASS);
+
+        addToTagsAndMarkKnown(MekanismTags.BlockItems.STRUCTURES_TANK, MekanismBlocks.DYNAMIC_TANK, MekanismBlocks.DYNAMIC_VALVE);
+        addToTags(MekanismTags.BlockItems.STRUCTURES_TANK, MekanismTags.BlockItems.STRUCTURES_COMMON);
+
+        addToTagsAndMarkKnown(MekanismTags.BlockItems.STRUCTURES_MATRIX, MekanismBlocks.INDUCTION_CASING, MekanismBlocks.INDUCTION_PORT);
+        addToTags(MekanismTags.BlockItems.STRUCTURES_MATRIX, MekanismTags.BlockItems.INDUCTION_CELLS, MekanismTags.BlockItems.INDUCTION_PROVIDERS,
+              MekanismTags.BlockItems.STRUCTURES_COMMON);
+
+        addToTagsAndMarkKnown(MekanismTags.BlockItems.STRUCTURES_BOILER, MekanismBlocks.SUPERHEATING_ELEMENT, MekanismBlocks.PRESSURE_DISPERSER,
+              MekanismBlocks.BOILER_CASING, MekanismBlocks.BOILER_VALVE);
+        addToTags(MekanismTags.BlockItems.STRUCTURES_BOILER, MekanismTags.BlockItems.STRUCTURES_COMMON);
+
+        addToTagsAndMarkKnown(MekanismTags.BlockItems.STRUCTURES_EVAPORATION, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismBlocks.THERMAL_EVAPORATION_VALVE,
+              MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
+        addToTags(MekanismTags.BlockItems.STRUCTURES_EVAPORATION, MekanismTags.BlockItems.STRUCTURES_COMMON);
+
+        addToTagsAndMarkKnown(MekanismTags.BlockItems.STRUCTURES_SPS, MekanismBlocks.SPS_CASING, MekanismBlocks.SPS_PORT, MekanismBlocks.SUPERCHARGED_COIL);
+        addToTags(MekanismTags.BlockItems.STRUCTURES_SPS, MekanismTags.BlockItems.STRUCTURES_COMMON);
+
+
+        addToTags(MekanismTags.BlockItems.STRUCTURES, MekanismTags.BlockItems.STRUCTURES_TANK, MekanismTags.BlockItems.STRUCTURES_MATRIX,
+              MekanismTags.BlockItems.STRUCTURES_BOILER, MekanismTags.BlockItems.STRUCTURES_EVAPORATION, MekanismTags.BlockItems.STRUCTURES_SPS);
+    }
+
     private void addHarvestRequirements() {
+        getBuilder(BlockTags.MINEABLE_WITH_PICKAXE).addAsBlocks(
+              MekanismTags.BlockItems.HEATERS,
+              MekanismTags.BlockItems.BINS,
+              MekanismTags.BlockItems.CHEMICAL_TANKS,
+              MekanismTags.BlockItems.FLUID_TANKS,
+              MekanismTags.BlockItems.ENERGY_CUBES,
+              MekanismTags.BlockItems.TRANSMITTERS,
+              MekanismTags.BlockItems.BASE_FACTORY_SUPPORTED,
+              MekanismTags.BlockItems.STRUCTURES
+        );
         addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE,
               MekanismBlocks.BOUNDING_BLOCK,
-              MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE,
-              MekanismBlocks.CREATIVE_ENERGY_CUBE,
-              MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
-              MekanismBlocks.CREATIVE_FLUID_TANK,
-              MekanismBlocks.BASIC_CHEMICAL_TANK, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismBlocks.ULTIMATE_CHEMICAL_TANK,
-              MekanismBlocks.CREATIVE_CHEMICAL_TANK,
-              MekanismBlocks.BASIC_BIN, MekanismBlocks.ADVANCED_BIN, MekanismBlocks.ELITE_BIN, MekanismBlocks.ULTIMATE_BIN, MekanismBlocks.CREATIVE_BIN,
               MekanismBlocks.BRONZE_BLOCK, MekanismBlocks.REFINED_OBSIDIAN_BLOCK, MekanismBlocks.CHARCOAL_BLOCK, MekanismBlocks.REFINED_GLOWSTONE_BLOCK,
               MekanismBlocks.STEEL_BLOCK, MekanismBlocks.FLUORITE_BLOCK,
-              MekanismBlocks.TELEPORTER, MekanismBlocks.TELEPORTER_FRAME,
               MekanismBlocks.STEEL_CASING,
-              MekanismBlocks.STRUCTURAL_GLASS,
-              MekanismBlocks.DYNAMIC_TANK, MekanismBlocks.DYNAMIC_VALVE,
-              MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismBlocks.THERMAL_EVAPORATION_VALVE, MekanismBlocks.THERMAL_EVAPORATION_BLOCK,
-              MekanismBlocks.INDUCTION_CASING,
-              MekanismBlocks.INDUCTION_PORT,
-              MekanismBlocks.BASIC_INDUCTION_CELL, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_INDUCTION_CELL,
-              MekanismBlocks.BASIC_INDUCTION_PROVIDER, MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, MekanismBlocks.ELITE_INDUCTION_PROVIDER,
-              MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER,
-              MekanismBlocks.SUPERHEATING_ELEMENT, MekanismBlocks.PRESSURE_DISPERSER, MekanismBlocks.BOILER_CASING, MekanismBlocks.BOILER_VALVE,
+              MekanismBlocks.TELEPORTER, MekanismBlocks.TELEPORTER_FRAME,
               MekanismBlocks.SECURITY_DESK,
               MekanismBlocks.RADIOACTIVE_WASTE_BARREL,
-              MekanismBlocks.ENRICHMENT_CHAMBER,
-              MekanismBlocks.OSMIUM_COMPRESSOR,
-              MekanismBlocks.COMBINER,
-              MekanismBlocks.CRUSHER,
               MekanismBlocks.DIGITAL_MINER,
-              MekanismBlocks.METALLURGIC_INFUSER,
-              MekanismBlocks.PURIFICATION_CHAMBER,
-              MekanismBlocks.ENERGIZED_SMELTER,
               MekanismBlocks.ELECTRIC_PUMP, MekanismBlocks.FLUIDIC_PLENISHER,
               MekanismBlocks.PERSONAL_BARREL, MekanismBlocks.PERSONAL_CHEST,
               MekanismBlocks.CHARGEPAD,
@@ -770,9 +894,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.ROTARY_CONDENSENTRATOR,
               MekanismBlocks.CHEMICAL_OXIDIZER,
               MekanismBlocks.CHEMICAL_INFUSER,
-              MekanismBlocks.CHEMICAL_INJECTION_CHAMBER,
               MekanismBlocks.ELECTROLYTIC_SEPARATOR,
-              MekanismBlocks.PRECISION_SAWMILL,
               MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER,
               MekanismBlocks.CHEMICAL_WASHER,
               MekanismBlocks.CHEMICAL_CRYSTALLIZER,
@@ -784,19 +906,14 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.QUANTUM_ENTANGLOPORTER,
               MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR,
               MekanismBlocks.OREDICTIONIFICATOR,
-              MekanismBlocks.FUELWOOD_HEATER, MekanismBlocks.RESISTIVE_HEATER,
               MekanismBlocks.FORMULAIC_ASSEMBLICATOR,
               MekanismBlocks.MODIFICATION_STATION,
               MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER,
               MekanismBlocks.PIGMENT_EXTRACTOR, MekanismBlocks.PIGMENT_MIXER, MekanismBlocks.PAINTING_MACHINE,
-              MekanismBlocks.SPS_CASING, MekanismBlocks.SPS_PORT, MekanismBlocks.SUPERCHARGED_COIL,
               MekanismBlocks.DIMENSIONAL_STABILIZER,
               MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER
         );
-        addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE, MekanismBlocks.getFactoryBlocksAsArray());
-        addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE,
-              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.values()
-        );
+        addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE, MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.values());
         MekanismTagBuilder<Block> needsStoneToolBuilder = getBuilder(BlockTags.NEEDS_STONE_TOOL);
         for (OreBlockType ore : MekanismBlocks.ORES.values()) {
             Holder<Block> stone = ore.stone();
@@ -806,13 +923,13 @@ public class MekanismTagProvider extends BaseTagProvider {
         }
         addToHarvestTag(BlockTags.MINEABLE_WITH_SHOVEL, MekanismBlocks.SALT_BLOCK);
         getBuilder(BlockTags.NEEDS_STONE_TOOL).add(
-              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.OSMIUM),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.RAW_OSMIUM),
-              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.TIN),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.TIN),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.RAW_TIN),
-              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.LEAD),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.LEAD),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.RAW_LEAD),
-              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.URANIUM),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.URANIUM),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.RAW_URANIUM),
               MekanismBlocks.FLUORITE_BLOCK,
               MekanismBlocks.BRONZE_BLOCK,

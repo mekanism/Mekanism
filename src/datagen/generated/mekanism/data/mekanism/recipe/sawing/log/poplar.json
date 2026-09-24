@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "#minecraft:poplar_logs"
+  },
+  "main_output": {
+    "count": 6,
+    "id": "minecraft:poplar_planks"
+  },
+  "secondary_chance": 0.25,
+  "secondary_output": {
+    "id": "mekanism:sawdust"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 256,
+    "ingredient": "mekanism:lime"
+  },
+  "item_input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/wool_stairs",
+      "subtracted": "minecraft:lime_wool_stairs"
+    }
+  },
+  "output": {
+    "id": "minecraft:lime_wool_stairs"
+  },
+  "per_tick_usage": false
+}

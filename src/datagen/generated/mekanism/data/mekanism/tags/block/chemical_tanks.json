@@ -1,0 +1,9 @@
+{
+  "values": [
+    "mekanism:basic_chemical_tank",
+    "mekanism:advanced_chemical_tank",
+    "mekanism:elite_chemical_tank",
+    "mekanism:ultimate_chemical_tank",
+    "mekanism:creative_chemical_tank"
+  ]
+}

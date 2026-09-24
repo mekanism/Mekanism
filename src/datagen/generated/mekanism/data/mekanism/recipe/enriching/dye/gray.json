@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:closed_eyeblossom"
+  },
+  "output": {
+    "count": 2,
+    "id": "minecraft:gray_dye"
+  }
+}

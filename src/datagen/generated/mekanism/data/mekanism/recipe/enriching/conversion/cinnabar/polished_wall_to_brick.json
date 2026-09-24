@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:polished_cinnabar_wall"
+  },
+  "output": {
+    "id": "minecraft:cinnabar_brick_wall"
+  }
+}

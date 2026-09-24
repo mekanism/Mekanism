@@ -86,7 +86,7 @@ public final class VoxelShapeUtils {
     /// @param side  The side to rotate it to.
     ///
     /// @return The rotated [VoxelShape]
-    public static VoxelShape rotate(VoxelShape shape, Direction side) {
+    public static VoxelShape rotate(VoxelShape shape, Direction side) {//TODO - 26.3: Evaluate this vs mojang's Shapes#rotate methods
         return rotate(shape, side, VoxelShapeUtils::rotate);
     }
 

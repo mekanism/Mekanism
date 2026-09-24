@@ -20,7 +20,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.resource.IResource;
+import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
@@ -98,7 +98,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
                   MekanismBlocks.getFactory(FactoryTier.ULTIMATE, factoryType)
             ), factoryType.getBaseBlock());
             //Add the type as a way to look-up the base block
-            rv.addAliases(factoryType.getBaseBlock(), () -> Mekanism.rl(factoryType.getRegistryNameComponent()).toLanguageKey("alias"));
+            rv.addAliases(factoryType.getBaseBlock(), () -> Mekanism.rl(factoryType.getSerializedName()).toLanguageKey("alias"));
         }
     }
 
@@ -149,56 +149,30 @@ public final class MekanismAliasMapping implements IAliasMapping {
     }
 
     private <ITEM, FLUID, CHEMICAL> void addMultiblockAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
-        rv.addAliases(List.of(
-              MekanismBlocks.BOILER_CASING,
-              MekanismBlocks.BOILER_VALVE,
-              MekanismBlocks.PRESSURE_DISPERSER,
-              MekanismBlocks.SUPERHEATING_ELEMENT,
-              MekanismBlocks.STRUCTURAL_GLASS
-        ), MekanismAliases.BOILER_COMPONENT);
-        rv.addAliases(List.of(
-              MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER,
-              MekanismBlocks.THERMAL_EVAPORATION_BLOCK,
-              MekanismBlocks.THERMAL_EVAPORATION_VALVE,
-              MekanismBlocks.STRUCTURAL_GLASS
-        ), MekanismAliases.EVAPORATION_COMPONENT);
+        rv.addItemAliases(MekanismTags.BlockItems.STRUCTURES_COMMON,
+              MekanismAliases.BOILER_COMPONENT,
+              MekanismAliases.EVAPORATION_COMPONENT,
+              MekanismAliases.MATRIX_COMPONENT,
+              MekanismAliases.SPS_COMPONENT,
+              MekanismAliases.SPS_FULL_COMPONENT,
+              MekanismAliases.TANK_COMPONENT
+        );
+        rv.addItemAliases(MekanismTags.BlockItems.STRUCTURES_BOILER, MekanismAliases.BOILER_COMPONENT);
+        rv.addItemAliases(MekanismTags.BlockItems.STRUCTURES_EVAPORATION, MekanismAliases.EVAPORATION_COMPONENT);
 
+        rv.addItemAliases(MekanismTags.BlockItems.STRUCTURES_MATRIX, MekanismAliases.MATRIX_COMPONENT);
         rv.addAliases(List.of(
               MekanismBlocks.INDUCTION_CASING,
-              MekanismBlocks.INDUCTION_PORT,
-              MekanismBlocks.BASIC_INDUCTION_CELL,
-              MekanismBlocks.BASIC_INDUCTION_PROVIDER,
-              MekanismBlocks.ADVANCED_INDUCTION_CELL,
-              MekanismBlocks.ADVANCED_INDUCTION_PROVIDER,
-              MekanismBlocks.ELITE_INDUCTION_CELL,
-              MekanismBlocks.ELITE_INDUCTION_PROVIDER,
-              MekanismBlocks.ULTIMATE_INDUCTION_CELL,
-              MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER,
-              MekanismBlocks.STRUCTURAL_GLASS
-        ), MekanismAliases.MATRIX_COMPONENT);
-        rv.addAliases(List.of(
-              MekanismBlocks.INDUCTION_CASING,
-              MekanismBlocks.INDUCTION_PORT,
-              MekanismBlocks.BASIC_INDUCTION_CELL,
-              MekanismBlocks.ADVANCED_INDUCTION_CELL,
-              MekanismBlocks.ELITE_INDUCTION_CELL,
-              MekanismBlocks.ULTIMATE_INDUCTION_CELL
+              MekanismBlocks.INDUCTION_PORT
         ), MekanismAliases.ENERGY_STORAGE, MekanismAliases.ENERGY_STORAGE_BATTERY, MekanismAliases.ITEM_CHARGER);
-        rv.addAliases(List.of(
-              MekanismBlocks.INDUCTION_PORT,
-              MekanismBlocks.BASIC_INDUCTION_PROVIDER,
-              MekanismBlocks.ADVANCED_INDUCTION_PROVIDER,
-              MekanismBlocks.ELITE_INDUCTION_PROVIDER,
-              MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER
-        ), MekanismAliases.ENERGY_TRANSFER, MekanismAliases.ENERGY_THROUGHPUT, MekanismAliases.ITEM_CHARGER);
+        rv.addItemAliases(MekanismTags.BlockItems.INDUCTION_CELLS, MekanismAliases.ENERGY_STORAGE, MekanismAliases.ENERGY_STORAGE_BATTERY, MekanismAliases.ITEM_CHARGER);
 
-        rv.addAliases(List.of(
-              MekanismBlocks.SPS_CASING,
-              MekanismBlocks.SPS_PORT,
-              MekanismBlocks.SUPERCHARGED_COIL,
-              MekanismBlocks.STRUCTURAL_GLASS
-        ), MekanismAliases.SPS_COMPONENT, MekanismAliases.SPS_FULL_COMPONENT);
-        rv.addAliases(List.of(MekanismBlocks.DYNAMIC_TANK, MekanismBlocks.DYNAMIC_VALVE, MekanismBlocks.STRUCTURAL_GLASS),
+        rv.addAliases(MekanismBlocks.INDUCTION_PORT, MekanismAliases.ENERGY_TRANSFER, MekanismAliases.ENERGY_THROUGHPUT, MekanismAliases.ITEM_CHARGER);
+        rv.addItemAliases(MekanismTags.BlockItems.INDUCTION_PROVIDERS, MekanismAliases.ENERGY_TRANSFER, MekanismAliases.ENERGY_THROUGHPUT, MekanismAliases.ITEM_CHARGER,
+              MekanismAliases.MATRIX_COMPONENT);
+
+        rv.addItemAliases(MekanismTags.BlockItems.STRUCTURES_SPS, MekanismAliases.SPS_COMPONENT, MekanismAliases.SPS_FULL_COMPONENT);
+        rv.addItemAliases(MekanismTags.BlockItems.STRUCTURES_TANK,
               MekanismAliases.TANK_COMPONENT,
               MekanismAliases.FLUID_STORAGE,
               MekanismAliases.CHEMICAL_STORAGE,
@@ -213,30 +187,12 @@ public final class MekanismAliasMapping implements IAliasMapping {
     private <ITEM, FLUID, CHEMICAL> void addStorageAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
         addStorageBlockAliases(rv);
         addQIOAliases(rv);
-        rv.addAliases(List.of(
-              MekanismBlocks.BASIC_BIN,
-              MekanismBlocks.ADVANCED_BIN,
-              MekanismBlocks.ELITE_BIN,
-              MekanismBlocks.ULTIMATE_BIN,
-              MekanismBlocks.CREATIVE_BIN
-        ), MekanismAliases.BIN_DRAWER, MekanismAliases.ITEM_STORAGE);
-        rv.addItemAliases(MekanismTags.BlockItems.PERSONAL_STORAGE.item(), MekanismAliases.PERSONAL_BACKPACK, MekanismAliases.ITEM_STORAGE, MekanismAliases.STORAGE_PORTABLE);
+        rv.addItemAliases(MekanismTags.BlockItems.BINS, MekanismAliases.BIN_DRAWER, MekanismAliases.ITEM_STORAGE);
+        rv.addItemAliases(MekanismTags.BlockItems.PERSONAL_STORAGE, MekanismAliases.PERSONAL_BACKPACK, MekanismAliases.ITEM_STORAGE, MekanismAliases.STORAGE_PORTABLE);
 
-        rv.addAliases(List.of(
-              MekanismBlocks.BASIC_FLUID_TANK,
-              MekanismBlocks.ADVANCED_FLUID_TANK,
-              MekanismBlocks.ELITE_FLUID_TANK,
-              MekanismBlocks.ULTIMATE_FLUID_TANK,
-              MekanismBlocks.CREATIVE_FLUID_TANK
-        ), MekanismAliases.FLUID_STORAGE, MekanismAliases.STORAGE_PORTABLE, Items.BUCKET::getDescriptionId);//Note: We add bucket as the tanks can act as buckets
+        rv.addItemAliases(MekanismTags.BlockItems.FLUID_TANKS, MekanismAliases.FLUID_STORAGE, MekanismAliases.STORAGE_PORTABLE, Items.BUCKET::getDescriptionId);//Note: We add bucket as the tanks can act as buckets
 
-        rv.addAliases(List.of(
-                    MekanismBlocks.BASIC_CHEMICAL_TANK,
-                    MekanismBlocks.ADVANCED_CHEMICAL_TANK,
-                    MekanismBlocks.ELITE_CHEMICAL_TANK,
-                    MekanismBlocks.ULTIMATE_CHEMICAL_TANK,
-                    MekanismBlocks.CREATIVE_CHEMICAL_TANK
-              ),
+        rv.addItemAliases(MekanismTags.BlockItems.CHEMICAL_TANKS,
               MekanismAliases.CHEMICAL_STORAGE,
               MekanismAliases.GAS_STORAGE,
               MekanismAliases.INFUSE_TYPE_STORAGE,
@@ -268,7 +224,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
         rv.addAliases(MekanismBlocks.STEEL_BLOCK, MekanismAliases.BLOCK_STEEL);
         rv.addAliases(MekanismBlocks.FLUORITE_BLOCK, MekanismAliases.BLOCK_FLUORITE);
         //Dynamic storage blocks
-        for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
+        for (Map.Entry<BlockResourceInfo, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             rv.addItemAliases(entry.getValue().getItemHolder(), () -> Mekanism.rl(entry.getKey().getRegistrySuffix()).toLanguageKey("alias"));
         }
     }
@@ -292,12 +248,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
     }
 
     private <ITEM, FLUID, CHEMICAL> void addTransferAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
-        rv.addAliases(List.of(
-                    MekanismBlocks.BASIC_UNIVERSAL_CABLE,
-                    MekanismBlocks.ADVANCED_UNIVERSAL_CABLE,
-                    MekanismBlocks.ELITE_UNIVERSAL_CABLE,
-                    MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE
-              ),
+        rv.addItemAliases(MekanismTags.BlockItems.ENERGY_TRANSMITTERS,
               MekanismAliases.ENERGY_TRANSFER,
               MekanismAliases.TRANSMITTER,
               MekanismAliases.TRANSMITTER_CONDUIT,
@@ -305,12 +256,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
               MekanismAliases.TRANSMITTER_TUBE
         );
 
-        rv.addAliases(List.of(
-                    MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR,
-                    MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR,
-                    MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR,
-                    MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR
-              ),
+        rv.addItemAliases(MekanismTags.BlockItems.HEAT_TRANSMITTERS,
               MekanismAliases.HEAT_TRANSFER,
               MekanismAliases.TRANSMITTER,
               MekanismAliases.TRANSMITTER_CONDUIT,
@@ -318,21 +264,9 @@ public final class MekanismAliasMapping implements IAliasMapping {
               MekanismAliases.TRANSMITTER_TUBE
         );
 
-        rv.addAliases(List.of(
-              MekanismBlocks.BASIC_MECHANICAL_PIPE,
-              MekanismBlocks.ADVANCED_MECHANICAL_PIPE,
-              MekanismBlocks.ELITE_MECHANICAL_PIPE,
-              MekanismBlocks.ULTIMATE_MECHANICAL_PIPE
-        ), MekanismAliases.FLUID_TRANSFER, MekanismAliases.TRANSMITTER, MekanismAliases.TRANSMITTER_CONDUIT, MekanismAliases.TRANSMITTER_TUBE);
+        rv.addItemAliases(MekanismTags.BlockItems.FLUID_TRANSMITTERS, MekanismAliases.FLUID_TRANSFER, MekanismAliases.TRANSMITTER, MekanismAliases.TRANSMITTER_CONDUIT, MekanismAliases.TRANSMITTER_TUBE);
 
-        rv.addAliases(List.of(
-                    MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER,
-                    MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER,
-                    MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER,
-                    MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER,
-                    MekanismBlocks.RESTRICTIVE_TRANSPORTER,
-                    MekanismBlocks.DIVERSION_TRANSPORTER
-              ),
+        rv.addItemAliases(MekanismTags.BlockItems.ITEM_TRANSMITTERS,
               MekanismAliases.ITEM_TRANSFER,
               MekanismAliases.TRANSMITTER,
               MekanismAliases.TRANSMITTER_CONDUIT,
@@ -342,12 +276,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
         rv.addAliases(MekanismBlocks.DIVERSION_TRANSPORTER, MekanismAliases.REDSTONE_CONTROL);
         rv.addAliases(MekanismBlocks.LOGISTICAL_SORTER, MekanismAliases.ITEM_TRANSFER, MekanismAliases.ROUND_ROBIN);
 
-        rv.addAliases(List.of(
-                    MekanismBlocks.BASIC_PRESSURIZED_TUBE,
-                    MekanismBlocks.ADVANCED_PRESSURIZED_TUBE,
-                    MekanismBlocks.ELITE_PRESSURIZED_TUBE,
-                    MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE
-              ),
+        rv.addItemAliases(MekanismTags.BlockItems.CHEMICAL_TRANSMITTERS,
               MekanismAliases.CHEMICAL_TRANSFER,
               MekanismAliases.GAS_TRANSFER,
               MekanismAliases.INFUSE_TYPE_TRANSFER,

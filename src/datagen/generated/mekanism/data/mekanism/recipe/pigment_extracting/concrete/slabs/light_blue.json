@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:intersection",
+      "children": [
+        "#mekanism:colorable/concrete/slabs",
+        "#c:dyed/light_blue"
+      ]
+    }
+  },
+  "output": {
+    "amount": 12,
+    "id": "mekanism:light_blue"
+  }
+}

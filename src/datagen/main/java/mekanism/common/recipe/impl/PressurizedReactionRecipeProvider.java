@@ -91,7 +91,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "logs"));
         //Planks, each worth a 5th of a log.
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(
                     this.items,
                     ItemTags.PLANKS,
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
@@ -113,7 +113,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "rods_wooden"));
         //Slabs, each worth a 10th of a log.
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(
                     this.items,
                     ItemTags.WOODEN_SLABS,
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
@@ -126,7 +126,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "wooden_slabs"));
         //Stairs, each worth a 6⅔th of a log.
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(
                     this.items,
                     ItemTags.WOODEN_STAIRS,
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification

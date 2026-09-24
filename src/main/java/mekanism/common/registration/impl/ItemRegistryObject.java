@@ -50,7 +50,7 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     }
 
     public ItemStackTemplate asTemplate(int count) {
-        return new ItemStackTemplate(value(), count);
+        return new ItemStackTemplate(this, count);
     }
 
     public ItemStack asStack() {

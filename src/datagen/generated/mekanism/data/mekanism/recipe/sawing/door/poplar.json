@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:poplar_door"
+  },
+  "main_output": {
+    "count": 2,
+    "id": "minecraft:poplar_planks"
+  }
+}

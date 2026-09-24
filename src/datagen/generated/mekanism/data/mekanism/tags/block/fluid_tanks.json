@@ -1,0 +1,9 @@
+{
+  "values": [
+    "mekanism:basic_fluid_tank",
+    "mekanism:advanced_fluid_tank",
+    "mekanism:elite_fluid_tank",
+    "mekanism:ultimate_fluid_tank",
+    "mekanism:creative_fluid_tank"
+  ]
+}

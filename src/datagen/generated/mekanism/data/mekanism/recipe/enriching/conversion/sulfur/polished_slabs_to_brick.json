@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:polished_sulfur_slab"
+  },
+  "output": {
+    "id": "minecraft:sulfur_brick_slab"
+  }
+}

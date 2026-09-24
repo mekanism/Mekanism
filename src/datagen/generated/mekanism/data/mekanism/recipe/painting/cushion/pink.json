@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 256,
+    "ingredient": "mekanism:pink"
+  },
+  "item_input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/cushions",
+      "subtracted": "minecraft:pink_cushion"
+    }
+  },
+  "output": {
+    "id": "minecraft:pink_cushion"
+  },
+  "per_tick_usage": false
+}

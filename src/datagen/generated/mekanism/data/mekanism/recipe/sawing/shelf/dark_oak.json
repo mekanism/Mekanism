@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:dark_oak_shelf"
+  },
+  "main_output": {
+    "id": "minecraft:stripped_dark_oak_log"
+  }
+}

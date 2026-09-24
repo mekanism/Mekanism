@@ -55,6 +55,6 @@ class FactoryRecipeProvider extends BaseSubRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, circuitTag)
               .key(Pattern.INGOT, this.items, ingotTag)
               .key(Pattern.ALLOY, this.items, alloyTag)
-              .save(consumer, Mekanism.rl(basePath + Attribute.getOrThrow(factory, AttributeFactoryType.class).getFactoryType().getRegistryNameComponent()));
+              .save(consumer, Mekanism.rl(basePath + Attribute.getOrThrow(factory, AttributeFactoryType.class).getFactoryType().getSerializedName()));
     }
 }

@@ -54,7 +54,7 @@ class InfusionConversionRecipeProvider extends BaseSubRecipeProvider {
         //Charcoal Block
         infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.BlockItems.STORAGE_BLOCKS_CHARCOAL), chemicalTemplate(ChemicalIds.CARBON, 180), basePath, "from_charcoal_block");
         //Charcoal
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(
               this.items,
               MekanismTags.Items.DUSTS_CHARCOAL,
               ItemIds.CHARCOAL
@@ -63,7 +63,7 @@ class InfusionConversionRecipeProvider extends BaseSubRecipeProvider {
         //Coal Block
         infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, Tags.Items.STORAGE_BLOCKS_COAL), chemicalTemplate(ChemicalIds.CARBON, 90), basePath, "from_coal_block");
         //Coal
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(
               this.items,
               MekanismTags.Items.DUSTS_COAL,
               ItemIds.COAL
@@ -82,7 +82,7 @@ class InfusionConversionRecipeProvider extends BaseSubRecipeProvider {
 
     private void addInfusionConversionFungiRecipes(RecipeOutput consumer, String basePath) {
         //Mushrooms
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(
               this.items,
               Tags.Items.MUSHROOMS,
               //TODO: If these get added to the mushroom tag then we can remove them from here

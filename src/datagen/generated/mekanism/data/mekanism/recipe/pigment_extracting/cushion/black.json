@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:intersection",
+      "children": [
+        "#mekanism:colorable/cushions",
+        "#c:dyed/black"
+      ]
+    }
+  },
+  "output": {
+    "amount": 288,
+    "id": "mekanism:black"
+  }
+}

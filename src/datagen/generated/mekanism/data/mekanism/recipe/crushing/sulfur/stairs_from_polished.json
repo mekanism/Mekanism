@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:polished_sulfur_stairs"
+  },
+  "output": {
+    "id": "minecraft:sulfur_stairs"
+  }
+}

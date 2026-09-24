@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "#minecraft:pale_oak_logs"
+  },
+  "main_output": {
+    "count": 6,
+    "id": "minecraft:pale_oak_planks"
+  },
+  "secondary_chance": 0.25,
+  "secondary_output": {
+    "id": "mekanism:sawdust"
+  }
+}

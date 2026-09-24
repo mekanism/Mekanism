@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:sulfur"
+  },
+  "output": {
+    "count": 4,
+    "id": "mekanism:dust_sulfur"
+  }
+}

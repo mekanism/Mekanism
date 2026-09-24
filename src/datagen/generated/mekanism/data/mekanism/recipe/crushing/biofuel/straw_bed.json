@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 2,
+    "ingredient": "minecraft:straw_bed"
+  },
+  "output": {
+    "count": 3,
+    "id": "mekanism:block_bio_fuel"
+  }
+}

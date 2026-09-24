@@ -7,9 +7,13 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import mekanism.api.text.EnumColorCollection;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.ColorCollection;
@@ -18,6 +22,7 @@ import net.minecraft.world.level.block.ColorCollection;
 public class MekanismTagBuilder<TYPE> {
 
     private final Function<Holder<TYPE>, Identifier> holderToName = holder -> Objects.requireNonNull(holder.getKey()).identifier();
+    private final ResourceKey<? extends Registry<TYPE>> registry;
     private final Consumer<Identifier> elementAdder;
     private final Consumer<Identifier> elementRemover;
     private final Consumer<Identifier> optionalElementAdder;
@@ -26,7 +31,8 @@ public class MekanismTagBuilder<TYPE> {
     private final Consumer<Identifier> optionalTagAdder;
     private final TagBuilder builder;
 
-    public MekanismTagBuilder(TagBuilder builder) {
+    public MekanismTagBuilder(ResourceKey<? extends Registry<TYPE>> registry, TagBuilder builder) {
+        this.registry = registry;
         this.builder = builder;
         this.elementAdder = this.builder::addElement;
         this.elementRemover = this.builder::removeElement;
@@ -47,6 +53,33 @@ public class MekanismTagBuilder<TYPE> {
 
     public <COLOR> MekanismTagBuilder<TYPE> add(ColorCollection<COLOR> colorCollection, Function<COLOR, ResourceKey<TYPE>> keyExtractor) {
         colorCollection.forEach(color -> elementAdder.accept(keyExtractor.apply(color).identifier()));
+        return this;
+    }
+
+    public MekanismTagBuilder<TYPE> addAsItems(BlockItemTagId... tags) {
+        if (!registry.equals(Registries.ITEM)) {
+            throw new IllegalStateException("addAsItems should only be called for item builders");
+        }
+        return apply(tagAdder, tag -> tag.item().location(), tags);
+    }
+
+    public MekanismTagBuilder<TYPE> addAsBlocks(BlockItemTagId... tags) {
+        if (!registry.equals(Registries.BLOCK)) {
+            throw new IllegalStateException("addAsBlocks should only be called for block builders");
+        }
+        return apply(tagAdder, tag -> tag.block().location(), tags);
+    }
+
+    @SuppressWarnings("unchecked")
+    public MekanismTagBuilder<TYPE> addAsItems(EnumColorCollection<? extends BlockRegistryObject<?, ?>> colorCollection) {
+        if (!registry.equals(Registries.ITEM)) {
+            throw new IllegalStateException("addAsItems should only be called for item builders");
+        }
+        return add(colorCollection.map(ro -> (Holder<TYPE>) ro.getItemHolder()));
+    }
+
+    public <COLOR extends Holder<TYPE>> MekanismTagBuilder<TYPE> add(EnumColorCollection<COLOR> colorCollection) {
+        colorCollection.forEach(color -> elementAdder.accept(holderToName.apply(color)));
         return this;
     }
 

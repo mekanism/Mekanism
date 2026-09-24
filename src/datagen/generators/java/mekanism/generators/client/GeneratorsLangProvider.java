@@ -46,6 +46,11 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
     }
 
     private void addTags() {
+        add(GeneratorTags.BlockItems.STRUCTURES_TURBINE, "Turbine Multiblock Components");
+        add(GeneratorTags.BlockItems.STRUCTURES_REACTORS, "Reactor Multiblock Components");
+        add(GeneratorTags.BlockItems.STRUCTURES_FISSION, "Fission Reactor Multiblock Components");
+        add(GeneratorTags.BlockItems.STRUCTURES_FUSION, "Fusion Reactor Multiblock Components");
+
         add(GeneratorTags.Fluids.BIOETHANOL, "Bioethanol");
         add(GeneratorTags.Fluids.DEUTERIUM, "Deuterium");
         add(GeneratorTags.Fluids.TRITIUM, "Tritium");

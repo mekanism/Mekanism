@@ -9,9 +9,7 @@ public final class SerializationConstants {
     }
 
     //Ones that also are used for interacting with neo/vanilla
-    public static final String COUNT = "count";
     public static final String CUSTOM_NAME = "CustomName";
-    public static final String ENTITY = "entity";
     public static final String ID = "id";
     public static final String X = "x";
     public static final String Y = "y";
@@ -150,6 +148,7 @@ public final class SerializationConstants {
     /// @since 10.7.11
     public static final String COOL_VARIANT = "cool_variant";
     public static final String COULD_OPERATE = "could_operate";
+    public static final String COUNT = "count";
     public static final String CURRENT_REDSTONE = "current_redstone";
     public static final String CUSTOM_MODEL = "custom_model";
     public static final String DATA = "data";

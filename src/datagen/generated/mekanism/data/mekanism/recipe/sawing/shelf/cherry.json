@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:cherry_shelf"
+  },
+  "main_output": {
+    "id": "minecraft:stripped_cherry_log"
+  }
+}

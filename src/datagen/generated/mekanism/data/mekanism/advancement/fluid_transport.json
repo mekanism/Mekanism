@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:steel_ingot",
   "criteria": {
-    "basic_mechanical_pipe": {
+    "has_pipe": {
       "conditions": {
         "items": [
           {
-            "items": "mekanism:basic_mechanical_pipe"
+            "items": "#mekanism:transmitters/fluid"
           }
         ]
       },
@@ -26,7 +26,7 @@
   },
   "requirements": [
     [
-      "basic_mechanical_pipe"
+      "has_pipe"
     ]
   ],
   "sends_telemetry_event": true

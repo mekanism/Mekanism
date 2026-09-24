@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:closed_eyeblossom"
+  },
+  "output": {
+    "amount": 768,
+    "id": "mekanism:gray"
+  }
+}

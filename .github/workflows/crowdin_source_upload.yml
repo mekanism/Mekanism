@@ -8,7 +8,7 @@ on:
       - src/datagen/generated/mekanismtools/assets/mekanismtools/lang/en_us.json
     branches:
       - "1.21.x"
-      - "26.2"
+      - "26.3"
 
 permissions:
   contents: write

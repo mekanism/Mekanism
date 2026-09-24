@@ -1,11 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "#": "#c:dusts/wood"
+    "#": "#c:dusts/wood",
+    "R": "#c:clumps/resin"
   },
   "pattern": [
-    "##",
-    "##"
+    "# #",
+    "R R",
+    "#R#"
   ],
   "result": {
     "id": "mekanism:cardboard_box"

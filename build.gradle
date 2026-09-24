@@ -62,7 +62,7 @@ ext {
     //Integrations that we sometimes have to disable compilation of when porting to newer mc versions
     integrations = [
             'ae2'             : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.DATA_ONLY),
-            'biomes_o_plenty' : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.DATA_ONLY),
+            'biomes_o_plenty' : new IntegrationSettings(shouldCompile: true, scope: IntegrationScope.DATA_ONLY),
             'biomes_weve_gone': new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.DATA_ONLY),
             'computer_craft'  : new IntegrationSettings(shouldCompile: true),
             'crafttweaker'    : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL),

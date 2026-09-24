@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 64,
+    "ingredient": "mekanism:pink"
+  },
+  "item_input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/glazed_terracotta",
+      "subtracted": "minecraft:pink_glazed_terracotta"
+    }
+  },
+  "output": {
+    "id": "minecraft:pink_glazed_terracotta"
+  },
+  "per_tick_usage": false
+}

@@ -1,0 +1,9 @@
+{
+  "values": [
+    "mekanism:superheating_element",
+    "mekanism:pressure_disperser",
+    "mekanism:boiler_casing",
+    "mekanism:boiler_valve",
+    "#mekanism:structures/common"
+  ]
+}

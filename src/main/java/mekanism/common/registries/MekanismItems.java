@@ -238,7 +238,7 @@ public class MekanismItems {
           );
     public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerItem("meka_tool", ItemMekaTool::new)
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.creator(attachedAccess -> new ComponentBackedEnergyContainer(
-                attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
+                      attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
                       () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, MekanismConfig.gear.mekaToolBaseEnergyCapacity), () -> ModuleEnergyUnit.getChargeRate(attachedAccess, MekanismConfig.gear.mekaToolBaseChargeRate)
                 )), MekanismConfig.gear
           );
@@ -292,8 +292,8 @@ public class MekanismItems {
     }
 
     public static ItemRegistryObject<Item> getProcessedResource(ResourceType resourceType, PrimaryResource resource) {
-            return Objects.requireNonNull(PROCESSED_RESOURCES.get(resourceType, resource));
-        }
+        return Objects.requireNonNull(PROCESSED_RESOURCES.get(resourceType, resource));
+    }
 
     private static ItemRegistryObject<Item> registerResource(ResourceType type, IResource resource) {
         return ITEMS.register(type.getRegistryPrefix() + "_" + resource.getRegistrySuffix());

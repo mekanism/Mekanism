@@ -34,16 +34,16 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.BlockItemId;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.SlotDisplay.TagSlotDisplay;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import org.jspecify.annotations.Nullable;
@@ -83,14 +83,15 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         addNetheriteProcessingRecipes(consumer, basePath + "netherite/");
         addBronzeProcessingRecipes(consumer, basePath + "bronze/");
         addCoalOreProcessingRecipes(consumer, basePath + "coal/");
-        addOreProcessingGemRecipes(consumer, basePath + "diamond/", Items.DIAMOND_ORE, Items.DEEPSLATE_DIAMOND_ORE, Tags.Items.ORES_DIAMOND,
-              MekanismItems.DIAMOND_DUST, MekanismTags.Items.DUSTS_DIAMOND, Items.DIAMOND, Tags.Items.GEMS_DIAMOND, 2, 5, Tags.Items.COBBLESTONES_NORMAL);
-        addOreProcessingGemRecipes(consumer, basePath + "emerald/", Items.EMERALD_ORE, Items.DEEPSLATE_EMERALD_ORE, Tags.Items.ORES_EMERALD,
-              MekanismItems.EMERALD_DUST, MekanismTags.Items.DUSTS_EMERALD, Items.EMERALD, Tags.Items.GEMS_EMERALD, 2, 5, Tags.Items.COBBLESTONES_NORMAL);
-        addOreProcessingGemRecipes(consumer, basePath + "lapis_lazuli/", Items.LAPIS_ORE, Items.DEEPSLATE_LAPIS_ORE, Tags.Items.ORES_LAPIS,
-              MekanismItems.LAPIS_LAZULI_DUST, MekanismTags.Items.DUSTS_LAPIS, Items.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 27, Tags.Items.COBBLESTONES_NORMAL);
-        addOreProcessingGemRecipes(consumer, basePath + "quartz/", Items.NETHER_QUARTZ_ORE, null, Tags.Items.ORES_QUARTZ, MekanismItems.QUARTZ_DUST,
-              MekanismTags.Items.DUSTS_QUARTZ, Items.QUARTZ, Tags.Items.GEMS_QUARTZ, 2, 14, IngredientCreatorAccess.item().from(this.items, BlockItemIds.NETHERRACK));
+        addOreProcessingGemRecipes(consumer, basePath + "diamond/", BlockItemIds.DIAMOND_ORE, BlockItemIds.DEEPSLATE_DIAMOND_ORE, Tags.Items.ORES_DIAMOND,
+              MekanismItems.DIAMOND_DUST, MekanismTags.Items.DUSTS_DIAMOND, ItemIds.DIAMOND, Tags.Items.GEMS_DIAMOND, 2, 5, Tags.Items.COBBLESTONES_NORMAL);
+        addOreProcessingGemRecipes(consumer, basePath + "emerald/", BlockItemIds.EMERALD_ORE, BlockItemIds.DEEPSLATE_EMERALD_ORE, Tags.Items.ORES_EMERALD,
+              MekanismItems.EMERALD_DUST, MekanismTags.Items.DUSTS_EMERALD, ItemIds.EMERALD, Tags.Items.GEMS_EMERALD, 2, 5, Tags.Items.COBBLESTONES_NORMAL);
+        addOreProcessingGemRecipes(consumer, basePath + "lapis_lazuli/", BlockItemIds.LAPIS_ORE, BlockItemIds.DEEPSLATE_LAPIS_ORE, Tags.Items.ORES_LAPIS,
+              MekanismItems.LAPIS_LAZULI_DUST, MekanismTags.Items.DUSTS_LAPIS, ItemIds.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 27, Tags.Items.COBBLESTONES_NORMAL);
+        addOreProcessingGemRecipes(consumer, basePath + "quartz/", BlockItemIds.NETHER_QUARTZ_ORE, null, Tags.Items.ORES_QUARTZ,
+              MekanismItems.QUARTZ_DUST, MekanismTags.Items.DUSTS_QUARTZ, ItemIds.QUARTZ, Tags.Items.GEMS_QUARTZ, 2, 14,
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.NETHERRACK));
         addRedstoneProcessingRecipes(consumer, basePath + "redstone/");
         addRefinedGlowstoneProcessingRecipes(consumer, basePath + "refined_glowstone/");
         addRefinedObsidianProcessingRecipes(consumer, basePath + "refined_obsidian/");
@@ -139,8 +140,8 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
             case COPPER -> {
                 ingot = items.getOrThrow(ItemIds.COPPER_INGOT);
                 ingotTag = Tags.Items.INGOTS_COPPER;
-                nugget = null;
-                nuggetTag = null;
+                nugget = items.getOrThrow(ItemIds.COPPER_NUGGET);
+                nuggetTag = Tags.Items.NUGGETS_COPPER;
                 block = items.getOrThrow(BlockItemIds.COPPER_BLOCK.weathering().unaffected().item());
                 raw = items.getOrThrow(ItemIds.RAW_COPPER);
                 rawTag = Tags.Items.RAW_MATERIALS_COPPER;
@@ -156,7 +157,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
                 ingotTag = Objects.requireNonNull(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, resource));
                 nugget = Objects.requireNonNull(MekanismItems.getProcessedResource(ResourceType.NUGGET, resource));
                 nuggetTag = Objects.requireNonNull(MekanismTags.Items.getProcessedResource(ResourceType.NUGGET, resource));
-                block = Objects.requireNonNull(MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource)).getItemHolder();
+                block = Objects.requireNonNull(MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource.getResourceBlockInfo())).getItemHolder();
                 raw = Objects.requireNonNull(MekanismItems.getProcessedResource(ResourceType.RAW, resource));
                 rawTag = Objects.requireNonNull(MekanismTags.Items.getProcessedResource(ResourceType.RAW, resource));
                 rawBlock = Objects.requireNonNull(MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo())).getItemHolder();
@@ -195,18 +196,18 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
             // from nuggets
             ExtendedShapedRecipeBuilder.shapedRecipe(ingot)
                   .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
-                  .key(Pattern.PREVIOUS, Objects.requireNonNull(nugget))
-                  .key(Pattern.CONSTANT, this.items, Objects.requireNonNull(nuggetTag))
+                  .key(Pattern.PREVIOUS, nugget)
+                  .key(Pattern.CONSTANT, this.items, nuggetTag)
                   .save(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
             // to nuggets
             ExtendedShapelessRecipeBuilder.shapelessRecipe(nugget, 9)
                   .addIngredient(ingot)
                   .save(consumer, Mekanism.rl(basePath + "nugget/from_ingot"));
             // from ore
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.createIngredient(ore, deepslateOre), ingot, dustExperience * 2, 200,
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.ingredient(ore, deepslateOre), ingot, dustExperience * 2, 200,
                   Mekanism.rl(basePath + "ingot/from_ore_blasting"), Mekanism.rl(basePath + "ingot/from_ore_smelting"));
             // from raw
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.createIngredient(raw), ingot, dustExperience * 2, 200,
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.ingredient(raw), ingot, dustExperience * 2, 200,
                   Mekanism.rl(basePath + "ingot/from_raw_blasting"), Mekanism.rl(basePath + "ingot/from_raw_smelting"));
             // raw from raw block
             ExtendedShapelessRecipeBuilder.shapelessRecipe(raw, 9)
@@ -240,7 +241,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
 
         // Intermediate Steps
         // Ingot from Dust
-        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.createIngredient(dust), ingot, dustExperience, 200,
+        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.ingredient(dust), ingot, dustExperience, 200,
               Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
         // Dust from Dirty Dust
         ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(this.items, dirtyDustTag), new ItemStackTemplate(dust))
@@ -385,23 +386,35 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
     }
 
-    private void addOreProcessingGemRecipes(RecipeOutput consumer, String basePath, ItemLike ore, @Nullable ItemLike deepslateOre, TagKey<Item> oreTag,
-          Holder<Item> dust, TagKey<Item> dustTag, ItemLike gem, TagKey<Item> gemTag, int fromOre, int toOre, TagKey<Item> combineType) {
+    private void addOreProcessingGemRecipes(RecipeOutput consumer, String basePath, BlockItemId ore, @Nullable BlockItemId deepslateOre, TagKey<Item> oreTag,
+          Holder<Item> dust, TagKey<Item> dustTag, ResourceKey<Item> gem, TagKey<Item> gemTag, int fromOre, int toOre, TagKey<Item> combineType) {
+        addOreProcessingGemRecipes(consumer, basePath, items.getOrThrow(ore.item()), deepslateOre == null ? null : items.getOrThrow(deepslateOre.item()),
+              oreTag, dust, dustTag, items.getOrThrow(gem), gemTag, fromOre, toOre, combineType);
+    }
+
+    private void addOreProcessingGemRecipes(RecipeOutput consumer, String basePath, Holder<Item> ore, @Nullable Holder<Item> deepslateOre, TagKey<Item> oreTag,
+          Holder<Item> dust, TagKey<Item> dustTag, Holder<Item> gem, TagKey<Item> gemTag, int fromOre, int toOre, TagKey<Item> combineType) {
         addOreProcessingGemRecipes(consumer, basePath, ore, deepslateOre, oreTag, dust, dustTag, gem, gemTag, fromOre, toOre,
               IngredientCreatorAccess.item().from(this.items, combineType));
     }
 
-    private void addOreProcessingGemRecipes(RecipeOutput consumer, String basePath, ItemLike ore, @Nullable ItemLike deepslateOre, TagKey<Item> oreTag,
-          Holder<Item> dust, TagKey<Item> dustTag, ItemLike gem, TagKey<Item> gemTag, int fromOre, int toOre, ItemStackIngredient combineType) {
+    private void addOreProcessingGemRecipes(RecipeOutput consumer, String basePath, BlockItemId ore, @Nullable BlockItemId deepslateOre, TagKey<Item> oreTag,
+          Holder<Item> dust, TagKey<Item> dustTag, ResourceKey<Item> gem, TagKey<Item> gemTag, int fromOre, int toOre, ItemStackIngredient combineType) {
+        addOreProcessingGemRecipes(consumer, basePath, items.getOrThrow(ore.item()), deepslateOre == null ? null : items.getOrThrow(deepslateOre.item()),
+              oreTag, dust, dustTag, items.getOrThrow(gem), gemTag, fromOre, toOre, combineType);
+    }
+
+    private void addOreProcessingGemRecipes(RecipeOutput consumer, String basePath, Holder<Item> ore, @Nullable Holder<Item> deepslateOre, TagKey<Item> oreTag,
+          Holder<Item> dust, TagKey<Item> dustTag, Holder<Item> gem, TagKey<Item> gemTag, int fromOre, int toOre, ItemStackIngredient combineType) {
         //from dust
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(this.items, dustTag),
-              new ItemStackTemplate(gem.asItem())
+              new ItemStackTemplate(gem)
         ).save(consumer, Mekanism.rl(basePath + "from_dust"));
         //from ore
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(this.items, oreTag),
-              new ItemStackTemplate(gem.asItem(), fromOre)
+              new ItemStackTemplate(gem, fromOre)
         ).save(consumer, Mekanism.rl(basePath + "from_ore"));
         //to dust
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -413,14 +426,14 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         CombinerRecipeBuilder.combining(
               forOre,
               combineType,
-              new ItemStackTemplate(ore.asItem())
+              new ItemStackTemplate(ore)
         ).save(consumer, Mekanism.rl(basePath + "to_ore"));
         if (deepslateOre != null) {
             //to deepslate ore
             CombinerRecipeBuilder.combining(
                   forOre,
                   IngredientCreatorAccess.item().from(this.items, Tags.Items.COBBLESTONES_DEEPSLATE),
-                  new ItemStackTemplate(deepslateOre.asItem())
+                  new ItemStackTemplate(deepslateOre)
             ).save(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
         }
     }
@@ -614,7 +627,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
 
     private void addFluoriteRecipes(RecipeOutput consumer, String basePath) {
         OreBlockType fluorite = MekanismBlocks.ORES.get(OreType.FLUORITE);
-        addOreProcessingGemRecipes(consumer, basePath, fluorite.stone(), fluorite.deepslate(), MekanismTags.BlockItems.ORES.get(OreType.FLUORITE).item(),
+        addOreProcessingGemRecipes(consumer, basePath, fluorite.stone().getItemHolder(), fluorite.deepslate().getItemHolder(), MekanismTags.BlockItems.ORES.get(OreType.FLUORITE).item(),
               MekanismItems.FLUORITE_DUST, MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, 6, 14,
               Tags.Items.COBBLESTONES_NORMAL);
         //Gem from block

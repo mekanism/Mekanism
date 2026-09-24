@@ -4,6 +4,7 @@ import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
@@ -11,6 +12,25 @@ import net.minecraft.world.level.material.Fluid;
 public class GeneratorTags {
 
     private GeneratorTags() {
+    }
+
+    public static class BlockItems {
+
+        private BlockItems() {
+        }
+
+        public static final BlockItemTagId STRUCTURES_TURBINE = tag("structures/turbine");
+        public static final BlockItemTagId STRUCTURES_REACTORS = tag("structures/reactors");
+        public static final BlockItemTagId STRUCTURES_FISSION = tag("structures/reactors/fission");
+        public static final BlockItemTagId STRUCTURES_FUSION = tag("structures/reactors/fusion");
+
+        private static BlockItemTagId tag(String name) {
+            return tag(MekanismGenerators.rl(name));
+        }
+
+        private static BlockItemTagId tag(Identifier tag) {
+            return BlockItemTagId.create(tag, tag);
+        }
     }
 
     public static class Fluids {

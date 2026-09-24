@@ -1,4 +1,4 @@
-// 26.3	2026-09-17T15:06:11.1764566	Tags: mekanismadditions
+// 26.3	2026-09-23T20:27:42.4659189	Tags: mekanismadditions
 eabdd3bffc129c5335f361f00d4a0adacf59016c data/c/tags/block/dyed.json
 c0a3434189d007f164cd4c931b0a892a6837b5a1 data/c/tags/block/dyed/black.json
 64a804c0d747716198c47794e47fc07ff26cc005 data/c/tags/block/dyed/blue.json
@@ -86,12 +86,15 @@ dc8bc92147066211415451157f23629e42df3da3 data/mekanismadditions/tags/item/plasti
 f3585bbe7dc6e3836425288e77e922e4eebbc034 data/mekanismadditions/tags/item/plastic_stairs/normal.json
 5332be6c4e4fe641e61aabe28061b9b02cc7738c data/mekanismadditions/tags/item/plastic_stairs/transparent.json
 95741736d10448cf20ad66ed2e1acf23c0076c1d data/mekanism/tags/data_component_type/config/clearable.json
+7225c5b764576a905b91b03c4ff795bef1d6ea3f data/minecraft/tags/block/blocks_motion_no_leaves.json
 49c90df09fb9803707e99d724517e2eb441dbe57 data/minecraft/tags/block/fences.json
 6c72a079835fe22d3553edb0f05d066ca238eebe data/minecraft/tags/block/fence_gates.json
 ac3d2a088c5fc2bef29cd8d98e15c11fe135c527 data/minecraft/tags/block/impermeable.json
+0c5cdd63bbce1f54a23b959fc01b052bef6fe6fd data/minecraft/tags/block/mineable/axe.json
 68443d78408fdd3801ba8c069cef8d6192dfd11f data/minecraft/tags/block/mineable/pickaxe.json
 0727994833549dd1ecb13bc6163a5bef159b1131 data/minecraft/tags/block/slabs.json
 bf113affffb3861c37792b9ea8bd1564e1af8d6a data/minecraft/tags/block/stairs.json
+51c7b189adb1a1f633dd6539df3f65ba58781948 data/minecraft/tags/block/wall_post_override.json
 828ca23789970f1d1ce7bbd0def38bc7d35a9962 data/minecraft/tags/entity_type/burn_in_daylight.json
 7afa561c11ab95d25582819547b1d50d56b88ded data/minecraft/tags/entity_type/fall_damage_immune.json
 250f04137941705828e4ae8fd8e813f4bba0f081 data/minecraft/tags/entity_type/freeze_immune_entity_types.json
@@ -101,4 +104,10 @@ bf113affffb3861c37792b9ea8bd1564e1af8d6a data/minecraft/tags/block/stairs.json
 6c72a079835fe22d3553edb0f05d066ca238eebe data/minecraft/tags/item/fence_gates.json
 aea35239906ec82e25999e826651b83d2a77a219 data/minecraft/tags/item/slabs.json
 07c1b673153a745dd278af6f56e3f0a2c47da121 data/minecraft/tags/item/stairs.json
+18d06e5f18ee0f3a176e3a438447af13205cffee data/minecraft/tags/item/sulfur_cube_archetype/explosive.json
+0deb8953958c0ffaaec98aa59f28d0e1740b605d data/minecraft/tags/item/sulfur_cube_archetype/fast_flat.json
+a8e193ab9bc54f7f574993b8f2d7b21a7703d3e4 data/minecraft/tags/item/sulfur_cube_archetype/fast_sliding.json
+32492b2fb9e0bedb7d5f7dfb460586f562427693 data/minecraft/tags/item/sulfur_cube_archetype/high_resistance.json
+979a283519ec7b98565151c058098d0d5e77cccf data/minecraft/tags/item/sulfur_cube_archetype/regular.json
+f272775be888b7385c8963bed05baf760b6db361 data/minecraft/tags/item/sulfur_cube_archetype/slow_bouncy.json
 a98eb2f0b7a3daf20da3991d923498161d5e26cc data/per-viam-invenire/tags/entity_type/replace_vanilla_navigator.json

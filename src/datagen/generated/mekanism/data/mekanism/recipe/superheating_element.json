@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "A": "#mekanism:alloys/basic",
-    "I": "#c:ingots/copper",
+    "I": "minecraft:copper_chain",
     "X": "mekanism:steel_casing"
   },
   "pattern": [

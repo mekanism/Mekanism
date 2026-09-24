@@ -3,15 +3,14 @@ package mekanism.common.tags;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.common.Mekanism;
+import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.resource.BlockResourceInfo;
-import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.OreType;
@@ -41,7 +40,9 @@ public class MekanismTags {
         }
 
         public static final Map<OreType, BlockItemTagId> ORES = new EnumMap<>(OreType.class);
-        public static final Map<IResource, BlockItemTagId> PROCESSED_RESOURCE_BLOCKS = new HashMap<>();
+        public static final Map<BlockResourceInfo, BlockItemTagId> PROCESSED_RESOURCE_BLOCKS = new EnumMap<>(BlockResourceInfo.class);
+        public static final Map<FactoryType, BlockItemTagId> TIERED_FACTORIES = new EnumMap<>(FactoryType.class);
+        public static final Map<FactoryType, BlockItemTagId> FACTORY_SUPPORTED = new EnumMap<>(FactoryType.class);
 
         static {
             for (OreType ore : EnumUtils.ORE_TYPES) {
@@ -49,12 +50,19 @@ public class MekanismTags {
             }
             for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
                 if (!resource.isVanilla()) {
-                    PROCESSED_RESOURCE_BLOCKS.put(resource, commonTag("storage_blocks/" + resource.getRegistrySuffix()));
+                    BlockResourceInfo resourceInfo = resource.getResourceBlockInfo();
+                    if (resourceInfo != null) {
+                        PROCESSED_RESOURCE_BLOCKS.put(resourceInfo, commonTag("storage_blocks/" + resourceInfo.getRegistrySuffix()));
+                    }
                     BlockResourceInfo rawResource = resource.getRawResourceBlockInfo();
                     if (rawResource != null) {
                         PROCESSED_RESOURCE_BLOCKS.put(rawResource, commonTag("storage_blocks/" + rawResource.getRegistrySuffix()));
                     }
                 }
+            }
+            for (FactoryType factoryType : EnumUtils.FACTORY_TYPES) {
+                FACTORY_SUPPORTED.put(factoryType, tag("factory_supported/" + factoryType.getSerializedName()));
+                TIERED_FACTORIES.put(factoryType, tag("factories/" + factoryType.getSerializedName()));
             }
         }
 
@@ -66,6 +74,33 @@ public class MekanismTags {
         public static final BlockItemTagId STORAGE_BLOCKS_FLUORITE = commonTag("storage_blocks/fluorite");
 
         public static final BlockItemTagId PERSONAL_STORAGE = tag("personal_storage");
+        public static final BlockItemTagId HEATERS = tag("heaters");
+        public static final BlockItemTagId FACTORIES = tag("factories");
+        public static final BlockItemTagId BASE_FACTORY_SUPPORTED = tag("factory_supported");
+
+        public static final BlockItemTagId BINS = tag("bins");
+        public static final BlockItemTagId CHEMICAL_TANKS = tag("chemical_tanks");
+        public static final BlockItemTagId FLUID_TANKS = tag("fluid_tanks");
+        public static final BlockItemTagId ENERGY_CUBES = tag("energy_cubes");
+        public static final BlockItemTagId INDUCTION_CELLS = tag("induction_cells");
+        public static final BlockItemTagId INDUCTION_PROVIDERS = tag("induction_providers");
+
+        public static final BlockItemTagId TRANSMITTERS = tag("transmitters");
+        public static final BlockItemTagId HEAT_TRANSMITTERS = tag("transmitters/heat");
+        public static final BlockItemTagId ITEM_TRANSMITTERS = tag("transmitters/items");
+        public static final BlockItemTagId TIERED_ITEM_TRANSMITTERS = tag("transmitters/items/tiered");
+        public static final BlockItemTagId BUFFERED_TRANSMITTERS = tag("transmitters/buffered");
+        public static final BlockItemTagId ENERGY_TRANSMITTERS = tag("transmitters/energy");
+        public static final BlockItemTagId CHEMICAL_TRANSMITTERS = tag("transmitters/chemical");
+        public static final BlockItemTagId FLUID_TRANSMITTERS = tag("transmitters/fluid");
+
+        public static final BlockItemTagId STRUCTURES = tag("structures");
+        public static final BlockItemTagId STRUCTURES_COMMON = tag("structures/common");
+        public static final BlockItemTagId STRUCTURES_BOILER = tag("structures/boiler");
+        public static final BlockItemTagId STRUCTURES_EVAPORATION = tag("structures/evaporation");
+        public static final BlockItemTagId STRUCTURES_MATRIX = tag("structures/matrix");
+        public static final BlockItemTagId STRUCTURES_SPS = tag("structures/sps");
+        public static final BlockItemTagId STRUCTURES_TANK = tag("structures/tank");
 
         private static BlockItemTagId commonTag(String name) {
             return tag(Identifier.fromNamespaceAndPath("c", name));
@@ -178,15 +213,22 @@ public class MekanismTags {
         public static final TagKey<Item> MUFFLING_CENTER = tag("muffling_center");
 
         public static final TagKey<Item> COLORABLE_WOOL = tag("colorable/wool");
+        public static final TagKey<Item> COLORABLE_WOOL_SLABS = tag("colorable/wool_slabs");
+        public static final TagKey<Item> COLORABLE_WOOL_STAIRS = tag("colorable/wool_stairs");
         public static final TagKey<Item> COLORABLE_CARPETS = tag("colorable/carpets");
         public static final TagKey<Item> COLORABLE_BEDS = tag("colorable/beds");
         public static final TagKey<Item> COLORABLE_GLASS = tag("colorable/glass");
         public static final TagKey<Item> COLORABLE_GLASS_PANES = tag("colorable/glass_panes");
         public static final TagKey<Item> COLORABLE_TERRACOTTA = tag("colorable/terracotta");
+        public static final TagKey<Item> COLORABLE_GLAZED_TERRACOTTA = tag("colorable/glazed_terracotta");
         public static final TagKey<Item> COLORABLE_CANDLE = tag("colorable/candle");
         public static final TagKey<Item> COLORABLE_CONCRETE = tag("colorable/concrete");
+        public static final TagKey<Item> COLORABLE_CONCRETE_SLABS = tag("colorable/concrete/slabs");
+        public static final TagKey<Item> COLORABLE_CONCRETE_STAIRS = tag("colorable/concrete/stairs");
         public static final TagKey<Item> COLORABLE_CONCRETE_POWDER = tag("colorable/concrete_powder");
         public static final TagKey<Item> COLORABLE_BANNERS = tag("colorable/banners");
+        public static final TagKey<Item> COLORABLE_HARNESSES = tag("colorable/harnesses");
+        public static final TagKey<Item> COLORABLE_CUSHIONS = tag("colorable/cushions");
 
         private static TagKey<Item> commonTag(String name) {
             return ItemTags.create(Identifier.fromNamespaceAndPath("c", name));

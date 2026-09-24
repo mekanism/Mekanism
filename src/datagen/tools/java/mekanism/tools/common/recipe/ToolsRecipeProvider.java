@@ -32,7 +32,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -159,7 +158,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         registerVanillaPaxel(ToolsItems.IRON_PAXEL, ItemIds.IRON_AXE, ItemIds.IRON_PICKAXE, ItemIds.IRON_SHOVEL, ItemIds.IRON_NUGGET);
         registerVanillaPaxel(ToolsItems.GOLD_PAXEL, ItemIds.GOLDEN_AXE, ItemIds.GOLDEN_PICKAXE, ItemIds.GOLDEN_SHOVEL, ItemIds.GOLD_NUGGET);
         registerVanillaPaxel(ToolsItems.DIAMOND_PAXEL, ItemIds.DIAMOND_AXE, ItemIds.DIAMOND_PICKAXE, ItemIds.DIAMOND_SHOVEL, null);
-        ExtendedSmithingRecipeBuilder.smithing(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, ToolsItems.DIAMOND_PAXEL, Items.NETHERITE_INGOT, ToolsItems.NETHERITE_PAXEL).save(output);
+        ExtendedSmithingRecipeBuilder.smithing(items, ItemIds.NETHERITE_UPGRADE_SMITHING_TEMPLATE, ToolsItems.DIAMOND_PAXEL, ItemIds.NETHERITE_INGOT, ToolsItems.NETHERITE_PAXEL).save(output);
     }
 
     private void registerVanillaPaxel(Holder<Item> paxel, ResourceKey<Item> axe, ResourceKey<Item> pickaxe, ResourceKey<Item> shovel, @Nullable ResourceKey<Item> nugget) {
@@ -173,7 +172,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             String baseNuggetFrom = nugget.identifier().getPath() + "_from_";
-            RecipeProviderUtil.addSmeltingBlastingRecipes(output, createIngredient(paxel), items.getOrThrow(nugget), 0.1F, 200,
+            RecipeProviderUtil.addSmeltingBlastingRecipes(output, ingredient(paxel), items.getOrThrow(nugget), 0.1F, 200,
                   MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }

@@ -14,15 +14,16 @@ import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.BlockItemId;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
@@ -39,6 +40,8 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         addCrusherBioFuelRecipes(consumer, basePath + "biofuel/");
         addCrusherDewaxingRecipes(consumer, basePath + "dewax/");
         addCrusherStoneRecipes(consumer, basePath + "stone/");
+        addCrusherCinnabarRecipes(consumer, basePath + "cinnabar/");
+        addCrusherSulfurRecipes(consumer, basePath + "sulfur/");
         addCrusherTuffRecipes(consumer, basePath + "tuff/");
         addCrusherDeepslateRecipes(consumer, basePath + "deepslate/");
         addCrusherBlackstoneRecipes(consumer, basePath + "blackstone/");
@@ -47,6 +50,8 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         addCrusherDioriteRecipes(consumer, basePath + "diorite/");
         addCrusherAndesiteRecipes(consumer, basePath + "andesite/");
         addCrusherPrismarineRecipes(consumer, basePath + "prismarine/");
+        addCrusherResinRecipes(consumer, basePath + "resin/");
+        addCrusherStringRecipes(consumer, basePath + "string/");
         //Dripstone Block -> Pointed Dripstone
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.DRIPSTONE_BLOCK),
@@ -119,14 +124,9 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
               template(ItemIds.BONE_MEAL, 9)//must be the same as vanilla needs to make a block
         ).save(consumer, Mekanism.rl(basePath + "bone_block"));
         //Red Sandstone -> Sand
-        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, this.items, basePath + "red_sandstone_to_sand", null, Items.RED_SAND, Tags.Items.SANDSTONE_RED_BLOCKS);
+        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, this.items, basePath + "red_sandstone_to_sand", null, BlockItemIds.RED_SAND, Tags.Items.SANDSTONE_RED_BLOCKS);
         //Sandstone -> Sand
-        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, this.items, basePath + "sandstone_to_sand", null, Items.SAND, Tags.Items.SANDSTONE_UNCOLORED_BLOCKS);
-        //Wool -> String
-        ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL),
-              template(BlockItemIds.TRIPWIRE, 4)
-        ).save(consumer, Mekanism.rl(basePath + "wool_to_string"));
+        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, this.items, basePath + "sandstone_to_sand", null, BlockItemIds.SAND, Tags.Items.SANDSTONE_UNCOLORED_BLOCKS);
         //Soul Soil -> Soul Sand
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.SOUL_SOIL),
@@ -134,9 +134,9 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "soul_soil_to_soul_sand"));
         //Polished or Smooth Basalt -> Basalt
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(
-                    Items.POLISHED_BASALT,
-                    Items.SMOOTH_BASALT
+              IngredientCreatorAccess.item().from(this.items,
+                    BlockItemIds.POLISHED_BASALT,
+                    BlockItemIds.SMOOTH_BASALT
               ),
               template(BlockItemIds.BASALT)
         ).save(consumer, Mekanism.rl(basePath + "polished_or_smooth_basalt_to_basalt"));
@@ -150,6 +150,35 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.NETHER_BRICKS),
               template(BlockItemIds.CRACKED_NETHER_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "nether_bricks_to_cracked_nether_bricks"));
+
+        //Dried Ghast -> Ghast Tears
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DRIED_GHAST),
+              template(ItemIds.GHAST_TEAR, 3)
+        ).save(consumer, Mekanism.rl(basePath + "dried_ghast"));
+    }
+
+    private void addCrusherStringRecipes(RecipeOutput consumer, String basePath) {
+        //Wool -> String
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL),
+              template(BlockItemIds.TRIPWIRE, 4)
+        ).save(consumer, Mekanism.rl(basePath + "from_wool"));
+        //Wool Slabs -> String
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL_SLABS),
+              template(BlockItemIds.TRIPWIRE, 2)
+        ).save(consumer, Mekanism.rl(basePath + "from_wool_slabs"));
+        //Wool Stairs -> String
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL_STAIRS),
+              template(BlockItemIds.TRIPWIRE, 6)
+        ).save(consumer, Mekanism.rl(basePath + "from_wool_stairs"));
+        //Cushions -> String
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, ItemTags.CUSHIONS),
+              template(BlockItemIds.TRIPWIRE, 6)
+        ).save(consumer, Mekanism.rl(basePath + "from_cushions"));
     }
 
     private void addCrusherStoneRecipes(RecipeOutput consumer, String basePath) {
@@ -183,6 +212,125 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.CRACKED_STONE_BRICKS),
               template(BlockItemIds.STONE)
         ).save(consumer, Mekanism.rl(basePath + "from_cracked_bricks"));
+    }
+
+    private void addCrusherCinnabarRecipes(RecipeOutput consumer, String basePath) {
+        //Polished Cinnabar -> Cinnabar
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_CINNABAR),
+              template(BlockItemIds.CINNABAR)
+        ).save(consumer, Mekanism.rl(basePath + "from_polished"));
+        //Polished Cinnabar Stairs -> Cinnabar Stairs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_CINNABAR_STAIRS),
+              template(BlockItemIds.CINNABAR_STAIRS)
+        ).save(consumer, Mekanism.rl(basePath + "stairs_from_polished"));
+        //Polished Cinnabar Slabs -> Cinnabar Slabs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_CINNABAR_SLAB),
+              template(BlockItemIds.CINNABAR_SLAB)
+        ).save(consumer, Mekanism.rl(basePath + "slabs_from_polished"));
+        //Polished Cinnabar Walls -> Cinnabar Walls
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_CINNABAR_WALL),
+              template(BlockItemIds.CINNABAR_WALL)
+        ).save(consumer, Mekanism.rl(basePath + "wall_from_polished"));
+
+        //Cinnabar Bricks -> Polished Cinnabar
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CINNABAR_BRICKS),
+              template(BlockItemIds.POLISHED_CINNABAR)
+        ).save(consumer, Mekanism.rl(basePath + "bricks_to_polished"));
+        //Cinnabar Brick Stairs -> Polished Cinnabar Stairs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CINNABAR_BRICK_STAIRS),
+              template(BlockItemIds.POLISHED_CINNABAR_STAIRS)
+        ).save(consumer, Mekanism.rl(basePath + "brick_stairs_to_polished"));
+        //Cinnabar Brick Slabs -> Polished Cinnabar Slabs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CINNABAR_BRICK_SLAB),
+              template(BlockItemIds.POLISHED_CINNABAR_SLAB)
+        ).save(consumer, Mekanism.rl(basePath + "brick_slabs_to_polished"));
+        //Cinnabar Brick Walls -> Polished Cinnabar Walls
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CINNABAR_BRICK_WALL),
+              template(BlockItemIds.POLISHED_CINNABAR_WALL)
+        ).save(consumer, Mekanism.rl(basePath + "brick_wall_to_polished"));
+
+        //Chiseled Cinnabar -> Cinnabar Bricks
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_CINNABAR),
+              template(BlockItemIds.CINNABAR_BRICKS)
+        ).save(consumer, Mekanism.rl(basePath + "chiseled_to_brick"));
+    }
+
+    private void addCrusherSulfurRecipes(RecipeOutput consumer, String basePath) {
+        int spikeRate = 1;
+        int blockRate = 4 * spikeRate;
+        int potentRate = 9 * blockRate;
+        //Sulfur Spikes -> Sulfur Dust
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_SPIKE),
+              MekanismItems.SULFUR_DUST.asTemplate(spikeRate)
+        ).save(consumer, Mekanism.rl(basePath + "spike_to_dust"));
+        //Sulfur -> Sulfur Dust
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR),
+              MekanismItems.SULFUR_DUST.asTemplate(blockRate)
+        ).save(consumer, Mekanism.rl(basePath + "to_dust"));
+        //Potent Sulfur -> Sulfur Dust
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POTENT_SULFUR),
+              MekanismItems.SULFUR_DUST.asTemplate(potentRate)
+        ).save(consumer, Mekanism.rl(basePath + "potent_to_dust"));
+
+        //Polished Sulfur -> Sulfur
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_SULFUR),
+              template(BlockItemIds.SULFUR)
+        ).save(consumer, Mekanism.rl(basePath + "from_polished"));
+        //Polished Sulfur Stairs -> Sulfur Stairs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_SULFUR_STAIRS),
+              template(BlockItemIds.SULFUR_STAIRS)
+        ).save(consumer, Mekanism.rl(basePath + "stairs_from_polished"));
+        //Polished Sulfur Slabs -> Sulfur Slabs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_SULFUR_SLAB),
+              template(BlockItemIds.SULFUR_SLAB)
+        ).save(consumer, Mekanism.rl(basePath + "slabs_from_polished"));
+        //Polished Sulfur Walls -> Sulfur Walls
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_SULFUR_WALL),
+              template(BlockItemIds.SULFUR_WALL)
+        ).save(consumer, Mekanism.rl(basePath + "wall_from_polished"));
+
+        //Sulfur Bricks -> Polished Sulfur
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_BRICKS),
+              template(BlockItemIds.POLISHED_SULFUR)
+        ).save(consumer, Mekanism.rl(basePath + "bricks_to_polished"));
+        //Sulfur Brick Stairs -> Polished Sulfur Stairs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_BRICK_STAIRS),
+              template(BlockItemIds.POLISHED_SULFUR_STAIRS)
+        ).save(consumer, Mekanism.rl(basePath + "brick_stairs_to_polished"));
+        //Sulfur Brick Slabs -> Polished Sulfur Slabs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_BRICK_SLAB),
+              template(BlockItemIds.POLISHED_SULFUR_SLAB)
+        ).save(consumer, Mekanism.rl(basePath + "brick_slabs_to_polished"));
+        //Sulfur Brick Walls -> Polished Sulfur Walls
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_BRICK_WALL),
+              template(BlockItemIds.POLISHED_SULFUR_WALL)
+        ).save(consumer, Mekanism.rl(basePath + "brick_wall_to_polished"));
+
+        //Chiseled Sulfur -> Sulfur Bricks
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_SULFUR),
+              template(BlockItemIds.SULFUR_BRICKS)
+        ).save(consumer, Mekanism.rl(basePath + "chiseled_to_brick"));
     }
 
     private void addCrusherTuffRecipes(RecipeOutput consumer, String basePath) {
@@ -233,27 +381,6 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_TUFF),
               template(BlockItemIds.TUFF_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "chiseled_to_brick"));
-
-        //Tuff -> Chiseled Tuff
-        ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF),
-              template(BlockItemIds.CHISELED_TUFF)
-        ).save(consumer, Mekanism.rl(basePath + "to_chiseled"));
-        //Tuff Stairs -> Tuff Brick Stairs
-        ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_STAIRS),
-              template(BlockItemIds.TUFF_BRICK_STAIRS)
-        ).save(consumer, Mekanism.rl(basePath + "stairs_to_brick"));
-        //Tuff Slabs -> Tuff Brick Slabs
-        ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_SLAB),
-              template(BlockItemIds.TUFF_BRICK_SLAB)
-        ).save(consumer, Mekanism.rl(basePath + "slab_to_brick"));
-        //Tuff Walls -> Tuff Brick Walls
-        ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_WALL),
-              template(BlockItemIds.TUFF_BRICK_WALL)
-        ).save(consumer, Mekanism.rl(basePath + "wall_to_brick"));
     }
 
     private void addCrusherDeepslateRecipes(RecipeOutput consumer, String basePath) {
@@ -515,6 +642,24 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "shard_from_brick_stairs"));
     }
 
+    private void addCrusherResinRecipes(RecipeOutput consumer, String basePath) {
+        //Block of Resin -> Resin clumps
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.RESIN_BLOCK),
+              template(BlockItemIds.RESIN_CLUMP, 9)
+        ).save(consumer, Mekanism.rl(basePath + "clump_from_block"));
+        //Resin Bricks -> Resin Blocks
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.RESIN_BRICKS),
+              template(BlockItemIds.RESIN_BLOCK)
+        ).save(consumer, Mekanism.rl(basePath + "resin_bricks_to_block"));
+        //Chiseled Resin Bricks -> Resin Bricks
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_RESIN_BRICKS),
+              template(BlockItemIds.RESIN_BRICKS)
+        ).save(consumer, Mekanism.rl(basePath + "chiseled_resin_bricks_to_bricks"));
+    }
+
     private void addCrusherDewaxingRecipes(RecipeOutput consumer, String basePath) {
         //Generate baseline recipes from de-waxing recipe set
         for (Map.Entry<Block, Block> entry : HoneycombItem.WAX_OFF_BY_BLOCK.get().entrySet()) {
@@ -527,80 +672,91 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
     }
 
     private void addCrusherBioFuelRecipes(RecipeOutput consumer, String basePath) {
-        biofuel(consumer, basePath, "apple", 2, 1, Items.APPLE);
-        biofuel(consumer, basePath, "baked_potato", 2, 1, Items.BAKED_POTATO);
-        biofuel(consumer, basePath, "bamboo", 2, 1, Items.BAMBOO);
+        biofuel(consumer, basePath, "apple", 2, 1, ItemIds.APPLE);
+        biofuel(consumer, basePath, "baked_potato", 2, 1, ItemIds.BAKED_POTATO);
+        biofuel(consumer, basePath, "bamboo", 2, 1, BlockItemIds.BAMBOO);
         biofuel(consumer, basePath, "berries", 1, 1, Tags.Items.FOODS_BERRY);
-        biofuel(consumer, basePath, "big_dripleaf", 2, 1, Items.BIG_DRIPLEAF);
-        biofuel(consumer, basePath, "bread", 4, 1, Items.BREAD);
-        biofuel(consumer, basePath, "bush", 1, 1, Items.BUSH);
-        biofuel(consumer, basePath, "cactus_flower", 2, 1, Items.CACTUS_FLOWER);
-        biofuel(consumer, basePath, "cake", 6, 1, Items.CAKE);
-        biofuel(consumer, basePath, "carved_pumpkin", 2, 1, Items.CARVED_PUMPKIN);//pumpkin minus 4 seeds (sawmill)
-        biofuel(consumer, basePath, "crimson_roots", 1, 1, Items.CRIMSON_ROOTS);
-        biofuel(consumer, basePath, "cookie", 3, 4, Items.COOKIE);
+        biofuel(consumer, basePath, "big_dripleaf", 2, 1, BlockItemIds.BIG_DRIPLEAF);
+        biofuel(consumer, basePath, "bread", 4, 1, ItemIds.BREAD);
+        biofuel(consumer, basePath, "bush", 1, 1, BlockItemIds.BUSH, BlockItemIds.RED_SHRUB);
+        biofuel(consumer, basePath, "cactus_flower", 2, 1, BlockItemIds.CACTUS_FLOWER);
+        biofuel(consumer, basePath, "cake", 6, 1, BlockItemIds.CAKE);
+        biofuel(consumer, basePath, "carved_pumpkin", 2, 1, BlockItemIds.CARVED_PUMPKIN);//pumpkin minus 4 seeds (sawmill)
+        biofuel(consumer, basePath, "crimson_roots", 1, 1, BlockItemIds.CRIMSON_ROOTS);
+        biofuel(consumer, basePath, "cookie", 3, 4, ItemIds.COOKIE);
         //TODO - 1.21.1: Make our own tag that contains all of these
         biofuel(consumer, basePath, "crops_tags", 2, 1, Tags.Items.CROPS_CARROT, Tags.Items.CROPS_CACTUS, Tags.Items.CROPS_POTATO,
               Tags.Items.CROPS_WHEAT, Tags.Items.CROPS_BEETROOT, Tags.Items.CROPS_NETHER_WART, Tags.Items.CROPS_COCOA_BEAN);
-        biofuel(consumer, basePath, "crops", 2, 1, Items.POISONOUS_POTATO);
-        biofuel(consumer, basePath, "dried_kelp", 1, 1, Items.DRIED_KELP);
+        biofuel(consumer, basePath, "crops", 2, 1, ItemIds.POISONOUS_POTATO);
+        biofuel(consumer, basePath, "dried_kelp", 1, 1, ItemIds.DRIED_KELP);
         biofuelBlock(consumer, basePath, "dried_kelp_block", 1, 1, Tags.Items.STORAGE_BLOCKS_DRIED_KELP);
-        biofuel(consumer, basePath, "fern", 2, 1, Items.FERN);
-        biofuel(consumer, basePath, "firefly_bush", 1, 1, Items.FIREFLY_BUSH);
-        biofuel(consumer, basePath, "fungus", 1, 1, Items.CRIMSON_FUNGUS, Items.WARPED_FUNGUS);
-        biofuel(consumer, basePath, "glow_lichen", 1, 1, Items.GLOW_LICHEN);
-        biofuel(consumer, basePath, "hanging_roots", 1, 1, Items.HANGING_ROOTS);
+        biofuel(consumer, basePath, "fern", 2, 1, BlockItemIds.FERN);
+        biofuel(consumer, basePath, "firefly_bush", 1, 1, BlockItemIds.FIREFLY_BUSH);
+        biofuel(consumer, basePath, "fungus", 1, 1, BlockItemIds.CRIMSON_FUNGUS, BlockItemIds.WARPED_FUNGUS);
+        biofuel(consumer, basePath, "glow_lichen", 1, 1, BlockItemIds.GLOW_LICHEN);
+        biofuel(consumer, basePath, "hanging_roots", 1, 1, BlockItemIds.HANGING_ROOTS);
         biofuelBlock(consumer, basePath, "hay_block", 2, 1, Tags.Items.STORAGE_BLOCKS_WHEAT);
-        biofuel(consumer, basePath, "kelp", 2, 1, Items.KELP);
-        biofuel(consumer, basePath, "large_fern", 3, 1, Items.LARGE_FERN);
+        biofuelBlock(consumer, basePath, "straw_bed", 3, 2, BlockItemIds.STRAW_BED);
+        biofuel(consumer, basePath, "kelp", 2, 1, BlockItemIds.KELP);
+        biofuel(consumer, basePath, "large_fern", 3, 1, BlockItemIds.LARGE_FERN);
         //1:1 with leaves because they can be produced by smelting leaves
-        biofuel(consumer, basePath, "leaf_litter", 1, 10, Items.LEAF_LITTER);
+        biofuel(consumer, basePath, "leaf_litter", 1, 10, BlockItemIds.LEAF_LITTER);
         biofuel(consumer, basePath, "leaves", 1, 10, ItemTags.LEAVES);
-        biofuel(consumer, basePath, "lily_pad", 1, 1, Items.LILY_PAD);
-        biofuel(consumer, basePath, "mangrove_roots", 1, 1, Items.MANGROVE_ROOTS);
+        biofuel(consumer, basePath, "lily_pad", 1, 1, BlockItemIds.LILY_PAD);
+        biofuel(consumer, basePath, "mangrove_roots", 1, 1, BlockItemIds.MANGROVE_ROOTS);
         biofuel(consumer, basePath, "melon", 6, 1, Tags.Items.CROPS_MELON);
-        biofuel(consumer, basePath, "melon_slice", 1, 1, Items.MELON_SLICE);
-        biofuel(consumer, basePath, "moss_block", 2, 1, Items.MOSS_BLOCK, Items.PALE_MOSS_BLOCK);
-        biofuel(consumer, basePath, "moss_carpet", 4, 3, Items.MOSS_CARPET, Items.PALE_MOSS_CARPET);
-        biofuel(consumer, basePath, "mushroom_blocks", 4, 1, Items.BROWN_MUSHROOM_BLOCK, Items.RED_MUSHROOM_BLOCK, Items.MUSHROOM_STEM);
+        biofuel(consumer, basePath, "melon_slice", 1, 1, ItemIds.MELON_SLICE);
+        biofuel(consumer, basePath, "moss_block", 2, 1, BlockItemTags.MOSS_BLOCKS.item());
+        biofuel(consumer, basePath, "moss_carpet", 4, 3, BlockItemIds.MOSS_CARPET, BlockItemIds.PALE_MOSS_CARPET);
+        biofuel(consumer, basePath, "mushroom_blocks", 4, 1, BlockItemIds.BROWN_MUSHROOM_BLOCK, BlockItemIds.RED_MUSHROOM_BLOCK, BlockItemIds.MUSHROOM_STEM);
         biofuel(consumer, basePath, "mushrooms", 1, 1, Tags.Items.MUSHROOMS);
-        biofuel(consumer, basePath, "nether_sprouts", 1, 1, Items.NETHER_SPROUTS);
-        biofuelBlock(consumer, basePath, "nether_wart_block", 2, 1, Items.NETHER_WART_BLOCK);
-        biofuel(consumer, basePath, "pale_hanging_moss", 1, 1, Items.PALE_HANGING_MOSS);
-        biofuel(consumer, basePath, "pitcher_pod", 1, 1, Items.PITCHER_POD);
+        biofuel(consumer, basePath, "nether_sprouts", 1, 1, BlockItemIds.NETHER_SPROUTS);
+        biofuelBlock(consumer, basePath, "nether_wart_block", 2, 1, BlockItemIds.NETHER_WART_BLOCK);
+        biofuel(consumer, basePath, "pale_hanging_moss", 1, 1, BlockItemIds.PALE_HANGING_MOSS);
+        biofuel(consumer, basePath, "pitcher_pod", 1, 1, BlockItemIds.PITCHER_CROP);
         final int pumpkinOutput = 6;
         biofuel(consumer, basePath, "pumpkin", pumpkinOutput, 1, Tags.Items.CROPS_PUMPKIN);
-        biofuel(consumer, basePath, "pumpkin_pie", pumpkinOutput + 1, 1, Items.PUMPKIN_PIE);
-        biofuel(consumer, basePath, "rotten_flesh", 1, 1, Items.ROTTEN_FLESH);
+        biofuel(consumer, basePath, "pumpkin_pie", pumpkinOutput + 1, 1, ItemIds.PUMPKIN_PIE);
+        biofuel(consumer, basePath, "rotten_flesh", 1, 1, ItemIds.ROTTEN_FLESH);
         biofuel(consumer, basePath, "saplings", 1, 1, ItemTags.SAPLINGS);
-        biofuel(consumer, basePath, "sea_pickle", 1, 1, Items.SEA_PICKLE);
-        biofuel(consumer, basePath, "seagrass", 1, 1, Items.SEAGRASS);
+        biofuel(consumer, basePath, "sea_pickle", 1, 1, BlockItemIds.SEA_PICKLE);
+        biofuel(consumer, basePath, "seagrass", 1, 1, BlockItemIds.SEAGRASS);
         biofuel(consumer, basePath, "seeds", 1, 1, Tags.Items.SEEDS);
-        biofuel(consumer, basePath, "short_grass", 1, 1, Items.DRY_SHORT_GRASS, Items.SHORT_GRASS);
-        biofuel(consumer, basePath, "shroomlight", 4, 1, Items.SHROOMLIGHT);
-        biofuel(consumer, basePath, "small_dripleaf", 1, 1, Items.SMALL_DRIPLEAF);
+        biofuel(consumer, basePath, "short_grass", 1, 1, BlockItemIds.SHORT_DRY_GRASS, BlockItemIds.SHORT_GRASS);
+        biofuel(consumer, basePath, "shroomlight", 4, 1, BlockItemIds.SHROOMLIGHT);
+        biofuel(consumer, basePath, "small_dripleaf", 1, 1, BlockItemIds.SMALL_DRIPLEAF);
         biofuel(consumer, basePath, "small_flowers", 1, 1, BlockItemTags.SMALL_FLOWERS.item());
-        biofuel(consumer, basePath, "pink_petals", 1, 1, Items.PINK_PETALS);//not in small_flowers tag
-        biofuel(consumer, basePath, "spore_blossom", 2, 1, Items.SPORE_BLOSSOM);
+        biofuel(consumer, basePath, "pink_petals", 1, 1, BlockItemIds.PINK_PETALS);//not in small_flowers tag
+        biofuel(consumer, basePath, "spore_blossom", 2, 1, BlockItemIds.SPORE_BLOSSOM);
         biofuel(consumer, basePath, "sugar_cane", 1, 1, Tags.Items.CROPS_SUGAR_CANE);
         biofuel(consumer, basePath, "tall_flowers", 2, 1, Tags.Items.FLOWERS_TALL);
-        biofuel(consumer, basePath, "tall_grass", 2, 1, Items.DRY_TALL_GRASS, Items.TALL_GRASS);
-        biofuel(consumer, basePath, "vines", 1, 1, Items.VINE, Items.TWISTING_VINES, Items.WEEPING_VINES);
-        biofuel(consumer, basePath, "warped_roots", 1, 1, Items.WARPED_ROOTS);
-        biofuel(consumer, basePath, "warped_wart_block", 4, 1, Items.WARPED_WART_BLOCK);
-        biofuel(consumer, basePath, "wildflowers", 1, 1, Items.WILDFLOWERS);//not in small_flowers tag
+        biofuel(consumer, basePath, "tall_grass", 2, 1, BlockItemIds.TALL_DRY_GRASS, BlockItemIds.TALL_GRASS);
+        biofuel(consumer, basePath, "vines", 1, 1, BlockItemIds.VINE, BlockItemIds.TWISTING_VINES, BlockItemIds.WEEPING_VINES);
+        biofuel(consumer, basePath, "warped_roots", 1, 1, BlockItemIds.WARPED_ROOTS);
+        biofuel(consumer, basePath, "warped_wart_block", 4, 1, BlockItemIds.WARPED_WART_BLOCK);
+        biofuel(consumer, basePath, "wildflowers", 1, 1, BlockItemIds.WILDFLOWERS);//not in small_flowers tag
     }
 
-    private void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, Item... items) {
+    @SafeVarargs
+    private void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, ResourceKey<Item>... items) {
         biofuel(consumer, basePath, filename, MekanismItems.BIO_FUEL, countOutput, countInput, items);
     }
 
-    private void biofuelBlock(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, Item... items) {
+    @SafeVarargs
+    private void biofuel(RecipeOutput consumer, String basePath, String filename, Holder<Item> bioFuelType, int countOutput, int countInput, ResourceKey<Item>... items) {
+        biofuel(consumer, basePath, filename, bioFuelType, countOutput, IngredientCreatorAccess.item().from(this.items, countInput, items));
+    }
+
+    private void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, BlockItemId... items) {
+        biofuel(consumer, basePath, filename, MekanismItems.BIO_FUEL, countOutput, countInput, items);
+    }
+
+    private void biofuelBlock(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, BlockItemId... items) {
         biofuel(consumer, basePath, filename, MekanismBlocks.BIO_FUEL_BLOCK.getItemHolder(), countOutput, countInput, items);
     }
 
-    private void biofuel(RecipeOutput consumer, String basePath, String filename, Holder<Item> bioFuelType, int countOutput, int countInput, Item... items) {
-        biofuel(consumer, basePath, filename, bioFuelType, countOutput, IngredientCreatorAccess.item().from(countInput, items));
+    private void biofuel(RecipeOutput consumer, String basePath, String filename, Holder<Item> bioFuelType, int countOutput, int countInput, BlockItemId... items) {
+        biofuel(consumer, basePath, filename, bioFuelType, countOutput, IngredientCreatorAccess.item().from(this.items, countInput, items));
     }
 
     @SafeVarargs

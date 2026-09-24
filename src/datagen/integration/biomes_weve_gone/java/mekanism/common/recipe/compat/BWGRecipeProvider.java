@@ -52,13 +52,16 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         for (BWGWoodSet woodType : BWGWoodSet.woodsets()) {
             RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, this.items, basePath, woodType.planks().asItem(), woodType.boatItem().get(),
                   woodType.chestBoatItem().get(), woodType.door().asItem(), woodType.fenceGate().asItem(), woodType.logItemTag(), woodType.pressurePlate().asItem(),
-                  woodType.trapdoor().asItem(), woodType.hangingSignItem(), woodType.name(), modLoaded);
+                  woodType.trapdoor().asItem(), woodType.hangingSignItem(), woodType.strippedLogStem().asItem(), woodType.shelf().asItem(), woodType.name(), modLoaded);
         }
     }
 
     private void addSandRecipes(RecipeOutput consumer, String basePath) {
         for (BWGSandSet sandSet : BWGSandSet.getSandSets()) {
-            RecipeProviderUtil.addSandStoneToSandRecipe(consumer, this.items, basePath + sandSet.getName(), modLoaded, sandSet.getSand().asItem(), sandSet.getSandstoneBlocksItemTag());
+            RecipeProviderUtil.save(consumer, ItemStackToItemStackRecipeBuilder.crushing(
+                  IngredientCreatorAccess.item().from(items, sandSet.getSandstoneBlocksItemTag()),
+                  new ItemStackTemplate(sandSet.getSand().asItem(), 2)
+            ), basePath + sandSet.getName(), modLoaded);
         }
     }
 

@@ -20,6 +20,7 @@ import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
@@ -44,6 +45,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
     @Override
     protected void registerTags(HolderLookup.Provider registries) {
         addEntities();
+        addSulfurCubeArchetypes();
         addDamageTypes();
         addDataComponents();
         addBalloons();
@@ -55,6 +57,10 @@ public class AdditionsTagProvider extends BaseTagProvider {
         addPlasticBlocks();
         addHarvestRequirements();
         getBuilder(BlockTags.IMPERMEABLE).add(AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.asList());
+        getBuilder(BlockTags.BLOCKS_MOTION_NO_LEAVES)
+              //Note: Plastic fences, fence gates, slabs, and stairs are already covered by vanilla adding the corresponding base tags to BLOCKS_MOTION_NO_LEAVES
+              .addAsBlocks(AdditionsTags.BlockItems.PLASTIC_BLOCKS, AdditionsTags.BlockItems.GLOW_PANELS)
+              .add(AdditionsBlocks.OBSIDIAN_TNT);
     }
 
     private void addEntities() {
@@ -96,6 +102,15 @@ public class AdditionsTagProvider extends BaseTagProvider {
         for (BabyType babyType : BabyType.VALUES) {
             pviCompatBuilder.add(babyType.id());
         }
+    }
+
+    private void addSulfurCubeArchetypes() {
+        getBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_EXPLOSIVE).add(AdditionsBlocks.OBSIDIAN_TNT.getItemHolder());
+        getBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_REGULAR).addAsItems(AdditionsTags.BlockItems.PLASTIC_BLOCKS_PLASTIC);
+        getBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_BOUNCY).addAsItems(AdditionsTags.BlockItems.PLASTIC_BLOCKS_GLOW);
+        getBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_FAST_SLIDING).addAsItems(AdditionsTags.BlockItems.PLASTIC_BLOCKS_SLICK);
+        getBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_FAST_FLAT).addAsItems(AdditionsTags.BlockItems.PLASTIC_BLOCKS_ROAD);
+        getBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_HIGH_RESISTANCE).addAsItems(AdditionsTags.BlockItems.PLASTIC_BLOCKS_REINFORCED);
     }
 
     private void addDamageTypes() {
@@ -154,6 +169,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
 
     private void addGlowPanels() {
         addToTags(AdditionsTags.BlockItems.GLOW_PANELS, AdditionsBlocks.GLOW_PANELS);
+        getBuilder(BlockTags.WALL_POST_OVERRIDE).addAsBlocks(AdditionsTags.BlockItems.GLOW_PANELS);
     }
 
     private void addPlasticBlocks() {
@@ -175,6 +191,8 @@ public class AdditionsTagProvider extends BaseTagProvider {
               AdditionsBlocks.SLICK_PLASTIC_BLOCKS, AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, AdditionsBlocks.PLASTIC_FENCES,
               AdditionsBlocks.PLASTIC_FENCE_GATES, AdditionsBlocks.PLASTIC_SLABS, AdditionsBlocks.PLASTIC_GLOW_SLABS, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS,
               AdditionsBlocks.PLASTIC_STAIRS, AdditionsBlocks.PLASTIC_GLOW_STAIRS, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS);
+        //Vanilla adds fence gates as a whole to the mineable with axe tag, we want plastic fences to be mineable with pickaxes
+        AdditionsBlocks.PLASTIC_FENCE_GATES.forEach(getBuilder(BlockTags.MINEABLE_WITH_AXE)::remove);
     }
 
     private void addToTags(BlockItemTagId tag, EnumColorCollection<? extends BlockRegistryObject<?, ?>> blockProviders) {

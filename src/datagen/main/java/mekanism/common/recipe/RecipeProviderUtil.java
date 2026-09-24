@@ -22,6 +22,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
@@ -46,25 +47,57 @@ public class RecipeProviderUtil {
         smeltingRecipe.save(consumer, smeltingLocation);
     }
 
-    public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> items, String basePath, Item planks, @Nullable Item boat,
-          @Nullable Item chestBoat, Item door, Item fenceGate, @Nullable TagKey<Item> log, Item pressurePlate, Item trapdoor,
-          @Nullable Item hangingSign, String name) {
-        addPrecisionSawmillWoodTypeRecipes(consumer, items, basePath, planks, boat, chestBoat, door, fenceGate, log, pressurePlate, trapdoor, hangingSign, name, null);
+    public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> items, String basePath, BlockItemId planks,
+          @Nullable ResourceKey<Item> boat, @Nullable ResourceKey<Item> chestBoat, BlockItemId door, BlockItemId fenceGate, @Nullable TagKey<Item> log,
+          BlockItemId pressurePlate, BlockItemId trapdoor, @Nullable BlockItemId hangingSign, BlockItemId strippedLog, BlockItemId shelf, WoodType woodType) {
+        addPrecisionSawmillWoodTypeRecipes(consumer, items, basePath,
+              items.getOrThrow(planks.item()),
+              boat == null ? null : items.getOrThrow(boat),
+              chestBoat == null ? null : items.getOrThrow(chestBoat),
+              items.getOrThrow(door.item()),
+              items.getOrThrow(fenceGate.item()),
+              log,
+              items.getOrThrow(pressurePlate.item()),
+              items.getOrThrow(trapdoor.item()),
+              hangingSign == null ? null : items.getOrThrow(hangingSign.item()),
+              items.getOrThrow(strippedLog.item()),
+              items.getOrThrow(shelf.item()),
+              woodType.name(), null);
     }
 
+    @SuppressWarnings("deprecation")
     public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> items, String basePath, Item planks, @Nullable Item boat,
           @Nullable Item chestBoat, Item door, Item fenceGate, @Nullable TagKey<Item> log, Item pressurePlate, Item trapdoor,
-          @Nullable Item hangingSign, String name, @Nullable ICondition condition) {
+          @Nullable Item hangingSign, Item strippedLog, Item shelf, String name, @Nullable ICondition condition) {
+        addPrecisionSawmillWoodTypeRecipes(consumer, items, basePath,
+              planks.builtInRegistryHolder(),
+              boat == null ? null : boat.builtInRegistryHolder(),
+              chestBoat == null ? null : chestBoat.builtInRegistryHolder(),
+              door.builtInRegistryHolder(),
+              fenceGate.builtInRegistryHolder(),
+              log,
+              pressurePlate.builtInRegistryHolder(),
+              trapdoor.builtInRegistryHolder(),
+              hangingSign == null ? null : hangingSign.builtInRegistryHolder(),
+              strippedLog.builtInRegistryHolder(),
+              shelf.builtInRegistryHolder(),
+              name, condition);
+    }
+
+    public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> items, String basePath, Holder<Item> planks,
+          @Nullable Holder<Item> boat, @Nullable Holder<Item> chestBoat, Holder<Item> door, Holder<Item> fenceGate, @Nullable TagKey<Item> log,
+          Holder<Item> pressurePlate, Holder<Item> trapdoor, @Nullable Holder<Item> hangingSign, Holder<Item> strippedLog, Holder<Item> shelf,
+          String name, @Nullable ICondition condition) {
         if (boat != null) {
             //Boat
             save(consumer, SawmillRecipeBuilder.sawing(
-                  IngredientCreatorAccess.item().from(boat),
+                  IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(boat)),
                   new ItemStackTemplate(planks, 5)
             ), basePath + "boat/" + name, condition);
             if (chestBoat != null) {
                 //Chest Boat
                 save(consumer, SawmillRecipeBuilder.sawing(
-                      IngredientCreatorAccess.item().from(chestBoat),
+                      IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(chestBoat)),
                       new ItemStackTemplate(boat),
                       template(items, BlockItemIds.CHEST),
                       1
@@ -73,12 +106,12 @@ public class RecipeProviderUtil {
         }
         //Door
         save(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(door),
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(door)),
               new ItemStackTemplate(planks, 2)
         ), basePath + "door/" + name, condition);
         //Fence Gate
         save(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(fenceGate),
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(fenceGate)),
               new ItemStackTemplate(planks, 2),
               new ItemStackTemplate(items.getOrThrow(ItemIds.STICK), 4),
               1
@@ -95,7 +128,7 @@ public class RecipeProviderUtil {
         if (hangingSign != null) {
             //Hanging sign
             save(consumer, SawmillRecipeBuilder.sawing(
-                  IngredientCreatorAccess.item().from(hangingSign),
+                  IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(hangingSign)),
                   new ItemStackTemplate(planks, 2),
                   MekanismItems.SAWDUST.asTemplate(),
                   0.5
@@ -103,35 +136,32 @@ public class RecipeProviderUtil {
         }
         //Pressure plate
         save(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(pressurePlate),
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(pressurePlate)),
               new ItemStackTemplate(planks),
               MekanismItems.SAWDUST.asTemplate(2),
               0.25
         ), basePath + "pressure_plate/" + name, condition);
         //Trapdoor
         save(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(trapdoor),
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(trapdoor)),
               new ItemStackTemplate(planks, 3)
         ), basePath + "trapdoor/" + name, condition);
+        //Shelf
+        save(consumer, SawmillRecipeBuilder.sawing(
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(shelf)),
+              new ItemStackTemplate(strippedLog)
+        ), basePath + "shelf/" + name, condition);
     }
 
-    public static void addSandStoneToSandRecipe(RecipeOutput consumer, HolderGetter<Item> items, String path, @Nullable ICondition condition, Item sand,
+    public static void addSandStoneToSandRecipe(RecipeOutput consumer, HolderGetter<Item> items, String path, @Nullable ICondition condition, BlockItemId sand,
           TagKey<Item> sandstoneTag) {
         save(consumer, ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(items, sandstoneTag),
-              new ItemStackTemplate(sand, 2)
+              template(items, sand, 2)
         ), path, condition);
     }
 
-    @Deprecated
-    public static void addSandStoneToSandRecipe(RecipeOutput consumer, String path, @Nullable ICondition condition, Item sand, Item... sandstones) {
-        save(consumer, ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(sandstones),
-              new ItemStackTemplate(sand, 2)
-        ), path, condition);
-    }
-
-    private static void save(RecipeOutput consumer, MekanismRecipeBuilder<?> builder, String path, @Nullable ICondition condition) {
+    public static void save(RecipeOutput consumer, MekanismRecipeBuilder<?> builder, String path, @Nullable ICondition condition) {
         if (condition != null) {
             //If there is a condition, add it to the recipe builder
             builder.addCondition(condition);

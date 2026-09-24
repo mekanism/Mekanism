@@ -52,7 +52,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSounds;
-import mekanism.common.resource.IResource;
+import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.BaseOreConfig;
@@ -157,9 +157,56 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         }
     }
 
+    private String getFactoryTypeName(FactoryType type) {
+        return switch (type) {
+            case SMELTING -> "Smelting";
+            case ENRICHING -> "Enriching";
+            case CRUSHING -> "Crushing";
+            case COMPRESSING -> "Compressing";
+            case COMBINING -> "Combining";
+            case PURIFYING -> "Purifying";
+            case INJECTING -> "Injecting";
+            case INFUSING -> "Infusing";
+            case SAWING -> "Sawing";
+        };
+    }
+
     private void addTags() {
         add(MekanismTags.Items.CONFIGURATORS, "Configurators");
         add(MekanismTags.BlockItems.PERSONAL_STORAGE, "Personal Storage");
+        add(MekanismTags.BlockItems.HEATERS, "Heaters");
+
+        add(MekanismTags.BlockItems.FACTORIES, "Factories");
+        add(MekanismTags.BlockItems.BASE_FACTORY_SUPPORTED, "Factory Supported");
+        for (FactoryType type : EnumUtils.FACTORY_TYPES) {
+            String name = getFactoryTypeName(type);
+            add(MekanismTags.BlockItems.TIERED_FACTORIES.get(type), name + " Factories");
+            add(MekanismTags.BlockItems.FACTORY_SUPPORTED.get(type), name + "Factory Supported");
+        }
+
+        add(MekanismTags.BlockItems.BINS, "Bins");
+        add(MekanismTags.BlockItems.CHEMICAL_TANKS, "Chemical Tanks");
+        add(MekanismTags.BlockItems.FLUID_TANKS, "Fluid Tanks");
+        add(MekanismTags.BlockItems.ENERGY_CUBES, "Energy Cubes");
+        add(MekanismTags.BlockItems.INDUCTION_CELLS, "Induction Cells");
+        add(MekanismTags.BlockItems.INDUCTION_PROVIDERS, "Induction Providers");
+
+        add(MekanismTags.BlockItems.TRANSMITTERS, "Transmitters");
+        add(MekanismTags.BlockItems.HEAT_TRANSMITTERS, "Thermodynamic Conductors");
+        add(MekanismTags.BlockItems.ITEM_TRANSMITTERS, "Transporters");
+        add(MekanismTags.BlockItems.TIERED_ITEM_TRANSMITTERS, "Logistical Transporters");
+        add(MekanismTags.BlockItems.BUFFERED_TRANSMITTERS, "Buffered Transmitters");
+        add(MekanismTags.BlockItems.ENERGY_TRANSMITTERS, "Universal Cables");
+        add(MekanismTags.BlockItems.CHEMICAL_TRANSMITTERS, "Pressurized Tubes");
+        add(MekanismTags.BlockItems.FLUID_TRANSMITTERS, "Mechanical Pipes");
+
+        add(MekanismTags.BlockItems.STRUCTURES, "Multiblock Components");
+        add(MekanismTags.BlockItems.STRUCTURES_COMMON, "Common Multiblock Components");
+        add(MekanismTags.BlockItems.STRUCTURES_TANK, "Dynamic Tank Multiblock Components");
+        add(MekanismTags.BlockItems.STRUCTURES_MATRIX, "Induction Matrix Multiblock Components");
+        add(MekanismTags.BlockItems.STRUCTURES_BOILER, "Boiler Multiblock Components");
+        add(MekanismTags.BlockItems.STRUCTURES_EVAPORATION, "Thermal Evaporation Tower Multiblock Components");
+        add(MekanismTags.BlockItems.STRUCTURES_SPS, "SPS Multiblock Components");
 
         add(MekanismTags.Items.RODS_PLASTIC, "Plastic Rods");
 
@@ -252,15 +299,22 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismTags.Items.MUFFLING_CENTER, "Muffling Upgrade Usable Ingots");
 
         add(MekanismTags.Items.COLORABLE_WOOL, "Colorable Wool");
+        add(MekanismTags.Items.COLORABLE_WOOL_SLABS, "Colorable Wool Slabs");
+        add(MekanismTags.Items.COLORABLE_WOOL_STAIRS, "Colorable Wool Stairs");
         add(MekanismTags.Items.COLORABLE_CARPETS, "Colorable Carpets");
         add(MekanismTags.Items.COLORABLE_BEDS, "Colorable Beds");
         add(MekanismTags.Items.COLORABLE_GLASS, "Colorable Glass");
         add(MekanismTags.Items.COLORABLE_GLASS_PANES, "Colorable Glass Panes");
         add(MekanismTags.Items.COLORABLE_TERRACOTTA, "Colorable Terracotta");
+        add(MekanismTags.Items.COLORABLE_GLAZED_TERRACOTTA, "Colorable Glazed Terracotta");
         add(MekanismTags.Items.COLORABLE_CANDLE, "Colorable Candles");
         add(MekanismTags.Items.COLORABLE_CONCRETE, "Colorable Concrete");
+        add(MekanismTags.Items.COLORABLE_CONCRETE_SLABS, "Colorable Concrete Slabs");
+        add(MekanismTags.Items.COLORABLE_CONCRETE_STAIRS, "Colorable Concrete Stairs");
         add(MekanismTags.Items.COLORABLE_CONCRETE_POWDER, "Colorable Concrete Powders");
         add(MekanismTags.Items.COLORABLE_BANNERS, "Colorable Banners");
+        add(MekanismTags.Items.COLORABLE_HARNESSES, "Colorable Harnesses");
+        add(MekanismTags.Items.COLORABLE_CUSHIONS, "Colorable Cushions");
 
         add(MekanismTags.Fluids.BRINE, "Brine");
         add(MekanismTags.Fluids.CHLORINE, "Chlorine");
@@ -534,8 +588,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.REFINED_OBSIDIAN_BLOCK, "Refined Obsidian");
         add(MekanismBlocks.REFINED_GLOWSTONE_BLOCK, "Refined Glowstone");
         //Dynamic storage blocks
-        for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            IResource key = entry.getKey();
+        for (Map.Entry<BlockResourceInfo, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
+            BlockResourceInfo key = entry.getKey();
             String name = TextUtils.formatAndCapitalize(key.getRegistrySuffix());
             add(entry.getValue(), "Block of " + name);
             addAlias(key.getRegistrySuffix(), name + " Block");
@@ -839,7 +893,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addAliases() {
         addAliases(MekanismAliases.values());
         for (FactoryType type : EnumUtils.FACTORY_TYPES) {
-            addAlias(type.getRegistryNameComponent(), type.getRegistryNameComponentCapitalized());
+            addAlias(type.getSerializedName(), type.getRegistryNameComponentCapitalized());
         }
     }
 
@@ -1402,15 +1456,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.AUTO_MODE, "Auto-Mode: %1$s");
         //Factory Type
         add(MekanismLang.FACTORY_TYPE, "Recipe type: %1$s");
-        add(MekanismLang.SMELTING, "Smelting");
-        add(MekanismLang.ENRICHING, "Enriching");
-        add(MekanismLang.CRUSHING, "Crushing");
-        add(MekanismLang.COMPRESSING, "Compressing");
-        add(MekanismLang.COMBINING, "Combining");
-        add(MekanismLang.PURIFYING, "Purifying");
-        add(MekanismLang.INJECTING, "Injecting");
-        add(MekanismLang.INFUSING, "Infusing");
-        add(MekanismLang.SAWING, "Sawing");
+        for (FactoryType factoryType : EnumUtils.FACTORY_TYPES) {
+            add(factoryType.getTranslationKey(), getFactoryTypeName(factoryType));
+        }
         //Transmitter Networks
         add(MekanismLang.NETWORK_DESCRIPTION, "[%1$s] %2$s transmitters, %3$s acceptors.");
         add(MekanismLang.INVENTORY_NETWORK, "InventoryNetwork");

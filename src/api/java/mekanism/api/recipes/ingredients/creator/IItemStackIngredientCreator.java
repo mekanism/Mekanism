@@ -1,5 +1,6 @@
 package mekanism.api.recipes.ingredients.creator;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -164,6 +165,64 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
     /// @since 10.8.0
     default ItemStackIngredient from(HolderGetter<Item> lookup, ResourceKey<Item> id) {
         return from(lookup, id, 1);
+    }
+
+    /// Creates an Item Stack Ingredient that matches the given Item ids.
+    ///
+    /// @param lookup Holder getter to find the id in.
+    /// @param ids    Element ids to match.
+    /// @throws IllegalArgumentException if no items are passed.
+    ///
+    /// @since 10.8.0
+    @SuppressWarnings("unchecked")
+    default ItemStackIngredient from(HolderGetter<Item> lookup, ResourceKey<Item>... ids) {
+        return from(lookup, 1, ids);
+    }
+
+    /// Creates an Item Stack Ingredient that matches the given Item ids and amount.
+    ///
+    /// @param lookup Holder getter to find the id in.
+    /// @param amount Amount needed.
+    /// @param ids    Element ids to match.
+    /// @throws IllegalArgumentException if no items are passed.
+    ///
+    /// @since 10.8.0
+    @SuppressWarnings("unchecked")
+    default ItemStackIngredient from(HolderGetter<Item> lookup, int amount, ResourceKey<Item>... ids) {
+        if (ids.length == 0) {
+            throw new IllegalArgumentException("Attempted to create an ItemStackIngredient with no items.");
+        } else if (ids.length == 1) {
+            return from(lookup, ids[0], amount);
+        }
+        return from(Ingredient.of(HolderSet.direct(Arrays.stream(ids).map(lookup::getOrThrow).toList())), amount);
+    }
+
+    /// Creates an Item Stack Ingredient that matches the given Item ids.
+    ///
+    /// @param lookup Holder getter to find the id in.
+    /// @param ids    Element ids to match.
+    /// @throws IllegalArgumentException if no items are passed.
+    ///
+    /// @since 10.8.0
+    default ItemStackIngredient from(HolderGetter<Item> lookup, BlockItemId... ids) {
+        return from(lookup, 1, ids);
+    }
+
+    /// Creates an Item Stack Ingredient that matches the given Item ids and amount.
+    ///
+    /// @param lookup Holder getter to find the id in.
+    /// @param amount Amount needed.
+    /// @param ids    Element ids to match.
+    /// @throws IllegalArgumentException if no items are passed.
+    ///
+    /// @since 10.8.0
+    default ItemStackIngredient from(HolderGetter<Item> lookup, int amount, BlockItemId... ids) {
+        if (ids.length == 0) {
+            throw new IllegalArgumentException("Attempted to create an ItemStackIngredient with no items.");
+        } else if (ids.length == 1) {
+            return from(lookup, ids[0], amount);
+        }
+        return from(Ingredient.of(HolderSet.direct(Arrays.stream(ids).map(BlockItemId::item).map(lookup::getOrThrow).toList())), amount);
     }
 
     /// Creates an Item Stack Ingredient that matches a given Item id.

@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:poplar_pressure_plate"
+  },
+  "main_output": {
+    "id": "minecraft:poplar_planks"
+  },
+  "secondary_chance": 0.25,
+  "secondary_output": {
+    "count": 2,
+    "id": "mekanism:sawdust"
+  }
+}

@@ -34,8 +34,12 @@ public class MobEquipmentHelper {
     private static final GearType OSMIUM = new GearType(ToolsItems.OSMIUM_ARMOR, ToolsItems.OSMIUM_TOOLS, MekanismToolsConfig.tools.osmiumSpawnRate);
 
     private static boolean isZombie(LivingEntity entity) {
-        //Ignore the specific subclasses that can't spawn with armor in vanilla
-        return entity instanceof Zombie && !(entity instanceof Drowned) && !(entity instanceof ZombifiedPiglin);
+        //Ignore the specific subclasses that can't spawn with armor or weapons in vanilla
+        return entity instanceof Zombie && !(entity instanceof Drowned);
+    }
+
+    private static boolean disallowArmor(LivingEntity entity) {
+        return entity instanceof ZombifiedPiglin;
     }
 
     public static void onLivingSpecialSpawn(FinalizeSpawnEvent event) {
@@ -48,24 +52,30 @@ public class MobEquipmentHelper {
             boolean isHard = difficulty.getDifficulty() == Difficulty.HARD;
             float difficultyMultiplier = difficulty.getSpecialMultiplier();
             GearType gearType = null;
-            if (random.nextFloat() < MekanismToolsConfig.tools.armorSpawnChance.get() * difficultyMultiplier) {
-                //We can only spawn refined glowstone armor on piglins
-                gearType = getGearType(entity instanceof Piglin ? 0 : random.nextInt(6));
+            if (!disallowArmor(entity) && random.nextFloat() < MekanismToolsConfig.tools.armorSpawnChance.get() * difficultyMultiplier) {
+                gearType = getGearType(entity, random);
                 setEntityArmorWithChance(random, entity, isHard, difficulty, gearType);
             }
-            if (isZombie) {
+            if (entity instanceof Zombie) {//Zombies including zombified piglins can spawn with weapons
                 CachedFloatValue spawnChance = isHard ? MekanismToolsConfig.tools.weaponSpawnChanceHard : MekanismToolsConfig.tools.weaponSpawnChance;
                 if (random.nextFloat() < spawnChance.get()) {
                     if (gearType == null) {
-                        gearType = getGearType(random.nextInt(6));
+                        gearType = getGearType(entity, random);
                     }
                     if (gearType.spawnChance.canSpawnWeapon.get()) {
+                        //TODO - 26.3: Add support for spawning with spears. Zombified piglins can only spawn with spears or swords, and not shovels
                         Holder<Item> weapon = random.nextFloat() < gearType.spawnChance.swordWeight.get() ? gearType.sword : gearType.shovel;
                         setStackIfEmpty(entity, random, gearType.spawnChance.weaponEnchantmentChance.get(), difficulty, EquipmentSlot.MAINHAND, weapon);
                     }
                 }
             }
         }
+    }
+
+    private static GearType getGearType(LivingEntity entity, RandomSource random) {
+        //We can only spawn refined glowstone equipment on piglins
+        boolean isPiglin = entity instanceof Piglin || entity instanceof ZombifiedPiglin;
+        return getGearType(isPiglin ? 0 : random.nextInt(6));
     }
 
     private static GearType getGearType(int type) {
@@ -116,11 +126,12 @@ public class MobEquipmentHelper {
         }
     }
 
-    private record GearType(Holder<Item> sword, Holder<Item> shovel, Holder<Item> helmet, Holder<Item> chestplate, Holder<Item> leggings, Holder<Item> boots,
+    private record GearType(Holder<Item> sword, Holder<Item> spear, Holder<Item> shovel,
+                            Holder<Item> helmet, Holder<Item> chestplate, Holder<Item> leggings, Holder<Item> boots,
                             ArmorSpawnChanceConfig spawnChance) {
 
         public GearType(ArmorCollection armor, ToolCollection tools, ArmorSpawnChanceConfig spawnChange) {
-            this(tools.sword(), tools.shovel(), armor.helmet(), armor.chestplate(), armor.leggings(), armor.boots(), spawnChange);
+            this(tools.sword(), tools.spear(), tools.shovel(), armor.helmet(), armor.chestplate(), armor.leggings(), armor.boots(), spawnChange);
         }
     }
 }

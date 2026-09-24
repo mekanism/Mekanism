@@ -137,7 +137,7 @@
 			"name": "crossbar4",
 			"from": [14.01, 23.42426, -0.57071],
 			"to": [14.97, 24.42426, 16.42929],
-			"rotation": {"angle": 45, "axis": "x", "origin": [14.5, 23.92426, 7.92929]},
+			"rotation": {"x": 45, "origin": [14.5, 23.92426, 7.92929]},
 			"faces": {
 				"east": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
 				"west": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
@@ -149,7 +149,7 @@
 			"name": "crossbar5",
 			"from": [14.01, 23.42426, -0.48],
 			"to": [14.97, 24.42426, 16.52],
-			"rotation": {"angle": -45, "axis": "x", "origin": [14.5, 23.92426, 7.92929]},
+			"rotation": {"x": -45, "origin": [14.5, 23.92426, 7.92929]},
 			"faces": {
 				"east": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
 				"west": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
@@ -161,7 +161,7 @@
 			"name": "crossbar6",
 			"from": [1.01, 23.42426, -0.57071],
 			"to": [1.97, 24.42426, 16.42929],
-			"rotation": {"angle": 45, "axis": "x", "origin": [1.5, 23.92426, 7.92929]},
+			"rotation": {"x": 45, "origin": [1.5, 23.92426, 7.92929]},
 			"faces": {
 				"east": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
 				"west": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
@@ -173,7 +173,7 @@
 			"name": "crossbar7",
 			"from": [1.01, 23.42426, -0.48],
 			"to": [1.97, 24.42426, 16.52],
-			"rotation": {"angle": -45, "axis": "x", "origin": [1.5, 23.92426, 7.92929]},
+			"rotation": {"x": -45, "origin": [1.5, 23.92426, 7.92929]},
 			"faces": {
 				"east": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
 				"west": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
@@ -185,7 +185,7 @@
 			"name": "crossbar8",
 			"from": [14.01, 10.42426, -0.57071],
 			"to": [14.97, 11.42426, 16.42929],
-			"rotation": {"angle": 45, "axis": "x", "origin": [14.5, 10.92426, 7.92929]},
+			"rotation": {"x": 45, "origin": [14.5, 10.92426, 7.92929]},
 			"faces": {
 				"east": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
 				"west": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
@@ -197,7 +197,7 @@
 			"name": "crossbar9",
 			"from": [14.01, 10.42426, -0.48],
 			"to": [14.97, 11.42426, 16.52],
-			"rotation": {"angle": -45, "axis": "x", "origin": [14.5, 10.92426, 7.92929]},
+			"rotation": {"x": -45, "origin": [14.5, 10.92426, 7.92929]},
 			"faces": {
 				"east": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
 				"west": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
@@ -209,7 +209,7 @@
 			"name": "crossbar10",
 			"from": [1.01, 10.42426, -0.57071],
 			"to": [1.97, 11.42426, 16.42929],
-			"rotation": {"angle": 45, "axis": "x", "origin": [1.5, 10.92426, 7.92929]},
+			"rotation": {"x": 45, "origin": [1.5, 10.92426, 7.92929]},
 			"faces": {
 				"east": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
 				"west": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
@@ -221,7 +221,7 @@
 			"name": "crossbar11",
 			"from": [1.01, 10.42426, -0.48],
 			"to": [1.97, 11.42426, 16.52],
-			"rotation": {"angle": -45, "axis": "x", "origin": [1.5, 10.92426, 7.92929]},
+			"rotation": {"x": -45, "origin": [1.5, 10.92426, 7.92929]},
 			"faces": {
 				"east": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
 				"west": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
@@ -233,7 +233,7 @@
 			"name": "crossbar12",
 			"from": [-0.41386, 23.60624, 14.02],
 			"to": [16.58614, 24.60624, 14.98],
-			"rotation": {"angle": -45, "axis": "z", "origin": [8.08614, 24.10624, 14.5]},
+			"rotation": {"z": -45, "origin": [8.08614, 24.10624, 14.5]},
 			"faces": {
 				"north": {"uv": [7, 7.5, 7.5, 16], "rotation": 270, "texture": "#1"},
 				"south": {"uv": [7, 7.5, 7.5, 16], "rotation": 270, "texture": "#1"},
@@ -245,7 +245,7 @@
 			"name": "crossbar13",
 			"from": [-0.57, 23.6062, 14.02],
 			"to": [16.43, 24.6062, 14.98],
-			"rotation": {"angle": 45, "axis": "z", "origin": [8.08614, 24.10624, 14.5]},
+			"rotation": {"z": 45, "origin": [8.08614, 24.10624, 14.5]},
 			"faces": {
 				"north": {"uv": [7, 7.5, 7.5, 16], "rotation": 270, "texture": "#1"},
 				"south": {"uv": [7, 7.5, 7.5, 16], "rotation": 90, "texture": "#1"},
@@ -257,7 +257,7 @@
 			"name": "crossbar14",
 			"from": [16.58614, 6.3, 14.02],
 			"to": [17.58614, 23.3, 14.98],
-			"rotation": {"angle": -45, "axis": "z", "origin": [8.08614, 24.10624, 14.5]},
+			"rotation": {"z": -45, "origin": [8.08614, 24.10624, 14.5]},
 			"faces": {
 				"north": {"uv": [7, 7.5, 7.5, 16], "rotation": 180, "texture": "#1"},
 				"east": {"uv": [7, 7.5, 7.5, 16], "texture": "#1"},
@@ -269,7 +269,7 @@
 			"name": "crossbar15",
 			"from": [8.8, 14.60624, 14.02],
 			"to": [25.8, 15.60624, 14.98],
-			"rotation": {"angle": -45, "axis": "z", "origin": [8.08614, 24.10624, 14.5]},
+			"rotation": {"z": -45, "origin": [8.08614, 24.10624, 14.5]},
 			"faces": {
 				"north": {"uv": [7, 7.5, 7.5, 16], "rotation": 270, "texture": "#1"},
 				"south": {"uv": [7, 7.5, 7.5, 16], "rotation": 270, "texture": "#1"},

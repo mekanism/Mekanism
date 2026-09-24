@@ -1,11 +1,11 @@
 {
   "parent": "mekanism:steel_ingot",
   "criteria": {
-    "basic_thermodynamic_conductor": {
+    "has_conductor": {
       "conditions": {
         "items": [
           {
-            "items": "mekanism:basic_thermodynamic_conductor"
+            "items": "#mekanism:transmitters/heat"
           }
         ]
       },
@@ -26,7 +26,7 @@
   },
   "requirements": [
     [
-      "basic_thermodynamic_conductor"
+      "has_conductor"
     ]
   ],
   "sends_telemetry_event": true

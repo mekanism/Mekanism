@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 256,
+    "ingredient": "mekanism:magenta"
+  },
+  "item_input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/wool_slabs",
+      "subtracted": "minecraft:magenta_wool_slab"
+    }
+  },
+  "output": {
+    "id": "minecraft:magenta_wool_slab"
+  },
+  "per_tick_usage": false
+}

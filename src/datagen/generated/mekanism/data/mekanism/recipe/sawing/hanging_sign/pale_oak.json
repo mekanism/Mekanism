@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:pale_oak_hanging_sign"
+  },
+  "main_output": {
+    "count": 2,
+    "id": "minecraft:pale_oak_planks"
+  },
+  "secondary_chance": 0.5,
+  "secondary_output": {
+    "id": "mekanism:sawdust"
+  }
+}

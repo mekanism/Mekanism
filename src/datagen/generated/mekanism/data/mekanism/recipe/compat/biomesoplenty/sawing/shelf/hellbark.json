@@ -1,0 +1,16 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:hellbark_shelf"
+  },
+  "main_output": {
+    "id": "biomesoplenty:stripped_hellbark_log"
+  }
+}

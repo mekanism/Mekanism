@@ -3,6 +3,7 @@ package mekanism.common.registries;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -92,7 +93,6 @@ import mekanism.common.recipe.lookup.cache.SingleInputRecipeCache;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.resource.BlockResourceInfo;
-import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
@@ -204,7 +204,7 @@ public class MekanismBlocks {
 
     public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(Mekanism.MODID);
 
-    public static final Map<IResource, BlockRegistryObject<?, ?>> PROCESSED_RESOURCE_BLOCKS = new LinkedHashMap<>();
+    public static final Map<BlockResourceInfo, BlockRegistryObject<?, ?>> PROCESSED_RESOURCE_BLOCKS = new EnumMap<>(BlockResourceInfo.class);
     public static final Map<OreType, OreBlockType> ORES = new LinkedHashMap<>();
 
     private static final Table<FactoryTier, FactoryType, BlockRegistryObject<BlockFactory<?>, ItemBlockTooltip<BlockFactory<?>>>> FACTORIES = HashBasedTable.create();
@@ -218,8 +218,9 @@ public class MekanismBlocks {
         }
         // resource blocks
         for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
-            if (resource.getResourceBlockInfo() != null) {
-                PROCESSED_RESOURCE_BLOCKS.put(resource, registerResourceBlock(resource.getResourceBlockInfo()));
+            BlockResourceInfo resourceInfo = resource.getResourceBlockInfo();
+            if (resourceInfo != null) {
+                PROCESSED_RESOURCE_BLOCKS.put(resourceInfo, registerResourceBlock(resourceInfo));
             }
             BlockResourceInfo rawResource = resource.getRawResourceBlockInfo();
             if (rawResource != null) {
@@ -232,12 +233,12 @@ public class MekanismBlocks {
         }
     }
 
-    public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> BRONZE_BLOCK = registerResourceBlock(BlockResourceInfo.BRONZE);
-    public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> REFINED_OBSIDIAN_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_OBSIDIAN);
     public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> CHARCOAL_BLOCK = registerResourceBlock(BlockResourceInfo.CHARCOAL);
-    public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> REFINED_GLOWSTONE_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_GLOWSTONE);
+    public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> BRONZE_BLOCK = registerResourceBlock(BlockResourceInfo.BRONZE);
     public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> STEEL_BLOCK = registerResourceBlock(BlockResourceInfo.STEEL);
     public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> FLUORITE_BLOCK = registerResourceBlock(BlockResourceInfo.FLUORITE);
+    public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> REFINED_OBSIDIAN_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_OBSIDIAN);
+    public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> REFINED_GLOWSTONE_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_GLOWSTONE);
 
     public static final BlockRegistryObject<BlockBin, ItemBlockBin> BASIC_BIN = registerBin(MekanismBlockTypes.BASIC_BIN);
     public static final BlockRegistryObject<BlockBin, ItemBlockBin> ADVANCED_BIN = registerBin(MekanismBlockTypes.ADVANCED_BIN);
@@ -1103,7 +1104,7 @@ public class MekanismBlocks {
             case COMBINING -> AttachedSideConfig.EXTRA_MACHINE;
             case PURIFYING, INJECTING -> AttachedSideConfig.ADVANCED_MACHINE_INPUT_ONLY;
         };
-        BlockRegistryObject<BlockFactory<?>, ItemBlockTooltip<BlockFactory<?>>> factory = registerTieredBlock(tier, "_" + factoryType.getRegistryNameComponent() + "_factory", properties -> new BlockFactory<>(type, properties),
+        BlockRegistryObject<BlockFactory<?>, ItemBlockTooltip<BlockFactory<?>>> factory = registerTieredBlock(tier, "_" + factoryType.getSerializedName() + "_factory", properties -> new BlockFactory<>(type, properties),
               (block, properties) -> new ItemBlockTooltip<>(block, properties
                     .component(MekanismDataComponents.FACTORY_TIER, tier)
                     .component(MekanismDataComponents.FACTORY_TYPE, factoryType)
@@ -1224,12 +1225,7 @@ public class MekanismBlocks {
         return Objects.requireNonNull(FACTORIES.get(tier, type));
     }
 
-    @SuppressWarnings("unchecked")
-    public static BlockRegistryObject<BlockFactory<?>, ?>[] getFactoryBlocksAsArray() {
-        return getFactoryBlocks().toArray(new BlockRegistryObject[0]);
-    }
-
-    public static Collection<? extends BlockRegistryObject<BlockFactory<?>, ?>> getFactoryBlocks() {
-        return FACTORIES.values();
+    public static Collection<? extends BlockRegistryObject<BlockFactory<?>, ?>> getFactoryBlocks(FactoryType type) {
+        return FACTORIES.column(type).values();
     }
 }

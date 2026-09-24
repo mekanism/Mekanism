@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 256,
+    "ingredient": "mekanism:orange"
+  },
+  "item_input": {
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/harnesses",
+      "subtracted": "minecraft:orange_harness"
+    }
+  },
+  "output": {
+    "id": "minecraft:orange_harness"
+  },
+  "per_tick_usage": false
+}

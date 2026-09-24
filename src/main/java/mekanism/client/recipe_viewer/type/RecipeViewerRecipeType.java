@@ -33,7 +33,7 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay.ItemSlotDisplay;
 
 //Note: Do not use any classes from any recipe viewer mods here as this is to allow us to safely keep them each optional while referencing from our GUIs
-public class RecipeViewerRecipeType {
+public class RecipeViewerRecipeType {//TODO - 26.3: Switch some of these displays to using tags instead of hardcoded blocks here
 
     private RecipeViewerRecipeType() {
     }

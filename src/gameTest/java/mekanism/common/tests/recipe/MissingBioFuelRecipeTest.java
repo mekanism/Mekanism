@@ -55,7 +55,7 @@ public class MissingBioFuelRecipeTest {
                     helper.collectInputs(bioFuelRecipeInputs, basicRecipe.getInput(), KNOWN_MISSING, "bio fuel");
                 }
             }
-            helper.checkForMissing(helper.collectMissingRecipes(DataComponents.COMPOSTABLE, bioFuelRecipeInputs));
+            helper.checkForMissing("recipes", helper.collectMissingRecipes(DataComponents.COMPOSTABLE, bioFuelRecipeInputs));
         }));
     }
 }

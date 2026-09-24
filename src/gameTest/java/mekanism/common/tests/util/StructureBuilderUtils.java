@@ -34,7 +34,6 @@ public class StructureBuilderUtils {
     }
 
     private static CompoundTag containing(NonNullList<ItemStack> items) {
-        //TODO - 26.3: Should we pass a path to the scoped collector?
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Mekanism.logger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, registryAccess());
             ContainerHelper.saveAllItems(output, items);
@@ -52,7 +51,6 @@ public class StructureBuilderUtils {
         }
         driveSlots.getFirst().setContents(MekanismItems.BASE_QIO_DRIVE.asResource(), 1, null);
 
-        //TODO - 26.3: Should we pass a path to the scoped collector?
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Mekanism.logger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, registryAccess());
             ContainerType.ITEM.saveTo(output, driveSlots);
@@ -89,16 +87,16 @@ public class StructureBuilderUtils {
         if (color == null && side == null) {
             return null;
         }
-        CompoundTag tag = new CompoundTag();
-        if (color != null) {
-            tag.putInt(SerializationConstants.COLOR, color.ordinal());
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Mekanism.logger)) {
+            TagValueOutput output = TagValueOutput.createWithContext(reporter, registryAccess());
+            output.storeNullable(SerializationConstants.COLOR, EnumColor.CODEC, color);
+            if (side != null) {
+                int[] raw = new int[EnumUtils.DIRECTIONS.length];
+                raw[side.ordinal()] = connectionType.ordinal();
+                output.putIntArray(SerializationConstants.CONNECTION, raw);
+            }
+            return output.buildResult();
         }
-        if (side != null) {
-            int[] raw = new int[EnumUtils.DIRECTIONS.length];
-            raw[side.ordinal()] = connectionType.ordinal();
-            tag.putIntArray(SerializationConstants.CONNECTION, raw);
-        }
-        return tag;
     }
 
     public static CompoundTag diversionMode(Direction side, DiversionControl mode) {

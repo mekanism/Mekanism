@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:mangrove_shelf"
+  },
+  "main_output": {
+    "id": "minecraft:stripped_mangrove_log"
+  }
+}

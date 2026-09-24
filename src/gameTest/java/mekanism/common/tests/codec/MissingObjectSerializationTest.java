@@ -71,7 +71,7 @@ public class MissingObjectSerializationTest {
         }, formulaItem -> {
             if (formulaItem.is(MekanismItems.CRAFTING_FORMULA)) {
                 FormulaComponent formula = formulaItem.get(MekanismDataComponents.FORMULA_HOLDER);
-                return formula != null && formula.isEmpty() && formulaItem.getComponentsPatch().getPatch(MekanismDataComponents.FORMULA_HOLDER.get()) == null;
+                return formula != null && formula.isEmpty() && !formulaItem.getComponentsPatch().isPatched(MekanismDataComponents.FORMULA_HOLDER.get());
             }
             return false;
         });
@@ -86,7 +86,6 @@ public class MissingObjectSerializationTest {
 
     @GameTest
     @EmptyTemplate
-    @SuppressWarnings("OptionalAssignedToNull")
     @TestHolder(description = "Tests to make sure that bins that are locked to an invalid item will load as not being locked.")
     public static void testLockDataOnItem(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
@@ -94,12 +93,11 @@ public class MissingObjectSerializationTest {
             binItem.set(MekanismDataComponents.LOCK, LockData.create(help.failureItemType()));
             return binItem;
         }, binItem -> binItem.is(MekanismBlocks.BASIC_BIN.getItemHolder()) && LockData.EMPTY.equals(binItem.get(MekanismDataComponents.LOCK)) &&
-                      binItem.getComponentsPatch().getPatch(MekanismDataComponents.LOCK.get()) == null);
+                      !binItem.getComponentsPatch().isPatched(MekanismDataComponents.LOCK.get()));
     }
 
     @GameTest
     @EmptyTemplate
-    @SuppressWarnings("OptionalAssignedToNull")
     @TestHolder(description = "Tests to make sure that redstone adapters with a target that are targeting an invalid item, will load sa if they have no target.")
     public static void testItemTarget(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
@@ -110,7 +108,7 @@ public class MissingObjectSerializationTest {
         }, adapter -> {
             if (adapter.is(MekanismBlocks.QIO_REDSTONE_ADAPTER.getItemHolder())) {
                 ItemResource itemTarget = adapter.get(MekanismDataComponents.ITEM_TARGET);
-                return itemTarget != null && itemTarget.isEmpty() && adapter.getComponentsPatch().getPatch(MekanismDataComponents.ITEM_TARGET.get()) == null &&
+                return itemTarget != null && itemTarget.isEmpty() && !adapter.getComponentsPatch().isPatched(MekanismDataComponents.ITEM_TARGET.get()) &&
                        adapter.getOrDefault(MekanismDataComponents.LONG_AMOUNT, 0L) == 5;
             }
             return false;

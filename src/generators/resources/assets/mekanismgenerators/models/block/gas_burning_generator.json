@@ -21,7 +21,7 @@
 			"name": "port_connector_south2",
 			"from": [4, 11.35355, 12.64645],
 			"to": [12, 12.85355, 13.64645],
-			"rotation": {"angle": -45, "axis": "x", "origin": [12, 13.35355, 13.64645]},
+			"rotation": {"x": -45, "origin": [12, 13.35355, 13.64645]},
 			"faces": {
 				"north": {"uv": [11.5, 8.5, 15.5, 8], "texture": "#0"},
 				"east": {"uv": [11.5, 8.5, 15.5, 8], "texture": "#0"},
@@ -34,7 +34,7 @@
 			"name": "port_connector_west1",
 			"from": [0.5, 12, 4],
 			"to": [2, 13, 12],
-			"rotation": {"angle": 45, "axis": "z", "origin": [2, 13, 4]},
+			"rotation": {"z": 45, "origin": [2, 13, 4]},
 			"faces": {
 				"up": {"uv": [11.5, 9, 15.5, 8], "rotation": 90, "texture": "#0"}
 			}
@@ -91,7 +91,7 @@
 			"name": "port_connector_north2",
 			"from": [4, 10.64645, 2.06066],
 			"to": [12, 12.14645, 3.06066],
-			"rotation": {"angle": 45, "axis": "x", "origin": [12, 12.64645, 3.06066]},
+			"rotation": {"x": 45,"origin": [12, 12.64645, 3.06066]},
 			"faces": {
 				"north": {"uv": [11.5, 9, 15.5, 8], "texture": "#0"}
 			}
@@ -100,7 +100,7 @@
 			"name": "port_connector_east1",
 			"from": [12.84315, 17.08579, 4],
 			"to": [14.34315, 18.08579, 12],
-			"rotation": {"angle": -45, "axis": "z", "origin": [7.28249, 14.14645, 8]},
+			"rotation": {"z": -45, "origin": [7.28249, 14.14645, 8]},
 			"faces": {
 				"up": {"uv": [11.5, 9, 15.5, 8], "rotation": 90, "texture": "#0"}
 			}
