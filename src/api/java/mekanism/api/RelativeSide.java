@@ -2,6 +2,7 @@ package mekanism.api;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.text.APILang;
@@ -12,6 +13,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.Unmodifiable;
 
 public enum RelativeSide implements IHasEnumNameTranslationKey, StringRepresentable {
     FRONT(APILang.FRONT),
@@ -21,6 +23,11 @@ public enum RelativeSide implements IHasEnumNameTranslationKey, StringRepresenta
     TOP(APILang.TOP),
     BOTTOM(APILang.BOTTOM);
 
+    /// Cached value of [RelativeSide#values()]
+    ///
+    /// @since 10.8.0
+    @Unmodifiable
+    public static final List<RelativeSide> VALUES = List.of(values());
     /// Codec for serializing sides based on their name.
     ///
     /// @since 10.6.0

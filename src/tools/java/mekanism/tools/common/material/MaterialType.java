@@ -1,11 +1,13 @@
 package mekanism.tools.common.material;
 
+import java.util.List;
 import java.util.Locale;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.registration.ArmorCollection;
 import mekanism.tools.common.registration.ToolCollection;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.Unmodifiable;
 
 public enum MaterialType implements StringRepresentable {
     BRONZE(MekanismToolsConfig.materials.bronze, ToolsItems.BRONZE_ARMOR, ToolsItems.BRONZE_TOOLS),
@@ -15,8 +17,8 @@ public enum MaterialType implements StringRepresentable {
     REFINED_OBSIDIAN(MekanismToolsConfig.materials.refinedObsidian, ToolsItems.REFINED_OBSIDIAN_ARMOR, ToolsItems.REFINED_OBSIDIAN_TOOLS),
     STEEL(MekanismToolsConfig.materials.steel, ToolsItems.STEEL_ARMOR, ToolsItems.STEEL_TOOLS);
 
-    /// @apiNote DO NOT MODIFY THIS ARRAY
-    public static final MaterialType[] VALUES = values();
+    @Unmodifiable
+    public static final List<MaterialType> VALUES = List.of(values());
 
     private final String serializedName;
     public final MaterialCreator material;

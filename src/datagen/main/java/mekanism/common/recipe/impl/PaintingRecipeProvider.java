@@ -9,7 +9,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
@@ -64,7 +63,7 @@ class PaintingRecipeProvider extends BaseSubRecipeProvider {
 
     private void addDyeRecipes(RecipeOutput consumer, String basePath) {
         basePath += "dye/";
-        for (EnumColor color : EnumUtils.COLORS) {
+        for (EnumColor color : EnumColor.VALUES) {
             DyeColor dyeColor = color.getDyeColor();
             if (dyeColor != null) {
                 ItemStackChemicalToItemStackRecipeBuilder.painting(
@@ -83,7 +82,7 @@ class PaintingRecipeProvider extends BaseSubRecipeProvider {
 
     private void addItemRecoloringRecipes(RecipeOutput consumer, TagKey<Item> input, int rate, ColorCollection<ResourceKey<Item>> outputs, String basePath) {
         HolderSet<Item> inputTag = this.items.getOrThrow(input);
-        for (EnumColor color : EnumUtils.COLORS) {
+        for (EnumColor color : EnumColor.VALUES) {
             DyeColor dyeColor = color.getDyeColor();
             if (dyeColor != null) {
                 Holder<Item> result = items.getOrThrow(outputs.pick(dyeColor));

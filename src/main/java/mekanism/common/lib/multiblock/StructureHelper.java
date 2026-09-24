@@ -30,7 +30,7 @@ public class StructureHelper {
     @Nullable
     public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds) {
         VoxelCuboid prev = null;
-        for (Axis axis : Axis.AXES) {
+        for (Axis axis : Axis.VALUES) {
             ObjectSortedSet<Int2ObjectMap.Entry<VoxelPlane>> majorAxisMap = structure.getMajorAxisMap(axis).int2ObjectEntrySet();
             Int2ObjectMap.Entry<VoxelPlane> firstMajor = majorAxisMap.first(), lastMajor = majorAxisMap.last();
             if (firstMajor == null || !firstMajor.getValue().equals(lastMajor.getValue()) || !firstMajor.getValue().isFull()) {

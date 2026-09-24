@@ -13,7 +13,6 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.IPersistentConfigInfo;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Util;
@@ -232,7 +231,7 @@ public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configIn
 
         public static final LightConfigInfo INPUT_OUT_ALL = Util.make(() -> {
             Map<RelativeSide, DataType> sideConfig = new EnumMap<>(RelativeSide.class);
-            for (RelativeSide side : EnumUtils.SIDES) {
+            for (RelativeSide side : RelativeSide.VALUES) {
                 sideConfig.put(side, DataType.INPUT_OUTPUT);
             }
             return new LightConfigInfo(sideConfig, false);
@@ -279,7 +278,7 @@ public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configIn
 
         private static LightConfigInfo create(@Nullable RelativeSide output, @Nullable RelativeSide extra, @Nullable RelativeSide energy, boolean ejecting) {
             Map<RelativeSide, DataType> sideConfig = new EnumMap<>(RelativeSide.class);
-            for (RelativeSide side : EnumUtils.SIDES) {
+            for (RelativeSide side : RelativeSide.VALUES) {
                 sideConfig.put(side, DataType.INPUT);
             }
             if (output != null) {

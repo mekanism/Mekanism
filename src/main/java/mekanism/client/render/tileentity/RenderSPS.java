@@ -87,7 +87,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
             }
             if (multiblock.lastReceivedEnergy > 0) {
                 if (random.nextDouble() < state.lerpEnergy(0.01F, 0.4F)) {
-                    CuboidSide side = Util.getRandom(CuboidSide.SIDES, random);
+                    CuboidSide side = Util.getRandom(CuboidSide.VALUES, random);
                     Plane plane = Plane.getInnerCuboidPlane(multiblock.getBounds(), side);
                     Vector3fc endPos = plane.getRandomPoint(random).sub(pos.getX(), pos.getY(), pos.getZ());
                     BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, renderCenter, endPos, 15)

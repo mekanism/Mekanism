@@ -12,6 +12,8 @@ import mekanism.api.MekanismAPITags;
 import mekanism.api.SupportsColorMap;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
+import mekanism.api.text.EnumColor;
+import mekanism.api.tier.BaseTier;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.lib.ColorAtlas;
@@ -20,7 +22,6 @@ import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -199,16 +200,17 @@ public class MekanismRenderer {
         }
     }
 
-    private static <T extends Enum<T> & SupportsColorMap> void parseColorAtlas(Identifier rl, T[] elements) {
-        List<@Nullable Color> parsed = ColorAtlas.load(rl, elements.length);
-        if (parsed.size() < elements.length) {
+    private static <T extends Enum<T> & SupportsColorMap> void parseColorAtlas(Identifier rl, List<T> elements) {
+        int elementSize = elements.size();
+        List<@Nullable Color> parsed = ColorAtlas.load(rl, elementSize);
+        if (parsed.size() < elementSize) {
             Mekanism.logger.error("Failed to parse color atlas: {}.", rl);
             return;
         }
-        for (int i = 0; i < elements.length; i++) {
+        for (int i = 0; i < elementSize; i++) {
             Color color = parsed.get(i);
             if (color != null) {
-                elements[i].setColorFromAtlas(color.rgbArray());
+                elements.get(i).setColorFromAtlas(color.rgbArray());
             }
         }
     }
@@ -219,7 +221,7 @@ public class MekanismRenderer {
         if (map.location().equals(TextureAtlas.LOCATION_ITEMS)) {
             GUNPOWDER_SPRITE = map.getSprite(Identifier.withDefaultNamespace("item/gunpowder"));
         } else if (map.location().equals(TextureAtlas.LOCATION_BLOCKS)) {
-            for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
+            for (TransmissionType type : TransmissionType.VALUES) {
                 overlays.put(type, map.getSprite(Mekanism.rl("block/overlay/" + type.getTransmission() + "_overlay")));
             }
 
@@ -237,8 +239,8 @@ public class MekanismRenderer {
             SINGLE_TEXTURE_PICKERS.clear();
             VALVE_FLUID_TEX_CACHE.clear();
 
-            parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"), EnumUtils.COLORS);
-            parseColorAtlas(Mekanism.rl("textures/colormap/tiers.png"), EnumUtils.TIERS);
+            parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"), EnumColor.VALUES);
+            parseColorAtlas(Mekanism.rl("textures/colormap/tiers.png"), BaseTier.VALUES);
             SpecialColors.GUI_OBJECTS.parse(Mekanism.rl("textures/colormap/gui_objects.png"));
             SpecialColors.GUI_TEXT.parse(Mekanism.rl("textures/colormap/gui_text.png"));
             GuiElementHolder.updateBackgroundColor();

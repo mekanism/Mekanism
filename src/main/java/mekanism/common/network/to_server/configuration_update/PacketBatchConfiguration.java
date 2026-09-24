@@ -10,7 +10,6 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -52,7 +51,7 @@ public record PacketBatchConfiguration(BlockPos pos, @Nullable TransmissionType 
 
     private void updateAllSides(TileComponentConfig configComponent, TransmissionType transmission, @Nullable ConfigInfo info) {
         if (info != null && info.supports(targetType)) {
-            for (RelativeSide side : EnumUtils.SIDES) {
+            for (RelativeSide side : RelativeSide.VALUES) {
                 if (info.setDataType(targetType, side)) {
                     configComponent.sideChanged(transmission, side);
                 }

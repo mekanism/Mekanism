@@ -6,7 +6,6 @@ import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.text.EnumColor;
 import mekanism.client.integration.emi.BaseEmiDefaults;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 
@@ -26,7 +25,7 @@ public class AdditionsEmiDefaults extends BaseEmiDefaults {
     }
 
     private void addColoredRecipes(HolderLookup.Provider reloadableLookupProvider, String basePath, boolean requiresDye) {
-        for (EnumColor color : EnumUtils.COLORS) {
+        for (EnumColor color : EnumColor.VALUES) {
             if (!requiresDye || color.getDyeColor() != null) {
                 addRecipe(reloadableLookupProvider, basePath + color.getRegistryPrefix());
             }

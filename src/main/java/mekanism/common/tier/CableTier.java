@@ -2,6 +2,7 @@ package mekanism.common.tier;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
@@ -21,6 +22,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipProvider;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public enum CableTier implements ITier, TooltipProvider {
@@ -29,6 +31,9 @@ public enum CableTier implements ITier, TooltipProvider {
     ELITE(BaseTier.ELITE, 1_024_000L),
     ULTIMATE(BaseTier.ULTIMATE, 8_192_000L);
 
+    /// Cached value of [CableTier#values()].
+    @Unmodifiable
+    public static final List<CableTier> VALUES = List.of(values());
     public static final IntFunction<CableTier> BY_ID = ByIdMap.continuous(CableTier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, CableTier> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, CableTier::ordinal);
     public static final Codec<CableTier> CODEC = StringRepresentable.fromEnum(CableTier::values);

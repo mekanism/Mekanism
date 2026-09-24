@@ -74,7 +74,7 @@ public class TransmitterContentsManager {
             for (Direction side : EnumUtils.DIRECTIONS) {
                 String sideName = side.getSerializedName();
                 ConnectionType connectionType = connectionTypes[side.ordinal()];
-                for (ConnectionType value : ConnectionType.values()) {
+                for (ConnectionType value : ConnectionType.VALUES) {
                     connections.put(sideName + value.name(), value == connectionType);
                 }
             }

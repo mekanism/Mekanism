@@ -31,6 +31,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
 
@@ -220,9 +221,10 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         NEAR_FULL(Mekanism.rl("block/qio_drive/qio_drive_partial")),
         FULL(Mekanism.rl("block/qio_drive/qio_drive_full"));
 
-
-        public static final DriveStatus[] VALUES = values();
-        public static final IntFunction<DriveStatus> BY_ID = ByIdMap.continuous(DriveStatus::ordinal, VALUES, ByIdMap.OutOfBoundsStrategy.WRAP);
+        /// Cached value of [DriveStatus#values()].
+        @Unmodifiable
+        public static final List<DriveStatus> VALUES = List.of(values());
+        public static final IntFunction<DriveStatus> BY_ID = ByIdMap.continuous(DriveStatus::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, DriveStatus> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DriveStatus::ordinal);
 
         @Nullable

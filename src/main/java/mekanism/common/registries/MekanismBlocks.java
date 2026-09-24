@@ -211,13 +211,13 @@ public class MekanismBlocks {
 
     static {
         // factories
-        for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
-            for (FactoryType type : EnumUtils.FACTORY_TYPES) {
+        for (FactoryTier tier : FactoryTier.VALUES) {
+            for (FactoryType type : FactoryType.VALUES) {
                 FACTORIES.put(tier, type, registerFactory(MekanismBlockTypes.getFactory(tier, type)));
             }
         }
         // resource blocks
-        for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
+        for (PrimaryResource resource : PrimaryResource.VALUES) {
             BlockResourceInfo resourceInfo = resource.getResourceBlockInfo();
             if (resourceInfo != null) {
                 PROCESSED_RESOURCE_BLOCKS.put(resourceInfo, registerResourceBlock(resourceInfo));
@@ -228,7 +228,7 @@ public class MekanismBlocks {
             }
         }
         // ores
-        for (OreType ore : EnumUtils.ORE_TYPES) {
+        for (OreType ore : OreType.VALUES) {
             ORES.put(ore, registerOre(ore));
         }
     }

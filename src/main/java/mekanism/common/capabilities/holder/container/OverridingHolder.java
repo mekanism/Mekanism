@@ -8,7 +8,6 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
 import org.jspecify.annotations.Nullable;
 
@@ -22,7 +21,7 @@ public class OverridingHolder<CONTAINER> extends BasicContainerHolder<CONTAINER>
 
     void addContainer(CONTAINER container, BiFunction<CONTAINER, RelativeSide, CONTAINER> containerTransformer) {
         addContainer(container);
-        for (RelativeSide side : EnumUtils.SIDES) {
+        for (RelativeSide side : RelativeSide.VALUES) {
             CONTAINER transformed = containerTransformer.apply(container, side);
             if (transformed != container) {
                 sideOverrides.computeIfAbsent(side, _ -> new ArrayList<>()).add(transformed);

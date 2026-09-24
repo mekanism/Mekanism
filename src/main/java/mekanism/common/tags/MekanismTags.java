@@ -14,7 +14,6 @@ import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.OreType;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -45,10 +44,10 @@ public class MekanismTags {
         public static final Map<FactoryType, BlockItemTagId> FACTORY_SUPPORTED = new EnumMap<>(FactoryType.class);
 
         static {
-            for (OreType ore : EnumUtils.ORE_TYPES) {
+            for (OreType ore : OreType.VALUES) {
                 ORES.put(ore, commonTag("ores/" + ore.getResource().getRegistrySuffix()));
             }
-            for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
+            for (PrimaryResource resource : PrimaryResource.VALUES) {
                 if (!resource.isVanilla()) {
                     BlockResourceInfo resourceInfo = resource.getResourceBlockInfo();
                     if (resourceInfo != null) {
@@ -60,7 +59,7 @@ public class MekanismTags {
                     }
                 }
             }
-            for (FactoryType factoryType : EnumUtils.FACTORY_TYPES) {
+            for (FactoryType factoryType : FactoryType.VALUES) {
                 FACTORY_SUPPORTED.put(factoryType, tag("factory_supported/" + factoryType.getSerializedName()));
                 TIERED_FACTORIES.put(factoryType, tag("factories/" + factoryType.getSerializedName()));
             }
@@ -123,8 +122,8 @@ public class MekanismTags {
         public static final Table<ResourceType, PrimaryResource, TagKey<Item>> PROCESSED_RESOURCES = HashBasedTable.create();
 
         static {
-            for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
-                for (ResourceType type : EnumUtils.RESOURCE_TYPES) {
+            for (PrimaryResource resource : PrimaryResource.VALUES) {
+                for (ResourceType type : ResourceType.VALUES) {
                     if (type.usedByPrimary(resource)) {
                         String name = type.getBaseTagPath() + "/" + resource.getRegistrySuffix();
                         TagKey<Item> tagKey = type.isVanilla() || type == ResourceType.DUST ? commonTag(name) : tag(name);

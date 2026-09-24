@@ -30,7 +30,6 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -57,7 +56,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
     @Override
     public void addRecipes(RecipeOutput consumer) {
         String basePath = "processing/";
-        for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
+        for (PrimaryResource resource : PrimaryResource.VALUES) {
             addDynamicOreProcessingIngotRecipes(consumer, basePath + resource.getRegistrySuffix() + "/", resource);
         }
         //Raw Gold plus netherrack to nether gold ore

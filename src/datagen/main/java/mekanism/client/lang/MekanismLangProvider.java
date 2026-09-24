@@ -71,7 +71,6 @@ import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
@@ -108,47 +107,47 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addConfigs() {
         addConfigs(MekanismConfig.getConfigs());
         addConfigs(MekanismConfigTranslations.values());
-        for (WindowType windowType : WindowType.values()) {
+        for (WindowType windowType : WindowType.VALUES) {
             for (ConfigSaveData saveData : windowType.getSavePaths()) {
                 addConfigs(saveData);
             }
         }
         //Tier Configs
-        for (EnergyCubeTier tier : EnumUtils.ENERGY_CUBE_TIERS) {
+        for (EnergyCubeTier tier : EnergyCubeTier.VALUES) {
             addConfigs(TierTranslations.create(tier).toArray());
         }
-        for (FluidTankTier tier : EnumUtils.FLUID_TANK_TIERS) {
+        for (FluidTankTier tier : FluidTankTier.VALUES) {
             addConfigs(TierTranslations.create(tier).toArray());
         }
-        for (ChemicalTankTier tier : EnumUtils.CHEMICAL_TANK_TIERS) {
+        for (ChemicalTankTier tier : ChemicalTankTier.VALUES) {
             addConfigs(TierTranslations.create(tier).toArray());
         }
-        for (BinTier tier : EnumUtils.BIN_TIERS) {
+        for (BinTier tier : BinTier.VALUES) {
             addConfigs(TierTranslations.create(tier).toArray());
         }
-        for (InductionCellTier tier : EnumUtils.INDUCTION_CELL_TIERS) {
+        for (InductionCellTier tier : InductionCellTier.VALUES) {
             addConfigs(TierTranslations.create(tier).toArray());
         }
-        for (InductionProviderTier tier : EnumUtils.INDUCTION_PROVIDER_TIERS) {
+        for (InductionProviderTier tier : InductionProviderTier.VALUES) {
             addConfigs(TierTranslations.create(tier).toArray());
         }
-        for (CableTier tier : EnumUtils.CABLE_TIERS) {
+        for (CableTier tier : CableTier.VALUES) {
             addConfigs(TierTranslations.create(tier).toArray());
         }
-        for (PipeTier tier : EnumUtils.PIPE_TIERS) {
+        for (PipeTier tier : PipeTier.VALUES) {
             addConfigs(TierTranslations.create(tier).toArray());
         }
-        for (TubeTier tier : EnumUtils.TUBE_TIERS) {
+        for (TubeTier tier : TubeTier.VALUES) {
             addConfigs(TierTranslations.create(tier).toArray());
         }
-        for (TransporterTier tier : EnumUtils.TRANSPORTER_TIERS) {
+        for (TransporterTier tier : TransporterTier.VALUES) {
             addConfigs(TierTranslations.create(tier).toArray());
         }
-        for (ConductorTier tier : EnumUtils.CONDUCTOR_TIERS) {
+        for (ConductorTier tier : ConductorTier.VALUES) {
             addConfigs(TierTranslations.create(tier).toArray());
         }
         //World Gen configs
-        for (OreType oreType : EnumUtils.ORE_TYPES) {
+        for (OreType oreType : OreType.VALUES) {
             String ore = oreType.getResource().getRegistrySuffix();
             addConfigs(OreConfigTranslations.create(ore).toArray());
             for (BaseOreConfig baseConfig : oreType.getBaseConfigs()) {
@@ -178,7 +177,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         add(MekanismTags.BlockItems.FACTORIES, "Factories");
         add(MekanismTags.BlockItems.BASE_FACTORY_SUPPORTED, "Factory Supported");
-        for (FactoryType type : EnumUtils.FACTORY_TYPES) {
+        for (FactoryType type : FactoryType.VALUES) {
             String name = getFactoryTypeName(type);
             add(MekanismTags.BlockItems.TIERED_FACTORIES.get(type), name + " Factories");
             add(MekanismTags.BlockItems.FACTORY_SUPPORTED.get(type), name + "Factory Supported");
@@ -604,8 +603,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addTiered(MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK, "Fluid Tank");
         addTiered(MekanismBlocks.BASIC_CHEMICAL_TANK, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismBlocks.ULTIMATE_CHEMICAL_TANK, MekanismBlocks.CREATIVE_CHEMICAL_TANK, "Chemical Tank");
         //Factories
-        for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
-            for (FactoryType type : EnumUtils.FACTORY_TYPES) {
+        for (FactoryTier tier : FactoryTier.VALUES) {
+            for (FactoryType type : FactoryType.VALUES) {
                 add(MekanismBlocks.getFactory(tier, type), tier.getBaseTier().getSimpleName() + " " + type.getRegistryNameComponentCapitalized() + " Factory");
             }
         }
@@ -892,7 +891,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addAliases() {
         addAliases(MekanismAliases.values());
-        for (FactoryType type : EnumUtils.FACTORY_TYPES) {
+        for (FactoryType type : FactoryType.VALUES) {
             addAlias(type.getSerializedName(), type.getRegistryNameComponentCapitalized());
         }
     }
@@ -946,7 +945,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY, " - Energy Density: %1$s");
         add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_MAX_TOTAL, " - Maximum Output: %1$s");
         //Colors
-        for (EnumColor color : EnumUtils.COLORS) {
+        for (EnumColor color : EnumColor.VALUES) {
             add(color, color.getEnglishName());
         }
         addModInfo(modName + " is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.");
@@ -1456,7 +1455,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.AUTO_MODE, "Auto-Mode: %1$s");
         //Factory Type
         add(MekanismLang.FACTORY_TYPE, "Recipe type: %1$s");
-        for (FactoryType factoryType : EnumUtils.FACTORY_TYPES) {
+        for (FactoryType factoryType : FactoryType.VALUES) {
             add(factoryType.getTranslationKey(), getFactoryTypeName(factoryType));
         }
         //Transmitter Networks

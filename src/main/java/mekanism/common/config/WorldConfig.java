@@ -13,7 +13,6 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.resource.ore.BaseOreConfig;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.ore.OreType.OreVeinType;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.world.height.ConfigurableHeightRange;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.neoforged.fml.config.ModConfig.Type;
@@ -35,7 +34,7 @@ public class WorldConfig extends BaseMekanismConfig {
               .define("enableRegeneration", false));
         userGenVersion = CachedIntValue.wrap(this, MekanismConfigTranslations.WORLD_WORLD_VERSION.applyToBuilder(builder)
               .defineInRange("userWorldGenVersion", 0, 0, Integer.MAX_VALUE));
-        for (OreType ore : EnumUtils.ORE_TYPES) {
+        for (OreType ore : OreType.VALUES) {
             ores.put(ore, new OreConfig(this, builder, ore));
         }
         salt = new SaltConfig(this, builder, 2, 2, 3, 1);

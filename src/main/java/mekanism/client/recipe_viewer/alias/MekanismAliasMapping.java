@@ -23,7 +23,6 @@ import mekanism.common.registries.MekanismModules;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderGetter;
@@ -89,7 +88,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
     }
 
     private <ITEM, FLUID, CHEMICAL> void addFactoryAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
-        for (FactoryType factoryType : EnumUtils.FACTORY_TYPES) {
+        for (FactoryType factoryType : FactoryType.VALUES) {
             //Allow searching for factories by the name of the base block
             rv.addAliases(List.of(
                   MekanismBlocks.getFactory(FactoryTier.BASIC, factoryType),

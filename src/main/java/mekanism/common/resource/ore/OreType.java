@@ -9,6 +9,7 @@ import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.world.height.HeightShape;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public enum OreType implements StringRepresentable {
@@ -33,6 +34,9 @@ public enum OreType implements StringRepresentable {
           new BaseOreConfig("normal", 8, 0.25F, 9, HeightShape.TRAPEZOID, OreAnchor.aboveBottom(-24), OreAnchor.absolute(64))
     );
 
+    /// Cached value of [OreType#values()]
+    @Unmodifiable
+    public static final List<OreType> VALUES = List.of(values());
     public static Codec<OreType> CODEC = StringRepresentable.fromEnum(OreType::values);
 
     private final List<BaseOreConfig> baseConfigs;
@@ -73,7 +77,7 @@ public enum OreType implements StringRepresentable {
 
     @Nullable
     public static OreType get(IResource resource) {
-        for (OreType ore : values()) {
+        for (OreType ore : VALUES) {
             if (resource == ore.resource) {
                 return ore;
             }

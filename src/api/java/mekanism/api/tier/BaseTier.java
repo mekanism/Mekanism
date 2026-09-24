@@ -2,6 +2,7 @@ package mekanism.api.tier;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.SupportsColorMap;
@@ -13,6 +14,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 /// The default tiers used in Mekanism.
@@ -23,6 +25,11 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
     ULTIMATE("Ultimate", 0xF787FF, MapColor.COLOR_MAGENTA),
     CREATIVE("Creative", 0x585858, MapColor.TERRACOTTA_CYAN);
 
+    /// Cached value of [BaseTier#values()]
+    ///
+    /// @since 10.8.0
+    @Unmodifiable
+    public static final List<BaseTier> VALUES = List.of(values());
     /// Gets a tier by index, wrapping for out of bounds indices.
     ///
     /// @since 10.6.0

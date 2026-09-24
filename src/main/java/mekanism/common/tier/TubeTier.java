@@ -2,6 +2,7 @@ package mekanism.common.tier;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
@@ -22,6 +23,7 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipProvider;
 import net.neoforged.neoforge.fluids.FluidType;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public enum TubeTier implements IStorageTier, TooltipProvider {
@@ -30,6 +32,9 @@ public enum TubeTier implements IStorageTier, TooltipProvider {
     ELITE(BaseTier.ELITE, 256L * FluidType.BUCKET_VOLUME, 64 * FluidType.BUCKET_VOLUME),
     ULTIMATE(BaseTier.ULTIMATE, 1_024L * FluidType.BUCKET_VOLUME, 256 * FluidType.BUCKET_VOLUME);
 
+    /// Cached value of [TubeTier#values()].
+    @Unmodifiable
+    public static final List<TubeTier> VALUES = List.of(values());
     public static final IntFunction<TubeTier> BY_ID = ByIdMap.continuous(TubeTier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, TubeTier> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, TubeTier::ordinal);
     public static final Codec<TubeTier> CODEC = StringRepresentable.fromEnum(TubeTier::values);

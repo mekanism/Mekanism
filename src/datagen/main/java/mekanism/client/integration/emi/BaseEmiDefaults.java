@@ -10,7 +10,6 @@ import java.util.concurrent.CompletableFuture;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -59,7 +58,7 @@ public abstract class BaseEmiDefaults implements DataProvider {
     protected abstract void addDefaults(HolderLookup.Provider reloadableLookupProvider);
 
     protected void addTieredRecipes(HolderLookup.Provider reloadableLookupProvider, String basePath) {
-        for (BaseTier tier : EnumUtils.TIERS) {
+        for (BaseTier tier : BaseTier.VALUES) {
             if (tier != BaseTier.CREATIVE) {
                 addRecipe(reloadableLookupProvider, basePath + tier.getLowerName());
             }

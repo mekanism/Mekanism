@@ -47,7 +47,7 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
             Axis h = axis.horizontal(), v = axis.vertical();
             //Note: This ends up becoming immutable by doing this but that is fine and doesn't really matter
             pos = pos.subtract(cuboid.getMinPos());
-            return StructureRequirement.REQUIREMENTS[ALLOWED_GRID[h.getCoord(pos)][v.getCoord(pos)]];
+            return StructureRequirement.VALUES.get(ALLOWED_GRID[h.getCoord(pos)][v.getCoord(pos)]);
         }
         return super.getStructureRequirement(pos, cuboid);
     }

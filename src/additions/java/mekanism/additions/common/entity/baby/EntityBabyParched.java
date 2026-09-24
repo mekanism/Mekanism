@@ -44,7 +44,7 @@ public class EntityBabyParched extends Parched {
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(random, difficulty);
-        for (EquipmentSlot slot : EquipmentSlot.values()) {
+        for (EquipmentSlot slot : EquipmentSlot.VALUES) {
             if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
                 setItemSlot(slot, ItemStack.EMPTY);
             }

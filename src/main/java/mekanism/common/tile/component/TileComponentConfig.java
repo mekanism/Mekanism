@@ -39,7 +39,6 @@ import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.HeatSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -297,8 +296,9 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             Optional<int[]> optionalConfigData = configInput.getIntArray(SerializationConstants.CONFIG + ordinalToUse);
             if (optionalConfigData.isPresent()) {
                 int[] sideData = optionalConfigData.get();
-                for (int i = 0; i < sideData.length && i < EnumUtils.SIDES.length; i++) {
-                    RelativeSide side = EnumUtils.SIDES[i];
+                int sides = RelativeSide.VALUES.size();
+                for (int i = 0; i < sideData.length && i < sides; i++) {
+                    RelativeSide side = RelativeSide.VALUES.get(i);
                     if (info.setDataType(DataType.BY_ID.apply(sideData[i]), side)) {
                         onChange.accept(type, side);
                     }
@@ -319,9 +319,9 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             if (full) {
                 configOutput.putBoolean(SerializationConstants.EJECT + type.ordinal(), info.isEjecting());
             }
-            int[] sideData = new int[EnumUtils.SIDES.length];
-            for (int i = 0; i < EnumUtils.SIDES.length; i++) {
-                sideData[i] = info.getDataType(EnumUtils.SIDES[i]).ordinal();
+            int[] sideData = new int[RelativeSide.VALUES.size()];
+            for (int i = 0; i < sideData.length; i++) {
+                sideData[i] = info.getDataType(RelativeSide.VALUES.get(i)).ordinal();
             }
             configOutput.putIntArray(SerializationConstants.CONFIG + type.ordinal(), sideData);
         }

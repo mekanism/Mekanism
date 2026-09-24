@@ -7,7 +7,6 @@ import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -49,7 +48,7 @@ public interface IRecipeViewerRecipeType<RECIPE> extends IHasTextComponent {
             displays.add(new SlotDisplay.ItemSlotDisplay(item));
             FactoryType factoryType = item.components().get(MekanismDataComponents.FACTORY_TYPE);
             if (factoryType != null) {
-                for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
+                for (FactoryTier tier : FactoryTier.VALUES) {
                     displays.add(new SlotDisplay.ItemSlotDisplay(MekanismBlocks.getFactory(tier, factoryType).getItemHolder()));
                 }
             }

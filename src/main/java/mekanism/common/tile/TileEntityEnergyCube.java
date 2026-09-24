@@ -28,7 +28,6 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.EnergyCubeUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -157,16 +156,16 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     @Override
     public void handleUpdateTag(ValueInput input) {
         ConfigInfo config = getConfig().getConfig(TransmissionType.ENERGY);
-        DataType[] currentConfig = new DataType[EnumUtils.SIDES.length];
+        DataType[] currentConfig = new DataType[RelativeSide.VALUES.size()];
         if (config != null) {
-            for (RelativeSide side : EnumUtils.SIDES) {
+            for (RelativeSide side : RelativeSide.VALUES) {
                 currentConfig[side.ordinal()] = config.getDataType(side);
             }
         }
         super.handleUpdateTag(input);
         prevScale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
         if (config != null) {
-            for (RelativeSide side : EnumUtils.SIDES) {
+            for (RelativeSide side : RelativeSide.VALUES) {
                 if (currentConfig[side.ordinal()] != config.getDataType(side)) {
                     //Only update the model data if at least one side had the config change
                     updateModelData();
@@ -182,8 +181,8 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
         if (config == null) {//Should not happen but validate it anyway
             return super.getModelData();
         }
-        CubeSideState[] sideStates = new CubeSideState[EnumUtils.SIDES.length];
-        for (RelativeSide side : EnumUtils.SIDES) {
+        CubeSideState[] sideStates = new CubeSideState[RelativeSide.VALUES.size()];
+        for (RelativeSide side : RelativeSide.VALUES) {
             CubeSideState state = CubeSideState.INACTIVE;
             ISlotInfo slotInfo = config.getSlotInfo(side);
             if (slotInfo != null) {

@@ -20,7 +20,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.phys.Vec3;
 
@@ -36,8 +35,8 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
         setMachineData(tier);
         add(new AttributeGui(containerRegistrar, null), new AttributeTier<>(tier));
 
-        if (tier.ordinal() < EnumUtils.FACTORY_TIERS.length - 1) {
-            add(new AttributeUpgradeable(() -> MekanismBlocks.getFactory(EnumUtils.FACTORY_TIERS[tier.ordinal() + 1], factoryType)));
+        if (tier.ordinal() < FactoryTier.VALUES.size() - 1) {
+            add(new AttributeUpgradeable(() -> MekanismBlocks.getFactory(FactoryTier.VALUES.get(tier.ordinal() + 1), factoryType)));
         }
     }
 

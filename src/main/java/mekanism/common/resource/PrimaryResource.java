@@ -1,11 +1,13 @@
 package mekanism.common.resource;
 
+import java.util.List;
 import java.util.function.Supplier;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public enum PrimaryResource implements IResource {
@@ -16,6 +18,10 @@ public enum PrimaryResource implements IResource {
     TIN("tin", 0xFFCCCCD9, () -> MekanismTags.BlockItems.ORES.get(OreType.TIN).item(), BlockResourceInfo.TIN, BlockResourceInfo.RAW_TIN),
     LEAD("lead", 0xFF3A404A, () -> MekanismTags.BlockItems.ORES.get(OreType.LEAD).item(), BlockResourceInfo.LEAD, BlockResourceInfo.RAW_LEAD),
     URANIUM("uranium", 0xFF46664F, () -> MekanismTags.BlockItems.ORES.get(OreType.URANIUM).item(), BlockResourceInfo.URANIUM, BlockResourceInfo.RAW_URANIUM);
+
+    /// Cached value of [PrimaryResource#values()].
+    @Unmodifiable
+    public static final List<PrimaryResource> VALUES = List.of(values());
 
     private final String name;
     private final int tint;

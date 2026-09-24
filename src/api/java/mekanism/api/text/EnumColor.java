@@ -2,6 +2,7 @@ package mekanism.api.text;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
@@ -19,6 +20,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 /// Simple color enum for adding colors to in-game GUI strings of text.
@@ -43,6 +45,11 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     BROWN(DyeColor.BROWN, "Brown", 0xA17649),
     BRIGHT_PINK(DyeColor.PINK, "Pink", 0xFFBCC4);
 
+    /// Cached value of [EnumColor#values()]
+    ///
+    /// @since 10.8.0
+    @Unmodifiable
+    public static final List<EnumColor> VALUES = List.of(values());
     /// Codec for serializing colors based on their name.
     ///
     /// @since 10.6.0

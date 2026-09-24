@@ -15,7 +15,6 @@ import mekanism.common.chemical.EnumColorPigment;
 import mekanism.common.registration.AdvancedDatapackDeferredRegister;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.resource.PrimaryResource;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Util;
 import net.neoforged.bus.api.IEventBus;
 
@@ -31,7 +30,7 @@ public class MekanismChemicals {
 
     public static final Map<PrimaryResource, CleanDirtySlurryId> PROCESSED_RESOURCES = Util.make(() -> {
         Map<PrimaryResource, CleanDirtySlurryId> slurries = new EnumMap<>(PrimaryResource.class);
-        for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
+        for (PrimaryResource resource : PrimaryResource.VALUES) {
             String baseName = resource.getRegistrySuffix();
             slurries.put(resource, new CleanDirtySlurryId(CHEMICALS.dataKey("clean_" + baseName), CHEMICALS.dataKey("dirty_" + baseName)));
         }

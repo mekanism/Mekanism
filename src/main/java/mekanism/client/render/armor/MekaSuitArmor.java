@@ -73,6 +73,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
 import net.neoforged.neoforge.client.submit.RenderPhaseKeys;
 import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.Unmodifiable;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
@@ -263,12 +264,15 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         LEFT_WING(BASE_TRANSLATION, s -> s.contains("left_wing")),
         RIGHT_WING(BASE_TRANSLATION, s -> s.contains("right_wing"));
 
+        /// Cached value of [ModelPos#values()].
+        @Unmodifiable
+        public static final List<ModelPos> VALUES = List.of(values());
+
         private static final float EXPANDED_WING_X = 1;
         private static final float EXPANDED_WING_Y = -2.5F;
         private static final float EXPANDED_WING_Z = 5;
         private static final float EXPANDED_WING_Y_ROT = 45;
         private static final float EXPANDED_WING_Z_ROT = 25;
-        public static final ModelPos[] VALUES = values();
 
         private final Vector3fc transform;
         private final Predicate<String> modelSpec;

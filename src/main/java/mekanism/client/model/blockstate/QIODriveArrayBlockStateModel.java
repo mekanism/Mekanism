@@ -95,9 +95,9 @@ public record QIODriveArrayBlockStateModel(BlockStateModelPart basePart, BlockSt
             BlockStateModelPart bakedBase = SimpleModelWrapper.bake(baker, model, baseTransforms);
             BlockStateModelPart[][] slotToBakedDrive = new BlockStateModelPart[TileEntityQIODriveArray.DRIVE_SLOTS][];
             for (int slot = 0; slot < TileEntityQIODriveArray.DRIVE_SLOTS; slot++) {
-                BlockStateModelPart[] slotBakedParts = new BlockStateModelPart[DriveStatus.VALUES.length];
+                BlockStateModelPart[] slotBakedParts = new BlockStateModelPart[DriveStatus.VALUES.size()];
                 slotToBakedDrive[slot] = slotBakedParts;
-                for (int statusOrdinal = 0; statusOrdinal < DriveStatus.VALUES.length; statusOrdinal++) {
+                for (int statusOrdinal = 0; statusOrdinal < slotBakedParts.length; statusOrdinal++) {
                     DriveStatus status = DriveStatus.BY_ID.apply(statusOrdinal);
                     Identifier statusModel = status.getModel();
                     if (statusModel == null) {
@@ -114,7 +114,7 @@ public record QIODriveArrayBlockStateModel(BlockStateModelPart basePart, BlockSt
         @Override
         public void resolveDependencies(Resolver resolver) {
             resolver.markDependency(baseModel.modelLocation());
-            for (DriveStatus status : DriveStatus.values()) {
+            for (DriveStatus status : DriveStatus.VALUES) {
                 Identifier statusModel = status.getModel();
                 if (statusModel != null) {
                     resolver.markDependency(statusModel);

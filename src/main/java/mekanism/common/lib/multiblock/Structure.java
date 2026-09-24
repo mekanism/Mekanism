@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.ToIntFunction;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public class Structure {
@@ -59,7 +61,7 @@ public class Structure {
     private void init(IMultiblockBase node) {
         BlockPos pos = node.getBlockPos();
         nodes.put(pos, node);
-        for (Axis axis : Axis.AXES) {
+        for (Axis axis : Axis.VALUES) {
             getMinorAxisMap(axis).put(axis.getCoord(pos), new VoxelPlane(axis, pos, node instanceof IMultiblock));
         }
         if (node instanceof IMultiblock<?> multiblock) {
@@ -370,6 +372,10 @@ public class Structure {
         Y(Vec3i::getY),
         Z(Vec3i::getZ);
 
+        /// Cached value of [Axis#values()].
+        @Unmodifiable
+        public static final List<Axis> VALUES = List.of(values());
+
         private final ToIntFunction<BlockPos> posMapper;
 
         Axis(ToIntFunction<BlockPos> posMapper) {
@@ -393,9 +399,7 @@ public class Structure {
         }
 
         public static Axis get(Direction side) {
-            return AXES[side.getAxis().ordinal()];
+            return VALUES.get(side.getAxis().ordinal());
         }
-
-        static final Axis[] AXES = values();
     }
 }

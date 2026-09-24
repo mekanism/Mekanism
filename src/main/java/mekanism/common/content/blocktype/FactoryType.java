@@ -2,6 +2,7 @@ package mekanism.common.content.blocktype;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
@@ -23,6 +24,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipProvider;
+import org.jetbrains.annotations.Unmodifiable;
 
 //TODO - 26.3: Do we want to make this into a registry to simplify some things for addons that add custom factory types?
 public enum FactoryType implements IHasEnumNameTranslationKey, StringRepresentable, TooltipProvider {
@@ -36,6 +38,9 @@ public enum FactoryType implements IHasEnumNameTranslationKey, StringRepresentab
     INFUSING("infusing", MekanismLang.INFUSING, () -> MekanismBlockTypes.METALLURGIC_INFUSER, () -> MekanismBlocks.METALLURGIC_INFUSER),
     SAWING("sawing", MekanismLang.SAWING, () -> MekanismBlockTypes.PRECISION_SAWMILL, () -> MekanismBlocks.PRECISION_SAWMILL);
 
+    /// Cached value of [FactoryType#values()].
+    @Unmodifiable
+    public static final List<FactoryType> VALUES = List.of(values());
     public static final Codec<FactoryType> CODEC = StringRepresentable.fromEnum(FactoryType::values);
     public static final IntFunction<FactoryType> BY_ID = ByIdMap.continuous(FactoryType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
     public static final StreamCodec<ByteBuf, FactoryType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FactoryType::ordinal);

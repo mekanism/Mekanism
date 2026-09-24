@@ -1,5 +1,8 @@
 package mekanism.common.resource;
 
+import java.util.List;
+import org.jetbrains.annotations.Unmodifiable;
+
 public enum ResourceType {
     SHARD("shard"),
     CRYSTAL("crystal"),
@@ -10,6 +13,10 @@ public enum ResourceType {
     RAW("raw", "raw_materials"),
     NUGGET("nugget"),
     ENRICHED("enriched", "enriched");
+
+    /// Cached value of [ResourceType#values()].
+    @Unmodifiable
+    public static final List<ResourceType> VALUES = List.of(values());
 
     private final String registryPrefix;
     private final String baseTagPath;

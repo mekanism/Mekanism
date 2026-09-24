@@ -141,7 +141,6 @@ import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.ChemicalUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -880,8 +879,8 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityThermodynamicConductor> ULTIMATE_THERMODYNAMIC_CONDUCTOR = createConductor(ConductorTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
 
     static {
-        for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
-            for (FactoryType type : EnumUtils.FACTORY_TYPES) {
+        for (FactoryTier tier : FactoryTier.VALUES) {
+            for (FactoryType type : FactoryType.VALUES) {
                 FACTORIES.put(tier, type, FactoryBuilder.createFactory(() -> MekanismTileEntityTypes.getFactoryTile(tier, type), type, tier).build());
             }
         }

@@ -1,6 +1,7 @@
 package mekanism.generators.client.gui.element.button;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
@@ -28,12 +29,12 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     private final Consumer<TYPE> onPress;
 
 
-    public ReactorLogicButton(IGuiWrapper gui, int x, int y, int index, IReactorLogic<TYPE> tile, Class<TYPE> clazz, IntSupplier indexSupplier, Supplier<TYPE[]> modeList,
+    public ReactorLogicButton(IGuiWrapper gui, int x, int y, int index, IReactorLogic<TYPE> tile, Class<TYPE> clazz, IntSupplier indexSupplier, Supplier<List<TYPE>> modeList,
           Consumer<TYPE> onPress) {
         this(gui, x, y, tile, clazz, onPress, () -> {
             int i = indexSupplier.getAsInt() + index;
-            TYPE[] modes = modeList.get();
-            return i >= 0 && i < modes.length ? modes[i] : null;
+            List<TYPE> modes = modeList.get();
+            return i >= 0 && i < modes.size() ? modes.get(i) : null;
         });
     }
 

@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
@@ -38,6 +39,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public class FormationProtocol<T extends MultiblockData> {
@@ -313,7 +315,9 @@ public class FormationProtocol<T extends MultiblockData> {
         OTHER,
         INNER;
 
-        public static final StructureRequirement[] REQUIREMENTS = values();
+        /// Cached value of [StructureRequirement#values()].
+        @Unmodifiable
+        public static final List<StructureRequirement> VALUES = List.of(values());
 
         boolean needsFrame() {
             return this == FRAME;

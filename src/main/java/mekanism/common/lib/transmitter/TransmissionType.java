@@ -2,6 +2,7 @@ package mekanism.common.lib.transmitter;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.function.IntFunction;
 import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
@@ -14,6 +15,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.Unmodifiable;
 
 public enum TransmissionType implements IHasEnumNameTranslationKey, StringRepresentable {
     ENERGY("EnergyNetwork", "energy", MekanismLang.TRANSMISSION_TYPE_ENERGY),
@@ -22,6 +24,9 @@ public enum TransmissionType implements IHasEnumNameTranslationKey, StringRepres
     ITEM("InventoryNetwork", "items", MekanismLang.TRANSMISSION_TYPE_ITEM),
     HEAT("HeatNetwork", "heat", MekanismLang.TRANSMISSION_TYPE_HEAT);
 
+    /// Cached value of [TransmissionType#values()].
+    @Unmodifiable
+    public static final List<TransmissionType> VALUES = List.of(values());
     public static final Codec<TransmissionType> CODEC = StringRepresentable.fromEnum(TransmissionType::values);
     public static final IntFunction<TransmissionType> BY_ID = ByIdMap.continuous(TransmissionType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
     public static final StreamCodec<ByteBuf, TransmissionType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, TransmissionType::ordinal);

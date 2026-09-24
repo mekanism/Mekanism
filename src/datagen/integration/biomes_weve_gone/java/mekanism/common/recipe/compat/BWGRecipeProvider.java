@@ -66,7 +66,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     }
 
     private void addDyeRecipes(RecipeOutput consumer, String basePath) {
-        for (EnumColor color : EnumUtils.COLORS) {
+        for (EnumColor color : EnumColor.VALUES) {
             DyeColor dyeColor = color.getDyeColor();
             if (dyeColor != null) {
                 Holder<Item> dye = this.items.getOrThrow(ItemIds.DYE.pick(dyeColor));

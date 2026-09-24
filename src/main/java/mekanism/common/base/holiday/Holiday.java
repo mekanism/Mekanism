@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.EnumColor;
@@ -13,7 +14,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSounds;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -24,6 +24,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public enum Holiday implements StringRepresentable {
@@ -84,11 +85,13 @@ public enum Holiday implements StringRepresentable {
 
         @Override
         public ResourceKey<RobitSkin> randomBaseSkin(RandomSource random) {
-            return MekanismRobitSkins.PRIDE_SKINS.get(Util.getRandom(EnumUtils.PRIDE_SKINS, random));
+            return MekanismRobitSkins.PRIDE_SKINS.get(Util.getRandom(RobitPrideSkinData.VALUES, random));
         }
     };
 
-    public static final Holiday[] VALUES = values();
+    /// Cached value of [Holiday#values()].
+    @Unmodifiable
+    public static final List<Holiday> VALUES = List.of(values());
     public static final Codec<Holiday> CODEC = StringRepresentable.fromEnum(Holiday::values);
 
     private final KnownDate date;

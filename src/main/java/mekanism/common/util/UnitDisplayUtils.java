@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.text.IHasTranslationKey;
@@ -13,6 +14,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.common.TranslatableEnum;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 /// Code taken from UE and modified to fit Mekanism.
@@ -75,11 +77,11 @@ public class UnitDisplayUtils {
         if (negative) {
             value = Math.abs(value);
         }
-        for (int i = 0; i < EnumUtils.MEASUREMENT_UNITS.length; i++) {
-            MeasurementUnit lowerMeasure = EnumUtils.MEASUREMENT_UNITS[i];
+        for (int i = 0, size = MeasurementUnit.VALUES.size(); i < size; i++) {
+            MeasurementUnit lowerMeasure = MeasurementUnit.VALUES.get(i);
             if ((i == 0 && lowerMeasure.below(value)) ||
-                i + 1 >= EnumUtils.MEASUREMENT_UNITS.length ||
-                (lowerMeasure.aboveEqual(value) && EnumUtils.MEASUREMENT_UNITS[i + 1].below(value))) {
+                i + 1 >= size ||
+                (lowerMeasure.aboveEqual(value) && MeasurementUnit.VALUES.get(i + 1).below(value))) {
                 //First element and it is below it (no more unit abbreviations before),
                 // or last element (no more unit abbreviations past),
                 // or we are within the bounds between this one and the next one
@@ -87,7 +89,7 @@ public class UnitDisplayUtils {
             }
         }
         //Fallback, should never be reached as should have been captured by the check in the loop
-        return EnumUtils.MEASUREMENT_UNITS[EnumUtils.MEASUREMENT_UNITS.length - 1].getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative, singular);
+        return MeasurementUnit.VALUES.getLast().getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative, singular);
     }
 
     public static Component getDisplayShort(double value, TemperatureUnit unit) {
@@ -240,6 +242,10 @@ public class UnitDisplayUtils {
         EXA("Exa", "E", 1_000_000_000_000_000_000D),
         ZETTA("Zetta", "Z", 1_000_000_000_000_000_000_000D),
         YOTTA("Yotta", "Y", 1_000_000_000_000_000_000_000_000D);
+
+        /// Cached value of [MeasurementUnit#values()].
+        @Unmodifiable
+        public static final List<MeasurementUnit> VALUES = List.of(values());
 
         /// long name for the unit
         private final String name;

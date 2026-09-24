@@ -1,11 +1,13 @@
 package mekanism.client.model.data;
 
 import java.util.Arrays;
+import java.util.List;
 import mekanism.client.model.data.TransmitterModelData.Diversion;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public sealed class TransmitterModelData permits Diversion {
@@ -97,6 +99,10 @@ public sealed class TransmitterModelData permits Diversion {
         NONE,
         NONE_CONTIGUOUS,
         NONE_CONTIGUOUS_ROTATED;
+
+        /// Cached value of [VisualConnectionStatus#values()]
+        @Unmodifiable
+        public static final List<VisualConnectionStatus> VALUES = List.of(values());
 
         public String partName() {
             return switch (this) {

@@ -19,7 +19,6 @@ import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tier.TransporterTier;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -76,7 +75,7 @@ public class MekanismCreativeTabs {
         if (tabKey == CreativeModeTabs.BUILDING_BLOCKS) {
             CreativeTabDeferredRegister.addToDisplay(event, MekanismBlocks.SALT_BLOCK, MekanismBlocks.BRONZE_BLOCK, MekanismBlocks.STEEL_BLOCK,
                   MekanismBlocks.CHARCOAL_BLOCK, MekanismBlocks.REFINED_OBSIDIAN_BLOCK, MekanismBlocks.REFINED_GLOWSTONE_BLOCK);
-            for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
+            for (PrimaryResource resource : PrimaryResource.VALUES) {
                 BlockResourceInfo resourceInfo = resource.getResourceBlockInfo();
                 if (resourceInfo != null) {
                     CreativeTabDeferredRegister.addToDisplay(event, MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resourceInfo));

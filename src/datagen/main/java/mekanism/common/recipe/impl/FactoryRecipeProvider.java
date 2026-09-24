@@ -14,7 +14,6 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -36,7 +35,7 @@ class FactoryRecipeProvider extends BaseSubRecipeProvider {
         String elitePath = basePath + "elite/";
         String ultimatePath = basePath + "ultimate/";
         TagKey<Item> osmiumIngot = MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM);
-        for (FactoryType type : EnumUtils.FACTORY_TYPES) {
+        for (FactoryType type : FactoryType.VALUES) {
             BlockRegistryObject<BlockFactory<?>, ?> basicFactory = MekanismBlocks.getFactory(FactoryTier.BASIC, type);
             BlockRegistryObject<BlockFactory<?>, ?> advancedFactory = MekanismBlocks.getFactory(FactoryTier.ADVANCED, type);
             BlockRegistryObject<BlockFactory<?>, ?> eliteFactory = MekanismBlocks.getFactory(FactoryTier.ELITE, type);

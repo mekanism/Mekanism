@@ -14,7 +14,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
@@ -97,9 +96,9 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
 
     private void addFactoryRecipes(HolderLookup.Provider reloadableLookupProvider) {
         String basePath = "factory/";
-        for (FactoryTier factoryTier : EnumUtils.FACTORY_TIERS) {
+        for (FactoryTier factoryTier : FactoryTier.VALUES) {
             String tieredPath = basePath + factoryTier.getBaseTier().getLowerName() + "/";
-            for (FactoryType type : EnumUtils.FACTORY_TYPES) {
+            for (FactoryType type : FactoryType.VALUES) {
                 addRecipe(reloadableLookupProvider, tieredPath + type.getSerializedName());
             }
         }

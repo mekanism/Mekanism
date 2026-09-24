@@ -8,7 +8,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
 import mekanism.common.capabilities.holder.BasicHolder;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
 import org.jspecify.annotations.Nullable;
 
@@ -25,7 +24,7 @@ public class OverridingSingleHolder<CONTAINER> extends BasicHolder implements IS
           @Nullable Predicate<RelativeSide> extractPredicate, BiFunction<CONTAINER, RelativeSide, CONTAINER> containerTransformer) {
         super(facingSupplier, insertPredicate, extractPredicate);
         this.container = container;
-        for (RelativeSide side : EnumUtils.SIDES) {
+        for (RelativeSide side : RelativeSide.VALUES) {
             CONTAINER transformed = containerTransformer.apply(container, side);
             if (transformed != container) {
                 sideOverrides.put(side, transformed);

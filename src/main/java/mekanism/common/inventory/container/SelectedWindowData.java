@@ -16,6 +16,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public record SelectedWindowData(WindowType type, byte extraData) {
@@ -96,6 +97,9 @@ public record SelectedWindowData(WindowType type, byte extraData) {
         /// For use by windows that don't actually have any server side specific logic required, or don't persist their position.
         UNSPECIFIED(null, false);
 
+        /// Cached value of [WindowType#values()]
+        @Unmodifiable
+        public static final List<WindowType> VALUES = List.of(values());
         public static final IntFunction<WindowType> BY_ID = ByIdMap.continuous(WindowType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, WindowType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, WindowType::ordinal);
 

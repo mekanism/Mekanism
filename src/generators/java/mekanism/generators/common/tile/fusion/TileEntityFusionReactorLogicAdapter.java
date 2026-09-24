@@ -3,6 +3,7 @@ package mekanism.generators.common.tile.fusion;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.SerializationConstants;
@@ -40,6 +41,7 @@ import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.event.EventHooks;
+import org.jetbrains.annotations.Unmodifiable;
 
 public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactorBlock implements IReactorLogic<FusionReactorLogic>, IHasMode {
 
@@ -150,8 +152,9 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     }
 
     @Override
-    public FusionReactorLogic[] getModes() {
-        return FusionReactorLogic.values();
+    @Unmodifiable
+    public List<FusionReactorLogic> getModes() {
+        return FusionReactorLogic.VALUES;
     }
 
     @ComputerMethod(nameOverride = "setLogicMode")
@@ -185,6 +188,9 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
         CAPACITY(GeneratorsLang.REACTOR_LOGIC_CAPACITY, GeneratorsLang.DESCRIPTION_REACTOR_CAPACITY, Items.REDSTONE),
         DEPLETED(GeneratorsLang.REACTOR_LOGIC_DEPLETED, GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, Items.REDSTONE);
 
+        /// Cached value of [FusionReactorLogic#values()]
+        @Unmodifiable
+        public static final List<FusionReactorLogic> VALUES = List.of(values());
         public static final Codec<FusionReactorLogic> CODEC = StringRepresentable.fromEnum(FusionReactorLogic::values);
         public static final IntFunction<FusionReactorLogic> BY_ID = ByIdMap.continuous(FusionReactorLogic::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, FusionReactorLogic> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FusionReactorLogic::ordinal);

@@ -5,7 +5,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.util.EnumUtils;
 import mekanism.tools.client.recipe_viewer.aliases.ToolsAliases;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsLang;
@@ -124,7 +123,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
     private void addShield(IHasTranslationKey shield, String name) {
         add(shield, name);
         //Add names for all the bannered overlay types
-        for (EnumColor color : EnumUtils.COLORS) {
+        for (EnumColor color : EnumColor.VALUES) {
             if (color.getDyeColor() != null) {
                 add(shield.getTranslationKey() + "." + color.getRegistryPrefix(), color.getEnglishName() + " " + name);
             }

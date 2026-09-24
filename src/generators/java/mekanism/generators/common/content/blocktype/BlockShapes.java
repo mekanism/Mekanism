@@ -15,14 +15,15 @@ public final class BlockShapes {
         return Block.box(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    public static final VoxelShape[] HEAT_GENERATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
-    public static final VoxelShape[] WIND_GENERATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
-    public static final VoxelShape[] BIO_GENERATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
-    public static final VoxelShape[] SOLAR_GENERATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
-    public static final VoxelShape[] GAS_BURNING_GENERATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
-    public static final VoxelShape[] ADVANCED_SOLAR_GENERATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
-    public static final VoxelShape[] CONTROL_ROD_ASSEMBLY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
-    public static final VoxelShape[] FUEL_ASSEMBLY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    private static final int HORIZONTAL_DIRECTIONS = EnumUtils.HORIZONTAL_DIRECTIONS.length;
+    public static final VoxelShape[] HEAT_GENERATOR = new VoxelShape[HORIZONTAL_DIRECTIONS];
+    public static final VoxelShape[] WIND_GENERATOR = new VoxelShape[HORIZONTAL_DIRECTIONS];
+    public static final VoxelShape[] BIO_GENERATOR = new VoxelShape[HORIZONTAL_DIRECTIONS];
+    public static final VoxelShape[] SOLAR_GENERATOR = new VoxelShape[HORIZONTAL_DIRECTIONS];
+    public static final VoxelShape[] GAS_BURNING_GENERATOR = new VoxelShape[HORIZONTAL_DIRECTIONS];
+    public static final VoxelShape[] ADVANCED_SOLAR_GENERATOR = new VoxelShape[HORIZONTAL_DIRECTIONS];
+    public static final VoxelShape[] CONTROL_ROD_ASSEMBLY = new VoxelShape[HORIZONTAL_DIRECTIONS];
+    public static final VoxelShape[] FUEL_ASSEMBLY = new VoxelShape[HORIZONTAL_DIRECTIONS];
     public static final VoxelShape[] TURBINE_ROTOR = {box(6, 0, 6, 10, 16, 10)};
 
     static {

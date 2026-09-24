@@ -43,7 +43,6 @@ import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnergyUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
@@ -72,7 +71,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
 
-    private final @Nullable EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
+    private final @Nullable EnumColor[] inputColors = new EnumColor[RelativeSide.VALUES.size()];
     private final IntSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
     @Nullable
@@ -136,7 +135,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     public void tickServer(ServerLevel level, @Nullable TransactionContext transaction) {
         //loop on array to avoid iterator usage and high memory consumption
-        for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
+        for (TransmissionType type : TransmissionType.VALUES) {
             ConfigInfo info = configInfo.get(type);
             if (info == null) {
                 continue;

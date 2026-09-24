@@ -59,7 +59,7 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
     }
 
     public void collectParts(List<BlockStateModelPart> parts, CubeSideState @Nullable [] sideStates) {
-        if (sideStates == null || sideStates.length != EnumUtils.SIDES.length) {
+        if (sideStates == null || sideStates.length != RelativeSide.VALUES.size()) {
             //If there is no side data then treat everything as inactive
             sideStates = INACTIVE;
         }
@@ -71,8 +71,8 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
         List<BlockStateModelPart> parts = new ArrayList<>();
         parts.add(frame);
         CubeSideState[] data = CacheKey.unpack(key);
-        for (int i = 0; i < EnumUtils.SIDES.length; i++) {
-            RelativeSide dir = EnumUtils.SIDES[i];
+        for (int i = 0, size = RelativeSide.VALUES.size(); i < size; i++) {
+            RelativeSide dir = RelativeSide.VALUES.get(i);
             CubeSideState sideState = data[i];
             if (sideState != null) {
                 parts.add(dynamicParts.get(dir).get(sideState));
@@ -137,7 +137,7 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
             ModelState tierModelState = tierModel.modelState().asModelState();
             BlockStateModelPart frame = SimpleModelWrapper.bake(baker, model, tierModelState);
 
-            for (RelativeSide side : EnumUtils.SIDES) {
+            for (RelativeSide side : RelativeSide.VALUES) {
                 Map<CubeSideState, BlockStateModelPart> sideMap = new HashMap<>(2);
                 dynamicParts.put(side, sideMap);
                 addSideState(baker, side, sideMap, model, tierModelState, CubeSideState.ACTIVE_LIT);

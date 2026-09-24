@@ -4,7 +4,6 @@ import com.mojang.math.Transformation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +50,7 @@ import org.jspecify.annotations.Nullable;
 public class TransmitterBlockStateModel implements DynamicBlockStateModel {
 
     public static final Set<String> ALL_PART_GROUPS = Direction.stream()
-          .flatMap(direction -> Arrays.stream(VisualConnectionStatus.values())
+          .flatMap(direction -> VisualConnectionStatus.VALUES.stream()
                 .map(connectionType -> getPartName(direction, connectionType))
           )
           .collect(Collectors.toSet());
@@ -175,7 +174,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
             BakerOverrider noneSegmentOverrider = new BakerOverrider(modelBakery, new NoneSegmentRemap(modelBakery.materials()));
 
             //now bake all the parts
-            for (VisualConnectionStatus connectionType : VisualConnectionStatus.values()) {
+            for (VisualConnectionStatus connectionType : VisualConnectionStatus.VALUES) {
                 if (!hideContiguousJoin && (connectionType == VisualConnectionStatus.NONE_CONTIGUOUS || connectionType == VisualConnectionStatus.NONE_CONTIGUOUS_ROTATED)) {
                     continue; //skip as this model doesn't want it and its model data shouldn't contain it
                 }
@@ -228,7 +227,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         private final BlockStateModelPart[][] parts;
 
         private PartStorage(boolean hideContiguousJoin) {
-            int connections = hideContiguousJoin ? VisualConnectionStatus.values().length : ConnectionType.values().length;
+            int connections = hideContiguousJoin ? VisualConnectionStatus.VALUES.size() : ConnectionType.VALUES.size();
             parts = new BlockStateModelPart[EnumUtils.DIRECTIONS.length][connections];
         }
 

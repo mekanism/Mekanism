@@ -167,7 +167,6 @@ import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.tile.qio.QIOBlockTintSource;
 import mekanism.common.tile.transmitter.LogisticalTransporterBlockTintSource;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.client.model.object.armorstand.ArmorStandModel;
@@ -555,7 +554,7 @@ public class ClientRegistration {
               MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER);
         ClientRegistrationUtil.registerBlockColorHandler(event, LogisticalTransporterBlockTintSource.INSTANCE, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER,
               MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
-        for (PrimaryResource primaryResource : EnumUtils.PRIMARY_RESOURCES) {
+        for (PrimaryResource primaryResource : PrimaryResource.VALUES) {
             BlockResourceInfo resourceInfo = primaryResource.getResourceBlockInfo();
             if (resourceInfo != null) {
                 int tint = primaryResource.getTint();

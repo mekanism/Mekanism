@@ -47,7 +47,7 @@ public class EntityBabySkeleton extends Skeleton {
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(random, difficulty);
         //TODO - 26.3: Does this still exist for whatever part of vanilla we were mirroring?
-        for (EquipmentSlot slot : EquipmentSlot.values()) {
+        for (EquipmentSlot slot : EquipmentSlot.VALUES) {
             if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
                 setItemSlot(slot, ItemStack.EMPTY);
             }

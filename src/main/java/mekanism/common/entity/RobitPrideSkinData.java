@@ -1,7 +1,9 @@
 package mekanism.common.entity;
 
+import java.util.List;
 import java.util.Locale;
 import net.minecraft.util.CommonColors;
+import org.jetbrains.annotations.Unmodifiable;
 
 public enum RobitPrideSkinData {
     PRIDE(0xFFD12229, 0xFFF68A1E, 0xFFFDE01A, 0xFF007940, 0xFF24408E, 0xFF732982),
@@ -15,6 +17,10 @@ public enum RobitPrideSkinData {
     GAY(0xFF078D70, 0xFF26CEAA, 0xFF99E8C2, CommonColors.WHITE, 0xFF7BADE3, 0xFF5049CB, 0xFF3E1A78),
     AGENDER(CommonColors.BLACK, 0xFF999999, CommonColors.WHITE, 0xFFA1CF77, CommonColors.WHITE, 0xFF999999),
     GENDERFLUID(0xFFFD64B0, CommonColors.WHITE, 0xFF9932CC, CommonColors.BLACK, 0xFF4169E1);
+
+    /// Cached value of [RobitPrideSkinData#values()].
+    @Unmodifiable
+    public static final List<RobitPrideSkinData> VALUES = List.of(values());
 
     private final int[] color;
 

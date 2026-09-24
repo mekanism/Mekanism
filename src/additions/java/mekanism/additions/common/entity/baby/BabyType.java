@@ -1,6 +1,7 @@
 package mekanism.additions.common.entity.baby;
 
 import com.mojang.serialization.Codec;
+import java.util.List;
 import mekanism.additions.common.MekanismAdditions;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -11,6 +12,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypeIds;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import org.jetbrains.annotations.Unmodifiable;
 
 public enum BabyType implements StringRepresentable {
     BOGGED(EntityTypeIds.BOGGED, "Baby Bogged"),
@@ -21,8 +23,9 @@ public enum BabyType implements StringRepresentable {
     STRAY(EntityTypeIds.STRAY, "Baby Stray"),
     WITHER_SKELETON(EntityTypeIds.WITHER_SKELETON, "Baby Wither Skeleton");
 
-    /// @apiNote **Do not modify this array**
-    public static final BabyType[] VALUES = values();
+    /// Cached value of [BabyType#values()].
+    @Unmodifiable
+    public static final List<BabyType> VALUES = List.of(values());
 
     public static final Codec<BabyType> CODEC = StringRepresentable.fromEnum(BabyType::values);
 

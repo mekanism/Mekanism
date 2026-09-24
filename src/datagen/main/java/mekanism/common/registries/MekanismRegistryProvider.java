@@ -36,7 +36,6 @@ import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.ore.OreType.OreVeinType;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.world.ConfigurableConstantInt;
 import mekanism.common.world.ConfigurableUniformInt;
 import mekanism.common.world.DisableableFeaturePlacement;
@@ -92,7 +91,7 @@ public class MekanismRegistryProvider extends BaseRegistryProvider {
     public static DatapackBuiltinEntriesProvider forWorldLayer(PackOutput output, CompletableFuture<HolderLookup.Provider> worldRegistries) {
         return forWorldLayer(output, worldRegistries, Mekanism.MODID, new RegistrySetBuilder()
               .add(Registries.FEATURE, context -> {
-                  for (OreType type : EnumUtils.ORE_TYPES) {
+                  for (OreType type : OreType.VALUES) {
                       int features = type.getBaseConfigs().size();
                       for (int vein = 0; vein < features; vein++) {
                           OreVeinType oreVeinType = new OreVeinType(type, vein);
@@ -108,7 +107,7 @@ public class MekanismRegistryProvider extends BaseRegistryProvider {
                   ));
               })
               .add(Registries.PLACED_FEATURE, context -> {
-                  for (OreType type : EnumUtils.ORE_TYPES) {
+                  for (OreType type : OreType.VALUES) {
                       int features = type.getBaseConfigs().size();
                       for (int vein = 0; vein < features; vein++) {
                           OreVeinType oreVeinType = new OreVeinType(type, vein);
@@ -135,7 +134,7 @@ public class MekanismRegistryProvider extends BaseRegistryProvider {
               .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, context -> {
                   HolderSet.Named<Biome> isOverworldTag = context.lookup(Registries.BIOME).getOrThrow(MekanismTags.Biomes.SPAWN_ORES);
                   HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
-                  for (OreType type : EnumUtils.ORE_TYPES) {
+                  for (OreType type : OreType.VALUES) {
                       int features = type.getBaseConfigs().size();
                       List<Reference<PlacedFeature>> placedVeins = new ArrayList<>(features);
                       for (int vein = 0; vein < features; vein++) {

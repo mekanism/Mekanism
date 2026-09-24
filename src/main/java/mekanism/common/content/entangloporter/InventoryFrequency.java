@@ -44,7 +44,6 @@ import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.EmitUtils;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
@@ -182,7 +181,7 @@ public class InventoryFrequency extends Frequency implements IContentsListener {
             lastEject = gameTime;
             Map<TransmissionType, Target<?, ?>> typesToEject = new EnumMap<>(TransmissionType.class);
             //All but heat and item
-            List<TargetExecution> transferHandlers = new ArrayList<>(EnumUtils.TRANSMISSION_TYPES.length - 2);
+            List<TargetExecution> transferHandlers = new ArrayList<>(TransmissionType.VALUES.size() - 2);
             int expected = 6 * activeQEs.size();
             try (Transaction simulation = Transaction.open(transaction)) {
                 addEnergyTransferHandler(typesToEject, transferHandlers, expected, simulation);

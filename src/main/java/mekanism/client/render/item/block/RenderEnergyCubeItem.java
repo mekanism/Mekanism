@@ -19,7 +19,6 @@ import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube.CubeSideState;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.IPersistentConfigInfo;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -95,10 +94,10 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
         if (tier == null) {
             return null;
         }
-        CubeSideState[] sideStates = new CubeSideState[EnumUtils.SIDES.length];
+        CubeSideState[] sideStates = new CubeSideState[RelativeSide.VALUES.size()];
         AttachedSideConfig fallback = tier.isCreative() ? ItemBlockEnergyCube.ALL_OUTPUT : ItemBlockEnergyCube.SIDE_CONFIG;
         IPersistentConfigInfo sideConfig = AttachedSideConfig.getStoredConfigInfo(stack, fallback, TransmissionType.ENERGY);
-        for (RelativeSide side : EnumUtils.SIDES) {
+        for (RelativeSide side : RelativeSide.VALUES) {
             DataType dataType = sideConfig.getDataType(side);
             CubeSideState state = CubeSideState.INACTIVE;
             if (dataType != DataType.NONE) {

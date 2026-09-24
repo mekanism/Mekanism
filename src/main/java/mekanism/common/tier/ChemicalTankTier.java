@@ -2,6 +2,7 @@ package mekanism.common.tier;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipProvider;
 import net.neoforged.neoforge.fluids.FluidType;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public enum ChemicalTankTier implements IStorageTier, TooltipProvider {
@@ -29,6 +31,9 @@ public enum ChemicalTankTier implements IStorageTier, TooltipProvider {
     ULTIMATE(BaseTier.ULTIMATE, 8_192L * FluidType.BUCKET_VOLUME, 512 * FluidType.BUCKET_VOLUME),
     CREATIVE(BaseTier.CREATIVE, Long.MAX_VALUE, Integer.MAX_VALUE);
 
+    /// Cached value of [ChemicalTankTier#values()].
+    @Unmodifiable
+    public static final List<ChemicalTankTier> VALUES = List.of(values());
     public static final IntFunction<ChemicalTankTier> BY_ID = ByIdMap.continuous(ChemicalTankTier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, ChemicalTankTier> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ChemicalTankTier::ordinal);
     public static final Codec<ChemicalTankTier> CODEC = StringRepresentable.fromEnum(ChemicalTankTier::values);

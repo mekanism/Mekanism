@@ -7,7 +7,6 @@ import java.util.function.ToIntFunction;
 import mekanism.common.Mekanism;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.ore.OreType.OreVeinType;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.SharedConstants;
@@ -113,7 +112,7 @@ public class GenHandler {
         }
         cachedFeatures = new ArrayList<>();
         Registry<PlacedFeature> placedFeatures = registryAccess.lookupOrThrow(Registries.PLACED_FEATURE);
-        for (OreType type : EnumUtils.ORE_TYPES) {
+        for (OreType type : OreType.VALUES) {
             for (int vein = 0, features = type.getBaseConfigs().size(); vein < features; vein++) {
                 OreVeinType oreVeinType = new OreVeinType(type, vein);
                 MekFeature mekFeature = MekFeature.create(placedFeatures, Mekanism.rl(oreVeinType.name()));

@@ -49,7 +49,6 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -301,7 +300,7 @@ public class MekanismModelProvider extends BaseModelProvider {
                 //If the texture does not exist fallback to the default texture and use a colorable base model
                 textureMapping = TextureMapping.cube(modTexture("block/resource_block"));
                 modelTemplate = COLORED_CUBE;
-                int tint = Arrays.stream(EnumUtils.PRIMARY_RESOURCES)
+                int tint = PrimaryResource.VALUES.stream()
                       .filter(resource -> resource.getRegistrySuffix().equals(registrySuffix))
                       .mapToInt(PrimaryResource::getTint)
                       .findFirst()
@@ -377,8 +376,8 @@ public class MekanismModelProvider extends BaseModelProvider {
                     )
         );
 
-        for (FactoryType factoryType : FactoryType.values()) {
-            for (FactoryTier tier : FactoryTier.values()) {
+        for (FactoryType factoryType : FactoryType.VALUES) {
+            for (FactoryTier tier : FactoryTier.VALUES) {
                 plainBlockItemModel(
                       blockModels,
                       MekanismBlocks.getFactory(tier, factoryType),

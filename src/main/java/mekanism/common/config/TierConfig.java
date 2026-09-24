@@ -16,7 +16,6 @@ import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
-import mekanism.common.util.EnumUtils;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -38,7 +37,7 @@ public class TierConfig extends BaseMekanismConfig {
 
     private void addEnergyCubeCategory(ModConfigSpec.Builder builder) {
         MekanismConfigTranslations.TIER_ENERGY_CUBE.applyToBuilder(builder).push("energy_cubes");
-        for (EnergyCubeTier tier : EnumUtils.ENERGY_CUBE_TIERS) {
+        for (EnergyCubeTier tier : EnergyCubeTier.VALUES) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedLongValue storageReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
@@ -52,7 +51,7 @@ public class TierConfig extends BaseMekanismConfig {
 
     private void addFluidTankCategory(ModConfigSpec.Builder builder) {
         MekanismConfigTranslations.TIER_FLUID_TANK.applyToBuilder(builder).push("fluid_tanks");
-        for (FluidTankTier tier : EnumUtils.FLUID_TANK_TIERS) {
+        for (FluidTankTier tier : FluidTankTier.VALUES) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedLongValue storageReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
@@ -66,7 +65,7 @@ public class TierConfig extends BaseMekanismConfig {
 
     private void addChemicalTankCategory(ModConfigSpec.Builder builder) {
         MekanismConfigTranslations.TIER_CHEMICAL_TANK.applyToBuilder(builder).push("chemical_tanks");
-        for (ChemicalTankTier tier : EnumUtils.CHEMICAL_TANK_TIERS) {
+        for (ChemicalTankTier tier : ChemicalTankTier.VALUES) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedLongValue storageReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
@@ -80,7 +79,7 @@ public class TierConfig extends BaseMekanismConfig {
 
     private void addBinCategory(ModConfigSpec.Builder builder) {
         MekanismConfigTranslations.TIER_BIN.applyToBuilder(builder).push("bins");
-        for (BinTier tier : EnumUtils.BIN_TIERS) {
+        for (BinTier tier : BinTier.VALUES) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedLongValue storageReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
@@ -92,14 +91,14 @@ public class TierConfig extends BaseMekanismConfig {
 
     private void addInductionCategory(ModConfigSpec.Builder builder) {
         MekanismConfigTranslations.TIER_INDUCTION.applyToBuilder(builder).push("induction");
-        for (InductionCellTier tier : EnumUtils.INDUCTION_CELL_TIERS) {
+        for (InductionCellTier tier : InductionCellTier.VALUES) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedLongValue storageReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
                   .defineInRange(tierName + "Capacity", tier.getBaseMaxEnergy(), 1, Long.MAX_VALUE));
             tier.setConfigReference(storageReference);
         }
-        for (InductionProviderTier tier : EnumUtils.INDUCTION_PROVIDER_TIERS) {
+        for (InductionProviderTier tier : InductionProviderTier.VALUES) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedLongValue outputReference = CachedLongValue.wrap(this, translations.second().applyToBuilder(builder)
@@ -121,7 +120,7 @@ public class TierConfig extends BaseMekanismConfig {
 
     private void addUniversalCableCategory(ModConfigSpec.Builder builder) {
         MekanismConfigTranslations.TIER_TRANSMITTERS_ENERGY.applyToBuilder(builder).push("energy");
-        for (CableTier tier : EnumUtils.CABLE_TIERS) {
+        for (CableTier tier : CableTier.VALUES) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedLongValue capacityReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
@@ -133,7 +132,7 @@ public class TierConfig extends BaseMekanismConfig {
 
     private void addMechanicalPipeCategory(ModConfigSpec.Builder builder) {
         MekanismConfigTranslations.TIER_TRANSMITTERS_FLUID.applyToBuilder(builder).push("fluid");
-        for (PipeTier tier : EnumUtils.PIPE_TIERS) {
+        for (PipeTier tier : PipeTier.VALUES) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedLongValue capacityReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
@@ -147,7 +146,7 @@ public class TierConfig extends BaseMekanismConfig {
 
     private void addPressurizedTubesCategory(ModConfigSpec.Builder builder) {
         MekanismConfigTranslations.TIER_TRANSMITTERS_CHEMICAL.applyToBuilder(builder).push("chemical");
-        for (TubeTier tier : EnumUtils.TUBE_TIERS) {
+        for (TubeTier tier : TubeTier.VALUES) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedLongValue capacityReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
@@ -161,7 +160,7 @@ public class TierConfig extends BaseMekanismConfig {
 
     private void addLogisticalTransportersCategory(ModConfigSpec.Builder builder) {
         MekanismConfigTranslations.TIER_TRANSMITTERS_ITEM.applyToBuilder(builder).push("items");
-        for (TransporterTier tier : EnumUtils.TRANSPORTER_TIERS) {
+        for (TransporterTier tier : TransporterTier.VALUES) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedIntValue pullReference = CachedIntValue.wrap(this, translations.first().applyToBuilder(builder)
@@ -175,7 +174,7 @@ public class TierConfig extends BaseMekanismConfig {
 
     private void addThermodynamicConductorsCategory(ModConfigSpec.Builder builder) {
         MekanismConfigTranslations.TIER_TRANSMITTERS_HEAT.applyToBuilder(builder).push("heat");
-        for (ConductorTier tier : EnumUtils.CONDUCTOR_TIERS) {
+        for (ConductorTier tier : ConductorTier.VALUES) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedDoubleValue conductionReference = CachedDoubleValue.wrap(this, translations.first().applyToBuilder(builder)

@@ -3,6 +3,7 @@ package mekanism.generators.common.tile.fission;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.SerializationConstants;
@@ -45,6 +46,7 @@ import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.event.EventHooks;
+import org.jetbrains.annotations.Unmodifiable;
 
 public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReactorCasing implements IReactorLogic<FissionReactorLogic> {
 
@@ -82,8 +84,9 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @Override
-    public FissionReactorLogic[] getModes() {
-        return FissionReactorLogic.values();
+    @Unmodifiable
+    public List<FissionReactorLogic> getModes() {
+        return FissionReactorLogic.VALUES;
     }
 
     public int getRedstoneLevel(Direction side) {
@@ -212,6 +215,9 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         DAMAGED(GeneratorsLang.REACTOR_LOGIC_DAMAGED, GeneratorsLang.DESCRIPTION_REACTOR_DAMAGED, Items.REDSTONE, EnumColor.RED),
         DEPLETED(GeneratorsLang.REACTOR_LOGIC_DEPLETED, GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, Items.REDSTONE, EnumColor.RED);
 
+        /// Cached value of [FissionReactorLogic#values()]
+        @Unmodifiable
+        public static final List<FissionReactorLogic> VALUES = List.of(values());
         public static final Codec<FissionReactorLogic> CODEC = StringRepresentable.fromEnum(FissionReactorLogic::values);
         public static final IntFunction<FissionReactorLogic> BY_ID = ByIdMap.continuous(FissionReactorLogic::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, FissionReactorLogic> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FissionReactorLogic::ordinal);

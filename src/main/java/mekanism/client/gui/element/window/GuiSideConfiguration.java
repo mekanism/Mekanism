@@ -34,7 +34,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -111,7 +110,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         ConfigInfo info = tile.getConfig().getConfig(currentType);
         if (info != null) {
             DataType commonType = null;
-            for (RelativeSide side : EnumUtils.SIDES) {
+            for (RelativeSide side : RelativeSide.VALUES) {
                 if (info.isSideEnabled(side)) {
                     DataType current = info.getDataType(side);
                     if (commonType == null) {

@@ -133,7 +133,7 @@ public class EnergyCubeBaseGeometry implements ExtendedUnbakedGeometry {
     private static Map<RelativeSide, UnbakedCuboidGeometry> getSidedMap(JsonDeserializationContext context, JsonObject object, String key) {
         Map<RelativeSide, UnbakedCuboidGeometry> parts = new EnumMap<>(RelativeSide.class);
         JsonObject group = GsonHelper.getAsJsonObject(object, key);
-        for (RelativeSide side : RelativeSide.values()) {
+        for (RelativeSide side : RelativeSide.VALUES) {
             parts.put(side, getElements(context, group, side.getSerializedName()));
         }
         return parts;

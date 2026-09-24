@@ -1,7 +1,6 @@
 package mekanism.common.tag;
 
 import com.google.common.collect.Table.Cell;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -30,7 +29,6 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -68,7 +66,6 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     @Override
     protected void registerTags(HolderLookup.Provider registries) {
-        //TODO - 26.3: BlockTags.CUSHION_USES_COLLISION_SHAPE ???
         addCompat();
         addProcessedResources();
         addBeaconTags();
@@ -282,7 +279,7 @@ public class MekanismTagProvider extends BaseTagProvider {
                     MekanismBlocks.STEEL_CASING.getItemHolder()
               )
               .add(MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.values().stream().map(BlockRegistryObject::getItemHolder))
-              .add(Arrays.stream(EnumUtils.ORE_TYPES).filter(OreType::isMetal).map(MekanismTags.BlockItems.ORES::get).map(BlockItemTagId::item).toList());
+              .add(OreType.VALUES.stream().filter(OreType::isMetal).map(MekanismTags.BlockItems.ORES::get).map(BlockItemTagId::item).toList());
 
         getBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_FAST_FLAT)
               .add(MekanismBlocks.BIO_FUEL_BLOCK.getItemHolder());
@@ -832,7 +829,7 @@ public class MekanismTagProvider extends BaseTagProvider {
 
         addTagsToTags(MekanismTags.BlockItems.FACTORIES, MekanismTags.BlockItems.TIERED_FACTORIES.values());
         addTagsToTags(MekanismTags.BlockItems.BASE_FACTORY_SUPPORTED, MekanismTags.BlockItems.FACTORY_SUPPORTED.values());
-        for (FactoryType factoryType : EnumUtils.FACTORY_TYPES) {
+        for (FactoryType factoryType : FactoryType.VALUES) {
             BlockItemTagId factories = MekanismTags.BlockItems.TIERED_FACTORIES.get(factoryType);
             BlockItemTagId factorySupported = MekanismTags.BlockItems.FACTORY_SUPPORTED.get(factoryType);
             addToTagsAndMarkKnown(factories, MekanismBlocks.getFactoryBlocks(factoryType).toArray(new BlockRegistryObject[0]));

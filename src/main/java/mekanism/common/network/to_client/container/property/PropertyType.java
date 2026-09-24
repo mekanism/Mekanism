@@ -1,6 +1,7 @@
 package mekanism.common.network.to_client.container.property;
 
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
@@ -31,6 +32,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public enum PropertyType {
@@ -49,6 +51,9 @@ public enum PropertyType {
     LARGE_RESOURCE_STACK(LargeResourceStack.class, null, SyncableLargeResourceStack::forSyncableProperty, () -> ResourceStackPropertyData.STREAM_CODEC),
     BLOCK_POS(BlockPos.class, null, (getter, setter, _) -> SyncableBlockPos.create(() -> (BlockPos) getter.get(), setter::accept), () -> BlockPosPropertyData.STREAM_CODEC);
 
+    /// Cached value of [PropertyType#values()].
+    @Unmodifiable
+    public static final List<PropertyType> VALUES = List.of(values());
     public static final IntFunction<PropertyType> BY_ID = ByIdMap.continuous(PropertyType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
     public static final StreamCodec<ByteBuf, PropertyType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, PropertyType::ordinal);
 
@@ -58,8 +63,6 @@ public enum PropertyType {
     @Nullable
     private final CreatorFunction creatorFunction;
     private final Supplier<StreamCodec<? super RegistryFriendlyByteBuf, ? extends PropertyData>> streamCodec;
-
-    private static final PropertyType[] VALUES = values();
 
     PropertyType(Class<?> type, @Nullable Object defaultValue, @Nullable CreatorFunction creatorFunction, Supplier<StreamCodec<? super RegistryFriendlyByteBuf, ? extends PropertyData>> streamCodec) {
         this.type = type;

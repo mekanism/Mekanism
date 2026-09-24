@@ -8,7 +8,6 @@ import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.armor.MekaSuitArmor.ModuleOBJModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
@@ -35,11 +34,11 @@ public class MekanismModelCache extends BaseModelCache {
     public final BlockStateModelPartHelper VIBRATOR_SHAFT = registerJSON("block/vibrator_shaft");
     public final BlockStateModelPartHelper PIGMENT_MIXER_SHAFT = registerJSON("block/pigment_mixer_shaft");
     public final BlockStateModelPartHelper TRANSPORTER_BOX = registerJSON("block/transporter_box");
-    public final BlockStateModelPartHelper[] QIO_DRIVES = new BlockStateModelPartHelper[EnumUtils.DRIVE_STATUSES.length];
+    public final BlockStateModelPartHelper[] QIO_DRIVES = new BlockStateModelPartHelper[DriveStatus.VALUES.size()];
 
     private MekanismModelCache() {
         super(Mekanism.MODID);
-        for (DriveStatus status : EnumUtils.DRIVE_STATUSES) {
+        for (DriveStatus status : DriveStatus.VALUES) {
             Identifier model = status.getModel();
             if (model != null) {
                 QIO_DRIVES[status.ordinal()] = registerJSON(model);

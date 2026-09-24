@@ -52,8 +52,8 @@ public final class TransporterUtils {
     @Nullable
     public static EnumColor increment(@Nullable EnumColor color) {
         if (color == null) {
-            return EnumUtils.COLORS[0];
-        } else if (color.ordinal() == EnumUtils.COLORS.length - 1) {
+            return EnumColor.VALUES.getFirst();
+        } else if (color.ordinal() == EnumColor.VALUES.size() - 1) {
             return null;
         }
         return color.getNext();
@@ -62,7 +62,7 @@ public final class TransporterUtils {
     @Nullable
     public static EnumColor decrement(@Nullable EnumColor color) {
         if (color == null) {
-            return EnumUtils.COLORS[EnumUtils.COLORS.length - 1];
+            return EnumColor.VALUES.getLast();
         }
         return color.ordinal() == 0 ? null : color.getPrevious();
     }

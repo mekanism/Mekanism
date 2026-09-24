@@ -2,6 +2,7 @@ package mekanism.common.tier;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
@@ -22,6 +23,7 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipProvider;
 import net.neoforged.neoforge.fluids.FluidType;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public enum PipeTier implements IStorageTier, TooltipProvider {//TODO - 26.3: Do we want to change capacities to match chemicals?
@@ -30,6 +32,9 @@ public enum PipeTier implements IStorageTier, TooltipProvider {//TODO - 26.3: Do
     ELITE(BaseTier.ELITE, 32L * FluidType.BUCKET_VOLUME, 8 * FluidType.BUCKET_VOLUME),
     ULTIMATE(BaseTier.ULTIMATE, 128L * FluidType.BUCKET_VOLUME, 32 * FluidType.BUCKET_VOLUME);
 
+    /// Cached value of [PipeTier#values()].
+    @Unmodifiable
+    public static final List<PipeTier> VALUES = List.of(values());
     public static final IntFunction<PipeTier> BY_ID = ByIdMap.continuous(PipeTier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, PipeTier> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, PipeTier::ordinal);
     public static final Codec<PipeTier> CODEC = StringRepresentable.fromEnum(PipeTier::values);

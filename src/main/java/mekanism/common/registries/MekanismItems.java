@@ -62,7 +62,6 @@ import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.QIODriveTier;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -282,8 +281,8 @@ public class MekanismItems {
           .repairable(HDPE_SHEET.value()));
 
     static {
-        for (ResourceType type : EnumUtils.RESOURCE_TYPES) {
-            for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
+        for (ResourceType type : ResourceType.VALUES) {
+            for (PrimaryResource resource : PrimaryResource.VALUES) {
                 if (resource.has(type)) {
                     PROCESSED_RESOURCES.put(type, resource, registerResource(type, resource));
                 }

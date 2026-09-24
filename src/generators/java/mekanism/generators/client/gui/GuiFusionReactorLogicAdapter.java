@@ -40,7 +40,7 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
         addRenderableWidget(new ToggleButton(this, 26, 19, 11, tile::isActiveCooled,
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, ((GuiFusionReactorLogicAdapter) element.gui()).tile))))
               .setTooltip(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING);
-        scrollBar = addRenderableWidget(new GuiScrollBar(this, 156, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
+        scrollBar = addRenderableWidget(new GuiScrollBar(this, 156, 31, 90, () -> tile.getModes().size(), () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {
             int typeShift = 22 * i;
             addRenderableWidget(new ReactorLogicButton<>(this, 27, 32 + typeShift, i, tile, FusionReactorLogic.class, scrollBar::getCurrentSelection, tile::getModes, this::changeLogic));

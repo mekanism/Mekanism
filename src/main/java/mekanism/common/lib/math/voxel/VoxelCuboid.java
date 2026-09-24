@@ -2,11 +2,13 @@ package mekanism.common.lib.math.voxel;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.Structure.Axis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public class VoxelCuboid implements IShape {
@@ -221,7 +223,9 @@ public class VoxelCuboid implements IShape {
         WEST(Axis.X, Face.NEGATIVE),
         EAST(Axis.X, Face.POSITIVE);
 
-        public static final CuboidSide[] SIDES = values();
+        /// Cached value of [CuboidSide#values()].
+        @Unmodifiable
+        public static final List<CuboidSide> VALUES = List.of(values());
 
         private static final CuboidSide[][] ORDERED = {{WEST, BOTTOM, NORTH}, {EAST, TOP, SOUTH}};
         private static final CuboidSide[] OPPOSITES = {TOP, BOTTOM, SOUTH, NORTH, EAST, WEST};

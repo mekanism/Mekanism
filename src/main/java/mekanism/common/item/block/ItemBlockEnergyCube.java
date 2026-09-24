@@ -20,7 +20,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.util.Unit;
@@ -35,14 +34,14 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     public static final AttachedSideConfig SIDE_CONFIG = sideConfig(LightConfigInfo.FRONT_OUT_EJECT);
     public static final AttachedSideConfig ALL_INPUT = Util.make(() -> {
         Map<RelativeSide, DataType> sideData = new EnumMap<>(RelativeSide.class);
-        for (RelativeSide side : EnumUtils.SIDES) {
+        for (RelativeSide side : RelativeSide.VALUES) {
             sideData.put(side, DataType.INPUT);
         }
         return sideConfig(new LightConfigInfo(sideData, false));
     });
     public static final AttachedSideConfig ALL_OUTPUT = Util.make(() -> {
         Map<RelativeSide, DataType> sideData = new EnumMap<>(RelativeSide.class);
-        for (RelativeSide side : EnumUtils.SIDES) {
+        for (RelativeSide side : RelativeSide.VALUES) {
             sideData.put(side, DataType.OUTPUT);
         }
         return sideConfig(new LightConfigInfo(sideData, true));

@@ -143,7 +143,7 @@ public class ClientConfig extends BaseMekanismConfig {
         builder.pop();
 
         MekanismConfigTranslations.CLIENT_LAST_WINDOW_POSITIONS.applyToBuilder(builder).push("window");
-        for (WindowType windowType : WindowType.values()) {
+        for (WindowType windowType : WindowType.VALUES) {
             for (ConfigSaveData saveData : windowType.getSavePaths()) {
                 saveData.applyToBuilder(builder).push(saveData.savePath());
                 lastWindowPositions.put(saveData.savePath(), new CachedWindowPosition(

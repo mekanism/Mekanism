@@ -13,7 +13,6 @@ import java.util.concurrent.CompletableFuture;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registries.MekanismRobitSkins;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -52,7 +51,7 @@ public class PrideRobitTextureProvider implements DataProvider {
                     // so we will overwrite any changes we make. In theory, we could just edit the loaded source directly,
                     // but it is a bit safer to just copy it into its own spot in memory
                     writableImage.copyFrom(sourceImage);
-                    for (RobitPrideSkinData skinData : EnumUtils.PRIDE_SKINS) {
+                    for (RobitPrideSkinData skinData : RobitPrideSkinData.VALUES) {
                         String baseFileName = skinData.lowerCaseName();
                         //generate all textures
                         for (int rotationIndex = 0; rotationIndex < skinData.getColor().length; rotationIndex++) {
