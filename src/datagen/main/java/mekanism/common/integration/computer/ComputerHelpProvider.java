@@ -1,14 +1,10 @@
 package mekanism.common.integration.computer;
 
-import com.google.common.hash.Hashing;
-import com.google.common.hash.HashingOutputStream;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thiakil.yamlops.SnakeYamlOps;
 import com.thiakil.yamlops.YamlHelper;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -187,26 +183,16 @@ public class ComputerHelpProvider implements DataProvider {
 
     //implementation isn't quite "stable" like json, input MUST be pre-sorted
     //the computer help uses TreeMaps to maintain order
-    @SuppressWarnings("UnstableApiUsage")
-    static CompletableFuture<?> saveCSV(CachedOutput pOutput, Path pPath, String[] headers, IOConsumer<CsvOutput> rowGenerator) {
-        return CompletableFuture.runAsync(() -> {
-            try (ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream()) {
-                HashingOutputStream hashingoutputstream = new HashingOutputStream(Hashing.sha1(), bytearrayoutputstream);
-
-                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(hashingoutputstream, StandardCharsets.UTF_8))) {
-                    Builder builder = CsvOutput.builder();
-                    for (String header : headers) {
-                        builder.addColumn(header);
-                    }
-                    rowGenerator.accept(builder.build(writer));
+    private static CompletableFuture<?> saveCSV(CachedOutput output, Path path, String[] headers, IOConsumer<CsvOutput> rowGenerator) {
+        return MekanismDataGenerator.save(output, stream -> {
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stream, StandardCharsets.UTF_8))) {
+                Builder builder = CsvOutput.builder();
+                for (String header : headers) {
+                    builder.addColumn(header);
                 }
-
-                pOutput.writeIfNeeded(pPath, bytearrayoutputstream.toByteArray(), hashingoutputstream.hash());
-            } catch (IOException ioexception) {
-                LOGGER.error("Failed to save file to {}", pPath, ioexception);
+                rowGenerator.accept(builder.build(writer));
             }
-
-        }, Util.backgroundExecutor());
+        }, path);
     }
 
     private static String getFriendlyName(Class<?> clazz) {

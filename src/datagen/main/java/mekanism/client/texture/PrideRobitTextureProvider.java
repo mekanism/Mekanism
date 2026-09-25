@@ -80,10 +80,10 @@ public class PrideRobitTextureProvider implements DataProvider {
                                 fileName += rotationIndex + 1;
                             }
                             Path path = pathProvider.file(Mekanism.rl(fileName), "png");
-                            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                                 HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), outputStream)) {
-                                nativeImageToStream(writableImage, hashingOutputStream);
-                                cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
+                            try (ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                                 HashingOutputStream hashedBytes = new HashingOutputStream(Hashing.sha1(), bytes)) {
+                                nativeImageToStream(writableImage, hashedBytes);
+                                cache.writeIfNeeded(path, bytes.toByteArray(), hashedBytes.hash());
                             } catch (IOException ioexception) {
                                 Mekanism.logger.error("Failed to save file to {}", path, ioexception);
                             }

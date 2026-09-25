@@ -6,6 +6,7 @@ import mekanism.common.PersistingDisabledProvidersProvider;
 import mekanism.generators.client.GeneratorsLangProvider;
 import mekanism.generators.client.GeneratorsModelProvider;
 import mekanism.generators.client.GeneratorsSoundProvider;
+import mekanism.generators.client.GeneratorsSplashProvider;
 import mekanism.generators.client.integration.emi.GeneratorsEmiDefaults;
 import mekanism.generators.client.recipe_viewer.alias.GeneratorsAliasMapping;
 import net.minecraft.core.HolderLookup;
@@ -38,6 +39,7 @@ public class GeneratorsDataGenerator {
         gen.addProvider(true, new GeneratorsLangProvider(output));
         gen.addProvider(true, new GeneratorsSoundProvider(output));
         gen.addProvider(true, new GeneratorsModelProvider(output, clientResources));
+        gen.addProvider(true, new GeneratorsSplashProvider(output));
         //Server side data generators
         gen.addProvider(true, new GeneratorsTagProvider(output, reloadableLookupProvider));
         gen.addProvider(true, worldRegistryProvider);

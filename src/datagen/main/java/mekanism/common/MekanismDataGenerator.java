@@ -24,6 +24,7 @@ import mekanism.client.lang.MekanismLangProvider;
 import mekanism.client.model.MekanismEquipmentAssetProvider;
 import mekanism.client.model.MekanismModelProvider;
 import mekanism.client.sound.MekanismSoundProvider;
+import mekanism.client.splash.MekanismSplashProvider;
 import mekanism.client.texture.MekanismSpriteSourceProvider;
 import mekanism.client.texture.PrideRobitTextureProvider;
 import mekanism.common.integration.computer.ComputerHelpProvider;
@@ -92,6 +93,7 @@ public class MekanismDataGenerator {
         gen.addProvider(true, new MekanismLangProvider(output));
         gen.addProvider(true, new PrideRobitTextureProvider(output, clientResources));
         gen.addProvider(true, new MekanismSoundProvider(output));
+        gen.addProvider(true, new MekanismSplashProvider(output));
         gen.addProvider(true, new MekanismSpriteSourceProvider(output, worldLookupProvider));
         gen.addProvider(true, new MekanismModelProvider(output, clientResources));
         gen.addProvider(true, new MekanismEquipmentAssetProvider(output));
@@ -144,10 +146,10 @@ public class MekanismDataGenerator {
     @SuppressWarnings({"UnstableApiUsage", "deprecation"})
     public static CompletableFuture<?> save(CachedOutput cache, IOConsumer<OutputStream> osConsumer, Path path) {
         return CompletableFuture.runAsync(() -> {
-            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                 HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), outputStream)) {
-                osConsumer.accept(hashingOutputStream);
-                cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
+            try (ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                 HashingOutputStream hashedBytes = new HashingOutputStream(Hashing.sha1(), bytes)) {
+                osConsumer.accept(hashedBytes);
+                cache.writeIfNeeded(path, bytes.toByteArray(), hashedBytes.hash());
             } catch (IOException ioexception) {
                 DataProvider.LOGGER.error("Failed to save file to {}", path, ioexception);
             }

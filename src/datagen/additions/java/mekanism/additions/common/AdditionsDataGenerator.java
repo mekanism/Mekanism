@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture;
 import mekanism.additions.client.AdditionsLangProvider;
 import mekanism.additions.client.AdditionsModelProvider;
 import mekanism.additions.client.AdditionsSoundProvider;
+import mekanism.additions.client.AdditionsSplashProvider;
 import mekanism.additions.client.AdditionsSpriteSourceProvider;
 import mekanism.additions.client.integration.emi.AdditionsEmiDefaults;
 import mekanism.additions.client.recipe_viewer.aliases.AdditionsAliasMapping;
@@ -40,6 +41,7 @@ public class AdditionsDataGenerator {
         gen.addProvider(true, new AdditionsSoundProvider(output));
         gen.addProvider(true, new AdditionsSpriteSourceProvider(output, worldLookupProvider));
         gen.addProvider(true, new AdditionsModelProvider(output, clientResources));
+        gen.addProvider(true, new AdditionsSplashProvider(output));
         //Server side data generators
         gen.addProvider(true, new AdditionsTagProvider(output, reloadableLookupProvider));
         gen.addProvider(true, worldRegistryProvider);

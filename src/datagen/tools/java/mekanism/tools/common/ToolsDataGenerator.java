@@ -6,6 +6,7 @@ import mekanism.common.PersistingDisabledProvidersProvider;
 import mekanism.tools.client.ToolsEquipmentAssetProvider;
 import mekanism.tools.client.ToolsLangProvider;
 import mekanism.tools.client.ToolsModelProvider;
+import mekanism.tools.client.ToolsSplashProvider;
 import mekanism.tools.client.ToolsSpriteSourceProvider;
 import mekanism.tools.client.integration.emi.ToolsEmiDefaults;
 import mekanism.tools.client.recipe_viewer.aliases.ToolsAliasMapping;
@@ -40,6 +41,7 @@ public class ToolsDataGenerator {
         gen.addProvider(true, new ToolsSpriteSourceProvider(output, worldLookupProvider));
         gen.addProvider(true, new ToolsModelProvider(output, clientResources));
         gen.addProvider(true, new ToolsEquipmentAssetProvider(output));
+        gen.addProvider(true, new ToolsSplashProvider(output));
         //Server side data generators
         gen.addProvider(true, new ToolsTagProvider(output, reloadableLookupProvider));
         gen.addProvider(true, worldRegistryProvider);

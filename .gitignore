@@ -15,6 +15,7 @@ MDK.zip
 .settings
 /eclipse
 *.txt
+!**/datagen/**/*.txt
 *.launch
 
 *.blend1
