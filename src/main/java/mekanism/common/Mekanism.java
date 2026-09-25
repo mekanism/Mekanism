@@ -124,7 +124,7 @@ import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.registries.NewDatapackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.datamaps.DataMapsUpdatedEvent;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
@@ -218,7 +218,7 @@ public class Mekanism {
 
     private void addRegistrationListeners(IEventBus modEventBus) {
         modEventBus.addListener(NewRegistryEvent.class, this::registerRegistries);
-        modEventBus.addListener(DataPackRegistryEvent.NewRegistry.class, this::registerSimpleDPRegistries);
+        modEventBus.addListener(NewDatapackRegistryEvent.class, this::registerSimpleDPRegistries);
 
         MekanismItems.ITEMS.register(modEventBus);
         MekanismBlocks.BLOCKS.register(modEventBus);
@@ -254,8 +254,8 @@ public class Mekanism {
         MekanismTicketTypes.TICKET_TYPES.register(modEventBus);
     }
 
-    private void registerSimpleDPRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(MekanismRegistries.Keys.UPGRADES, Upgrade.DIRECT_CODEC, Upgrade.DIRECT_CODEC);
+    private void registerSimpleDPRegistries(NewDatapackRegistryEvent event) {
+        event.worldRegistry(MekanismRegistries.Keys.UPGRADES, Upgrade.DIRECT_CODEC, Upgrade.DIRECT_CODEC);
     }
 
     private void registerRegistries(NewRegistryEvent event) {

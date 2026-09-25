@@ -12,8 +12,8 @@ import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.StructureModifier;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.NewDatapackRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.jspecify.annotations.Nullable;
 
@@ -45,10 +45,10 @@ public class DatapackDeferredRegister<T> extends DeferredMapCodecRegister<T> {
     }
 
     /// Only call this from mekanism and for custom datapack registries
-    public void createAndRegisterDatapack(IEventBus bus, Codec<T> directCodec, @Nullable Codec<T> networkCodec, Consumer<RegistryBuilder<T>> consumer) {
+    public void createAndRegisterWorldRegistry(IEventBus bus, Codec<T> directCodec, @Nullable Codec<T> networkCodec, Consumer<RegistryBuilder<T>> consumer) {
         register(bus);
         //Create a new datapack registry using the direct codec that is created based on the serializer's codec
-        bus.addListener(DataPackRegistryEvent.NewRegistry.class, event -> event.dataPackRegistry(datapackRegistryName, directCodec, networkCodec, consumer));
+        bus.addListener(NewDatapackRegistryEvent.class, event -> event.worldRegistry(datapackRegistryName, directCodec, networkCodec, consumer));
     }
 
     public ResourceKey<T> dataKey(String name) {

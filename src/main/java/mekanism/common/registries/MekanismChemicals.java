@@ -38,7 +38,7 @@ public class MekanismChemicals {
     });
 
     public static void createAndRegisterDatapack(IEventBus modEventBus) {
-        CHEMICALS.createAndRegisterDatapack(modEventBus, ChemicalSerializationHelper.DIRECT_CODEC, ChemicalSerializationHelper.NETWORK_CODEC,
+        CHEMICALS.createAndRegisterWorldRegistry(modEventBus, ChemicalSerializationHelper.DIRECT_CODEC, ChemicalSerializationHelper.NETWORK_CODEC,
               registryBuilder -> registryBuilder
                     .defaultKey(ChemicalIds.EMPTY)
                     .onBake(registry -> ((EmptyChemicalResource) ChemicalResource.EMPTY).updateEmptyHolder(registry.getOrThrow(ChemicalIds.EMPTY)))

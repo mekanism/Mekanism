@@ -45,7 +45,7 @@ public class MekanismRobitSkins {
     });
 
     public static void createAndRegisterDatapack(IEventBus modEventBus) {
-        ROBIT_SKINS.createAndRegisterDatapack(modEventBus, RobitSkinSerializationHelper.DIRECT_CODEC, RobitSkinSerializationHelper.NETWORK_CODEC.codec(),
+        ROBIT_SKINS.createAndRegisterWorldRegistry(modEventBus, RobitSkinSerializationHelper.DIRECT_CODEC, RobitSkinSerializationHelper.NETWORK_CODEC.codec(),
               registryBuilder -> registryBuilder.defaultKey(BASE));
     }
 
