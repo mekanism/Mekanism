@@ -21,7 +21,6 @@ import mekanism.common.base.MekanismPermissions;
 import mekanism.common.base.PlayerState;
 import mekanism.common.base.TagCache;
 import mekanism.common.base.holiday.HolidayManager;
-import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.command.CommandMek;
 import mekanism.common.command.builders.BuildCommand;
@@ -42,7 +41,6 @@ import mekanism.common.content.qio.QIOGlobalItemLookup;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
 import mekanism.common.item.interfaces.IHasConditionalAttributes;
@@ -64,7 +62,6 @@ import mekanism.common.network.to_client.transmitter.PacketFluidNetworkContents;
 import mekanism.common.network.to_client.transmitter.PacketNetworkScale;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.condition.MekanismRecipeConditions;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicalIngredientTypes;
@@ -92,12 +89,12 @@ import mekanism.common.registries.MekanismSlotDisplayTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTicketTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
 import mekanism.common.world.GenHandler;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.cauldron.CauldronInteractions;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -119,6 +116,7 @@ import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.RegisterCauldronInteractionEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
@@ -198,6 +196,7 @@ public class Mekanism {
         });
         modEventBus.addListener(EventPriority.HIGH, RegisterCapabilitiesEvent.class, Capabilities::registerProxyableCapabilities);
         modEventBus.addListener(RegisterCapabilitiesEvent.class, Capabilities::registerCapabilities);
+        modEventBus.addListener(RegisterCauldronInteractionEvent.Interaction.class, this::registerCauldronInteractions);
         modEventBus.addListener(FMLCommonSetupEvent.class, this::commonSetup);
         modEventBus.addListener(RegisterTicketControllersEvent.class, this::registerChunkTicketControllers);
         modEventBus.addListener(ModConfigEvent.class, MekanismConfig::onConfigLoad);
@@ -339,8 +338,12 @@ public class Mekanism {
             MekAnnotationScanner.collectScanData();
             //Register dispenser behaviors
             MekanismFluids.FLUIDS.registerBucketDispenserBehavior();
-            registerFluidTankBehaviors(MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK,
-                  MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK);
+            DispenserBlock.registerBehavior(MekanismBlocks.BASIC_FLUID_TANK.asItem(), FluidTankItemDispenseBehavior.INSTANCE);
+            DispenserBlock.registerBehavior(MekanismBlocks.ADVANCED_FLUID_TANK.asItem(), FluidTankItemDispenseBehavior.INSTANCE);
+            DispenserBlock.registerBehavior(MekanismBlocks.ELITE_FLUID_TANK.asItem(), FluidTankItemDispenseBehavior.INSTANCE);
+            DispenserBlock.registerBehavior(MekanismBlocks.ULTIMATE_FLUID_TANK.asItem(), FluidTankItemDispenseBehavior.INSTANCE);
+            DispenserBlock.registerBehavior(MekanismBlocks.CREATIVE_FLUID_TANK.asItem(), FluidTankItemDispenseBehavior.INSTANCE);
+
             registerDispenseBehavior(new ModuleDispenseBehavior(), MekanismItems.MEKA_TOOL);
             registerDispenseBehavior(new MekaSuitDispenseBehavior(), MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS,
                   MekanismItems.MEKASUIT_BOOTS);
@@ -365,16 +368,8 @@ public class Mekanism {
         }
     }
 
-    @SafeVarargs
-    private static void registerFluidTankBehaviors(BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank>... tanks) {
-        for (BlockRegistryObject<?, ?> tank : tanks) {
-            Item item = tank.getItemHolder().value();
-            DispenserBlock.registerBehavior(item, FluidTankItemDispenseBehavior.INSTANCE);
-            //TODO: Is there any generic cauldron interaction map that we could get for purposes of custom cauldrons from RegisterCauldronFluidContentEvent
-            CauldronInteractions.EMPTY.put(item, FluidTankCauldronInteraction.INSTANCE);
-            CauldronInteractions.WATER.put(item, FluidTankCauldronInteraction.INSTANCE);
-            CauldronInteractions.LAVA.put(item, FluidTankCauldronInteraction.INSTANCE);
-        }
+    private void registerCauldronInteractions(RegisterCauldronInteractionEvent.Interaction event) {
+        event.registerToAll(MekanismTags.BlockItems.FLUID_TANKS.item(), FluidTankCauldronInteraction.INSTANCE);
     }
 
     private void registerChunkTicketControllers(RegisterTicketControllersEvent event) {
