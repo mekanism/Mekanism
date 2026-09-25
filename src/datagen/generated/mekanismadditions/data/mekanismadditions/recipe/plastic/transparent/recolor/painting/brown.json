@@ -1,7 +1,7 @@
 {
   "type": "mekanism:painting",
   "chemical_input": {
-    "amount": 32,
+    "amount": 42,
     "chemical": "mekanism:brown"
   },
   "item_input": {

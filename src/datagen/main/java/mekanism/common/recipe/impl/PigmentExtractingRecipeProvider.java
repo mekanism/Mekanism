@@ -35,7 +35,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
     private static final long STAINED_GLASS_RATE = DYE_RATE / 16;//16
     private static final long STAINED_GLASS_PANE_RATE = STAINED_GLASS_RATE * 3 / 8;//6
     private static final long WOOL_RATE = DYE_RATE * 3 / 4;//192
-    private static final long CARPET_RATE = WOOL_RATE * 2 / 3;//128
+    public static final long CARPET_RATE = WOOL_RATE * 2 / 3;//128
 
     private static final Map<EnumColor, TagKey<Item>> DYED_TAGS = new EnumMap<>(EnumColor.class);
 

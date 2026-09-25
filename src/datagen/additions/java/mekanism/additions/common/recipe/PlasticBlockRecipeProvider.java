@@ -221,7 +221,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(recolorInput),
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE / 8),
+              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE * 3 / 16 * 7 / 8),
               new ItemStack(result.value()),
               false
         ).build(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
