@@ -2,7 +2,7 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "ingredient": "minecraft:netherrack"
+    "ingredient": "#c:netherracks"
   },
   "main_input": {
     "count": 14,

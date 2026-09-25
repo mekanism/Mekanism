@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "ingredient": "minecraft:pumpkin"
+    "ingredient": "#c:pumpkins/normal"
   },
   "main_output": {
     "id": "minecraft:carved_pumpkin"

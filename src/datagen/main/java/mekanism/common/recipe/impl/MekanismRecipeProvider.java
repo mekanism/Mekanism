@@ -40,7 +40,6 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -475,7 +474,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ADVANCED)
               .key(Pattern.CONSTANT, this.items, MekanismTags.Items.INGOTS_BRONZE)
               .key(Pattern.INGOT, tinIngot(this.items))
-              .key(Pattern.STEEL, this.items, ItemIds.FLINT_AND_STEEL)
+              .key(Pattern.STEEL, this.items, Tags.Items.TOOLS_IGNITER)
               .category(RecipeCategory.TOOLS)
               .save(output);
         //Fluidic plenisher
@@ -532,7 +531,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
-              .key(Pattern.CONSTANT, this.items, BlockItemIds.FURNACE)
+              .key(Pattern.CONSTANT, this.items, Tags.Items.PLAYER_WORKSTATIONS_FURNACES)
               .save(output);
         //Scuba mask
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.SCUBA_MASK)
@@ -720,7 +719,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
               .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .key(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
-              .key(Pattern.CONSTANT, this.items, BlockItemIds.FURNACE)
+              .key(Pattern.CONSTANT, this.items, Tags.Items.PLAYER_WORKSTATIONS_FURNACES)
               .save(output);
         //Network reader
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.NETWORK_READER)
@@ -813,7 +812,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL),
                     TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.CONSTANT),
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL))
-              ).key(Pattern.CONSTANT, this.items, BlockItemTags.BARS)
+              ).key(Pattern.CONSTANT, this.items, Tags.Items.BARS)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .save(output);
@@ -1474,7 +1473,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
-              .key(Pattern.CONSTANT, this.items, ItemIds.SHEARS)
+              .key(Pattern.CONSTANT, this.items, Tags.Items.TOOLS_SHEAR)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
               .save(output, MekanismModules.SHEARING_UNIT.getId());
         //Vein Mining Unit
@@ -1495,7 +1494,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
-              .key(Pattern.CONSTANT, this.items, ItemIds.EMERALD)
+              .key(Pattern.CONSTANT, this.items, Tags.Items.GEMS_EMERALD)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .save(output, MekanismModules.VISION_ENHANCEMENT_UNIT.getId());
         //Inhalation Purification Unit
@@ -1518,7 +1517,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.HDPE_CHAR, Pattern.HDPE_CHAR, Pattern.HDPE_CHAR))
               ).key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
-              .key(Pattern.CONSTANT, this.items, BlockItemIds.IRON_BARS)
+              .key(Pattern.CONSTANT, this.items, Tags.Items.BARS_IRON)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ELITE)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .save(output, MekanismModules.MAGNETIC_ATTRACTION_UNIT.getId());
@@ -1577,7 +1576,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.HDPE_CHAR, Pattern.CONSTANT, Pattern.HDPE_CHAR))
               ).key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
-              .key(Pattern.CONSTANT, this.items, BlockItemIds.OBSIDIAN)
+              .key(Pattern.CONSTANT, this.items, Tags.Items.OBSIDIANS_NORMAL)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .save(output, MekanismModules.GYROSCOPIC_STABILIZATION_UNIT.getId());
         //Hydrostatic Repulsion Unit

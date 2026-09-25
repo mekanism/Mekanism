@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "#": "minecraft:iron_bars",
+    "#": "#c:bars/iron",
     "A": "#c:alloys/elite",
     "C": "#c:circuits/elite",
     "H": "#c:pellets/polonium",

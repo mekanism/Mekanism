@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "ingredient": "minecraft:netherrack"
+    "ingredient": "#c:netherracks"
   },
   "output": {
     "id": "minecraft:crimson_nylium"

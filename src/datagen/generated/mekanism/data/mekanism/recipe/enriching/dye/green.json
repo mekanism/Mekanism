@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "ingredient": "minecraft:cactus"
+    "ingredient": "#c:crops/cactus"
   },
   "output": {
     "count": 2,

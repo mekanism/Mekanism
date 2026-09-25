@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "ingredient": "minecraft:cocoa_beans"
+    "ingredient": "#c:crops/cocoa_bean"
   },
   "output": {
     "amount": 768,

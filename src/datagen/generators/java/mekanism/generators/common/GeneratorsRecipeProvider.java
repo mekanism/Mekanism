@@ -29,10 +29,8 @@ import mekanism.generators.common.registries.GeneratorsModules;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.Recipe;
@@ -179,7 +177,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
               .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .key(COPPER_CHAR, this.items, Tags.Items.INGOTS_COPPER)
-              .key(FURNACE_CHAR, this.items, BlockItemIds.FURNACE)
+              .key(FURNACE_CHAR, this.items, Tags.Items.PLAYER_WORKSTATIONS_FURNACES)
               .save(output, MekanismGenerators.rl("generator/heat"));
         //Wind
         MekDataShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.WIND_GENERATOR)
@@ -405,7 +403,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, BARS_CHAR, Pattern.CONSTANT),
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CONSTANT, GeneratorsBlocks.TURBINE_CASING)
-              .key(BARS_CHAR, this.items, BlockItemTags.BARS)
+              .key(BARS_CHAR, this.items, Tags.Items.BARS)
               .save(output, MekanismGenerators.rl("turbine/vent"));
     }
 }

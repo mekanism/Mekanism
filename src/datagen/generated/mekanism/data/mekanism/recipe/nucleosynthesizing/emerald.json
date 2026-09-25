@@ -7,7 +7,7 @@
   "duration": 1000,
   "item_input": {
     "count": 1,
-    "ingredient": "minecraft:diamond"
+    "ingredient": "#c:gems/diamond"
   },
   "output": {
     "id": "minecraft:emerald"

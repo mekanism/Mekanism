@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "ingredient": "minecraft:resin_block"
+    "ingredient": "#c:storage_blocks/resin"
   },
   "output": {
     "count": 9,

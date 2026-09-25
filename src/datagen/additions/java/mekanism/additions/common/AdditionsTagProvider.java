@@ -56,7 +56,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
         addGlowPanels();
         addPlasticBlocks();
         addHarvestRequirements();
-        getBuilder(BlockTags.IMPERMEABLE).add(AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.asList());
+        getBuilder(BlockTags.IMPERMEABLE).add(AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS);
         getBuilder(BlockTags.BLOCKS_MOTION_NO_LEAVES)
               //Note: Plastic fences, fence gates, slabs, and stairs are already covered by vanilla adding the corresponding base tags to BLOCKS_MOTION_NO_LEAVES
               .addAsBlocks(AdditionsTags.BlockItems.PLASTIC_BLOCKS, AdditionsTags.BlockItems.GLOW_PANELS)
@@ -183,7 +183,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
               AdditionsTags.BlockItems.PLASTIC_BLOCKS_REINFORCED, AdditionsTags.BlockItems.PLASTIC_BLOCKS_ROAD, AdditionsTags.BlockItems.PLASTIC_BLOCKS_SLICK,
               AdditionsTags.BlockItems.PLASTIC_BLOCKS_TRANSPARENT);
 
-        getBuilder(FRAMEABLE).add(AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.asList());
+        getBuilder(FRAMEABLE).add(AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS);
     }
 
     private void addHarvestRequirements() {
@@ -201,6 +201,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
 
     private void addToTags(TagKey<Item> itemTag, TagKey<Block> blockTag, EnumColorCollection<? extends BlockRegistryObject<?, ?>> blockProviders) {
         addToTags(itemTag, blockTag, blockProviders.asList());
+        addToTags(Tags.Items.DYEABLE_REDYEABLE_SIMPLE , Tags.Blocks.DYEABLE_REDYEABLE_SIMPLE, blockProviders.asList());
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, blockProviders, (color, provider) -> {
             DyeColor dyeColor = color.getDyeColor();
             if (dyeColor != null) {
@@ -211,7 +212,8 @@ public class AdditionsTagProvider extends BaseTagProvider {
     }
 
     private void addToTag(TagKey<Item> itemTag, EnumColorCollection<? extends Holder<Item>> itemProviders) {
-        getBuilder(itemTag).add(itemProviders.asList());
+        getBuilder(itemTag).add(itemProviders);
+        getBuilder(Tags.Items.DYEABLE_REDYEABLE_SIMPLE).add(itemProviders);
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, itemProviders, (color, provider) -> {
             DyeColor dyeColor = color.getDyeColor();
             if (dyeColor != null) {

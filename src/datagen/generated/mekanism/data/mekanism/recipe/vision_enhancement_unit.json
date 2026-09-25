@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "#": "minecraft:emerald",
+    "#": "#c:gems/emerald",
     "A": "#c:alloys/elite",
     "H": "#c:pellets/polonium",
     "P": "mekanism:module_base"

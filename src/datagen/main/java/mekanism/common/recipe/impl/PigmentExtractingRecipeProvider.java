@@ -18,6 +18,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
 public class PigmentExtractingRecipeProvider extends BaseSubRecipeProvider {
@@ -79,7 +80,7 @@ public class PigmentExtractingRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "large_cyan"));
         //Green
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
-              IngredientCreatorAccess.item().from(items, BlockItemIds.CACTUS),
+              IngredientCreatorAccess.item().from(items, Tags.Items.CROPS_CACTUS),
               chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.darkGreen(), flowerRate)
         ).save(consumer, Mekanism.rl(basePath + "green"));
         //Light gray
@@ -160,7 +161,7 @@ public class PigmentExtractingRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "blue"));
         //Brown
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
-              IngredientCreatorAccess.item().from(items, BlockItemIds.COCOA_CROP),
+              IngredientCreatorAccess.item().from(items, Tags.Items.CROPS_COCOA_BEAN),
               chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.brown(), flowerRate)
         ).save(consumer, Mekanism.rl(basePath + "brown"));
         //Black

@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "#": "minecraft:obsidian",
+    "#": "#c:obsidians/normal",
     "A": "#c:alloys/elite",
     "H": "#c:pellets/polonium",
     "P": "mekanism:module_base"

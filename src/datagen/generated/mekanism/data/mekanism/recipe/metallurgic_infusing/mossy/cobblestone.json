@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "ingredient": "minecraft:cobblestone"
+    "ingredient": "#c:cobblestones/normal"
   },
   "output": {
     "id": "minecraft:mossy_cobblestone"

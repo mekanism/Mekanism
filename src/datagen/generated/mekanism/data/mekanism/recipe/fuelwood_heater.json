@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "#": "minecraft:furnace",
+    "#": "#c:player_workstations/furnaces",
     "C": "#c:circuits/basic",
     "S": "#c:ingots/steel",
     "X": "mekanism:steel_casing"

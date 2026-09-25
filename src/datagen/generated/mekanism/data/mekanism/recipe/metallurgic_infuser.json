@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "#": "minecraft:furnace",
+    "#": "#c:player_workstations/furnaces",
     "I": "#c:ingots/iron",
     "O": "#c:ingots/osmium",
     "R": "#c:dusts/redstone"

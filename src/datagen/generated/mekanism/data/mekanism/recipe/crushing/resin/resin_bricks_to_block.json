@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "ingredient": "minecraft:resin_bricks"
+    "ingredient": "#c:bricks/resin"
   },
   "output": {
     "id": "minecraft:resin_block"

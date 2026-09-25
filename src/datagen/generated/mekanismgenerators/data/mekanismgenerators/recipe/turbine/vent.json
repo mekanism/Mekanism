@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "#": "mekanismgenerators:turbine_casing",
-    "B": "#minecraft:bars"
+    "B": "#c:bars"
   },
   "pattern": [
     " # ",

@@ -12,7 +12,6 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
-import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
@@ -50,7 +49,7 @@ class NucleosynthesizingRecipeProvider extends BaseSubRecipeProvider {
               false
         ).save(consumer, Mekanism.rl(basePath + "diamond"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(this.items, ItemIds.DIAMOND),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.GEMS_DIAMOND),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 4),
               template(ItemIds.EMERALD),
               1_000,
@@ -152,7 +151,7 @@ class NucleosynthesizingRecipeProvider extends BaseSubRecipeProvider {
               false
         ).save(consumer, Mekanism.rl(basePath + "quartz_stairs"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemTags.SMALL_FLOWERS),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.FLOWERS_SMALL),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 2),
               template(BlockItemIds.CHORUS_FLOWER),
               500,

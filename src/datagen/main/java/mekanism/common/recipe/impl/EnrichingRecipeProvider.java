@@ -513,12 +513,12 @@ class EnrichingRecipeProvider extends BaseSubRecipeProvider {
     private void addEnrichingResinRecipes(RecipeOutput consumer, String basePath) {
         //Resin Bricks -> Resin Blocks
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.RESIN_BLOCK),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.STORAGE_BLOCKS_RESIN),
               template(BlockItemIds.RESIN_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "block_to_bricks"));
         //Chiseled Resin Bricks -> Resin Bricks
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.RESIN_BRICKS),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.BRICKS_RESIN),
               template(BlockItemIds.CHISELED_RESIN_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "bricks_to_chiseled"));
     }
@@ -543,7 +543,7 @@ class EnrichingRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "stone_brick_walls"));
         //Mossy Cobblestone -> Cobblestone recipes
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.MOSSY_COBBLESTONE),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.COBBLESTONES_MOSSY),
               template(BlockItemIds.COBBLESTONE)
         ).save(consumer, Mekanism.rl(basePath + "cobblestone"));
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -593,7 +593,7 @@ class EnrichingRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "large_cyan"));
         //Green
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CACTUS),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.CROPS_CACTUS),
               template(ItemIds.DYE.green(), 2)
         ).save(consumer, Mekanism.rl(basePath + "green"));
         //Light gray
@@ -674,7 +674,7 @@ class EnrichingRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "blue"));
         //Brown
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.COCOA_CROP),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.CROPS_COCOA_BEAN),
               template(ItemIds.DYE.brown(), 2)
         ).save(consumer, Mekanism.rl(basePath + "brown"));
         //Black

@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "ingredient": "minecraft:bone_block"
+    "ingredient": "#c:storage_blocks/bone_meal"
   },
   "output": {
     "count": 9,

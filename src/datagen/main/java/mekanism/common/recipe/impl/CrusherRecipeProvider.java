@@ -18,7 +18,6 @@ import net.minecraft.references.BlockItemId;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.HoneycombItem;
@@ -120,7 +119,7 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "bone"));
         //Bone block -> bone meal
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.BONE_BLOCK),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.STORAGE_BLOCKS_BONE_MEAL),
               template(ItemIds.BONE_MEAL, 9)//must be the same as vanilla needs to make a block
         ).save(consumer, Mekanism.rl(basePath + "bone_block"));
         //Red Sandstone -> Sand
@@ -645,12 +644,12 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
     private void addCrusherResinRecipes(RecipeOutput consumer, String basePath) {
         //Block of Resin -> Resin clumps
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.RESIN_BLOCK),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.STORAGE_BLOCKS_RESIN),
               template(BlockItemIds.RESIN_CLUMP, 9)
         ).save(consumer, Mekanism.rl(basePath + "clump_from_block"));
         //Resin Bricks -> Resin Blocks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.RESIN_BRICKS),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.BRICKS_RESIN),
               template(BlockItemIds.RESIN_BLOCK)
         ).save(consumer, Mekanism.rl(basePath + "resin_bricks_to_block"));
         //Chiseled Resin Bricks -> Resin Bricks
@@ -681,7 +680,7 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         biofuel(consumer, basePath, "bush", 1, 1, BlockItemIds.BUSH, BlockItemIds.RED_SHRUB);
         biofuel(consumer, basePath, "cactus_flower", 2, 1, BlockItemIds.CACTUS_FLOWER);
         biofuel(consumer, basePath, "cake", 6, 1, BlockItemIds.CAKE);
-        biofuel(consumer, basePath, "carved_pumpkin", 2, 1, BlockItemIds.CARVED_PUMPKIN);//pumpkin minus 4 seeds (sawmill)
+        biofuel(consumer, basePath, "carved_pumpkin", 2, 1, Tags.Items.PUMPKINS_CARVED);//pumpkin minus 4 seeds (sawmill)
         biofuel(consumer, basePath, "crimson_roots", 1, 1, BlockItemIds.CRIMSON_ROOTS);
         biofuel(consumer, basePath, "cookie", 3, 4, ItemIds.COOKIE);
         //TODO - 1.21.1: Make our own tag that contains all of these
@@ -706,7 +705,7 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         biofuel(consumer, basePath, "mangrove_roots", 1, 1, BlockItemIds.MANGROVE_ROOTS);
         biofuel(consumer, basePath, "melon", 6, 1, Tags.Items.CROPS_MELON);
         biofuel(consumer, basePath, "melon_slice", 1, 1, ItemIds.MELON_SLICE);
-        biofuel(consumer, basePath, "moss_block", 2, 1, BlockItemTags.MOSS_BLOCKS.item());
+        biofuel(consumer, basePath, "moss_block", 2, 1, ItemTags.MOSS_BLOCKS);
         biofuel(consumer, basePath, "moss_carpet", 4, 3, BlockItemIds.MOSS_CARPET, BlockItemIds.PALE_MOSS_CARPET);
         biofuel(consumer, basePath, "mushroom_blocks", 4, 1, BlockItemIds.BROWN_MUSHROOM_BLOCK, BlockItemIds.RED_MUSHROOM_BLOCK, BlockItemIds.MUSHROOM_STEM);
         biofuel(consumer, basePath, "mushrooms", 1, 1, Tags.Items.MUSHROOMS);
@@ -725,7 +724,7 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         biofuel(consumer, basePath, "short_grass", 1, 1, BlockItemIds.SHORT_DRY_GRASS, BlockItemIds.SHORT_GRASS);
         biofuel(consumer, basePath, "shroomlight", 4, 1, BlockItemIds.SHROOMLIGHT);
         biofuel(consumer, basePath, "small_dripleaf", 1, 1, BlockItemIds.SMALL_DRIPLEAF);
-        biofuel(consumer, basePath, "small_flowers", 1, 1, BlockItemTags.SMALL_FLOWERS.item());
+        biofuel(consumer, basePath, "small_flowers", 1, 1, Tags.Items.FLOWERS_SMALL);
         biofuel(consumer, basePath, "pink_petals", 1, 1, BlockItemIds.PINK_PETALS);//not in small_flowers tag
         biofuel(consumer, basePath, "spore_blossom", 2, 1, BlockItemIds.SPORE_BLOSSOM);
         biofuel(consumer, basePath, "sugar_cane", 1, 1, Tags.Items.CROPS_SUGAR_CANE);

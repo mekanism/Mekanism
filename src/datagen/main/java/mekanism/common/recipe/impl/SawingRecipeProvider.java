@@ -155,7 +155,7 @@ class SawingRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "planks"));
         //Pumpkin
         SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(items, BlockItemIds.PUMPKIN),
+              IngredientCreatorAccess.item().from(items, Tags.Items.PUMPKINS_NORMAL),
               template(BlockItemIds.CARVED_PUMPKIN, 1),
               template(BlockItemIds.PUMPKIN_CROP, 4),
               1

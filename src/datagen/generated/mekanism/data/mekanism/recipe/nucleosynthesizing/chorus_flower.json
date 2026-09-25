@@ -7,7 +7,7 @@
   "duration": 500,
   "item_input": {
     "count": 1,
-    "ingredient": "#minecraft:small_flowers"
+    "ingredient": "#c:flowers/small"
   },
   "output": {
     "id": "minecraft:chorus_flower"

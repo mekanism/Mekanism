@@ -36,7 +36,7 @@ class MetallurgicInfuserRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "dirt_to_mycelium"));
         //Netherrack -> crimson nylium
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.NETHERRACK),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.NETHERRACKS),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.FUNGI, 10),
               template(BlockItemIds.CRIMSON_NYLIUM),
               false
@@ -85,7 +85,7 @@ class MetallurgicInfuserRecipeProvider extends BaseSubRecipeProvider {
     private void addMetallurgicInfuserMossyRecipes(RecipeOutput consumer, String basePath) {
         //Cobblestone
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.COBBLESTONE),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.COBBLESTONES_NORMAL),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.BIO, 10),
               template(BlockItemIds.MOSSY_COBBLESTONE),
               false

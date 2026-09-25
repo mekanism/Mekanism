@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "ingredient": "minecraft:resin_block"
+    "ingredient": "#c:storage_blocks/resin"
   },
   "output": {
     "id": "minecraft:resin_bricks"

@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "#": "minecraft:shears",
+    "#": "#c:tools/shear",
     "A": "#c:alloys/advanced",
     "H": "mekanism:hdpe_sheet",
     "P": "mekanism:module_base"

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": "#c:ingots/copper",
-    "F": "minecraft:furnace",
+    "F": "#c:player_workstations/furnaces",
     "I": "#c:ingots/iron",
     "O": "#c:ingots/osmium",
     "W": "#minecraft:planks"

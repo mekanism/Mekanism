@@ -113,7 +113,7 @@ public class RecipeProviderUtil {
         save(consumer, SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(fenceGate)),
               new ItemStackTemplate(planks, 2),
-              new ItemStackTemplate(items.getOrThrow(ItemIds.STICK), 4),
+              template(items, ItemIds.STICK, 4),
               1
         ), basePath + "fence_gate/" + name, condition);
         if (log != null) {

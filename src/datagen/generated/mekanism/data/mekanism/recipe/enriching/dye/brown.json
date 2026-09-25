@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "ingredient": "minecraft:cocoa_beans"
+    "ingredient": "#c:crops/cocoa_bean"
   },
   "output": {
     "count": 2,
