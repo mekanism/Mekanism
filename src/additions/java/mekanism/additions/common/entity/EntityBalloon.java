@@ -101,8 +101,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     public void tick() {
         setOldPos();
 
-        //TODO - 26.3: Re-evaluate all these cases where we have getMaxY() + 1, to make sure the logic makes sense having the +1
-        if (getY() >= level().getMaxY() + 1) {
+        if (level().isOutsideBuildHeight(getBlockY())) {
             pop();
             return;
         }
@@ -181,21 +180,16 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     private double getTargetElevation(LivingEntity entity) {
         BlockPos pos = BlockPos.containing(entity.position());
-        BlockPos.MutableBlockPos posi = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ());
-        CollisionContext collisionContext = CollisionContext.of(entity);
-        for (; posi.getY() > 0; posi.move(Direction.DOWN)) {
-            if (posi.getY() < level().getMaxY() + 1) {
-                BlockState state = level().getBlockState(posi);
-                if (!state.isAir()) {
-                    double stateOffset = state.getCollisionShape(level(), posi, collisionContext).max(Axis.Y);
-                    if (Double.isInfinite(stateOffset) || stateOffset == 0) {
-                        //Cannot determine, skip this block and go to the next one
-                        continue;
-                    }
-                    double floor = posi.getY() + stateOffset;
-                    //Note: Add some extra height to make entities float above blocks
-                    return floor + Math.min(4, Mth.ceil(entity.getBbHeight()));
+        CollisionContext collisionContext = CollisionContext.of(entity, true);
+        for (BlockPos.MutableBlockPos posi = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ()); posi.getY() > 0; posi.move(Direction.DOWN)) {
+            BlockState state = level().getBlockState(posi);
+            if (!state.isAir()) {
+                double stateOffset = state.getCollisionShape(level(), posi, collisionContext).max(Axis.Y);
+                if (!Double.isInfinite(stateOffset) && stateOffset > 0) {
+                    //Note: Add an extra block of height to make entities float above blocks
+                    return posi.getY() + stateOffset + 1;
                 }
+                //Cannot determine, skip this block and go to the next one
             }
         }
         return 0;
