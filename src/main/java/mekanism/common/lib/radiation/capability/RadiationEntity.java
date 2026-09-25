@@ -32,7 +32,7 @@ public class RadiationEntity implements IRadiationEntity {
     @Override
     public void radiate(double magnitude) {
         if (magnitude > 0) {
-            entity.setData(MekanismAttachmentTypes.RADIATION, getRadiation() + magnitude);
+            set(getRadiation() + magnitude);
         }
     }
 
@@ -81,6 +81,7 @@ public class RadiationEntity implements IRadiationEntity {
     @Override
     public void set(double magnitude) {
         entity.setData(MekanismAttachmentTypes.RADIATION, Math.max(IRadiationManager.INSTANCE.baselineRadiation(), magnitude));
+        entity.syncData(MekanismAttachmentTypes.RADIATION);
     }
 
     @Override

@@ -10,7 +10,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.PlayerExposure;
 import mekanism.common.network.to_client.player_data.PacketPlayerData;
 import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
-import mekanism.common.network.to_client.radiation.PacketPlayerRadiationData;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags.Items;
 import net.minecraft.ChatFormatting;
@@ -60,7 +59,6 @@ public class CommonPlayerTracker {
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
-        PacketDistributor.sendToPlayer(player, new PacketPlayerRadiationData(player));
         PlayerExposure.updateClientRadiation(player);
     }
 
@@ -74,7 +72,6 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
-        PacketDistributor.sendToPlayer(player, new PacketPlayerRadiationData(player));
         PlayerExposure.updateClientRadiation(player);
         PacketDistributor.sendToAllPlayers(new PacketResetPlayerClient(player.getUUID()));
     }

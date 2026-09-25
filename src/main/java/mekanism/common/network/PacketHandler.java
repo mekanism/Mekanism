@@ -16,7 +16,6 @@ import mekanism.common.network.to_client.player_data.PacketPlayerData;
 import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
 import mekanism.common.network.to_client.qio.PacketUpdateItemViewer;
 import mekanism.common.network.to_client.radiation.PacketEnvironmentalRadiationData;
-import mekanism.common.network.to_client.radiation.PacketPlayerRadiationData;
 import mekanism.common.network.to_client.security.PacketBatchSecurityUpdate;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.network.to_client.transmitter.PacketChemicalNetworkContents;
@@ -158,7 +157,6 @@ public class PacketHandler extends BasePacketHandler {
         registrar.play(PacketPlayerData.TYPE, PacketPlayerData.STREAM_CODEC);
         registrar.play(PacketPortalFX.TYPE, PacketPortalFX.STREAM_CODEC);
         registrar.play(PacketEnvironmentalRadiationData.TYPE, PacketEnvironmentalRadiationData.STREAM_CODEC);
-        registrar.play(PacketPlayerRadiationData.TYPE, PacketPlayerRadiationData.STREAM_CODEC);
         registrar.play(PacketResetPlayerClient.TYPE, PacketResetPlayerClient.STREAM_CODEC);
         registrar.play(PacketSyncSecurity.TYPE, PacketSyncSecurity.STREAM_CODEC);
         showModeChange = registrar.playInstanced(Mekanism.rl("show_mode_change"), (_, _) -> MekanismStatusOverlay.INSTANCE.setTimer());

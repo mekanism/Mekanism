@@ -8,6 +8,7 @@ import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.lib.radiation.MeltdownLevelData;
 import mekanism.common.lib.radiation.RadiationLevelData;
 import mekanism.common.world.QueuedRegenLevelData;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -26,6 +27,7 @@ public class MekanismAttachmentTypes {
           () -> AttachmentType.builder(IRadiationManager.INSTANCE::baselineRadiation)
                 .serialize(Codec.doubleRange(IRadiationManager.INSTANCE.baselineRadiation(), Double.MAX_VALUE).fieldOf(SerializationConstants.RADIATION), radiation -> radiation > IRadiationManager.INSTANCE.baselineRadiation())
                 .copyHandler((radiation, _, _) -> radiation > IRadiationManager.INSTANCE.baselineRadiation() ? radiation : null)
+                .sync((holder, player) -> player == holder, ByteBufCodecs.DOUBLE)
                 .build()
     );
 

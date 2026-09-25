@@ -7,7 +7,6 @@ import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.to_client.radiation.PacketEnvironmentalRadiationData;
-import mekanism.common.network.to_client.radiation.PacketPlayerRadiationData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.resources.ResourceKey;
@@ -28,7 +27,6 @@ import org.jspecify.annotations.Nullable;
 public class PlayerExposure {
 
     private static final Map<UUID, PreviousRadiationData> playerEnvironmentalExposureMap = new Object2ObjectOpenHashMap<>();
-    private static final Map<UUID, PreviousRadiationData> playerExposureMap = new Object2ObjectOpenHashMap<>();
 
     public static void tickServer(ServerPlayer player) {
         updateEntityRadiation(player);
@@ -47,7 +45,6 @@ public class PlayerExposure {
 
     public static void clear() {
         playerEnvironmentalExposureMap.clear();
-        playerExposureMap.clear();
     }
 
     private static void updateEntityRadiation(LivingEntity entity) {
@@ -71,21 +68,11 @@ public class PlayerExposure {
         // update the radiation capability (decay, sync, effects)
         if (radiationCap != null) {
             radiationCap.update();
-            if (entity instanceof ServerPlayer player) {
-                double radiation = radiationCap.getRadiation();
-                PreviousRadiationData previousRadiationData = playerExposureMap.get(player.getUUID());
-                PreviousRadiationData relevantData = PreviousRadiationData.compareTo(previousRadiationData, radiation);
-                if (relevantData != null) {
-                    playerExposureMap.put(player.getUUID(), relevantData);
-                    PacketDistributor.sendToPlayer(player, new PacketPlayerRadiationData(radiation));
-                }
-            }
         }
     }
 
     public static void resetPlayer(UUID uuid) {
         playerEnvironmentalExposureMap.remove(uuid);
-        playerExposureMap.remove(uuid);
     }
 
     public static void updateClientRadiation(ServerPlayer player) {
