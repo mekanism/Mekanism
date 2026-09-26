@@ -30,7 +30,7 @@ public record ToolCollection(ItemRegistryObject<Item> axe, ItemRegistryObject<It
               registry.registerSimple(material.registryPrefix() + "_hoe", properties -> ToolsItems.setCommonProperties(properties, material)
                     .hoe(material.toToolMaterial(), material.hoeDamage(), material.hoeAtkSpeed())
               ),
-              registry.registerSimple(material.registryPrefix() + "_paxel", properties -> ToolsItems.paxel(ToolsItems.setCommonProperties(properties, material), material)),
+              registry.registerItem(material.registryPrefix() + "_paxel", properties -> ToolsItems.paxel(ToolsItems.setCommonProperties(properties, material), material)),
               registry.registerSimple(material.registryPrefix() + "_pickaxe", properties -> ToolsItems.setCommonProperties(properties, material)
                     .pickaxe(material.toToolMaterial(), material.pickaxeDamage(), material.pickaxeAtkSpeed())
               ),

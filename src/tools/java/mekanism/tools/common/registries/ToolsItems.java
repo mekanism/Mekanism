@@ -1,7 +1,6 @@
 package mekanism.tools.common.registries;
 
 import java.util.stream.Stream;
-import mekanism.api.MekanismBlockTransformers;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.tools.common.MekanismTools;
@@ -14,7 +13,10 @@ import mekanism.tools.common.registration.ArmorCollection;
 import mekanism.tools.common.registration.ToolCollection;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Unit;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.BlockTransformers;
+import net.minecraft.world.item.context.UseOnContext;
 
 public class ToolsItems {
 
@@ -50,11 +52,11 @@ public class ToolsItems {
     public static final ToolCollection STEEL_TOOLS = ToolCollection.create(ITEMS, MekanismToolsConfig.materials.steel);
 
     private static ItemRegistryObject<Item> registerPaxel(VanillaPaxelMaterialCreator material) {
-        return ITEMS.registerSimple(material.getRegistryPrefix() + "_paxel", properties -> {
+        return ITEMS.registerItem(material.getRegistryPrefix() + "_paxel", properties -> {
             if (material.isFireResistant()) {
                 properties = properties.fireResistant();
             }
-            return paxel(properties, material).component(ToolsDataComponents.DISPLAY_HP, Unit.INSTANCE);
+            return paxel(properties.component(ToolsDataComponents.DISPLAY_HP, Unit.INSTANCE), material);
         });
     }
 
@@ -66,12 +68,31 @@ public class ToolsItems {
         return properties;
     }
 
-    public static Item.Properties paxel(Item.Properties properties, IPaxelMaterial material) {
-        return properties.tool(material.toPaxelToolMaterial(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, material.paxelDamage(), material.paxelAtkSpeed(), material.paxelDisableBlockingSeconds())
-              .delayedComponent(DataComponents.BLOCK_TRANSFORMER, context -> context.getOrThrow(MekanismBlockTransformers.PAXEL));
+    public static Item paxel(Item.Properties properties, IPaxelMaterial material) {
+        return new PaxelItem(properties
+              .tool(material.toPaxelToolMaterial(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, material.paxelDamage(), material.paxelAtkSpeed(), material.paxelDisableBlockingSeconds())
+              .delayedComponent(DataComponents.BLOCK_TRANSFORMER, context -> context.getOrThrow(BlockTransformers.AXE))
+        );
     }
 
     public static Stream<ItemRegistryObject<Item>> vanillaPaxels() {
         return Stream.of(WOOD_PAXEL, STONE_PAXEL, COPPER_PAXEL, IRON_PAXEL, GOLD_PAXEL, DIAMOND_PAXEL, NETHERITE_PAXEL);
+    }
+
+    private static class PaxelItem extends Item {
+
+        public PaxelItem(Item.Properties properties) {
+            super(properties);
+        }
+
+        @Override
+        public InteractionResult useOn(UseOnContext context) {
+            InteractionResult result = super.useOn(context);
+            if (result == InteractionResult.PASS) {
+                //If using it as an axe failed, try to use it as a shovel
+                result = context.getLevel().registryAccess().getOrThrow(BlockTransformers.SHOVEL).value().transformBlock(context);
+            }
+            return result;
+        }
     }
 }
