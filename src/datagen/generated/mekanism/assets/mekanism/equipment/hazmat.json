@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mekanism:hazmat"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "mekanism:hazmat"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mekanism:hazmat"
+      }
+    ]
+  }
+}
