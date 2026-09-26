@@ -118,7 +118,7 @@ public class MekanismAPITags {
         private DamageTypes() {
         }
 
-        /// Represents any damage type that is always supported by the MekaSuit.
+        /// Represents any damage type that is always supported by the MekaSuit even when it is marked as bypassing armor.
         public static final TagKey<DamageType> MEKASUIT_ALWAYS_SUPPORTED = tag("mekasuit_always_supported");
         /// Represents any type of damage that can be prevented by the Scuba Mask or the Inhalation Purification Unit.
         public static final TagKey<DamageType> IS_PREVENTABLE_MAGIC = tag("is_preventable_magic");

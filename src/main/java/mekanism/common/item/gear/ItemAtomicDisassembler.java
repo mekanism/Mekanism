@@ -37,6 +37,7 @@ import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.lib.radial.IRadialModeItem;
 import mekanism.common.lib.transaction.TransactionHelper;
+import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
@@ -103,6 +104,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         //TODO - 26.3: Re-evaluate uses of setNoCombineRepair and see if any of them are not actually needed
         super(properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1)
               .component(MekanismDataComponents.DISASSEMBLER_MODE, DisassemblerMode.NORMAL)
+              .delayedHolderComponent(DataComponents.DAMAGE_TYPE, MekanismDamageTypes.DISASSEMBLING.key())
               .delayedComponent(DataComponents.TOOL, context -> new Tool(List.of(
                     Tool.Rule.deniesDrops(context.getOrThrow(MekanismTags.Blocks.INCORRECT_FOR_DISASSEMBLER)),
                     new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK), Optional.empty(), Optional.of(true))

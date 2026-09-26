@@ -646,6 +646,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addDamageTypes() {
+        ResourceKey<DamageType> disassembling = MekanismDamageTypes.DISASSEMBLING.key();
         ResourceKey<DamageType> flamethrower = MekanismDamageTypes.FLAMETHROWER.key();
         ResourceKey<DamageType> laser = MekanismDamageTypes.LASER.key();
         ResourceKey<DamageType> radiation = MekanismDamageTypes.RADIATION.key();
@@ -656,10 +657,11 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(DamageTypeTags.BYPASSES_COOLDOWN).add(laser, sps);
         getBuilder(DamageTypeTags.BYPASSES_EFFECTS).add(radiation, sps);
         getBuilder(DamageTypeTags.BYPASSES_ENCHANTMENTS).add(radiation, sps);
-        getBuilder(DamageTypeTags.BYPASSES_RESISTANCE).add(radiation, sps);
+        getBuilder(DamageTypeTags.BYPASSES_RESISTANCE).add(disassembling, radiation, sps);
         getBuilder(DamageTypeTags.BYPASSES_SHIELD).add(radiation, sps);
         getBuilder(DamageTypeTags.BYPASSES_WOLF_ARMOR).add(radiation, sps);
         getBuilder(Tags.DamageTypes.IS_ENVIRONMENT).add(radiation);
+        getBuilder(Tags.DamageTypes.IS_PHYSICAL).add(disassembling);
         getBuilder(DamageTypeTags.IS_FIRE).add(flamethrower);
         getBuilder(DamageTypeTags.IS_LIGHTNING).add(sps);
         getBuilder(MekanismAPITags.DamageTypes.IS_PREVENTABLE_MAGIC).add(DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC);
@@ -667,13 +669,63 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(DamageTypeTags.NO_KNOCKBACK).add(flamethrower, laser, radiation, sps);
         getBuilder(DamageTypeTags.PANIC_CAUSES).add(flamethrower, laser);
         getBuilder(DamageTypeTags.PANIC_ENVIRONMENTAL_CAUSES).add(radiation, sps);
+        getBuilder(DamageTypeTags.IS_PLAYER_ATTACK).add(disassembling);
+        getBuilder(DamageTypeTags.SULFUR_CUBE_WITH_BLOCK_IMMUNE_TO).add(disassembling, flamethrower);
 
-        //TODO - 26.3: Update this list of always supported tags, as a variety of ones have been added such as SULFUR_CUBE_HOT
-        // but also there are things that should probably be added like CAMPFIRE
-        getBuilder(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED).add(DamageTypes.FALLING_ANVIL, DamageTypes.CACTUS, DamageTypes.CRAMMING,
-              DamageTypes.DRAGON_BREATH, DamageTypes.DRY_OUT, DamageTypes.FALL, DamageTypes.FALLING_BLOCK, DamageTypes.FLY_INTO_WALL, DamageTypes.GENERIC,
-              DamageTypes.HOT_FLOOR, DamageTypes.IN_FIRE, DamageTypes.IN_WALL, DamageTypes.LAVA, DamageTypes.LIGHTNING_BOLT, DamageTypes.ON_FIRE,
-              DamageTypes.SWEET_BERRY_BUSH, DamageTypes.WITHER, DamageTypes.FREEZE, DamageTypes.FALLING_STALACTITE, DamageTypes.STALAGMITE, DamageTypes.SONIC_BOOM);
+        //Note: We list all so that we can more easily know what ones we already evaluated. We also don't bother including things that are not in the BYPASSES_ARMOR tag
+        getBuilder(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED).add(
+              //DamageTypes.IN_FIRE,//Doesn't bypass armor
+              //DamageTypes.CAMPFIRE,//Doesn't bypass armor
+              //DamageTypes.LIGHTNING_BOLT,//Doesn't bypass armor
+              DamageTypes.ON_FIRE,
+              //DamageTypes.LAVA,//Doesn't bypass armor
+              //DamageTypes.HOT_FLOOR,//Doesn't bypass armor
+              //DamageTypes.SULFUR_CUBE_HOT,//Doesn't bypass armor
+              DamageTypes.IN_WALL,
+              DamageTypes.CRAMMING,
+              //DamageTypes.DROWN,//Intentionally skipped (unbalanced)
+              //DamageTypes.STARVE,//Intentionally skipped (unbalanced)
+              DamageTypes.CACTUS,
+              DamageTypes.FALL,
+              DamageTypes.ENDER_PEARL,
+              DamageTypes.FLY_INTO_WALL,
+              //DamageTypes.FELL_OUT_OF_WORLD,//Intentionally skipped (unbalanced)
+              DamageTypes.GENERIC,
+              //DamageTypes.MAGIC,//Intentionally skipped (inhalation purification)
+              DamageTypes.WITHER,
+              DamageTypes.DRAGON_BREATH,
+              //DamageTypes.DRY_OUT,//Doesn't bypass armor
+              //DamageTypes.SWEET_BERRY_BUSH,//Doesn't bypass armor
+              DamageTypes.FREEZE,
+              DamageTypes.STALAGMITE,
+              //DamageTypes.FALLING_BLOCK,//Doesn't bypass armor
+              //DamageTypes.FALLING_ANVIL,//Doesn't bypass armor
+              //DamageTypes.FALLING_STALACTITE,//Doesn't bypass armor
+              //DamageTypes.STING,//Doesn't bypass armor
+              //DamageTypes.MOB_ATTACK,//Doesn't bypass armor
+              //DamageTypes.MOB_ATTACK_NO_AGGRO,//Doesn't bypass armor
+              //DamageTypes.PLAYER_ATTACK,//Doesn't bypass armor
+              //DamageTypes.SPEAR,//Doesn't bypass armor
+              //DamageTypes.ARROW,//Doesn't bypass armor
+              //DamageTypes.TRIDENT,//Doesn't bypass armor
+              //DamageTypes.MOB_PROJECTILE,//Doesn't bypass armor
+              //DamageTypes.SPIT,//Doesn't bypass armor
+              //DamageTypes.WIND_CHARGE,//Doesn't bypass armor
+              //DamageTypes.FIREWORKS,//Doesn't bypass armor
+              //DamageTypes.FIREBALL,//Doesn't bypass armor
+              //DamageTypes.UNATTRIBUTED_FIREBALL,//Doesn't bypass armor
+              //DamageTypes.WITHER_SKULL,//Doesn't bypass armor
+              //DamageTypes.THROWN,//Doesn't bypass armor
+              //DamageTypes.INDIRECT_MAGIC,//Intentionally skipped (inhalation purification)
+              //DamageTypes.THORNS,//Doesn't bypass armor
+              //DamageTypes.EXPLOSION,//Doesn't bypass armor
+              //DamageTypes.PLAYER_EXPLOSION,//Doesn't bypass armor
+              DamageTypes.SONIC_BOOM
+              //DamageTypes.BAD_RESPAWN_POINT,//Doesn't bypass armor
+              //DamageTypes.OUTSIDE_BORDER,//Intentionally skipped (unbalanced)
+              //DamageTypes.GENERIC_KILL,//Intentionally skipped (unbalanced)
+              //DamageTypes.MACE_SMASH,//Doesn't bypass armor
+        );
     }
 
     private void addDataComponents() {

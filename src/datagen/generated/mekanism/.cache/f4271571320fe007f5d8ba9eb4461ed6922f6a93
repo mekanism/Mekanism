@@ -1,4 +1,4 @@
-// 26.3	2026-09-26T13:55:43.1665722	Tags: mekanism
+// 26.3	2026-09-26T15:45:16.7162373	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -217,7 +217,7 @@ ae0d24481f3d210ea49d53ed854315abc928505a data/mekanism/tags/block/transmitters/f
 366ccfabf6175d18f9122b7df4fc85bf16f851fe data/mekanism/tags/block/transmitters/items.json
 d41d6272e2371aea1cba40453fa82255ed4ef961 data/mekanism/tags/block/transmitters/items/tiered.json
 10324698ef50d9ab1c367abd0d46152a26bf5ed5 data/mekanism/tags/damage_type/is_preventable_magic.json
-bf457102006e4f901e6858ec33bb241e55c4724c data/mekanism/tags/damage_type/mekasuit_always_supported.json
+fa2ba51877c19fac117309658f80eeaab742d9f0 data/mekanism/tags/damage_type/mekasuit_always_supported.json
 debf303c735181a679584bdf63c35b07442c256d data/mekanism/tags/data_component_type/config/clearable.json
 1f0bf591fc8121c0165dd4834e2c7529b896538b data/mekanism/tags/entity_type/mekasuit_reduced_visibility.json
 4b67fc6179cbe96b6cb9674c9d5a9ee562b63b59 data/mekanism/tags/entity_type/radiation_immune.json
@@ -393,15 +393,17 @@ b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/bypasse
 c82f2e6153947cc3c231d2fbba2cf2534edbef46 data/minecraft/tags/damage_type/bypasses_cooldown.json
 b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/bypasses_effects.json
 b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/bypasses_enchantments.json
-b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/bypasses_resistance.json
+9e23253743f4c63f40b983f206754d3397d56f72 data/minecraft/tags/damage_type/bypasses_resistance.json
 b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/bypasses_shield.json
 b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/bypasses_wolf_armor.json
 bb5a20680a0dd6f1a391f77b1363f3b4de0bcc66 data/minecraft/tags/damage_type/is_fire.json
 0527eea5e9b48ff1c39e586c500347aefe501e62 data/minecraft/tags/damage_type/is_lightning.json
+65e4dfd585c4d02daee2fe1b327aaa08164b1e58 data/minecraft/tags/damage_type/is_player_attack.json
 bb5a20680a0dd6f1a391f77b1363f3b4de0bcc66 data/minecraft/tags/damage_type/is_projectile.json
 45019171787f87f6a7b984371c809dbd32ecbfb6 data/minecraft/tags/damage_type/no_knockback.json
 cfa4bf6224a4792f97ea1ff1fef3cb66fb2b9ac5 data/minecraft/tags/damage_type/panic_causes.json
 b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/panic_environmental_causes.json
+baa0bce10600045811588c42dc8a2744b054d9d7 data/minecraft/tags/damage_type/sulfur_cube_with_block_immune_to.json
 903060898e7790a3059ae8734191a498ce75e0cb data/minecraft/tags/entity_type/candidate_for_iron_golem_gift.json
 cdd9432141724cd18387fa09ce115dac26127f8d data/minecraft/tags/entity_type/can_breathe_under_water.json
 903060898e7790a3059ae8734191a498ce75e0cb data/minecraft/tags/entity_type/fall_damage_immune.json
@@ -445,5 +447,6 @@ a16020216bc9f627bf30c93fb3b8fe7c764fb344 data/minecraft/tags/item/piglin_loved.j
 98c2bd0ffddf16fb66fd75e274145f45ca022846 data/minecraft/tags/item/wither_skeleton_disliked_weapons.json
 9b8972b5909132fc097ce36448ddd7612c47328d data/neoforge/tags/block/enderman_place_on_blacklist.json
 87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/neoforge/tags/damage_type/is_environment.json
+65e4dfd585c4d02daee2fe1b327aaa08164b1e58 data/neoforge/tags/damage_type/is_physical.json
 903060898e7790a3059ae8734191a498ce75e0cb data/per-viam-invenire/tags/entity_type/replace_vanilla_navigator.json
 b79a9a1e0ddcf1344df98002024bc070480b51d7 data/projecte/tags/block/vein/shovel.json

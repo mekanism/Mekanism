@@ -32,6 +32,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.LanguageProvider;
+import org.jspecify.annotations.Nullable;
 
 public abstract class BaseLanguageProvider extends LanguageProvider {
 
@@ -140,8 +141,15 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     protected void add(MekanismDamageType damageType, String value, String valueEscaping) {
+        add(damageType, value, valueEscaping, null);
+    }
+
+    protected void add(MekanismDamageType damageType, String value, String valueEscaping, @Nullable String valueItem) {
         add(damageType, value);
         add(damageType.getTranslationKey() + ".player", valueEscaping);
+        if (valueItem != null) {
+            add(damageType.getTranslationKey() + ".item", valueItem);
+        }
     }
 
     private String getConfigSectionTranslationPath(IMekanismConfig config) {

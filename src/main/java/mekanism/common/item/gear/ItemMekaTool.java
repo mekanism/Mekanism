@@ -32,6 +32,7 @@ import mekanism.common.item.ItemEnergized;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
+import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemAccessUtils;
@@ -89,6 +90,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     public ItemMekaTool(Properties properties) {//TODO - 26.3 add WEAPON component, so net.minecraft.world.item.ItemStack.hurtEnemy works properly?
         super(IModuleHelper.INSTANCE.applyModuleContainerProperties(properties.fireResistant().rarity(Rarity.EPIC).setNoCombineRepair().stacksTo(1)
+              .delayedHolderComponent(DataComponents.DAMAGE_TYPE, MekanismDamageTypes.DISASSEMBLING.key())
               .delayedComponent(DataComponents.TOOL, context -> new Tool(List.of(
                     Tool.Rule.deniesDrops(context.getOrThrow(MekanismTags.Blocks.INCORRECT_FOR_MEKA_TOOL)),
                     new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK), Optional.empty(), Optional.of(true))

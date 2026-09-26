@@ -699,7 +699,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addDamageSources() {
-        add(MekanismDamageTypes.FLAMETHROWER, "%1$s was incinerated.", "%1$s was ruthlessly incinerated by %2$s.");
+        add(MekanismDamageTypes.DISASSEMBLING, "%1$s was disassembled atom by atom.", "%1$s was disassembled at the atomic level by %2$s.",
+              "%1$s was disassembled at the atomic level by %2$s using %3$s.");
+        add(MekanismDamageTypes.FLAMETHROWER, "%1$s was incinerated.", "%1$s was ruthlessly incinerated by %2$s.",
+              "%1$s was ruthlessly incinerated by %2$s using %3$s.");
         add(MekanismDamageTypes.LASER, "%1$s was incinerated.", "%1$s was incinerated whilst trying to escape %2$s.");
         add(MekanismDamageTypes.RADIATION, "%1$s was killed by radiation poisoning.", "%1$s was killed by radiation poisoning whilst trying to escape %2$s.");
         add(MekanismDamageTypes.SPS, "%1$s was supercritically phase shifted into the next life.",
