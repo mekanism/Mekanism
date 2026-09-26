@@ -3,7 +3,7 @@ package mekanism.common.item.gear;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
-import mekanism.common.registries.MekanismArmorMaterials;
+import mekanism.common.registries.MekanismEquipmentAssets;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.Equippable;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 public class ItemHazmatSuitArmor extends Item implements ICapabilityAware {
@@ -18,7 +19,9 @@ public class ItemHazmatSuitArmor extends Item implements ICapabilityAware {
     private final ArmorType armorType;
 
     public ItemHazmatSuitArmor(ArmorType armorType, Item.Properties properties) {
-        super(MekanismArmorMaterials.apply(properties, MekanismArmorMaterials.HAZMAT, armorType).rarity(Rarity.UNCOMMON).stacksTo(1));
+        super(properties.stacksTo(1).rarity(Rarity.UNCOMMON)
+              .component(DataComponents.EQUIPPABLE, Equippable.builder(armorType.getSlot()).setAsset(MekanismEquipmentAssets.HAZMAT).build())
+        );
         this.armorType = armorType;
     }
 

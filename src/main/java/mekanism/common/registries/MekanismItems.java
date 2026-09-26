@@ -39,8 +39,6 @@ import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemUpgrade;
-import mekanism.common.item.gear.ItemArmoredFreeRunners;
-import mekanism.common.item.gear.ItemArmoredJetpack;
 import mekanism.common.item.gear.ItemAtomicDisassembler;
 import mekanism.common.item.gear.ItemCanteen;
 import mekanism.common.item.gear.ItemElectricBow;
@@ -244,26 +242,28 @@ public class MekanismItems {
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy),
                 MekanismConfig.gear
           );
-    public static final ItemRegistryObject<ItemArmoredFreeRunners> ARMORED_FREE_RUNNERS = ITEMS.registerItem("free_runners_armored", ItemArmoredFreeRunners::new)
-          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy),
-                MekanismConfig.gear
-          );
+    public static final ItemRegistryObject<ItemFreeRunners> ARMORED_FREE_RUNNERS = ITEMS.registerItem("free_runners_armored", properties -> new ItemFreeRunners(
+          properties.attributes(MekanismArmorMaterials.armoredFreeRunners())
+    )).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy),
+          MekanismConfig.gear
+    );
     public static final ItemRegistryObject<ItemScubaMask> SCUBA_MASK = ITEMS.registerItem("scuba_mask", ItemScubaMask::new);
     public static final ItemRegistryObject<ItemScubaTank> SCUBA_TANK = ITEMS.registerItem("scuba_tank", ItemScubaTank::new)
           .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
                 .addInternalStorage(MekanismConfig.gear.scubaFillRate, MekanismConfig.gear.scubaTankCapacity, chemical -> chemical.is(ChemicalIds.OXYGEN))
                 .build(), MekanismConfig.gear
           );
-    public static final ItemRegistryObject<ItemJetpack> JETPACK = ITEMS.registerItem("jetpack", ItemJetpack::new)
+    public static final ItemRegistryObject<ItemJetpack> JETPACK = ITEMS.registerItem("jetpack", properties -> new ItemJetpack(properties, MekanismEquipmentAssets.JETPACK))
           .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
                 .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackCapacity, chemical -> chemical.is(ChemicalIds.HYDROGEN))
                 .build(), MekanismConfig.gear
           );
-    public static final ItemRegistryObject<ItemArmoredJetpack> ARMORED_JETPACK = ITEMS.registerItem("jetpack_armored", ItemArmoredJetpack::new)
-          .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
-                .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackCapacity, chemical -> chemical.is(ChemicalIds.HYDROGEN))
-                .build(), MekanismConfig.gear
-          );
+    public static final ItemRegistryObject<ItemJetpack> ARMORED_JETPACK = ITEMS.registerItem("jetpack_armored", properties -> new ItemJetpack(
+          properties.attributes(MekanismArmorMaterials.armoredJetpack()), MekanismEquipmentAssets.ARMORED_JETPACK)
+    ).addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
+          .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackCapacity, chemical -> chemical.is(ChemicalIds.HYDROGEN))
+          .build(), MekanismConfig.gear
+    );
     public static final ItemRegistryObject<Item> HDPE_REINFORCED_ELYTRA = ITEMS.registerSimple("hdpe_elytra", props -> props
           .durability(648)
           .rarity(Rarity.EPIC)

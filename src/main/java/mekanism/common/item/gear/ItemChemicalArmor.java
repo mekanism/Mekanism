@@ -6,13 +6,11 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.equipment.ArmorMaterial;
-import net.minecraft.world.item.equipment.ArmorType;
 
 public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChemicalItem {
 
-    protected ItemChemicalArmor(ArmorMaterial material, ArmorType armorType, Item.Properties properties) {
-        super(material, armorType, properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1));
+    protected ItemChemicalArmor(Item.Properties properties) {
+        super(properties.stacksTo(1).rarity(Rarity.RARE));
     }
 
     @Override

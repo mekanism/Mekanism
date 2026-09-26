@@ -41,6 +41,7 @@ import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismArmorMaterials;
+import mekanism.common.registries.MekanismEquipmentAssets;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.tags.MekanismTags;
@@ -72,6 +73,7 @@ import net.minecraft.world.item.component.MobVisibility;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.Equippable;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.Tags;
@@ -99,10 +101,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     private final ArmorType armorType;
 
     public ItemMekaSuitArmor(ArmorType armorType, Item.Properties properties) {
-        super(MekanismArmorMaterials.MEKASUIT, armorType, IModuleHelper.INSTANCE.applyModuleContainerProperties(
-              properties.rarity(Rarity.EPIC).setNoCombineRepair().stacksTo(1)
-                    //Each piece lowers by 10%, for a total of about 35% if all pieces are equipped
-                    .delayedComponent(DataComponents.MOB_VISIBILITY, context -> new MobVisibility(context.getOrThrow(MekanismTags.Entities.MEKASUIT_REDUCED_VISIBILITY), 0.9F))
+        super(IModuleHelper.INSTANCE.applyModuleContainerProperties(properties.stacksTo(1).rarity(Rarity.EPIC)
+              .attributes(MekanismArmorMaterials.mekaSuit(armorType))
+              .component(DataComponents.EQUIPPABLE, Equippable.builder(armorType.getSlot()).setAsset(MekanismEquipmentAssets.MEKASUIT).build())
+              //Each piece lowers by 10%, for a total of about 35% if all pieces are equipped
+              .delayedComponent(DataComponents.MOB_VISIBILITY, context -> new MobVisibility(context.getOrThrow(MekanismTags.Entities.MEKASUIT_REDUCED_VISIBILITY), 0.9F))
         ));
         this.armorType = armorType;
         switch (this.armorType) {
@@ -135,12 +138,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             }
             default -> throw new IllegalArgumentException("Unknown Equipment Slot Type");
         }
-    }
-
-    @Override
-    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, @Nullable T entity, Consumer<ItemStack> onBroken) {
-        // safety check
-        return 0;
     }
 
     @Override
