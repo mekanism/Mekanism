@@ -19,7 +19,6 @@ import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
@@ -78,11 +77,6 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         super(properties.rarity(Rarity.UNCOMMON).stacksTo(1)
               .component(MekanismDataComponents.CONFIGURATOR_MODE, ConfiguratorMode.CONFIGURATE_ITEMS)
         );
-    }
-
-    @Override
-    public Component getName(ItemStack stack) {
-        return TextComponentUtil.build(EnumColor.AQUA, super.getName(stack));
     }
 
     @Override

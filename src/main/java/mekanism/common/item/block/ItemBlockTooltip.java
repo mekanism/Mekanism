@@ -27,6 +27,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -34,14 +35,13 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 
-public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLOCK> implements ICapabilityAware, IComponentAware {
+public class ItemBlockTooltip extends BlockItem implements ICapabilityAware, IComponentAware {
 
-    //TODO - 26.3: Re-evaluate what callers should even be using this, vs just using ItemBlockMekanism now that we moved the description elsewhere
-    public ItemBlockTooltip(BLOCK block, Item.Properties properties) {
+    public ItemBlockTooltip(Block block, Item.Properties properties) {
         super(block, properties);
     }
 
-    @Override//TODO - 26.3: Should we move this impl into ItemBlockMekanism? Then the only thing this class would do other than the super one is handling energy caps, components, and security
+    @Override
     public void onDestroyed(ItemEntity item, DamageSource damageSource) {
         //Try to drop the inventory contents if we are a block item that persists our inventory
         InventoryUtils.dropItemContents(item, damageSource);
@@ -77,7 +77,7 @@ public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLO
     }
 
     protected IContainerCreator<IEnergyContainer, Long> getDefaultEnergyContainer() {
-        BLOCK block = getBlock();
+        Block block = getBlock();
         AttributeEnergy attributeEnergy = Attribute.getOrThrow(block, AttributeEnergy.class);
         LongSupplier maxEnergy = attributeEnergy::getStorage;
         if (Attribute.has(block, AttributeUpgradeSupport.class)) {

@@ -9,7 +9,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 
-public class ItemBlockTeleporter extends ItemBlockTooltip<BlockTile<?, ?>> implements IFrequencyItem {
+public class ItemBlockTeleporter extends ItemBlockTooltip implements IFrequencyItem {
 
     public ItemBlockTeleporter(BlockTile<?, ?> block, Item.Properties properties) {
         super(block, properties.component(MekanismDataComponents.DETAILS, Unit.INSTANCE));

@@ -12,14 +12,13 @@ import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-public class ItemBlockQIOComponent extends ItemBlockTooltip<BlockTile<?, ?>> implements IColoredItem, IFrequencyItem {
+public class ItemBlockQIOComponent extends ItemBlockTooltip implements IColoredItem, IFrequencyItem {
 
     public ItemBlockQIOComponent(BlockTile<?, ?> block, Item.Properties properties) {
         super(block, properties);

@@ -18,8 +18,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 
-public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip<BlockTileModel<TileEntityQuantumEntangloporter, BlockTypeTile<TileEntityQuantumEntangloporter>>>
-      implements IFrequencyItem {
+public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip implements IFrequencyItem {
 
     private static final AttachedSideConfig SIDE_CONFIG = Util.make(() -> {
         Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);

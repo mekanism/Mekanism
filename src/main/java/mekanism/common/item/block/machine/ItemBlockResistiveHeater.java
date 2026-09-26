@@ -10,7 +10,7 @@ import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 
-public class ItemBlockResistiveHeater extends ItemBlockTooltip<BlockTile<?, ?>> {
+public class ItemBlockResistiveHeater extends ItemBlockTooltip {
 
     public ItemBlockResistiveHeater(BlockTile<?, ?> block, Item.Properties properties) {
         super(block, properties

@@ -8,7 +8,7 @@ import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
 import net.minecraft.world.item.Item;
 
-public class ItemBlockInductionCell extends ItemBlockTooltip<BlockTile<TileEntityInductionCell, BlockTypeTile<TileEntityInductionCell>>> {
+public class ItemBlockInductionCell extends ItemBlockTooltip {
 
     public ItemBlockInductionCell(BlockTile<TileEntityInductionCell, BlockTypeTile<TileEntityInductionCell>> block, Item.Properties properties) {
         super(block, properties.component(MekanismDataComponents.INDUCTION_CELL_TIER, Attribute.getTierNN(block, InductionCellTier.class)));

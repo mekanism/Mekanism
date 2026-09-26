@@ -28,7 +28,7 @@ public class ItemRecipeData extends ResourceRecipeData<ItemResource> {
         if (contents.isEmpty()) {
             return true;
         }
-        if (itemAccess.getResource().getItem() instanceof ItemBlockPersonalStorage<?>) {
+        if (itemAccess.getResource().getItem() instanceof ItemBlockPersonalStorage) {
             //Add the slots in the same way we would for a PersonalStorageItemInventory and if we can transfer to the item,
             // we will copy them over directly
             List<IInventorySlot> stackSlots = new ArrayList<>();

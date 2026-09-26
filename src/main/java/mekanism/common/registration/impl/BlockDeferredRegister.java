@@ -40,16 +40,21 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
     public BlockRegistryObject<Block, BlockItem> registerSimple(String name, UnaryOperator<BlockBehaviour.Properties> propertyModifier,
           UnaryOperator<Item.Properties> itemPropertyModifier) {
         //TODO: Do we care about always trying to apply light level adjustments here given none of our callers are fluid loggable?
-        return register(name, properties -> new Block(BlockStateHelper.applyLightLevelAdjustments(propertyModifier.apply(properties))),
-              (block, properties) -> new BlockItem(block, itemPropertyModifier.apply(properties)));
+        return registerSimpleItem(name, properties -> new Block(BlockStateHelper.applyLightLevelAdjustments(propertyModifier.apply(properties))),
+              itemPropertyModifier);
+    }
+
+    public <BLOCK extends Block> BlockRegistryObject<BLOCK, BlockItem> registerSimpleItem(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator,
+          UnaryOperator<Item.Properties> itemPropertyModifier) {
+        return register(name, blockCreator, (block, properties) -> new BlockItem(block, itemPropertyModifier.apply(properties)));
     }
 
     public <BLOCK extends Block> BlockRegistryObject<BLOCK, BlockItem> register(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator) {
         return register(name, blockCreator, BlockItem::new);
     }
 
-    public <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerDetails(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator) {
-        return register(name, blockCreator, (block, properties) -> new ItemBlockTooltip<>(block, properties.component(MekanismDataComponents.DETAILS, Unit.INSTANCE)));
+    public <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip> registerDetails(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator) {
+        return register(name, blockCreator, (block, properties) -> new ItemBlockTooltip(block, properties.component(MekanismDataComponents.DETAILS, Unit.INSTANCE)));
     }
 
     public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator,

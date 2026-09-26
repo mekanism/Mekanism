@@ -11,7 +11,7 @@ import mekanism.common.tile.laser.TileEntityLaserAmplifier.RedstoneOutput;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 
-public class ItemBlockLaserAmplifier extends ItemBlockTooltip<BlockTileModel<TileEntityLaserAmplifier, BlockTypeTile<TileEntityLaserAmplifier>>> {
+public class ItemBlockLaserAmplifier extends ItemBlockTooltip {
 
     public ItemBlockLaserAmplifier(BlockTileModel<TileEntityLaserAmplifier, BlockTypeTile<TileEntityLaserAmplifier>> block, Item.Properties properties) {
         super(block, properties

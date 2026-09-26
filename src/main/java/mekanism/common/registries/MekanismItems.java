@@ -7,7 +7,6 @@ import java.util.Objects;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
@@ -64,13 +63,11 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.QIODriveTier;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.Equippable;
@@ -96,7 +93,8 @@ public class MekanismItems {
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(),
                 MekanismConfig.gear.tabletChargeRate, MekanismConfig.gear.tabletMaxEnergy), MekanismConfig.gear
           );
-    public static final ItemRegistryObject<ItemConfigurator> CONFIGURATOR = ITEMS.registerItem("configurator", ItemConfigurator::new);
+    public static final ItemRegistryObject<ItemConfigurator> CONFIGURATOR = ITEMS.registerItem("configurator", ItemConfigurator::new)
+          .setNameColor(EnumColor.AQUA);
     public static final ItemRegistryObject<ItemNetworkReader> NETWORK_READER = ITEMS.registerItem("network_reader", ItemNetworkReader::new)
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismConfig.gear.networkReaderChargeRate, MekanismConfig.gear.networkReaderMaxEnergy),
                 MekanismConfig.gear
@@ -304,17 +302,13 @@ public class MekanismItems {
 
     private static ItemRegistryObject<Item> registerCircuit(BaseTier tier) {
         //Ensure the name is lower case as with concatenating with values from enums it may not be
-        return ITEMS.registerItem(tier.getLowerName() + "_control_circuit", properties -> new Item(properties) {
-            @Override
-            public Component getName(ItemStack stack) {
-                return TextComponentUtil.build(tier.getTextColor(), super.getName(stack));
-            }
-        });
+        return ITEMS.register(tier.getLowerName() + "_control_circuit", tier);
     }
 
     private static ItemRegistryObject<ItemTierInstaller> registerInstaller(@Nullable BaseTier fromTier, BaseTier toTier) {
         //Ensure the name is lower case as with concatenating with values from enums it may not be
-        return ITEMS.registerItem(toTier.getLowerName() + "_tier_installer", properties -> new ItemTierInstaller(fromTier, toTier, properties));
+        return ITEMS.registerItem(toTier.getLowerName() + "_tier_installer", properties -> new ItemTierInstaller(fromTier, toTier, properties))
+              .setNameColor(toTier.getTextColor());
     }
 
     private static ItemRegistryObject<ItemAlloy> registerAlloy(AlloyTier tier, Rarity rarity) {

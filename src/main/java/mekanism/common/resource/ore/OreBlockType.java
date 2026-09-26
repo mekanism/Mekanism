@@ -1,9 +1,8 @@
 package mekanism.common.resource.ore;
 
 import mekanism.common.block.BlockOre;
-import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registration.impl.BlockRegistryObject;
+import net.minecraft.world.item.BlockItem;
 
-public record OreBlockType(BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> stone,
-                           BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> deepslate) {
+public record OreBlockType(BlockRegistryObject<BlockOre, BlockItem> stone, BlockRegistryObject<BlockOre, BlockItem> deepslate) {
 }

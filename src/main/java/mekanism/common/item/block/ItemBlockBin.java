@@ -9,7 +9,7 @@ import mekanism.common.tier.BinTier;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
-public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppableAttachmentContents {
+public class ItemBlockBin extends ItemBlockTooltip implements IDroppableAttachmentContents {
 
     public ItemBlockBin(BlockBin block, Item.Properties properties) {
         super(block, properties

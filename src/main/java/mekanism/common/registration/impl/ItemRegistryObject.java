@@ -6,22 +6,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.tier.BaseTier;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.interfaces.IColoredBlock;
+import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.component.IComponentAware;
 import mekanism.common.component.containers.creator.IContainerCreator;
 import mekanism.common.component.containers.type.CapableContainerType;
 import mekanism.common.component.containers.type.IContainerType;
-import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.registration.MekanismDeferredHolder;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
@@ -35,6 +42,8 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     private Map<IContainerType<?, ?>, Supplier<? extends IContainerCreator<?, ?>>> defaultCreators;
     @Nullable
     private List<Consumer<RegisterCapabilitiesEvent>> containerCapabilities;
+    @Nullable
+    private TextColor nameColor;
 
     public ItemRegistryObject(ResourceKey<Item> key) {
         super(key);
@@ -77,6 +86,33 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     @Override
     public Component getTextComponent() {
         return value().getName(asStack());
+    }
+
+    @Nullable
+    public TextColor getNameColor() {
+        if (nameColor == null && value() instanceof BlockItem blockItem) {
+            Block block = blockItem.getBlock();
+            if (block instanceof IColoredBlock coloredBlock) {
+                nameColor = coloredBlock.getColor().getTextColor();
+            } else {
+                BaseTier tier = Attribute.getBaseTier(block);
+                if (tier != null) {
+                    nameColor = tier.getTextColor();
+                }
+            }
+        }
+        return nameColor;
+    }
+
+    @Internal
+    public ItemRegistryObject<ITEM> setNameColor(EnumColor color) {
+        return setNameColor(color.getTextColor());
+    }
+
+    @Internal
+    public ItemRegistryObject<ITEM> setNameColor(TextColor color) {
+        this.nameColor = color;
+        return this;
     }
 
     @Internal

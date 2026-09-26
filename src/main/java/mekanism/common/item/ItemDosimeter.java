@@ -26,7 +26,7 @@ import net.minecraft.world.level.Level;
 public class ItemDosimeter extends Item {
 
     public ItemDosimeter(Properties properties) {
-        super(properties.stacksTo(1).rarity(Rarity.UNCOMMON));
+        super(properties.stacksTo(1).rarity(Rarity.UNCOMMON).useCooldown(0.5F));
     }
 
     @Override

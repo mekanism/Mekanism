@@ -9,7 +9,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 
-public class ItemBlockLaserTractorBeam extends ItemBlockTooltip<BlockTile<?, ?>> {
+public class ItemBlockLaserTractorBeam extends ItemBlockTooltip {
 
     public ItemBlockLaserTractorBeam(BlockTile<?, ?> block, Item.Properties properties) {
         super(block, properties.component(MekanismDataComponents.DETAILS, Unit.INSTANCE));

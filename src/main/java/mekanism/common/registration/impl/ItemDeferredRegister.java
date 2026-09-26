@@ -4,22 +4,22 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import mekanism.api.SupportsColorMap;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SpawnEggItem;
 import net.neoforged.bus.api.EventPriority;
@@ -54,6 +54,17 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
                     }
                 });
             }
+            //Note: Setting the name color has to be via the modify default components event, as otherwise vanilla will just override the component as part of finalization
+            TextColor nameColor = registryObject.getNameColor();
+            if (nameColor != null) {
+                event.modify(registryObject, (components, _, _) -> {
+                    DataComponentType<Component> itemName = net.minecraft.core.component.DataComponents.ITEM_NAME;
+                    Component component = components.get(itemName);
+                    if (component != null) {
+                        components.set(itemName, component.copy().withColor(nameColor));
+                    }
+                });
+            }
         }));
     }
 
@@ -85,12 +96,7 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
     }
 
     public ItemRegistryObject<Item> register(String name, SupportsColorMap color, UnaryOperator<Properties> propertyModifier) {
-        return registerItem(name, properties -> new Item(propertyModifier.apply(properties)) {
-            @Override
-            public Component getName(ItemStack stack) {
-                return TextComponentUtil.build(color.getTextColor(), super.getName(stack));
-            }
-        });
+        return registerSimple(name, propertyModifier).setNameColor(color.getTextColor());
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> registerItem(String name, Function<Item.Properties, ITEM> sup) {

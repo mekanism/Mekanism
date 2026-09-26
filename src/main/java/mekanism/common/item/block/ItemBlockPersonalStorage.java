@@ -36,11 +36,11 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> extends ItemBlockTooltip<BLOCK> implements IDroppableContents, IGuiItem {
+public class ItemBlockPersonalStorage extends ItemBlockTooltip implements IDroppableContents, IGuiItem {
 
     private final Identifier openStat;
 
-    public ItemBlockPersonalStorage(BLOCK block, Item.Properties properties, Identifier openStat) {
+    public ItemBlockPersonalStorage(BlockPersonalStorage<?, ?> block, Item.Properties properties, Identifier openStat) {
         super(block, properties.component(MekanismDataComponents.DETAILS, Unit.INSTANCE));
         this.openStat = openStat;
     }

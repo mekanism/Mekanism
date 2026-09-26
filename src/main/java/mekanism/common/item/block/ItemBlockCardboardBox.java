@@ -18,6 +18,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -29,7 +30,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.BlockRelocability;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 
-public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
+public class ItemBlockCardboardBox extends BlockItem {
 
     public ItemBlockCardboardBox(BlockCardboardBox block, Item.Properties properties) {
         super(block, properties.stacksTo(16).component(MekanismDataComponents.BLOCK_DATA, BlockData.NONE));

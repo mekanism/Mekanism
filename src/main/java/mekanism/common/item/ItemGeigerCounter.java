@@ -23,7 +23,7 @@ import net.minecraft.world.level.Level;
 public class ItemGeigerCounter extends Item {
 
     public ItemGeigerCounter(Properties props) {
-        super(props.stacksTo(1).rarity(Rarity.UNCOMMON));
+        super(props.stacksTo(1).rarity(Rarity.UNCOMMON).useCooldown(0.5F));
     }
 
     @Override
