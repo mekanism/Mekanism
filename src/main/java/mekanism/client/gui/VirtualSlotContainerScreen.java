@@ -15,7 +15,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.3: Heavily re-evaluate this class/make sure nothing has gotten broken
+//TODO - 26.4: Heavily re-evaluate this class/make sure nothing has gotten broken
 public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
     public VirtualSlotContainerScreen(T container, Inventory inv, Component titleIn) {
@@ -34,7 +34,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
     protected Slot getHoveredSlot(double mouseX, double mouseY) {
         for (Slot slot : menu.slots) {
             //Like super.getSelectedSlot except uses our isMouseOverSlot so
-            // that our redirection doesn't break this
+            // that our redirection of isHovering doesn't break this
             if (slot.isActive() && isMouseOverSlot(slot, mouseX, mouseY)) {
                 return slot;
             }
@@ -56,16 +56,6 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
             return false;
         }
         return mouseOver;
-    }
-
-    private boolean mouseReleasedBase(MouseButtonEvent event) {
-        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && this.isDragging()) {
-            setDragging(false);
-            if (getFocused() != null) {
-                return getFocused().mouseReleased(event);
-            }
-        }
-        return false;
     }
 
     //TODO - 26.3: If we AT x and y for slots to not be final, and actually update them I think we can skip this override unless we need this to be delayed
@@ -135,8 +125,9 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
 
     @Override
     protected void renderSlotContents(GuiGraphicsExtractor graphics, ItemStack itemStack, Slot slot, @Nullable String itemCount) {
+        //Note: Technically we don't need to override this as we override the one caller in extractSlot to not call it for virtual slots,
+        // but having it here in case we end up calling it from somewhere else doesn't hurt
         if (slot instanceof IVirtualSlot virtualSlot) {
-            //TODO - 26.3: Re-evaluate overriding this method? I don't think this should ever be called as we override extractSlot and change the render call?
             virtualSlot.updateRenderInfo(itemStack, false, itemCount);
         } else {
             //If we are not a virtual slot, the super method is good enough
@@ -155,7 +146,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         } else {
             boolean clickedOutside = hasClickedOutside(event.x(), event.y(), this.leftPos, this.topPos);
             if (slot != null) {
-                clickedOutside = false; // Forge, prevent dropping of items through slots outside of GUI boundaries
+                clickedOutside = false; // Neo: prevent dropping of items through slots outside of GUI boundaries
             }
             int slotId = -1;
             if (slot != null) {
@@ -168,8 +159,8 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
             if (slotId != -1) {
                 if (!this.isQuickCrafting) {
                     if (this.menu.getCarried().isEmpty()) {
-                        if (this.minecraft.options.keyPickItem.isActiveAndMatches(mouseKey)) {
-                            slotClicked(slot, slotId, event.button(), ContainerInput.CLONE);
+                        if (cloning) {
+                            slotClicked(slot, slotId, event, ContainerInput.CLONE);
                         } else {
                             boolean quickKey = slotId != AbstractContainerMenu.SLOT_CLICKED_OUTSIDE && event.hasShiftDown();
                             ContainerInput containerInput = ContainerInput.PICKUP;
@@ -180,7 +171,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                                 containerInput = ContainerInput.THROW;
                             }
 
-                            slotClicked(slot, slotId, event.button(), containerInput);
+                            slotClicked(slot, slotId, event, containerInput);
                         }
 
                         this.skipNextRelease = true;
@@ -192,7 +183,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                             this.quickCraftingType = AbstractContainerMenu.QUICKCRAFT_TYPE_CHARITABLE;
                         } else if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
                             this.quickCraftingType = AbstractContainerMenu.QUICKCRAFT_TYPE_GREEDY;
-                        } else if (this.minecraft.options.keyPickItem.isActiveAndMatches(mouseKey)) {
+                        } else if (cloning) {
                             this.quickCraftingType = AbstractContainerMenu.QUICKCRAFT_TYPE_CLONE;
                         }
                     }
