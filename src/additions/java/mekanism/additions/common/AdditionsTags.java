@@ -68,10 +68,6 @@ public class AdditionsTags {
         public static final TagKey<Item> STAIRS_PLASTIC_TRANSPARENT = tag("plastic_stairs/transparent");
         public static final TagKey<Item> SLABS_PLASTIC_TRANSPARENT = tag("plastic_slabs/transparent");
 
-        private static TagKey<Item> commonTag(String name) {
-            return ItemTags.create(Identifier.fromNamespaceAndPath("c", name));
-        }
-
         private static TagKey<Item> tag(String name) {
             return ItemTags.create(MekanismAdditions.rl(name));
         }
@@ -95,7 +91,6 @@ public class AdditionsTags {
         }
 
         public static final TagKey<EntityType<?>> BOGGED = commonTag("bogged");
-        public static final TagKey<EntityType<?>> ENDERMEN = commonTag("endermen");
         public static final TagKey<EntityType<?>> PARCHED = commonTag("parched");
         public static final TagKey<EntityType<?>> STRAY = commonTag("stray");
 

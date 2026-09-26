@@ -229,6 +229,8 @@ public class MekanismTagProvider extends BaseTagProvider {
 
         getBuilder(MekanismTags.Entities.CREEPERS)
               .add(EntityTypeIds.CREEPER);
+        getBuilder(MekanismTags.Entities.ENDERMEN)
+              .add(EntityTypeIds.ENDERMAN);
 
         getBuilder(MekanismAPITags.Entities.RADIATION_IMMUNE).add(MekanismEntityTypes.ROBIT);
         getBuilder(MekanismAPITags.Entities.MEK_RADIATION_IMMUNE)
@@ -259,6 +261,22 @@ public class MekanismTagProvider extends BaseTagProvider {
               EntityTypeIds.VILLAGER//Turns into witch
         ).add(
               MekanismTags.Entities.CREEPERS//Becomes charged
+        );
+        getBuilder(MekanismTags.Entities.MEKASUIT_REDUCED_VISIBILITY).add(
+              EntityTypeTags.ARTHROPOD,
+              EntityTypeTags.UNDEAD,
+              EntityTypeTags.RAIDERS,
+              MekanismTags.Entities.CREEPERS,
+              MekanismTags.Entities.ENDERMEN
+        ).add(
+              EntityTypeIds.BLAZE,
+              EntityTypeIds.BREEZE,
+              EntityTypeIds.CREAKING,
+              EntityTypeIds.GUARDIAN,
+              EntityTypeIds.ELDER_GUARDIAN,
+              EntityTypeIds.ENDER_DRAGON,
+              EntityTypeIds.WITCH,
+              EntityTypeIds.VEX
         );
     }
 

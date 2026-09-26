@@ -82,8 +82,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
               .add(AdditionsEntityTypes.BABY_BOGGED);
         getBuilder(MekanismTags.Entities.CREEPERS)
               .add(AdditionsEntityTypes.BABY_CREEPER);
-        getBuilder(AdditionsTags.Entities.ENDERMEN)
-              .add(EntityTypeIds.ENDERMAN)
+        getBuilder(MekanismTags.Entities.ENDERMEN)
               .add(AdditionsEntityTypes.BABY_ENDERMAN);
         getBuilder(AdditionsTags.Entities.PARCHED)
               .add(EntityTypeIds.PARCHED)

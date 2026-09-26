@@ -43,6 +43,7 @@ import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCrea
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
@@ -50,6 +51,7 @@ import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
@@ -66,6 +68,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.MobVisibility;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.item.equipment.ArmorType;
@@ -98,6 +101,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public ItemMekaSuitArmor(ArmorType armorType, Item.Properties properties) {
         super(MekanismArmorMaterials.MEKASUIT, armorType, IModuleHelper.INSTANCE.applyModuleContainerProperties(
               properties.rarity(Rarity.EPIC).setNoCombineRepair().stacksTo(1)
+                    //Each piece lowers by 10%, for a total of about 35% if all pieces are equipped
+                    .delayedComponent(DataComponents.MOB_VISIBILITY, context -> new MobVisibility(context.getOrThrow(MekanismTags.Entities.MEKASUIT_REDUCED_VISIBILITY), 0.9F))
         ));
         this.armorType = armorType;
         switch (this.armorType) {

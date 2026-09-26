@@ -1,0 +1,17 @@
+{
+  "values": [
+    "#minecraft:arthropod",
+    "#minecraft:undead",
+    "#minecraft:raiders",
+    "#c:creepers",
+    "#c:endermen",
+    "minecraft:blaze",
+    "minecraft:breeze",
+    "minecraft:creaking",
+    "minecraft:guardian",
+    "minecraft:elder_guardian",
+    "minecraft:ender_dragon",
+    "minecraft:witch",
+    "minecraft:vex"
+  ]
+}

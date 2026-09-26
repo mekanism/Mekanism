@@ -282,6 +282,9 @@ public class MekanismTags {
         }
 
         public static final TagKey<EntityType<?>> CREEPERS = commonTag("creepers");
+        public static final TagKey<EntityType<?>> ENDERMEN = commonTag("endermen");
+
+        public static final TagKey<EntityType<?>> MEKASUIT_REDUCED_VISIBILITY = tag("mekasuit_reduced_visibility");
         public static final TagKey<EntityType<?>> VALID_SPS_EXPERIMENT = tag("valid_sps_experiment");
 
         private static TagKey<EntityType<?>> commonTag(String name) {

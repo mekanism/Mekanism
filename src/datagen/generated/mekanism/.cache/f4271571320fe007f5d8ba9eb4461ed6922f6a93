@@ -1,4 +1,4 @@
-// 26.3	2026-09-23T20:20:18.8838054	Tags: mekanism
+// 26.3	2026-09-26T13:55:43.1665722	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -32,6 +32,7 @@ f5cef9314ee390feebf4b2036219d1c3df23e351 data/c/tags/block/storage_blocks/steel.
 65a28a53b7a60e660859cecfa32ce0c8f7771b30 data/c/tags/block/storage_blocks/tin.json
 8e745c5f7a6a8b0bc07f373181a241c6c2ea9a01 data/c/tags/block/storage_blocks/uranium.json
 da9ec5f7ed64a0d225e00ee60b8e6d6408b431fb data/c/tags/entity_type/creepers.json
+6f8bc3eb93347d4d15c38a3b7cfbd2b796ac201c data/c/tags/entity_type/endermen.json
 903060898e7790a3059ae8734191a498ce75e0cb data/c/tags/entity_type/radiation_immune.json
 88a67aad1e1becece2f0fa1763e5491173a9a577 data/c/tags/fluid/brine.json
 f84e9ea02956bff6cb8a6f42a996f4fd76b5b6e9 data/c/tags/fluid/chlorine.json
@@ -218,6 +219,7 @@ d41d6272e2371aea1cba40453fa82255ed4ef961 data/mekanism/tags/block/transmitters/i
 10324698ef50d9ab1c367abd0d46152a26bf5ed5 data/mekanism/tags/damage_type/is_preventable_magic.json
 bf457102006e4f901e6858ec33bb241e55c4724c data/mekanism/tags/damage_type/mekasuit_always_supported.json
 debf303c735181a679584bdf63c35b07442c256d data/mekanism/tags/data_component_type/config/clearable.json
+1f0bf591fc8121c0165dd4834e2c7529b896538b data/mekanism/tags/entity_type/mekasuit_reduced_visibility.json
 4b67fc6179cbe96b6cb9674c9d5a9ee562b63b59 data/mekanism/tags/entity_type/radiation_immune.json
 8e31f21fe2a9c86403af7a98e3d163b5513a83a1 data/mekanism/tags/entity_type/valid_sps_experiment.json
 ab7a3106f18b6b47d54a87a099ddd43adfa77368 data/mekanism/tags/item/alloys.json
