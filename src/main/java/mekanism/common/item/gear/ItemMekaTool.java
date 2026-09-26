@@ -65,6 +65,7 @@ import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.component.Weapon;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -82,14 +83,15 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.Nullable;
 
 public class ItemMekaTool extends ItemEnergized implements IRadialModuleContainerItem, IBlastingItem {
 
     private static final Identifier RADIAL_ID = Mekanism.rl("meka_tool");
 
-    public ItemMekaTool(Properties properties) {//TODO - 26.3 add WEAPON component, so net.minecraft.world.item.ItemStack.hurtEnemy works properly?
-        super(IModuleHelper.INSTANCE.applyModuleContainerProperties(properties.fireResistant().rarity(Rarity.EPIC).setNoCombineRepair().stacksTo(1)
+    public ItemMekaTool(Properties properties) {
+        super(IModuleHelper.INSTANCE.applyModuleContainerProperties(properties.fireResistant().rarity(Rarity.EPIC).stacksTo(1)
+              //Note: The meka-tool does not use vanilla damage, so we just set the item damage per attack to zero
+              .component(DataComponents.WEAPON, new Weapon(0, ItemAtomicDisassembler.DISABLES_BLOCKING_FOR_SECONDS))
               .delayedHolderComponent(DataComponents.DAMAGE_TYPE, MekanismDamageTypes.DISASSEMBLING.key())
               .delayedComponent(DataComponents.TOOL, context -> new Tool(List.of(
                     Tool.Rule.deniesDrops(context.getOrThrow(MekanismTags.Blocks.INCORRECT_FOR_MEKA_TOOL)),
@@ -107,9 +109,6 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     public boolean canPerformAction(ItemInstance instance, ItemAbility action) {
         IModuleContainer container = moduleContainer(instance);
         if (container != null) {
-            if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
-                return hasEnergyForDigAction(container, Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance)));
-            }
             for (IModule<?> module : container.modules()) {
                 if (module.isEnabled() && canPerformAction(module, container, instance, action)) {
                     return true;
@@ -122,18 +121,6 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     private <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module,
           IModuleContainer moduleContainer, ITEM instance, ItemAbility action) {
         return module.getCustomInstance().canPerformAction(module, moduleContainer, instance, action);
-    }
-
-    public static boolean hasEnergyForDigAction(IModuleContainer container, @Nullable EnergyHandler energyHandler) {
-        if (energyHandler != null) {
-            //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
-            // as that is the best guess we can currently give whether the corresponding dig action is supported
-            int energyRequired = getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
-            int energyAvailable = energyHandler.getAmountAsInt();
-            //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
-            return energyRequired <= energyAvailable || ((double) energyAvailable / energyRequired) > Mth.EPSILON;
-        }
-        return false;
     }
 
     public static int getDestroyEnergy(IModuleContainer container, float hardness, boolean silk) {

@@ -1,6 +1,7 @@
 package mekanism.tools.common.material;
 
 import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.component.Weapon;
 
 public interface IPaxelMaterial {
 
@@ -17,8 +18,7 @@ public interface IPaxelMaterial {
     int paxelEnchantability();
 
     default float paxelDisableBlockingSeconds() {
-        //Mirror the default value that an axe has
-        return 5;
+        return Weapon.AXE_DISABLES_BLOCKING_FOR_SECONDS;
     }
 
     ToolMaterial toPaxelToolMaterial();

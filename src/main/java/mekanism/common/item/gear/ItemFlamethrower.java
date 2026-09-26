@@ -61,7 +61,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemicalItem, IAttachmentBasedModeItem<FlamethrowerMode> {
 
     public ItemFlamethrower(Properties properties) {
-        super(properties.stacksTo(1).rarity(Rarity.RARE).setNoCombineRepair()
+        super(properties.stacksTo(1).rarity(Rarity.RARE)
               .component(MekanismDataComponents.FLAMETHROWER_MODE, FlamethrowerMode.COMBAT)
         );
     }

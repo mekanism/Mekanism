@@ -1,6 +1,5 @@
 package mekanism.common.item.gear;
 
-import com.mojang.math.Constants;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -73,10 +71,10 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.component.TooltipProvider;
+import net.minecraft.world.item.component.Weapon;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.registries.holdersets.AnyHolderSet;
@@ -88,10 +86,7 @@ import org.jspecify.annotations.Nullable;
 
 public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode>, IHasConditionalAttributes {
 
-    //All basic dig actions except shears
-    //TODO - 26.3: review why these not longer exist: https://github.com/neoforged/NeoForge/issues/3112
-    public static final Set<ItemAbility> ALWAYS_SUPPORTED_ACTIONS = Set.of(/*ItemAbilities.AXE_DIG, ItemAbilities.HOE_DIG, ItemAbilities.SHOVEL_DIG, ItemAbilities.PICKAXE_DIG,
-          ItemAbilities.SWORD_DIG*/);
+    public static final float DISABLES_BLOCKING_FOR_SECONDS = Weapon.AXE_DISABLES_BLOCKING_FOR_SECONDS / 2;
     private static final Lazy<RadialData<DisassemblerMode>> LAZY_RADIAL_DATA = Lazy.of(() ->
           IRadialDataHelper.INSTANCE.dataForEnum(Mekanism.rl("disassembler_mode"), DisassemblerMode.NORMAL));
 
@@ -101,31 +96,16 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     public ItemAtomicDisassembler(Properties properties) {
-        //TODO - 26.3: Re-evaluate uses of setNoCombineRepair and see if any of them are not actually needed
-        super(properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1)
+        super(properties.rarity(Rarity.RARE).stacksTo(1)
               .component(MekanismDataComponents.DISASSEMBLER_MODE, DisassemblerMode.NORMAL)
+              //Note: The atomic disassembler does not use vanilla damage, so we just set the item damage per attack to zero
+              .component(DataComponents.WEAPON, new Weapon(0, DISABLES_BLOCKING_FOR_SECONDS))
               .delayedHolderComponent(DataComponents.DAMAGE_TYPE, MekanismDamageTypes.DISASSEMBLING.key())
               .delayedComponent(DataComponents.TOOL, context -> new Tool(List.of(
                     Tool.Rule.deniesDrops(context.getOrThrow(MekanismTags.Blocks.INCORRECT_FOR_DISASSEMBLER)),
                     new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK), Optional.empty(), Optional.of(true))
               ), 1, 0, true))
         );
-    }
-
-    @Override
-    public boolean canPerformAction(ItemInstance instance, ItemAbility action) {
-        if (ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
-            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
-            if (energyHandler != null) {
-                //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
-                // as that is the best guess we can currently give whether the corresponding dig action is supported
-                int energyRequired = getDestroyEnergy(instance, 0);
-                int energyAvailable = energyHandler.getAmountAsInt();
-                //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
-                return energyRequired <= energyAvailable || energyAvailable / (double) energyRequired > Constants.EPSILON;
-            }
-        }
-        return false;
     }
 
     @Override

@@ -17,6 +17,7 @@ import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.ShearsDispenseItemBehavior;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -35,6 +36,7 @@ import net.neoforged.neoforge.common.IShearable;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
@@ -55,7 +57,16 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
                 int cost = ItemMekaTool.getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
                 return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), cost);
             } else if (action == ItemAbilities.SHEARS_DIG) {
-                return ItemMekaTool.hasEnergyForDigAction(container, module.getEnergyHandler(ItemAccessUtils.sideEffectFreeAccess(instance), true));
+                EnergyHandler energyHandler = module.getEnergyHandler(ItemAccessUtils.sideEffectFreeAccess(instance), true);
+                if (energyHandler == null) {
+                    return false;
+                }
+                //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
+                // as that is the best guess we can currently give whether the corresponding dig action is supported
+                int energyRequired = ItemMekaTool.getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
+                int energyAvailable = energyHandler.getAmountAsInt();
+                //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
+                return energyRequired <= energyAvailable || ((double) energyAvailable / energyRequired) > Mth.EPSILON;
             } else if (action == ItemAbilities.SHEARS_TRIM) {
                 return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageShearTrim);
             }

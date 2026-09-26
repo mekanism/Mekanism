@@ -33,7 +33,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 public class ItemCanteen extends Item implements IFluidItem {
 
     public ItemCanteen(Properties properties) {
-        super(properties.rarity(Rarity.UNCOMMON).stacksTo(1).setNoCombineRepair());
+        super(properties.rarity(Rarity.UNCOMMON).stacksTo(1));
     }
 
     @Override
