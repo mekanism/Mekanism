@@ -24,6 +24,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityAttachment;
+import net.minecraft.world.entity.EntityAttachments;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityType.Builder;
@@ -59,8 +60,8 @@ public class AdditionsEntityTypes {
 
     public static final Map<BabyType, MekanismDeferredHolder<EntityType<?>, ? extends EntityType<? extends Monster>>> BABIES = Collections.unmodifiableMap(Util.make(new EnumMap<>(BabyType.class), map -> {
         registerBaby(BabyType.BOGGED, map, () -> baby(EntityBabyBogged::new, EntityTypes.BOGGED), Bogged::createAttributes);
-        registerBaby(BabyType.CREEPER, map, () -> baby(EntityBabyCreeper::new, EntityTypes.CREEPER, 0.625F), Creeper::createAttributes);
-        registerBaby(BabyType.ENDERMAN, map, () -> baby(EntityBabyEnderman::new, EntityTypes.ENDERMAN, 0.525F), Enderman::createAttributes);
+        registerBaby(BabyType.CREEPER, map, () -> baby(EntityBabyCreeper::new, EntityTypes.CREEPER, 0.6F, 0.9F), Creeper::createAttributes);
+        registerBaby(BabyType.ENDERMAN, map, () -> baby(EntityBabyEnderman::new, EntityTypes.ENDERMAN, 0.625F, 0.88F), Enderman::createAttributes);
         registerBaby(BabyType.PARCHED, map, () -> baby(EntityBabyParched::new, EntityTypes.PARCHED), Parched::createAttributes);
         registerBaby(BabyType.SKELETON, map, () -> baby(EntityBabySkeleton::new, EntityTypes.SKELETON), AbstractSkeleton::createAttributes);
         registerBaby(BabyType.STRAY, map, () -> baby(EntityBabyStray::new, EntityTypes.STRAY), AbstractSkeleton::createAttributes, Stray::checkStraySpawnRules);
@@ -122,11 +123,10 @@ public class AdditionsEntityTypes {
     }
 
     private static <ENTITY extends Entity> EntityType.Builder<ENTITY> baby(EntityType.EntityFactory<ENTITY> factory, EntityType<?> parent) {
-        //Vanilla's 0.5 scaling for baby mobs is too small compared to the visual of the mob
-        return baby(factory, parent, 0.5625F);
+        return baby(factory, parent, 0.5F, 0.815F);
     }
 
-    private static <ENTITY extends Entity> EntityType.Builder<ENTITY> baby(EntityType.EntityFactory<ENTITY> factory, EntityType<?> parent, float scale) {
+    private static <ENTITY extends Entity> EntityType.Builder<ENTITY> baby(EntityType.EntityFactory<ENTITY> factory, EntityType<?> parent, float heightScale, float eyeHeightScale) {
         EntityType.Builder<ENTITY> builder = Builder.of(factory, parent.getCategory());
         if (!parent.canSerialize()) {
             builder.noSave();
@@ -149,19 +149,23 @@ public class AdditionsEntityTypes {
         if (parent.getDefaultLootTable().isEmpty()) {
             builder.noLootTable();
         }
+        if (!parent.trackDeltas()) {
+            builder.dontTrackDeltas();
+        }
         builder.requiredFeatures = parent.requiredFeatures();
         builder.immuneTo(parent.immuneTo)
               .spawnDimensionsScale(parent.spawnDimensionsScale)
-              .setShouldReceiveVelocityUpdates(parent.trackDeltas())
+              .setShouldReceiveVelocityUpdates(parent.hasUpdateInterval())
               .clientTrackingRange(parent.clientTrackingRange())
               .setTrackingRange(parent.clientTrackingRange())
               .updateInterval(parent.updateInterval())
               .setUpdateInterval(parent.updateInterval());
-        EntityDimensions babyDimensions = parent.getDimensions().scale(scale);
+        float widthScale = 0.817F;
+        EntityDimensions babyDimensions = parent.getDimensions().scale(widthScale, heightScale);
         builder.sized(babyDimensions.width(), babyDimensions.height());
-        //Note: We use a custom value rather than the 0.85 multiplier default as babies have larger heads than normal
-        builder.eyeHeight(babyDimensions.height() * 0.83F);
-        for (Map.Entry<EntityAttachment, List<Vec3>> entry : babyDimensions.attachments().attachments.entrySet()) {
+        builder.eyeHeight(babyDimensions.height() * eyeHeightScale);
+        EntityAttachments attachments = parent.getDimensions().attachments().scale(widthScale, 0.25F, widthScale);
+        for (Map.Entry<EntityAttachment, List<Vec3>> entry : attachments.attachments.entrySet()) {
             EntityAttachment attachment = entry.getKey();
             for (Vec3 vec3 : entry.getValue()) {
                 builder.attach(attachment, vec3);
