@@ -1,9 +1,10 @@
 package mekanism.additions.client.render.entity;
 
+import mekanism.additions.client.model.BabyEndermanModel;
 import mekanism.additions.client.model.BabyModelLayers;
-import mekanism.additions.client.model.ModelBabyEnderman;
+import mekanism.additions.client.render.entity.layer.BabyEndermanCarriedBlockLayer;
 import mekanism.additions.client.render.entity.layer.BabyEndermanEyesLayer;
-import mekanism.additions.client.render.entity.layer.BabyEndermanHeldBlockLayer;
+import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.baby.EntityBabyEnderman;
 import net.minecraft.client.model.monster.enderman.EndermanModel;
 import net.minecraft.client.renderer.block.BlockModelResolver;
@@ -21,15 +22,30 @@ import net.minecraft.world.phys.Vec3;
 /// block is held in the correct spot and the head is in the proper place.
 public class BabyEndermanRenderer extends MobRenderer<EntityBabyEnderman, EndermanRenderState, EndermanModel<EndermanRenderState>> {
 
-    private static final Identifier ENDERMAN_TEXTURES = Identifier.withDefaultNamespace("textures/entity/enderman/enderman.png");
+    private static final Identifier ENDERMAN_LOCATION = MekanismAdditions.rl("textures/entity/baby/enderman/enderman.png");
     private final RandomSource random = RandomSource.create();
     private final BlockModelResolver blockModelResolver;
 
     public BabyEndermanRenderer(EntityRendererProvider.Context context) {
-        super(context, new ModelBabyEnderman(context.bakeLayer(BabyModelLayers.BABY_ENDERMAN)), 0.5F);
+        super(context, new BabyEndermanModel(context.bakeLayer(BabyModelLayers.BABY_ENDERMAN)), 0.5F);
         this.blockModelResolver = context.getBlockModelResolver();
         this.addLayer(new BabyEndermanEyesLayer(this));
-        this.addLayer(new BabyEndermanHeldBlockLayer(this));
+        this.addLayer(new BabyEndermanCarriedBlockLayer(this));
+    }
+
+    @Override
+    public Vec3 getRenderOffset(EndermanRenderState state) {
+        Vec3 offset = super.getRenderOffset(state);
+        if (state.isCreepy) {
+            double d = 0.02 * state.scale;
+            return offset.add(this.random.nextGaussian() * d, 0, this.random.nextGaussian() * d);
+        }
+        return offset;
+    }
+
+    @Override
+    public Identifier getTextureLocation(EndermanRenderState state) {
+        return ENDERMAN_LOCATION;
     }
 
     @Override
@@ -38,29 +54,15 @@ public class BabyEndermanRenderer extends MobRenderer<EntityBabyEnderman, Enderm
     }
 
     @Override
-    public void extractRenderState(EntityBabyEnderman enderman, EndermanRenderState state, float partialTicks) {
-        super.extractRenderState(enderman, state, partialTicks);
-        HumanoidMobRenderer.extractHumanoidRenderState(enderman, state, partialTicks, this.itemModelResolver);
-        state.isCreepy = enderman.isCreepy();
-        BlockState carriedBlock = enderman.getCarriedBlock();
+    public void extractRenderState(EntityBabyEnderman entity, EndermanRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        HumanoidMobRenderer.extractHumanoidRenderState(entity, state, partialTicks, this.itemModelResolver);
+        state.isCreepy = entity.isCreepy();
+        BlockState carriedBlock = entity.getCarriedBlock();
         if (carriedBlock != null) {
             this.blockModelResolver.update(state.carriedBlock, carriedBlock, EndermanRenderer.BLOCK_DISPLAY_CONTEXT);
         } else {
             state.carriedBlock.clear();
         }
-    }
-
-    @Override
-    public Vec3 getRenderOffset(EndermanRenderState state) {
-        if (state.isCreepy) {
-            double offset = 0.02 * state.scale;
-            return new Vec3(this.random.nextGaussian() * offset, 0, this.random.nextGaussian() * offset);
-        }
-        return super.getRenderOffset(state);
-    }
-
-    @Override
-    public Identifier getTextureLocation(EndermanRenderState state) {
-        return ENDERMAN_TEXTURES;
     }
 }

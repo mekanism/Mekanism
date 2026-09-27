@@ -2,8 +2,9 @@ package mekanism.additions.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.additions.client.model.BabyModelLayers;
-import mekanism.additions.client.model.ModelBabyCreeper;
-import mekanism.additions.client.render.entity.layer.BabyCreeperChargeLayer;
+import mekanism.additions.client.model.BabyCreeperModel;
+import mekanism.additions.client.render.entity.layer.BabyCreeperPowerLayer;
+import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.baby.EntityBabyCreeper;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -12,25 +13,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /// Copy of vanilla's [creeper render][net.minecraft.client.renderer.entity.CreeperRenderer], modified to use our own model/layer that is properly scaled
-public class BabyCreeperRenderer extends MobRenderer<EntityBabyCreeper, CreeperRenderState, ModelBabyCreeper> {
+public class BabyCreeperRenderer extends MobRenderer<EntityBabyCreeper, CreeperRenderState, BabyCreeperModel> {
 
-    private static final Identifier CREEPER_TEXTURES = Identifier.withDefaultNamespace("textures/entity/creeper/creeper.png");
+    private static final Identifier CREEPER_LOCATION = MekanismAdditions.rl("textures/entity/baby/creeper/creeper.png");
 
     public BabyCreeperRenderer(EntityRendererProvider.Context context) {
-        super(context, new ModelBabyCreeper(context.getModelSet().bakeLayer(BabyModelLayers.BABY_CREEPER)), 0.5F);
-        this.addLayer(new BabyCreeperChargeLayer(this, context.getModelSet()));
-    }
-
-    @Override
-    public CreeperRenderState createRenderState() {
-        return new CreeperRenderState();
-    }
-
-    @Override
-    public void extractRenderState(EntityBabyCreeper creeper, CreeperRenderState state, float partialTicks) {
-        super.extractRenderState(creeper, state, partialTicks);
-        state.swelling = creeper.getSwelling(partialTicks);
-        state.isPowered = creeper.isPowered();
+        super(context, new BabyCreeperModel(context.getModelSet().bakeLayer(BabyModelLayers.BABY_CREEPER)), 0.5F);
+        addLayer(new BabyCreeperPowerLayer(this, context.getModelSet()));
     }
 
     @Override
@@ -52,6 +41,18 @@ public class BabyCreeperRenderer extends MobRenderer<EntityBabyCreeper, CreeperR
 
     @Override
     public Identifier getTextureLocation(CreeperRenderState state) {
-        return CREEPER_TEXTURES;
+        return CREEPER_LOCATION;
+    }
+
+    @Override
+    public CreeperRenderState createRenderState() {
+        return new CreeperRenderState();
+    }
+
+    @Override
+    public void extractRenderState(EntityBabyCreeper entity, CreeperRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        state.swelling = entity.getSwelling(partialTicks);
+        state.isPowered = entity.isPowered();
     }
 }

@@ -10,7 +10,6 @@ public class BabyModelLayers {
     }
 
     public static final ModelLayerLocation BABY_BOGGED = mainLayer(BabyType.BOGGED);
-    public static final ModelLayerLocation BABY_BOGGED_OUTER_LAYER = outerLayer(BabyType.BOGGED);
     public static final ArmorModelSet<ModelLayerLocation> BABY_BOGGED_ARMOR = armorSet(BabyType.BOGGED);
 
     public static final ModelLayerLocation BABY_CREEPER = mainLayer(BabyType.CREEPER);
@@ -25,7 +24,6 @@ public class BabyModelLayers {
     public static final ArmorModelSet<ModelLayerLocation> BABY_SKELETON_ARMOR = armorSet(BabyType.SKELETON);
 
     public static final ModelLayerLocation BABY_STRAY = mainLayer(BabyType.STRAY);
-    public static final ModelLayerLocation BABY_STRAY_OUTER_LAYER = outerLayer(BabyType.STRAY);
     public static final ArmorModelSet<ModelLayerLocation> BABY_STRAY_ARMOR = armorSet(BabyType.STRAY);
 
     public static final ModelLayerLocation BABY_WITHER_SKELETON = mainLayer(BabyType.WITHER_SKELETON);
@@ -33,10 +31,6 @@ public class BabyModelLayers {
 
     private static ModelLayerLocation mainLayer(BabyType babyType) {
         return layer(babyType, "main");
-    }
-
-    private static ModelLayerLocation outerLayer(BabyType babyType) {
-        return layer(babyType, "outer");
     }
 
     private static ModelLayerLocation layer(BabyType babyType, String layer) {
