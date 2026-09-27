@@ -16,7 +16,6 @@ public class ToolsEquipmentAssetProvider extends EquipmentAssetProvider {
 
     @Override
     protected void registerModels(BiConsumer<ResourceKey<EquipmentAsset>, EquipmentClientInfo> output) {
-        //TODO - 26.3: Make armor render on humanoid baby mobs. Either by figuring out how to convert the textures, or by adding baby textures
         for (MaterialType material : MaterialType.VALUES) {
             ResourceKey<EquipmentAsset> equipmentAsset = material.material.equipmentAsset();
             output.accept(equipmentAsset, EquipmentClientInfo.builder().addHumanoidLayers(equipmentAsset.identifier()).build());
