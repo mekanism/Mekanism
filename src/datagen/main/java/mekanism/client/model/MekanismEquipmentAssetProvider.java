@@ -21,7 +21,6 @@ public class MekanismEquipmentAssetProvider extends EquipmentAssetProvider {
               .addLayers(EquipmentClientInfo.LayerType.WINGS, new EquipmentClientInfo.Layer(MekanismEquipmentAssets.HDPE_ELYTRA.identifier(), Optional.empty(), true))
               .build()
         );
-        //TODO - 26.3: Make armor render on humanoid baby mobs. Either by figuring out how to convert the textures, or by adding baby textures
         consumer.accept(MekanismEquipmentAssets.HAZMAT, EquipmentClientInfo.builder().addHumanoidLayers(MekanismEquipmentAssets.HAZMAT.identifier()).build());
     }
 }
