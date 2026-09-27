@@ -1,5 +1,10 @@
 {
   "layers": {
+    "horse_body": [
+      {
+        "texture": "mekanismtools:osmium"
+      }
+    ],
     "humanoid": [
       {
         "texture": "mekanismtools:osmium"
@@ -11,6 +16,11 @@
       }
     ],
     "humanoid_leggings": [
+      {
+        "texture": "mekanismtools:osmium"
+      }
+    ],
+    "nautilus_body": [
       {
         "texture": "mekanismtools:osmium"
       }

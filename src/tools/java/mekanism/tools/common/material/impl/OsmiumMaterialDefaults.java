@@ -82,7 +82,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
             case LEGGINGS -> 6;
             case CHESTPLATE -> 8;
             case HELMET -> 4;
-            default -> 0;
+            case BODY -> 11;
         };
     }
 

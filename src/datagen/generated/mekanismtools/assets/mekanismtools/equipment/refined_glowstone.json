@@ -1,5 +1,10 @@
 {
   "layers": {
+    "horse_body": [
+      {
+        "texture": "mekanismtools:refined_glowstone"
+      }
+    ],
     "humanoid": [
       {
         "texture": "mekanismtools:refined_glowstone"
@@ -11,6 +16,11 @@
       }
     ],
     "humanoid_leggings": [
+      {
+        "texture": "mekanismtools:refined_glowstone"
+      }
+    ],
+    "nautilus_body": [
       {
         "texture": "mekanismtools:refined_glowstone"
       }

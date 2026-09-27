@@ -89,7 +89,7 @@ public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
             case BOOTS, HELMET -> 3;
             case LEGGINGS -> 6;
             case CHESTPLATE -> 8;
-            default -> 0;
+            case BODY -> 11;
         };
     }
 

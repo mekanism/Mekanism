@@ -36,10 +36,22 @@ public class ToolsCreativeTabs {
 
         } else if (tabKey == CreativeModeTabs.COMBAT) {
             for (MaterialType material : MaterialType.VALUES) {
-                material.armor.forEach(armor -> CreativeTabDeferredRegister.addToDisplay(event, armor));
                 CreativeTabDeferredRegister.addToDisplay(event, material.tools.sword());
+            }
+            for (MaterialType material : MaterialType.VALUES) {
                 CreativeTabDeferredRegister.addToDisplay(event, material.tools.spear());
+            }
+            for (MaterialType material : MaterialType.VALUES) {
                 CreativeTabDeferredRegister.addToDisplay(event, material.tools.shield());
+            }
+            for (MaterialType material : MaterialType.VALUES) {
+                material.armor.forEachHumanoid(armor -> CreativeTabDeferredRegister.addToDisplay(event, armor));
+            }
+            for (MaterialType material : MaterialType.VALUES) {
+                CreativeTabDeferredRegister.addToDisplay(event, material.armor.horse());
+            }
+            for (MaterialType material : MaterialType.VALUES) {
+                CreativeTabDeferredRegister.addToDisplay(event, material.armor.nautilus());
             }
         }
     }

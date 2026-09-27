@@ -62,7 +62,8 @@ public class ToolsModelProvider extends BaseModelProvider {
             generateTrimmableItem(itemModels, material.armor.chestplate(), ItemModelGenerators.TRIM_PREFIX_CHESTPLATE);
             generateTrimmableItem(itemModels, material.armor.leggings(), ItemModelGenerators.TRIM_PREFIX_LEGGINGS);
             generateTrimmableItem(itemModels, material.armor.boots(), ItemModelGenerators.TRIM_PREFIX_BOOTS);
-
+            generateFlatItem(itemModels, material.armor.horse());
+            generateFlatItem(itemModels, material.armor.nautilus());
         }
         ToolsItems.vanillaPaxels().forEach(paxel -> handheld(itemModels, paxel, new Material(itemTexture(paxel))));
     }
@@ -70,7 +71,18 @@ public class ToolsModelProvider extends BaseModelProvider {
     private Material getTexture(ItemRegistryObject<?> mekItem) {
         String name = mekItem.getName();
         int index = name.lastIndexOf('_');
-        return new Material(modLocation("item/" + name.substring(0, index) + '/' + name.substring(index + 1)));
+        String last = name.substring(index + 1);
+        if (last.equals("armor")) {//TODO: Do this in a less special cased way
+            index = name.lastIndexOf('_', index - 1);
+            last = name.substring(index + 1);
+        }
+        return new Material(modLocation("item/" + name.substring(0, index) + '/' + last));
+    }
+
+    private void generateFlatItem(ItemModelGenerators itemModels, ItemRegistryObject<?> holder) {
+        Item item = holder.value();
+        Identifier flatItemModel = ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(item), TextureMapping.layer0(getTexture(holder)), itemModels.modelOutput);
+        itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(flatItemModel));
     }
 
     private void handheld(ItemModelGenerators itemModels, ItemRegistryObject<?> holder) {

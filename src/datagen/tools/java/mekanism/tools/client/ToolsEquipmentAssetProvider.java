@@ -18,7 +18,7 @@ public class ToolsEquipmentAssetProvider extends EquipmentAssetProvider {
     protected void registerModels(BiConsumer<ResourceKey<EquipmentAsset>, EquipmentClientInfo> output) {
         for (MaterialType material : MaterialType.VALUES) {
             ResourceKey<EquipmentAsset> equipmentAsset = material.material.equipmentAsset();
-            output.accept(equipmentAsset, EquipmentClientInfo.builder().addHumanoidLayers(equipmentAsset.identifier()).build());
+            output.accept(equipmentAsset, humanoidAndMountArmor(equipmentAsset.identifier().toString()).build());
         }
     }
 }

@@ -109,6 +109,8 @@ public class ToolsLangProvider extends BaseLanguageProvider {
         add(armor.chestplate(), type + " Chestplate");
         add(armor.leggings(), type + " Leggings");
         add(armor.boots(), type + " Boots");
+        add(armor.horse(), type + " Horse Armor");
+        add(armor.nautilus(), type + " Nautilus Armor");
 
         add(tools.axe(), type + " Axe");
         add(tools.hoe(), type + " Hoe");

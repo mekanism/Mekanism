@@ -1,5 +1,7 @@
-// 26.3	2026-09-17T15:06:11.3036187	Tags: mekanismtools
+// 26.3	2026-09-27T16:56:17.147108	Tags: mekanismtools
 13cf1fe06cf159d32d074144254a0d375f6b20e7 data/c/tags/block/mineable/paxel.json
+8997da3c3ed0ca483abfd5d3287d47cfe62b4aa6 data/c/tags/item/armors/horse.json
+4814a9728a195411e392400ec2297d5b23751371 data/c/tags/item/armors/nautilus.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/c/tags/item/tools.json
 a9b1406d28741b06bb1aff0b175adc726effbba7 data/c/tags/item/tools/melee_weapon.json
 d60a2c6cb5c303e3c4e84510470de0191ea0f0df data/c/tags/item/tools/mining_tool.json
@@ -22,12 +24,12 @@ ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/mi
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/sharp_weapon.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/weapon.json
 61aac4830507ca1aeaeffcbd3b2c6ffd2eb5b58c data/minecraft/tags/item/foot_armor.json
-4b2c0ee85fec7ddd4d5fd69eb7b305bd1d38c389 data/minecraft/tags/item/freeze_immune_wearables.json
+140bbe5af540babcad1cc3c8ded2208f1072e8cf data/minecraft/tags/item/freeze_immune_wearables.json
 1a7d9b6b6074ff3c9b5bcf285768e9fdeb843a27 data/minecraft/tags/item/head_armor.json
 e01d70e305d942a3815bfa2630c32f18c7b58537 data/minecraft/tags/item/hoes.json
 33c4fcf2117cb7b8b7b18f179bb867c552c06a21 data/minecraft/tags/item/leg_armor.json
 9581467c567477a2c5ad115e3cee624633122eb1 data/minecraft/tags/item/pickaxes.json
-a645569723b0240a2c6201eacbe2d58d1dd7a96f data/minecraft/tags/item/piglin_loved.json
+bb26a6cf8327ec63393438d850d2b73eeeadcbc4 data/minecraft/tags/item/piglin_loved.json
 67f530591e1b7568d4a4353b6a01eadfe2bb2ca3 data/minecraft/tags/item/piglin_preferred_weapons.json
 4b2c0ee85fec7ddd4d5fd69eb7b305bd1d38c389 data/minecraft/tags/item/piglin_safe_armor.json
 ec0da4985a81ff417ae0567b6917e65b05047624 data/minecraft/tags/item/shovels.json

@@ -186,7 +186,8 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
           IConfigTranslation bootDurability, IConfigTranslation bootArmor,
           IConfigTranslation leggingDurability, IConfigTranslation leggingArmor,
           IConfigTranslation chestplateDurability, IConfigTranslation chestplateArmor,
-          IConfigTranslation helmetDurability, IConfigTranslation helmetArmor
+          IConfigTranslation helmetDurability, IConfigTranslation helmetArmor,
+          IConfigTranslation bodyArmor
     ) {
 
         public IConfigTranslation[] toArray() {
@@ -205,7 +206,8 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
                                             bootDurability, bootArmor,
                                             leggingDurability, leggingArmor,
                                             chestplateDurability, chestplateArmor,
-                                            helmetDurability, helmetArmor
+                                            helmetDurability, helmetArmor,
+                                            bodyArmor
             };
         }
 
@@ -274,7 +276,9 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
                   new ConfigTranslation(getKey(registryPrefix, "durability.chestplate"), "Chestplate Durability", "Maximum durability of " + name + " chestplates."),
                   new ConfigTranslation(getKey(registryPrefix, "armor.chestplate"), "Chestplate Armor", "Protection value of " + name + " chestplates."),
                   new ConfigTranslation(getKey(registryPrefix, "durability.helmet"), "Helmet Durability", "Maximum durability of " + name + " helmets."),
-                  new ConfigTranslation(getKey(registryPrefix, "armor.helmet"), "Helmet Armor", "Protection value of " + name + " helmets.")
+                  new ConfigTranslation(getKey(registryPrefix, "armor.helmet"), "Helmet Armor", "Protection value of " + name + " helmets."),
+
+                  new ConfigTranslation(getKey(registryPrefix, "armor.body"), "Body Armor", "Protection value of " + name + " Horse and Nautilus Armor.")
             );
         }
     }

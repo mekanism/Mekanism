@@ -11,14 +11,22 @@ import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorType;
 
-public record ArmorCollection(ItemRegistryObject<Item> helmet, ItemRegistryObject<Item> chestplate, ItemRegistryObject<Item> leggings, ItemRegistryObject<Item> boots) {
+public record ArmorCollection(ItemRegistryObject<Item> helmet, ItemRegistryObject<Item> chestplate, ItemRegistryObject<Item> leggings, ItemRegistryObject<Item> boots,
+                              ItemRegistryObject<Item> horse, ItemRegistryObject<Item> nautilus) {
 
     public static ArmorCollection create(ItemDeferredRegister registry, MaterialCreator material) {
         return new ArmorCollection(
               registerArmor(registry, material, ArmorType.HELMET),
               registerArmor(registry, material, ArmorType.CHESTPLATE),
               registerArmor(registry, material, ArmorType.LEGGINGS),
-              registerArmor(registry, material, ArmorType.BOOTS)
+              registerArmor(registry, material, ArmorType.BOOTS),
+              //Note: Neither horse armor nor nautilus armor has durability, so we don't have to reset the durability to the correct value afterwards like we do for humanoid armor
+              registry.registerSimple(material.registryPrefix() + "_horse_armor", properties -> ToolsItems.setCommonProperties(properties, material)
+                    .horseArmor(material.toArmorMaterial(ArmorType.BODY))
+              ),
+              registry.registerSimple(material.registryPrefix() + "_nautilus_armor", properties -> ToolsItems.setCommonProperties(properties, material)
+                    .nautilusArmor(material.toArmorMaterial(ArmorType.BODY))
+              )
         );
     }
 
@@ -36,7 +44,19 @@ public record ArmorCollection(ItemRegistryObject<Item> helmet, ItemRegistryObjec
         return builder.build();
     }
 
+    public List<ItemRegistryObject<Item>> asListHumanoid() {
+        Builder<ItemRegistryObject<Item>> builder = ImmutableList.builderWithExpectedSize(4);
+        forEachHumanoid(builder::add);
+        return builder.build();
+    }
+
     public void forEach(Consumer<ItemRegistryObject<Item>> consumer) {
+        forEachHumanoid(consumer);
+        consumer.accept(this.horse);
+        consumer.accept(this.nautilus);
+    }
+
+    public void forEachHumanoid(Consumer<ItemRegistryObject<Item>> consumer) {
         consumer.accept(this.helmet);
         consumer.accept(this.chestplate);
         consumer.accept(this.leggings);

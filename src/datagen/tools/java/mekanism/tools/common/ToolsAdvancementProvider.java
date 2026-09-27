@@ -27,7 +27,7 @@ public class ToolsAdvancementProvider extends BaseAdvancementProvider {
               .save(output);
         advancement(ToolsAdvancements.ALTERNATE_ARMOR)
               .display(ToolsItems.OSMIUM_ARMOR.chestplate(), AdvancementType.TASK, false)
-              .orCriteria("armor", itemLookup, MaterialType.VALUES.stream().flatMap(material -> material.armor.asList().stream()))
+              .orCriteria("armor", itemLookup, MaterialType.VALUES.stream().flatMap(material -> material.armor.asListHumanoid().stream()))
               .save(output);
         advancement(ToolsAdvancements.ALTERNATE_TOOLS)
               .display(ToolsItems.OSMIUM_TOOLS.pickaxe(), AdvancementType.TASK, false)
@@ -44,11 +44,11 @@ public class ToolsAdvancementProvider extends BaseAdvancementProvider {
 
         advancement(ToolsAdvancements.BETTER_THAN_NETHERITE)
               .display(ToolsItems.REFINED_OBSIDIAN_ARMOR.chestplate(), AdvancementType.GOAL, false)
-              .orCriteria("armor", itemLookup, ToolsItems.REFINED_OBSIDIAN_ARMOR.asList())
+              .orCriteria("armor", itemLookup, ToolsItems.REFINED_OBSIDIAN_ARMOR.asListHumanoid())
               .save(output);
         advancement(ToolsAdvancements.LOVED_BY_PIGLINS)
               .display(ToolsItems.REFINED_GLOWSTONE_ARMOR.chestplate(), AdvancementType.GOAL, false)
-              .orCriteria("armor", itemLookup, ToolsItems.REFINED_GLOWSTONE_ARMOR.asList())
+              .orCriteria("armor", itemLookup, ToolsItems.REFINED_GLOWSTONE_ARMOR.asListHumanoid())
               .save(output);
     }
 }

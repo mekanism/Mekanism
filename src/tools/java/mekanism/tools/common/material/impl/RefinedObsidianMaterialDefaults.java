@@ -85,7 +85,7 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
             case LEGGINGS -> 8;
             case CHESTPLATE -> 12;
             case HELMET -> 6;
-            default -> 0;
+            case BODY -> 25;
         };
     }
 

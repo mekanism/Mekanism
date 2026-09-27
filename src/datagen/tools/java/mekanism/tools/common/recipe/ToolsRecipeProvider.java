@@ -105,6 +105,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         registerVanillaPaxels();
     }
 
+    //TODO - 26.3: Either add recipes or loot tables for Horse and Nautlius armor
     private void registerRecipeSet(MaterialType material, TagKey<Item> ingot, @Nullable Holder<Item> nugget) {
         String name = material.getSerializedName();
         ArmorCollection armor = material.armor;

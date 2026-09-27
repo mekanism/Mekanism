@@ -85,6 +85,7 @@ public class MaterialCreator implements BaseMekanismMaterial {
     private final CachedIntValue leggingArmor;
     private final CachedIntValue chestplateArmor;
     private final CachedIntValue helmetArmor;
+    private final CachedIntValue bodyArmor;
 
     public MaterialCreator(IMekanismConfig config, ModConfigSpec.Builder builder, BaseMekanismMaterial materialDefaults) {
         fallBack = materialDefaults;
@@ -246,6 +247,10 @@ public class MaterialCreator implements BaseMekanismMaterial {
         helmetArmor = CachedIntValue.wrap(config, translations.helmetArmor().applyToBuilder(builder)
               .gameRestart()
               .defineInRange(toolKey + "HelmetArmor", materialDefaults.defense(ArmorType.HELMET), 0, Integer.MAX_VALUE));
+
+        bodyArmor = CachedIntValue.wrap(config, translations.bodyArmor().applyToBuilder(builder)
+              .gameRestart()
+              .defineInRange(toolKey + "BodyArmor", materialDefaults.defense(ArmorType.BODY), 0, Integer.MAX_VALUE));
         builder.pop();
     }
 
@@ -493,7 +498,7 @@ public class MaterialCreator implements BaseMekanismMaterial {
             case LEGGINGS -> leggingArmor.get();
             case CHESTPLATE -> chestplateArmor.get();
             case HELMET -> helmetArmor.get();
-            default -> 0;
+            case BODY -> bodyArmor.get();
         };
     }
 

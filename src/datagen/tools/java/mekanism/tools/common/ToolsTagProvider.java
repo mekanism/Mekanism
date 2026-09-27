@@ -24,7 +24,7 @@ public class ToolsTagProvider extends BaseTagProvider {
         MekanismTagBuilder<Item> piglinLoved = getBuilder(ItemTags.PIGLIN_LOVED).add(ToolsItems.GOLD_PAXEL);
         ToolsItems.REFINED_GLOWSTONE_ARMOR.forEach(piglinLoved::add);
         ToolsItems.REFINED_GLOWSTONE_TOOLS.forEach(piglinLoved::add);
-        ToolsItems.REFINED_GLOWSTONE_ARMOR.forEach(getBuilder(ItemTags.PIGLIN_SAFE_ARMOR)::add);
+        ToolsItems.REFINED_GLOWSTONE_ARMOR.forEachHumanoid(getBuilder(ItemTags.PIGLIN_SAFE_ARMOR)::add);
         getBuilder(ItemTags.PIGLIN_PREFERRED_WEAPONS).add(ToolsItems.REFINED_GLOWSTONE_TOOLS.spear());
         //Make refined glowstone armor make you immune to freezing because of the light it gives off
         ToolsItems.REFINED_GLOWSTONE_ARMOR.forEach(getBuilder(ItemTags.FREEZE_IMMUNE_WEARABLES)::add);
@@ -69,6 +69,8 @@ public class ToolsTagProvider extends BaseTagProvider {
         addChestplates();
         addLeggings();
         addBoots();
+        addHorseArmors();
+        addNautilusArmors();
     }
 
     private void addPaxels() {
@@ -168,6 +170,20 @@ public class ToolsTagProvider extends BaseTagProvider {
         MekanismTagBuilder<Item> builder = getBuilder(ItemTags.FOOT_ARMOR);
         for (MaterialType material : MaterialType.VALUES) {
             builder.add(material.armor.boots());
+        }
+    }
+
+    private void addHorseArmors() {
+        MekanismTagBuilder<Item> builder = getBuilder(Tags.Items.ARMORS_HORSE);
+        for (MaterialType material : MaterialType.VALUES) {
+            builder.add(material.armor.horse());
+        }
+    }
+
+    private void addNautilusArmors() {
+        MekanismTagBuilder<Item> builder = getBuilder(Tags.Items.ARMORS_NAUTILUS);
+        for (MaterialType material : MaterialType.VALUES) {
+            builder.add(material.armor.nautilus());
         }
     }
 }

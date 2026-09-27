@@ -1,5 +1,10 @@
 {
   "layers": {
+    "horse_body": [
+      {
+        "texture": "mekanismtools:refined_obsidian"
+      }
+    ],
     "humanoid": [
       {
         "texture": "mekanismtools:refined_obsidian"
@@ -11,6 +16,11 @@
       }
     ],
     "humanoid_leggings": [
+      {
+        "texture": "mekanismtools:refined_obsidian"
+      }
+    ],
+    "nautilus_body": [
       {
         "texture": "mekanismtools:refined_obsidian"
       }

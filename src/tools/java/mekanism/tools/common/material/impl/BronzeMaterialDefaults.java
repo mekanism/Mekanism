@@ -77,10 +77,9 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
     public int defense(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 2;
-            case LEGGINGS -> 6;
+            case LEGGINGS, BODY -> 6;
             case CHESTPLATE -> 7;
             case HELMET -> 3;
-            default -> 0;
         };
     }
 

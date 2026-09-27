@@ -88,8 +88,7 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
         return switch (armorType) {
             case BOOTS, HELMET -> 1;
             case LEGGINGS -> 3;
-            case CHESTPLATE -> 4;
-            default -> 0;
+            case CHESTPLATE, BODY -> 4;
         };
     }
 
