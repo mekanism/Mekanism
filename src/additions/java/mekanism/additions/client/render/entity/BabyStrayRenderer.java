@@ -1,6 +1,7 @@
 package mekanism.additions.client.render.entity;
 
 import mekanism.additions.client.model.BabyModelLayers;
+import mekanism.additions.client.model.BabySkeletonModel;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.baby.EntityBabyStray;
 import net.minecraft.client.renderer.entity.AbstractSkeletonRenderer;
@@ -14,7 +15,7 @@ public class BabyStrayRenderer extends AbstractSkeletonRenderer<EntityBabyStray,
     private static final Identifier STRAY_SKELETON_LOCATION = MekanismAdditions.rl("textures/entity/baby/skeleton/stray.png");
 
     public BabyStrayRenderer(EntityRendererProvider.Context context) {
-        super(context, BabyModelLayers.BABY_STRAY, BabyModelLayers.BABY_STRAY_ARMOR);
+        super(context, BabyModelLayers.BABY_STRAY_ARMOR, new BabySkeletonModel<>(context.bakeLayer(BabyModelLayers.BABY_STRAY)));
     }
 
     @Override
