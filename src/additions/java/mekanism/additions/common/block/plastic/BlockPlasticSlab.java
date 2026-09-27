@@ -1,6 +1,7 @@
 package mekanism.additions.common.block.plastic;
 
 import java.util.Optional;
+import mekanism.additions.common.block.ExtendedFluidLogType;
 import mekanism.additions.common.block.IStateExtendedFluidLoggable;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -52,7 +53,26 @@ public class BlockPlasticSlab extends SlabBlock implements IColoredBlock, IState
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return BlockStateHelper.getStateForPlacement(super.getStateForPlacement(context), context);
+        BlockState state;
+        BlockState replacedBlockState = context.getLevel().getBlockState(context.getClickedPos());
+        boolean clearFluidLogging;
+        if (replacedBlockState.is(this)) {
+            //Like super except also stops it from being lava logged
+            state = replacedBlockState.setValue(TYPE, SlabType.DOUBLE);
+            clearFluidLogging = true;
+        } else {
+            state = super.getStateForPlacement(context);
+            clearFluidLogging = false;
+        }
+        state = BlockStateHelper.getStateForPlacement(state, context);
+        if (clearFluidLogging && state != null) {
+            return clearDoubleSlabFluidLogging(state);
+        }
+        return state;
+    }
+
+    protected BlockState clearDoubleSlabFluidLogging(BlockState doubleSlab) {
+        return doubleSlab.setValue(WATERLOGGED, false).setValue(getFluidLoggedProperty(), ExtendedFluidLogType.EMPTY);
     }
 
     @Override

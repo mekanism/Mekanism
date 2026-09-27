@@ -44,4 +44,10 @@ public class BlockPlasticTransparentSlab extends BlockPlasticSlab {
     public Integer getBeaconColorMultiplier(BlockState state, LevelReader world, BlockPos pos, BlockPos beaconPos) {
         return getColor().getPackedColor();
     }
+
+    @Override
+    protected BlockState clearDoubleSlabFluidLogging(BlockState doubleSlab) {
+        //Explicitly support having fluid logged transparent double slabs
+        return doubleSlab;
+    }
 }

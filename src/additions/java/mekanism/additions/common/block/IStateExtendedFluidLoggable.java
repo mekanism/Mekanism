@@ -1,6 +1,5 @@
 package mekanism.additions.common.block;
 
-import mekanism.common.block.states.IFluidLogType;
 import mekanism.common.block.states.IStateFluidLoggable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,7 +28,7 @@ public interface IStateExtendedFluidLoggable extends IStateFluidLoggable {
     }
 
     @Override
-    default EnumProperty<? extends IFluidLogType> getFluidLoggedProperty() {
+    default EnumProperty<ExtendedFluidLogType> getFluidLoggedProperty() {
         return FLUID_LOGGED;
     }
 

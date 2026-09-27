@@ -44,7 +44,9 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<Boolean> {
 
     public ItemElectricBow(Properties properties) {
-        super(properties.rarity(Rarity.RARE).stacksTo(1).component(MekanismDataComponents.ELECTRIC_BOW_MODE, false));
+        super(properties.rarity(Rarity.RARE).stacksTo(1).enchantable(1)
+              .component(MekanismDataComponents.ELECTRIC_BOW_MODE, false)
+        );
     }
 
     @Override
