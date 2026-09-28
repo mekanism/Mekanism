@@ -22,7 +22,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -85,9 +84,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 if (stackRenderState.color() != null) {
                     poseStack.pushPose();
                     poseStack.translate(-0.5F, -0.25F, -0.5F);
-                    //TODO - 26.3: Do we want this to be based on the light coords? Maybe with like a base emissive level of 5
                     nodeCollector.submitBlockModel(poseStack, Sheets.cutoutBlockItemSheet(), MekanismModelCache.INSTANCE.TRANSPORTER_BOX.getBakedModel(),
-                          new int[]{stackRenderState.color().getPackedColor()}, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+                          new int[]{stackRenderState.color().getPackedColor()}, state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
                     poseStack.popPose();
                 }
                 AABB bb = stackRenderState.item().getModelBoundingBox();

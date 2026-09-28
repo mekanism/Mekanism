@@ -44,6 +44,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
@@ -143,7 +144,7 @@ public class GeneratorsBlockTypes {
               @Override
               public <LEVEL extends LevelReader, DATA extends @Nullable Object> boolean handle(LEVEL level, BlockPos pos, BlockState state, DATA data,
                     TriBooleanFunction<LEVEL, BlockPos, DATA> consumer) {
-                  BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
+                  BlockPos.MutableBlockPos mutable = pos.mutable().move(Direction.UP);
                   if (!consumer.accept(level, mutable, data)) {
                       return false;
                   }

@@ -1,12 +1,9 @@
 package mekanism.generators.common.content.turbine;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.IChemicalTank;
@@ -28,8 +25,8 @@ import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.ValueUtils;
 import mekanism.common.util.ResourceUtils;
+import mekanism.common.util.ValueUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
@@ -56,7 +53,6 @@ import org.jspecify.annotations.Nullable;
 public class TurbineMultiblockData extends MultiblockData {
 
     public static final float ROTATION_THRESHOLD = 0.001F;
-    public static final Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
 
     private final List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> fluidOutputTargets = new ArrayList<>();
     private final List<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> energyOutputTargets = new ArrayList<>();
@@ -223,7 +219,6 @@ public class TurbineMultiblockData extends MultiblockData {
         ValueUtils.readOrEmpty(input, SerializationConstants.FLUID, ventTank);
         input.read(SerializationConstants.COMPLEX, BlockPos.CODEC).ifPresent(value -> complex = value);
         clientRotation = input.getFloatOr(SerializationConstants.ROTATION, clientRotation);
-        clientRotationMap.put(inventoryID, clientRotation);
     }
 
     @Override

@@ -181,7 +181,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     private double getTargetElevation(LivingEntity entity) {
         BlockPos pos = BlockPos.containing(entity.position());
         CollisionContext collisionContext = CollisionContext.of(entity, true);
-        for (BlockPos.MutableBlockPos posi = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ()); posi.getY() > 0; posi.move(Direction.DOWN)) {
+        for (BlockPos.MutableBlockPos posi = pos.mutable(); posi.getY() > 0; posi.move(Direction.DOWN)) {
             BlockState state = level().getBlockState(posi);
             if (!state.isAir()) {
                 double stateOffset = state.getCollisionShape(level(), posi, collisionContext).max(Axis.Y);

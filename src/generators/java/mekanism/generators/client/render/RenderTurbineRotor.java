@@ -2,13 +2,11 @@ package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import java.util.UUID;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.client.model.ModelTurbine;
 import mekanism.generators.client.model.ModelTurbine.TurbineBladeRenderState;
 import mekanism.generators.client.render.RenderTurbineRotor.TurbineRotorRenderState;
 import mekanism.generators.common.GeneratorsProfilerConstants;
-import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -16,20 +14,22 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTurbineRotor, TurbineRotorRenderState> {
 
-    private static final float BASE_SPEED = 512F;
+    public static final float BASE_SPEED = 512F;
+    @Nullable
+    public static RenderTurbineRotor INSTANCE;
 
     private final ModelTurbine model;
 
     public RenderTurbineRotor(BlockEntityRendererProvider.Context context) {
         super(context);
         this.model = new ModelTurbine(context.entityModelSet());
+        INSTANCE = this;
     }
 
     @Override
@@ -45,23 +45,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
         if (state.housedBlades == 0) {//Sanity check
             return;
         }
-        UUID multiblockUUID = rotor.getMultiblockUUID();
-        if (multiblockUUID != null) {
-            //We are rendering inside the multiblock, use full-bright for the textures
-            //TODO - 26.3: Should this calculate the light coords like MultiblockContentsRenderState
-            state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
-        }
-
         int baseIndex = rotor.getPosition() * 2;
-        if (isTickingNormally(rotor)) {//TODO - 26.3: Re-evaluate where these calculations should be done
-            if (multiblockUUID != null && TurbineMultiblockData.clientRotationMap.containsKey(multiblockUUID)) {
-                float rotateSpeed = TurbineMultiblockData.clientRotationMap.getFloat(multiblockUUID) * BASE_SPEED;
-                rotor.rotationLower += rotateSpeed / (baseIndex + 1);
-                rotor.rotationUpper += rotateSpeed / (baseIndex + 2);
-            }
-            rotor.rotationLower %= 360;
-            rotor.rotationUpper %= 360;
-        }
         state.lowerBlade.index = baseIndex;
         state.lowerBlade.rotation = rotor.rotationLower;
 
@@ -104,7 +88,8 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
 
     @Override
     public boolean shouldRender(TileEntityTurbineRotor tile, Vec3 camera) {
-        return tile.getHousedBlades() > 0 && super.shouldRender(tile, camera);
+        //Note: When a multiblock is present, we let the turbine handle the rendering so that it can calculate the light level properly
+        return tile.getHousedBlades() > 0 && tile.getMultiblockUUID() == null && super.shouldRender(tile, camera);
     }
 
     @Override

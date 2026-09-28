@@ -8,7 +8,6 @@ import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.lib.Version;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.MekanismGeneratorsMultiblocks;
-import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.network.GeneratorsPacketHandler;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsBuilders.FissionReactorBuilder;
@@ -94,10 +93,5 @@ public class MekanismGenerators implements IModModule {
     @Override
     public String getName() {
         return "Generators";
-    }
-
-    @Override
-    public void resetClientDimensionChanged() {
-        TurbineMultiblockData.clientRotationMap.clear();
     }
 }
