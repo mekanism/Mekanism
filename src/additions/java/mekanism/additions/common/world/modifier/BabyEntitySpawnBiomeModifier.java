@@ -10,7 +10,8 @@ import mekanism.additions.common.registries.AdditionsBiomeModifierSerializers;
 import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList.Builder;
 import net.minecraft.world.entity.EntityType;
@@ -29,7 +30,7 @@ public record BabyEntitySpawnBiomeModifier(BabyType babyType, AdditionsConfig.Sp
     }
 
     @Override
-    public void modify(Holder<Biome> biome, Phase phase, BiomeInfo.Builder builder) {
+    public void modify(RegistryAccess registries, Holder<Biome> biome, Phase phase, BiomeInfo.Builder builder) {
         if (phase == Phase.REMOVE && spawnConfig.shouldSpawn.get()) {
             //Note: We need to run after addition in case we ran after any mods added their skeletons,
             // but we run before after everything to make it easier for another mod to remove us
@@ -41,7 +42,7 @@ public record BabyEntitySpawnBiomeModifier(BabyType babyType, AdditionsConfig.Sp
                 }
                 List<Weighted<MobSpawnSettings.SpawnerData>> spawnersToAdd = spawnConfig.getSpawnersToAdd(monsterSpawns.getList());
                 if (!spawnersToAdd.isEmpty()) {
-                    EntityType<?> parentType = BuiltInRegistries.ENTITY_TYPE.get(spawnConfig.parentType).map(Holder::value).orElse(null);
+                    EntityType<?> parentType = registries.lookupOrThrow(Registries.ENTITY_TYPE).get(spawnConfig.parentType).map(Holder::value).orElse(null);
                     if (parentType == null) {
                         Mekanism.logger.warn("Parent entity type: '{}' was missing, when trying to add biome spawns for '{}' to '{}'. Spawns rates will not include a cost per entity.",
                               babyType.parentId(), babyType.id(), biome.getRegisteredName());

@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "mekanismtools:item/refined_glowstone/boots",
-    "layer1": "minecraft:trims/items/boots_trim_lapis"
-  }
-}

@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "mekanismtools:item/refined_obsidian/helmet",
-    "layer1": "minecraft:trims/items/helmet_trim_emerald"
-  }
-}

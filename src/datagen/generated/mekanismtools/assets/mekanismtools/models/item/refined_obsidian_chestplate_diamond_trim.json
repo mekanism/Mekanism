@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "mekanismtools:item/refined_obsidian/chestplate",
-    "layer1": "minecraft:trims/items/chestplate_trim_diamond"
-  }
-}

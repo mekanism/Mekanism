@@ -8,11 +8,14 @@ import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsStructureModifierSerializers;
 import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
-import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Util;
 import net.minecraft.util.random.Weighted;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -28,7 +31,7 @@ public record BabyEntitySpawnStructureModifier(BabyType babyType, AdditionsConfi
     }
 
     @Override
-    public void modify(Holder<Structure> structure, Phase phase, StructureInfo.Builder builder) {
+    public void modify(RegistryAccess registries, Holder<Structure> structure, Phase phase, StructureInfo.Builder builder) {
         if (phase == Phase.REMOVE && spawnConfig.shouldSpawn.get()) {
             //Note: We need to run after addition in case we ran after any mods added their skeletons,
             // but we run before after everything to make it easier for another mod to remove us
@@ -36,11 +39,12 @@ public record BabyEntitySpawnStructureModifier(BabyType babyType, AdditionsConfi
             StructureSpawnOverrideBuilder spawnOverrides = structureSettings.getSpawnOverrides(MobCategory.MONSTER);
             //Fail quick if there are no overrides for this structure, or it is blacklisted
             if (spawnOverrides != null && !structure.is(babyType.structureBlacklist())) {
+                Registry<EntityType<?>> entityTypes = registries.lookupOrThrow(Registries.ENTITY_TYPE);
                 for (Weighted<MobSpawnSettings.SpawnerData> spawner : spawnConfig.getSpawnersToAdd(spawnOverrides.getSpawns())) {
                     spawnOverrides.addSpawn(spawner);
                     ResourceKey<Structure> structureKey = structure.getKey();
                     Mekanism.logger.debug("Adding spawn rate for '{}' in structure '{}', with weight: {}, minSize: {}, maxSize: {}",
-                          Util.getRegisteredName(BuiltInRegistries.ENTITY_TYPE, spawner.value().type()), structureKey == null ? null : structureKey.identifier(), spawner.weight(),
+                          Util.getRegisteredName(entityTypes, spawner.value().type()), structureKey == null ? null : structureKey.identifier(), spawner.weight(),
                           spawner.value().count().minInclusive(), spawner.value().count().maxInclusive());
                 }
             }

@@ -1,7 +1,5 @@
 package mekanism.tools.client;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import mekanism.client.model.BaseModelProvider;
 import mekanism.common.Mekanism;
@@ -20,17 +18,13 @@ import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.item.ClientItem;
 import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.client.renderer.item.SelectItemModel.SwitchCase;
-import net.minecraft.client.renderer.item.properties.select.TrimMaterialProperty;
 import net.minecraft.client.renderer.special.ShieldSpecialRenderer;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.equipment.trim.TrimMaterial;
 
 public class ToolsModelProvider extends BaseModelProvider {
 
@@ -58,10 +52,12 @@ public class ToolsModelProvider extends BaseModelProvider {
             handheld(itemModels, material.tools.sword());
             spear(itemModels, material.tools.spear());
 
-            generateTrimmableItem(itemModels, material.armor.helmet(), ItemModelGenerators.TRIM_PREFIX_HELMET);
-            generateTrimmableItem(itemModels, material.armor.chestplate(), ItemModelGenerators.TRIM_PREFIX_CHESTPLATE);
-            generateTrimmableItem(itemModels, material.armor.leggings(), ItemModelGenerators.TRIM_PREFIX_LEGGINGS);
-            generateTrimmableItem(itemModels, material.armor.boots(), ItemModelGenerators.TRIM_PREFIX_BOOTS);
+            material.armor.forEachHumanoid(armorItem -> {
+                Material itemTexture = getTexture(armorItem);
+                Identifier modelLocation = armorItem.getId().withPrefix("item/");
+                ModelTemplates.FLAT_ITEM.create(modelLocation, TextureMapping.layer0(itemTexture), itemModels.modelOutput);
+            });
+            itemModels.generateDynamicTrimmableArmorSet(material.armor.helmet().asItem(), material.armor.chestplate().asItem(), material.armor.leggings().asItem(), material.armor.boots().asItem(), null);
             generateFlatItem(itemModels, material.armor.horse());
             generateFlatItem(itemModels, material.armor.nautilus());
         }
@@ -109,26 +105,6 @@ public class ToolsModelProvider extends BaseModelProvider {
               ModelTemplates.SPEAR_IN_HAND.create(item, TextureMapping.layer0(new Material(itemTexture.sprite().withSuffix("_in_hand"))), itemModels.modelOutput)
         );
         itemModels.itemModelOutput.accept(item, ItemModelGenerators.createFlatModelDispatch(flatModel, inHandModel), new ClientItem.Properties(true, false, 1.95F));
-    }
-
-    private void generateTrimmableItem(ItemModelGenerators itemModels, ItemRegistryObject<?> armorItem, Identifier slotTrimPrefix) {
-        Material itemTexture = getTexture(armorItem);
-        Identifier modelLocation = armorItem.getId().withPrefix("item/");
-        ModelTemplates.FLAT_ITEM.create(modelLocation, TextureMapping.layer0(itemTexture), itemModels.modelOutput);
-        //itemModels.generateDynamicTrimmableItem(armorItem.asItem(), modelLocation, slotTrimPrefix);
-        //TODO - 26.3: Once https://github.com/neoforged/NeoForge/pull/3539 or an alternative is merged replace the below with the above line
-
-        List<SwitchCase<ResourceKey<TrimMaterial>>> cases = new ArrayList<>(ItemModelGenerators.TRIM_MATERIAL_MODELS.size());
-        for (ItemModelGenerators.TrimMaterialData material : ItemModelGenerators.TRIM_MATERIAL_MODELS) {
-            Identifier trimModelLocation = modelLocation.withSuffix("_" + material.palette().suffix() + "_trim");
-            Material trimOverlayTexture = new Material(slotTrimPrefix.withSuffix("_" + material.palette().suffix()));
-            itemModels.generateLayeredItem(trimModelLocation, itemTexture, trimOverlayTexture);
-            ItemModel.Unbaked trimModel = ItemModelUtils.plainModel(trimModelLocation);
-
-            cases.add(ItemModelUtils.when(material.materialKey(), trimModel));
-        }
-        ItemModel.Unbaked untrimmedModel = ItemModelUtils.plainModel(modelLocation);
-        itemModels.itemModelOutput.accept(armorItem.value(), ItemModelUtils.select(new TrimMaterialProperty(), untrimmedModel, cases));
     }
 
     private static final ModelTemplate SHIELD = new ModelTemplate(Optional.of(Identifier.withDefaultNamespace("item/shield")), Optional.empty(), TextureSlot.PARTICLE);
