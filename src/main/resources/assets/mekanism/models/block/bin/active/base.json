@@ -4,9 +4,9 @@
 	"textures": {
 		"#led": "#led",
 		"front": "mekanism:block/bin/front",
-		"#side": "#side",
-		"#top": "#top",
-		"#back": "#back",
+		"side": "mekanism:block/bin/side",
+		"top": "mekanism:block/bin/top_active",
+		"back": "mekanism:block/bin/back",
 		"bottom": "mekanism:block/bin/bottom_active",
 		"particle": "#back"
 	},
