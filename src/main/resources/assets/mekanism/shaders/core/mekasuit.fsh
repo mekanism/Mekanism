@@ -23,7 +23,6 @@ layout(location = 1) in float cylindricalVertexDistance;
 #ifdef PER_FACE_LIGHTING
 layout(location = 2) in vec4 vertexPerFaceColorBack;
 layout(location = 3) in vec4 vertexPerFaceColorFront;
-//TODO - 26.3: Re-evaluate this
 layout(location = 8) in vec4 shadedVertexPerFaceColorBack;
 layout(location = 9) in vec4 shadedVertexPerFaceColorFront;
 #else

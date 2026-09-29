@@ -72,15 +72,14 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
           IConfigTranslation topLevel,
           IConfigTranslation shouldSpawn,
           @Nullable IConfigTranslation disableArmorSpawning,
-          IConfigTranslation minSize,
-          IConfigTranslation maxSize,
+          IConfigTranslation sizePercentage,
           IConfigTranslation weight,
           IConfigTranslation costPerEntity,
           IConfigTranslation maxCost
     ) {
 
         public IConfigTranslation[] toArray() {
-            return Stream.of(topLevel, shouldSpawn, disableArmorSpawning, minSize, maxSize, weight, costPerEntity, maxCost)
+            return Stream.of(topLevel, shouldSpawn, disableArmorSpawning, sizePercentage, weight, costPerEntity, maxCost)
                   .filter(Objects::nonNull)
                   .toArray(IConfigTranslation[]::new);
         }
@@ -97,8 +96,7 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
                   new ConfigTranslation(getKey(key, "should_spawn"), "Should Spawn", "Enable the spawning of " + name + ". Think baby zombies."),
                   babyType.hasEquipment() ? new ConfigTranslation(getKey(key, "disable_armor_spawning"), "Disable Armor on Babies", "Disables armor from spawning on " + name + ".")
                                           : null,
-                  new ConfigTranslation(getKey(key, "min_size"), "Min Group Size", "The multiplier for minimum group size of " + name + " spawns, compared to the adult mob."),
-                  new ConfigTranslation(getKey(key, "max_size"), "Max Group Size", "The multiplier for maximum group size of " + name + " spawns, compared to the adult mob."),
+                  new ConfigTranslation(getKey(key, "size_percentage"), "Group Size Scale", "The multiplier for the group size of " + name + " spawns, compared to the adult mob."),
                   new ConfigTranslation(getKey(key, "weight"), "Weight Multiplier", "The multiplier for weight of " + name + " spawns, compared to the adult mob."),
                   new ConfigTranslation(getKey(key, "cost_per_entity"), "Cost Per Entity Multiplier", "The multiplier for spawn cost per entity of " + name + " spawns, compared to the adult mob."),
                   new ConfigTranslation(getKey(key, "max_cost"), "Max Cost Multiplier", "The multiplier for max spawn cost of " + name + " spawns, compared to the adult mob.")

@@ -9,6 +9,7 @@ import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsCreativeTabs;
 import mekanism.additions.common.registries.AdditionsDataComponents;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import mekanism.additions.common.registries.AdditionsIntProviderTypes;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.additions.common.registries.AdditionsStructureModifierSerializers;
@@ -70,6 +71,7 @@ public class MekanismAdditions implements IModModule {
         AdditionsBlocks.BLOCKS.register(modEventBus);
         AdditionsCreativeTabs.CREATIVE_TABS.register(modEventBus);
         AdditionsEntityTypes.ENTITY_TYPES.register(modEventBus);
+        AdditionsIntProviderTypes.INT_PROVIDER_TYPES.register(modEventBus);
         AdditionsSounds.SOUND_EVENTS.register(modEventBus);
         AdditionsBiomeModifierSerializers.BIOME_MODIFIER_SERIALIZERS.register(modEventBus);
         AdditionsStructureModifierSerializers.STRUCTURE_MODIFIER_SERIALIZERS.register(modEventBus);

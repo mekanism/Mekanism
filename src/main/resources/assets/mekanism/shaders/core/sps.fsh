@@ -12,7 +12,6 @@ layout(location = 1) in vec4 vertexColor;
 layout(location = 2) in float sphericalVertexDistance;
 layout(location = 3) in float cylindricalVertexDistance;
 
-//TODO - 26.3: Figure out whether we should always be defining this or what
 #ifndef OIT_ALPHA_ONLY
 layout(location = 0) out vec4 fragColor;
 #endif

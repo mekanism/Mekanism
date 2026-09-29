@@ -9,6 +9,7 @@ import java.util.function.BooleanSupplier;
 import mekanism.additions.common.config.AdditionsConfigTranslations.BabySpawnTranslations;
 import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import mekanism.additions.common.world.ScaledIntProvider;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.IMekanismConfig;
@@ -22,7 +23,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData;
@@ -98,8 +98,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
 
         public final CachedBooleanValue shouldSpawn;
         public final BooleanSupplier disableArmorSpawning;
-        public final CachedDoubleValue minSizePercentage;
-        public final CachedDoubleValue maxSizePercentage;
+        public final CachedFloatValue sizePercentage;
         public final CachedDoubleValue weightPercentage;
         public final CachedDoubleValue spawnCostPerEntityPercentage;
         public final CachedDoubleValue maxSpawnCostPercentage;
@@ -121,12 +120,9 @@ public class AdditionsConfig extends BaseMekanismConfig {
             } else {
                 this.disableArmorSpawning = ConstantPredicates.ALWAYS_FALSE;
             }
-            this.minSizePercentage = CachedDoubleValue.wrap(config, translations.minSize().applyToBuilder(builder)
+            this.sizePercentage = CachedFloatValue.wrap(config, translations.sizePercentage().applyToBuilder(builder)
                   .worldRestart()
-                  .defineInRange("minSizePercentage", 0.5, 0, 100));
-            this.maxSizePercentage = CachedDoubleValue.wrap(config, translations.maxSize().applyToBuilder(builder)
-                  .worldRestart()
-                  .defineInRange("maxSizePercentage", 0.5, 0, 100));
+                  .defineInRange("sizePercentage", 0.5, 0, 10));
             this.weightPercentage = CachedDoubleValue.wrap(config, translations.weight().applyToBuilder(builder)
                   .worldRestart()
                   .defineInRange("weightPercentage", 0.05, 0, 100));
@@ -141,11 +137,8 @@ public class AdditionsConfig extends BaseMekanismConfig {
 
         public Weighted<MobSpawnSettings.SpawnerData> getSpawner(Weighted<MobSpawnSettings.SpawnerData> parentEntry) {
             int weight = Mth.ceil(parentEntry.weight() * weightPercentage.get());
-            IntProvider count = parentEntry.value().count();
-            int minSize = Mth.ceil(count.minInclusive() * minSizePercentage.get());
-            int maxSize = Mth.ceil(count.maxInclusive() * maxSizePercentage.get());
-            //TODO - 26.3: Make this not have to be uniform
-            return new Weighted<>(new MobSpawnSettings.SpawnerData(entityType.value(), new UniformInt(minSize, Math.max(minSize, maxSize))), weight);
+            IntProvider scaledProvider = new ScaledIntProvider(parentEntry.value().count(), sizePercentage.get());
+            return new Weighted<>(new MobSpawnSettings.SpawnerData(entityType.value(), scaledProvider), weight);
         }
 
         public List<Weighted<MobSpawnSettings.SpawnerData>> getSpawnersToAdd(List<Weighted<MobSpawnSettings.SpawnerData>> monsterSpawns) {
