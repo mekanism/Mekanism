@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "#c:ingots/refined_glowstone",
+    "N": "#c:nuggets/refined_glowstone",
+    "P": "minecraft:golden_nautilus_armor"
+  },
+  "pattern": [
+    "III",
+    "IPI",
+    "NNI"
+  ],
+  "result": {
+    "id": "mekanismtools:refined_glowstone_nautilus_armor"
+  }
+}

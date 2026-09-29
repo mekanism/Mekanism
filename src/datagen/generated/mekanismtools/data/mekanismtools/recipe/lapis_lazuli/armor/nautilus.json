@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "#c:gems/lapis",
+    "N": "#c:gems/lapis",
+    "P": "minecraft:nautilus_shell"
+  },
+  "pattern": [
+    "III",
+    "IPI",
+    "NNI"
+  ],
+  "result": {
+    "id": "mekanismtools:lapis_lazuli_nautilus_armor"
+  }
+}

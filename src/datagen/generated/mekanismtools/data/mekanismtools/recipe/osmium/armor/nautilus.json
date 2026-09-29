@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "#c:ingots/osmium",
+    "N": "#c:nuggets/osmium",
+    "P": "minecraft:iron_nautilus_armor"
+  },
+  "pattern": [
+    "III",
+    "IPI",
+    "NNI"
+  ],
+  "result": {
+    "id": "mekanismtools:osmium_nautilus_armor"
+  }
+}

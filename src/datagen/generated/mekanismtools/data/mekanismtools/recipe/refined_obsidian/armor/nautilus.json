@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "#c:ingots/refined_obsidian",
+    "N": "#c:nuggets/refined_obsidian",
+    "P": "minecraft:diamond_nautilus_armor"
+  },
+  "pattern": [
+    "III",
+    "IPI",
+    "NNI"
+  ],
+  "result": {
+    "id": "mekanismtools:refined_obsidian_nautilus_armor"
+  }
+}

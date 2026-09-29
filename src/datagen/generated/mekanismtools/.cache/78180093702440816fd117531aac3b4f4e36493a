@@ -1,4 +1,4 @@
-// 26.3	2026-09-27T16:56:17.1341101	Registries for mekanismtools-reloadable
+// 26.3	2026-09-28T16:35:30.3929181	Registries for mekanismtools-reloadable
 595110982a3e3cb91bc33e4f706756718a0dea0d data/mekanismtools/advancement/alternate_armor.json
 5b7d8c1b4ab002c2a3a9b7e8f7b2a0679dbaa771 data/mekanismtools/advancement/alternate_tools.json
 ca49900f56c0b5289ffad1de3dd5bff98559aa6c data/mekanismtools/advancement/better_than_netherite.json
@@ -8,7 +8,9 @@ ae95bb51e0ad89bff842bceef94d90ac690e7edd data/mekanismtools/advancement/paxel.js
 e223cbde7adefe647bf8f1bdf89df15550e28599 data/mekanismtools/recipe/bronze/armor/boots.json
 5df9f38fdfc921e1f73cd85951a5ffeca198ff39 data/mekanismtools/recipe/bronze/armor/chestplate.json
 2142eada34d6e890a71bec0bda427ef87d4e1c49 data/mekanismtools/recipe/bronze/armor/helmet.json
+2e4be47154e19b7548bfd5a3789087de1bafcedc data/mekanismtools/recipe/bronze/armor/horse.json
 b88dc799b601c3ccb6b0aa374aca18fc65a80258 data/mekanismtools/recipe/bronze/armor/leggings.json
+8d8a844164c4424dbda29867d9269f621df19940 data/mekanismtools/recipe/bronze/armor/nautilus.json
 4615b54746e95a36bdee273576da976132c63509 data/mekanismtools/recipe/bronze/nugget_from_blasting.json
 4c75217123dc4144a0c9ee11c292b236e16cfa02 data/mekanismtools/recipe/bronze/nugget_from_smelting.json
 bc1a4f9d100ac80cf4d759b0885a0516975d2f9d data/mekanismtools/recipe/bronze/shield.json
@@ -32,7 +34,9 @@ b9136df51a1f226a98ad68f5129116679848251e data/mekanismtools/recipe/copper_paxel.
 4ad4add9c1d43f611f707c3134319ccb16a0e996 data/mekanismtools/recipe/lapis_lazuli/armor/boots.json
 6cebc17894953581114228e7875fa1fd68933cfe data/mekanismtools/recipe/lapis_lazuli/armor/chestplate.json
 acab4a5a5316f40f62101f771678512a964d0be2 data/mekanismtools/recipe/lapis_lazuli/armor/helmet.json
+cfdc6c562aaf9fdca89366040fea466b81c15f39 data/mekanismtools/recipe/lapis_lazuli/armor/horse.json
 33a5188628f39236ffb15c0ee19adee62eb5d177 data/mekanismtools/recipe/lapis_lazuli/armor/leggings.json
+42bcd773da3dcb68a8c6a636a55f4321873eed1f data/mekanismtools/recipe/lapis_lazuli/armor/nautilus.json
 7255e3f9dbc90f5abdcbc6b62e432716506eb942 data/mekanismtools/recipe/lapis_lazuli/shield.json
 f6f48c654c5bb789f93a8b4f52f3c050c5a7f2ff data/mekanismtools/recipe/lapis_lazuli/tools/axe.json
 bd035837ca53fe1545030012a53afee6be3116f6 data/mekanismtools/recipe/lapis_lazuli/tools/hoe.json
@@ -45,7 +49,9 @@ f1b66b0ca107f9c63e6fabb4ff53986d4d4b4922 data/mekanismtools/recipe/netherite_pax
 cc3c93878719acc84d6a665d69b7ed99377af93a data/mekanismtools/recipe/osmium/armor/boots.json
 b6ee8638446d0cbee92aafc27357a37dbc5729f1 data/mekanismtools/recipe/osmium/armor/chestplate.json
 5b017ba7418c039919e14b6319fe4223f4c04ea7 data/mekanismtools/recipe/osmium/armor/helmet.json
+628d1376784c87147c64a64454f626c7e23e17d3 data/mekanismtools/recipe/osmium/armor/horse.json
 b6056604a18adffbb4ccc3220ce9b5c0feb0368b data/mekanismtools/recipe/osmium/armor/leggings.json
+4b4e7bf04d26665564bb440e6c97e99224a690dd data/mekanismtools/recipe/osmium/armor/nautilus.json
 0e9def6869972a969c23011bff1c4d5e3029d03b data/mekanismtools/recipe/osmium/nugget_from_blasting.json
 5aca985f0c3414bfecb1cab9332d8acc39b99e5b data/mekanismtools/recipe/osmium/nugget_from_smelting.json
 8d0044ab992f5a1e6f6a9809130d134e17b9a78b data/mekanismtools/recipe/osmium/shield.json
@@ -59,7 +65,9 @@ dbc93543c3ab43eba096c4c1aa39239fcf84c45b data/mekanismtools/recipe/osmium/tools/
 1d0e38e39ea667c65735a14b4c2d44436eb8b207 data/mekanismtools/recipe/refined_glowstone/armor/boots.json
 a489006e19b8f096d304ae222c9f20ed5e3e90cf data/mekanismtools/recipe/refined_glowstone/armor/chestplate.json
 0d70fb0d72a794358b1cd81383c9519bd7277ebc data/mekanismtools/recipe/refined_glowstone/armor/helmet.json
+26e711ca39161755b0d5997b0a5fd154a35bf1eb data/mekanismtools/recipe/refined_glowstone/armor/horse.json
 a5ddcb89b50e66b801275600339d57e714811b26 data/mekanismtools/recipe/refined_glowstone/armor/leggings.json
+cb61e089d419044073792cbe94533893e17050fc data/mekanismtools/recipe/refined_glowstone/armor/nautilus.json
 4652b93358188c691dc11497152c0538bd2fdd38 data/mekanismtools/recipe/refined_glowstone/nugget_from_blasting.json
 2d6f9c4473c355ee012cc54364a124bf394c4513 data/mekanismtools/recipe/refined_glowstone/nugget_from_smelting.json
 deb4928a96245b191c6b6db56f6421d8f1b3f6ad data/mekanismtools/recipe/refined_glowstone/shield.json
@@ -73,7 +81,9 @@ f8e798d4ed6fb660ebea5c0c02cc7dfd255c3d7c data/mekanismtools/recipe/refined_glows
 2a872d276769a1a5a844f93fe0f27733e6e35fb7 data/mekanismtools/recipe/refined_obsidian/armor/boots.json
 fe73111abee9fcbae898f2cea067480002521c47 data/mekanismtools/recipe/refined_obsidian/armor/chestplate.json
 fb1c9effaf3b40c5739c0a9b1104d0e8a191cf2d data/mekanismtools/recipe/refined_obsidian/armor/helmet.json
+0fcf27b0c81a5a088b84f5ebeeca9710bd338979 data/mekanismtools/recipe/refined_obsidian/armor/horse.json
 abd651da139658af948cc338c0af8a93d9179795 data/mekanismtools/recipe/refined_obsidian/armor/leggings.json
+a437e87f7a8b9c2879ce86e6cb4f461525259779 data/mekanismtools/recipe/refined_obsidian/armor/nautilus.json
 6492f6c4f0d63e1b32ea06f1e0824485aee0bf4f data/mekanismtools/recipe/refined_obsidian/nugget_from_blasting.json
 a6ce681996fd89ea46e0b5f0a1c17a03150bd3d3 data/mekanismtools/recipe/refined_obsidian/nugget_from_smelting.json
 7efbeaf047dcb5d3df828c97695bc88e5981e303 data/mekanismtools/recipe/refined_obsidian/shield.json
@@ -87,7 +97,9 @@ d6f5a38818192d017c7256c4bb0c9c51913786d1 data/mekanismtools/recipe/refined_obsid
 3681781f2b85bf38a9beeb26261778782d94eb45 data/mekanismtools/recipe/steel/armor/boots.json
 1ead170924f13bc9378b02bebc4b53ab9d011da7 data/mekanismtools/recipe/steel/armor/chestplate.json
 4625b6c1d9d6b2f712157227bb3643ffd9ec06ef data/mekanismtools/recipe/steel/armor/helmet.json
+6cfe73df675a7203225b6d95c5fcc538231f5b72 data/mekanismtools/recipe/steel/armor/horse.json
 1d2352a6a614815a235db1ff1fe9a98d426bd35c data/mekanismtools/recipe/steel/armor/leggings.json
+f6f0fdd67ce114c0b77e1087ff184c165559f00b data/mekanismtools/recipe/steel/armor/nautilus.json
 38866cd15ffdf47afacef506871e4d93a30df916 data/mekanismtools/recipe/steel/nugget_from_blasting.json
 50da15737848bc241c88874f139165fed6fa43a8 data/mekanismtools/recipe/steel/nugget_from_smelting.json
 6f9c96a63ba994bca7c4fabe27af030ee7c3526d data/mekanismtools/recipe/steel/shield.json

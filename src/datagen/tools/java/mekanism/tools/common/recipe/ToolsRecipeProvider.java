@@ -65,6 +65,14 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
           TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
           TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY));
+    private static final RecipePattern HORSE_ARMOR = RecipePattern.createPattern(
+          TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT),
+          TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+          TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT));
+    private static final RecipePattern NAUTILUS_ARMOR = RecipePattern.createPattern(
+          TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+          TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
+          TripleLine.of(Pattern.NUGGET, Pattern.NUGGET, Pattern.INGOT));
     //Tool Patterns
     private static final RecipePattern AXE = RecipePattern.createPattern(
           DoubleLine.of(Pattern.INGOT, Pattern.INGOT),
@@ -95,18 +103,23 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
 
     @Override
     protected void addRecipes() {
-        registerRecipeSet(MaterialType.BRONZE, MekanismTags.Items.INGOTS_BRONZE, MekanismItems.BRONZE_NUGGET);
-        registerRecipeSet(MaterialType.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, null);
+        registerRecipeSet(MaterialType.BRONZE, MekanismTags.Items.INGOTS_BRONZE, MekanismTags.Items.NUGGETS_BRONZE, MekanismItems.BRONZE_NUGGET,
+              ItemIds.COPPER_HORSE_ARMOR, ItemIds.COPPER_NAUTILUS_ARMOR);
+        registerRecipeSet(MaterialType.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, null, null, ItemIds.LEATHER_HORSE_ARMOR, ItemIds.NAUTILUS_SHELL);
         registerRecipeSet(MaterialType.OSMIUM, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM),
-              MekanismItems.getProcessedResource(ResourceType.NUGGET, PrimaryResource.OSMIUM));
-        registerRecipeSet(MaterialType.REFINED_GLOWSTONE, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, MekanismItems.REFINED_GLOWSTONE_NUGGET);
-        registerRecipeSet(MaterialType.REFINED_OBSIDIAN, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, MekanismItems.REFINED_OBSIDIAN_NUGGET);
-        registerRecipeSet(MaterialType.STEEL, MekanismTags.Items.INGOTS_STEEL, MekanismItems.STEEL_NUGGET);
+              MekanismTags.Items.getProcessedResource(ResourceType.NUGGET, PrimaryResource.OSMIUM),
+              MekanismItems.getProcessedResource(ResourceType.NUGGET, PrimaryResource.OSMIUM), ItemIds.IRON_HORSE_ARMOR, ItemIds.IRON_NAUTILUS_ARMOR);
+        registerRecipeSet(MaterialType.REFINED_GLOWSTONE, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, MekanismTags.Items.NUGGETS_REFINED_GLOWSTONE,
+              MekanismItems.REFINED_GLOWSTONE_NUGGET, ItemIds.GOLDEN_HORSE_ARMOR, ItemIds.GOLDEN_NAUTILUS_ARMOR);
+        registerRecipeSet(MaterialType.REFINED_OBSIDIAN, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, MekanismTags.Items.NUGGETS_REFINED_OBSIDIAN,
+              MekanismItems.REFINED_OBSIDIAN_NUGGET, ItemIds.DIAMOND_HORSE_ARMOR, ItemIds.DIAMOND_NAUTILUS_ARMOR);
+        registerRecipeSet(MaterialType.STEEL, MekanismTags.Items.INGOTS_STEEL, MekanismTags.Items.NUGGETS_STEEL, MekanismItems.STEEL_NUGGET,
+              ItemIds.IRON_HORSE_ARMOR, ItemIds.IRON_NAUTILUS_ARMOR);
         registerVanillaPaxels();
     }
 
-    //TODO - 26.3: Either add recipes or loot tables for Horse and Nautlius armor
-    private void registerRecipeSet(MaterialType material, TagKey<Item> ingot, @Nullable Holder<Item> nugget) {
+    private void registerRecipeSet(MaterialType material, TagKey<Item> ingot, @Nullable TagKey<Item> nuggetTag, @Nullable Holder<Item> nugget, ResourceKey<Item> baseHorseArmor,
+          ResourceKey<Item> baseNautilusArmor) {
         String name = material.getSerializedName();
         ArmorCollection armor = material.armor;
         ToolCollection tools = material.tools;
@@ -115,6 +128,19 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         armor(CHESTPLATE, armor.chestplate(), ingot).save(output, MekanismTools.rl(baseArmorPath + "chestplate"));
         armor(LEGGINGS, armor.leggings(), ingot).save(output, MekanismTools.rl(baseArmorPath + "leggings"));
         armor(BOOTS, armor.boots(), ingot).save(output, MekanismTools.rl(baseArmorPath + "boots"));
+
+        ExtendedShapedRecipeBuilder.shapedRecipe(armor.horse())
+              .pattern(HORSE_ARMOR)
+              .key(Pattern.PREVIOUS, this.items, baseHorseArmor)
+              .key(Pattern.INGOT, this.items, ingot)
+              .save(output, MekanismTools.rl(baseArmorPath + "horse"));
+        ExtendedShapedRecipeBuilder.shapedRecipe(armor.nautilus())
+              .pattern(NAUTILUS_ARMOR)
+              .key(Pattern.PREVIOUS, this.items, baseNautilusArmor)
+              .key(Pattern.INGOT, this.items, ingot)
+              .key(Pattern.NUGGET, this.items, nuggetTag == null ? ingot : nuggetTag)
+              .save(output, MekanismTools.rl(baseArmorPath + "nautilus"));
+
         ItemRegistryObject<ShieldItem> shield = material.tools.shield();
         ExtendedShapedRecipeBuilder.shapedRecipe(shield)
               .pattern(SHIELD)

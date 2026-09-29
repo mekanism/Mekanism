@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "#c:ingots/steel",
+    "P": "minecraft:iron_horse_armor"
+  },
+  "pattern": [
+    "I I",
+    "III",
+    "IPI"
+  ],
+  "result": {
+    "id": "mekanismtools:steel_horse_armor"
+  }
+}

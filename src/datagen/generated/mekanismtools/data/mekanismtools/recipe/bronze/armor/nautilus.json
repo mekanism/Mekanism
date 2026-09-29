@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "#c:ingots/bronze",
+    "N": "#c:nuggets/bronze",
+    "P": "minecraft:copper_nautilus_armor"
+  },
+  "pattern": [
+    "III",
+    "IPI",
+    "NNI"
+  ],
+  "result": {
+    "id": "mekanismtools:bronze_nautilus_armor"
+  }
+}

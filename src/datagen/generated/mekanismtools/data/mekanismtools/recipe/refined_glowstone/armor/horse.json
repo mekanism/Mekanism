@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "#c:ingots/refined_glowstone",
+    "P": "minecraft:golden_horse_armor"
+  },
+  "pattern": [
+    "I I",
+    "III",
+    "IPI"
+  ],
+  "result": {
+    "id": "mekanismtools:refined_glowstone_horse_armor"
+  }
+}
