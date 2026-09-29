@@ -8,15 +8,14 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
 import mekanism.common.Mekanism;
-import mekanism.common.block.basic.BlockResource;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
+import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tier.FactoryTier;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class MekanismEmiDefaults extends BaseEmiDefaults {
@@ -79,19 +78,19 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
         addRecipe(reloadableLookupProvider, nuggetPath + "steel");
 
         String storagePath = "storage_blocks/";
-        addStorageBlockRecipe(reloadableLookupProvider, storagePath, MekanismBlocks.BRONZE_BLOCK);
-        addStorageBlockRecipe(reloadableLookupProvider, storagePath, MekanismBlocks.REFINED_GLOWSTONE_BLOCK);
-        addStorageBlockRecipe(reloadableLookupProvider, storagePath, MekanismBlocks.REFINED_OBSIDIAN_BLOCK);
-        addStorageBlockRecipe(reloadableLookupProvider, storagePath, MekanismBlocks.STEEL_BLOCK);
-        addStorageBlockRecipe(reloadableLookupProvider, storagePath, MekanismBlocks.FLUORITE_BLOCK);
-        addStorageBlockRecipe(reloadableLookupProvider, storagePath, MekanismBlocks.CHARCOAL_BLOCK);
+        addStorageBlockRecipe(reloadableLookupProvider, storagePath, BlockResourceInfo.BRONZE);
+        addStorageBlockRecipe(reloadableLookupProvider, storagePath, BlockResourceInfo.REFINED_GLOWSTONE);
+        addStorageBlockRecipe(reloadableLookupProvider, storagePath, BlockResourceInfo.REFINED_OBSIDIAN);
+        addStorageBlockRecipe(reloadableLookupProvider, storagePath, BlockResourceInfo.STEEL);
+        addStorageBlockRecipe(reloadableLookupProvider, storagePath, BlockResourceInfo.FLUORITE);
+        addStorageBlockRecipe(reloadableLookupProvider, storagePath, BlockResourceInfo.CHARCOAL);
         addRecipe(reloadableLookupProvider, storagePath + "bio_fuel");
         addRecipe(reloadableLookupProvider, storagePath + "salt");
 
     }
 
-    private void addStorageBlockRecipe(HolderLookup.Provider reloadableLookupProvider, String basePath, DeferredHolder<Block, BlockResource> block) {
-        addRecipe(reloadableLookupProvider, basePath + block.value().getResourceInfo().getRegistrySuffix());
+    private void addStorageBlockRecipe(HolderLookup.Provider reloadableLookupProvider, String basePath, BlockResourceInfo material) {
+        addRecipe(reloadableLookupProvider, basePath + material.getRegistrySuffix());
     }
 
     private void addFactoryRecipes(HolderLookup.Provider reloadableLookupProvider) {

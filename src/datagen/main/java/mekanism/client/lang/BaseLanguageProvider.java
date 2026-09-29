@@ -22,6 +22,7 @@ import mekanism.common.config.IMekanismConfig;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.MekanismDamageType;
+import mekanism.common.registries.MekanismTrimMaterials;
 import net.minecraft.core.Holder;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
@@ -30,6 +31,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.equipment.trim.TrimMaterial;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import org.jspecify.annotations.Nullable;
@@ -120,6 +122,10 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         add(fluidRO.getBlock(), name);
         add(fluidRO.getBucket(), name + " Bucket");
         add(ItemTags.create(Tags.Items.BUCKETS.location().withSuffix("/" + fluidRO.getName())), name + " Buckets");
+    }
+
+    protected void addTrim(ResourceKey<TrimMaterial> id, String value) {
+        add(MekanismTrimMaterials.getTranslationKey(id), value);
     }
 
     protected void addChemical(ResourceKey<Chemical> id, String value) {

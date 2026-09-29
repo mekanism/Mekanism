@@ -188,7 +188,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> SUBSTRATE = ITEMS.register("substrate");
     public static final ItemRegistryObject<Item> BIO_FUEL = ITEMS.registerSimple("bio_fuel", properties -> properties.cookingFuel(MekanismContextIntProviders.COOKING_TIME_BIO_FUEL));
     public static final ItemRegistryObject<Item> DYE_BASE = ITEMS.register("dye_base");
-    public static final ItemRegistryObject<Item> FLUORITE_GEM = ITEMS.register("fluorite_gem");
+    public static final ItemRegistryObject<Item> FLUORITE_GEM = ITEMS.registerSimple("fluorite_gem", properties -> MiscResource.FLUORITE.modifyProperties(properties, null));
     public static final ItemRegistryObject<Item> YELLOW_CAKE_URANIUM = ITEMS.register("yellow_cake_uranium", Rarity.UNCOMMON);
     public static final ItemRegistryObject<Item> DIRTY_NETHERITE_SCRAP = ITEMS.registerSimple("dirty_netherite_scrap", Properties::fireResistant);
 
@@ -208,11 +208,12 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> FLUORITE_DUST = registerResource(ResourceType.DUST, MiscResource.FLUORITE);
 
     public static final ItemRegistryObject<Item> BRONZE_INGOT = registerResource(ResourceType.INGOT, MiscResource.BRONZE);
-    public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_INGOT = registerUnburnableResource(ResourceType.INGOT, MiscResource.REFINED_OBSIDIAN);
-    public static final ItemRegistryObject<Item> REFINED_GLOWSTONE_INGOT = ITEMS.registerItem(ResourceType.INGOT.getRegistryPrefix() + "_" + MiscResource.REFINED_GLOWSTONE.getRegistrySuffix(), ItemRefinedGlowstoneIngot::new);
+    public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_INGOT = registerResource(ResourceType.INGOT, MiscResource.REFINED_OBSIDIAN);
+    public static final ItemRegistryObject<Item> REFINED_GLOWSTONE_INGOT = ITEMS.registerItem(ResourceType.INGOT.getRegistryPrefix() + "_" + MiscResource.REFINED_GLOWSTONE.getRegistrySuffix(),
+          properties -> new ItemRefinedGlowstoneIngot(MiscResource.REFINED_GLOWSTONE.modifyProperties(properties, ResourceType.INGOT)));
     public static final ItemRegistryObject<Item> STEEL_INGOT = registerResource(ResourceType.INGOT, MiscResource.STEEL);
 
-    public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_NUGGET = registerUnburnableResource(ResourceType.NUGGET, MiscResource.REFINED_OBSIDIAN);
+    public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_NUGGET = registerResource(ResourceType.NUGGET, MiscResource.REFINED_OBSIDIAN);
     public static final ItemRegistryObject<Item> BRONZE_NUGGET = registerResource(ResourceType.NUGGET, MiscResource.BRONZE);
     public static final ItemRegistryObject<Item> REFINED_GLOWSTONE_NUGGET = registerResource(ResourceType.NUGGET, MiscResource.REFINED_GLOWSTONE);
     public static final ItemRegistryObject<Item> STEEL_NUGGET = registerResource(ResourceType.NUGGET, MiscResource.STEEL);
@@ -293,11 +294,7 @@ public class MekanismItems {
     }
 
     private static ItemRegistryObject<Item> registerResource(ResourceType type, IResource resource) {
-        return ITEMS.register(type.getRegistryPrefix() + "_" + resource.getRegistrySuffix());
-    }
-
-    private static ItemRegistryObject<Item> registerUnburnableResource(ResourceType type, IResource resource) {
-        return ITEMS.registerSimple(type.getRegistryPrefix() + "_" + resource.getRegistrySuffix(), Properties::fireResistant);
+        return ITEMS.registerSimple(type.getRegistryPrefix() + "_" + resource.getRegistrySuffix(), properties -> resource.modifyProperties(properties, type));
     }
 
     private static ItemRegistryObject<Item> registerCircuit(BaseTier tier) {

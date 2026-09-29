@@ -1,13 +1,12 @@
 package mekanism.common.resource;
 
 import mekanism.common.registries.MekanismContextIntProviders;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
 import org.jspecify.annotations.Nullable;
 
 public enum BlockResourceInfo implements IResource {
@@ -19,23 +18,17 @@ public enum BlockResourceInfo implements IResource {
     RAW_LEAD("raw_lead", 5, 9, MapColor.COLOR_LIGHT_GRAY, NoteBlockInstrument.BASEDRUM),
     URANIUM("uranium", 5, 9, MapColor.GRASS),
     RAW_URANIUM("raw_uranium", 5, 9, MapColor.GRASS, NoteBlockInstrument.BASEDRUM),
-    CHARCOAL("charcoal", 5, 6, MapColor.COLOR_BLACK, NoteBlockInstrument.BASEDRUM) {
-        @Override
-        public ResourceKey<ContextIntProvider> cookingTime() {
-            return MekanismContextIntProviders.COOKING_TIME_CHARCOAL_BLOCK;
-        }
-    },
+    CHARCOAL("charcoal", 5, 6, MapColor.COLOR_BLACK, NoteBlockInstrument.BASEDRUM),
     FLUORITE("fluorite", 5, 9, MapColor.SNOW),
     BRONZE("bronze", 5, 9, MapColor.COLOR_ORANGE),
     //Note: Deepslate is closer to steel than stone or metal
     STEEL("steel", 5, 9, MapColor.DEEPSLATE),
-    REFINED_OBSIDIAN("refined_obsidian", 50, 2_400, MapColor.COLOR_PURPLE, NoteBlockInstrument.BASEDRUM, 8, false, PushReaction.IMMOVEABLE),
+    REFINED_OBSIDIAN("refined_obsidian", 50, 2_400, MapColor.COLOR_PURPLE, NoteBlockInstrument.BASEDRUM, 8, PushReaction.IMMOVEABLE),
     REFINED_GLOWSTONE("refined_glowstone", 5, 6, MapColor.COLOR_YELLOW, NoteBlockInstrument.BASEDRUM, Level.MAX_BRIGHTNESS);
 
     private final String registrySuffix;
     private final MapColor mapColor;
     private final PushReaction pushReaction;
-    private final boolean burnsInFire;
     @Nullable
     private final NoteBlockInstrument instrument;
     private final float resistance;
@@ -52,14 +45,13 @@ public enum BlockResourceInfo implements IResource {
     }
 
     BlockResourceInfo(String registrySuffix, float hardness, float resistance, MapColor mapColor, @Nullable NoteBlockInstrument instrument, int lightValue) {
-        this(registrySuffix, hardness, resistance, mapColor, instrument, lightValue, true, PushReaction.PUSH_PULL);
+        this(registrySuffix, hardness, resistance, mapColor, instrument, lightValue, PushReaction.PUSH_PULL);
     }
 
     BlockResourceInfo(String registrySuffix, float hardness, float resistance, MapColor mapColor, @Nullable NoteBlockInstrument instrument, int lightValue,
-          boolean burnsInFire, PushReaction pushReaction) {
+          PushReaction pushReaction) {
         this.registrySuffix = registrySuffix;
         this.pushReaction = pushReaction;
-        this.burnsInFire = burnsInFire;
         this.lightValue = lightValue;
         this.resistance = resistance;
         this.hardness = hardness;
@@ -72,23 +64,24 @@ public enum BlockResourceInfo implements IResource {
         return registrySuffix;
     }
 
-    public boolean burnsInFire() {
-        return burnsInFire;
-    }
-
-    @Nullable
-    public ResourceKey<ContextIntProvider> cookingTime() {
-        return null;
-    }
-
     public MapColor getMapColor() {
         return mapColor;
+    }
+
+    @Override
+    public Item.Properties modifyProperties(Item.Properties properties, @Nullable ResourceType resourceType) {
+        if (this == REFINED_OBSIDIAN) {
+            properties = properties.fireResistant();
+        } else if (this == CHARCOAL) {
+            properties = properties.cookingFuel(MekanismContextIntProviders.COOKING_TIME_CHARCOAL_BLOCK);
+        }
+        return properties;
     }
 
     public BlockBehaviour.Properties modifyProperties(BlockBehaviour.Properties properties) {
         if (instrument != null) {
             properties.instrument(instrument);
         }
-        return properties.mapColor(mapColor).strength(hardness, resistance).lightLevel(state -> lightValue).pushReaction(pushReaction);
+        return properties.requiresCorrectToolForDrops().mapColor(mapColor).strength(hardness, resistance).lightLevel(_ -> lightValue).pushReaction(pushReaction);
     }
 }

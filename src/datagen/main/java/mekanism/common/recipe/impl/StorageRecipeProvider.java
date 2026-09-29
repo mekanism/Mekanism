@@ -2,7 +2,6 @@ package mekanism.common.recipe.impl;
 
 import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
-import mekanism.common.block.basic.BlockResource;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
@@ -70,9 +69,8 @@ class StorageRecipeProvider extends BaseSubRecipeProvider {
               .save(consumer, Mekanism.rl(basePath + "salt"));
     }
 
-    private void addStorageBlockRecipe(RecipeOutput consumer, BlockRegistryObject<BlockResource, ?> block, Holder<Item> ingot, TagKey<Item> ingotTag,
-          String basePath) {
-        addStorageBlockRecipe(consumer, block, ingot, ingotTag, basePath, block.value().getResourceInfo().getRegistrySuffix());
+    private void addStorageBlockRecipe(RecipeOutput consumer, BlockRegistryObject<?, ?> block, Holder<Item> ingot, TagKey<Item> ingotTag, String basePath) {
+        addStorageBlockRecipe(consumer, block, ingot, ingotTag, basePath, block.getId().getPath().substring(6));
     }
 
     private void addStorageBlockRecipe(RecipeOutput consumer, BlockRegistryObject<?, ?> block, Holder<Item> ingot, TagKey<Item> ingotTag,

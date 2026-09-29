@@ -30,7 +30,6 @@ import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.basic.BlockChargepad;
 import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.block.basic.BlockLogisticalSorter;
-import mekanism.common.block.basic.BlockResource;
 import mekanism.common.block.basic.BlockStructuralGlass;
 import mekanism.common.block.prefab.BlockBase;
 import mekanism.common.block.prefab.BlockBasicMultiblock;
@@ -177,7 +176,6 @@ import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.BlockItem;
@@ -190,7 +188,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
@@ -230,12 +227,12 @@ public class MekanismBlocks {
         }
     }
 
-    public static final BlockRegistryObject<BlockResource, BlockItem> CHARCOAL_BLOCK = registerResourceBlock(BlockResourceInfo.CHARCOAL);
-    public static final BlockRegistryObject<BlockResource, BlockItem> BRONZE_BLOCK = registerResourceBlock(BlockResourceInfo.BRONZE);
-    public static final BlockRegistryObject<BlockResource, BlockItem> STEEL_BLOCK = registerResourceBlock(BlockResourceInfo.STEEL);
-    public static final BlockRegistryObject<BlockResource, BlockItem> FLUORITE_BLOCK = registerResourceBlock(BlockResourceInfo.FLUORITE);
-    public static final BlockRegistryObject<BlockResource, BlockItem> REFINED_OBSIDIAN_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_OBSIDIAN);
-    public static final BlockRegistryObject<BlockResource, BlockItem> REFINED_GLOWSTONE_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_GLOWSTONE);
+    public static final BlockRegistryObject<Block, BlockItem> CHARCOAL_BLOCK = registerResourceBlock(BlockResourceInfo.CHARCOAL);
+    public static final BlockRegistryObject<Block, BlockItem> BRONZE_BLOCK = registerResourceBlock(BlockResourceInfo.BRONZE);
+    public static final BlockRegistryObject<Block, BlockItem> STEEL_BLOCK = registerResourceBlock(BlockResourceInfo.STEEL);
+    public static final BlockRegistryObject<Block, BlockItem> FLUORITE_BLOCK = registerResourceBlock(BlockResourceInfo.FLUORITE);
+    public static final BlockRegistryObject<Block, BlockItem> REFINED_OBSIDIAN_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_OBSIDIAN);
+    public static final BlockRegistryObject<Block, BlockItem> REFINED_GLOWSTONE_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_GLOWSTONE);
 
     public static final BlockRegistryObject<BlockBin, ItemBlockBin> BASIC_BIN = registerBin(MekanismBlockTypes.BASIC_BIN);
     public static final BlockRegistryObject<BlockBin, ItemBlockBin> ADVANCED_BIN = registerBin(MekanismBlockTypes.ADVANCED_BIN);
@@ -983,17 +980,8 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<Block, BlockItem> BIO_FUEL_BLOCK = BLOCKS.registerSimple("block_bio_fuel", properties -> properties.mapColor(MapColor.COLOR_BROWN).strength(0.5F).sound(SoundType.GRASS).instrument(NoteBlockInstrument.BANJO),
           properties -> properties.cookingFuel(MekanismContextIntProviders.COOKING_TIME_BIO_FUEL_BLOCK));
 
-    private static BlockRegistryObject<BlockResource, BlockItem> registerResourceBlock(BlockResourceInfo resource) {
-        return BLOCKS.register("block_" + resource.getRegistrySuffix(), properties -> new BlockResource(properties, resource), (block, properties) -> {
-            if (!block.getResourceInfo().burnsInFire()) {
-                properties = properties.fireResistant();
-            }
-            ResourceKey<ContextIntProvider> cookingTime = block.getResourceInfo().cookingTime();
-            if (cookingTime != null) {
-                properties = properties.cookingFuel(cookingTime);
-            }
-            return new BlockItem(block, properties);
-        });
+    private static BlockRegistryObject<Block, BlockItem> registerResourceBlock(BlockResourceInfo resource) {
+        return BLOCKS.registerSimple("block_" + resource.getRegistrySuffix(), resource::modifyProperties, properties -> resource.modifyProperties(properties, null));
     }
 
     private static BlockRegistryObject<BlockBin, ItemBlockBin> registerBin(BlockTypeTile<TileEntityBin> type) {

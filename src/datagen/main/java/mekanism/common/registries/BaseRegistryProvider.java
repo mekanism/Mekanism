@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.chemical.BasicChemical;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.base.IChemicalConstant;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
@@ -15,8 +16,10 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.equipment.trim.TrimMaterial;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
@@ -54,6 +57,14 @@ public abstract class BaseRegistryProvider {
 
         Reference<Feature> retrogenConfiguredFeature = configuredFeatures.getOrThrow(feature(retrogenName));
         context.register(placedFeature(name.withSuffix("_retrogen")), new PlacedFeature(retrogenConfiguredFeature, placementModifiers.get(true)));
+    }
+
+    protected static void registerTrimMaterial(BootstrapContext<TrimMaterial> context, ResourceKey<TrimMaterial> registryKey, int hoverTextColor) {
+        Identifier id = registryKey.identifier();
+        context.register(registryKey, new TrimMaterial(
+              id.withPrefix("trim/" + id.getNamespace() + "_"),
+              TextComponentUtil.build(TextColor.fromRgb(hoverTextColor), TextComponentUtil.translate(MekanismTrimMaterials.getTranslationKey(registryKey)))
+        ));
     }
 
     protected static ResourceKey<Feature> feature(Identifier name) {

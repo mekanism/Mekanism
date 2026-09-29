@@ -52,6 +52,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSounds;
+import mekanism.common.registries.MekanismTrimMaterials;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -96,6 +97,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addInfusionTypes();
         addPigments();
         addSlurries();
+        addTrims();
         addDamageSources();
         addRobitSkins();
         addSubtitles();
@@ -696,6 +698,18 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addSlurry(CleanDirtySlurryId slurryRO, String name) {
         addChemical(slurryRO.dirty(), "Dirty " + name + " Slurry");
         addChemical(slurryRO.clean(), "Clean " + name + " Slurry");
+    }
+
+    private void addTrims() {
+        addTrim(MekanismTrimMaterials.BRONZE, "Bronze Material");
+        addTrim(MekanismTrimMaterials.FLUORITE, "Fluorite Material");
+        addTrim(MekanismTrimMaterials.LEAD, "Lead Material");
+        addTrim(MekanismTrimMaterials.OSMIUM, "Osmium Material");
+        addTrim(MekanismTrimMaterials.REFINED_GLOWSTONE, "Refined Glowstone Material");
+        addTrim(MekanismTrimMaterials.REFINED_OBSIDIAN, "Refined Obsidian Material");
+        addTrim(MekanismTrimMaterials.STEEL, "Steel Material");
+        addTrim(MekanismTrimMaterials.TIN, "Tin Material");
+        addTrim(MekanismTrimMaterials.URANIUM, "Uranium Material");
     }
 
     private void addDamageSources() {

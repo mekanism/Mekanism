@@ -318,6 +318,9 @@ public class MekanismTagProvider extends BaseTagProvider {
                 case NUGGET -> Tags.Items.NUGGETS;
                 default -> throw new IllegalStateException("Unexpected resource type for primary resource.");
             }).add(tag);
+            if (item.getRowKey() == ResourceType.INGOT) {
+                getBuilder(ItemTags.TRIM_MATERIALS).add(item.getValue());
+            }
         }
     }
 
@@ -542,8 +545,15 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismTags.Items.INGOTS_REFINED_GLOWSTONE).add(MekanismItems.REFINED_GLOWSTONE_INGOT);
         getBuilder(MekanismTags.Items.INGOTS_REFINED_OBSIDIAN).add(MekanismItems.REFINED_OBSIDIAN_INGOT);
         getBuilder(MekanismTags.Items.INGOTS_STEEL).add(MekanismItems.STEEL_INGOT);
-        getBuilder(Tags.Items.INGOTS).add(MekanismTags.Items.INGOTS_BRONZE,
-              MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, MekanismTags.Items.INGOTS_STEEL);
+        getBuilder(Tags.Items.INGOTS).add(MekanismTags.Items.INGOTS_BRONZE, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN,
+              MekanismTags.Items.INGOTS_STEEL);
+        getBuilder(ItemTags.TRIM_MATERIALS).add(
+              MekanismItems.BRONZE_INGOT,
+              MekanismItems.REFINED_GLOWSTONE_INGOT,
+              MekanismItems.REFINED_OBSIDIAN_INGOT,
+              MekanismItems.STEEL_INGOT,
+              MekanismItems.FLUORITE_GEM
+        );
     }
 
     private void addNuggets() {
