@@ -5,6 +5,10 @@
       "type": "minecraft:model",
       "model": "mekanismtools:item/bronze_chestplate"
     },
-    "base_trim_texture": "minecraft:trims/items/chestplate_trim"
+    "base_trim_texture": "minecraft:trims/items/chestplate_trim",
+    "palette_replacement": {
+      "replacement": "mekanism:trim/mekanism_bronze_lighter",
+      "target": "mekanism:trim/mekanism_bronze"
+    }
   }
 }

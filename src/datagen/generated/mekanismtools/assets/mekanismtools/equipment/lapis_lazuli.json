@@ -25,5 +25,13 @@
         "texture": "mekanismtools:lapis_lazuli"
       }
     ]
-  }
+  },
+  "trim_overrides": [
+    {
+      "palette": "mekanismtools:trim/mekanismtools_lapis_lighter",
+      "when": {
+        "material": "minecraft:lapis"
+      }
+    }
+  ]
 }

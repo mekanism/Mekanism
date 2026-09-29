@@ -25,5 +25,13 @@
         "texture": "mekanismtools:bronze"
       }
     ]
-  }
+  },
+  "trim_overrides": [
+    {
+      "palette": "mekanism:trim/mekanism_bronze_lighter",
+      "when": {
+        "material": "mekanism:bronze"
+      }
+    }
+  ]
 }

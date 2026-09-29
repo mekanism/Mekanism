@@ -25,5 +25,13 @@
         "texture": "mekanismtools:refined_glowstone"
       }
     ]
-  }
+  },
+  "trim_overrides": [
+    {
+      "palette": "mekanism:trim/mekanism_refined_glowstone_lighter",
+      "when": {
+        "material": "mekanism:refined_glowstone"
+      }
+    }
+  ]
 }

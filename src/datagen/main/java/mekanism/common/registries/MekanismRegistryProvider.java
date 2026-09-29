@@ -216,15 +216,15 @@ public class MekanismRegistryProvider extends BaseRegistryProvider {
                   context.register(UpgradeIds.STONE_GENERATOR, Upgrade.create(UpgradeIds.STONE_GENERATOR, EnumColor.ORANGE));
               })
               .add(Registries.TRIM_MATERIAL, context -> {
-                  registerTrimMaterial(context, MekanismTrimMaterials.BRONZE, 0xC17B3B);
-                  registerTrimMaterial(context, MekanismTrimMaterials.FLUORITE, 0xDDF5F4);
-                  registerTrimMaterial(context, MekanismTrimMaterials.LEAD, 0x8C9A98);
-                  registerTrimMaterial(context, MekanismTrimMaterials.OSMIUM, 0x7D92A7);
-                  registerTrimMaterial(context, MekanismTrimMaterials.REFINED_GLOWSTONE, 0xF3C755);
-                  registerTrimMaterial(context, MekanismTrimMaterials.REFINED_OBSIDIAN, 0x4F4267);
-                  registerTrimMaterial(context, MekanismTrimMaterials.STEEL, 0x676767);
-                  registerTrimMaterial(context, MekanismTrimMaterials.TIN, 0xAAAAAA);
-                  registerTrimMaterial(context, MekanismTrimMaterials.URANIUM, 0x85B274);
+                  registerTrimMaterial(context, MekanismTrimMaterials.BRONZE, 0xC38443);
+                  registerTrimMaterial(context, MekanismTrimMaterials.FLUORITE, 0xD9F4E9);
+                  registerTrimMaterial(context, MekanismTrimMaterials.LEAD, 0x768B89);
+                  registerTrimMaterial(context, MekanismTrimMaterials.OSMIUM, 0x8FA6B6);
+                  registerTrimMaterial(context, MekanismTrimMaterials.REFINED_GLOWSTONE, 0xE9C567);
+                  registerTrimMaterial(context, MekanismTrimMaterials.REFINED_OBSIDIAN, 0x46395A);
+                  registerTrimMaterial(context, MekanismTrimMaterials.STEEL, 0x868686);
+                  registerTrimMaterial(context, MekanismTrimMaterials.TIN, 0xAA7AEAD);
+                  registerTrimMaterial(context, MekanismTrimMaterials.URANIUM, 0x76B36A);
               })
         );
     }

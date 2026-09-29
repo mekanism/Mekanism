@@ -4,6 +4,7 @@ import java.util.Optional;
 import mekanism.client.model.BaseModelProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.ItemRegistryObject;
+import mekanism.common.registries.MekanismTrimMaterials;
 import mekanism.tools.client.render.item.RenderMekanismShieldItem;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.material.MaterialType;
@@ -23,8 +24,13 @@ import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.equipment.trim.TrimMaterial;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
+import net.neoforged.neoforge.client.model.item.TrimmedArmorModel.PaletteTransform;
+import org.jspecify.annotations.Nullable;
 
 public class ToolsModelProvider extends BaseModelProvider {
 
@@ -57,11 +63,38 @@ public class ToolsModelProvider extends BaseModelProvider {
                 Identifier modelLocation = armorItem.getId().withPrefix("item/");
                 ModelTemplates.FLAT_ITEM.create(modelLocation, TextureMapping.layer0(itemTexture), itemModels.modelOutput);
             });
-            itemModels.generateDynamicTrimmableArmorSet(material.armor.helmet().asItem(), material.armor.chestplate().asItem(), material.armor.leggings().asItem(), material.armor.boots().asItem(), null);
+            PaletteTransformData transform = getTransform(material);
+            itemModels.generateDynamicTrimmableArmorSet(material.armor.helmet().asItem(), material.armor.chestplate().asItem(), material.armor.leggings().asItem(),
+                  material.armor.boots().asItem(), transform == null ? null : transform.transform());
             generateFlatItem(itemModels, material.armor.horse());
             generateFlatItem(itemModels, material.armor.nautilus());
         }
         ToolsItems.vanillaPaxels().forEach(paxel -> handheld(itemModels, paxel, new Material(itemTexture(paxel))));
+    }
+
+    @Nullable
+    public static PaletteTransformData getTransform(MaterialType material) {
+        return switch (material) {
+            case BRONZE -> transformMek(MekanismTrimMaterials.BRONZE);
+            case LAPIS_LAZULI -> new PaletteTransformData(TrimMaterials.LAPIS, TrimMaterials.Palette.LAPIS.id(),
+                  MekanismTools.rl("trim/" + MekanismTools.MODID + "_lapis_lighter"));
+            case REFINED_GLOWSTONE -> transformMek(MekanismTrimMaterials.REFINED_GLOWSTONE);
+            case REFINED_OBSIDIAN -> transformMek(MekanismTrimMaterials.REFINED_OBSIDIAN);
+            case OSMIUM, STEEL -> null;
+        };
+    }
+
+    private static PaletteTransformData transformMek(ResourceKey<TrimMaterial> material) {
+        Identifier id = material.identifier();
+        Identifier target = id.withPrefix("trim/" + id.getNamespace() + "_");
+        return new PaletteTransformData(material, target, target.withSuffix("_lighter"));
+    }
+
+    public record PaletteTransformData(ResourceKey<TrimMaterial> material, Identifier target, Identifier replacement) {
+
+        public PaletteTransform transform() {
+            return new PaletteTransform(target, replacement);
+        }
     }
 
     private Material getTexture(ItemRegistryObject<?> mekItem) {

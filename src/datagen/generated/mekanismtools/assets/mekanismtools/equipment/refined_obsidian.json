@@ -25,5 +25,13 @@
         "texture": "mekanismtools:refined_obsidian"
       }
     ]
-  }
+  },
+  "trim_overrides": [
+    {
+      "palette": "mekanism:trim/mekanism_refined_obsidian_lighter",
+      "when": {
+        "material": "mekanism:refined_obsidian"
+      }
+    }
+  ]
 }
