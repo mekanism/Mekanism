@@ -59,6 +59,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Direction.Plane;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -169,7 +170,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             Level level = teleporter.getLevel();
             if (level != null) {
                 BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
-                for (Direction iterSide : EnumUtils.HORIZONTAL_DIRECTIONS) {
+                for (Direction iterSide : Plane.HORIZONTAL) {
                     mutable.setWithOffset(target, iterSide);
                     if (level.isEmptyBlock(mutable)) {
                         side = iterSide;

@@ -1,12 +1,12 @@
 package mekanism.additions.common.block;
 
+import java.util.Map;
 import mekanism.additions.common.registries.AdditionsBlockTypes;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.prefab.BlockBase.BlockBaseModel;
 import mekanism.common.content.blocktype.BlockType;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,11 +23,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColoredBlock {
 
-    private static final VoxelShape[] MIN_SHAPES = new VoxelShape[EnumUtils.DIRECTIONS.length];
-
-    static {
-        VoxelShapeUtils.setShape(box(4, 13, 4, 12, 16, 12), MIN_SHAPES, true);
-    }
+    private static final Map<Direction, VoxelShape> MIN_SHAPES = VoxelShapeUtils.rotateAllInitialDown(box(4, 13, 4, 12, 16, 12));
 
     private final EnumColor color;
 
@@ -70,6 +66,6 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
         //Like SupportType and BlockState#isFaceSturdy except without support for the block state cache and with our own custom shapes
         VoxelShape projected = offsetState.getBlockSupportShape(level, offsetPos).getFaceShape(side);
         //Don't allow placing on blocks that are too small; same restrictions as vanilla except we have a better check for placing against the side
-        return !Shapes.joinIsNotEmpty(projected, MIN_SHAPES[side.ordinal()], BooleanOp.ONLY_SECOND);
+        return !Shapes.joinIsNotEmpty(projected, MIN_SHAPES.get(side), BooleanOp.ONLY_SECOND);
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.common.content.blocktype;
 
+import com.mojang.datafixers.util.Either;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ import mekanism.common.block.attribute.Attributes.AttributeLight;
 import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.lib.transmitter.TransmissionType;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
@@ -134,8 +136,12 @@ public class BlockType {
             return with(AttributeSideConfig.create(types));
         }
 
-        public T withCustomShape(VoxelShape[] shape) {
-            return with(new AttributeCustomShape(shape));
+        public T withCustomShape(VoxelShape shape) {
+            return with(new AttributeCustomShape(Either.left(shape)));
+        }
+
+        public T withCustomShape(Map<Direction, VoxelShape> shape) {
+            return with(new AttributeCustomShape(Either.right(shape)));
         }
 
         public T withLight(int light) {

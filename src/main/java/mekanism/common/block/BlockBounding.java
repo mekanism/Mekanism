@@ -346,9 +346,8 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         }
         BlockState mainState = world.getBlockState(mainPos);
         VoxelShape shape = proxy.getShape(mainState, world, mainPos, context);
-        BlockPos offset = pos.subtract(mainPos);
         //TODO: Can we somehow cache the withOffset? It potentially would have to then be moved into the Tile, but that is probably fine
-        return shape.move(-offset.getX(), -offset.getY(), -offset.getZ());
+        return shape.move(mainPos.subtract(pos));
     }
 
     @Override

@@ -1,11 +1,11 @@
 package mekanism.common.block;
 
+import java.util.Map;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,11 +23,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class BlockIndustrialAlarm extends BlockTileModel<TileEntityIndustrialAlarm, BlockTypeTile<TileEntityIndustrialAlarm>> {
 
-    private static final VoxelShape[] MIN_SHAPES = new VoxelShape[EnumUtils.DIRECTIONS.length];
-
-    static {
-        VoxelShapeUtils.setShape(box(5, 11, 5, 11, 16, 11), MIN_SHAPES, true);
-    }
+    private static final Map<Direction, VoxelShape> MIN_SHAPES = VoxelShapeUtils.rotateAllInitialDown(box(5, 11, 5, 11, 16, 11));
 
     public BlockIndustrialAlarm(BlockBehaviour.Properties properties) {
         super(MekanismBlockTypes.INDUSTRIAL_ALARM, properties.strength(2, 2.4F).mapColor(MapColor.COLOR_RED));
@@ -58,6 +54,6 @@ public class BlockIndustrialAlarm extends BlockTileModel<TileEntityIndustrialAla
         //Like SupportType and BlockState#isFaceSturdy except without support for the block state cache and with our own custom shapes
         VoxelShape projected = offsetState.getBlockSupportShape(level, offsetPos).getFaceShape(side);
         //Don't allow placing on blocks that are too small; same restrictions as vanilla except we have a better check for placing against the side
-        return !Shapes.joinIsNotEmpty(projected, MIN_SHAPES[side.ordinal()], BooleanOp.ONLY_SECOND);
+        return !Shapes.joinIsNotEmpty(projected, MIN_SHAPES.get(side), BooleanOp.ONLY_SECOND);
     }
 }

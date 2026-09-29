@@ -1,5 +1,6 @@
 package mekanism.common.block.prefab;
 
+import java.util.Map;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.BlockMekanism;
@@ -16,6 +17,7 @@ import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,7 +29,6 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.BlockHitResult;
@@ -99,14 +100,16 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         AttributeCustomShape customShape = type.get(AttributeCustomShape.class);
         if (customShape != null) {
-            VoxelShape[] bounds = customShape.bounds();
-            if (bounds.length == 1) {
+            if (customShape.bounds().left().isPresent()) {
                 //If there is only one voxel shape for this model use it directly regardless of the direction it is facing
-                return bounds[0];
+                return customShape.bounds().left().get();
             }
             AttributeStateFacing attr = type.get(AttributeStateFacing.class);
-            int index = attr == null ? 0 : (attr.getDirection(state).ordinal() - (attr.facingProperty() == BlockStateProperties.FACING ? 0 : 2));
-            return bounds[index];
+            if (attr == null) {
+                throw new IllegalStateException("AttributeStateFacing not found for a block with multiple custom shapes; " + this);
+            }
+            Map<Direction, VoxelShape> bounds = customShape.bounds().right().orElseThrow();
+            return bounds.get(attr.getDirection(state));
         }
         return super.getShape(state, world, pos, context);
     }

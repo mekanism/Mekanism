@@ -1,5 +1,6 @@
 package mekanism.common.block;
 
+import com.mojang.math.OctahedralGroup;
 import mekanism.api.RelativeSide;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
@@ -13,7 +14,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
@@ -78,12 +78,13 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
               box(3, 1, 5, 13, 2, 11),//connectorBottomToggle
               box(4, 0, 4, 12, 1, 12)//portBottomToggle
         );
-        VoxelShape frameRotated = VoxelShapeUtils.rotate(frame, Rotation.CLOCKWISE_90);
-        VoxelShape topRotated = VoxelShapeUtils.rotate(topPanel, Rotation.CLOCKWISE_90);
-        VoxelShape bottomRotated = VoxelShapeUtils.rotate(bottomPanel, Rotation.CLOCKWISE_90);
-        VoxelShape frameRotatedAlt = VoxelShapeUtils.rotate(frame, Direction.NORTH);
-        VoxelShape rightRotated = VoxelShapeUtils.rotate(rightPanel, Direction.NORTH);
-        VoxelShape leftRotated = VoxelShapeUtils.rotate(leftPanel, Direction.NORTH);
+        VoxelShape frameRotated = Shapes.rotate(frame, OctahedralGroup.BLOCK_ROT_Y_90);
+        VoxelShape topRotated = Shapes.rotate(topPanel, OctahedralGroup.BLOCK_ROT_Y_90);
+        VoxelShape bottomRotated = Shapes.rotate(bottomPanel, OctahedralGroup.BLOCK_ROT_Y_90);
+        //Rotate them north
+        VoxelShape frameRotatedAlt = Shapes.rotate(frame, OctahedralGroup.BLOCK_ROT_X_270);
+        VoxelShape rightRotated = Shapes.rotate(rightPanel, OctahedralGroup.BLOCK_ROT_X_270);
+        VoxelShape leftRotated = Shapes.rotate(leftPanel, OctahedralGroup.BLOCK_ROT_X_270);
         for (int rotated = 0; rotated < 3; rotated++) {
             //If we don't need to rotate anything, this is zero
             // If we need to rotate the top and bottom frames, this is one

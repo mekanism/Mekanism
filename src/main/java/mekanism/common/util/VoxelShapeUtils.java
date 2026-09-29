@@ -1,13 +1,11 @@
 package mekanism.common.util;
 
-import java.util.ArrayList;
+import com.mojang.math.OctahedralGroup;
 import java.util.Collection;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.UnaryOperator;
+import java.util.EnumMap;
+import java.util.Map;
 import mekanism.common.Mekanism;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -16,7 +14,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public final class VoxelShapeUtils {
 
-    private static final Vec3 fromOrigin = new Vec3(-0.5, -0.5, -0.5);
+    /// Copy of [Shapes#BLOCK_CENTER]
+    private static final Vec3 BLOCK_CENTER = new Vec3(0.5, 0.5, 0.5);
 
     /// Prints out an easy to copy-paste string representing the cuboid of a shape
     public static void print(double x1, double y1, double z1, double x2, double y2, double z2) {
@@ -32,124 +31,6 @@ public final class VoxelShapeUtils {
         }
     }
 
-    /// Rotates an [AABB] to a specific side, similar to how the block states rotate models.
-    ///
-    /// @param box  The [AABB] to rotate
-    /// @param side The side to rotate it to.
-    ///
-    /// @return The rotated [AABB]
-    public static AABB rotate(AABB box, Direction side) {
-        return switch (side) {
-            case DOWN -> box;
-            case UP -> new AABB(box.minX, -box.minY, -box.minZ, box.maxX, -box.maxY, -box.maxZ);
-            case NORTH -> new AABB(box.minX, -box.minZ, box.minY, box.maxX, -box.maxZ, box.maxY);
-            case SOUTH -> new AABB(-box.minX, -box.minZ, -box.minY, -box.maxX, -box.maxZ, -box.maxY);
-            case WEST -> new AABB(box.minY, -box.minZ, -box.minX, box.maxY, -box.maxZ, -box.maxX);
-            case EAST -> new AABB(-box.minY, -box.minZ, box.minX, -box.maxY, -box.maxZ, box.maxX);
-        };
-    }
-
-    /// Rotates an [AABB] according to a specific rotation.
-    ///
-    /// @param box      The [AABB] to rotate
-    /// @param rotation The rotation we are performing.
-    ///
-    /// @return The rotated [AABB]
-    public static AABB rotate(AABB box, Rotation rotation) {
-        return switch (rotation) {
-            case NONE -> box;
-            case CLOCKWISE_90 -> new AABB(-box.minZ, box.minY, box.minX, -box.maxZ, box.maxY, box.maxX);
-            case CLOCKWISE_180 -> new AABB(-box.minX, box.minY, -box.minZ, -box.maxX, box.maxY, -box.maxZ);
-            case COUNTERCLOCKWISE_90 -> new AABB(box.minZ, box.minY, -box.minX, box.maxZ, box.maxY, -box.maxX);
-        };
-    }
-
-    /// Rotates an [AABB] to a specific side horizontally. This is a default most common rotation setup as to [#rotate(AABB, Rotation)]
-    ///
-    /// @param box  The [AABB] to rotate
-    /// @param side The side to rotate it to.
-    ///
-    /// @return The rotated [AABB]
-    public static AABB rotateHorizontal(AABB box, Direction side) {
-        return switch (side) {
-            case NORTH -> rotate(box, Rotation.NONE);
-            case SOUTH -> rotate(box, Rotation.CLOCKWISE_180);
-            case WEST -> rotate(box, Rotation.COUNTERCLOCKWISE_90);
-            case EAST -> rotate(box, Rotation.CLOCKWISE_90);
-            default -> box;
-        };
-    }
-
-    /// Rotates a [VoxelShape] to a specific side, similar to how the block states rotate models.
-    ///
-    /// @param shape The [VoxelShape] to rotate
-    /// @param side  The side to rotate it to.
-    ///
-    /// @return The rotated [VoxelShape]
-    public static VoxelShape rotate(VoxelShape shape, Direction side) {//TODO - 26.3: Evaluate this vs mojang's Shapes#rotate methods
-        return rotate(shape, side, VoxelShapeUtils::rotate);
-    }
-
-    /// Rotates a [VoxelShape] according to a specific rotation.
-    ///
-    /// @param shape    The [VoxelShape] to rotate
-    /// @param rotation The rotation we are performing.
-    ///
-    /// @return The rotated [VoxelShape]
-    public static VoxelShape rotate(VoxelShape shape, Rotation rotation) {
-        return rotate(shape, rotation, VoxelShapeUtils::rotate);
-    }
-
-    /// Rotates a [VoxelShape] to a specific side horizontally. This is a default most common rotation setup as to [#rotate(VoxelShape, Rotation)]
-    ///
-    /// @param shape The [VoxelShape] to rotate
-    /// @param side  The side to rotate it to.
-    ///
-    /// @return The rotated [VoxelShape]
-    public static VoxelShape rotateHorizontal(VoxelShape shape, Direction side) {
-        return rotate(shape, side, VoxelShapeUtils::rotateHorizontal);
-    }
-
-    /// Rotates a [VoxelShape] using a specific transformation function for each [AABB] in the [VoxelShape].
-    ///
-    /// @param shape          The [VoxelShape] to rotate
-    /// @param rotateFunction The transformation function to apply to each [AABB] in the [VoxelShape].
-    ///
-    /// @return The rotated [VoxelShape]
-    public static VoxelShape rotate(VoxelShape shape, UnaryOperator<AABB> rotateFunction) {
-        List<VoxelShape> rotatedPieces = new ArrayList<>();
-        //Explode the voxel shape into bounding boxes
-        List<AABB> sourceBoundingBoxes = shape.toAabbs();
-        //Rotate them and convert them each back into a voxel shape
-        for (AABB sourceBoundingBox : sourceBoundingBoxes) {
-            //Make the bounding box be centered around the middle, and then move it back after rotating
-            rotatedPieces.add(Shapes.create(rotateFunction.apply(sourceBoundingBox.move(fromOrigin.x, fromOrigin.y, fromOrigin.z))
-                  .move(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z)));
-        }
-        //return the recombined rotated voxel shape
-        return combine(rotatedPieces);
-    }
-
-    /// Rotates a [VoxelShape] using a specific transformation function for each [AABB] in the [VoxelShape].
-    ///
-    /// @param shape          The [VoxelShape] to rotate
-    /// @param rotateFunction The transformation function to apply to each [AABB] in the [VoxelShape].
-    ///
-    /// @return The rotated [VoxelShape]
-    public static <DATA> VoxelShape rotate(VoxelShape shape, DATA data, BiFunction<AABB, DATA, AABB> rotateFunction) {
-        List<VoxelShape> rotatedPieces = new ArrayList<>();
-        //Explode the voxel shape into bounding boxes
-        List<AABB> sourceBoundingBoxes = shape.toAabbs();
-        //Rotate them and convert them each back into a voxel shape
-        for (AABB sourceBoundingBox : sourceBoundingBoxes) {
-            //Make the bounding box be centered around the middle, and then move it back after rotating
-            rotatedPieces.add(Shapes.create(rotateFunction.apply(sourceBoundingBox.move(fromOrigin.x, fromOrigin.y, fromOrigin.z), data)
-                  .move(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z)));
-        }
-        //return the recombined rotated voxel shape
-        return combine(rotatedPieces);
-    }
-
     /// Used for mass combining shapes
     ///
     /// @param shapes The list of [VoxelShape]s to include
@@ -157,24 +38,6 @@ public final class VoxelShapeUtils {
     /// @return A simplified [VoxelShape] including everything that is part of the input shapes.
     public static VoxelShape combine(VoxelShape... shapes) {
         return batchCombine(Shapes.empty(), BooleanOp.OR, true, shapes);
-    }
-
-    /// Used for mass combining shapes
-    ///
-    /// @param shapes The collection of [VoxelShape]s to include
-    ///
-    /// @return A simplified [VoxelShape] including everything that is part of the input shapes.
-    public static VoxelShape combine(Collection<VoxelShape> shapes) {
-        return batchCombine(Shapes.empty(), BooleanOp.OR, true, shapes);
-    }
-
-    /// Used for cutting shapes out of a full cube
-    ///
-    /// @param shapes The list of [VoxelShape]s to cut out
-    ///
-    /// @return A [VoxelShape] including everything that is not part of the input shapes.
-    public static VoxelShape exclude(VoxelShape... shapes) {
-        return batchCombine(Shapes.block(), BooleanOp.ONLY_FIRST, true, shapes);
     }
 
     /// Used for mass combining shapes using a specific [BooleanOp] and a given start shape.
@@ -215,18 +78,27 @@ public final class VoxelShapeUtils {
         return simplify ? combinedShape.optimize() : combinedShape;
     }
 
-    public static void setShape(VoxelShape shape, VoxelShape[] dest, boolean verticalAxis) {
-        setShape(shape, dest, verticalAxis, false);
+    @Deprecated//TODO: Try to move the remaining use cases to one of the rotateAll util methods
+    public static Map<Direction, VoxelShape> rotateAllLegacy(VoxelShape shape) {
+        return new EnumMap<>(Map.of(
+              Direction.NORTH, Shapes.rotate(shape, OctahedralGroup.ROT_180_EDGE_YZ_NEG),
+              Direction.EAST, Shapes.rotate(shape, OctahedralGroup.ROT_120_PPN),
+              Direction.SOUTH, Shapes.rotate(shape, OctahedralGroup.ROT_90_X_POS),
+              Direction.WEST, Shapes.rotate(shape, OctahedralGroup.ROT_120_PNP),
+              Direction.UP, Shapes.rotate(shape, OctahedralGroup.IDENTITY),
+              Direction.DOWN, Shapes.rotate(shape, OctahedralGroup.ROT_180_FACE_YZ)
+        ));
     }
 
-    public static void setShape(VoxelShape shape, VoxelShape[] dest, boolean verticalAxis, boolean invert) {
-        Direction[] dirs = verticalAxis ? EnumUtils.DIRECTIONS : EnumUtils.HORIZONTAL_DIRECTIONS;
-        for (Direction side : dirs) {
-            dest[verticalAxis ? side.ordinal() : side.ordinal() - 2] = verticalAxis ? rotate(shape, invert ? side.getOpposite() : side) : rotateHorizontal(shape, side);
-        }
+    public static Map<Direction, VoxelShape> rotateAllInitialDown(VoxelShape down) {
+        return rotateAll(down, OctahedralGroup.BLOCK_ROT_X_270);
     }
 
-    public static void setShape(VoxelShape shape, VoxelShape[] dest) {
-        setShape(shape, dest, false, false);
+    public static Map<Direction, VoxelShape> rotateAll(VoxelShape shape, OctahedralGroup initial) {
+        return Shapes.rotateAll(shape, initial, BLOCK_CENTER);
+    }
+
+    public static Map<Direction, VoxelShape> rotateHorizontal(VoxelShape shape, OctahedralGroup initial) {
+        return Shapes.rotateHorizontal(shape, initial, BLOCK_CENTER);
     }
 }
