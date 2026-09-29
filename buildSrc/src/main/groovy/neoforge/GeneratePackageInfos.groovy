@@ -22,21 +22,24 @@ abstract class GeneratePackageInfos extends DefaultTask {
     @TaskAction
     void generatePackageInfos() {
         getFiles().each { javaFile ->
-            def packageInfoFile = new File(javaFile.parent, 'package-info.java')
-            if (!packageInfoFile.exists()) {
-                def pkgName = javaFile.toString().replaceAll(Matcher.quoteReplacement(File.separator), '/')
-                //Note: Changed from neo's package to our package
-                pkgName = pkgName.substring(pkgName.indexOf('mekanism/'), pkgName.lastIndexOf('/'))
-                pkgName = pkgName.replaceAll('/', '.')
+            //Don't add to annotation processor generated packages
+            if (!javaFile.path.contains('annotationProcessor')) {
+                def packageInfoFile = new File(javaFile.parent, 'package-info.java')
+                if (!packageInfoFile.exists()) {
+                    def pkgName = javaFile.toString().replaceAll(Matcher.quoteReplacement(File.separator), '/')
+                    //Note: Changed from neo's package to our package
+                    pkgName = pkgName.substring(pkgName.indexOf('mekanism/'), pkgName.lastIndexOf('/'))
+                    pkgName = pkgName.replaceAll('/', '.')
 
-                def pkgInfoText = """
+                    def pkgInfoText = """
                     |@NullMarked
                     |package $pkgName;
                     |
                     |import org.jspecify.annotations.NullMarked;
                 """.stripMargin().trim()
 
-                packageInfoFile.text = pkgInfoText
+                    packageInfoFile.text = pkgInfoText
+                }
             }
         }
     }
