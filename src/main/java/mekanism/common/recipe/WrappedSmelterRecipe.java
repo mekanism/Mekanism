@@ -61,7 +61,9 @@ public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
         List<ItemStackTemplate> list = new ArrayList<>();
         for (RecipeDisplay display : wrapped.display()) {
             for (ItemStack stack : display.result().resolveForStacks(contextMap)) {
-                if (!stack.isEmpty()) {//TODO - 26.3: Can resolved stacks ever be empty?
+                //Note: Theoretically there is no reason this should be empty, as an empty stream could just be returned instead
+                // but just in case a mod is doing something dumb, handle it rather than crashing
+                if (!stack.isEmpty()) {
                     list.add(ItemStackTemplate.fromNonEmptyStack(stack));
                 }
             }

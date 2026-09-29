@@ -88,7 +88,7 @@ public class ToolsItems {
         @Override
         public InteractionResult useOn(UseOnContext context) {
             InteractionResult result = super.useOn(context);
-            if (result == InteractionResult.PASS) {
+            if (!result.consumesAction()) {
                 //If using it as an axe failed, try to use it as a shovel
                 result = context.getLevel().registryAccess().getOrThrow(BlockTransformers.SHOVEL).value().transformBlock(context);
             }

@@ -25,6 +25,7 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.block.FluidStateModelSet;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -217,19 +218,19 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public static void onStitch(TextureAtlasStitchedEvent event) {
-        TextureAtlas map = event.getAtlas();
-        if (map.location().equals(TextureAtlas.LOCATION_ITEMS)) {
-            GUNPOWDER_SPRITE = map.getSprite(Identifier.withDefaultNamespace("item/gunpowder"));
-        } else if (map.location().equals(TextureAtlas.LOCATION_BLOCKS)) {
+        TextureAtlas atlas = event.getAtlas();
+        if (atlas.location().equals(TextureAtlas.LOCATION_ITEMS)) {
+            GUNPOWDER_SPRITE = atlas.getSprite(Identifier.withDefaultNamespace("item/gunpowder"));
+        } else if (atlas.location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             for (TransmissionType type : TransmissionType.VALUES) {
-                overlays.put(type, map.getSprite(Mekanism.rl("block/overlay/" + type.getTransmission() + "_overlay")));
+                overlays.put(type, atlas.getSprite(Mekanism.rl("block/overlay/" + type.getTransmission() + "_overlay")));
             }
 
-            WHITE_ICON_GETTER = new SingleTexturePicker(map.getSprite(Mekanism.rl("block/overlay/overlay_white")));
-            energyIcon = map.getSprite(ENERGY_ICON_LOCATION);
-            REDSTONE_TORCH_OFF_SPRITE = map.getSprite(Identifier.withDefaultNamespace("block/redstone_torch_off"));
-            REDSTONE_TORCH_SPRITE = map.getSprite(Identifier.withDefaultNamespace("block/redstone_torch"));
-            teleporterPortal = new SingleTexturePicker(map.getSprite(Mekanism.rl("block/teleporter_portal")));
+            WHITE_ICON_GETTER = new SingleTexturePicker(atlas.getSprite(Mekanism.rl("block/overlay/overlay_white")));
+            energyIcon = atlas.getSprite(ENERGY_ICON_LOCATION);
+            REDSTONE_TORCH_OFF_SPRITE = atlas.getSprite(Identifier.withDefaultNamespace("block/redstone_torch_off"));
+            REDSTONE_TORCH_SPRITE = atlas.getSprite(Identifier.withDefaultNamespace("block/redstone_torch"));
+            teleporterPortal = new SingleTexturePicker(atlas.getSprite(Mekanism.rl("block/teleporter_portal")));
 
             //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
             //Reset any cached models now that the atlases are built
@@ -241,9 +242,10 @@ public class MekanismRenderer {
 
             parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"), EnumColor.VALUES);
             parseColorAtlas(Mekanism.rl("textures/colormap/tiers.png"), BaseTier.VALUES);
+        } else if (atlas.location().equals(Sheets.GUI_SHEET)) {
             SpecialColors.GUI_OBJECTS.parse(Mekanism.rl("textures/colormap/gui_objects.png"));
             SpecialColors.GUI_TEXT.parse(Mekanism.rl("textures/colormap/gui_text.png"));
-            GuiElementHolder.updateBackgroundColor();
+            GuiElementHolder.updateBackgroundColor(atlas);
         }
     }
 

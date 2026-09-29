@@ -62,7 +62,6 @@ public class ItemConfigurationCard extends Item {
         } else if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos)) {
             return InteractionResult.FAIL;
         }
-        //TODO - 26.3: Figure out if there is any other information we want to include in the problem path
         ProblemReporter.PathElement problemPath = new ConfigurationCardPathElement(blockState.getBlock(), pos);
         ItemStack stack = context.getItemInHand();
         if (player.isShiftKeyDown()) {

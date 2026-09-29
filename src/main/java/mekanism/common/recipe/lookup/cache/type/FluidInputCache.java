@@ -60,7 +60,7 @@ public class FluidInputCache<RECIPE extends MekanismRecipe<?>> extends Component
         for (Holder<Fluid> fluid : fluidSet) {
             if (fluid.isBound()) {
                 //Ignore unbound holders just in case
-                addInputCache(fluid.value(), recipe);
+                addInputCache(fluid, recipe);
             }
         }
     }

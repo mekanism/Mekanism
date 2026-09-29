@@ -15,7 +15,6 @@ import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.3 - should it still use Item or should we use holders?
 public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentSensitiveInputCache<Item, ItemStack, ItemStackIngredient, RECIPE> {
 
     @Override
@@ -28,13 +27,13 @@ public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentS
             //Vanilla ingredients don't actually check anything related to NBT,
             // so we can add the items to our base/raw input cache directly
             for (Holder<Item> item : input.getValues()) {
-                addInputCache(item.value(), recipe);
+                addInputCache(item, recipe);
             }
         } else if (input.isSimple()) {
             //Simple ingredients don't actually check anything related to NBT,
             // so we can add the items to our base/raw input cache directly
             for (Holder<Item> item : Objects.requireNonNull(input.getCustomIngredient()).items().toList()) {
-                addInputCache(item.value(), recipe);
+                addInputCache(item, recipe);
             }
         } else if (input.getCustomIngredient() instanceof CompoundIngredient(List<Ingredient> children)) {
             //Special handling for neo's compound ingredient to map all children as best as we can

@@ -8,7 +8,6 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.component.containers.type.ContainerType;
@@ -61,31 +60,6 @@ public class StorageUtils {//TODO - 26.3: Re-evaluate which of these methods are
     public static double getEnergyRatio(ItemAccess itemAccess) {
         EnergyHandler handler = Capabilities.ENERGY.getCapability(itemAccess);
         return handler == null ? 0 : ContainerType.ENERGY.divideToLevel(handler);
-    }
-
-    //TODO - 26.3: Should this method be used anywhere? Or is coloring happening elsewhere
-    public static Component getEnergyPercent(TypedInstance<Item> stack, boolean colorText) {
-        return getStoragePercent(getEnergyRatio(stack), colorText);
-    }
-
-    public static Component getStoragePercent(double ratio, boolean colorText) {
-        Component text = TextUtils.getPercent(ratio);
-        if (!colorText) {
-            return text;
-        }
-        EnumColor color;
-        if (ratio < 0.01F) {
-            color = EnumColor.DARK_RED;
-        } else if (ratio < 0.1F) {
-            color = EnumColor.RED;
-        } else if (ratio < 0.25F) {
-            color = EnumColor.ORANGE;
-        } else if (ratio < 0.5F) {
-            color = EnumColor.YELLOW;
-        } else {
-            color = EnumColor.BRIGHT_GREEN;
-        }
-        return TextComponentUtil.build(color, text);
     }
 
     public static int getBarWidth(double ratio) {
