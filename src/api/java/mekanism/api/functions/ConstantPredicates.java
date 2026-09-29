@@ -19,6 +19,10 @@ public class ConstantPredicates {
     ///
     /// @since 10.5.0
     public static final BooleanSupplier ALWAYS_TRUE = () -> true;
+    /// A boolean supplier that returns `false`.
+    ///
+    /// @since 10.8.0
+    public static final BooleanSupplier ALWAYS_FALSE = () -> false;
 
     /// A supplier that returns `0L`.
     ///

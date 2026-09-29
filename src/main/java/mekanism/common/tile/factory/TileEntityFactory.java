@@ -16,6 +16,7 @@ import java.util.function.ToIntBiFunction;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -758,7 +759,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                 }
             }
             //Something went wrong
-            return () -> false;
+            return ConstantPredicates.ALWAYS_FALSE;
         }
     }
 }

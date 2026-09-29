@@ -7,7 +7,6 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.skeleton.Skeleton;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
@@ -46,12 +45,7 @@ public class EntityBabySkeleton extends Skeleton {
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(random, difficulty);
-        //TODO - 26.3: Does this still exist for whatever part of vanilla we were mirroring?
-        for (EquipmentSlot slot : EquipmentSlot.VALUES) {
-            if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
-                setItemSlot(slot, ItemStack.EMPTY);
-            }
-        }
+        AdditionsEntityTypes.depopulateDefaultEquipmentSlots(this, BabyType.SKELETON);
     }
 
     @Override

@@ -18,6 +18,7 @@ import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.event.MekanismTeleportEvent;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
@@ -655,7 +656,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         int errorIndex = TRACKED_ERROR_TYPES.indexOf(error);
         if (errorIndex == -1) {
             //Something went wrong
-            return () -> false;
+            return ConstantPredicates.ALWAYS_FALSE;
         }
         return () -> trackedErrors[errorIndex];
     }

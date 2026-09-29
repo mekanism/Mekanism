@@ -1,5 +1,7 @@
 package mekanism.additions.common.config;
 
+import java.util.Objects;
+import java.util.stream.Stream;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.common.config.IConfigTranslation;
@@ -69,6 +71,7 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
     public record BabySpawnTranslations(
           IConfigTranslation topLevel,
           IConfigTranslation shouldSpawn,
+          @Nullable IConfigTranslation disableArmorSpawning,
           IConfigTranslation minSize,
           IConfigTranslation maxSize,
           IConfigTranslation weight,
@@ -77,7 +80,9 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
     ) {
 
         public IConfigTranslation[] toArray() {
-            return new IConfigTranslation[]{topLevel, shouldSpawn, minSize, maxSize, weight, costPerEntity, maxCost};
+            return Stream.of(topLevel, shouldSpawn, disableArmorSpawning, minSize, maxSize, weight, costPerEntity, maxCost)
+                  .filter(Objects::nonNull)
+                  .toArray(IConfigTranslation[]::new);
         }
 
         private static String getKey(String name, String path) {
@@ -90,6 +95,8 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
             return new BabySpawnTranslations(
                   new ConfigTranslation(getKey(key, "top_level"), name, "Config options regarding the spawning of " + name + ".", "Edit Spawn Settings"),
                   new ConfigTranslation(getKey(key, "should_spawn"), "Should Spawn", "Enable the spawning of " + name + ". Think baby zombies."),
+                  babyType.hasEquipment() ? new ConfigTranslation(getKey(key, "disable_armor_spawning"), "Disable Armor on Babies", "Disables armor from spawning on " + name + ".")
+                                          : null,
                   new ConfigTranslation(getKey(key, "min_size"), "Min Group Size", "The multiplier for minimum group size of " + name + " spawns, compared to the adult mob."),
                   new ConfigTranslation(getKey(key, "max_size"), "Max Group Size", "The multiplier for maximum group size of " + name + " spawns, compared to the adult mob."),
                   new ConfigTranslation(getKey(key, "weight"), "Weight Multiplier", "The multiplier for weight of " + name + " spawns, compared to the adult mob."),

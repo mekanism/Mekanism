@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 import mekanism.additions.common.MekanismAdditions;
+import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.additions.common.entity.baby.BabyType;
@@ -17,6 +18,7 @@ import mekanism.additions.common.entity.baby.EntityBabyParched;
 import mekanism.additions.common.entity.baby.EntityBabySkeleton;
 import mekanism.additions.common.entity.baby.EntityBabyStray;
 import mekanism.additions.common.entity.baby.EntityBabyWitherSkeleton;
+import mekanism.common.Mekanism;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.EntityTypeDeferredRegister;
 import net.minecraft.SharedConstants;
@@ -29,6 +31,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityType.Builder;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -44,6 +47,7 @@ import net.minecraft.world.entity.monster.skeleton.AbstractSkeleton;
 import net.minecraft.world.entity.monster.skeleton.Bogged;
 import net.minecraft.world.entity.monster.skeleton.Parched;
 import net.minecraft.world.entity.monster.skeleton.Stray;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 public class AdditionsEntityTypes {
@@ -119,6 +123,20 @@ public class AdditionsEntityTypes {
             if (attributeInstance != null) {
                 attributeInstance.addPermanentModifier(BABY_ATTACK_NERF_MODIFIER);
             }
+        }
+    }
+
+    public static void depopulateDefaultEquipmentSlots(LivingEntity baby, BabyType babyType) {
+        if (babyType.hasEquipment()) {
+            if (MekanismAdditionsConfig.additions.getConfig(babyType).disableArmorSpawning.getAsBoolean()) {
+                for (EquipmentSlot slot : EquipmentSlot.VALUES) {
+                    if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
+                        baby.setItemSlot(slot, ItemStack.EMPTY);
+                    }
+                }
+            }
+        } else {
+            Mekanism.logger.warn("Attempted to depopulate equipment slots for a {}, but that baby type does not have equipment slots.", babyType.displayName());
         }
     }
 

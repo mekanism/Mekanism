@@ -9,6 +9,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.MekanismRecipe;
@@ -123,7 +124,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
         int errorIndex = errorTypes.indexOf(error);
         if (errorIndex == -1) {
             //Something went wrong
-            return () -> false;
+            return ConstantPredicates.ALWAYS_FALSE;
         }
         return () -> trackedErrors[errorIndex];
     }

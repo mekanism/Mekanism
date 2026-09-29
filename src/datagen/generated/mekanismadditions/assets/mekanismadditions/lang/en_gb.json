@@ -31,6 +31,16 @@
   "block.mekanismadditions.light_gray_plastic_transparent_stairs": "Light Grey Transparent Plastic Stairs",
   "block.mekanismadditions.light_gray_reinforced_plastic": "Light Grey Reinforced Plastic Block",
   "block.mekanismadditions.light_gray_slick_plastic": "Light Grey Slick Plastic Block",
+  "configuration.mekanismadditions.server.baby.spawning.baby_bogged.disable_armor_spawning": "Disable Armour on Babies",
+  "configuration.mekanismadditions.server.baby.spawning.baby_bogged.disable_armor_spawning.tooltip": "Disables armour from spawning on Baby Bogged.",
+  "configuration.mekanismadditions.server.baby.spawning.baby_parched.disable_armor_spawning": "Disable Armour on Babies",
+  "configuration.mekanismadditions.server.baby.spawning.baby_parched.disable_armor_spawning.tooltip": "Disables armour from spawning on Baby Parched.",
+  "configuration.mekanismadditions.server.baby.spawning.baby_skeleton.disable_armor_spawning": "Disable Armour on Babies",
+  "configuration.mekanismadditions.server.baby.spawning.baby_skeleton.disable_armor_spawning.tooltip": "Disables armour from spawning on Baby Skeleton.",
+  "configuration.mekanismadditions.server.baby.spawning.baby_stray.disable_armor_spawning": "Disable Armour on Babies",
+  "configuration.mekanismadditions.server.baby.spawning.baby_stray.disable_armor_spawning.tooltip": "Disables armour from spawning on Baby Stray.",
+  "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.disable_armor_spawning": "Disable Armour on Babies",
+  "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.disable_armor_spawning.tooltip": "Disables armour from spawning on Baby Wither Skeleton.",
   "item.mekanismadditions.gray_balloon": "Grey Balloon",
   "item.mekanismadditions.light_gray_balloon": "Light Grey Balloon"
 }

@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.BooleanSupplier;
 import mekanism.additions.common.config.AdditionsConfigTranslations.BabySpawnTranslations;
 import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
@@ -94,6 +97,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
     public static class SpawnConfig {
 
         public final CachedBooleanValue shouldSpawn;
+        public final BooleanSupplier disableArmorSpawning;
         public final CachedDoubleValue minSizePercentage;
         public final CachedDoubleValue maxSizePercentage;
         public final CachedDoubleValue weightPercentage;
@@ -111,6 +115,12 @@ public class AdditionsConfig extends BaseMekanismConfig {
             this.shouldSpawn = CachedBooleanValue.wrap(config, translations.shouldSpawn().applyToBuilder(builder)
                   .worldRestart()
                   .define("shouldSpawn", true));
+            if (babyType.hasEquipment()) {
+                this.disableArmorSpawning = CachedBooleanValue.wrap(config, Objects.requireNonNull(translations.disableArmorSpawning()).applyToBuilder(builder)
+                      .define("disableArmorSpawning", false));
+            } else {
+                this.disableArmorSpawning = ConstantPredicates.ALWAYS_FALSE;
+            }
             this.minSizePercentage = CachedDoubleValue.wrap(config, translations.minSize().applyToBuilder(builder)
                   .worldRestart()
                   .defineInRange("minSizePercentage", 0.5, 0, 100));

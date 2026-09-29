@@ -15,13 +15,13 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import org.jetbrains.annotations.Unmodifiable;
 
 public enum BabyType implements StringRepresentable {
-    BOGGED(EntityTypeIds.BOGGED, "Baby Bogged"),
-    CREEPER(EntityTypeIds.CREEPER, "Baby Creeper"),
-    ENDERMAN(EntityTypeIds.ENDERMAN, "Baby Enderman"),
-    PARCHED(EntityTypeIds.PARCHED, "Baby Parched"),
-    SKELETON(EntityTypeIds.SKELETON, "Baby Skeleton"),
-    STRAY(EntityTypeIds.STRAY, "Baby Stray"),
-    WITHER_SKELETON(EntityTypeIds.WITHER_SKELETON, "Baby Wither Skeleton");
+    BOGGED(EntityTypeIds.BOGGED, "Baby Bogged", true),
+    CREEPER(EntityTypeIds.CREEPER, "Baby Creeper", false),
+    ENDERMAN(EntityTypeIds.ENDERMAN, "Baby Enderman", false),
+    PARCHED(EntityTypeIds.PARCHED, "Baby Parched", true),
+    SKELETON(EntityTypeIds.SKELETON, "Baby Skeleton", true),
+    STRAY(EntityTypeIds.STRAY, "Baby Stray", true),
+    WITHER_SKELETON(EntityTypeIds.WITHER_SKELETON, "Baby Wither Skeleton", true);
 
     /// Cached value of [BabyType#values()].
     @Unmodifiable
@@ -32,14 +32,16 @@ public enum BabyType implements StringRepresentable {
     private final ResourceKey<EntityType<?>> parentId;
     private final TagKey<Structure> structureBlacklist;
     private final TagKey<Biome> biomeBlacklist;
+    private final boolean hasEquipment;
     private final String displayName;
     private final Identifier id;
     private final String name;
 
-    BabyType(ResourceKey<EntityType<?>> parentId, String displayName) {
+    BabyType(ResourceKey<EntityType<?>> parentId, String displayName, boolean hasEquipment) {
         this.parentId = parentId;
         this.displayName = displayName;
         this.name = "baby_" + this.parentId.identifier().getPath();
+        this.hasEquipment = hasEquipment;
         this.id = MekanismAdditions.rl(this.name);
         Identifier blacklist = id.withPrefix("blacklist/");
         this.biomeBlacklist = TagKey.create(Registries.BIOME, blacklist);
@@ -69,5 +71,9 @@ public enum BabyType implements StringRepresentable {
     @Override
     public String getSerializedName() {
         return this.name;
+    }
+
+    public boolean hasEquipment() {
+        return this.hasEquipment;
     }
 }
