@@ -244,7 +244,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         WRENCH(MekanismLang.CONFIGURATOR_WRENCH, null, EnumColor.PINK, false, Mekanism.rl("radial/wrench"));
 
         public static final Codec<ConfiguratorMode> CODEC = StringRepresentable.fromEnum(ConfiguratorMode::values);
-        public static final IntFunction<ConfiguratorMode> BY_ID = ByIdMap.continuous(ConfiguratorMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<ConfiguratorMode> BY_ID = ByIdMap.continuous(ConfiguratorMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, ConfiguratorMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ConfiguratorMode::ordinal);
 
         private final String serializedName;

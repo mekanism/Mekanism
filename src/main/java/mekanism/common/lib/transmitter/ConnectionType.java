@@ -26,7 +26,7 @@ public enum ConnectionType implements IIncrementalEnum<ConnectionType>, StringRe
     /// Cached value of [ConnectionType#values()]
     @Unmodifiable
     public static final List<ConnectionType> VALUES = List.of(values());
-    public static final IntFunction<ConnectionType> BY_ID = ByIdMap.continuous(ConnectionType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    public static final IntFunction<ConnectionType> BY_ID = ByIdMap.continuous(ConnectionType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, ConnectionType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ConnectionType::ordinal);
 
     private final ILangEntry langEntry;

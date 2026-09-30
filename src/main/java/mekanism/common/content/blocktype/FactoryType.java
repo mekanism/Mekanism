@@ -42,7 +42,7 @@ public enum FactoryType implements IHasEnumNameTranslationKey, StringRepresentab
     @Unmodifiable
     public static final List<FactoryType> VALUES = List.of(values());
     public static final Codec<FactoryType> CODEC = StringRepresentable.fromEnum(FactoryType::values);
-    public static final IntFunction<FactoryType> BY_ID = ByIdMap.continuous(FactoryType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
+    public static final IntFunction<FactoryType> BY_ID = ByIdMap.continuous(FactoryType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
     public static final StreamCodec<ByteBuf, FactoryType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FactoryType::ordinal);
 
     private final String registryNameComponent;

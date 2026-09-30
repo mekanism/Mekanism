@@ -148,7 +148,7 @@ public class UnitDisplayUtils {
         FAHRENHEIT(MekanismLang.TEMPERATURE_FAHRENHEIT, MekanismLang.TEMPERATURE_FAHRENHEIT_SHORT, "°F", "f", 459.67, 1.8),
         AMBIENT(MekanismLang.TEMPERATURE_AMBIENT, MekanismLang.TEMPERATURE_AMBIENT_SHORT, "+STP", "stp", 300, 1);
 
-        public static final IntFunction<TemperatureUnit> BY_ID = ByIdMap.continuous(TemperatureUnit::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<TemperatureUnit> BY_ID = ByIdMap.continuous(TemperatureUnit::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, TemperatureUnit> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, TemperatureUnit::ordinal);
 
         private final ILangEntry langEntry;

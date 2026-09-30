@@ -29,7 +29,7 @@ public enum DataType implements IIncrementalEnum<DataType>, IHasEnumNameTranslat
     EXTRA(MekanismLang.SIDE_DATA_EXTRA, EnumColor.YELLOW);
 
     public static final Codec<DataType> CODEC = StringRepresentable.fromEnum(DataType::values);
-    public static final IntFunction<DataType> BY_ID = ByIdMap.continuous(DataType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    public static final IntFunction<DataType> BY_ID = ByIdMap.continuous(DataType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, DataType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DataType::ordinal);
 
     private final String serializedName;

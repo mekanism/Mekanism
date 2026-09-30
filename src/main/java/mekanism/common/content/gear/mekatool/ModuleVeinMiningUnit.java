@@ -200,7 +200,7 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
         EXTREME(8);
 
         public static final Codec<ExcavationRange> CODEC = StringRepresentable.fromEnum(ExcavationRange::values);
-        public static final IntFunction<ExcavationRange> BY_ID = ByIdMap.continuous(ExcavationRange::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<ExcavationRange> BY_ID = ByIdMap.continuous(ExcavationRange::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         public static final StreamCodec<ByteBuf, ExcavationRange> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ExcavationRange::ordinal);
 
         private final String serializedName;

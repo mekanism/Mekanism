@@ -136,7 +136,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         ULTRA(7);
 
         public static final Codec<FarmingRadius> CODEC = StringRepresentable.fromEnum(FarmingRadius::values);
-        public static final IntFunction<FarmingRadius> BY_ID = ByIdMap.continuous(FarmingRadius::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<FarmingRadius> BY_ID = ByIdMap.continuous(FarmingRadius::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         public static final StreamCodec<ByteBuf, FarmingRadius> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FarmingRadius::ordinal);
 
         private final String serializedName;

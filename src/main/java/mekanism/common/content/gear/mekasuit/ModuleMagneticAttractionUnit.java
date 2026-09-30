@@ -92,7 +92,7 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
         ULTRA(10);
 
         public static final Codec<Range> CODEC = StringRepresentable.fromEnum(Range::values);
-        public static final IntFunction<Range> BY_ID = ByIdMap.continuous(Range::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<Range> BY_ID = ByIdMap.continuous(Range::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         public static final StreamCodec<ByteBuf, Range> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, Range::ordinal);
 
         private final String serializedName;

@@ -36,11 +36,9 @@ public class MekanismArmorLayer<STATE extends HumanoidRenderState, MODEL extends
 
     private void renderArmorPart(PoseStack poseStack, SubmitNodeCollector nodeCollector, ItemStack stack, EquipmentSlot slot, STATE state, int lightCoords) {
         Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
-        //TODO - 26.3: Should we check there is an asset id like super does?
         if (equippable != null && equippable.slot() == slot && IClientItemExtensions.of(stack.getItem()) instanceof ISpecialGear specialGear) {
             ICustomArmor model = specialGear.gearModel();
-            //TODO - 26.3: Fix this as it seems baby models now get handled via this
-            //TODO - 26.3: Figure out baby vs not
+            //TODO - 26.3: Fix this as it seems baby models now get handled via this, and baby mobs wearing our gear now don't have it scale properly
             A coreModel = getArmorModel(state, slot);
             model.render(coreModel, poseStack, nodeCollector, lightCoords, state, stack);
         }

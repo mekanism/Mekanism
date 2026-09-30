@@ -198,7 +198,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         HIGH(MekanismLang.DIVERSION_CONTROL_HIGH),
         LOW(MekanismLang.DIVERSION_CONTROL_LOW);
 
-        public static final IntFunction<DiversionControl> BY_ID = ByIdMap.continuous(DiversionControl::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<DiversionControl> BY_ID = ByIdMap.continuous(DiversionControl::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, DiversionControl> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DiversionControl::ordinal);
 
         private final ILangEntry langEntry;

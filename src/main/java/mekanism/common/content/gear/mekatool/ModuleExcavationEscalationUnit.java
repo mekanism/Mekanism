@@ -132,7 +132,7 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
         EXTREME(MekanismLang.RADIAL_EXCAVATION_SPEED_EXTREME, 128, EnumColor.RED, "speed_extreme");
 
         public static final Codec<ExcavationMode> CODEC = StringRepresentable.fromEnum(ExcavationMode::values);
-        public static final IntFunction<ExcavationMode> BY_ID = ByIdMap.continuous(ExcavationMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<ExcavationMode> BY_ID = ByIdMap.continuous(ExcavationMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         public static final StreamCodec<ByteBuf, ExcavationMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ExcavationMode::ordinal);
 
         private final String serializedName;

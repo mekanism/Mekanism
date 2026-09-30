@@ -57,7 +57,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     /// Gets a color by index, wrapping for out of bounds indices.
     ///
     /// @since 10.6.0
-    public static final IntFunction<EnumColor> BY_ID = ByIdMap.continuous(EnumColor::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    public static final IntFunction<EnumColor> BY_ID = ByIdMap.continuous(EnumColor::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     /// Stream codec for syncing colors by index.
     ///
     /// @since 10.6.0

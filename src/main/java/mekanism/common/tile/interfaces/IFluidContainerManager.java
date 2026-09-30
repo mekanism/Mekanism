@@ -24,7 +24,7 @@ public interface IFluidContainerManager extends IHasMode {
         EMPTY(MekanismLang.FLUID_CONTAINER_EMPTY);
 
         public static final Codec<ContainerEditMode> CODEC = StringRepresentable.fromEnum(ContainerEditMode::values);
-        public static final IntFunction<ContainerEditMode> BY_ID = ByIdMap.continuous(ContainerEditMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<ContainerEditMode> BY_ID = ByIdMap.continuous(ContainerEditMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, ContainerEditMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ContainerEditMode::ordinal);
 
         private final String serializedName;

@@ -33,7 +33,7 @@ public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasEnumName
     /// Gets a security mode by index, wrapping for out of bounds indices.
     ///
     /// @since 10.6.0
-    public static final IntFunction<SecurityMode> BY_ID = ByIdMap.continuous(SecurityMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    public static final IntFunction<SecurityMode> BY_ID = ByIdMap.continuous(SecurityMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     /// Stream codec for syncing security modes by index.
     ///
     /// @since 10.6.0

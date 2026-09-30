@@ -235,7 +235,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         DUMPING(MekanismLang.DUMPING);
 
         public static final Codec<GasMode> CODEC = StringRepresentable.fromEnum(GasMode::values);
-        public static final IntFunction<GasMode> BY_ID = ByIdMap.continuous(GasMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<GasMode> BY_ID = ByIdMap.continuous(GasMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, GasMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, GasMode::ordinal);
 
         private final String serializedName;

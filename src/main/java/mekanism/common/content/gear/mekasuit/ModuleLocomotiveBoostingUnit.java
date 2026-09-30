@@ -95,7 +95,7 @@ public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements I
         ULTRA(0.5F);
 
         public static final Codec<SprintBoost> CODEC = StringRepresentable.fromEnum(SprintBoost::values);
-        public static final IntFunction<SprintBoost> BY_ID = ByIdMap.continuous(SprintBoost::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<SprintBoost> BY_ID = ByIdMap.continuous(SprintBoost::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         public static final StreamCodec<ByteBuf, SprintBoost> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, SprintBoost::ordinal);
 
         private final String serializedName;

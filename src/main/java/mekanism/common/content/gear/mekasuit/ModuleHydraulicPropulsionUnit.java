@@ -41,7 +41,7 @@ public record ModuleHydraulicPropulsionUnit(JumpBoost jumpBoost, StepAssist step
         ULTRA(5);
 
         public static final Codec<JumpBoost> CODEC = StringRepresentable.fromEnum(JumpBoost::values);
-        public static final IntFunction<JumpBoost> BY_ID = ByIdMap.continuous(JumpBoost::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<JumpBoost> BY_ID = ByIdMap.continuous(JumpBoost::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         public static final StreamCodec<ByteBuf, JumpBoost> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, JumpBoost::ordinal);
 
         private final String serializedName;
@@ -77,7 +77,7 @@ public record ModuleHydraulicPropulsionUnit(JumpBoost jumpBoost, StepAssist step
         ULTRA(2);
 
         public static final Codec<StepAssist> CODEC = StringRepresentable.fromEnum(StepAssist::values);
-        public static final IntFunction<StepAssist> BY_ID = ByIdMap.continuous(StepAssist::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<StepAssist> BY_ID = ByIdMap.continuous(StepAssist::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         public static final StreamCodec<ByteBuf, StepAssist> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, StepAssist::ordinal);
 
         private final String serializedName;

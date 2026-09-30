@@ -224,7 +224,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         /// Cached value of [DriveStatus#values()].
         @Unmodifiable
         public static final List<DriveStatus> VALUES = List.of(values());
-        public static final IntFunction<DriveStatus> BY_ID = ByIdMap.continuous(DriveStatus::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<DriveStatus> BY_ID = ByIdMap.continuous(DriveStatus::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, DriveStatus> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DriveStatus::ordinal);
 
         @Nullable

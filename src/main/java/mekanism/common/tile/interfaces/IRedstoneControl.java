@@ -44,7 +44,7 @@ public interface IRedstoneControl {
         PULSE(MekanismLang.REDSTONE_CONTROL_PULSE);
 
         public static final Codec<RedstoneControl> CODEC = StringRepresentable.fromEnum(RedstoneControl::values);
-        public static final IntFunction<RedstoneControl> BY_ID = ByIdMap.continuous(RedstoneControl::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<RedstoneControl> BY_ID = ByIdMap.continuous(RedstoneControl::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, RedstoneControl> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, RedstoneControl::ordinal);
 
         private final String serializedName;

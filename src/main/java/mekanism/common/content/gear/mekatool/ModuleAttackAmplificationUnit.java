@@ -53,7 +53,7 @@ public record ModuleAttackAmplificationUnit(AttackDamage attackDamage) implement
         MAX(32);
 
         public static final Codec<AttackDamage> CODEC = StringRepresentable.fromEnum(AttackDamage::values);
-        public static final IntFunction<AttackDamage> BY_ID = ByIdMap.continuous(AttackDamage::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<AttackDamage> BY_ID = ByIdMap.continuous(AttackDamage::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         public static final StreamCodec<ByteBuf, AttackDamage> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, AttackDamage::ordinal);
 
         private final String serializedName;

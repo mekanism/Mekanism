@@ -223,7 +223,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
         INFERNO(MekanismLang.FLAMETHROWER_INFERNO, EnumColor.DARK_RED);
 
         public static final Codec<FlamethrowerMode> CODEC = StringRepresentable.fromEnum(FlamethrowerMode::values);
-        public static final IntFunction<FlamethrowerMode> BY_ID = ByIdMap.continuous(FlamethrowerMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<FlamethrowerMode> BY_ID = ByIdMap.continuous(FlamethrowerMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, FlamethrowerMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FlamethrowerMode::ordinal);
 
         private final ILangEntry langEntry;

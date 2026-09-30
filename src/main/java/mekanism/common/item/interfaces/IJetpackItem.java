@@ -54,7 +54,7 @@ public interface IJetpackItem {
         DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED, "jetpack_off");
 
         public static final Codec<JetpackMode> CODEC = StringRepresentable.fromEnum(JetpackMode::values);
-        public static final IntFunction<JetpackMode> BY_ID = ByIdMap.continuous(JetpackMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<JetpackMode> BY_ID = ByIdMap.continuous(JetpackMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, JetpackMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, JetpackMode::ordinal);
 
         private final String serializedName;

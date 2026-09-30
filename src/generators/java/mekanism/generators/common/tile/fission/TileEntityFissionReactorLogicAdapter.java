@@ -219,7 +219,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         @Unmodifiable
         public static final List<FissionReactorLogic> VALUES = List.of(values());
         public static final Codec<FissionReactorLogic> CODEC = StringRepresentable.fromEnum(FissionReactorLogic::values);
-        public static final IntFunction<FissionReactorLogic> BY_ID = ByIdMap.continuous(FissionReactorLogic::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<FissionReactorLogic> BY_ID = ByIdMap.continuous(FissionReactorLogic::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, FissionReactorLogic> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FissionReactorLogic::ordinal);
 
         private final ILangEntry name;
@@ -267,7 +267,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         OUTPUTTING(GeneratorsLang.REACTOR_LOGIC_OUTPUTTING),
         POWERED(GeneratorsLang.REACTOR_LOGIC_POWERED);
 
-        public static final IntFunction<RedstoneStatus> BY_ID = ByIdMap.continuous(RedstoneStatus::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<RedstoneStatus> BY_ID = ByIdMap.continuous(RedstoneStatus::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, RedstoneStatus> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, RedstoneStatus::ordinal);
 
         private final ILangEntry name;

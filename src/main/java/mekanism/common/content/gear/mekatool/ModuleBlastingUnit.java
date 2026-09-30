@@ -113,7 +113,7 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
         EXTREME(4, MekanismLang.RADIAL_BLASTING_POWER_EXTREME, EnumColor.RED, "blasting_extreme");
 
         public static final Codec<BlastRadius> CODEC = StringRepresentable.fromEnum(BlastRadius::values);
-        public static final IntFunction<BlastRadius> BY_ID = ByIdMap.continuous(BlastRadius::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<BlastRadius> BY_ID = ByIdMap.continuous(BlastRadius::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         public static final StreamCodec<ByteBuf, BlastRadius> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, BlastRadius::ordinal);
 
         private final String serializedName;

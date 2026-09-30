@@ -262,7 +262,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         //We only allow deserializing to enabled modes
         public static final Codec<DisassemblerMode> CODEC = StringRepresentable.fromEnum(DisassemblerMode::values)
               .xmap(mode -> mode.isEnabled() ? mode : NORMAL, Function.identity());
-        public static final IntFunction<DisassemblerMode> BY_ID = ByIdMap.continuous(DisassemblerMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<DisassemblerMode> BY_ID = ByIdMap.continuous(DisassemblerMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         //Though we allow network handling to sync it whether it is enabled or not
         public static final StreamCodec<ByteBuf, DisassemblerMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DisassemblerMode::ordinal);
 

@@ -785,7 +785,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         READY(MekanismLang.TELEPORTER_READY, false);
 
         public static final Codec<TeleporterStatus> CODEC = StringRepresentable.fromEnum(TeleporterStatus::values);
-        public static final IntFunction<TeleporterStatus> BY_ID = ByIdMap.continuous(TeleporterStatus::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<TeleporterStatus> BY_ID = ByIdMap.continuous(TeleporterStatus::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         public static final StreamCodec<ByteBuf, TeleporterStatus> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, TeleporterStatus::ordinal);
 
         private final String serializedName;

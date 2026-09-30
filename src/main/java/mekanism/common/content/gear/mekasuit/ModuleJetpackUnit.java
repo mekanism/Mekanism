@@ -103,7 +103,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
         FASTEST(4f);
 
         public static final Codec<ThrustMultiplier> CODEC = StringRepresentable.fromEnum(ThrustMultiplier::values);
-        public static final IntFunction<ThrustMultiplier> BY_ID = ByIdMap.continuous(ThrustMultiplier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<ThrustMultiplier> BY_ID = ByIdMap.continuous(ThrustMultiplier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         public static final StreamCodec<ByteBuf, ThrustMultiplier> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ThrustMultiplier::ordinal);
 
         private final String serializedName;

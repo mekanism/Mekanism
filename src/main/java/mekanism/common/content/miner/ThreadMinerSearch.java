@@ -136,7 +136,7 @@ public class ThreadMinerSearch extends Thread {
         FINISHED(MekanismLang.MINER_READY);
 
         public static final Codec<State> CODEC = StringRepresentable.fromEnum(State::values);
-        public static final IntFunction<State> BY_ID = ByIdMap.continuous(State::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final IntFunction<State> BY_ID = ByIdMap.continuous(State::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, State> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, State::ordinal);
 
         private final String serializedName;
