@@ -68,7 +68,9 @@ public class ToolsConfig extends BaseMekanismConfig {
     public static class ArmorSpawnChanceConfig {
 
         public final CachedBooleanValue canSpawnWeapon;
-        public final CachedFloatValue swordWeight;
+        public final CachedFloatValue sharpWeaponWeight;
+        public final CachedFloatValue swordChance;
+
         public final CachedFloatValue helmetChance;
         public final CachedFloatValue chestplateChance;
         public final CachedFloatValue leggingsChance;
@@ -81,25 +83,24 @@ public class ToolsConfig extends BaseMekanismConfig {
         public final CachedFloatValue armorEnchantmentChance;
 
         private ArmorSpawnChanceConfig(IMekanismConfig config, ModConfigSpec.Builder builder, MaterialCreator material) {
-            this(config, builder, material.registryPrefix(), 0.33, 1, 1, 1, 1, 0.25, 0.5);
-        }
-
-        private ArmorSpawnChanceConfig(IMekanismConfig config, ModConfigSpec.Builder builder, String key, double swordChance, double helmetChance,
-              double chestplateChance, double leggingsChance, double bootsChance, double weaponEnchantmentChance, double armorEnchantmentChance) {
+            String key = material.registryPrefix();
             ArmorSpawnChanceTranslations translations = ArmorSpawnChanceTranslations.create(key);
             translations.topLevel().applyToBuilder(builder).push(key);
             this.canSpawnWeapon = CachedBooleanValue.wrap(config, translations.canSpawnWeapon().applyToBuilder(builder)
                   .define("canSpawnWeapon", true));
-            this.swordWeight = CachedFloatValue.wrap(config, translations.swordWeight().applyToBuilder(builder)
-                  .defineInRange("swordWeight", swordChance, 0, 1));
+            this.sharpWeaponWeight = CachedFloatValue.wrap(config, translations.sharpWeaponWeight().applyToBuilder(builder)
+                  .defineInRange("sharpWeaponWeight", 0.33, 0, 1));
+            this.swordChance = CachedFloatValue.wrap(config, translations.sharpWeaponWeight().applyToBuilder(builder)
+                  .defineInRange("swordChance", 0.5, 0, 1));
+
             this.helmetChance = CachedFloatValue.wrap(config, translations.helmetChance().applyToBuilder(builder)
-                  .defineInRange("helmetChance", helmetChance, 0, 1));
+                  .defineInRange("helmetChance", 1D, 0, 1));
             this.chestplateChance = CachedFloatValue.wrap(config, translations.chestplateChance().applyToBuilder(builder)
-                  .defineInRange("chestplateChance", chestplateChance, 0, 1));
+                  .defineInRange("chestplateChance", 1D, 0, 1));
             this.leggingsChance = CachedFloatValue.wrap(config, translations.leggingsChance().applyToBuilder(builder)
-                  .defineInRange("leggingsChance", leggingsChance, 0, 1));
+                  .defineInRange("leggingsChance", 1D, 0, 1));
             this.bootsChance = CachedFloatValue.wrap(config, translations.bootsChance().applyToBuilder(builder)
-                  .defineInRange("bootsChance", bootsChance, 0, 1));
+                  .defineInRange("bootsChance", 1D, 0, 1));
 
             this.multiplePieceChance = CachedFloatValue.wrap(config, translations.multiplePieceChance().applyToBuilder(builder)
                   .defineInRange("multiplePieceChance", 0.25, 0, 1));
@@ -107,9 +108,9 @@ public class ToolsConfig extends BaseMekanismConfig {
                   .defineInRange("multiplePieceChanceHard", 0.1, 0, 1));
 
             this.weaponEnchantmentChance = CachedFloatValue.wrap(config, translations.weaponEnchantmentChance().applyToBuilder(builder)
-                  .defineInRange("weaponEnchantmentChance", weaponEnchantmentChance, 0, 1));
+                  .defineInRange("weaponEnchantmentChance", 0.25, 0, 1));
             this.armorEnchantmentChance = CachedFloatValue.wrap(config, translations.armorEnchantmentChance().applyToBuilder(builder)
-                  .defineInRange("armorEnchantmentChance", armorEnchantmentChance, 0, 1));
+                  .defineInRange("armorEnchantmentChance", 0.5, 0, 1));
             builder.pop();
         }
     }

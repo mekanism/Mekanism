@@ -377,8 +377,6 @@
   "configuration.mekanismadditions.server.baby.spawning.baby_stray.weight.tooltip": "˙qoɯ ʇꞁnpɐ ǝɥʇ oʇ pǝɹɐdɯoɔ 'suʍɐds ʎɐɹʇS ʎqɐᗺ ɟo ʇɥᵷᴉǝʍ ɹoɟ ɹǝᴉꞁdᴉʇꞁnɯ ǝɥ⟘",
   "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.cost_per_entity": "ɹǝᴉꞁdᴉʇꞁnW ʎʇᴉʇuƎ ɹǝԀ ʇsoƆ",
   "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.cost_per_entity.tooltip": "˙qoɯ ʇꞁnpɐ ǝɥʇ oʇ pǝɹɐdɯoɔ 'suʍɐds uoʇǝꞁǝʞS ɹǝɥʇᴉM ʎqɐᗺ ɟo ʎʇᴉʇuǝ ɹǝd ʇsoɔ uʍɐds ɹoɟ ɹǝᴉꞁdᴉʇꞁnɯ ǝɥ⟘",
-  "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.disable_armor_spawning": "sǝᴉqɐᗺ uo ɹoɯɹⱯ ǝꞁqɐsᴉᗡ",
-  "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.disable_armor_spawning.tooltip": "˙uoʇǝꞁǝʞS ɹǝɥʇᴉM ʎqɐᗺ uo ᵷuᴉuʍɐds ɯoɹɟ ɹoɯɹɐ sǝꞁqɐsᴉᗡ",
   "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.max_cost": "ɹǝᴉꞁdᴉʇꞁnW ʇsoƆ xɐW",
   "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.max_cost.tooltip": "˙qoɯ ʇꞁnpɐ ǝɥʇ oʇ pǝɹɐdɯoɔ 'suʍɐds uoʇǝꞁǝʞS ɹǝɥʇᴉM ʎqɐᗺ ɟo ʇsoɔ uʍɐds xɐɯ ɹoɟ ɹǝᴉꞁdᴉʇꞁnɯ ǝɥ⟘",
   "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.should_spawn": "uʍɐdS pꞁnoɥS",

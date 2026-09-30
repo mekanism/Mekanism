@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.additions.common.entity.baby.BabyType;
@@ -18,7 +17,7 @@ import mekanism.additions.common.entity.baby.EntityBabyParched;
 import mekanism.additions.common.entity.baby.EntityBabySkeleton;
 import mekanism.additions.common.entity.baby.EntityBabyStray;
 import mekanism.additions.common.entity.baby.EntityBabyWitherSkeleton;
-import mekanism.common.Mekanism;
+import mekanism.common.entity.ArmorSpawnable;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.EntityTypeDeferredRegister;
 import net.minecraft.SharedConstants;
@@ -126,17 +125,13 @@ public class AdditionsEntityTypes {
         }
     }
 
-    public static void depopulateDefaultEquipmentSlots(LivingEntity baby, BabyType babyType) {
-        if (babyType.hasEquipment()) {
-            if (MekanismAdditionsConfig.additions.getConfig(babyType).disableArmorSpawning.getAsBoolean()) {
-                for (EquipmentSlot slot : EquipmentSlot.VALUES) {
-                    if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
-                        baby.setItemSlot(slot, ItemStack.EMPTY);
-                    }
+    public static <BABY extends LivingEntity & ArmorSpawnable> void depopulateDefaultEquipmentSlots(BABY baby) {
+        if (!baby.canSpawnArmor()) {
+            for (EquipmentSlot slot : EquipmentSlot.VALUES) {
+                if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
+                    baby.setItemSlot(slot, ItemStack.EMPTY);
                 }
             }
-        } else {
-            Mekanism.logger.warn("Attempted to depopulate equipment slots for a {}, but that baby type does not have equipment slots.", babyType.displayName());
         }
     }
 

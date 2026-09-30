@@ -2,6 +2,7 @@ package mekanism.additions.common.entity.baby;
 
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import mekanism.common.entity.ArmorSpawnable;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityDimensions;
@@ -14,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-public class EntityBabyStray extends Stray {
+public class EntityBabyStray extends Stray implements ArmorSpawnable {
 
     public EntityBabyStray(EntityType<EntityBabyStray> type, Level world) {
         super(type, world);
@@ -43,11 +44,16 @@ public class EntityBabyStray extends Stray {
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(random, difficulty);
-        AdditionsEntityTypes.depopulateDefaultEquipmentSlots(this, BabyType.STRAY);
+        AdditionsEntityTypes.depopulateDefaultEquipmentSlots(this);
     }
 
     @Override
     public boolean is(EntityType<?> type) {
         return type == EntityTypes.STRAY || super.is(type);
+    }
+
+    @Override
+    public boolean canSpawnArmor() {
+        return !MekanismAdditionsConfig.additions.getConfig(BabyType.STRAY).disableArmorSpawning.getAsBoolean();
     }
 }

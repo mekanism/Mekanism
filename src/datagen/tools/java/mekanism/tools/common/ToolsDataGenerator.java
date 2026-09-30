@@ -38,7 +38,7 @@ public class ToolsDataGenerator {
         ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         //Client side data generators
         gen.addProvider(true, new ToolsLangProvider(output));
-        gen.addProvider(true, new ToolsSpriteSourceProvider(output, worldLookupProvider));
+        gen.addProvider(true, new ToolsSpriteSourceProvider(output, reloadableLookupProvider));
         gen.addProvider(true, new ToolsModelProvider(output, clientResources));
         gen.addProvider(true, new ToolsEquipmentAssetProvider(output));
         gen.addProvider(true, new ToolsSplashProvider(output));

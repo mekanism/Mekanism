@@ -16,8 +16,8 @@ public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
 
     private final Set<Identifier> trackedSingles = new HashSet<>();
 
-    protected BaseSpriteSourceProvider(PackOutput output, String modid, CompletableFuture<Provider> lookupProvider) {
-        super(output, lookupProvider, modid);
+    protected BaseSpriteSourceProvider(PackOutput output, String modid, CompletableFuture<Provider> reloadableLookupProvider) {
+        super(output, reloadableLookupProvider, modid);
     }
 
     protected void addFiles(SourceList atlas, List<Identifier> resourceLocations) {

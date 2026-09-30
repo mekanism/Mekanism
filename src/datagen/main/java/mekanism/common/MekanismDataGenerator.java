@@ -94,7 +94,7 @@ public class MekanismDataGenerator {
         gen.addProvider(true, new PrideRobitTextureProvider(output, clientResources));
         gen.addProvider(true, new MekanismSoundProvider(output));
         gen.addProvider(true, new MekanismSplashProvider(output));
-        gen.addProvider(true, new MekanismSpriteSourceProvider(output, worldLookupProvider));
+        gen.addProvider(true, new MekanismSpriteSourceProvider(output, reloadableLookupProvider));
         gen.addProvider(true, new MekanismModelProvider(output, clientResources));
         gen.addProvider(true, new MekanismEquipmentAssetProvider(output));
         //Server side data generators

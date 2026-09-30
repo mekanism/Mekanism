@@ -1,8 +1,6 @@
 package mekanism.additions.common.entity.baby;
 
 import mekanism.additions.common.registries.AdditionsEntityTypes;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
@@ -27,12 +25,6 @@ public class EntityBabyWitherSkeleton extends WitherSkeleton {
     public EntityDimensions getDefaultDimensions(Pose pose) {
         //Note: We already have the age scale factored into the dimensions
         return getType().getDimensions();
-    }
-
-    @Override
-    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
-        super.populateDefaultEquipmentSlots(random, difficulty);
-        AdditionsEntityTypes.depopulateDefaultEquipmentSlots(this, BabyType.WITHER_SKELETON);
     }
 
     @Override

@@ -10,8 +10,8 @@ import net.minecraft.data.PackOutput;
 
 public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
 
-    public MekanismSpriteSourceProvider(PackOutput output, CompletableFuture<Provider> lookupProvider) {
-        super(output, Mekanism.MODID, lookupProvider);
+    public MekanismSpriteSourceProvider(PackOutput output, CompletableFuture<Provider> reloadableLookupProvider) {
+        super(output, Mekanism.MODID, reloadableLookupProvider);
     }
 
     @Override

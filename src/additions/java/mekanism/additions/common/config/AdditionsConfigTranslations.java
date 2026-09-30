@@ -94,8 +94,8 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
             return new BabySpawnTranslations(
                   new ConfigTranslation(getKey(key, "top_level"), name, "Config options regarding the spawning of " + name + ".", "Edit Spawn Settings"),
                   new ConfigTranslation(getKey(key, "should_spawn"), "Should Spawn", "Enable the spawning of " + name + ". Think baby zombies."),
-                  babyType.hasEquipment() ? new ConfigTranslation(getKey(key, "disable_armor_spawning"), "Disable Armor on Babies", "Disables armor from spawning on " + name + ".")
-                                          : null,
+                  babyType.hasArmor() ? new ConfigTranslation(getKey(key, "disable_armor_spawning"), "Disable Armor on Babies", "Disables armor from spawning on " + name + ".")
+                                      : null,
                   new ConfigTranslation(getKey(key, "size_percentage"), "Group Size Scale", "The multiplier for the group size of " + name + " spawns, compared to the adult mob."),
                   new ConfigTranslation(getKey(key, "weight"), "Weight Multiplier", "The multiplier for weight of " + name + " spawns, compared to the adult mob."),
                   new ConfigTranslation(getKey(key, "cost_per_entity"), "Cost Per Entity Multiplier", "The multiplier for spawn cost per entity of " + name + " spawns, compared to the adult mob."),

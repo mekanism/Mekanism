@@ -10,8 +10,8 @@ import net.minecraft.data.PackOutput;
 
 public class ToolsSpriteSourceProvider extends BaseSpriteSourceProvider {
 
-    public ToolsSpriteSourceProvider(PackOutput output, CompletableFuture<Provider> lookupProvider) {
-        super(output, MekanismTools.MODID, lookupProvider);
+    public ToolsSpriteSourceProvider(PackOutput output, CompletableFuture<Provider> reloadableLookupProvider) {
+        super(output, MekanismTools.MODID, reloadableLookupProvider);
     }
 
     @Override

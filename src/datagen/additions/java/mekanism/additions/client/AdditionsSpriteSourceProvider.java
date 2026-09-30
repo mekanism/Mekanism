@@ -9,8 +9,8 @@ import net.minecraft.data.PackOutput;
 
 public class AdditionsSpriteSourceProvider extends BaseSpriteSourceProvider {
 
-    public AdditionsSpriteSourceProvider(PackOutput output, CompletableFuture<Provider> lookupProvider) {
-        super(output, MekanismAdditions.MODID, lookupProvider);
+    public AdditionsSpriteSourceProvider(PackOutput output, CompletableFuture<Provider> reloadableLookupProvider) {
+        super(output, MekanismAdditions.MODID, reloadableLookupProvider);
     }
 
     @Override

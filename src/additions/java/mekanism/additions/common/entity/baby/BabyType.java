@@ -21,7 +21,7 @@ public enum BabyType implements StringRepresentable {
     PARCHED(EntityTypeIds.PARCHED, "Baby Parched", true),
     SKELETON(EntityTypeIds.SKELETON, "Baby Skeleton", true),
     STRAY(EntityTypeIds.STRAY, "Baby Stray", true),
-    WITHER_SKELETON(EntityTypeIds.WITHER_SKELETON, "Baby Wither Skeleton", true);
+    WITHER_SKELETON(EntityTypeIds.WITHER_SKELETON, "Baby Wither Skeleton", false);
 
     /// Cached value of [BabyType#values()].
     @Unmodifiable
@@ -32,16 +32,16 @@ public enum BabyType implements StringRepresentable {
     private final ResourceKey<EntityType<?>> parentId;
     private final TagKey<Structure> structureBlacklist;
     private final TagKey<Biome> biomeBlacklist;
-    private final boolean hasEquipment;
+    private final boolean hasArmor;
     private final String displayName;
     private final Identifier id;
     private final String name;
 
-    BabyType(ResourceKey<EntityType<?>> parentId, String displayName, boolean hasEquipment) {
+    BabyType(ResourceKey<EntityType<?>> parentId, String displayName, boolean hasArmor) {
         this.parentId = parentId;
         this.displayName = displayName;
         this.name = "baby_" + this.parentId.identifier().getPath();
-        this.hasEquipment = hasEquipment;
+        this.hasArmor = hasArmor;
         this.id = MekanismAdditions.rl(this.name);
         Identifier blacklist = id.withPrefix("blacklist/");
         this.biomeBlacklist = TagKey.create(Registries.BIOME, blacklist);
@@ -73,7 +73,7 @@ public enum BabyType implements StringRepresentable {
         return this.name;
     }
 
-    public boolean hasEquipment() {
-        return this.hasEquipment;
+    public boolean hasArmor() {
+        return this.hasArmor;
     }
 }

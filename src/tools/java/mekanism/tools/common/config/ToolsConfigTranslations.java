@@ -70,7 +70,7 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
     public record ArmorSpawnChanceTranslations(
           IConfigTranslation topLevel,
           IConfigTranslation canSpawnWeapon,
-          IConfigTranslation swordWeight,
+          IConfigTranslation sharpWeaponWeight, IConfigTranslation swordChance,
           IConfigTranslation helmetChance,
           IConfigTranslation chestplateChance,
           IConfigTranslation leggingsChance,
@@ -84,7 +84,7 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
     ) {
 
         public IConfigTranslation[] toArray() {
-            return new IConfigTranslation[]{topLevel, canSpawnWeapon, swordWeight,
+            return new IConfigTranslation[]{topLevel, canSpawnWeapon, sharpWeaponWeight, swordChance,
                                             helmetChance, chestplateChance, leggingsChance, bootsChance,
                                             multiplePieceChance, multiplePieceChanceHard,
                                             weaponEnchantmentChance, armorEnchantmentChance
@@ -104,8 +104,10 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
                         "Edit Spawn Chance"
                   ),
                   new ConfigTranslation(getKey(registryPrefix, "spawn_weapon"), "With Weapon", "If enabled, zombies can spawn with " + name + " weapons."),
-                  new ConfigTranslation(getKey(registryPrefix, "sword_weight"), "Sword Weight",
-                        "The chance that mobs will spawn with " + name + " swords rather than " + name + " shovels. Requires canSpawnWeapon to be enabled."),
+                  new ConfigTranslation(getKey(registryPrefix, "sharp_weapon_weight"), "Sharp Weapon Weight",
+                        "The chance that mobs will spawn with " + name + " swords or spears rather than " + name + " shovels. Requires canSpawnWeapon to be enabled."),
+                  new ConfigTranslation(getKey(registryPrefix, "sword_chance"), "Sword Chance",
+                        "The chance that mobs will spawn with " + name + " swords rather than " + name + " spears when spawning with a sharp weapon. Requires canSpawnWeapon to be enabled, and sharpWeaponWeight to have been rolled."),
                   new ConfigTranslation(getKey(registryPrefix, "chance.helmet"), "Helmet Chance", "The chance that mobs can spawn with " + name + " helmets."),
                   new ConfigTranslation(getKey(registryPrefix, "chance.chestplate"), "Chestplate Chance", "The chance that mobs can spawn with " + name + " chestplates."),
                   new ConfigTranslation(getKey(registryPrefix, "chance.leggings"), "Leggings Chance", "The chance that mobs can spawn with " + name + " leggings."),

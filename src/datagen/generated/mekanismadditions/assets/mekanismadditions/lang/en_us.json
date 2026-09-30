@@ -377,8 +377,6 @@
   "configuration.mekanismadditions.server.baby.spawning.baby_stray.weight.tooltip": "The multiplier for weight of Baby Stray spawns, compared to the adult mob.",
   "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.cost_per_entity": "Cost Per Entity Multiplier",
   "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.cost_per_entity.tooltip": "The multiplier for spawn cost per entity of Baby Wither Skeleton spawns, compared to the adult mob.",
-  "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.disable_armor_spawning": "Disable Armor on Babies",
-  "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.disable_armor_spawning.tooltip": "Disables armor from spawning on Baby Wither Skeleton.",
   "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.max_cost": "Max Cost Multiplier",
   "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.max_cost.tooltip": "The multiplier for max spawn cost of Baby Wither Skeleton spawns, compared to the adult mob.",
   "configuration.mekanismadditions.server.baby.spawning.baby_wither_skeleton.should_spawn": "Should Spawn",

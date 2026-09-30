@@ -2,6 +2,7 @@ package mekanism.additions.common.entity.baby;
 
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import mekanism.common.entity.ArmorSpawnable;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityDimensions;
@@ -14,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-public class EntityBabyBogged extends Bogged {
+public class EntityBabyBogged extends Bogged implements ArmorSpawnable {
 
     public EntityBabyBogged(EntityType<EntityBabyBogged> type, Level world) {
         super(type, world);
@@ -43,11 +44,16 @@ public class EntityBabyBogged extends Bogged {
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(random, difficulty);
-        AdditionsEntityTypes.depopulateDefaultEquipmentSlots(this, BabyType.BOGGED);
+        AdditionsEntityTypes.depopulateDefaultEquipmentSlots(this);
     }
 
     @Override
     public boolean is(EntityType<?> type) {
         return type == EntityTypes.BOGGED || super.is(type);
+    }
+
+    @Override
+    public boolean canSpawnArmor() {
+        return !MekanismAdditionsConfig.additions.getConfig(BabyType.BOGGED).disableArmorSpawning.getAsBoolean();
     }
 }

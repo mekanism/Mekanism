@@ -114,7 +114,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
             this.shouldSpawn = CachedBooleanValue.wrap(config, translations.shouldSpawn().applyToBuilder(builder)
                   .worldRestart()
                   .define("shouldSpawn", true));
-            if (babyType.hasEquipment()) {
+            if (babyType.hasArmor()) {
                 this.disableArmorSpawning = CachedBooleanValue.wrap(config, Objects.requireNonNull(translations.disableArmorSpawning()).applyToBuilder(builder)
                       .define("disableArmorSpawning", false));
             } else {

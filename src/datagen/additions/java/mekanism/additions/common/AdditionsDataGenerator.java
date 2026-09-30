@@ -39,7 +39,7 @@ public class AdditionsDataGenerator {
         //Client side data generators
         gen.addProvider(true, new AdditionsLangProvider(output));
         gen.addProvider(true, new AdditionsSoundProvider(output));
-        gen.addProvider(true, new AdditionsSpriteSourceProvider(output, worldLookupProvider));
+        gen.addProvider(true, new AdditionsSpriteSourceProvider(output, reloadableLookupProvider));
         gen.addProvider(true, new AdditionsModelProvider(output, clientResources));
         gen.addProvider(true, new AdditionsSplashProvider(output));
         //Server side data generators
