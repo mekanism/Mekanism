@@ -59,7 +59,7 @@ public class WorldConfig extends BaseMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.SERVER;
+        return Type.SYNCED;
     }
 
     public OreVeinConfig getVeinConfig(OreVeinType oreVeinType) {

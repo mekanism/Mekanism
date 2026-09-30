@@ -34,7 +34,7 @@ public class ModuleDosimeterUnit implements ICustomModule<ModuleDosimeterUnit> {
         if (module.isEnabled()) {
             double radiation = RadiationManager.isGlobalRadiationEnabled() ? player.getData(MekanismAttachmentTypes.RADIATION) : 0;
             Component text = UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 2);
-            if (MekanismConfig.common.enableDecayTimers.get() && radiation > IRadiationManager.INSTANCE.minRadiationMagnitude()) {
+            if (MekanismConfig.local.enableDecayTimers.get() && radiation > IRadiationManager.INSTANCE.minRadiationMagnitude()) {
                 text = MekanismLang.GENERIC_WITH_PARENTHESIS.translate(text, TextUtils.getHoursMinutes(player.level(),
                       RadiationUtil.getDecayTime(radiation, false)));
             }

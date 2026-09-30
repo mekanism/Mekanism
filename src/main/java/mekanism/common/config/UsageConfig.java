@@ -144,6 +144,6 @@ public class UsageConfig extends BaseMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.SERVER;
+        return Type.SYNCED;
     }
 }

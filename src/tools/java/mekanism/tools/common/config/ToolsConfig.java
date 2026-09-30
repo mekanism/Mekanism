@@ -62,7 +62,7 @@ public class ToolsConfig extends BaseMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.SERVER;
+        return Type.SYNCED;
     }
 
     public static class ArmorSpawnChanceConfig {

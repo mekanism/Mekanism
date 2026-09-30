@@ -230,6 +230,6 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.SERVER;
+        return Type.SYNCED;
     }
 }

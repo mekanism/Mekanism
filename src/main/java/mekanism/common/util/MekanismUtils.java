@@ -353,7 +353,7 @@ public final class MekanismUtils {
     /// @return rounded energy display
     public static Component getTemperatureDisplay(double temp, TemperatureUnit unit, boolean shift) {
         double tempKelvin = unit.convertToK(temp, true);
-        return UnitDisplayUtils.getDisplayShort(tempKelvin, MekanismConfig.common.tempUnit.get(), shift);
+        return UnitDisplayUtils.getDisplayShort(tempKelvin, MekanismConfig.local.tempUnit.get(), shift);
     }
 
     /// Converts a list of slots into a simple crafting input.

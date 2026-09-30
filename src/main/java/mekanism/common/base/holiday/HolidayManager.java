@@ -46,7 +46,7 @@ public final class HolidayManager {
     private static Holiday soundHoliday;
 
     public static boolean areHolidaysEnabled() {
-        return MekanismConfig.common.holidays.get();
+        return MekanismConfig.local.holidays.get();
     }
 
     public static void init() {

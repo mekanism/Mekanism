@@ -87,7 +87,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.SERVER;
+        return Type.SYNCED;
     }
 
     public SpawnConfig getConfig(BabyType babyType) {

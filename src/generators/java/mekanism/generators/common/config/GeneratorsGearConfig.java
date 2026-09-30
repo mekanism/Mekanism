@@ -48,6 +48,6 @@ public class GeneratorsGearConfig extends BaseMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.SERVER;
+        return Type.SYNCED;
     }
 }

@@ -6,7 +6,7 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-public class CommonConfig extends BaseMekanismConfig {
+public class LocalConfig extends BaseMekanismConfig {
 
     private final ModConfigSpec configSpec;
 
@@ -15,7 +15,7 @@ public class CommonConfig extends BaseMekanismConfig {
     public final CachedBooleanValue copyBlockData;
     public final CachedBooleanValue holidays;
 
-    CommonConfig() {
+    LocalConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
         tempUnit = CachedEnumValue.wrap(this, MekanismConfigTranslations.COMMON_UNIT_TEMPERATURE.applyToBuilder(builder)
@@ -32,12 +32,12 @@ public class CommonConfig extends BaseMekanismConfig {
 
     @Override
     public String getFileName() {
-        return "common";
+        return "local";
     }
 
     @Override
     public String getTranslation() {
-        return "Common Config";
+        return "Local Config";
     }
 
     @Override
@@ -47,6 +47,6 @@ public class CommonConfig extends BaseMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.COMMON;
+        return Type.LOCAL;
     }
 }

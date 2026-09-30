@@ -16,7 +16,7 @@ public class MekanismConfig {
 
     private static final Map<IConfigSpec, IMekanismConfig> KNOWN_CONFIGS = new HashMap<>();
     public static final ClientConfig client = new ClientConfig();
-    public static final CommonConfig common = new CommonConfig();
+    public static final LocalConfig local = new LocalConfig();
     public static final GeneralConfig general = new GeneralConfig();
     public static final GearConfig gear = new GearConfig();
     public static final MekanismStartupConfig startup = new MekanismStartupConfig();
@@ -27,7 +27,7 @@ public class MekanismConfig {
 
     public static void registerConfigs(ModContainer modContainer) {
         MekanismConfigHelper.registerConfig(KNOWN_CONFIGS, modContainer, client);
-        MekanismConfigHelper.registerConfig(KNOWN_CONFIGS, modContainer, common);
+        MekanismConfigHelper.registerConfig(KNOWN_CONFIGS, modContainer, local);
         MekanismConfigHelper.registerConfig(KNOWN_CONFIGS, modContainer, general);
         MekanismConfigHelper.registerConfig(KNOWN_CONFIGS, modContainer, gear);
         MekanismConfigHelper.registerConfig(KNOWN_CONFIGS, modContainer, startup);

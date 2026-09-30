@@ -36,7 +36,7 @@ public class ItemGeigerCounter extends Item {
             EnumColor severityColor = RadiationScale.getSeverityColor(magnitude);
             player.sendSystemMessage(MekanismLang.RADIATION_EXPOSURE.translateColored(EnumColor.GRAY, severityColor,
                   UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)));
-            if (MekanismConfig.common.enableDecayTimers.get() && magnitude > IRadiationManager.INSTANCE.baselineRadiation()) {
+            if (MekanismConfig.local.enableDecayTimers.get() && magnitude > IRadiationManager.INSTANCE.baselineRadiation()) {
                 player.sendSystemMessage(MekanismLang.RADIATION_DECAY_TIME.translateColored(EnumColor.GRAY,
                       severityColor, TextUtils.getHoursMinutes(world, RadiationUtil.getDecayTime(levelAndMaxMagnitude.maxMagnitude(), true))));
             }

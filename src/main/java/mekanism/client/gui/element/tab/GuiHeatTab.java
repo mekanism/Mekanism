@@ -40,7 +40,7 @@ public class GuiHeatTab extends GuiTexturedElement {
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
         List<Component> info = new ArrayList<>(infoHandler.get());
-        info.add(MekanismLang.UNIT.translate(MekanismConfig.common.tempUnit.get()));
+        info.add(MekanismLang.UNIT.translate(MekanismConfig.local.tempUnit.get()));
         if (!info.equals(lastInfo)) {
             lastInfo = info;
             lastTooltip = TooltipUtils.create(info);
@@ -50,7 +50,7 @@ public class GuiHeatTab extends GuiTexturedElement {
 
     @Override
     protected Identifier getResource() {
-        return ICONS.computeIfAbsent(MekanismConfig.common.tempUnit.get(), type -> Mekanism.rl("tab/heat_info_" + type.getTabName()));
+        return ICONS.computeIfAbsent(MekanismConfig.local.tempUnit.get(), type -> Mekanism.rl("tab/heat_info_" + type.getTabName()));
     }
 
     @Override
@@ -69,11 +69,11 @@ public class GuiHeatTab extends GuiTexturedElement {
     }
 
     private void updateTemperatureUnit(UnaryOperator<TemperatureUnit> converter) {
-        TemperatureUnit current = MekanismConfig.common.tempUnit.get();
+        TemperatureUnit current = MekanismConfig.local.tempUnit.get();
         TemperatureUnit updated = converter.apply(current);
         if (current != updated) {//Should always be true but validate it
-            MekanismConfig.common.tempUnit.set(updated);
-            MekanismConfig.common.save();
+            MekanismConfig.local.tempUnit.set(updated);
+            MekanismConfig.local.save();
         }
     }
 }
