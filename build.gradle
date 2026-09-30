@@ -22,7 +22,7 @@ import java.util.function.Consumer
 plugins {
     id('org.ajoberstar.grgit.service')//Version declared in buildSrc
     id('net.darkhax.curseforgegradle').version('1.3.33')
-    id('com.modrinth.minotaur').version('2.9.0')
+    id('com.modrinth.minotaur').version('2.10.0')
     id('java')
     id('eclipse')
     id('idea')
@@ -32,7 +32,7 @@ plugins {
 
 tasks.named('wrapper', Wrapper, {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '9.7.1'
+    gradleVersion = '9.8.0'
     distributionType = Wrapper.DistributionType.ALL
 })
 
@@ -66,7 +66,7 @@ ext {
             'biomes_weve_gone': new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.DATA_ONLY),
             'computer_craft'  : new IntegrationSettings(shouldCompile: true),
             'crafttweaker'    : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL),
-            'curios'          : new IntegrationSettings(shouldCompile: false),
+            'curios'          : new IntegrationSettings(shouldCompile: true),
             'emi'             : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL, perModule: PerModule.MODULE_ONLY),
             'farmers_delight' : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.DATA_ONLY),
             'framedblocks'    : new IntegrationSettings(shouldCompile: false),
@@ -682,6 +682,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven.blamejared.com', filter -> {
         filter.includeGroupAndSubgroups('com.blamejared')
         filter.includeGroup('mezz.jei')
+        filter.includeGroup('net.mezzdev.config')
         filter.includeGroup('org.openzen.zencode')
     })
     exclusiveRepo(handler, 'https://repo.sleeping.town/', 'dev.emi')
@@ -1130,6 +1131,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
         versionNumber = "${basicVersion}"
         versionType = "${release_type}"
         gameVersions.add("${minecraft_version}")
+        environment = 'client_and_server'
         failSilently = true
         changelog.value(changelogFile.map(file -> file.asFile.text))
         uploadFile = jar

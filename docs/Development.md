@@ -1,10 +1,10 @@
 # Development
 
-Mekanism is developed for Minecraft 26.2 using NeoForge.
+Mekanism is developed for Minecraft 26.3 using NeoForge.
 
 ## Prerequisites
 
-* Gradle - Version 9.6.1 is known to work, your mileage with other versions may vary
+* Gradle - Version 9.8.0 is known to work, your mileage with other versions may vary
 * JDK - Version 25 is the target as that is what Mojang ships.
 
 ## Directory Structure
@@ -16,7 +16,6 @@ Mekanism is developed for Minecraft 26.2 using NeoForge.
     - /api/java/mekanism/api - Our API
     - /datagen
         - /additions/java/mekanism/additions - Data generators for Mekanism: Additions
-        - /defense/java/mekanism/defense - Data generators for Mekanism: Defense (Planned for V11, currently placeholder)
         - /generated
             - /mekanism - Generated resources for Mekanism
             - /mekanismadditions - Generated resources for Mekanism: Additions
@@ -25,9 +24,6 @@ Mekanism is developed for Minecraft 26.2 using NeoForge.
         - /generators/java/mekanism/generators - Data generators for Mekanism: Generators
         - /main/java/mekanism - Data generators for Mekanism
         - /tools/java/mekanism/tools - Data generators for Mekanism: Tools
-    - /defense (Planned for V11, currently placeholder)
-        - /java/mekanism/defense - Code for Mekanism: Defense
-        - /resources - Resources for Mekanism: Defense
     - /gameTest
       - /main/java/mekanism - Game Tests for Mekanism
     - /generators
@@ -63,13 +59,6 @@ This jar is for development purposes
 * /data - From /src/additions/resources/data and /src/datagen/generated/mekanismadditions/data
 * /mekanism - .class files from /src/additions/java
 * /META-INF - From /src/additions/resources/META-INF
-
-### MekanismDefense.jar (Planned for V11, currently placeholder)
-
-* /assets - From /src/defense/resources/assets and /src/datagen/generated/mekanismdefense/assets
-* /data - From /src/defense/resources/data and /src/datagen/generated/mekanismdefense/data
-* /mekanism - .class files from /src/defense/java
-* /META-INF - From /src/defense/resources/META-INF
 
 ### MekanismGenerators.jar
 

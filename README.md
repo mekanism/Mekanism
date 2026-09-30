@@ -1,6 +1,6 @@
 ![Mekanism Logo](src/main/resources/assets/mekanism/banner.png)
 
-# Mekanism for Minecraft 26.2 #
+# Mekanism for Minecraft 26.3 #
 
 Mekanism is an independent Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, 
 armor, and weapons. You can find more detail on the features on the [**Official Wiki**](https://wiki.aidancbrady.com/wiki/Mekanism).
@@ -77,9 +77,3 @@ mekanism_version=1.21.1-10.7.15.80
   * micdoodle
   * Bluexin
   * JaSpr
-
-## YourKit ##
-YourKit supports open source projects with innovative and intelligent tools for monitoring and 
-profiling Java and .NET applications. YourKit is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler), 
-[YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/) and [YourKit YouMonitor](https://www.yourkit.com/youmonitor/).
-Mekanism uses YourKit for all our profiling needs!

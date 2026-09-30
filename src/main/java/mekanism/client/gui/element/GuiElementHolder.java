@@ -36,7 +36,7 @@ public class GuiElementHolder extends GuiElement {
     public static void updateBackgroundColor(TextureAtlas guiSprites) {
         //TODO: Try to do this in a more generic way. We don't directly use our ColorAtlas because we want to automatically get it from the texture
         TextureAtlasSprite sprite = guiSprites.getSprite(HOLDER);
-        int argb = sprite.getPixelRGBA(0, HOLDER_BORDER_SIZE + 1, HOLDER_BORDER_SIZE + 1);
+        int argb = sprite.getPixelARGB(0, HOLDER_BORDER_SIZE + 1, HOLDER_BORDER_SIZE + 1);
         if (ARGB.alpha(argb) == 0) {
             //Don't allow fully transparent colors, fallback to default color.
             // Mark as null for now so that it can default to the proper color
