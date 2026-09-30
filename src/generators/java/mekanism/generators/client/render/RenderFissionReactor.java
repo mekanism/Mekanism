@@ -16,7 +16,6 @@ import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.client.render.RenderFissionReactor.FissionRenderState;
-import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
@@ -93,8 +92,6 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
     public void submit(FissionRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         BlockPos pos = state.blockPos;
         if (!state.assemblies.isEmpty()) {
-            //TODO - 26.3: Profiler?
-            //profiler.push(GeneratorsProfilerConstants.FISSION_FUEL_ASSEMBLY);
             for (FormedAssembly assembly : state.assemblies) {
                 BlockPos assemblyPos = assembly.pos();
                 poseStack.pushPose();
@@ -106,7 +103,6 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
                       RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(assemblyPos), MekanismRenderer.WHITE_ICON_GETTER);
                 poseStack.popPose();
             }
-            //profiler.pop();
         }
         if (state.coolantTexture != null) {
             RenderType renderType = Sheets.translucentBlockItemSheet();
@@ -124,11 +120,6 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
                   0.02F, 0.02F, 0.02F, state.length - 0.03F, state.heatedCoolantMaxY, state.width - 0.03F, state.heatedCoolantTexture,
                   OverlayTexture.NO_OVERLAY, state.heatedCoolantGlow, state.heatedCoolantColor, state.blockPos, state.renderLocation, state.length, state.width);
         }
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return GeneratorsProfilerConstants.FISSION_REACTOR;
     }
 
     public static class FissionRenderState extends MultiblockContentsRenderState {

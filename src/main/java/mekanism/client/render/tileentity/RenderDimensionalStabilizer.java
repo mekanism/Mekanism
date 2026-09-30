@@ -12,7 +12,6 @@ import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.RenderResizableCuboid.SideRender;
 import mekanism.client.render.tileentity.RenderDimensionalStabilizer.StabilizerRenderState;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -137,11 +136,6 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
                   EAST_WEST_COLOR, EAST_WEST_COLOR, 0, 0, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER, true);
             poseStack.popPose();
         }
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.DIMENSIONAL_STABILIZER;
     }
 
     @Override

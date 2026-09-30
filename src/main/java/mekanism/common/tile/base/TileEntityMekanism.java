@@ -572,13 +572,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             ItemStack stack = player.getMainHandItem();
             if (isDirectional() && !stack.isEmpty() && stack.getItem() instanceof ItemConfigurator configurator) {
                 if (configurator.getMode(stack) == ItemConfigurator.ConfiguratorMode.ROTATE) {
-                    return InteractionResult.PASS;
+                    return InteractionResult.TRY_WITH_EMPTY_HAND;
                 }
             }
             //Pass on this activation if the player is using a configuration card (and this tile supports the capability)
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurationCard &&
                 WorldUtils.getCapability(level, Capabilities.CONFIG_CARD, worldPosition, null, this, null) != null) {
-                return InteractionResult.PASS;
+                return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
 
             player.openMenu(Attribute.getOrThrow(getBlockHolder(), AttributeGui.class).getProvider(this, true), buffer -> {
@@ -587,7 +587,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             });
             return InteractionResult.CONSUME;
         }
-        return InteractionResult.PASS;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     public void encodeExtraContainerData(RegistryFriendlyByteBuf buffer) {

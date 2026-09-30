@@ -6,7 +6,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.SideRender;
 import mekanism.client.render.tileentity.RenderTeleporter.TeleporterRenderState;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -117,11 +116,6 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
     public void submit(TeleporterRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         RenderResizableCuboid.renderCube(state.renderAxis, state.minX, state.minY, state.minZ, state.maxX, state.maxY, state.maxZ, poseStack, Sheets.translucentBlockItemSheet(),
               nodeCollector, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), MekanismRenderer.teleporterPortal);
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.TELEPORTER;
     }
 
     @Override

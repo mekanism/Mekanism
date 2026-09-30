@@ -10,7 +10,6 @@ import mekanism.client.render.MultiblockContentsRenderState;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.tileentity.RenderThermalEvaporationPlant.TEPRenderState;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
@@ -65,11 +64,6 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
                       state.blockPos, state.renderLocation, state.length, state.width, state.height, state.tankColor, state.lightCoords, state.tankMaxY - 0.01F);
             }
         }
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.THERMAL_EVAPORATION_CONTROLLER;
     }
 
     @Override

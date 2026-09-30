@@ -12,7 +12,6 @@ import mekanism.client.render.MultiblockContentsRenderState;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.tileentity.RenderThermoelectricBoiler.BoilerRenderState;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
@@ -93,11 +92,6 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
                   0.01F, 0.01F, 0.01F, state.length - 0.02F, state.steamMaxY, state.width - 0.02F, state.steamTexture,
                   OverlayTexture.NO_OVERLAY, state.steamGlow, state.steamColor, state.blockPos, state.upperRenderLocation, state.length, state.width);
         }
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.THERMOELECTRIC_BOILER;
     }
 
     @Override

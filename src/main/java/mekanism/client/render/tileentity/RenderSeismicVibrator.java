@@ -9,7 +9,6 @@ import mekanism.client.render.outline.IWireFrameRenderer;
 import mekanism.client.render.outline.Outlines;
 import mekanism.client.render.outline.Outlines.Line;
 import mekanism.client.render.tileentity.RenderSeismicVibrator.VibratorRenderState;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntitySeismicVibrator;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -56,11 +55,6 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
         poseStack.translate(0, 0.625 * state.piston, 0);
         submitBreakableBlockModel(nodeCollector, poseStack, Sheets.cutoutBlockItemSheet(), MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel(), state);
         poseStack.popPose();
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.SEISMIC_VIBRATOR;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mekanism.client.render.transmitter;
 
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
@@ -33,11 +32,6 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
         //TODO - 26.3: Figure out the tint better
         setContentsModel(tube, state, chemical.value().icon(), ARGB.color(currentScale, chemical.value().tint()));
         state.lightCoords = LightCoordsUtil.lightCoordsWithEmission(state.lightCoords, chemical.value().lightLevel());
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.PRESSURIZED_TUBE;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mekanism.client.render.transmitter;
 
 import mekanism.common.Mekanism;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.transmitter.ThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.util.HeatUtils;
@@ -35,8 +34,4 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
         state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
     }
 
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.THERMODYNAMIC_CONDUCTOR;
-    }
 }

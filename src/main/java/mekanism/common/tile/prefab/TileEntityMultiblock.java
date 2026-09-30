@@ -214,16 +214,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (player.isShiftKeyDown() || !getMultiblock().isFormed()) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
-        InteractionResult result = openGui(level, player);
-        return result;
-        //TODO - 26.3: why are these being remapped??
-        /*return switch (result) {
-            case InteractionResult.SUCCESS, InteractionResult.SUCCESS_NO_ITEM_USED -> InteractionResult.SUCCESS;
-            case InteractionResult.CONSUME -> InteractionResult.CONSUME;
-            case InteractionResult.CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
-            case InteractionResult.PASS -> InteractionResult.TRY_WITH_EMPTY_HAND;
-            case InteractionResult.FAIL -> InteractionResult.FAIL;
-        };*/
+        return openGui(level, player);
     }
 
     @Override

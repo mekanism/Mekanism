@@ -7,7 +7,6 @@ import mekanism.client.render.MultiblockContentsRenderState;
 import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.generators.client.render.RenderFusionReactor.FusionRenderState;
-import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.client.Minecraft;
@@ -64,11 +63,6 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
 
     private static float sinDegrees(float degrees) {
         return Mth.sin((degrees % 360) * Mth.DEG_TO_RAD);
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return GeneratorsProfilerConstants.FUSION_REACTOR;
     }
 
     private void renderPart(FusionRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, EnumColor color, float scale, int mult1, int mult2,

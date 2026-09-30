@@ -1,7 +1,6 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.common.Mekanism;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -15,7 +14,7 @@ public class RenderPersonalChest extends ChestRenderer<TileEntityPersonalChest> 
 
     //nb: this is stitched by the Item's use of the texture
     private static final Identifier TEXTURE = Mekanism.rl("models/personal_chest");
-    public static final SpriteId MATERIAL = Sheets.BLOCKS_MAPPER.apply(TEXTURE);
+    private static final SpriteId MATERIAL = Sheets.BLOCKS_MAPPER.apply(TEXTURE);
 
     public RenderPersonalChest(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -25,10 +24,5 @@ public class RenderPersonalChest extends ChestRenderer<TileEntityPersonalChest> 
     @Override
     protected SpriteId getCustomSprite(TileEntityPersonalChest chest, ChestRenderState state) {
         return MATERIAL;
-    }
-
-    //@Override//TODO - 26.3: Figure out if we need to setup profiling for this again?
-    protected String getProfilerSection() {
-        return ProfilerConstants.PERSONAL_CHEST;
     }
 }

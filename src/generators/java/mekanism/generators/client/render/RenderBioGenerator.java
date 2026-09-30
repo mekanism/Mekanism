@@ -9,7 +9,6 @@ import mekanism.client.render.RenderResizableCuboid.SideRender;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.client.render.RenderBioGenerator.BioGeneratorRenderState;
-import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -98,11 +97,6 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
                   Sheets.translucentBlockItemSheet(), nodeCollector, state.tint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
                   camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return GeneratorsProfilerConstants.BIO_GENERATOR;
     }
 
     @Override

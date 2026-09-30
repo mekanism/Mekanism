@@ -16,7 +16,6 @@ import mekanism.client.render.lib.effect.BoltFeatureRenderer;
 import mekanism.client.render.lib.effect.BoltFeatureRenderer.BoltRenderState;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.tileentity.RenderSPS.SPSRenderState;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.content.sps.SPSMultiblockData.CoilData;
 import mekanism.common.lib.effect.BoltEffect;
@@ -168,11 +167,6 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         int count = 1 + (data.prevLevel - 1) / 2;
         float size = 0.01F * data.prevLevel;
         return new BoltEffect(BoltRenderInfo.ELECTRICITY, start, center, 15).count(count).size(size).lifespan(8).spawn(SpawnFunction.delay(4));
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.SPS;
     }
 
     public static class SPSRenderState extends MultiblockContentsRenderState {

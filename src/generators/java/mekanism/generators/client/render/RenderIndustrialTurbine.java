@@ -13,7 +13,6 @@ import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.client.render.RenderIndustrialTurbine.TurbineRenderState;
 import mekanism.generators.client.render.RenderTurbineRotor.TurbineRotorRenderState;
-import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
@@ -101,11 +100,6 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
                   0.01F, 0.01F, 0.01F, state.length - 0.02F, state.steamMaxY, state.width - 0.02F, state.steamTexture,
                   OverlayTexture.NO_OVERLAY, state.steamLightCoords, state.steamColor, state.blockPos, state.renderLocation, state.length, state.width);
         }
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return GeneratorsProfilerConstants.INDUSTRIAL_TURBINE;
     }
 
     public static class TurbineRenderState extends MultiblockContentsRenderState {

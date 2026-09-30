@@ -10,7 +10,6 @@ import mekanism.client.render.outline.IWireFrameRenderer;
 import mekanism.client.render.outline.Outlines;
 import mekanism.client.render.outline.Outlines.Line;
 import mekanism.client.render.tileentity.RenderPigmentMixer.PigmentMixerRenderState;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.machine.TileEntityPigmentMixer;
 import net.minecraft.client.renderer.Sheets;
@@ -71,11 +70,6 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         poseStack.translate(-shift, 0, -shift);
         submitBreakableBlockModel(nodeCollector, poseStack, Sheets.cutoutBlockItemSheet(), MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel(), state);
         poseStack.popPose();
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.PIGMENT_MIXER;
     }
 
     @Override

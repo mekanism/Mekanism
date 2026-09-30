@@ -18,7 +18,9 @@ import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.3: Update docs on this
+/// Resource for [chemicals][Chemical] similar to [net.neoforged.neoforge.transfer.item.ItemResource] and [net.neoforged.neoforge.transfer.fluid.FluidResource].
+///
+/// @since 10.8.0
 public class ChemicalResource implements RegisteredResource<Chemical>, ChemicalInstance {
 
     /// The empty resource instance of a [ChemicalResource]

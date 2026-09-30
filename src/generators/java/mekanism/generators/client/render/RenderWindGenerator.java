@@ -11,7 +11,6 @@ import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.client.model.ModelWindGenerator;
 import mekanism.generators.client.model.ModelWindGenerator.WindGeneratorRotationRenderState;
 import mekanism.generators.client.render.RenderWindGenerator.WindGeneratorRenderState;
-import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -63,11 +62,6 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
             submitCrumblingModel(nodeCollector, this.model, state.rotation, poseStack, ModelWindGenerator.RENDER_TYPE, state);
             poseStack.popPose();
         }
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return GeneratorsProfilerConstants.WIND_GENERATOR;
     }
 
     @Override

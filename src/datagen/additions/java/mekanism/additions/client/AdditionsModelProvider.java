@@ -52,9 +52,6 @@ public class AdditionsModelProvider extends BaseModelProvider {
         Identifier fixedBalloonLoc = modLocation("item/balloon_fixed");
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsItems.BALLOONS, (color, holder) -> {
             Item balloon = holder.value();
-            //Identifier generatedModel = balloonParent.create(ModelLocationUtils.getModelLocation(balloon), new TextureMapping(), itemModels.modelOutput);
-            //TODO - 26.3: does this work, or does it need to define child model with parent? (previous line). check other usages if so
-            //tintedItem(itemModels, balloon, balloonModelLoc, color);
             ItemModel.Unbaked modelToRegister = ItemModelUtils.select(
                   new DisplayContext(),
                   tintedModel(latchedBalloonLoc, color),

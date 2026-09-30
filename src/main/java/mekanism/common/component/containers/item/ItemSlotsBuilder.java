@@ -43,7 +43,7 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
-//TODO - 26.3: Do we want this to extend ResourceContainersBuilder
+//TODO: Do we want this to extend ResourceContainersBuilder
 public class ItemSlotsBuilder {
 
     //Note: For a lot of slots with specific helper methods we can simply use a ComponentBackedInventorySlot as we don't have any overrides or desire to call those methods while on an itemstack

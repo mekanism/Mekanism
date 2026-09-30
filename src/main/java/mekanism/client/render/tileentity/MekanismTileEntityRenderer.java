@@ -40,8 +40,6 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity, STATE
         return !Minecraft.getInstance().isPaused() && MekanismUtils.isTickingNormally(tile.getLevel());
     }
 
-    protected abstract String getProfilerSection();
-
     protected void submitBreakableBlockModel(SubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts, STATE state) {
         submitBreakableBlockModel(nodeCollector, poseStack, renderType, parts, BlockModelRenderState.EMPTY_TINTS, state.lightCoords, OverlayTexture.NO_OVERLAY,
               EntityRenderState.NO_OUTLINE, state.breakProgress);

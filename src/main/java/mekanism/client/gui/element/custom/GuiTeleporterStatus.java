@@ -34,7 +34,8 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     @Nullable
     @Override
     protected Identifier getButtonVariant(boolean hoveredOrFocused) {
-        return ButtonBackground.DEFAULT.base();//TODO - 26.3: check me
+        //Don't allow hovering or focussing the button to outline it
+        return buttonBackground.base();
     }
 
     @Override

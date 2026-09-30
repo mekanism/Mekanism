@@ -1,7 +1,6 @@
 package mekanism.client.render.transmitter;
 
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.transmitter.UniversalCable;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
@@ -33,11 +32,6 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
         setContentsModel(cable, state, MekanismRenderer.ENERGY_ICON_LOCATION, ARGB.white(network.currentScale));
         //TODO - 26.3: What do we want to use for the light level
         state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.UNIVERSAL_CABLE;
     }
 
     @Override

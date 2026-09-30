@@ -7,7 +7,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.render.tileentity.RenderBin.BinRenderState;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.WorldUtils;
@@ -161,11 +160,6 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
                 poseStack.popPose();
             }
         }
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.BIN;
     }
 
     public static class BinRenderState extends BlockEntityRenderState {

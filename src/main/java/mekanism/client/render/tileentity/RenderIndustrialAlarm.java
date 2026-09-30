@@ -6,7 +6,6 @@ import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.client.model.ModelIndustrialAlarm.IndustrialAlarmRenderState;
 import mekanism.client.render.tileentity.RenderIndustrialAlarm.AlarmRenderState;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -99,11 +98,6 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
         RenderType renderType = this.model.getRenderType();
         nodeCollector.submitModelPart(this.lightBox, poseStack, renderType, state.lightCoords, OverlayTexture.NO_OVERLAY, null);
         poseStack.popPose();
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.INDUSTRIAL_ALARM;
     }
 
     @Override

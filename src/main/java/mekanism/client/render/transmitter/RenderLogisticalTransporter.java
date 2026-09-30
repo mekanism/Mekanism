@@ -9,7 +9,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.transmitter.TransmitterRenderState.TransporterRenderState;
 import mekanism.client.render.transmitter.TransmitterRenderState.TransporterRenderState.TransporterStackRenderState;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
@@ -105,8 +104,4 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         }
     }
 
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.LOGISTICAL_TRANSPORTER;
-    }
 }

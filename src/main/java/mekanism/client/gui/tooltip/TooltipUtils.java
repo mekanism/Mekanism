@@ -1,11 +1,15 @@
 package mekanism.client.gui.tooltip;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -33,7 +37,8 @@ public class TooltipUtils {
 
     @Nullable
     public static Tooltip create(ILangEntry... langEntries) {
-        if (langEntries == null || langEntries.length == 0) {
+        Objects.requireNonNull(langEntries);
+        if (langEntries.length == 0) {
             throw new IllegalArgumentException("Messages cannot be null or empty");
         } else if (langEntries.length == 1) {
             //Note: This should never happen unless we are manually called with an explicit array
@@ -43,18 +48,13 @@ public class TooltipUtils {
         for (ILangEntry langEntry : langEntries) {
             messages.add(langEntry.translate());
         }
-        return MultiLineTooltip.create(messages);
+        return create(messages);
     }
 
     @Nullable
     public static Tooltip create(Component... messages) {
-        if (messages == null || messages.length == 0) {
-            throw new IllegalArgumentException("Messages cannot be null or empty");
-        } else if (messages.length == 1) {
-            //Note: This should never happen unless we are manually called with an explicit array
-            return create(messages[0]);
-        }
-        return MultiLineTooltip.create(List.of(messages));
+        Objects.requireNonNull(messages);
+        return create(Arrays.asList(messages));
     }
 
     @Nullable
@@ -64,6 +64,6 @@ public class TooltipUtils {
         } else if (messages.size() == 1) {
             return create(messages.getFirst());
         }
-        return MultiLineTooltip.create(messages);
+        return Tooltip.create(ComponentUtils.formatList(messages, CommonComponents.NEW_LINE));
     }
 }

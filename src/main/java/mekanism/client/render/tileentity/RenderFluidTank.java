@@ -6,7 +6,6 @@ import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.tileentity.RenderFluidTank.FluidTankRenderState;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.Sheets;
@@ -78,11 +77,6 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
                   poseStack, renderType, nodeCollector, state.fluidTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos,
                   Vec3.atLowerCornerOf(state.blockPos), state.valveFluidTexture);
         }
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.FLUID_TANK;
     }
 
     public static float valveMinY(float fluidScale) {

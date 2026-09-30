@@ -6,7 +6,6 @@ import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.client.model.ModelTurbine;
 import mekanism.generators.client.model.ModelTurbine.TurbineBladeRenderState;
 import mekanism.generators.client.render.RenderTurbineRotor.TurbineRotorRenderState;
-import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -74,11 +73,6 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
             submitCrumblingModel(nodeCollector, this.model, state.upperBlade, poseStack, this.model.getRenderType(), state);
             poseStack.popPose();
         }
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return GeneratorsProfilerConstants.TURBINE_ROTOR;
     }
 
     @Override

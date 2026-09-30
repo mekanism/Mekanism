@@ -433,8 +433,7 @@ public final class MekanismUtils {
     }
 
     public static boolean shouldSpeedUpEffect(MobEffectInstance effectInstance) {
-        //Only allow speeding up effects that can be sped up by milk. Also validate it isn't blacklisted by the modpack
-        //TODO - 26.3 milk now cures all effects, do we need to change anything?
+        //Validate it isn't blacklisted by the modpack
         return !effectInstance.getEffect().is(MekanismAPITags.MobEffects.SPEED_UP_BLACKLIST);
     }
 

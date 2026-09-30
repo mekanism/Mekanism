@@ -5,7 +5,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.tileentity.RenderDigitalMiner.DigitalMinerRenderState;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -63,11 +62,6 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
               Sheets.translucentBlockItemSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camPos, null,
               EAST_WEST_COLOR, EAST_WEST_COLOR, UP_DOWN_COLOR, UP_DOWN_COLOR, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER, true);
         poseStack.popPose();
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.DIGITAL_MINER;
     }
 
     @Override

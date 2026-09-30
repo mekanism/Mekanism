@@ -13,7 +13,6 @@ import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.tileentity.RenderNutritionalLiquifier.LiquifierRenderState;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -146,11 +145,6 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                 particles.remove(tile);
             }*/
         }
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.NUTRITIONAL_LIQUIFIER;
     }
 
     public static class LiquifierRenderState extends BlockEntityRenderState {

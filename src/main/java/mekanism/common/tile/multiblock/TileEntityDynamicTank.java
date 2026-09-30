@@ -40,16 +40,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
                         return InteractionResult.SUCCESS_SERVER;
                     }
                 }
-                InteractionResult result = openGui(level, player);
-                return result;
-                //TODO - 26.3: why are these being remapped??
-                /*return switch (result) {
-                    case InteractionResult.SUCCESS, InteractionResult.SUCCESS_NO_ITEM_USED -> ItemInteractionResult.SUCCESS;
-                    case InteractionResult.CONSUME -> ItemInteractionResult.CONSUME;
-                    case InteractionResult.CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
-                    case InteractionResult.PASS -> InteractionResult.TRY_WITH_EMPTY_HAND;
-                    case InteractionResult.FAIL -> InteractionResult.FAIL;
-                };*/
+                return openGui(level, player);
             }
         }
         return InteractionResult.TRY_WITH_EMPTY_HAND;

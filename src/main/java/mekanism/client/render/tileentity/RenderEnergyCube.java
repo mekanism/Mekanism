@@ -5,7 +5,6 @@ import com.mojang.math.Axis;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.tileentity.RenderEnergyCube.EnergyCubeRenderState;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -86,11 +85,6 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
               state.coreTint
         );
         poseStack.popPose();
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.ENERGY_CUBE;
     }
 
     @Override

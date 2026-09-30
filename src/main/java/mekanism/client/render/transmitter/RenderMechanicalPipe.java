@@ -8,7 +8,6 @@ import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.SideRender;
 import mekanism.client.render.transmitter.TransmitterRenderState.PipeRenderState;
-import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.lib.transmitter.ConnectionType;
@@ -185,11 +184,6 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                   Sheets.translucentBlockItemSheet(), nodeCollector, state.fluidTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
                   camera.pos, lowerCorner, state.fluidTexture);
         }
-    }
-
-    @Override
-    protected String getProfilerSection() {
-        return ProfilerConstants.MECHANICAL_PIPE;
     }
 
     @Override
