@@ -21,6 +21,7 @@ import org.jetbrains.annotations.UnknownNullability;
 public class ModelFreeRunners extends MekanismJavaModel<FreeRunnerRenderState> {
 
     public static final ModelLayerLocation FREE_RUNNER_LAYER = new ModelLayerLocation(Mekanism.rl("free_runners"), "main");
+    public static final ModelLayerLocation FREE_RUNNER_BABY_LAYER = new ModelLayerLocation(Mekanism.rl("free_runners_baby"), "main");
     private static final Identifier FREE_RUNNER_TEXTURE = MekanismUtils.getRenderResource("free_runners.png");
 
     protected static final ModelPartData SPRING_L = new ModelPartData("SpringL", CubeListBuilder.create()
@@ -56,7 +57,7 @@ public class ModelFreeRunners extends MekanismJavaModel<FreeRunnerRenderState> {
         this(entityModelSet.bakeLayer(FREE_RUNNER_LAYER));
     }
 
-    protected ModelFreeRunners(ModelPart root) {
+    public ModelFreeRunners(ModelPart root) {
         super(root);
         leftParts = getRenderableParts(root, SPRING_L, BRACE_L, SUPPORT_L);
         rightParts = getRenderableParts(root, SPRING_R, BRACE_R, SUPPORT_R);
@@ -95,16 +96,6 @@ public class ModelFreeRunners extends MekanismJavaModel<FreeRunnerRenderState> {
     }
 
     public record FreeRunnerRenderState(boolean leftVisible, boolean rightVisible) {
-
-        /// Don't call this with both false....
-        public static FreeRunnerRenderState choose(boolean leftVisible, boolean rightVisible) {
-            if (leftVisible && rightVisible) {
-                return BOTH;
-            } else if (leftVisible) {
-                return LEFT_ONLY;
-            }
-            return RIGHT_ONLY;
-        }
 
         public static final FreeRunnerRenderState BOTH = new FreeRunnerRenderState(true, true);
         public static final FreeRunnerRenderState LEFT_ONLY = new FreeRunnerRenderState(true, false);

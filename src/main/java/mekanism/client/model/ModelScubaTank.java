@@ -5,6 +5,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -16,6 +17,7 @@ import net.minecraft.util.Unit;
 public class ModelScubaTank extends Model<Unit> {
 
     public static final ModelLayerLocation TANK_LAYER = new ModelLayerLocation(Mekanism.rl("scuba_tank"), "main");
+    public static final ModelLayerLocation TANK_BABY_LAYER = new ModelLayerLocation(Mekanism.rl("scuba_tank_baby"), "main");
     private static final Identifier TANK_TEXTURE = MekanismUtils.getRenderResource("scuba_set.png");
 
     private static final ModelPartData TANK_L = new ModelPartData("tankL", CubeListBuilder.create()
@@ -60,7 +62,11 @@ public class ModelScubaTank extends Model<Unit> {
     public final RenderType RENDER_TYPE = RenderTypes.entitySolid(TANK_TEXTURE);
 
     public ModelScubaTank(EntityModelSet entityModelSet) {
-        super(entityModelSet.bakeLayer(TANK_LAYER), RenderTypes::entitySolid);
+        this(entityModelSet.bakeLayer(TANK_LAYER));
+    }
+
+    public ModelScubaTank(ModelPart root) {
+        super(root, RenderTypes::entitySolid);
     }
 
     public RenderType getRenderType() {

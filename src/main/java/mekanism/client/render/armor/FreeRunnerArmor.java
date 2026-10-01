@@ -7,6 +7,8 @@ import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelFreeRunners.FreeRunnerRenderState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -23,6 +25,8 @@ public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListe
     private final boolean armored;
     @Nullable
     private ModelFreeRunners model;
+    @Nullable
+    private ModelFreeRunners babyModel;
 
     private FreeRunnerArmor(boolean armored) {
         this.armored = armored;
@@ -30,10 +34,13 @@ public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListe
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
+        EntityModelSet modelSet = Minecraft.getInstance().getEntityModels();
         if (armored) {
-            model = new ModelArmoredFreeRunners(Minecraft.getInstance().getEntityModels());
+            model = new ModelArmoredFreeRunners(modelSet);
+            babyModel = new ModelArmoredFreeRunners(modelSet.bakeLayer(ModelArmoredFreeRunners.ARMORED_FREE_RUNNER_BABY_LAYER));
         } else {
-            model = new ModelFreeRunners(Minecraft.getInstance().getEntityModels());
+            model = new ModelFreeRunners(modelSet);
+            babyModel = new ModelFreeRunners(modelSet.bakeLayer(ModelFreeRunners.FREE_RUNNER_BABY_LAYER));
         }
     }
 
@@ -41,17 +48,27 @@ public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListe
     public <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
           STATE state, ItemStack stack) {
         //If the model isn't meant to be shown don't bother rendering anything
-        if (model == null || !baseModel.leftLeg.visible && !baseModel.rightLeg.visible) {
+        if (!baseModel.leftLeg.visible && !baseModel.rightLeg.visible) {
             return;
         }
-        FreeRunnerRenderState renderState = FreeRunnerRenderState.choose(baseModel.leftLeg.visible, baseModel.rightLeg.visible);
-        if (baseModel.leftLeg.visible) {
+        ModelFreeRunners model = state.isBaby ? this.babyModel : this.model;
+        if (model != null) {
+            FoilRendering foil = FoilRendering.ARMOR.foil(stack.hasFoil());
+            tryRenderLeg(poseStack, nodeCollector, lightCoords, foil, state.outlineColor, model, baseModel.leftLeg, FreeRunnerRenderState.LEFT_ONLY);
+            tryRenderLeg(poseStack, nodeCollector, lightCoords, foil, state.outlineColor, model, baseModel.rightLeg, FreeRunnerRenderState.RIGHT_ONLY);
+        }
+    }
+
+    //TODO - 26.3: Fix rendering
+    private void tryRenderLeg(PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, FoilRendering foil, int outlineColor, ModelFreeRunners model,
+          ModelPart leg, FreeRunnerRenderState renderState) {
+        if (leg.visible) {
             poseStack.pushPose();
-            baseModel.leftLeg.translateAndRotate(poseStack);
+            leg.translateAndRotate(poseStack);
             poseStack.translate(0, 0, 0.06);
             poseStack.scale(1.02F, 1.02F, 1.02F);
             poseStack.translate(-0.1375, -0.75, -0.0625);
-            this.model.collect(renderState, poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY, FoilRendering.ARMOR.foil(stack.hasFoil()), state.outlineColor);
+            model.collect(renderState, poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY, foil, outlineColor);
             poseStack.popPose();
         }
     }

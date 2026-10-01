@@ -6,22 +6,17 @@ import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelJetpack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
-public class JetpackArmor implements ICustomArmor, ResourceManagerReloadListener {
+public class JetpackArmor extends SimpleCustomArmor<ModelJetpack> {
 
     public static final JetpackArmor JETPACK = new JetpackArmor(false);
     public static final JetpackArmor ARMORED_JETPACK = new JetpackArmor(true);
 
     private final boolean armored;
-    @Nullable
-    private ModelJetpack model;
 
     private JetpackArmor(boolean armored) {
         this.armored = armored;
@@ -29,24 +24,28 @@ public class JetpackArmor implements ICustomArmor, ResourceManagerReloadListener
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
+        EntityModelSet modelSet = Minecraft.getInstance().getEntityModels();
         if (armored) {
-            model = new ModelArmoredJetpack(Minecraft.getInstance().getEntityModels());
+            model = new ModelArmoredJetpack(modelSet);
+            babyModel = new ModelArmoredJetpack(modelSet.bakeLayer(ModelArmoredJetpack.ARMORED_JETPACK_BABY_LAYER));
         } else {
-            model = new ModelJetpack(Minecraft.getInstance().getEntityModels());
+            model = new ModelJetpack(modelSet);
+            babyModel = new ModelJetpack(modelSet.bakeLayer(ModelArmoredJetpack.JETPACK_BABY_LAYER));
         }
     }
 
     @Override
-    public <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
-          STATE state, ItemStack stack) {
-        if (model == null || !baseModel.body.visible) {
-            //If the body model shouldn't show don't bother displaying it
-            return;
-        }
-        poseStack.pushPose();
-        baseModel.body.translateAndRotate(poseStack);
-        poseStack.translate(0, 0, 0.06);
-        model.collect(poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY, FoilRendering.ARMOR.foil(stack.hasFoil()), state.outlineColor);
-        poseStack.popPose();
+    protected void collect(PoseStack poseStack, SubmitNodeCollector collector, ModelJetpack model, int light, int overlayLight, FoilRendering foil, int outlineColor) {
+        model.collect(poseStack, collector, light, overlayLight, foil, outlineColor);
+    }
+
+    @Override
+    protected ModelPart humanoidPart(HumanoidModel<?> baseModel) {
+        return baseModel.body;
+    }
+
+    @Override
+    protected double getZOffset() {
+        return 0.06;
     }
 }

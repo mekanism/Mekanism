@@ -1,49 +1,46 @@
 package mekanism.client.render.armor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import mekanism.client.model.MekanismJavaModel.FoilRendering;
 import mekanism.client.model.ModelScubaTank;
-import mekanism.client.render.MekanismRenderType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.Unit;
-import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
-public class ScubaTankArmor implements ICustomArmor, ResourceManagerReloadListener {
+public class ScubaTankArmor extends SimpleCustomArmor<ModelScubaTank> {
 
     public static final ScubaTankArmor SCUBA_TANK = new ScubaTankArmor();
-
-    @Nullable
-    private ModelScubaTank model;
 
     private ScubaTankArmor() {
     }
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
-        model = new ModelScubaTank(Minecraft.getInstance().getEntityModels());
+        EntityModelSet modelSet = Minecraft.getInstance().getEntityModels();
+        model = new ModelScubaTank(modelSet);
+        babyModel = new ModelScubaTank(modelSet.bakeLayer(ModelScubaTank.TANK_BABY_LAYER));
     }
 
     @Override
-    public <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
-          STATE state, ItemStack stack) {
-        if (model == null || !baseModel.body.visible) {
-            //If the body model shouldn't show don't bother displaying it
-            return;
+    protected void collect(PoseStack poseStack, SubmitNodeCollector collector, ModelScubaTank model, int light, int overlayLight, FoilRendering foil, int outlineColor) {
+        collector.submitModel(model, Unit.INSTANCE, poseStack, model.RENDER_TYPE, light, overlayLight, outlineColor);
+        if (foil != FoilRendering.NONE) {
+            collector.order(1).submitModel(model, Unit.INSTANCE, poseStack, foil.renderType(), light, overlayLight, EntityRenderState.NO_OUTLINE);
         }
-        poseStack.pushPose();
-        baseModel.body.translateAndRotate(poseStack);
-        poseStack.translate(0, 0, 0.06);
-        nodeCollector.submitModel(this.model, Unit.INSTANCE, poseStack, model.RENDER_TYPE, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
-        if (stack.hasFoil()) {
-            nodeCollector.order(1).submitModel(this.model, Unit.INSTANCE, poseStack, MekanismRenderType.ARMOR_GLINT, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
-        }
-        poseStack.popPose();
+    }
+
+    @Override
+    protected ModelPart humanoidPart(HumanoidModel<?> baseModel) {
+        return baseModel.body;
+    }
+
+    @Override
+    protected double getZOffset() {
+        return 0.06;
     }
 }

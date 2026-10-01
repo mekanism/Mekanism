@@ -22,6 +22,7 @@ import org.jetbrains.annotations.UnknownNullability;
 public class ModelScubaMask extends MekanismJavaModel.NoState {
 
     public static final ModelLayerLocation MASK_LAYER = new ModelLayerLocation(Mekanism.rl("scuba_mask"), "main");
+    public static final ModelLayerLocation MASK_BABY_LAYER = new ModelLayerLocation(Mekanism.rl("scuba_mask_baby"), "main");
     private static final Identifier MASK_TEXTURE = MekanismUtils.getRenderResource("scuba_set.png");
 
     private static final ModelPartData HELMET_FEED = new ModelPartData("helmetFeed", CubeListBuilder.create()
@@ -123,7 +124,11 @@ public class ModelScubaMask extends MekanismJavaModel.NoState {
     private final List<ModelPart> glass;
 
     public ModelScubaMask(EntityModelSet entityModelSet) {
-        super(entityModelSet.bakeLayer(MASK_LAYER));
+        this(entityModelSet.bakeLayer(MASK_LAYER));
+    }
+
+    public ModelScubaMask(ModelPart root) {
+        super(root);
         parts = getRenderableParts(root, HELMET_FEED, TUBE_BACK, TUBE_L, TUBE_R, TUBE_FRONT, MOUTH_INTAKE, FIN_UPPER_R, FIN_UPPER_L,
               FIN_MID_R, FIN_MID_L, FIN_BACK, TOP_PLATE, FILTER_L, FILTER_R, FILTER_PIPE_LOWER, FILTER_PIPE_UPPER, PIPE_CORNER_F_L,
               PIPE_CORNER_F_R, PIPE_CORNER_B_R, PIPE_CORNER_B_L);

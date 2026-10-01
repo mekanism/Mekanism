@@ -16,6 +16,7 @@ import net.minecraft.util.LightCoordsUtil;
 public class ModelArmoredFreeRunners extends ModelFreeRunners {
 
     public static final ModelLayerLocation ARMORED_FREE_RUNNER_LAYER = new ModelLayerLocation(Mekanism.rl("armored_free_runners"), "main");
+    public static final ModelLayerLocation ARMORED_FREE_RUNNER_BABY_LAYER = new ModelLayerLocation(Mekanism.rl("armored_free_runners_baby"), "main");
 
     private static final ModelPartData PLATE_L = new ModelPartData("PlateL", CubeListBuilder.create()
           .mirror()
@@ -80,7 +81,7 @@ public class ModelArmoredFreeRunners extends ModelFreeRunners {
         this(entityModelSet.bakeLayer(ARMORED_FREE_RUNNER_LAYER));
     }
 
-    private ModelArmoredFreeRunners(ModelPart root) {
+    public ModelArmoredFreeRunners(ModelPart root) {
         super(root);
         leftParts.addAll(getRenderableParts(root, PLATE_L, TOP_PLATE_L, CONNECTION_L, ARMORED_BRACE_L));
         rightParts.addAll(getRenderableParts(root, PLATE_R, TOP_PLATE_R, CONNECTION_R, ARMORED_BRACE_R));

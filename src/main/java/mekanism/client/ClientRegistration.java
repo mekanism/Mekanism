@@ -169,6 +169,8 @@ import mekanism.common.tile.qio.QIOBlockTintSource;
 import mekanism.common.tile.transmitter.LogisticalTransporterBlockTintSource;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.PartNames;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshTransformer;
 import net.minecraft.client.model.object.armorstand.ArmorStandModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -375,16 +377,32 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(ModelJetpack.JETPACK_LAYER, ModelJetpack::createLayerDefinition);
-        event.registerLayerDefinition(ModelArmoredJetpack.ARMORED_JETPACK_LAYER, ModelArmoredJetpack::createLayerDefinition);
+        MeshTransformer babyTransformer = MeshTransformer.scaling(0.5F);
+        LayerDefinition jetpackLayer = ModelJetpack.createLayerDefinition();
+        event.registerLayerDefinition(ModelJetpack.JETPACK_LAYER, () -> jetpackLayer);
+        event.registerLayerDefinition(ModelJetpack.JETPACK_BABY_LAYER, () -> jetpackLayer.apply(babyTransformer));
+        LayerDefinition armoredJetpackLayer = ModelArmoredJetpack.createLayerDefinition();
+        event.registerLayerDefinition(ModelArmoredJetpack.ARMORED_JETPACK_LAYER, () -> armoredJetpackLayer);
+        event.registerLayerDefinition(ModelArmoredJetpack.ARMORED_JETPACK_BABY_LAYER, () -> armoredJetpackLayer.apply(babyTransformer));
+
+        LayerDefinition armoredFreeRunnerLayer = ModelArmoredFreeRunners.createLayerDefinition();
+        event.registerLayerDefinition(ModelArmoredFreeRunners.ARMORED_FREE_RUNNER_LAYER, () -> armoredFreeRunnerLayer);
+        event.registerLayerDefinition(ModelArmoredFreeRunners.ARMORED_FREE_RUNNER_BABY_LAYER, () -> armoredFreeRunnerLayer.apply(babyTransformer));
+        LayerDefinition freeRunnerLayer = ModelFreeRunners.createLayerDefinition();
+        event.registerLayerDefinition(ModelFreeRunners.FREE_RUNNER_LAYER, () -> freeRunnerLayer);
+        event.registerLayerDefinition(ModelFreeRunners.FREE_RUNNER_BABY_LAYER, () -> freeRunnerLayer.apply(babyTransformer));
+
+        LayerDefinition scubaMaskLayer = ModelScubaMask.createLayerDefinition();
+        event.registerLayerDefinition(ModelScubaMask.MASK_LAYER, () -> scubaMaskLayer);
+        event.registerLayerDefinition(ModelScubaMask.MASK_BABY_LAYER, () -> scubaMaskLayer.apply(babyTransformer));
+        LayerDefinition scubaTankLayer = ModelScubaTank.createLayerDefinition();
+        event.registerLayerDefinition(ModelScubaTank.TANK_LAYER, () -> scubaTankLayer);
+        event.registerLayerDefinition(ModelScubaTank.TANK_BABY_LAYER, () -> scubaTankLayer.apply(babyTransformer));
+
         event.registerLayerDefinition(RenderEnergyCube.CORE_LAYER, RenderEnergyCube::createCoreLayer);
         event.registerLayerDefinition(ModelFlamethrower.FLAMETHROWER_LAYER, ModelFlamethrower::createLayerDefinition);
-        event.registerLayerDefinition(ModelArmoredFreeRunners.ARMORED_FREE_RUNNER_LAYER, ModelArmoredFreeRunners::createLayerDefinition);
-        event.registerLayerDefinition(ModelFreeRunners.FREE_RUNNER_LAYER, ModelFreeRunners::createLayerDefinition);
         event.registerLayerDefinition(ModelIndustrialAlarm.ALARM_LAYER, ModelIndustrialAlarm::createLayerDefinition);
         event.registerLayerDefinition(RenderIndustrialAlarm.LIGHT_BOX_LAYER, RenderIndustrialAlarm::createLightBoxLayer);
-        event.registerLayerDefinition(ModelScubaMask.MASK_LAYER, ModelScubaMask::createLayerDefinition);
-        event.registerLayerDefinition(ModelScubaTank.TANK_LAYER, ModelScubaTank::createLayerDefinition);
 
         //Entity layer definitions
         event.registerLayerDefinition(FlameModel.FLAME_LAYER, FlameModel::createLayerDefinition);
@@ -582,7 +600,6 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-
         event.registerItem(new MekCustomArmorRenderProperties(JetpackArmor.ARMORED_JETPACK), MekanismItems.ARMORED_JETPACK);
         event.registerItem(new MekCustomArmorRenderProperties(JetpackArmor.JETPACK), MekanismItems.JETPACK);
         event.registerItem(new MekCustomArmorRenderProperties(FreeRunnerArmor.ARMORED_FREE_RUNNERS), MekanismItems.ARMORED_FREE_RUNNERS);

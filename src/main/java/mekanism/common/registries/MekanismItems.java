@@ -239,12 +239,13 @@ public class MekanismItems {
                 )), MekanismConfig.gear
           );
     // Armor
-    public static final ItemRegistryObject<ItemFreeRunners> FREE_RUNNERS = ITEMS.registerItem("free_runners", ItemFreeRunners::new)
+    public static final ItemRegistryObject<ItemFreeRunners> FREE_RUNNERS = ITEMS.registerItem("free_runners", properties -> new ItemFreeRunners(properties, MekanismEquipmentAssets.FREE_RUNNERS))
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy),
                 MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemFreeRunners> ARMORED_FREE_RUNNERS = ITEMS.registerItem("free_runners_armored", properties -> new ItemFreeRunners(
-          properties.attributes(MekanismArmorMaterials.armoredFreeRunners())
+          properties.attributes(MekanismArmorMaterials.armoredFreeRunners()),
+          MekanismEquipmentAssets.ARMORED_FREE_RUNNERS
     )).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy),
           MekanismConfig.gear
     );

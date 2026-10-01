@@ -16,6 +16,7 @@ import net.minecraft.util.LightCoordsUtil;
 public class ModelArmoredJetpack extends ModelJetpack {
 
     public static final ModelLayerLocation ARMORED_JETPACK_LAYER = new ModelLayerLocation(Mekanism.rl("armored_jetpack"), "main");
+    public static final ModelLayerLocation ARMORED_JETPACK_BABY_LAYER = new ModelLayerLocation(Mekanism.rl("armored_jetpack_baby"), "main");
 
     private static final ModelPartData THRUSTER_LEFT = thrusterLeft(-1.9F);
     private static final ModelPartData THRUSTER_RIGHT = thrusterRight(-1.9F);
@@ -68,7 +69,7 @@ public class ModelArmoredJetpack extends ModelJetpack {
         this(entityModelSet.bakeLayer(ARMORED_JETPACK_LAYER));
     }
 
-    private ModelArmoredJetpack(ModelPart root) {
+    public ModelArmoredJetpack(ModelPart root) {
         super(root);
         //Note: Parts are retrieved by name and given our parts we override for super have the same name, we don't have to inject them elsewhere
         armoredParts = getRenderableParts(root, CHESTPLATE, LEFT_GUARD_TOP, RIGHT_GUARD_TOP, MIDDLE_PLATE, RIGHT_GUARD_BOT, LEFT_GUARD_BOT);

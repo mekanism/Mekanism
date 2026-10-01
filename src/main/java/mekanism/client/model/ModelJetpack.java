@@ -22,6 +22,7 @@ import org.jetbrains.annotations.UnknownNullability;
 public class ModelJetpack extends MekanismJavaModel.NoState {
 
     public static final ModelLayerLocation JETPACK_LAYER = new ModelLayerLocation(Mekanism.rl("jetpack"), "main");
+    public static final ModelLayerLocation JETPACK_BABY_LAYER = new ModelLayerLocation(Mekanism.rl("jetpack_baby"), "main");
     private static final Identifier JETPACK_TEXTURE = MekanismUtils.getRenderResource("jetpack.png");
 
     protected static final ModelPartData PACK_TOP = new ModelPartData("packTop", CubeListBuilder.create()
@@ -110,7 +111,7 @@ public class ModelJetpack extends MekanismJavaModel.NoState {
         this(entityModelSet.bakeLayer(JETPACK_LAYER));
     }
 
-    protected ModelJetpack(ModelPart root) {
+    public ModelJetpack(ModelPart root) {
         super(root);
         this.wingRenderType = MekanismRenderType.JETPACK_GLASS.apply(JETPACK_TEXTURE);
         parts = getRenderableParts(root, PACK_TOP, PACK_BOTTOM, THRUSTER_LEFT, THRUSTER_RIGHT, FUEL_TUBE_RIGHT, FUEL_TUBE_LEFT, PACK_MID,
