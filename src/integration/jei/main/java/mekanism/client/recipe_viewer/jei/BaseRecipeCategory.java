@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.ToIntFunction;
+import mekanism.api.IMekanismAccess;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.client.gui.IGuiWrapper;
@@ -290,8 +291,9 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     }
 
     protected IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiElement element, SlotDisplay display) {
-        RecipeTankBuilder tankBuilder = init(builder, MekanismJEI.TYPE_CHEMICAL, role, element, display, ChemicalStackContentsFactory.INSTANCE, ChemicalStack::amount);
-        return tankBuilder.slotBuilder().setCustomRenderer(MekanismJEI.TYPE_CHEMICAL, new ChemicalStackRenderer(tankBuilder.max(), tankBuilder.width(), tankBuilder.height()));
+        IIngredientType<ChemicalStack> chemicalType = IMekanismAccess.INSTANCE.jeiHelper().getChemicalIngredientType();
+        RecipeTankBuilder tankBuilder = init(builder, chemicalType, role, element, display, ChemicalStackContentsFactory.INSTANCE, ChemicalStack::amount);
+        return tankBuilder.slotBuilder().setCustomRenderer(chemicalType, new ChemicalStackRenderer(tankBuilder.max(), tankBuilder.width(), tankBuilder.height()));
     }
 
     private <STACK> RecipeTankBuilder init(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, RecipeIngredientRole role, GuiElement element,

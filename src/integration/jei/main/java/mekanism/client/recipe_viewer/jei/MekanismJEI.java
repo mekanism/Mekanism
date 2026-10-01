@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import mekanism.api.IMekanismAccess;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
@@ -96,8 +97,6 @@ import org.jspecify.annotations.Nullable;
 @JeiPlugin
 public class MekanismJEI implements IModPlugin {
 
-    public static final IIngredientType<ChemicalStack> TYPE_CHEMICAL = () -> ChemicalStack.class;
-
     private static final ISubtypeInterpreter<ItemStack> MEKANISM_DATA_INTERPRETER = new MekanismSubtypeInterpreter();
     private static final Map<IRecipeViewerRecipeType<?>, IRecipeType<?>> recipeTypeInstanceCache = new HashMap<>();
     @Nullable
@@ -179,7 +178,7 @@ public class MekanismJEI implements IModPlugin {
               .filter(chemical -> !chemical.is(ChemicalIds.EMPTY))
               .map(chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME))
               .toList();
-        registry.register(TYPE_CHEMICAL, types, chemicalStackHelper, new ChemicalStackRenderer(), ChemicalSerializationHelper.REFERENCE_CODEC.xmap(
+        registry.register(chemicalStackHelper.getIngredientType(), types, chemicalStackHelper, new ChemicalStackRenderer(), ChemicalSerializationHelper.REFERENCE_CODEC.xmap(
               chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME),
               ChemicalStack::typeHolder
         ));
@@ -193,14 +192,15 @@ public class MekanismJEI implements IModPlugin {
         registration.register(MekanismSlotDisplayTypes.WITH_AMOUNT.get(), NeoForgeTypes.FLUID_STACK, (display, _, builder) -> builder
               .addChildDisplay(display.source(), stack -> stack.copyWithAmount(display.amount()))
         );
-        registration.register(MekanismSlotDisplayTypes.WITH_AMOUNT.get(), TYPE_CHEMICAL, (display, _, builder) -> builder
+        IIngredientType<ChemicalStack> chemicalType = IMekanismAccess.INSTANCE.jeiHelper().getChemicalIngredientType();
+        registration.register(MekanismSlotDisplayTypes.WITH_AMOUNT.get(), chemicalType, (display, _, builder) -> builder
               .addChildDisplay(display.source(), stack -> stack.copyWithAmount(display.amount()))
         );
 
-        registration.register(MekanismSlotDisplayTypes.CHEMICAL.get(), TYPE_CHEMICAL, (_, _, builder) -> builder
+        registration.register(MekanismSlotDisplayTypes.CHEMICAL.get(), chemicalType, (_, _, builder) -> builder
               .setWildcardForSubtypes(true)
         );
-        registration.register(MekanismSlotDisplayTypes.CHEMICAL_TAG.get(), TYPE_CHEMICAL, (display, _, builder) -> builder
+        registration.register(MekanismSlotDisplayTypes.CHEMICAL_TAG.get(), chemicalType, (display, _, builder) -> builder
               .setTagKey(display.tag())
               .setWildcardForSubtypes(true)
         );

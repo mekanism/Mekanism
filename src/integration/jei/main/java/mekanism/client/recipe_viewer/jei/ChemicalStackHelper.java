@@ -33,10 +33,23 @@ import org.jspecify.annotations.Nullable;
 
 public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
 
-    private final IColorHelper colorHelper;
     private final HolderLookup.RegistryLookup<Chemical> chemicalLookup;
+    private final IIngredientType<ChemicalStack> chemicalType;
+    private final IColorHelper colorHelper;
 
     public ChemicalStackHelper(IColorHelper colorHelper, HolderLookup.RegistryLookup<Chemical> chemicalLookup) {
+        this.chemicalType = new IIngredientType<>() {
+            @Override
+            public Class<? extends ChemicalStack> getIngredientClass() {
+                return ChemicalStack.class;
+            }
+
+            @Override
+            public Optional<ChemicalStack> getRepresentativeIngredient() {
+                return chemicalLookup.get(ChemicalIds.HYDROGEN)
+                      .map(hydrogen -> new ChemicalStack(hydrogen, FluidType.BUCKET_VOLUME));
+            }
+        };
         this.colorHelper = colorHelper;
         this.chemicalLookup = chemicalLookup;
     }
@@ -91,7 +104,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
 
     @Override
     public IIngredientType<ChemicalStack> getIngredientType() {
-        return MekanismJEI.TYPE_CHEMICAL;
+        return chemicalType;
     }
 
     @Override

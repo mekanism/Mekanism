@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import mekanism.api.IMekanismAccess;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.IHasTranslationKey;
@@ -120,7 +121,7 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack, FluidStack, Chem
 
     @Override
     public void addChemicalAliases(List<ChemicalStack> stacks, IHasTranslationKey... aliases) {
-        addAliases(MekanismJEI.TYPE_CHEMICAL, stacks, CHEMICAL_TO_STRING, aliases);
+        addAliases(IMekanismAccess.INSTANCE.jeiHelper().getChemicalIngredientType(), stacks, CHEMICAL_TO_STRING, aliases);
     }
 
     private <INGREDIENT> void addAliases(IIngredientType<INGREDIENT> type, List<INGREDIENT> stacks, Function<INGREDIENT, String> ingredientToString,

@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
+import mekanism.api.IMekanismAccess;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
@@ -13,7 +14,6 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.color.PaintingColorDetails;
 import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
-import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
@@ -48,7 +48,7 @@ public class PaintingRecipeCategory extends HolderRecipeCategory<ItemStackChemic
     @Override
     public void draw(RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
-        colorDetails.setIngredient(getDisplayedStack(recipeSlotsView, CHEMICAL_INPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));
+        colorDetails.setIngredient(getDisplayedStack(recipeSlotsView, CHEMICAL_INPUT, IMekanismAccess.INSTANCE.jeiHelper().getChemicalIngredientType(), ChemicalStack.EMPTY));
         super.draw(recipeHolder, recipeSlotsView, guiGraphics, mouseX, mouseY);
         colorDetails.reset();
     }
