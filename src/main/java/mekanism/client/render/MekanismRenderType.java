@@ -14,14 +14,6 @@ import net.minecraft.util.Util;
 
 public class MekanismRenderType {
 
-    //TODO - 26.3 render types
-    /*
-    private static final RenderStateShard.TransparencyStateShard PARTICLE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("mek_particle_transparency", () -> {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-    }, RenderSystem::disableBlend);
-    private static final RenderStateShard.ShaderStateShard PARTICLE_SHADER = new RenderStateShard.ShaderStateShard(GameRenderer::getParticleShader);*/
-
     //TODO - 26.3: Re-evaluate this
     public static final RenderType GUI_SPRITES = RenderType.create("mekanism_gui_sprite", RenderSetup.builder(RenderPipelines.GUI_TEXTURED)
           .withTexture("Sampler0", AtlasIds.GUI.withPrefix("textures/atlas/").withSuffix(".png"))
@@ -35,8 +27,6 @@ public class MekanismRenderType {
     public static final Function<Identifier, RenderType> JETPACK_GLASS = RenderTypes::entityTranslucent;
 
     public static final Function<Identifier, RenderType> FLAME = RenderTypes::entityTranslucent;
-
-    public static final RenderType NUTRITIONAL_PARTICLE = null;
 
     public static final RenderType MEKASUIT = RenderType.create("mekanism_mekasuit", RenderSetup.builder(MekanismRenderPipelines.MEKASUIT)
           .withTexture("Sampler0", TextureAtlas.LOCATION_ITEMS)
