@@ -701,10 +701,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addTrims() {
+        addTrim(MekanismTrimMaterials.ANTIMATTER, "Antimatter Material");
         addTrim(MekanismTrimMaterials.BRONZE, "Bronze Material");
         addTrim(MekanismTrimMaterials.FLUORITE, "Fluorite Material");
         addTrim(MekanismTrimMaterials.LEAD, "Lead Material");
         addTrim(MekanismTrimMaterials.OSMIUM, "Osmium Material");
+        addTrim(MekanismTrimMaterials.PLUTONIUM, "Plutonium Material");
+        addTrim(MekanismTrimMaterials.POLONIUM, "Polonium Material");
         addTrim(MekanismTrimMaterials.REFINED_GLOWSTONE, "Refined Glowstone Material");
         addTrim(MekanismTrimMaterials.REFINED_OBSIDIAN, "Refined Obsidian Material");
         addTrim(MekanismTrimMaterials.STEEL, "Steel Material");

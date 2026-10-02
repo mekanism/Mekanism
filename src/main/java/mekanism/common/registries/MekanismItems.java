@@ -177,9 +177,9 @@ public class MekanismItems {
 
     public static final ItemRegistryObject<Item> ELECTROLYTIC_CORE = ITEMS.register("electrolytic_core", Rarity.UNCOMMON);
     public static final ItemRegistryObject<Item> TELEPORTATION_CORE = ITEMS.register("teleportation_core", Rarity.RARE);
-    public static final ItemRegistryObject<Item> ANTIMATTER_PELLET = ITEMS.register("pellet_antimatter", EnumColor.PURPLE);
-    public static final ItemRegistryObject<Item> PLUTONIUM_PELLET = ITEMS.register("pellet_plutonium", EnumColor.GRAY);
-    public static final ItemRegistryObject<Item> POLONIUM_PELLET = ITEMS.register("pellet_polonium", EnumColor.INDIGO);
+    public static final ItemRegistryObject<Item> ANTIMATTER_PELLET = ITEMS.register("pellet_antimatter", EnumColor.PURPLE, properties -> properties.trimMaterial(MekanismTrimMaterials.ANTIMATTER));
+    public static final ItemRegistryObject<Item> PLUTONIUM_PELLET = ITEMS.register("pellet_plutonium", EnumColor.GRAY, properties -> properties.trimMaterial(MekanismTrimMaterials.PLUTONIUM));
+    public static final ItemRegistryObject<Item> POLONIUM_PELLET = ITEMS.register("pellet_polonium", EnumColor.INDIGO, properties -> properties.trimMaterial(MekanismTrimMaterials.POLONIUM));
     public static final ItemRegistryObject<Item> REPROCESSED_FISSILE_FRAGMENT = ITEMS.register("reprocessed_fissile_fragment", Rarity.RARE);
 
     public static final ItemRegistryObject<Item> ENRICHED_IRON = ITEMS.register("enriched_iron");

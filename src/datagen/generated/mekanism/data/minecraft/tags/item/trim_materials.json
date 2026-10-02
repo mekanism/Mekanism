@@ -4,10 +4,13 @@
     "mekanism:ingot_tin",
     "mekanism:ingot_lead",
     "mekanism:ingot_uranium",
+    "mekanism:pellet_antimatter",
     "mekanism:ingot_bronze",
+    "mekanism:fluorite_gem",
+    "mekanism:pellet_plutonium",
+    "mekanism:pellet_polonium",
     "mekanism:ingot_refined_glowstone",
     "mekanism:ingot_refined_obsidian",
-    "mekanism:ingot_steel",
-    "mekanism:fluorite_gem"
+    "mekanism:ingot_steel"
   ]
 }

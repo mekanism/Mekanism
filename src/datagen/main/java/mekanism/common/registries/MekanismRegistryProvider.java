@@ -216,10 +216,13 @@ public class MekanismRegistryProvider extends BaseRegistryProvider {
                   context.register(UpgradeIds.STONE_GENERATOR, Upgrade.create(UpgradeIds.STONE_GENERATOR, EnumColor.ORANGE));
               })
               .add(Registries.TRIM_MATERIAL, context -> {
+                  registerTrimMaterial(context, MekanismTrimMaterials.ANTIMATTER, 0xD479E5);
                   registerTrimMaterial(context, MekanismTrimMaterials.BRONZE, 0xC38443);
                   registerTrimMaterial(context, MekanismTrimMaterials.FLUORITE, 0xD9F4E9);
                   registerTrimMaterial(context, MekanismTrimMaterials.LEAD, 0x768B89);
                   registerTrimMaterial(context, MekanismTrimMaterials.OSMIUM, 0x8FA6B6);
+                  registerTrimMaterial(context, MekanismTrimMaterials.PLUTONIUM, 0x3C8A97);
+                  registerTrimMaterial(context, MekanismTrimMaterials.POLONIUM, 0x2A7361);
                   registerTrimMaterial(context, MekanismTrimMaterials.REFINED_GLOWSTONE, 0xE9C567);
                   registerTrimMaterial(context, MekanismTrimMaterials.REFINED_OBSIDIAN, 0x46395A);
                   registerTrimMaterial(context, MekanismTrimMaterials.STEEL, 0x868686);

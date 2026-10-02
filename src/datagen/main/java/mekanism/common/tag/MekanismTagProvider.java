@@ -143,6 +143,17 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(BlockTags.SCULK_REPLACEABLE).add(MekanismBlocks.SALT_BLOCK);
         getBuilder(MekanismAPITags.MobEffects.SPEED_UP_BLACKLIST);
 
+        getBuilder(ItemTags.TRIM_MATERIALS).add(
+              MekanismItems.ANTIMATTER_PELLET,
+              MekanismItems.BRONZE_INGOT,
+              MekanismItems.FLUORITE_GEM,
+              MekanismItems.PLUTONIUM_PELLET,
+              MekanismItems.POLONIUM_PELLET,
+              MekanismItems.REFINED_GLOWSTONE_INGOT,
+              MekanismItems.REFINED_OBSIDIAN_INGOT,
+              MekanismItems.STEEL_INGOT
+        );
+
         getBuilder(MekanismTags.Blocks.FARMING_OVERRIDE).add(
               BlockItemIds.LEAF_LITTER.block(),
               BlockItemIds.PINK_PETALS.block(),
@@ -547,13 +558,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismTags.Items.INGOTS_STEEL).add(MekanismItems.STEEL_INGOT);
         getBuilder(Tags.Items.INGOTS).add(MekanismTags.Items.INGOTS_BRONZE, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN,
               MekanismTags.Items.INGOTS_STEEL);
-        getBuilder(ItemTags.TRIM_MATERIALS).add(
-              MekanismItems.BRONZE_INGOT,
-              MekanismItems.REFINED_GLOWSTONE_INGOT,
-              MekanismItems.REFINED_OBSIDIAN_INGOT,
-              MekanismItems.STEEL_INGOT,
-              MekanismItems.FLUORITE_GEM
-        );
     }
 
     private void addNuggets() {

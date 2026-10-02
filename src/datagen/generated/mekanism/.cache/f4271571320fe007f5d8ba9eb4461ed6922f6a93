@@ -1,4 +1,4 @@
-// 26.3	2026-09-28T19:13:39.4169392	Tags: mekanism
+// 26.3	2026-10-02T09:44:23.6479936	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -444,7 +444,7 @@ a16020216bc9f627bf30c93fb3b8fe7c764fb344 data/minecraft/tags/item/piglin_loved.j
 9a0c3729122d6ce74de7db2a612eb455a71144bf data/minecraft/tags/item/sulfur_cube_archetype/slow_bouncy.json
 4476a2974efb1b8f4c78bc1d88abcfec072f451e data/minecraft/tags/item/sulfur_cube_archetype/slow_flat.json
 60123a60fc66ed7f7db9cf24e13e3a02a0e7a6be data/minecraft/tags/item/trimmable_armor.json
-f04ee910d095860191380ffd1672caf0f2a382c5 data/minecraft/tags/item/trim_materials.json
+52b40faf83753a2f3a7213b808ad5f088bfc716d data/minecraft/tags/item/trim_materials.json
 98c2bd0ffddf16fb66fd75e274145f45ca022846 data/minecraft/tags/item/wither_skeleton_disliked_weapons.json
 9b8972b5909132fc097ce36448ddd7612c47328d data/neoforge/tags/block/enderman_place_on_blacklist.json
 87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/neoforge/tags/damage_type/is_environment.json

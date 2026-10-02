@@ -1,4 +1,4 @@
-// 26.3	2026-09-29T15:14:55.2224213	Registries for mekanism-world
+// 26.3	2026-10-02T09:44:23.6539927	Registries for mekanism-world
 28bed520abe8965ec27645b95e7292ed32cc0a03 data/mekanism/damage_type/disassembling.json
 52821c8942920c69142705aae7c0b11038d53cdd data/mekanism/damage_type/flamethrower.json
 3569c860b35530ba451e7442db81f25f1491a9c9 data/mekanism/damage_type/laser.json
@@ -95,10 +95,13 @@ ed3276fdfddd740fec727d8e7ce1ed46f37cd6cb data/mekanism/mekanism/upgrade/energy.j
 ca8cb2901b33c9461f6509f626e6be241582a398 data/mekanism/neoforge/biome_modifier/salt.json
 e47e7396ea81ddc26f1776c244cc316a4e662cb8 data/mekanism/neoforge/biome_modifier/tin.json
 cba4a77cb7bbe0e2141c84ecc3ab72f09c675dfc data/mekanism/neoforge/biome_modifier/uranium.json
+4b25ad1a96c67e6f2a190b7f410af11a2c4f42fa data/mekanism/trim_material/antimatter.json
 7d8099cf47527de3a11c0effa90e00e4649aedcf data/mekanism/trim_material/bronze.json
 47b5f5202a64469e9c1f253301f39b703734db94 data/mekanism/trim_material/fluorite.json
 89a48a53d1f600213ffab0c71a1c06e9f949a3e9 data/mekanism/trim_material/lead.json
 f393349cb5bb94831f8a652af3b80454fa0a71f1 data/mekanism/trim_material/osmium.json
+bcf5adda91489d1e587335c6455f307086b06003 data/mekanism/trim_material/plutonium.json
+0962b1b2817bdbfbf2f0fa541bfdcb056782cd38 data/mekanism/trim_material/polonium.json
 e02b2f69fbadaae75ee4ca91895f674e193a3e9c data/mekanism/trim_material/refined_glowstone.json
 5465ae22839572cb4e5ab35a55fb68a92e026e83 data/mekanism/trim_material/refined_obsidian.json
 d5c4846f76446d6a970a0219308a5c155a1ddefd data/mekanism/trim_material/steel.json
