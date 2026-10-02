@@ -154,11 +154,6 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismItems.STEEL_INGOT
         );
 
-        getBuilder(MekanismTags.Blocks.FARMING_OVERRIDE).add(
-              BlockItemIds.LEAF_LITTER.block(),
-              BlockItemIds.PINK_PETALS.block(),
-              BlockItemIds.WILDFLOWERS.block()
-        );
         getBuilder(BlockTags.CAMEL_SAND_STEP_SOUND_BLOCKS).add(MekanismBlocks.SALT_BLOCK);
         getBuilder(BlockTags.CAMELS_SPAWNABLE_ON).add(MekanismBlocks.SALT_BLOCK);
         getBuilder(BlockTags.TRIGGERS_AMBIENT_DESERT_SAND_BLOCK_SOUNDS).add(MekanismBlocks.SALT_BLOCK);
