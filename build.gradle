@@ -701,6 +701,18 @@ repositories { RepositoryHandler handler ->
             includeGroup('org.appliedenergistics')
         }
     }
+    int prIndex = neo_version.indexOf('-pr-')
+    if (prIndex != -1) {//Automatically support looking up any Neo PR versions
+        def pr = neo_version.substring(prIndex + 4).split('-')[0]
+        println("Adding maven for Neo PR: #${pr}")
+        maven {
+            url = uri("https://prmaven.neoforged.net/NeoForge/pr${pr}")
+            content {
+                includeModule('net.neoforged', 'neoforge')
+                includeModule('net.neoforged', 'testframework')
+            }
+        }
+    }
 }
 
 tasks.named('test', Test, {
