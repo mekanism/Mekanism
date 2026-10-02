@@ -8,6 +8,8 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
@@ -18,107 +20,120 @@ public class ModelFlamethrower extends Model<Unit> {
     public static final ModelLayerLocation FLAMETHROWER_LAYER = new ModelLayerLocation(Mekanism.rl("flamethrower"), "main");
     public static final Identifier FLAMETHROWER_TEXTURE = MekanismUtils.getRenderResource("flamethrower.png");
 
-    private static final ModelPartData RING_BOTTOM = new ModelPartData("RingBottom", CubeListBuilder.create()
-          .texOffs(19, 14)
-          .addBox(0F, 0F, 0F, 3, 1, 3),
-          PartPose.offset(-2F, 19.5F, 1.5F));
-    private static final ModelPartData RING_TOP = new ModelPartData("RingTop", CubeListBuilder.create()
-          .texOffs(19, 14)
-          .addBox(0F, 0F, 0F, 3, 1, 3),
-          PartPose.offset(-2F, 13.5F, 1.466667F));
-    private static final ModelPartData RING = new ModelPartData("Ring", CubeListBuilder.create()
-          .texOffs(0, 14)
-          .addBox(0F, 0F, 0F, 5, 6, 4),
-          PartPose.offset(-3F, 14F, 1F));
-    private static final ModelPartData AXLE = new ModelPartData("Axle", CubeListBuilder.create()
-          .texOffs(32, 12)
-          .addBox(0F, 0F, 0F, 4, 4, 7),
-          PartPose.offset(-2.5F, 15F, -6.5F));
-    private static final ModelPartData AXLE_B_LEFT = new ModelPartData("AxleBLeft", CubeListBuilder.create()
-          .texOffs(0, 25)
-          .addBox(-0.5F, -0.5F, 0F, 1, 1, 8),
-          PartPose.offsetAndRotation(-2F, 19F, -7F, 0F, 0F, 0.2094395F));
-    private static final ModelPartData AXLE_B_RIGHT = new ModelPartData("AxleBRight", CubeListBuilder.create()
-          .texOffs(0, 25)
-          .addBox(-0.5F, -0.5F, 0F, 1, 1, 8),
-          PartPose.offsetAndRotation(1F, 19F, -7F, 0.0174533F, 0F, -0.2094395F));
-    private static final ModelPartData AXLE_T_RIGHT = new ModelPartData("AxleTRight", CubeListBuilder.create()
-          .texOffs(0, 25)
-          .addBox(-0.5F, -0.5F, 0F, 1, 1, 8),
-          PartPose.offsetAndRotation(1F, 15F, -7F, 0F, 0F, 0.2094395F));
-    private static final ModelPartData AXLE_T_LEFT = new ModelPartData("AxleTLeft", CubeListBuilder.create()
-          .texOffs(0, 25)
-          .addBox(-0.5F, -0.5F, 0F, 1, 1, 8),
-          PartPose.offsetAndRotation(-2F, 15F, -7F, 0F, 0F, -0.2094395F));
-    private static final ModelPartData GRASP = new ModelPartData("Grasp", CubeListBuilder.create()
-          .texOffs(24, 19)
-          .addBox(0F, 0F, 0F, 2, 1, 1),
-          PartPose.offsetAndRotation(-1.5F, 13F, -1.1F, 0.7807508F, 0F, 0F));
-    private static final ModelPartData GRASP_ROD = new ModelPartData("GraspRod", CubeListBuilder.create()
-          .texOffs(19, 19)
-          .addBox(0F, 0F, 0F, 1, 3, 1),
-          PartPose.offsetAndRotation(-1F, 13F, -1F, 0.2230717F, 0F, 0F));
-    private static final ModelPartData SUPPORT_CENTER = new ModelPartData("SupportCenter", CubeListBuilder.create()
-          .texOffs(0, 40)
-          .addBox(0F, 0F, 0F, 2, 1, 6),
-          PartPose.offsetAndRotation(-1.5F, 12.4F, 6.6F, -0.1115358F, 0F, 0F));
-    private static final ModelPartData SUPPORT_FRONT = new ModelPartData("SupportFront", CubeListBuilder.create()
-          .texOffs(19, 24)
-          .addBox(0F, 0F, 0F, 1, 1, 4),
-          PartPose.offsetAndRotation(-1F, 13.1F, 12.5F, -1.226894F, 0F, 0F));
-    private static final ModelPartData SUPPORT_REAR = new ModelPartData("SupportRear", CubeListBuilder.create()
-          .texOffs(0, 35)
-          .addBox(0F, 0F, 0F, 3, 1, 3),
-          PartPose.offsetAndRotation(-2F, 14F, 4F, 0.5424979F, 0F, 0F));
-    private static final ModelPartData LARGE_BARREL = new ModelPartData("LargeBarrel", CubeListBuilder.create()
-          .texOffs(19, 48)
-          .addBox(0F, 0F, 0F, 2, 3, 7),
-          PartPose.offset(-1.5F, 16F, 4F));
-    private static final ModelPartData LARGE_BARREL_DECOR = new ModelPartData("LargeBarrelDecor", CubeListBuilder.create()
-          .texOffs(0, 48)
-          .addBox(0F, 0F, 0F, 3, 3, 6),
-          PartPose.offsetAndRotation(-2F, 15F, 4F, -0.1115358F, 0F, 0F));
-    private static final ModelPartData LARGE_BARREL_DECOR_2 = new ModelPartData("LargeBarrelDecor2", CubeListBuilder.create()
-          .texOffs(17, 41)
-          .addBox(0F, 0F, 0F, 4, 2, 4),
-          PartPose.offset(-2.5F, 16F, 4F));
-    private static final ModelPartData BARREL = new ModelPartData("Barrel", CubeListBuilder.create()
-          .texOffs(19, 30)
-          .addBox(0F, 0F, 0F, 2, 2, 8),
-          PartPose.offset(-1.5F, 16.5F, 11F));
-    private static final ModelPartData BARREL_RING = new ModelPartData("BarrelRing", CubeListBuilder.create()
-          .texOffs(30, 25)
-          .addBox(0F, 0F, 0F, 3, 3, 1),
-          PartPose.offset(-2F, 16F, 13F));
-    private static final ModelPartData BARREL_RING_2 = new ModelPartData("BarrelRing2", CubeListBuilder.create()
-          .texOffs(30, 25)
-          .addBox(0F, 0F, 0F, 3, 3, 1),
-          PartPose.offset(-2F, 16F, 17F));
-    private static final ModelPartData FLAME = new ModelPartData("Flame", CubeListBuilder.create()
-          .texOffs(38, 0)
-          .addBox(0F, 0F, 0F, 1, 1, 2),
-          PartPose.offsetAndRotation(-1F, 19.5F, 19F, 0.7063936F, 0F, 0F));
-    private static final ModelPartData FLAME_STRUT = new ModelPartData("FlameStrut", CubeListBuilder.create()
-          .texOffs(27, 0)
-          .addBox(0F, 0F, 0F, 2, 1, 3),
-          PartPose.offsetAndRotation(-1.466667F, 18.5F, 17F, -0.2602503F, 0F, 0F));
-    private static final ModelPartData HYDROGEN_DECOR = new ModelPartData("HydrogenDecor", CubeListBuilder.create()
-          .texOffs(27, 5)
-          .addBox(0F, 0F, 0F, 3, 1, 5),
-          PartPose.offsetAndRotation(1.5F, 15.66667F, -4.933333F, 0F, 0F, 0.4438713F));
-    private static final ModelPartData HYDROGEN = new ModelPartData("Hydrogen", CubeListBuilder.create()
-          .addBox(0F, 0F, 0F, 3, 3, 10),
-          PartPose.offsetAndRotation(1.5F, 16F, -5.5F, 0F, 0F, 0.4438713F));
-
+    //TODO - 26.3: Fix this rendering inside the ground
     public static LayerDefinition createLayerDefinition() {
-        return MekanismJavaModel.createLayerDefinition(64, 64, RING_BOTTOM, RING_TOP, RING, AXLE, AXLE_B_LEFT, AXLE_B_RIGHT, AXLE_T_RIGHT, AXLE_T_LEFT,
-              GRASP, GRASP_ROD, SUPPORT_CENTER, SUPPORT_FRONT, SUPPORT_REAR, LARGE_BARREL, LARGE_BARREL_DECOR, LARGE_BARREL_DECOR_2, BARREL, BARREL_RING,
-              BARREL_RING_2, FLAME, FLAME_STRUT, HYDROGEN_DECOR, HYDROGEN);
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+
+        PartDefinition axle = root.addOrReplaceChild("axle", CubeListBuilder.create()
+                    .texOffs(32, 12)
+                    .addBox(-2.5F, 15, -6.5F, 4, 4, 7),
+              PartPose.ZERO
+        );
+        axle.addOrReplaceChild("bottom_left", CubeListBuilder.create()
+                    .texOffs(0, 25)
+                    .addBox(-0.5F, -0.5F, 0, 1, 1, 8),
+              PartPose.offsetAndRotation(-2, 19, -7, 0, 0, 0.2094395F)
+        );
+        axle.addOrReplaceChild("bottom_right", CubeListBuilder.create()
+                    .texOffs(0, 25)
+                    .addBox(-0.5F, -0.5F, 0, 1, 1, 8),
+              PartPose.offsetAndRotation(1, 19, -7, 0.0174533F, 0, -0.2094395F)
+        );
+        axle.addOrReplaceChild("top_right", CubeListBuilder.create()
+                    .texOffs(0, 25)
+                    .addBox(-0.5F, -0.5F, 0, 1, 1, 8),
+              PartPose.offsetAndRotation(1, 15, -7, 0, 0, 0.2094395F)
+        );
+        axle.addOrReplaceChild("top_left", CubeListBuilder.create()
+                    .texOffs(0, 25)
+                    .addBox(-0.5F, -0.5F, 0, 1, 1, 8),
+              PartPose.offsetAndRotation(-2, 15, -7, 0, 0, -0.2094395F)
+        );
+
+        PartDefinition barrel = root.addOrReplaceChild("barrel", CubeListBuilder.create()
+                    .texOffs(19, 30)
+                    .addBox(-1.5F, 16.5F, 11, 2, 2, 8)
+                    //Rings
+                    .texOffs(30, 25)
+                    .addBox(-2, 16, 13, 3, 3, 1)
+                    .addBox(-2, 16, 17, 3, 3, 1)
+                    //Large Barrel
+                    .texOffs(19, 48)
+                    .addBox(-1.5F, 16F, 4F, 2, 3, 7)
+                    //Decor2
+                    .texOffs(17, 41)
+                    .addBox(-2.5F, 16, 4, 4, 2, 4),
+              PartPose.ZERO
+        );
+        barrel.addOrReplaceChild("large_decor", CubeListBuilder.create()
+                    .texOffs(0, 48)
+                    .addBox(0, 0, 0, 3, 3, 6),
+              PartPose.offsetAndRotation(-2, 15, 4, -0.1115358F, 0, 0)
+        );
+
+        root.addOrReplaceChild("Ring", CubeListBuilder.create()
+                    .texOffs(0, 14)
+                    .addBox(-3, 14, 1, 5, 6, 4)
+                    .texOffs(19, 14)
+                    //Top
+                    .addBox(-2, 13.5F, 1.466667F, 3, 1, 3)
+                    //Bottom
+                    .addBox(-2, 19.5F, 1.5F, 3, 1, 3),
+              PartPose.ZERO
+        );
+
+        root.addOrReplaceChild("Grasp", CubeListBuilder.create()
+                    .texOffs(24, 19)
+                    .addBox(0, 0, 0, 2, 1, 1),
+              PartPose.offsetAndRotation(-1.5F, 13, -1.1F, 0.7807508F, 0, 0)
+        );
+        root.addOrReplaceChild("GraspRod", CubeListBuilder.create()
+                    .texOffs(19, 19)
+                    .addBox(0, 0, 0, 1, 3, 1),
+              PartPose.offsetAndRotation(-1, 13, -1, 0.2230717F, 0, 0)
+        );
+        root.addOrReplaceChild("SupportCenter", CubeListBuilder.create()
+                    .texOffs(0, 40)
+                    .addBox(0, 0, 0, 2, 1, 6),
+              PartPose.offsetAndRotation(-1.5F, 12.4F, 6.6F, -0.1115358F, 0, 0)
+        );
+        root.addOrReplaceChild("SupportFront", CubeListBuilder.create()
+                    .texOffs(19, 24)
+                    .addBox(0, 0, 0, 1, 1, 4),
+              PartPose.offsetAndRotation(-1, 13.1F, 12.5F, -1.226894F, 0, 0)
+        );
+        root.addOrReplaceChild("SupportRear", CubeListBuilder.create()
+                    .texOffs(0, 35)
+                    .addBox(0, 0, 0, 3, 1, 3),
+              PartPose.offsetAndRotation(-2, 14, 4, 0.5424979F, 0, 0)
+        );
+        root.addOrReplaceChild("Flame", CubeListBuilder.create()
+                    .texOffs(38, 0)
+                    .addBox(0, 0, 0, 1, 1, 2),
+              PartPose.offsetAndRotation(-1, 19.5F, 19, 0.7063936F, 0, 0)
+        );
+        root.addOrReplaceChild("FlameStrut", CubeListBuilder.create()
+                    .texOffs(27, 0)
+                    .addBox(0, 0, 0, 2, 1, 3),
+              PartPose.offsetAndRotation(-1.466667F, 18.5F, 17, -0.2602503F, 0, 0)
+        );
+        root.addOrReplaceChild("HydrogenDecor", CubeListBuilder.create()
+                    .texOffs(27, 5)
+                    .addBox(0, 0, 0, 3, 1, 5),
+              PartPose.offsetAndRotation(1.5F, 15.66667F, -4.933333F, 0, 0, 0.4438713F)
+        );
+        root.addOrReplaceChild("Hydrogen", CubeListBuilder.create()
+                    .addBox(0, 0, 0, 3, 3, 10),
+              PartPose.offsetAndRotation(1.5F, 16, -5.5F, 0, 0, 0.4438713F)
+        );
+        return LayerDefinition.create(mesh, 64, 64);
     }
 
-    public final RenderType RENDER_TYPE = RenderTypes.entitySolid(FLAMETHROWER_TEXTURE);
+    public final RenderType RENDER_TYPE;
 
     public ModelFlamethrower(EntityModelSet entityModelSet) {
         super(entityModelSet.bakeLayer(FLAMETHROWER_LAYER), RenderTypes::entitySolid);
+        RENDER_TYPE = renderType(FLAMETHROWER_TEXTURE);
     }
 }

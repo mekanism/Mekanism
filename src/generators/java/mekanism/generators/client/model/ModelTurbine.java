@@ -1,8 +1,6 @@
 package mekanism.generators.client.model;
 
 import com.mojang.math.Axis;
-import mekanism.client.model.MekanismJavaModel;
-import mekanism.client.model.ModelPartData;
 import mekanism.generators.client.model.ModelTurbine.TurbineBladeRenderState;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.model.Model;
@@ -12,6 +10,8 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
@@ -21,42 +21,59 @@ public class ModelTurbine extends Model<TurbineBladeRenderState> {
 
     public static final ModelLayerLocation TURBINE_LAYER = new ModelLayerLocation(MekanismGenerators.rl("turbine"), "main");
     private static final Identifier TURBINE_TEXTURE = MekanismGenerators.rl("render/turbine.png");
-    private static final float BLADE_ROTATE = 0.418879F;
-
-    private static final ModelPartData EXTENSION_NORTH = new ModelPartData("extensionNorth", CubeListBuilder.create()
-          .texOffs(0, 9)
-          .addBox(-1, 0, -4, 2, 1, 3),
-          PartPose.offsetAndRotation(0, 20, 0, 0, 0, BLADE_ROTATE));
-    private static final ModelPartData EXTENSION_EAST = new ModelPartData("extensionEast", CubeListBuilder.create()
-          .texOffs(0, 13)
-          .addBox(1, 0, -1, 3, 1, 2),
-          PartPose.offsetAndRotation(0, 20, 0, -BLADE_ROTATE, 0, 0));
-    private static final ModelPartData EXTENSION_SOUTH = new ModelPartData("extensionSouth", CubeListBuilder.create()
-          .texOffs(0, 9)
-          .addBox(-1, 0, 1, 2, 1, 3),
-          PartPose.offsetAndRotation(0, 20, 0, 0, 0, -BLADE_ROTATE));
-    private static final ModelPartData EXTENSION_WEST = new ModelPartData("extensionWest", CubeListBuilder.create()
-          .texOffs(0, 13)
-          .addBox(-4, 0, -1, 3, 1, 2),
-          PartPose.offsetAndRotation(0, 20, 0, BLADE_ROTATE, 0, 0));
-    private static final ModelPartData BLADE_NORTH = new ModelPartData("bladeNorth", CubeListBuilder.create()
-          .addBox(-1.5F, 0, -8, 3, 1, 4),
-          PartPose.offsetAndRotation(0, 20, 0, 0, 0, BLADE_ROTATE));
-    private static final ModelPartData BLADE_EAST = new ModelPartData("bladeEast", CubeListBuilder.create()
-          .texOffs(0, 5)
-          .addBox(4, 0, -1.5F, 4, 1, 3),
-          PartPose.offsetAndRotation(0, 20, 0, -BLADE_ROTATE, 0, 0));
-    private static final ModelPartData BLADE_SOUTH = new ModelPartData("bladeSouth", CubeListBuilder.create()
-          .addBox(-1.5F, 0, 4, 3, 1, 4),
-          PartPose.offsetAndRotation(0, 20, 0, 0, 0, -BLADE_ROTATE));
-    private static final ModelPartData BLADE_WEST = new ModelPartData("bladeWest", CubeListBuilder.create()
-          .texOffs(0, 5)
-          .addBox(-8, 0, -1.5F, 4, 1, 3),
-          PartPose.offsetAndRotation(0, 20, 0, BLADE_ROTATE, 0, 0));
 
     public static LayerDefinition createLayerDefinition() {
-        return MekanismJavaModel.createLayerDefinition(16, 16, EXTENSION_NORTH, EXTENSION_EAST, EXTENSION_SOUTH, EXTENSION_WEST, BLADE_NORTH, BLADE_EAST, BLADE_SOUTH,
-              BLADE_WEST);
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+
+        float bladeRotate = 0.418879F;
+        PartDefinition north = root.addOrReplaceChild("north", CubeListBuilder.create(), PartPose.offsetAndRotation(0, 20, 0, 0, 0, bladeRotate));
+        PartDefinition east = root.addOrReplaceChild("east", CubeListBuilder.create(), PartPose.offsetAndRotation(0, 20, 0, -bladeRotate, 0, 0));
+        PartDefinition south = root.addOrReplaceChild("south", CubeListBuilder.create(), PartPose.offsetAndRotation(0, 20, 0, 0, 0, -bladeRotate));
+        PartDefinition west = root.addOrReplaceChild("west", CubeListBuilder.create(), PartPose.offsetAndRotation(0, 20, 0, bladeRotate, 0, 0));
+
+        north.addOrReplaceChild("extension", CubeListBuilder.create()
+                    .texOffs(0, 9)
+                    .addBox(-1, 0, -4, 2, 1, 3),
+              PartPose.ZERO
+        );
+        north.addOrReplaceChild("blade", CubeListBuilder.create()
+                    .addBox(-1.5F, 0, -8, 3, 1, 4),
+              PartPose.ZERO
+        );
+
+        east.addOrReplaceChild("extension", CubeListBuilder.create()
+                    .texOffs(0, 13)
+                    .addBox(1, 0, -1, 3, 1, 2),
+              PartPose.ZERO
+        );
+        east.addOrReplaceChild("blade", CubeListBuilder.create()
+                    .texOffs(0, 5)
+                    .addBox(4, 0, -1.5F, 4, 1, 3),
+              PartPose.ZERO
+        );
+
+        south.addOrReplaceChild("extension", CubeListBuilder.create()
+                    .texOffs(0, 9)
+                    .addBox(-1, 0, 1, 2, 1, 3),
+              PartPose.ZERO
+        );
+        south.addOrReplaceChild("blade", CubeListBuilder.create()
+                    .addBox(-1.5F, 0, 4, 3, 1, 4),
+              PartPose.ZERO
+        );
+
+        west.addOrReplaceChild("extension", CubeListBuilder.create()
+                    .texOffs(0, 13)
+                    .addBox(-4, 0, -1, 3, 1, 2),
+              PartPose.ZERO
+        );
+        west.addOrReplaceChild("blade", CubeListBuilder.create()
+                    .texOffs(0, 5)
+                    .addBox(-8, 0, -1.5F, 4, 1, 3),
+              PartPose.ZERO
+        );
+        return LayerDefinition.create(mesh, 16, 16);
     }
 
     private final RenderType RENDER_TYPE = RenderTypes.entitySolid(TURBINE_TEXTURE);
@@ -67,10 +84,10 @@ public class ModelTurbine extends Model<TurbineBladeRenderState> {
 
     public ModelTurbine(EntityModelSet entityModelSet) {
         super(entityModelSet.bakeLayer(TURBINE_LAYER), RenderTypes::entitySolid);
-        bladeWest = BLADE_WEST.getFromRoot(root);
-        bladeEast = BLADE_EAST.getFromRoot(root);
-        bladeNorth = BLADE_NORTH.getFromRoot(root);
-        bladeSouth = BLADE_SOUTH.getFromRoot(root);
+        bladeNorth = root().getChild("north").getChild("blade");
+        bladeEast = root().getChild("east").getChild("blade");
+        bladeSouth = root().getChild("south").getChild("blade");
+        bladeWest = root().getChild("west").getChild("blade");
     }
 
     public RenderType getRenderType() {

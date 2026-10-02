@@ -2,8 +2,6 @@ package mekanism.generators.client.model;
 
 import java.util.Collection;
 import mekanism.client.ModelUtil;
-import mekanism.client.model.MekanismJavaModel;
-import mekanism.client.model.ModelPartData;
 import mekanism.client.render.outline.Outlines.Line;
 import mekanism.generators.client.model.ModelWindGenerator.WindGeneratorRotationRenderState;
 import mekanism.generators.common.MekanismGenerators;
@@ -14,6 +12,8 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
@@ -24,140 +24,127 @@ public class ModelWindGenerator extends Model<WindGeneratorRotationRenderState> 
     public static final ModelLayerLocation GENERATOR_LAYER = new ModelLayerLocation(MekanismGenerators.rl("wind_generator"), "main");
     public static final Identifier GENERATOR_TEXTURE = MekanismGenerators.rl("render/wind_generator.png");
 
-    private static final ModelPartData HEAD = new ModelPartData("head", CubeListBuilder.create()
-          .texOffs(20, 0)
-          .addBox(-3.5F, -3.5F, 0F, 7, 7, 9),
-          PartPose.offset(0F, -48F, -4F));
-    private static final ModelPartData PLATE_CONNECTOR_2 = new ModelPartData("plateConnector2", CubeListBuilder.create()
-          .texOffs(42, 34)
-          .addBox(0F, 0F, 0F, 6, 6, 10),
-          PartPose.offset(-3F, 13F, -7F));
-    private static final ModelPartData PLATE_CONNECTOR = new ModelPartData("plateConnector", CubeListBuilder.create()
-          .texOffs(0, 75)
-          .addBox(0F, 0F, 0F, 4, 2, 2),
-          PartPose.offset(-2F, 19F, -5.5F));
-    private static final ModelPartData PLATE = new ModelPartData("plate", CubeListBuilder.create()
-          .texOffs(42, 25)
-          .addBox(0F, 0F, 0F, 8, 8, 1),
-          PartPose.offset(-4F, 12F, -8F));
-    private static final ModelPartData BLADE_CAP = new ModelPartData("bladeCap", CubeListBuilder.create()
-          .texOffs(22, 0)
-          .addBox(-1F, -1F, -8F, 2, 2, 1),
-          PartPose.offset(0F, -48F, 0F));
-    private static final ModelPartData BLADE_CENTER = new ModelPartData("bladeCenter", CubeListBuilder.create()
-          .texOffs(20, 25)
-          .addBox(-2F, -2F, -7F, 4, 4, 3),
-          PartPose.offset(0F, -48F, 0F));
-    private static final ModelPartData BASE_RIM = new ModelPartData("baseRim", CubeListBuilder.create()
-          .texOffs(26, 50)
-          .addBox(0F, 0F, 0F, 12, 2, 12),
-          PartPose.offset(-6F, 21F, -6F));
-    private static final ModelPartData BASE = new ModelPartData("base", CubeListBuilder.create()
-          .texOffs(10, 64)
-          .addBox(0F, 0F, 0F, 16, 2, 16),
-          PartPose.offset(-8F, 22F, -8F));
-    private static final ModelPartData WIRE = new ModelPartData("wire", CubeListBuilder.create()
-          .texOffs(74, 0)
-          .addBox(-1F, 0F, -1.1F, 2, 65, 2),
-          PartPose.offsetAndRotation(0F, -46F, -1.5F, -0.0349066F, 0F, 0F));
-    private static final ModelPartData REAR_PLATE_1 = new ModelPartData("rearPlate1", CubeListBuilder.create()
-          .texOffs(20, 16)
-          .addBox(-2.5F, -6F, 0F, 5, 6, 3),
-          PartPose.offsetAndRotation(0F, -44.5F, 4F, 0.122173F, 0F, 0F));
-    private static final ModelPartData REAR_PLATE_2 = new ModelPartData("rearPlate2", CubeListBuilder.create()
-          .texOffs(36, 16)
-          .addBox(-1.5F, -5F, -1F, 3, 5, 2),
-          PartPose.offsetAndRotation(0F, -45F, 7F, 0.2094395F, 0F, 0F));
-    private static final ModelPartData BLADE_1A = new ModelPartData("blade1a", CubeListBuilder.create()
-          .texOffs(20, 32)
-          .addBox(-1F, -32F, 0F, 2, 32, 1),
-          PartPose.offset(0F, -48F, -5.99F));
-    private static final ModelPartData BLADE_2A = new ModelPartData("blade2a", CubeListBuilder.create()
-          .texOffs(20, 32)
-          .addBox(-1F, 0F, 0F, 2, 32, 1),
-          PartPose.offsetAndRotation(0F, -48F, -6F, 0F, 0F, 1.047198F));
-    private static final ModelPartData BLADE_3A = new ModelPartData("blade3a", CubeListBuilder.create()
-          .texOffs(20, 32)
-          .addBox(-1F, 0F, 0F, 2, 32, 1),
-          PartPose.offsetAndRotation(0F, -48F, -6F, 0F, 0F, -1.047198F));
-    private static final ModelPartData BLADE_1B = new ModelPartData("blade1b", CubeListBuilder.create()
-          .texOffs(26, 32)
-          .addBox(-2F, -28F, 0F, 2, 28, 1),
-          PartPose.offsetAndRotation(0F, -48F, -6F, 0F, 0F, 0.0349066F));
-    private static final ModelPartData BLADE_2B = new ModelPartData("blade2b", CubeListBuilder.create()
-          .texOffs(26, 32)
-          .addBox(0F, 0F, 0F, 2, 28, 1),
-          PartPose.offsetAndRotation(0F, -48F, -6.01F, 0F, 0F, 1.082104F));
-    private static final ModelPartData BLADE_3B = new ModelPartData("blade3b", CubeListBuilder.create()
-          .texOffs(26, 32)
-          .addBox(0F, 0F, 0F, 2, 28, 1),
-          PartPose.offsetAndRotation(0F, -48F, -6.01F, 0F, 0F, -1.012291F));
-    private static final ModelPartData POST_1A = new ModelPartData("post1a", CubeListBuilder.create()
-          .addBox(-2.5F, 0F, -2.5F, 5, 68, 5),
-          PartPose.offsetAndRotation(0F, -46F, 0F, -0.0349066F, 0F, 0.0349066F));
-    private static final ModelPartData POST_1B = new ModelPartData("post1b", CubeListBuilder.create()
-          .addBox(-2.5F, 0F, -2.5F, 5, 68, 5),
-          PartPose.offsetAndRotation(0F, -46F, 0F, 0.0349066F, 0F, -0.0349066F));
-    private static final ModelPartData POST_1C = new ModelPartData("post1c", CubeListBuilder.create()
-          .addBox(-2.5F, 0F, -2.5F, 5, 68, 5),
-          PartPose.offsetAndRotation(0F, -46F, 0F, 0.0347321F, 0F, 0.0347321F));
-    private static final ModelPartData POST_1D = new ModelPartData("post1d", CubeListBuilder.create()
-          .addBox(-2.5F, 0F, -2.5F, 5, 68, 5),
-          PartPose.offsetAndRotation(0F, -46F, 0F, -0.0347321F, 0F, -0.0347321F));
-
     public static LayerDefinition createLayerDefinition() {
-        return MekanismJavaModel.createLayerDefinition(128, 128, HEAD, PLATE_CONNECTOR_2, PLATE_CONNECTOR, PLATE, BLADE_CAP, BLADE_CENTER, BASE_RIM, BASE, WIRE,
-              REAR_PLATE_1, REAR_PLATE_2, BLADE_1A, BLADE_2A, BLADE_3A, BLADE_1B, BLADE_2B, BLADE_3B, POST_1A, POST_1B, POST_1C, POST_1D);
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+
+        root.addOrReplaceChild("base", CubeListBuilder.create()
+                    .texOffs(10, 64)
+                    .addBox(-8, 22, -8, 16, 2, 16)
+                    //Rim
+                    .texOffs(26, 50)
+                    .addBox(-6, 21, -6, 12, 2, 12),
+              PartPose.ZERO
+        );
+        root.addOrReplaceChild("head", CubeListBuilder.create()
+                    .texOffs(20, 0)
+                    .addBox(-3.5F, -51.5F, -4, 7, 7, 9),
+              PartPose.ZERO
+        );
+        root.addOrReplaceChild("plate", CubeListBuilder.create()
+                    .texOffs(42, 25)
+                    .addBox(-4, 12, -8, 8, 8, 1)
+                    //Connectors
+                    .texOffs(0, 75)
+                    .addBox(-2, 19, -5.5F, 4, 2, 2)
+                    .texOffs(42, 34)
+                    .addBox(-3, 13, -7, 6, 6, 10),
+              PartPose.ZERO
+        );
+        root.addOrReplaceChild("wire", CubeListBuilder.create()
+                    .texOffs(74, 0)
+                    .addBox(-1, 0, -1.1F, 2, 65, 2),
+              PartPose.offsetAndRotation(0, -46, -1.5F, -0.0349066F, 0, 0)
+        );
+        root.addOrReplaceChild("rearPlate1", CubeListBuilder.create()
+                    .texOffs(20, 16)
+                    .addBox(-2.5F, -6, 0, 5, 6, 3),
+              PartPose.offsetAndRotation(0, -44.5F, 4, 0.122173F, 0, 0)
+        );
+        root.addOrReplaceChild("rearPlate2", CubeListBuilder.create()
+                    .texOffs(36, 16)
+                    .addBox(-1.5F, -5, -1, 3, 5, 2),
+              PartPose.offsetAndRotation(0, -45, 7, 0.2094395F, 0, 0)
+        );
+
+        root.addOrReplaceChild("post1a", CubeListBuilder.create()
+                    .addBox(-2.5F, 0, -2.5F, 5, 68, 5),
+              PartPose.offsetAndRotation(0, -46, 0, -0.0349066F, 0, 0.0349066F)
+        );
+        root.addOrReplaceChild("post1b", CubeListBuilder.create()
+                    .addBox(-2.5F, 0, -2.5F, 5, 68, 5),
+              PartPose.offsetAndRotation(0, -46, 0, 0.0349066F, 0, -0.0349066F)
+        );
+        root.addOrReplaceChild("post1c", CubeListBuilder.create()
+                    .addBox(-2.5F, 0, -2.5F, 5, 68, 5),
+              PartPose.offsetAndRotation(0, -46, 0, 0.0347321F, 0, 0.0347321F)
+        );
+        root.addOrReplaceChild("post1d", CubeListBuilder.create()
+                    .addBox(-2.5F, 0, -2.5F, 5, 68, 5),
+              PartPose.offsetAndRotation(0, -46, 0, -0.0347321F, 0, -0.0347321F)
+        );
+
+        PartDefinition blades = root.addOrReplaceChild("blades", CubeListBuilder.create()
+                    //Center
+                    .texOffs(20, 25)
+                    .addBox(-2, -2, -7, 4, 4, 3)
+                    //Cap
+                    .texOffs(22, 0)
+                    .addBox(-1, -1, -8, 2, 2, 1),
+              PartPose.offset(0, -48, 0)
+        );
+        blades.addOrReplaceChild("1a", CubeListBuilder.create()
+                    .texOffs(20, 32)
+                    .addBox(-1, -32, 0, 2, 32, 1),
+              PartPose.offset(0, 0, -5.99F)
+        );
+        blades.addOrReplaceChild("2a", CubeListBuilder.create()
+                    .texOffs(20, 32)
+                    .addBox(-1, 0, 0, 2, 32, 1),
+              PartPose.offsetAndRotation(0, 0, -6, 0, 0, 1.047198F)
+        );
+        blades.addOrReplaceChild("3a", CubeListBuilder.create()
+                    .texOffs(20, 32)
+                    .addBox(-1, 0, 0, 2, 32, 1),
+              PartPose.offsetAndRotation(0, 0, -6, 0, 0, -1.047198F)
+        );
+        blades.addOrReplaceChild("1b", CubeListBuilder.create()
+                    .texOffs(26, 32)
+                    .addBox(-2, -28, 0, 2, 28, 1),
+              PartPose.offsetAndRotation(0, 0, -6, 0, 0, 0.0349066F)
+        );
+        blades.addOrReplaceChild("2b", CubeListBuilder.create()
+                    .texOffs(26, 32)
+                    .addBox(0, 0, 0, 2, 28, 1),
+              PartPose.offsetAndRotation(0, 0, -6.01F, 0, 0, 1.082104F)
+        );
+        blades.addOrReplaceChild("3b", CubeListBuilder.create()
+                    .texOffs(26, 32)
+                    .addBox(0, 0, 0, 2, 28, 1),
+              PartPose.offsetAndRotation(0, 0, -6.01F, 0, 0, -1.012291F)
+        );
+
+        return LayerDefinition.create(mesh, 128, 128);
     }
 
-    public static final RenderType RENDER_TYPE = RenderTypes.entitySolid(GENERATOR_TEXTURE);
-    private final ModelPart blade1a;
-    private final ModelPart blade1b;
-    private final ModelPart blade2a;
-    private final ModelPart blade2b;
-    private final ModelPart blade3a;
-    private final ModelPart blade3b;
-    private final ModelPart bladeCap;
-    private final ModelPart bladeCenter;
+    public final RenderType RENDER_TYPE;
+    private final ModelPart blades;
 
     public ModelWindGenerator(EntityModelSet entityModelSet) {
         super(entityModelSet.bakeLayer(GENERATOR_LAYER), RenderTypes::entitySolid);
-        blade1a = BLADE_1A.getFromRoot(root);
-        blade1b = BLADE_1B.getFromRoot(root);
-        blade2a = BLADE_2A.getFromRoot(root);
-        blade2b = BLADE_2B.getFromRoot(root);
-        blade3a = BLADE_3A.getFromRoot(root);
-        blade3b = BLADE_3B.getFromRoot(root);
-        bladeCap = BLADE_CAP.getFromRoot(root);
-        bladeCenter = BLADE_CENTER.getFromRoot(root);
+        RENDER_TYPE = renderType(GENERATOR_TEXTURE);
+        blades = root().getChild("blades");
     }
 
     public Collection<Line> getWireFrame(WindGeneratorRotationRenderState state) {
         setupAnim(state);
-        return ModelUtil.getPartsAsWireFrame(root().getAllParts());
+        return ModelUtil.getPartsAsWireFrame(root());
     }
 
     @Override
     public void setupAnim(WindGeneratorRotationRenderState state) {
         super.setupAnim(state);
-        float baseRotation = getAbsoluteRotation(state.angle);
-        blade1a.setRotation(0F, 0F, baseRotation);
-        blade1b.setRotation(0F, 0F, 0.0349066F + baseRotation);
-
-        float blade2Rotation = getAbsoluteRotation(state.angle - 60);
-        blade2a.setRotation(0F, 0F, blade2Rotation);
-        blade2b.setRotation(0F, 0F, 0.0349066F + blade2Rotation);
-
-        float blade3Rotation = getAbsoluteRotation(state.angle + 60);
-        blade3a.setRotation(0F, 0F, blade3Rotation);
-        blade3b.setRotation(0F, 0F, 0.0349066F + blade3Rotation);
-
-        bladeCap.setRotation(0F, 0F, baseRotation);
-        bladeCenter.setRotation(0F, 0F, baseRotation);
-    }
-
-    private float getAbsoluteRotation(float angle) {
-        return (angle % 360) * Mth.DEG_TO_RAD;
+        blades.setRotation(0, 0, (state.angle % 360) * Mth.DEG_TO_RAD);
     }
 
     public static class WindGeneratorRotationRenderState {
@@ -165,6 +152,7 @@ public class ModelWindGenerator extends Model<WindGeneratorRotationRenderState> 
         public WindGeneratorRotationRenderState(float angle) {
             this.angle = angle;
         }
+
         public float angle;
     }
 }

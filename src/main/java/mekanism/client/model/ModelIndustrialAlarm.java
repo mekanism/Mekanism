@@ -7,9 +7,12 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -21,16 +24,22 @@ public class ModelIndustrialAlarm extends Model<IndustrialAlarmRenderState> {
     public static final ModelLayerLocation ALARM_LAYER = new ModelLayerLocation(Mekanism.rl("industrial_alarm"), "main");
     private static final Identifier TEXTURE_ACTIVE = MekanismUtils.getRenderResource("industrial_alarm_active.png");
 
-    private static final ModelPartData BULB = new ModelPartData("bulb", CubeListBuilder.create()
-          .texOffs(16, 0)
-          .addBox(-1F, 1F, -1F, 2, 3, 2));
-
-    private static final ModelPartData AURA = new ModelPartData("aura", CubeListBuilder.create()
-          .texOffs(0, 16)
-          .addBox(-6F, 2F, -1F, 12, 1, 2, new CubeDeformation(0.01F)));
-
     public static LayerDefinition createLayerDefinition() {
-        return MekanismJavaModel.createLayerDefinition(64, 64, BULB, AURA);
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+
+        root.addOrReplaceChild("bulb", CubeListBuilder.create()
+                    .texOffs(16, 0)
+                    .addBox(-1F, 1F, -1F, 2, 3, 2),
+              PartPose.ZERO
+        );
+        root.addOrReplaceChild("aura", CubeListBuilder.create()
+                    .texOffs(0, 16)
+                    .addBox(-6F, 2F, -1F, 12, 1, 2, new CubeDeformation(0.01F)),
+              PartPose.ZERO
+        );
+
+        return LayerDefinition.create(mesh, 64, 64);
     }
 
     private final RenderType RENDER_TYPE = MekanismRenderType.ALARM.apply(TEXTURE_ACTIVE);

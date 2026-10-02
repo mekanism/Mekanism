@@ -9,6 +9,8 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
@@ -20,43 +22,53 @@ public class ModelScubaTank extends Model<Unit> {
     public static final ModelLayerLocation TANK_BABY_LAYER = new ModelLayerLocation(Mekanism.rl("scuba_tank_baby"), "main");
     private static final Identifier TANK_TEXTURE = MekanismUtils.getRenderResource("scuba_set.png");
 
-    private static final ModelPartData TANK_L = new ModelPartData("tankL", CubeListBuilder.create()
-          .texOffs(23, 54)
-          .addBox(-1F, 2F, 4F, 3, 7, 3),
-          PartPose.rotation(-0.2443461F, 0.5235988F, 0F));
-    private static final ModelPartData TANK_R = new ModelPartData("tankR", CubeListBuilder.create()
-          .texOffs(23, 54)
-          .addBox(-2F, 2F, 4F, 3, 7, 3),
-          PartPose.rotation(-0.2443461F, -0.5235988F, 0F));
-    private static final ModelPartData TANK_DOCK = new ModelPartData("tankDock", CubeListBuilder.create()
-          .texOffs(0, 55)
-          .addBox(-2F, 5F, 1F, 4, 4, 5));
-    private static final ModelPartData CAP_L = new ModelPartData("capL", CubeListBuilder.create()
-          .texOffs(23, 51)
-          .addBox(-0.5F, 1F, 4.5F, 2, 1, 2),
-          PartPose.rotation(-0.2443461F, 0.5235988F, 0F));
-    private static final ModelPartData CAP_R = new ModelPartData("capR", CubeListBuilder.create()
-          .texOffs(23, 51)
-          .addBox(-1.5F, 1F, 4.5F, 2, 1, 2),
-          PartPose.rotation(-0.2443461F, -0.5235988F, 0F));
-    private static final ModelPartData TANK_BRIDGE = new ModelPartData("tankBridge", CubeListBuilder.create()
-          .texOffs(0, 47)
-          .addBox(-1F, 3F, -1.5F, 2, 5, 3),
-          PartPose.rotation(0.5934119F, 0F, 0F));
-    private static final ModelPartData TANK_PIPE_LOWER = new ModelPartData("tankPipeLower", CubeListBuilder.create()
-          .texOffs(0, 37)
-          .addBox(-0.5F, 2F, 3F, 1, 4, 1),
-          PartPose.rotation(0.2094395F, 0F, 0F));
-    private static final ModelPartData TANK_PIPE_UPPER = new ModelPartData("tankPipeUpper", CubeListBuilder.create()
-          .texOffs(4, 38)
-          .addBox(-0.5F, 1F, 1.5F, 1, 1, 3));
-    private static final ModelPartData TANK_BACK_BRACE = new ModelPartData("tankBackBrace", CubeListBuilder.create()
-          .texOffs(0, 42)
-          .addBox(-3F, 2F, 0.5F, 6, 3, 2),
-          PartPose.rotation(0.2443461F, 0F, 0F));
-
     public static LayerDefinition createLayerDefinition() {
-        return MekanismJavaModel.createLayerDefinition(128, 64, TANK_L, TANK_R, TANK_DOCK, CAP_L, CAP_R, TANK_BRIDGE, TANK_PIPE_LOWER, TANK_PIPE_UPPER, TANK_BACK_BRACE);
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+
+        root.addOrReplaceChild("left_tank", CubeListBuilder.create()
+                    .texOffs(23, 54)
+                    .addBox(-1F, 2F, 4F, 3, 7, 3)
+                    //Cap
+                    .texOffs(23, 51)
+                    .addBox(-0.5F, 1F, 4.5F, 2, 1, 2),
+              PartPose.rotation(-0.2443461F, 0.5235988F, 0F)
+        );
+        root.addOrReplaceChild("right_tank", CubeListBuilder.create()
+                    .texOffs(23, 54)
+                    .addBox(-2F, 2F, 4F, 3, 7, 3)
+                    //Cap
+                    .texOffs(23, 51)
+                    .addBox(-1.5F, 1F, 4.5F, 2, 1, 2),
+              PartPose.rotation(-0.2443461F, -0.5235988F, 0F)
+        );
+        root.addOrReplaceChild("tankDock", CubeListBuilder.create()
+                    .texOffs(0, 55)
+                    .addBox(-2F, 5F, 1F, 4, 4, 5),
+              PartPose.ZERO
+        );
+        root.addOrReplaceChild("tankBridge", CubeListBuilder.create()
+                    .texOffs(0, 47)
+                    .addBox(-1F, 3F, -1.5F, 2, 5, 3),
+              PartPose.rotation(0.5934119F, 0F, 0F)
+        );
+        root.addOrReplaceChild("tankPipeLower", CubeListBuilder.create()
+                    .texOffs(0, 37)
+                    .addBox(-0.5F, 2F, 3F, 1, 4, 1),
+              PartPose.rotation(0.2094395F, 0F, 0F)
+        );
+        root.addOrReplaceChild("tankPipeUpper", CubeListBuilder.create()
+                    .texOffs(4, 38)
+                    .addBox(-0.5F, 1F, 1.5F, 1, 1, 3),
+              PartPose.ZERO
+        );
+        root.addOrReplaceChild("tankBackBrace", CubeListBuilder.create()
+                    .texOffs(0, 42)
+                    .addBox(-3F, 2F, 0.5F, 6, 3, 2),
+              PartPose.rotation(0.2443461F, 0F, 0F)
+        );
+
+        return LayerDefinition.create(mesh, 128, 64);
     }
 
     public final RenderType RENDER_TYPE = RenderTypes.entitySolid(TANK_TEXTURE);

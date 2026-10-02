@@ -1,13 +1,9 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.render.MekanismRenderType;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -30,7 +26,7 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
     public abstract void collect(STATE state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, @UnknownNullability FoilRendering foil, int outlineColor);
 
     public void setupAnim(STATE state) {
-        this.resetPose();
+        resetPose();
     }
 
     public final void resetPose() {
@@ -43,32 +39,13 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
         return root;
     }
 
-    protected static int collectParts(List<ModelPart> parts, PoseStack poseStack, RenderType renderType, SubmitNodeCollector collector, int light, int overlayLight,
+    protected static int collectParts(ModelPart part, PoseStack poseStack, RenderType renderType, SubmitNodeCollector collector, int light, int overlayLight,
           int argb, @Nullable UvMapping uvMapping, @UnknownNullability FoilRendering foil, int outlineColor, int nextOrder) {
-        for (ModelPart part : parts) {
-            collector.order(nextOrder++).submitModelPart(part, poseStack, renderType, light, overlayLight, uvMapping, argb, outlineColor);
-            if (foil != FoilRendering.NONE) {
-                collector.order(nextOrder++).submitModelPart(part, poseStack, foil.renderType(), light, overlayLight, uvMapping, argb, outlineColor);
-            }
+        collector.order(nextOrder++).submitModelPart(part, poseStack, renderType, light, overlayLight, uvMapping, argb, outlineColor);
+        if (foil != FoilRendering.NONE) {
+            collector.order(nextOrder++).submitModelPart(part, poseStack, foil.renderType(), light, overlayLight, uvMapping, argb, outlineColor);
         }
         return nextOrder;
-    }
-
-    protected static List<ModelPart> getRenderableParts(ModelPart root, ModelPartData... modelPartData) {
-        List<ModelPart> parts = new ArrayList<>(modelPartData.length);
-        for (ModelPartData partData : modelPartData) {
-            parts.add(partData.getFromRoot(root));
-        }
-        return parts;
-    }
-
-    public static LayerDefinition createLayerDefinition(int textureWidth, int textureHeight, ModelPartData... parts) {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition partDefinition = mesh.getRoot();
-        for (ModelPartData part : parts) {
-            part.addToDefinition(partDefinition);
-        }
-        return LayerDefinition.create(mesh, textureWidth, textureHeight);
     }
 
     public abstract static class NoState extends MekanismJavaModel<Unit> {

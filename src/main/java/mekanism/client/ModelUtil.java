@@ -77,7 +77,7 @@ public class ModelUtil {
         return resolver.resolve(debugName);
     }
 
-    public static Set<Line> getPartsAsWireFrame(List<ModelPart> parts) {
+    public static Set<Line> getPartsAsWireFrame(ModelPart root) {
         Set<Line> lines = new HashSet<>();
         //tmp variables to avoid allocating for each model part
         Vector4f pos = new Vector4f();
@@ -86,7 +86,7 @@ public class ModelUtil {
         Vector3f v2 = new Vector3f();
         Vector3f v3 = new Vector3f();
         PoseStack poseStack = new PoseStack();
-        for (ModelPart part : parts) {
+        for (ModelPart part : root.children.values()) {
             visit(part, poseStack, v0, v1, v2, v3, pos, lines);
         }
         return lines;
