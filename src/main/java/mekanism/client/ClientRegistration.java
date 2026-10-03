@@ -74,7 +74,6 @@ import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelFlamethrower;
 import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.client.model.ModelJetpack;
-import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.model.blockstate.HolidayBasedModelSelector;
@@ -103,7 +102,6 @@ import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.armor.FreeRunnerArmor;
 import mekanism.client.render.armor.JetpackArmor;
 import mekanism.client.render.armor.MekaSuitArmor;
-import mekanism.client.render.armor.ScubaMaskArmor;
 import mekanism.client.render.armor.ScubaTankArmor;
 import mekanism.client.render.entity.FlameModel;
 import mekanism.client.render.entity.RenderFlame;
@@ -119,7 +117,6 @@ import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderJetpack;
-import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.lib.effect.BillboardingEffectFeatureRenderer;
@@ -382,9 +379,6 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModelArmoredJetpack.ARMORED_JETPACK_LAYER, () -> armoredJetpackLayer);
         event.registerLayerDefinition(ModelArmoredJetpack.ARMORED_JETPACK_BABY_LAYER, () -> armoredJetpackLayer.apply(babyTransformer));
 
-        LayerDefinition scubaMaskLayer = ModelScubaMask.createLayerDefinition();
-        event.registerLayerDefinition(ModelScubaMask.MASK_LAYER, () -> scubaMaskLayer);
-        event.registerLayerDefinition(ModelScubaMask.MASK_BABY_LAYER, () -> scubaMaskLayer.apply(babyTransformer));
         LayerDefinition scubaTankLayer = ModelScubaTank.createLayerDefinition();
         event.registerLayerDefinition(ModelScubaTank.TANK_LAYER, () -> scubaTankLayer);
         event.registerLayerDefinition(ModelScubaTank.TANK_BABY_LAYER, () -> scubaTankLayer.apply(babyTransformer));
@@ -403,7 +397,6 @@ public class ClientRegistration {
         //Custom Armor
         event.addListener(Mekanism.rl("jetpack_armor_armored"), JetpackArmor.ARMORED_JETPACK);
         event.addListener(Mekanism.rl("jetpack_armor_jetpack"), JetpackArmor.JETPACK);
-        event.addListener(Mekanism.rl("scuba_mask_armor"), ScubaMaskArmor.SCUBA_MASK);
         event.addListener(Mekanism.rl("scuba_tank_armor"), ScubaTankArmor.SCUBA_TANK);
     }
 
@@ -412,7 +405,6 @@ public class ClientRegistration {
         event.register(Mekanism.rl("fluid_tank"), RenderFluidTankItem.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("jetpack"), RenderJetpack.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("flamethrower"), RenderFlameThrower.Unbaked.MAP_CODEC);
-        event.register(Mekanism.rl("scuba_mask"), RenderScubaMask.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("scuba_tank"), RenderScubaTank.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("energy_cube"), RenderEnergyCubeItem.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("robit"), RenderRobitItem.Unbaked.MAP_CODEC);
@@ -591,7 +583,6 @@ public class ClientRegistration {
         event.registerItem(new MekCustomArmorRenderProperties(JetpackArmor.JETPACK), MekanismItems.JETPACK);
         event.registerItem(new MekCustomArmorRenderProperties(FreeRunnerArmor.ARMORED_FREE_RUNNERS), MekanismItems.ARMORED_FREE_RUNNERS);
         event.registerItem(new MekCustomArmorRenderProperties(FreeRunnerArmor.FREE_RUNNERS), MekanismItems.FREE_RUNNERS);
-        event.registerItem(new MekCustomArmorRenderProperties(ScubaMaskArmor.SCUBA_MASK), MekanismItems.SCUBA_MASK);
         event.registerItem(new MekCustomArmorRenderProperties(ScubaTankArmor.SCUBA_TANK), MekanismItems.SCUBA_TANK);
 
         event.registerItem(MekaSuitArmor.HELMET, MekanismItems.MEKASUIT_HELMET);

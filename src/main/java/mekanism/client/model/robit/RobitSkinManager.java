@@ -90,7 +90,9 @@ public class RobitSkinManager {
         this.resolvedModelMap = bakery.resolvedModels;
         missingModelPart = missingModels.blockPart();
         this.bakedMissingModel = new BakeResult(Collections.singletonList(missingModelPart), Sheets.cutoutBlockItemSheet());
-        modelBaker = bakery.new ModelBakerImpl(Objects.requireNonNull(ROBIT_BAKER, "Failed to initialize Robit late material baker"), new ModelBakery.InternerImpl(), missingModels);
+        Objects.requireNonNull(ROBIT_BAKER, "Failed to initialize Robit late material baker");
+        ROBIT_BAKER.setMissingSprite();
+        modelBaker = bakery.new ModelBakerImpl(ROBIT_BAKER, new ModelBakery.InternerImpl(), missingModels);
     }
 
     public BakeResult getMissing() {
@@ -148,6 +150,9 @@ public class RobitSkinManager {
 
         public RobitLateMaterialBaker(SpriteLoader.Preparations blockAtlas, SpriteLoader.Preparations itemAtlas) {
             super(blockAtlas, itemAtlas);
+        }
+
+        private void setMissingSprite() {
             TextureAtlasSprite missingSprite = RobitSpriteUploader.getAtlas().missingSprite();
             this.missingSprite = new Material.Baked(missingSprite, false);
             this.missingSpriteForceTranslucent = new Material.Baked(missingSprite, true);

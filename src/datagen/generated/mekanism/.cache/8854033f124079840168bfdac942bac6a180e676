@@ -1,4 +1,4 @@
-// 26.3	2026-10-02T20:17:24.5471436	Model Definitions - mekanism
+// 26.3	2026-10-03T13:10:00.7225424	Model Definitions - mekanism
 2e09b81571bcad7a3e925d2b03b1ec1dd0f9b71f assets/mekanism/blockstates/advanced_energy_cube.json
 00c0d0e76b525301d8b7a1adc5dcb5d3807c4d38 assets/mekanism/blockstates/advanced_logistical_transporter.json
 84712d3beb4b5acb6a471b330f3bfa9dcf4de4fa assets/mekanism/blockstates/advanced_mechanical_pipe.json
@@ -351,7 +351,7 @@ bea7eb019b838c073c7515e89636f5d1fc8b04e4 assets/mekanism/items/restrictive_trans
 7e5e7814e582ef66d6771656f286bc05779bccdb assets/mekanism/items/rotary_condensentrator.json
 1c128725c0cec682400ab393937bd7607020f1ce assets/mekanism/items/salt.json
 a548abbe57e9c10cd4eb810780110a576e9101c6 assets/mekanism/items/sawdust.json
-486333e7c3969e2a969bc4516c3e1c457c928b15 assets/mekanism/items/scuba_mask.json
+ef18edb3c84a5bc009acd407b0f771076ba1b1cd assets/mekanism/items/scuba_mask.json
 a119b0e9fee21c6a1ede0bd44a1897a28a71b7de assets/mekanism/items/scuba_tank.json
 5dc2744d163895c436f9713b8aee89acae56fc18 assets/mekanism/items/security_desk.json
 796358e5652a5c19de6a3d90f48abb774cf4295e assets/mekanism/items/seismic_reader.json
