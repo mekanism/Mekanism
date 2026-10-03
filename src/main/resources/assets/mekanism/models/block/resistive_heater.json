@@ -10,7 +10,6 @@
 		"particle": "mekanism:block/models/resistive_heater_sides_2"
 	},
 	"parent": "block/block",
-	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "port_left",

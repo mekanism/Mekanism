@@ -9,7 +9,6 @@
 			"parent": "mekanism:block/solar_neutron_activator"
 		},
 		"translucent": {
-			"render_type": "minecraft:translucent",
 			"textures": {
 				"laser": "mekanism:block/laser"
 			},
@@ -18,6 +17,7 @@
 					"name": "laser",
 					"from": [7, 15, 5],
 					"to": [9, 25, 7],
+					"light_emission": 15,
 					"faces": {
 						"north": {"uv": [2, 6, 4, 16], "texture": "#laser"},
 						"east": {"uv": [8, 6, 10, 16], "texture": "#laser"},

@@ -6,7 +6,6 @@
 	},
 	"children": {
 		"base": {
-			"render_type": "minecraft:cutout",
 			"textures": {
 				"0": "mekanism:block/models/quantum_entangloporter",
 				"1": "mekanism:block/models/ports",
@@ -520,7 +519,6 @@
 				"origin": "center",
 				"rotation": [45, 0, -45]
 			},
-			"render_type": "minecraft:translucent",
 			"textures": {
 				"0": "mekanism:block/models/quantum_entangloporter"
 			},

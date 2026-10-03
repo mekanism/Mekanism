@@ -7,7 +7,6 @@
 		"all": "mekanism:block/models/chemical_infuser",
 		"particle": "mekanism:block/models/chemical_infuser"
 	},
-	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "portRight",

@@ -1,5 +1,4 @@
 {
-  "render_type": "minecraft:cutout",
 	"parent": "block/block",
 	"textures": {
 		"2": "mekanism:block/models/ports",

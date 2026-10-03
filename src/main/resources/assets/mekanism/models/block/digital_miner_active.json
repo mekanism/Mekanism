@@ -1,6 +1,5 @@
 {
 	"credit": "Made with love by CyanideX using Blockbench",
-	"render_type": "minecraft:cutout",
 	"gui_light": "side",
 	"textures": {
 		"1": "mekanism:block/models/digital_miner_elements1",

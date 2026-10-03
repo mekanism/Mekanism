@@ -10,7 +10,6 @@
 		"all": "mekanism:block/models/chemical_washer",
 		"particle": "mekanism:block/steel_casing"
 	},
-	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "base",

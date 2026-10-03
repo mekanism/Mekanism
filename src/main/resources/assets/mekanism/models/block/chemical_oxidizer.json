@@ -10,7 +10,6 @@
 		"ports_led": "mekanism:block/models/ports_led",
 		"elements": "mekanism:block/models/chemical_oxidizer_elements"
 	},
-	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "base",

@@ -1,5 +1,4 @@
 {
-	"render_type": "minecraft:cutout",
 	"textures": {
 		"0": "mekanism:block/models/seismic_vibrator_1",
 		"1": "mekanism:block/models/seismic_vibrator_2",

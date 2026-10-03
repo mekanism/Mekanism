@@ -6,7 +6,6 @@
 		"coil": "mekanism:block/models/supercharged_coil",
 		"particle": "mekanism:block/steel_casing"
 	},
-	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "body",

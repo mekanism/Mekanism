@@ -1,6 +1,5 @@
 {
 	"credit": "Model by CyanideX",
-	"render_type": "minecraft:cutout",
 	"parent": "block/block",
 	"textures": {
 		"particle": "mekanism:block/models/radioactive_waste_barrel",

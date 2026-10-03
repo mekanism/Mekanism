@@ -1,5 +1,4 @@
 {
-    "render_type": "minecraft:cutout",
     "parent": "mekanism:block/induction/provider/base",
     "textures": {
         "particle": "mekanism:block/advanced_induction_provider",

@@ -6,7 +6,6 @@
 		"2": "mekanism:block/models/ports_led",
 		"particle": "mekanismgenerators:block/model/gas_burning_generator"
 	},
-	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "port_connector_south1",

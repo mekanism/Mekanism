@@ -6,7 +6,6 @@
 		"particle": "mekanismgenerators:block/model/solar_generator",
 		"all": "mekanismgenerators:block/model/solar_generator"
 	},
-	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "solarPanel",

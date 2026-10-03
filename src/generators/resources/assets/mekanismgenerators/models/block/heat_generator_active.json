@@ -8,7 +8,6 @@
 		"5": "mekanismgenerators:block/model/heat_generator_led",
 		"particle": "mekanismgenerators:block/model/heat_generator"
 	},
-	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "drum",

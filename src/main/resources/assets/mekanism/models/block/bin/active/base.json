@@ -1,6 +1,5 @@
 {
 	"credit": "Made with love by CyanideX using Blockbench",
-	"render_type": "minecraft:cutout",
 	"textures": {
 		"#led": "#led",
 		"front": "mekanism:block/bin/front",

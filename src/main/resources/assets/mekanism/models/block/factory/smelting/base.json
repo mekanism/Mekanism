@@ -1,6 +1,5 @@
 {
 	"credit": "Made by CyanideX using Blockbench",
-	"render_type": "minecraft:cutout",
 	"textures": {
 		"bottom": "mekanism:block/factory/smelting/smelting_factory_bottom",
 		"particle": "mekanism:block/factory/smelting/smelting_factory_front",

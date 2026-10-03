@@ -7,7 +7,6 @@
 		"3": "mekanism:block/models/ports_led",
 		"particle": "mekanism:block/steel_casing"
 	},
-	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "pumpCasing",

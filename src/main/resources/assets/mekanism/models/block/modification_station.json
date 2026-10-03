@@ -7,7 +7,6 @@
 		"4": "mekanism:block/models/ports_led",
 		"particle": "mekanism:block/models/modification_station"
 	},
-	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "desk_top",

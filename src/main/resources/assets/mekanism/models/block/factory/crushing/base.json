@@ -1,6 +1,5 @@
 {
 	"credit": "Made by CyanideX using Blockbench",
-	"render_type": "minecraft:cutout",
 	"textures": {
 		"particle": "mekanism:block/factory/crushing/crushing_factory_front",
 		"front": "mekanism:block/factory/crushing/crushing_factory_front",

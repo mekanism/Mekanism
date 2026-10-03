@@ -1,6 +1,5 @@
 {
 	"parent": "block/cube_all",
-	"render_type": "minecraft:cutout",
 	"textures": {
 		"2": "mekanism:block/models/ports",
 		"3": "mekanism:block/models/ports_large",

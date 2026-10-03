@@ -7,7 +7,6 @@
 		"base": "mekanism:block/pigment_mixer/base_active",
 		"details": "mekanism:block/pigment_mixer/details"
 	},
-	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "base",

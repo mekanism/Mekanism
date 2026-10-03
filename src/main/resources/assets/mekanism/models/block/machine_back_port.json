@@ -1,6 +1,5 @@
 {
   "parent": "block/cube_all",
-  "render_type": "minecraft:cutout",
   "textures": {
     "particle": "#sides",
     "down": "#sides",

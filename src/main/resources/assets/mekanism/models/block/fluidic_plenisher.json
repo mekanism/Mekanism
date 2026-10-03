@@ -1,5 +1,4 @@
 {
-	"render_type": "minecraft:cutout",
 	"textures": {
 		"0": "mekanism:block/models/fluidic_plenisher",
 		"1": "mekanism:block/models/ports_large",

@@ -9,7 +9,6 @@
 		"particle": "mekanism:block/models/logistical_sorter",
 		"all": "mekanism:block/models/logistical_sorter"
 	},
-	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "portBackLarge",

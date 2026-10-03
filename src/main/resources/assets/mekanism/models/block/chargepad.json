@@ -1,7 +1,6 @@
 {
 	"credit": "Model by CyanideX",
 	"parent": "block/block",
-	"render_type": "minecraft:cutout",
 	"textures": {
 		"ports": "mekanism:block/models/ports",
 		"ports_led": "mekanism:block/models/ports_led",

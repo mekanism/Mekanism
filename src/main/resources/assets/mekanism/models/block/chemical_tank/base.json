@@ -1,7 +1,6 @@
 {
 	"credit": "Model by CyanideX",
 	"parent": "block/cube",
-	"render_type": "minecraft:cutout",
 	"textures": {
 		"particle": "mekanism:block/models/chemical_tank",
 		"body": "mekanism:block/models/chemical_tank",
