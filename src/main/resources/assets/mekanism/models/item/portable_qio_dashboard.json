@@ -1,15 +1,12 @@
 {
     "parent": "minecraft:item/generated",
-    "neoforge_data": {
-        "layers": {
-            "1": {
-                "light_emission": 15,
-                "TODO: this no longer seems to be a thing?": 0
-            }
-        }
-    },
     "textures": {
         "layer0": "mekanism:item/portable_qio_dashboard",
-        "layer1": "mekanism:item/portable_qio_dashboard_tint_led"
+        "layer1": {
+              "neoforge_data": {
+                  "light_emission": 15
+              },
+              "sprite": "mekanism:item/portable_qio_dashboard_tint_led"
+        }
     }
 }
