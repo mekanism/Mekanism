@@ -121,7 +121,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     /// @param output       Output to base the recipe name off of.
     /// @since 10.7.11
     protected void save(RecipeOutput recipeOutput, Holder<Item> output) {
-        ResourceKey<Item> key = output.getKey();
+        ResourceKey<Item> key = output.key();
         if (key == null) {
             throw new IllegalStateException("Could not retrieve registry name for output.");
         }

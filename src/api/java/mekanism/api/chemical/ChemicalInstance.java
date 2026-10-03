@@ -35,7 +35,7 @@ public interface ChemicalInstance extends TypedInstance<Chemical>, IHasTranslati
     @Override
     default String getTranslationKey() {
         //Wrapper to get translation key of the chemical type easier
-        return Chemical.getTranslationKey(typeHolder().getKey());
+        return Chemical.getTranslationKey(typeHolder().key());
     }
 
     /// Helper to check if this chemical is radioactive without having to look it up from the attributes.

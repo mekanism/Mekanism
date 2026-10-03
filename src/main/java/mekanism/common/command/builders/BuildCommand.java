@@ -119,7 +119,7 @@ public class BuildCommand {
 
     private static boolean isMekanismBlock(@Nullable LevelAccessor world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         return WorldUtils.getBlockState(world, chunkMap, pos)
-              .map(state -> state.typeHolder().getKey())
+              .map(state -> state.typeHolder().key())
               .filter(key -> key.identifier().getNamespace().startsWith(Mekanism.MODID))
               .isPresent();
     }

@@ -72,7 +72,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
     }
 
     private String getName(Holder<?> holder) {
-        return Objects.requireNonNull(holder.getKey()).identifier().getPath();
+        return Objects.requireNonNull(holder.key()).identifier().getPath();
     }
 
     private Criterion<EntityHurtPlayerTrigger.TriggerInstance> damaged(HolderGetter<EntityType<?>> entityTypeLookup, Holder<EntityType<?>> type) {

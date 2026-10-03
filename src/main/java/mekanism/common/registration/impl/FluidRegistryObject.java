@@ -25,7 +25,7 @@ public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FL
     FluidRegistryObject(DeferredHolder<FluidType, TYPE> fluidType, DeferredHolder<Fluid, STILL> still, DeferredHolder<Fluid, FLOWING> flowing,
           ItemRegistryObject<BUCKET> bucket, DeferredHolder<Block, BLOCK> block) {
         //Default our fluid to being the still variant
-        super(still.getKey());
+        super(still.key());
         this.fluidType = fluidType;
         this.flowing = flowing;
         this.bucket = bucket;

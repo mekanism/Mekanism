@@ -26,6 +26,6 @@ public class MekanismDeferredHolder<R, T extends R> extends DeferredHolder<R, T>
     }
 
     public boolean keyMatches(Holder<R> holder) {
-        return holder.is(getKey());
+        return holder.is(key());
     }
 }

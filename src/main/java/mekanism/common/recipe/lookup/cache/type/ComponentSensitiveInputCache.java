@@ -46,7 +46,7 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
         if (componentInputCache.isEmpty()) {
             return false;
         }
-        Map<DataComponentMap, List<RECIPE>> holderMatch = componentInputCache.get(input.typeHolder().getKey());
+        Map<DataComponentMap, List<RECIPE>> holderMatch = componentInputCache.get(input.typeHolder().key());
         return holderMatch != null && holderMatch.containsKey(asDCHolder.getComponents());
     }
 
@@ -69,7 +69,7 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
 
     @Nullable
     private List<RECIPE> getComponentMatches(TypedInstance<KEY> input, DataComponentHolder asDCHolder) {
-        Map<DataComponentMap, List<RECIPE>> holderMatches = componentInputCache.get(input.typeHolder().getKey());
+        Map<DataComponentMap, List<RECIPE>> holderMatches = componentInputCache.get(input.typeHolder().key());
         if (holderMatches == null) {
             return null;
         }
@@ -82,7 +82,7 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
     /// @param patch       The component patch to apply against inputHolder for storing in the index
     /// @param recipe      Recipe to add.
     protected void addComponentInputCache(Holder<KEY> inputHolder, DataComponentPatch patch, RECIPE recipe) {
-        ResourceKey<KEY> key = inputHolder.getKey();
+        ResourceKey<KEY> key = inputHolder.key();
         if (key == null) {
             Mekanism.logger.warn("Component Input Cache received a direct holder");
             return;

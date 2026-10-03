@@ -33,7 +33,7 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
 
     /// Helper method to create an [NSSChemical] representing a chemical from a [Holder].
     public static NSSChemical createChemical(Holder<Chemical> chemical) {
-        ResourceKey<Chemical> key = chemical.getKey();
+        ResourceKey<Chemical> key = chemical.key();
         if (key == null) {
             if (!chemical.isBound()) {
                 throw new IllegalArgumentException("Can't make an NSSChemical with an unbound direct holder");

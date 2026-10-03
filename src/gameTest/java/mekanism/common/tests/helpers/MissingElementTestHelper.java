@@ -27,7 +27,7 @@ public class MissingElementTestHelper extends MekGameTestHelper {
     public <TYPE> Set<ResourceKey<TYPE>> collectKnownMissing(Registry<TYPE> registry, TagKey<TYPE> knownMissingTag) {
         Set<ResourceKey<TYPE>> inputs = new ReferenceOpenHashSet<>();
         for (Holder<TYPE> knownMissing : registry.getTagOrEmpty(knownMissingTag)) {
-            ResourceKey<TYPE> key = knownMissing.getKey();
+            ResourceKey<TYPE> key = knownMissing.key();
             if (key != null) {//Pretend all the known missing items are already there
                 inputs.add(key);
             }

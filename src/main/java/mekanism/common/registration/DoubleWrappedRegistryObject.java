@@ -10,7 +10,7 @@ public class DoubleWrappedRegistryObject<PRIMARY_REGISTRY, PRIMARY extends PRIMA
     protected final DeferredHolder<SECONDARY_REGISTRY, SECONDARY> secondaryRO;
 
     public DoubleWrappedRegistryObject(DeferredHolder<PRIMARY_REGISTRY, PRIMARY> primaryKey, DeferredHolder<SECONDARY_REGISTRY, SECONDARY> secondaryRO) {
-        this(primaryKey.getKey(), secondaryRO);
+        this(primaryKey.key(), secondaryRO);
     }
 
     public DoubleWrappedRegistryObject(ResourceKey<PRIMARY_REGISTRY> primaryKey, DeferredHolder<SECONDARY_REGISTRY, SECONDARY> secondaryRO) {
@@ -23,7 +23,7 @@ public class DoubleWrappedRegistryObject<PRIMARY_REGISTRY, PRIMARY extends PRIMA
     }
 
     public boolean secondaryKeyMatches(Holder<SECONDARY_REGISTRY> holder) {
-        return holder.is(secondaryRO.getKey());
+        return holder.is(secondaryRO.key());
     }
 
     public boolean isSecondary(SECONDARY_REGISTRY other) {

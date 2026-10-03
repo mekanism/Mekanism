@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.ColorCollection;
 //Based off of TagsProvider.TagAppender but with a few shortcuts for things like holders and also a few more helpers and addition of SafeVarargs annotations
 public class MekanismTagBuilder<TYPE> {
 
-    private final Function<Holder<TYPE>, Identifier> holderToName = holder -> Objects.requireNonNull(holder.getKey()).identifier();
+    private final Function<Holder<TYPE>, Identifier> holderToName = holder -> Objects.requireNonNull(holder.key()).identifier();
     private final ResourceKey<? extends Registry<TYPE>> registry;
     private final Consumer<Identifier> elementAdder;
     private final Consumer<Identifier> elementRemover;

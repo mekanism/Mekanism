@@ -176,7 +176,7 @@ public abstract class BaseModelProvider extends ModelProvider {
     }
 
     protected void markManualBlockState(DeferredHolder<Block, ?> registryObject) {
-        manuallyGeneratedBlockStates.add(registryObject.getKey());
+        manuallyGeneratedBlockStates.add(registryObject.key());
     }
 
     protected void plainBlockItemModel(BlockModelGenerators blockModels, BlockRegistryObject<?, ?> registryObject, String name) {
@@ -188,7 +188,7 @@ public abstract class BaseModelProvider extends ModelProvider {
 
     @Override
     protected Stream<? extends Holder<Block>> getKnownBlocks() {
-        return super.getKnownBlocks().filter(holder -> !manuallyGeneratedBlockStates.contains(holder.getKey()));
+        return super.getKnownBlocks().filter(holder -> !manuallyGeneratedBlockStates.contains(holder.key()));
     }
 
     @Override

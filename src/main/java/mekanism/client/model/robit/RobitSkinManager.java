@@ -52,10 +52,17 @@ public class RobitSkinManager {
     public static final Identifier BASE_ROBIT_MODEL = Mekanism.rl("robit/robit");
     @Nullable
     private static RobitSkinManager INSTANCE = null;
+    @Nullable
+    private static RobitLateMaterialBaker ROBIT_BAKER = null;
     private static final ModelGatherer GATHERER = new ModelGatherer();
 
     public static RobitSkinManager get() {
         return Objects.requireNonNull(INSTANCE, "Not initialized");
+    }
+
+    @SubscribeEvent
+    private static void modifyBaking(ModelEvent.ModifyBakingResult e) {
+        ROBIT_BAKER = new RobitLateMaterialBaker(e.getBlockAtlasPreparations(), e.getItemAtlasPreparations());
     }
 
     @SubscribeEvent
@@ -82,9 +89,8 @@ public class RobitSkinManager {
     private RobitSkinManager(ModelBakery bakery, ModelBakery.MissingModels missingModels) {
         this.resolvedModelMap = bakery.resolvedModels;
         missingModelPart = missingModels.blockPart();
-        //TODO - 26.3: Validate this render sheet
         this.bakedMissingModel = new BakeResult(Collections.singletonList(missingModelPart), Sheets.cutoutBlockItemSheet());
-        modelBaker = bakery.new ModelBakerImpl(new RobitLateMaterialBaker(), new ModelBakery.InternerImpl(), missingModels);
+        modelBaker = bakery.new ModelBakerImpl(Objects.requireNonNull(ROBIT_BAKER, "Failed to initialize Robit late material baker"), new ModelBakery.InternerImpl(), missingModels);
     }
 
     public BakeResult getMissing() {
@@ -138,24 +144,13 @@ public class RobitSkinManager {
     /// @param renderType Render type to use - the one for missing will be different, this lets the renderer not care
     public record BakeResult(List<BlockStateModelPart> model, RenderType renderType) {}
 
-    public static class RobitLateMaterialBaker extends MaterialBaker {
+    private static class RobitLateMaterialBaker extends MaterialBaker {
 
-        private final Material.Baked missingSprite;
-        private final Material.Baked missingSpriteForceTranslucent;
-
-        public RobitLateMaterialBaker() {
-            //TODO - 26.3: Test this and figure out a more appropriate way to handle this
+        public RobitLateMaterialBaker(SpriteLoader.Preparations blockAtlas, SpriteLoader.Preparations itemAtlas) {
+            super(blockAtlas, itemAtlas);
             TextureAtlasSprite missingSprite = RobitSpriteUploader.getAtlas().missingSprite();
-            SpriteLoader.Preparations fakePreparations = new SpriteLoader.Preparations(
-                  16, 16, 4, missingSprite, Collections.emptyMap(), CompletableFuture.completedFuture(null)
-            );
-            super(fakePreparations, fakePreparations);
             this.missingSprite = new Material.Baked(missingSprite, false);
             this.missingSpriteForceTranslucent = new Material.Baked(missingSprite, true);
-        }
-
-        private Material.Baked replacementForMissingMaterial(Material material) {
-            return material.forceTranslucent() ? this.missingSpriteForceTranslucent : this.missingSprite;
         }
 
         @Override
