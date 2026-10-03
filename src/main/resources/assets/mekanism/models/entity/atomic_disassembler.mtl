@@ -1,6 +1,0 @@
-# Made in Blockbench 5.1.4
-newmtl disassembler
-map_Kd #atomic_disassembler
-newmtl glow
-map_Kd #atomic_disassembler
-Ka 1 1 1

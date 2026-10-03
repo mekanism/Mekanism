@@ -1,45 +1,258 @@
 {
-  "loader": "neoforge:obj",
-  "model": "mekanism:models/entity/atomic_disassembler.obj",
-  "flip_v": true,
-  "emissiveAmbient": true,
-  "textures": {
-    "particle": "mekanism:block/block_steel",
-    "atomic_disassembler": "mekanism:item/atomic_disassembler"
-  },
-  "display": {
-    "thirdperson_lefthand": {
-      "translation": [ -0.5, -5, 8.1 ]
-    },
-    "thirdperson_righthand": {
-      "translation": [ 0.5, -4, 8.4 ]
-    },
-    "firstperson_lefthand": {
-      "rotation": [ 12, 6, 4 ],
-      "translation": [ 3, -4, 4 ],
-      "scale": [ 0.6, 0.6, 0.6 ]
-    },
-    "firstperson_righthand": {
-      "rotation": [ 8, 10, 0 ],
-      "translation": [ 0, -4, 4 ],
-      "scale": [ 0.56, 0.56, 0.56 ]
-    },
-    "head": {
-      "translation": [ 1, 5, 3 ]
-    },
-    "gui": {
-      "rotation": [ 280, 142, 90 ],
-      "translation": [ -0.3, -4.4, 0 ],
-      "scale": [ 0.5, 0.5, 0.5 ]
-    },
-    "ground": {
-      "translation": [ 0.1, 0, 3.5 ],
-      "scale": [ 0.5, 0.5, 0.5 ]
-    },
-    "fixed": {
-      "rotation": [ 270, 318, 270 ],
-      "translation": [ -7, 0, 0 ],
-      "scale": [ 0.7, 0.7, 0.7 ]
-    }
-  }
+	"format_version": "26.3",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"disassembler": "mekanism:item/atomic_disassembler",
+		"particle": "mekanism:block/block_steel"
+	},
+	"elements": [
+		{
+			"name": "handleTopBack",
+			"from": [8, 12, 7],
+			"to": [9, 16, 8],
+			"faces": {
+				"east": {"uv": [9.25, 0.5, 9.5, 2.5], "texture": "#disassembler"},
+				"south": {"uv": [10, 0.5, 10.25, 2.5], "texture": "#disassembler"},
+				"west": {"uv": [9.75, 0.5, 10, 2.5], "texture": "#disassembler"},
+				"up": {"uv": [9.75, 0.5, 9.5, 0], "texture": "#disassembler"},
+				"down": {"uv": [10, 0, 9.75, 0.5], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "handle",
+			"from": [8, -1, 6],
+			"to": [9, 15, 7],
+			"faces": {
+				"north": {"uv": [0.25, 5.5, 0.5, 13.5], "texture": "#disassembler"},
+				"east": {"uv": [0, 5.5, 0.25, 13.5], "texture": "#disassembler"},
+				"south": {"uv": [0.75, 5.5, 1, 13.5], "texture": "#disassembler"},
+				"west": {"uv": [0.5, 5.5, 0.75, 13.5], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "handleTop",
+			"from": [7.5, 12.5, 5.5],
+			"to": [9.5, 17.5, 7.5],
+			"faces": {
+				"north": {"uv": [9, 5.5, 9.5, 8], "texture": "#disassembler"},
+				"east": {"uv": [8.5, 5.5, 9, 8], "texture": "#disassembler"},
+				"south": {"uv": [10, 5.5, 10.5, 8], "texture": "#disassembler"},
+				"west": {"uv": [9.5, 5.5, 10, 8], "texture": "#disassembler"},
+				"up": {"uv": [9.5, 5.5, 9, 4.5], "texture": "#disassembler"},
+				"down": {"uv": [10, 4.5, 9.5, 5.5], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "bladeBack",
+			"from": [8, 16, 5],
+			"to": [9, 18, 15],
+			"light_emission": 15,
+			"faces": {
+				"north": {"uv": [13, 5, 13.25, 6], "texture": "#disassembler"},
+				"east": {"uv": [10.5, 5, 13, 6], "texture": "#disassembler"},
+				"south": {"uv": [15.75, 5, 16, 6], "texture": "#disassembler"},
+				"west": {"uv": [13.25, 5, 15.75, 6], "texture": "#disassembler"},
+				"up": {"uv": [13.25, 5, 13, 0], "texture": "#disassembler"},
+				"down": {"uv": [13.5, 0, 13.25, 5], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "head",
+			"from": [18.26345, 6.23554, 3.5],
+			"to": [21.26345, 9.23554, 9.5],
+			"rotation": {"angle": 45, "axis": "z", "origin": [0, 0, 0]},
+			"faces": {
+				"north": {"uv": [7.5, 3, 8.25, 4.5], "texture": "#disassembler"},
+				"east": {"uv": [6, 3, 7.5, 4.5], "texture": "#disassembler"},
+				"south": {"uv": [9.75, 3, 10.5, 4.5], "texture": "#disassembler"},
+				"west": {"uv": [8.25, 3, 9.75, 4.5], "texture": "#disassembler"},
+				"up": {"uv": [8.25, 3, 7.5, 0], "texture": "#disassembler"},
+				"down": {"uv": [9, 0, 8.25, 3], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "neck",
+			"from": [7.5, 18, 2],
+			"to": [9.5, 20, 10],
+			"faces": {
+				"north": {"uv": [2, 4, 2.5, 5], "texture": "#disassembler"},
+				"east": {"uv": [0, 4, 2, 5], "texture": "#disassembler"},
+				"south": {"uv": [4.5, 4, 5, 5], "texture": "#disassembler"},
+				"west": {"uv": [2.5, 4, 4.5, 5], "texture": "#disassembler"},
+				"up": {"uv": [2.5, 4, 2, 0], "texture": "#disassembler"},
+				"down": {"uv": [3, 0, 2.5, 4], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "bladeFrontUpper",
+			"from": [8, 14.22538, -13.12001],
+			"to": [9, 16.87538, -12.12001],
+			"light_emission": 15,
+			"rotation": {"angle": 45, "axis": "x", "origin": [0, 0, 0]},
+			"faces": {
+				"north": {"uv": [15.25, 0.5, 15.5, 2], "texture": "#disassembler"},
+				"east": {"uv": [15, 0.5, 15.25, 2], "texture": "#disassembler"},
+				"south": {"uv": [15.75, 0.5, 16, 2], "texture": "#disassembler"},
+				"west": {"uv": [15.5, 0.5, 15.75, 2], "texture": "#disassembler"},
+				"up": {"uv": [15.5, 0.5, 15.25, 0], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "bladeFrontLower",
+			"from": [8, 8.11553, 12.26345],
+			"to": [9, 13.11553, 14.26345],
+			"light_emission": 15,
+			"rotation": {"angle": -45, "axis": "x", "origin": [0, 0, 0]},
+			"faces": {
+				"north": {"uv": [15, 1, 15.25, 3.5], "texture": "#disassembler"},
+				"east": {"uv": [14.5, 1, 15, 3.5], "texture": "#disassembler"},
+				"south": {"uv": [15.75, 1, 16, 3.5], "texture": "#disassembler"},
+				"west": {"uv": [15.25, 1, 15.75, 3.5], "texture": "#disassembler"},
+				"up": {"uv": [15.25, 1, 15, 0], "texture": "#disassembler"},
+				"down": {"uv": [15.5, 0, 15.25, 1], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "neckAngled",
+			"from": [7.5, 10.73553, 13.76345],
+			"to": [9.5, 11.73553, 14.76345],
+			"rotation": {"angle": -45, "axis": "x", "origin": [0, 0, 0]},
+			"faces": {
+				"north": {"uv": [3.25, 0.5, 3.75, 1], "texture": "#disassembler"},
+				"east": {"uv": [3, 0.5, 3.25, 1], "texture": "#disassembler"},
+				"west": {"uv": [3.75, 0.5, 4, 1], "texture": "#disassembler"},
+				"up": {"uv": [3.75, 0.5, 3.25, 0], "texture": "#disassembler"},
+				"down": {"uv": [4.25, 0, 3.75, 0.5], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "bladeFrontConnector",
+			"from": [8, 14.44, 2.93],
+			"to": [9, 16.44, 5.93],
+			"light_emission": 15,
+			"faces": {
+				"east": {"uv": [13.75, 1.5, 14.5, 2.5], "texture": "#disassembler"},
+				"west": {"uv": [14.75, 1.5, 15.5, 2.5], "texture": "#disassembler"},
+				"up": {"uv": [14.75, 1.5, 14.5, 0], "texture": "#disassembler"},
+				"down": {"uv": [15, 0, 14.75, 1.5], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "bladeHolderBack",
+			"from": [7.5, 17.5, 12.5],
+			"to": [9.5, 18.5, 13.5],
+			"faces": {
+				"north": {"uv": [10.75, 7.5, 11.25, 8], "texture": "#disassembler"},
+				"east": {"uv": [10.5, 7.5, 10.75, 8], "texture": "#disassembler"},
+				"south": {"uv": [11.5, 7.5, 12, 8], "texture": "#disassembler"},
+				"west": {"uv": [11.25, 7.5, 11.5, 8], "texture": "#disassembler"},
+				"up": {"uv": [11.25, 7.5, 10.75, 7], "texture": "#disassembler"},
+				"down": {"uv": [11.75, 7, 11.25, 7.5], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "bladeHolderMain",
+			"from": [7.5, 16.5, 7.5],
+			"to": [9.5, 17.5, 11.5],
+			"faces": {
+				"east": {"uv": [7.5, 10, 8.5, 10.5], "texture": "#disassembler"},
+				"south": {"uv": [10, 10, 10.5, 10.5], "texture": "#disassembler"},
+				"west": {"uv": [9, 10, 10, 10.5], "texture": "#disassembler"},
+				"up": {"uv": [9, 10, 8.5, 8], "texture": "#disassembler"},
+				"down": {"uv": [9.5, 8, 9, 10], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "bladeHolderFront",
+			"from": [7.5, 17.5, 10.5],
+			"to": [9.5, 18.5, 11.5],
+			"faces": {
+				"north": {"uv": [10.75, 6.5, 11.25, 7], "texture": "#disassembler"},
+				"east": {"uv": [10.5, 6.5, 10.75, 7], "texture": "#disassembler"},
+				"south": {"uv": [11.5, 6.5, 12, 7], "texture": "#disassembler"},
+				"west": {"uv": [11.25, 6.5, 11.5, 7], "texture": "#disassembler"},
+				"up": {"uv": [11.25, 6.5, 10.75, 6], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "rearBar",
+			"from": [8, 18.3, 9],
+			"to": [9, 19.3, 16],
+			"faces": {
+				"east": {"uv": [1, 8.5, 2.75, 9], "texture": "#disassembler"},
+				"south": {"uv": [4.75, 8.5, 5, 9], "texture": "#disassembler"},
+				"west": {"uv": [3, 8.5, 4.75, 9], "texture": "#disassembler"},
+				"up": {"uv": [3, 8.5, 2.75, 5], "texture": "#disassembler"},
+				"down": {"uv": [3.25, 5, 3, 8.5], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "bladeBackSmall",
+			"from": [8, 17, 15],
+			"to": [9, 18, 16],
+			"light_emission": 15,
+			"faces": {
+				"east": {"uv": [15, 0.5, 15.25, 1], "texture": "#disassembler"},
+				"south": {"uv": [15.75, 0.5, 16, 1], "texture": "#disassembler"},
+				"west": {"uv": [15.5, 0.5, 15.75, 1], "texture": "#disassembler"},
+				"up": {"uv": [15.5, 0.5, 15.25, 0], "texture": "#disassembler"},
+				"down": {"uv": [15.75, 0, 15.5, 0.5], "texture": "#disassembler"}
+			}
+		},
+		{
+			"name": "handleBase",
+			"from": [7.5, -5, 5.5],
+			"to": [9.5, -1, 7.5],
+			"faces": {
+				"north": {"uv": [7, 5.5, 7.5, 7.5], "texture": "#disassembler"},
+				"east": {"uv": [6.5, 5.5, 7, 7.5], "texture": "#disassembler"},
+				"south": {"uv": [8, 5.5, 8.5, 7.5], "texture": "#disassembler"},
+				"west": {"uv": [7.5, 5.5, 8, 7.5], "texture": "#disassembler"},
+				"up": {"uv": [7.5, 5.5, 7, 4.5], "texture": "#disassembler"},
+				"down": {"uv": [8, 4.5, 7.5, 5.5], "texture": "#disassembler"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [-0.5, 2, 2.25]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0.5, 2, 2.25]
+		},
+		"firstperson_righthand": {
+			"translation": [8, -4, 0]
+		},
+		"firstperson_lefthand": {
+			"translation": [8, -4, 0]
+		},
+		"ground": {
+			"translation": [0, 9, 0]
+		},
+		"gui": {
+			"rotation": [-90, 45, 90],
+			"translation": [1.25, -0.75, 0],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"head": {
+			"rotation": [-90, 20, -90],
+			"translation": [-7, 16, 0]
+		},
+		"fixed": {
+			"rotation": [0, -90, 0],
+			"scale": [0.65, 0.65, 0.65]
+		},
+		"on_shelf": {
+			"rotation": [0, -90, 0]
+		}
+	},
+	"groups": [
+		{
+			"name": "disassembler",
+			"origin": [15.50031, 20.49071, 9.58283],
+			"scope": 0,
+			"color": 0,
+			"children": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+		}
+	]
 }
