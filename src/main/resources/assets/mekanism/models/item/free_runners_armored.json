@@ -1,3 +1,46 @@
 {
-    "parent": "mekanism:item/free_runners"
+    "loader": "neoforge:composite",
+    "textures": {
+        "particle": "mekanism:item/free_runners"
+    },
+    "children": {
+        "left": {
+            "parent": "mekanism:item/left_free_runner_armored"
+        },
+        "right": {
+            "parent": "mekanism:item/right_free_runner_armored"
+        }
+    },
+    "display": {
+        "thirdperson_righthand": {
+            "rotation": [50, -180, 0]
+        },
+        "thirdperson_lefthand": {
+            "rotation": [50, -180, 0]
+        },
+        "firstperson_righthand": {
+            "rotation": [0, -90, 0],
+            "translation": [0, 2, 2]
+        },
+        "firstperson_lefthand": {
+            "rotation": [0, -90, 0],
+            "translation": [0, 2, 2]
+        },
+        "gui": {
+            "rotation": [0, -50, 0],
+            "scale": [1.25, 1.25, 1.25]
+        },
+        "head": {
+            "rotation": [-36, 180, 0],
+            "translation": [0, 7, -6.5]
+        },
+        "fixed": {
+            "rotation": [0, -180, 0],
+            "translation": [0, 0, -1.75]
+        },
+        "on_shelf": {
+            "translation": [0, 0, 2],
+            "scale": [2, 2, 2]
+        }
+    }
 }

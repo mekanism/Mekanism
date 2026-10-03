@@ -163,7 +163,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
     @Override
     public <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
-          STATE state, ItemStack stack) {
+          STATE state, boolean isBaby, ItemStack stack) {
         ArmorQuads armorQuads = cache.getUnchecked(key(state));
         boolean renderFoil = stack.hasFoil();
         //Same as what HumanoidArmorLayer does for the starting order index

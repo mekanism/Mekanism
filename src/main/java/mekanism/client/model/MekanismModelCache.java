@@ -34,6 +34,12 @@ public class MekanismModelCache extends BaseModelCache {
     public final BlockStateModelPartHelper VIBRATOR_SHAFT = registerJSON("block/vibrator_shaft");
     public final BlockStateModelPartHelper PIGMENT_MIXER_SHAFT = registerJSON("block/pigment_mixer_shaft");
     public final BlockStateModelPartHelper TRANSPORTER_BOX = registerJSON("block/transporter_box");
+
+    public final ItemModelHelper LEFT_FREE_RUNNER = registerItemJSON("item/left_free_runner");
+    public final ItemModelHelper LEFT_FREE_RUNNER_ARMORED = registerItemJSON("item/left_free_runner_armored");
+    public final ItemModelHelper RIGHT_FREE_RUNNER = registerItemJSON("item/right_free_runner");
+    public final ItemModelHelper RIGHT_FREE_RUNNER_ARMORED = registerItemJSON("item/right_free_runner_armored");
+
     public final BlockStateModelPartHelper[] QIO_DRIVES = new BlockStateModelPartHelper[DriveStatus.VALUES.size()];
 
     private MekanismModelCache() {

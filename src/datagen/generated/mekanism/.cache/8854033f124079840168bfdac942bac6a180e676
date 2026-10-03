@@ -1,4 +1,4 @@
-// 26.3	2026-09-17T15:06:10.8597778	Model Definitions - mekanism
+// 26.3	2026-10-02T20:17:24.5471436	Model Definitions - mekanism
 2e09b81571bcad7a3e925d2b03b1ec1dd0f9b71f assets/mekanism/blockstates/advanced_energy_cube.json
 00c0d0e76b525301d8b7a1adc5dcb5d3807c4d38 assets/mekanism/blockstates/advanced_logistical_transporter.json
 84712d3beb4b5acb6a471b330f3bfa9dcf4de4fa assets/mekanism/blockstates/advanced_mechanical_pipe.json
@@ -253,8 +253,8 @@ d4312a15c973eb76f2d14109ce1d05bb5cc4c2bf assets/mekanism/items/ethene_bucket.jso
 f9e2e400e1f9add4bfa99314de2d49b03dfdf93c assets/mekanism/items/fluorite_gem.json
 87c1f88097a4bef388ddb9aa01c16343ebb5e2ad assets/mekanism/items/fluorite_ore.json
 158839fc0c58220db8b84b46239eed808f3b916d assets/mekanism/items/formulaic_assemblicator.json
-5e73d4be5c343f3d9771ffe618e349e8a3df63c8 assets/mekanism/items/free_runners.json
-03769afc08370b3cacd847cbfeddf7c218345536 assets/mekanism/items/free_runners_armored.json
+d8f8b9041d644b9a1ac202b68e309297111ce364 assets/mekanism/items/free_runners.json
+8a8a8a069c63ec98b36aafbde655435dcd89e05c assets/mekanism/items/free_runners_armored.json
 e4ab1a3e40db6172772a73c498429973ee65d23e assets/mekanism/items/fuelwood_heater.json
 866e3ebe670875b16620df633d452bd8da970278 assets/mekanism/items/gauge_dropper.json
 d3ba47624c628c806c31b493293d6f2c81572fb4 assets/mekanism/items/geiger_counter.json

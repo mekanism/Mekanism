@@ -1,42 +1,46 @@
 {
+    "loader": "neoforge:composite",
     "textures": {
-        "particle": "mekanism:block/block_steel"
+        "particle": "mekanism:item/free_runners"
+    },
+    "children": {
+        "left": {
+            "parent": "mekanism:item/left_free_runner"
+        },
+        "right": {
+            "parent": "mekanism:item/right_free_runner"
+        }
     },
     "display": {
-        "gui": {
-            "rotation": [ 30, 45, 0 ],
-            "translation": [ -1, 5.5, 0],
-            "scale":[ 1.25, 1.25, 1.25 ]
-        },
-        "ground": {
-            "rotation": [ 0, 90, 0 ],
-            "translation": [ 0, 2.5, 0],
-            "scale":[ 0.5, 0.5, 0.5 ]
-        },
         "thirdperson_righthand": {
-            "rotation": [ 75, 135, 0 ],
-            "translation": [ 0, 0, 2],
-            "scale": [ 0.75, 0.75, 0.75 ]
-        },
-        "firstperson_righthand": {
-            "rotation": [ 0, 135, 0 ],
-            "translation": [ 0, 1, 0],
-            "scale": [ 0.8, 0.8, 0.8 ]
+            "rotation": [50, -180, 0]
         },
         "thirdperson_lefthand": {
-            "rotation": [ 75, 135, 0 ],
-            "translation": [ 0, 0, 2],
-            "scale": [ 0.75, 0.75, 0.75 ]
+            "rotation": [50, -180, 0]
+        },
+        "firstperson_righthand": {
+            "rotation": [0, -90, 0],
+            "translation": [0, 2, 2]
         },
         "firstperson_lefthand": {
-            "rotation": [ 0, 135, 0 ],
-            "translation": [ 0, 1, 0],
-            "scale": [ 0.8, 0.8, 0.8 ]
+            "rotation": [0, -90, 0],
+            "translation": [0, 2, 2]
+        },
+        "gui": {
+            "rotation": [0, -180, 0],
+            "scale": [1.25, 1.25, 1.25]
+        },
+        "head": {
+            "rotation": [-36, 180, 0],
+            "translation": [0, 7, -6.5]
         },
         "fixed": {
-            "rotation": [ 0, 180, 0 ],
-            "translation": [ 0, 6.5, 2],
-            "scale":[ 2, 2, 2 ]
+            "rotation": [0, -180, 0],
+            "translation": [0, 0, -1.75]
+        },
+        "on_shelf": {
+            "translation": [0, 0, 2],
+            "scale": [2, 2, 2]
         }
     }
 }

@@ -1,0 +1,123 @@
+{
+    "loader": "neoforge:composite",
+    "textures": {
+        "particle": "mekanism:item/free_runners"
+    },
+    "children": {
+        "base": {
+            "parent": "mekanism:item/right_free_runner"
+        },
+        "armored": {
+            "textures": {
+                "free_runners": "mekanism:item/free_runners",
+                "particle": "#free_runners"
+            },
+            "elements": [
+                {
+                    "name": "plate1",
+                    "from": [4.5, 10, 5],
+                    "to": [7.5, 12, 6],
+                    "rotation": {"x": -180, "origin": [8, 8.44194, 8.08101]},
+                    "faces": {
+                        "north": {"uv": [2, 6, 0.5, 7], "rotation": 180, "texture": "#free_runners"},
+                        "east": {"uv": [2.5, 6, 2, 7], "rotation": 180, "texture": "#free_runners"},
+                        "south": {"uv": [2, 6, 0.5, 7], "rotation": 180, "texture": "#free_runners"},
+                        "west": {"uv": [0.5, 6, 0, 7], "rotation": 180, "texture": "#free_runners"},
+                        "up": {"uv": [2, 6, 3.5, 5.5], "texture": "#free_runners"},
+                        "down": {"uv": [0.5, 6, 2, 6.5], "texture": "#free_runners"}
+                    }
+                },
+                {
+                    "name": "plate2",
+                    "from": [4.5, 6, 5],
+                    "to": [7.5, 7, 6],
+                    "rotation": {"x": -180, "origin": [8, 8.44194, 8.08101]},
+                    "faces": {
+                        "north": {"uv": [2, 4, 0.5, 4.5], "texture": "#free_runners"},
+                        "east": {"uv": [2.5, 4, 2, 4.5], "texture": "#free_runners"},
+                        "west": {"uv": [0.5, 4, 0, 4.5], "texture": "#free_runners"},
+                        "down": {"uv": [2, 3.5, 3.5, 4], "texture": "#free_runners"}
+                    }
+                },
+                {
+                    "name": "battery",
+                    "from": [5.5, 7, 5],
+                    "to": [6.5, 9, 6],
+                    "light_emission": 15,
+                    "rotation": {"x": -180, "origin": [8, 8.44194, 8.08101]},
+                    "faces": {
+                        "north": {"uv": [11.5, 7, 12, 6], "texture": "#free_runners"},
+                        "south": {"uv": [12.5, 7, 13, 6], "texture": "#free_runners"},
+                        "up": {"uv": [12, 6, 11.5, 5.5], "texture": "#free_runners"}
+                    }
+                },
+                {
+                    "name": "connection1",
+                    "from": [6.5, 7, 5],
+                    "to": [7.5, 10, 6],
+                    "rotation": {"x": -180, "origin": [8, 8.44194, 8.08101]},
+                    "faces": {
+                        "north": {"uv": [5, 4, 4.5, 5.5], "texture": "#free_runners"},
+                        "east": {"uv": [5.5, 4, 5, 5.5], "texture": "#free_runners"},
+                        "south": {"uv": [6, 5.5, 5.5, 4], "texture": "#free_runners"},
+                        "west": {"uv": [4.5, 4, 4, 5.5], "texture": "#free_runners"}
+                    }
+                },
+                {
+                    "name": "connection2",
+                    "from": [4.5, 7, 5],
+                    "to": [5.5, 10, 6],
+                    "rotation": {"x": -180, "origin": [8, 8.44194, 8.08101]},
+                    "faces": {
+                        "north": {"uv": [5, 4, 4.5, 5.5], "texture": "#free_runners"},
+                        "east": {"uv": [5.5, 4, 5, 5.5], "texture": "#free_runners"},
+                        "south": {"uv": [6, 5.5, 5.5, 4], "texture": "#free_runners"},
+                        "west": {"uv": [4.5, 4, 4, 5.5], "texture": "#free_runners"}
+                    }
+                },
+                {
+                    "name": "armored_brace1",
+                    "from": [3.8, 6, 5.7],
+                    "to": [7.8, 7, 6.7],
+                    "rotation": {"x": -180, "origin": [8, 8.44194, 8.08101]},
+                    "faces": {
+                        "north": {"uv": [5.5, 6.5, 7.5, 7], "texture": "#free_runners"},
+                        "east": {"uv": [5, 6.5, 5.5, 7], "texture": "#free_runners"},
+                        "south": {"uv": [8, 7, 10, 6.5], "texture": "#free_runners"},
+                        "west": {"uv": [7.5, 6.5, 8, 7], "texture": "#free_runners"},
+                        "up": {"uv": [7.5, 6.5, 5.5, 6], "texture": "#free_runners"},
+                        "down": {"uv": [9.5, 6, 7.5, 6.5], "texture": "#free_runners"}
+                    }
+                },
+                {
+                    "name": "armored_brace2",
+                    "from": [3.8, 10, 5.7],
+                    "to": [7.8, 11, 6.7],
+                    "rotation": {"x": -180, "origin": [8, 8.44194, 8.08101]},
+                    "faces": {
+                        "north": {"uv": [4.5, 5.5, 6.5, 6], "texture": "#free_runners"},
+                        "east": {"uv": [4, 5.5, 4.5, 6], "texture": "#free_runners"},
+                        "south": {"uv": [7, 6, 9, 5.5], "texture": "#free_runners"},
+                        "west": {"uv": [6.5, 5.5, 7, 6], "texture": "#free_runners"},
+                        "up": {"uv": [8.5, 5.5, 6.5, 5], "texture": "#free_runners"},
+                        "down": {"uv": [8.5, 5, 6.5, 5.5], "texture": "#free_runners"}
+                    }
+                },
+                {
+                    "name": "top_plate",
+                    "from": [5, 7.47962, 3.92569],
+                    "to": [7, 9.47962, 4.92569],
+                    "rotation": {"x": 135, "origin": [8, 8.44194, 8.08101]},
+                    "faces": {
+                        "north": {"uv": [7.5, 4, 6.5, 5], "texture": "#free_runners"},
+                        "east": {"uv": [8, 4, 7.5, 5], "texture": "#free_runners"},
+                        "south": {"uv": [9, 5, 8, 4], "texture": "#free_runners"},
+                        "west": {"uv": [6.5, 4, 6, 5], "texture": "#free_runners"},
+                        "up": {"uv": [6.5, 4, 7.5, 3.5], "texture": "#free_runners"},
+                        "down": {"uv": [7.5, 3.5, 8.5, 4], "texture": "#free_runners"}
+                    }
+                }
+            ]
+        }
+    }
+}

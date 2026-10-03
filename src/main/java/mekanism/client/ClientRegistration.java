@@ -70,10 +70,8 @@ import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.model.MekanismModelCache;
-import mekanism.client.model.ModelArmoredFreeRunners;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelFlamethrower;
-import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaMask;
@@ -120,7 +118,6 @@ import mekanism.client.render.item.TransmitterTypeDecorator;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.gear.RenderFlameThrower;
-import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderScubaTank;
@@ -385,13 +382,6 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModelArmoredJetpack.ARMORED_JETPACK_LAYER, () -> armoredJetpackLayer);
         event.registerLayerDefinition(ModelArmoredJetpack.ARMORED_JETPACK_BABY_LAYER, () -> armoredJetpackLayer.apply(babyTransformer));
 
-        LayerDefinition armoredFreeRunnerLayer = ModelArmoredFreeRunners.createLayerDefinition();
-        event.registerLayerDefinition(ModelArmoredFreeRunners.ARMORED_FREE_RUNNER_LAYER, () -> armoredFreeRunnerLayer);
-        event.registerLayerDefinition(ModelArmoredFreeRunners.ARMORED_FREE_RUNNER_BABY_LAYER, () -> armoredFreeRunnerLayer.apply(babyTransformer));
-        LayerDefinition freeRunnerLayer = ModelFreeRunners.createLayerDefinition();
-        event.registerLayerDefinition(ModelFreeRunners.FREE_RUNNER_LAYER, () -> freeRunnerLayer);
-        event.registerLayerDefinition(ModelFreeRunners.FREE_RUNNER_BABY_LAYER, () -> freeRunnerLayer.apply(babyTransformer));
-
         LayerDefinition scubaMaskLayer = ModelScubaMask.createLayerDefinition();
         event.registerLayerDefinition(ModelScubaMask.MASK_LAYER, () -> scubaMaskLayer);
         event.registerLayerDefinition(ModelScubaMask.MASK_BABY_LAYER, () -> scubaMaskLayer.apply(babyTransformer));
@@ -413,15 +403,12 @@ public class ClientRegistration {
         //Custom Armor
         event.addListener(Mekanism.rl("jetpack_armor_armored"), JetpackArmor.ARMORED_JETPACK);
         event.addListener(Mekanism.rl("jetpack_armor_jetpack"), JetpackArmor.JETPACK);
-        event.addListener(Mekanism.rl("free_runner_armor_armored"), FreeRunnerArmor.ARMORED_FREE_RUNNERS);
-        event.addListener(Mekanism.rl("free_runner_armor"), FreeRunnerArmor.FREE_RUNNERS);
         event.addListener(Mekanism.rl("scuba_mask_armor"), ScubaMaskArmor.SCUBA_MASK);
         event.addListener(Mekanism.rl("scuba_tank_armor"), ScubaTankArmor.SCUBA_TANK);
     }
 
     @SubscribeEvent
     public static void registerSpecialRenderer(RegisterSpecialModelRendererEvent event) {
-        event.register(Mekanism.rl("free_runner"), RenderFreeRunners.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("fluid_tank"), RenderFluidTankItem.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("jetpack"), RenderJetpack.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("flamethrower"), RenderFlameThrower.Unbaked.MAP_CODEC);

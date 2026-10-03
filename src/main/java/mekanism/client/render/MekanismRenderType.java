@@ -44,7 +44,7 @@ public class MekanismRenderType {
           //.setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
           .withForcedSolidModelPhase()
           .createRenderSetup()
-    );
+    );//TODO - 26.3: OIT rendering if we don't end up removing this render type
 
     public static final Function<Identifier, RenderType> SPS = Util.memoize(resourceLocation -> RenderType.create("mekanism_sps", RenderSetup.builder(MekanismRenderPipelines.SPS)
           .withTexture("Sampler0", resourceLocation)

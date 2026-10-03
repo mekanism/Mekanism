@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.math.Transformation;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -11,14 +12,21 @@ import java.util.Set;
 import java.util.function.Function;
 import mekanism.client.ModelUtil;
 import mekanism.common.Mekanism;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.event.ModelEvent;
@@ -69,6 +77,14 @@ public class BaseModelCache {
 
     protected BlockStateModelPartHelper registerJSON(Identifier rl) {
         return register(rl, BlockStateModelPartHelper::new);
+    }
+
+    protected ItemModelHelper registerItemJSON(String path) {
+        return registerItemJSON(rl(path));
+    }
+
+    protected ItemModelHelper registerItemJSON(Identifier rl) {
+        return register(rl, ItemModelHelper::new);
     }
 
     protected <DATA extends MekanismModelData> DATA register(Identifier rl, Function<Identifier, DATA> creator) {
@@ -163,7 +179,7 @@ public class BaseModelCache {
 
         //this is a list due to SubmitNodeCollector wanting a list
         private List<BlockStateModelPart> bakedModel = Collections.emptyList();
-        private final StandaloneModelKey<BlockStateModelPart> key;
+        protected final StandaloneModelKey<BlockStateModelPart> key;
 
         private BlockStateModelPartHelper(Identifier rl) {
             super(rl);
@@ -184,6 +200,33 @@ public class BaseModelCache {
 
         public List<BlockStateModelPart> getBakedModel() {
             return bakedModel;
+        }
+    }
+
+    public static class ItemModelHelper extends BlockStateModelPartHelper {
+
+        private ItemModelHelper(Identifier rl) {
+            super(rl);
+        }
+
+        @Override
+        protected void setup(ModelEvent.RegisterStandalone event) {
+            event.register(key, new SimpleUnbakedStandaloneModel<>(rl, (model, baker, _) -> {
+                //Slimmed down version of SimpleModelWrapper#bake that doesn't validate what sheet it is
+                QuadCollection quadCollection = model.bakeTopGeometry(model.getTopTextureSlots(), baker, BlockModelRotation.IDENTITY);
+                TextureSlots textureSlots = model.getTopTextureSlots();
+                Material.Baked particleMaterial = model.resolveParticleMaterial(textureSlots, baker);
+                return new SimpleModelWrapper(quadCollection, model.getTopAmbientOcclusion(), particleMaterial);
+            }));
+        }
+
+        public void submitModel(SubmitNodeCollector nodeCollector, PoseStack poseStack, int lightCoords, int outlineColor, boolean hasFoil) {
+            nodeCollector.submitBlockModel(poseStack, Sheets.cutoutItemSheet(), getBakedModel(), BlockModelRenderState.EMPTY_TINTS, lightCoords,
+                  OverlayTexture.NO_OVERLAY, outlineColor);
+            if (hasFoil) {
+                nodeCollector.order(1).submitBlockModel(poseStack, Sheets.cutoutItemGlintSheet(), getBakedModel(), BlockModelRenderState.EMPTY_TINTS,
+                      lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+            }
         }
     }
 }

@@ -23,18 +23,21 @@ public abstract class SimpleCustomArmor<MODEL> implements ICustomArmor, Resource
 
     @Override
     public <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
-          STATE state, ItemStack stack) {
+          STATE state, boolean isBaby, ItemStack stack) {
         ModelPart humanoidPart = humanoidPart(baseModel);
-        if (humanoidPart.visible) {
-            MODEL model = state.isBaby ? this.babyModel : this.model;
-            if (model != null) {
-                poseStack.pushPose();
-                humanoidPart.translateAndRotate(poseStack);
-                poseStack.translate(0, 0, getZOffset());
-                collect(poseStack, nodeCollector, model, lightCoords, OverlayTexture.NO_OVERLAY, FoilRendering.ARMOR.foil(stack.hasFoil()), state.outlineColor);
-                poseStack.popPose();
-            }
+        MODEL model = state.isBaby ? this.babyModel : this.model;
+        if (model != null) {
+            poseStack.pushPose();
+            humanoidPart.translateAndRotate(poseStack);
+            poseStack.translate(0, 0, getZOffset());
+            collect(poseStack, nodeCollector, model, lightCoords, OverlayTexture.NO_OVERLAY, FoilRendering.ARMOR.foil(stack.hasFoil()), state.outlineColor);
+            poseStack.popPose();
         }
+    }
+
+    @Override
+    public <STATE extends HumanoidRenderState> boolean isVisible(HumanoidModel<STATE> baseModel, STATE state) {
+        return humanoidPart(baseModel).visible;
     }
 
     protected abstract void collect(PoseStack poseStack, SubmitNodeCollector collector, MODEL model, int light, int overlayLight, FoilRendering foil, int outlineColor);
