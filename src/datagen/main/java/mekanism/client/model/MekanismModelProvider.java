@@ -25,7 +25,6 @@ import mekanism.client.model.props.CraftingFormulaStatus;
 import mekanism.client.render.item.RenderRobitItem;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
-import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.common.Mekanism;
@@ -202,7 +201,6 @@ public class MekanismModelProvider extends BaseModelProvider {
 
         simpleISTER(itemModels, MekanismItems.JETPACK, RenderJetpack.REGULAR);
         simpleISTER(itemModels, MekanismItems.ARMORED_JETPACK, RenderJetpack.ARMORED);
-        simpleISTER(itemModels, MekanismItems.FLAMETHROWER, RenderFlameThrower.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismItems.SCUBA_TANK, RenderScubaTank.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismItems.ROBIT, RenderRobitItem.Unbaked.INSTANCE, existingModel("item/robit_transforms"));
 
@@ -582,6 +580,7 @@ public class MekanismModelProvider extends BaseModelProvider {
         itemModels.declareCustomModelItem(MekanismItems.FLUORITE_GEM.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ARMORED_FREE_RUNNERS.asItem());
         itemModels.declareCustomModelItem(MekanismItems.FREE_RUNNERS.asItem());
+        itemModels.declareCustomModelItem(MekanismItems.FLAMETHROWER.asItem());
         itemModels.declareCustomModelItem(MekanismItems.SCUBA_MASK.asItem());
         itemModels.declareCustomModelItem(MekanismItems.GAUGE_DROPPER.asItem());
         itemModels.declareCustomModelItem(MekanismItems.HAZMAT_BOOTS.asItem());

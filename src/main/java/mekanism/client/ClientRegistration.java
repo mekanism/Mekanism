@@ -71,7 +71,6 @@ import mekanism.client.gui.robit.GuiRobitSmelting;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.model.ModelArmoredJetpack;
-import mekanism.client.model.ModelFlamethrower;
 import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaTank;
@@ -115,7 +114,6 @@ import mekanism.client.render.item.RenderRobitItem;
 import mekanism.client.render.item.TransmitterTypeDecorator;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
-import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
@@ -384,7 +382,6 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModelScubaTank.TANK_BABY_LAYER, () -> scubaTankLayer.apply(babyTransformer));
 
         event.registerLayerDefinition(RenderEnergyCube.CORE_LAYER, RenderEnergyCube::createCoreLayer);
-        event.registerLayerDefinition(ModelFlamethrower.FLAMETHROWER_LAYER, ModelFlamethrower::createLayerDefinition);
         event.registerLayerDefinition(ModelIndustrialAlarm.ALARM_LAYER, ModelIndustrialAlarm::createLayerDefinition);
         event.registerLayerDefinition(RenderIndustrialAlarm.LIGHT_BOX_LAYER, RenderIndustrialAlarm::createLightBoxLayer);
 
@@ -404,7 +401,6 @@ public class ClientRegistration {
     public static void registerSpecialRenderer(RegisterSpecialModelRendererEvent event) {
         event.register(Mekanism.rl("fluid_tank"), RenderFluidTankItem.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("jetpack"), RenderJetpack.Unbaked.MAP_CODEC);
-        event.register(Mekanism.rl("flamethrower"), RenderFlameThrower.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("scuba_tank"), RenderScubaTank.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("energy_cube"), RenderEnergyCubeItem.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("robit"), RenderRobitItem.Unbaked.MAP_CODEC);

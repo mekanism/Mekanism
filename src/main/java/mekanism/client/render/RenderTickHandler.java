@@ -245,20 +245,24 @@ public class RenderTickHandler {
             float angle = 15 * Mth.DEG_TO_RAD;
             flameVec = player.getViewVector(partialTick)
                   .yRot(rightHanded ? -angle : angle)
-                  .add(0, player.getEyeHeight() - 0.1, 0);
+                  .add(0, player.getEyeHeight() - 0.5, 0);
         } else {
-            double flameXCoord = rightHanded ? -0.2 : 0.2;
-            double flameYCoord = 1;
-            double flameZCoord = 1.2;
+            double flameXCoord = rightHanded ? -0.35 : 0.35;
+            double flameYCoord = 0.65;
+            double flameZCoord = 1.35;
             if (player.isCrouching()) {
-                flameYCoord -= 0.65;
-                flameZCoord -= 0.15;
+                if (rightHanded) {
+                    flameXCoord -= 0.05;
+                } else {
+                    flameXCoord += 0.05;
+                }
+                flameYCoord -= 0.7;
+                flameZCoord -= 0.4;
             } else if (vehicle != null) {
-                Vec3 attachmentPoint = player.getVehicleAttachmentPoint(vehicle);
-                flameXCoord -= attachmentPoint.x;
-                flameYCoord -= attachmentPoint.y + 0.1;
-                flameZCoord -= attachmentPoint.z;
+                flameYCoord += 0.4;
+                flameZCoord += 0.1;
             }
+            //TODO: Try and figure out how to make it sway with the arm motion. HumanoidModel#setupAnim -> AnimationUtils.bobModelPart
             flameVec = new Vec3(flameXCoord, flameYCoord, flameZCoord).yRot(-player.yBodyRot * Mth.DEG_TO_RAD);
         }
         Vec3 motion = vehicle == null ? player.getDeltaMovement() : vehicle.getDeltaMovement();

@@ -1,47 +1,355 @@
 {
+    "format_version": "26.3",
+    "credit": "Made with Blockbench",
     "textures": {
-        "particle": "mekanism:block/block_steel"
+        "flamethrower": "mekanism:item/flamethrower",
+        "particle": "#flamethrower"
     },
+    "elements": [
+        {
+            "name": "axle",
+            "from": [5.5, 7, -10.5],
+            "to": [9.5, 11, -3.5],
+            "rotation": {"x": -180, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [9.75, 5.75, 10.75, 4.75], "texture": "#flamethrower"},
+                "east": {"uv": [8, 4.75, 9.75, 5.75], "texture": "#flamethrower"},
+                "south": {"uv": [13.5, 5.75, 12.5, 4.75], "texture": "#flamethrower"},
+                "west": {"uv": [10.75, 4.75, 12.5, 5.75], "texture": "#flamethrower"},
+                "up": {"uv": [10.75, 3, 11.75, 4.75], "texture": "#flamethrower"},
+                "down": {"uv": [9.75, 3, 10.75, 4.75], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "bottom_left",
+            "from": [6.0701, 10.92782, -11],
+            "to": [7.0701, 11.92782, -3],
+            "rotation": {"x": -180, "z": -12, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [2, 8.25, 2.25, 8.5], "texture": "#flamethrower"},
+                "east": {"uv": [2.25, 8.5, 4.25, 8.25], "texture": "#flamethrower"},
+                "west": {"uv": [0, 8.5, 2, 8.25], "texture": "#flamethrower"},
+                "up": {"uv": [2.25, 8.25, 2.5, 6.25], "texture": "#flamethrower"},
+                "down": {"uv": [2, 6.25, 2.25, 8.25], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "bottom_right",
+            "from": [7.96575, 10.31509, -11.04275],
+            "to": [8.96575, 11.31509, -3.04275],
+            "rotation": {"x": -179, "z": 12, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [2, 8.25, 2.25, 8.5], "texture": "#flamethrower"},
+                "east": {"uv": [0, 8.25, 2, 8.5], "texture": "#flamethrower"},
+                "west": {"uv": [2.25, 8.25, 4.25, 8.5], "texture": "#flamethrower"},
+                "up": {"uv": [2.25, 8.25, 2.5, 6.25], "texture": "#flamethrower"},
+                "down": {"uv": [2, 6.25, 2.25, 8.25], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "top_left",
+            "from": [5.86296, 6.05041, -11],
+            "to": [6.86296, 7.05041, -3],
+            "rotation": {"x": -180, "z": 12, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [2, 8.25, 2.25, 8.5], "texture": "#flamethrower"},
+                "east": {"uv": [0, 8.25, 2, 8.5], "texture": "#flamethrower"},
+                "west": {"uv": [2.25, 8.25, 4.25, 8.5], "texture": "#flamethrower"},
+                "up": {"uv": [2.25, 8.25, 2.5, 6.25], "texture": "#flamethrower"},
+                "down": {"uv": [2, 6.25, 2.25, 8.25], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "top_right",
+            "from": [8.17289, 6.39149, -11],
+            "to": [9.17289, 7.39149, -3],
+            "rotation": {"x": -180, "z": -12, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [2, 8.25, 2.25, 8.5], "texture": "#flamethrower"},
+                "east": {"uv": [0, 8.25, 2, 8.5], "texture": "#flamethrower"},
+                "west": {"uv": [2.25, 8.25, 4.25, 8.5], "texture": "#flamethrower"},
+                "up": {"uv": [2.25, 8.25, 2.5, 6.25], "texture": "#flamethrower"},
+                "down": {"uv": [2.25, 6.25, 2, 8.25], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "barrel",
+            "from": [6.5, 8.5, 7],
+            "to": [8.5, 10.5, 15],
+            "rotation": {"x": -180, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "east": {"uv": [4.75, 9.5, 6.75, 10], "texture": "#flamethrower"},
+                "south": {"uv": [9.25, 9.5, 9.75, 10], "texture": "#flamethrower"},
+                "west": {"uv": [7.25, 9.5, 9.25, 10], "texture": "#flamethrower"},
+                "up": {"uv": [7.25, 9.5, 6.75, 7.5], "texture": "#flamethrower"},
+                "down": {"uv": [7.75, 7.5, 7.25, 9.5], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "barrel_ring1",
+            "from": [6, 8, 9],
+            "to": [9, 11, 10],
+            "rotation": {"x": -180, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [7.75, 6.5, 8.5, 7.25], "texture": "#flamethrower"},
+                "east": {"uv": [7.5, 6.5, 7.75, 7.25], "texture": "#flamethrower"},
+                "south": {"uv": [8.75, 6.5, 9.5, 7.25], "texture": "#flamethrower"},
+                "west": {"uv": [8.5, 6.5, 8.75, 7.25], "texture": "#flamethrower"},
+                "up": {"uv": [8.5, 6.5, 7.75, 6.25], "texture": "#flamethrower"},
+                "down": {"uv": [9.25, 6.5, 8.5, 6.25], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "barrel_ring2",
+            "from": [6, 8, 13],
+            "to": [9, 11, 14],
+            "rotation": {"x": -180, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [7.75, 6.5, 8.5, 7.25], "texture": "#flamethrower"},
+                "east": {"uv": [7.5, 6.5, 7.75, 7.25], "texture": "#flamethrower"},
+                "south": {"uv": [8.75, 6.5, 9.5, 7.25], "texture": "#flamethrower"},
+                "west": {"uv": [8.5, 6.5, 8.75, 7.25], "texture": "#flamethrower"},
+                "up": {"uv": [8.5, 6.5, 7.75, 6.25], "texture": "#flamethrower"},
+                "down": {"uv": [9.25, 6.5, 8.5, 6.25], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "barrel_large",
+            "from": [6.5, 8, 0],
+            "to": [8.5, 11, 7],
+            "rotation": {"x": -180, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "east": {"uv": [8.75, 13.75, 7, 14.5], "texture": "#flamethrower"},
+                "south": {"uv": [9.25, 14.5, 8.75, 13.75], "texture": "#flamethrower"},
+                "west": {"uv": [6.5, 13.75, 4.75, 14.5], "texture": "#flamethrower"},
+                "up": {"uv": [7, 13.75, 7.5, 12], "texture": "#flamethrower"},
+                "down": {"uv": [7, 12, 6.5, 13.75], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "barrel_decor2",
+            "from": [5.5, 8, 0],
+            "to": [9.5, 10, 4],
+            "rotation": {"x": -180, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "east": {"uv": [6.25, 11.25, 7.25, 11.75], "texture": "#flamethrower"},
+                "south": {"uv": [5.25, 11.25, 6.25, 11.75], "texture": "#flamethrower"},
+                "west": {"uv": [4.25, 11.25, 5.25, 11.75], "texture": "#flamethrower"},
+                "up": {"uv": [6.25, 11.25, 5.25, 10.25], "texture": "#flamethrower"},
+                "down": {"uv": [7.25, 10.25, 6.25, 11.25], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "barrel_large_decor",
+            "from": [6, 7.51487, -0.13893],
+            "to": [9, 10.51487, 5.86107],
+            "rotation": {"x": 173.61, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "east": {"uv": [3.75, 14.25, 2.25, 13.5], "texture": "#flamethrower"},
+                "south": {"uv": [2.25, 14.25, 1.5, 13.5], "texture": "#flamethrower"},
+                "west": {"uv": [1.5, 14.25, 0, 13.5], "texture": "#flamethrower"},
+                "up": {"uv": [2.25, 12, 3, 13.5], "texture": "#flamethrower"},
+                "down": {"uv": [1.5, 13.5, 2.25, 12], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "ring1",
+            "from": [5, 6, -3],
+            "to": [10, 12, 1],
+            "rotation": {"x": -180, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [2.25, 6, 1, 4.5], "texture": "#flamethrower"},
+                "east": {"uv": [3.25, 6, 2.25, 4.5], "texture": "#flamethrower"},
+                "south": {"uv": [4.5, 6, 3.25, 4.5], "texture": "#flamethrower"},
+                "west": {"uv": [1, 6, 0, 4.5], "texture": "#flamethrower"},
+                "up": {"uv": [2.25, 4.5, 3.5, 3.5], "texture": "#flamethrower"},
+                "down": {"uv": [1, 3.5, 2.25, 4.5], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "ring_top",
+            "from": [6, 5.5, -2.5],
+            "to": [9, 6.5, 0.5],
+            "rotation": {"x": -180, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [6.25, 4.5, 5.5, 4.25], "texture": "#flamethrower"},
+                "east": {"uv": [7.75, 4.5, 7, 4.25], "texture": "#flamethrower"},
+                "south": {"uv": [7.75, 4.5, 7, 4.25], "texture": "#flamethrower"},
+                "west": {"uv": [5.5, 4.5, 4.75, 4.25], "texture": "#flamethrower"},
+                "down": {"uv": [6.25, 4.25, 5.5, 3.5], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "ring_bottom",
+            "from": [6, 11.5, -2.5],
+            "to": [9, 12.5, 0.5],
+            "rotation": {"x": -180, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [6.25, 4.25, 5.5, 4.5], "texture": "#flamethrower"},
+                "east": {"uv": [7, 4.25, 6.25, 4.5], "texture": "#flamethrower"},
+                "south": {"uv": [7.75, 4.5, 7, 4.25], "texture": "#flamethrower"},
+                "west": {"uv": [5.5, 4.25, 4.75, 4.5], "texture": "#flamethrower"},
+                "up": {"uv": [6.25, 4.25, 7, 3.5], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "grasp",
+            "from": [6.5, -0.76963, 0.15175],
+            "to": [8.5, 0.23037, 1.15175],
+            "rotation": {"x": -135.3, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [6.25, 5, 6.75, 5.25], "texture": "#flamethrower"},
+                "east": {"uv": [6.75, 5.25, 7, 5], "texture": "#flamethrower"},
+                "south": {"uv": [7, 5.25, 7.5, 5], "texture": "#flamethrower"},
+                "west": {"uv": [6, 5.25, 6.25, 5], "texture": "#flamethrower"},
+                "up": {"uv": [6.25, 5, 6.75, 4.75], "texture": "#flamethrower"},
+                "down": {"uv": [6.25, 4.75, 6.75, 5], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "grasp_rod",
+            "from": [7, 2.97293, -3.98704],
+            "to": [8, 5.97293, -2.98704],
+            "rotation": {"x": -167.2, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [5.75, 5.75, 5.5, 5], "texture": "#flamethrower"},
+                "east": {"uv": [5, 5.75, 4.75, 5], "texture": "#flamethrower"},
+                "south": {"uv": [5.5, 5, 5.75, 5.75], "texture": "#flamethrower"},
+                "west": {"uv": [5.5, 5.75, 5.25, 5], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "support_center",
+            "from": [6.5, 4.64207, 2.15488],
+            "to": [8.5, 5.64207, 8.15488],
+            "rotation": {"x": 173.6, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [1.5, 11.5, 2, 11.75], "texture": "#flamethrower"},
+                "east": {"uv": [0, 11.5, 1.5, 11.75], "texture": "#flamethrower"},
+                "south": {"uv": [3.5, 11.5, 4, 11.75], "texture": "#flamethrower"},
+                "west": {"uv": [2, 11.5, 3.5, 11.75], "texture": "#flamethrower"},
+                "up": {"uv": [2, 11.5, 1.5, 10], "texture": "#flamethrower"},
+                "down": {"uv": [2.5, 10, 2, 11.5], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "support_front",
+            "from": [7, 3.62907, 2.6737],
+            "to": [8, 4.62907, 6.6737],
+            "rotation": {"x": 109.7, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "east": {"uv": [4.75, 7, 5.75, 7.25], "texture": "#flamethrower"},
+                "west": {"uv": [6, 7, 7, 7.25], "texture": "#flamethrower"},
+                "up": {"uv": [6, 7, 5.75, 6], "texture": "#flamethrower"},
+                "down": {"uv": [6.25, 6, 6, 7], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "support_rear",
+            "from": [6, 4.01333, 1.94517],
+            "to": [9, 5.01333, 4.94517],
+            "rotation": {"x": -148.9, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "east": {"uv": [0, 9.5, 0.75, 9.75], "texture": "#flamethrower"},
+                "south": {"uv": [2.25, 9.5, 3, 9.75], "texture": "#flamethrower"},
+                "west": {"uv": [1.5, 9.5, 2.25, 9.75], "texture": "#flamethrower"},
+                "up": {"uv": [1.5, 9.5, 0.75, 8.75], "texture": "#flamethrower"},
+                "down": {"uv": [2.25, 8.75, 1.5, 9.5], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "flame",
+            "from": [7, 17.57023, 10.55201],
+            "to": [8, 18.57023, 12.55201],
+            "rotation": {"x": -139.53, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "east": {"uv": [9.5, 0.5, 10, 0.75], "texture": "#flamethrower"},
+                "south": {"uv": [10.75, 0.5, 11, 0.75], "texture": "#flamethrower"},
+                "west": {"uv": [10.25, 0.5, 10.75, 0.75], "texture": "#flamethrower"},
+                "up": {"uv": [10.25, 0.5, 10, 0], "texture": "#flamethrower"},
+                "down": {"uv": [10.5, 0, 10.25, 0.5], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "flame_strut",
+            "from": [6.5, 8.25807, 13.22941],
+            "to": [8.5, 9.25807, 16.22941],
+            "rotation": {"x": 165.1, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [7.5, 0.75, 8, 1], "texture": "#flamethrower"},
+                "east": {"uv": [6.75, 0.75, 7.5, 1], "texture": "#flamethrower"},
+                "south": {"uv": [8.75, 0.75, 9.25, 1], "texture": "#flamethrower"},
+                "west": {"uv": [8, 0.75, 8.75, 1], "texture": "#flamethrower"},
+                "up": {"uv": [8, 0.75, 7.5, 0], "texture": "#flamethrower"},
+                "down": {"uv": [8.5, 0, 8, 0.75], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "hydrogen_decor",
+            "from": [8.99913, 7.18115, -8.9],
+            "to": [11.99913, 8.18115, -3.9],
+            "rotation": {"x": -180, "z": -25.4, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [8.75, 2.75, 8, 2.5], "texture": "#flamethrower"},
+                "east": {"uv": [10, 2.5, 8.75, 2.75], "texture": "#flamethrower"},
+                "south": {"uv": [10, 2.5, 10.75, 2.75], "texture": "#flamethrower"},
+                "down": {"uv": [8.75, 1.25, 8, 2.5], "texture": "#flamethrower"}
+            }
+        },
+        {
+            "name": "hydrogen",
+            "from": [9.1707, 7.54248, -9.5],
+            "to": [12.1707, 10.54248, 0.5],
+            "rotation": {"x": -180, "z": -25.4, "origin": [8.32027, 8.50185, 4.54233]},
+            "faces": {
+                "north": {"uv": [2.5, 2.5, 3.25, 3.25], "texture": "#flamethrower"},
+                "east": {"uv": [5.75, 2.5, 3.25, 3.25], "texture": "#flamethrower"},
+                "south": {"uv": [5.75, 2.5, 6.5, 3.25], "texture": "#flamethrower"},
+                "up": {"uv": [4, 2.5, 3.25, 0], "texture": "#flamethrower"},
+                "down": {"uv": [3.25, 0, 2.5, 2.5], "texture": "#flamethrower"}
+            }
+        }
+    ],
     "display": {
-        "gui": {
-            "rotation": [ 90, 135, 270 ],
-            "translation": [ -10.5, 6, 0],
-            "scale":[ 0.625, 0.625, 0.625 ]
-        },
-        "ground": {
-            "rotation": [ 0, 0, 0 ],
-            "translation": [ 0, 5, 0],
-            "scale":[ 0.25, 0.25, 0.25 ]
-        },
         "thirdperson_righthand": {
-            "rotation": [ 85, 190, 0 ],
-            "translation": [ 2, 0, 16],
-            "scale": [ 0.9375, 0.9375, 0.9375 ]
-        },
-        "firstperson_righthand": {
-            "rotation": [ 10, -175, 0 ],
-            "translation": [ 2, 16, 0 ],
-            "scale": [ 1, 1, 1 ]
+            "rotation": [75, 0, 0],
+            "translation": [0.5, 2, -4.25]
         },
         "thirdperson_lefthand": {
-            "rotation": [ 85, 195, 0 ],
-            "translation": [ 2, 0, 17],
-            "scale": [ 0.9375, 0.9375, 0.9375 ]
+            "rotation": [75, 0, 0],
+            "translation": [-0.5, 2, -4.25]
+        },
+        "firstperson_righthand": {
+            "rotation": [-15, 5, 0],
+            "translation": [-1.25, -0.5, 1.75]
         },
         "firstperson_lefthand": {
-            "rotation": [ 10, -175, 0 ],
-            "translation": [ 2, 16, 0 ],
-            "scale": [ 1, 1, 1 ]
+            "rotation": [-15, 5, 0],
+            "translation": [-1.25, -0.5, 1.75]
+        },
+        "gui": {
+            "rotation": [40, -30, 20],
+            "scale": [0.8, 0.8, 0.8]
         },
         "head": {
-            "rotation": [ 175, 15, 180 ],
-            "translation": [ 6, 20, 0],
-            "scale": [ 1, 1, 1]
+            "translation": [4.25, 7.5, 0]
         },
         "fixed": {
-            "rotation": [ 270, 130, 90 ],
-            "translation": [ 13, 7.5, -1.5],
-            "scale": [ -0.8, 0.8, -0.8 ]
+            "rotation": [0, 90, 0],
+            "translation": [1.25, 0, 0],
+            "scale": [0.65, 0.65, 0.65]
+        },
+        "on_shelf": {
+            "rotation": [90, 0, 0]
         }
-    }
+    },
+    "groups": [
+        {
+            "name": "flamethrower",
+            "origin": [1.5, 16, -5.5],
+            "scope": 0,
+            "color": 0,
+            "children": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+        }
+    ]
 }

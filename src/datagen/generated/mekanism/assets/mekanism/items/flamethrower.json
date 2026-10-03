@@ -1,9 +1,6 @@
 {
   "model": {
-    "type": "minecraft:special",
-    "base": "mekanism:item/flamethrower",
-    "model": {
-      "type": "mekanism:flamethrower"
-    }
+    "type": "minecraft:model",
+    "model": "mekanism:item/flamethrower"
   }
 }
