@@ -19,7 +19,6 @@ import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.Vec3i;
@@ -170,21 +169,8 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
 
     private static InteractionResult transformAOE(UseOnContext context, BlockState clickedState, EnergyHandler energyHandler, int diameter, TransactionContext transaction,
           ResourceKey<BlockTransformer> transformer, int energyUsage, IToolAOEData toolAOEData) {
-        ItemStack stack = context.getItemInHand();
-        Holder<BlockTransformer> previousTransformer = stack.get(DataComponents.BLOCK_TRANSFORMER);
         Reference<BlockTransformer> holder = context.getLevel().registryAccess().getOrThrow(transformer);
-        //Update the stack's transformer so that any modded added values can be used
-        stack.set(DataComponents.BLOCK_TRANSFORMER, holder);
-
-        Iterable<BlockTransformData> transforms = DataMapHooks.appendDatamapTransformers(stack, holder.value().transforms());
-        InteractionResult result = transformAOE(context, clickedState, energyHandler, diameter, transaction, transforms, energyUsage, toolAOEData);
-        //Reset the stack's transformer to what it was previously
-        stack.set(DataComponents.BLOCK_TRANSFORMER, previousTransformer);
-        return result;
-    }
-
-    private static InteractionResult transformAOE(UseOnContext context, BlockState clickedState, EnergyHandler energyHandler, int diameter, TransactionContext transaction,
-          Iterable<BlockTransformer.BlockTransformData> transforms, int energyUsage, IToolAOEData toolAOEData) {
+        Iterable<BlockTransformData> transforms = DataMapHooks.getAllTransformers(holder);
         Player player = context.getPlayer();
         if (player != null && player.isCreative()) {
             energyUsage = 0;

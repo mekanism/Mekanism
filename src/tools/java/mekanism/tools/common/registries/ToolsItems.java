@@ -11,14 +11,12 @@ import mekanism.tools.common.material.IPaxelMaterial;
 import mekanism.tools.common.material.VanillaPaxelMaterialCreator;
 import mekanism.tools.common.registration.ArmorCollection;
 import mekanism.tools.common.registration.ToolCollection;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.component.BlockTransformer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.BlockTransformers;
 import net.minecraft.world.item.context.UseOnContext;
 
@@ -94,14 +92,9 @@ public class ToolsItems {
             InteractionResult result = super.useOn(context);
             if (!result.consumesAction()) {
                 //If using it as an axe failed, try to use it as a shovel
-                ItemStack stack = context.getItemInHand();
-                Holder<BlockTransformer> previousTransformer = stack.get(DataComponents.BLOCK_TRANSFORMER);
                 Reference<BlockTransformer> shovel = context.getLevel().registryAccess().getOrThrow(BlockTransformers.SHOVEL);
-                //Update the stack's transformer so that any modded added values can be used
-                stack.set(DataComponents.BLOCK_TRANSFORMER, shovel);
-                result = shovel.value().transformBlock(context);
-                //Reset the stack's transformer to what it was previously
-                stack.set(DataComponents.BLOCK_TRANSFORMER, previousTransformer);
+                //Pass the shovel holder so that it uses that instead of looking it upu from the stack
+                return shovel.value().transformBlock(context, shovel);
             }
             return result;
         }
