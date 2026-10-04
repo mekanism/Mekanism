@@ -100,7 +100,7 @@ import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.armor.FreeRunnerArmor;
 import mekanism.client.render.armor.JetpackArmor;
 import mekanism.client.render.armor.MekaSuitArmor;
-import mekanism.client.render.armor.ScubaTankArmor;
+import mekanism.client.render.armor.ChestArmor;
 import mekanism.client.render.entity.FlameModel;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
@@ -157,6 +157,7 @@ import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.tile.qio.QIOBlockTintSource;
 import mekanism.common.tile.transmitter.LogisticalTransporterBlockTintSource;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -172,6 +173,7 @@ import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
@@ -181,6 +183,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -346,6 +349,10 @@ public class ClientRegistration {
                         }
                     }
                 } else if (chest instanceof ItemJetpack || chest instanceof ItemScubaTank) {
+                    ItemStackRenderState bodyItem = new ItemStackRenderState();
+                    //TODO - 26.3: If the jetpack and scuba tank need different transforms from each other, add a custom display context for back
+                    Minecraft.getInstance().getEntityRenderDispatcher().itemModelResolver.updateForLiving(bodyItem, state.chestEquipment, ItemDisplayContext.NONE, entity);
+                    state.setRenderData(ChestArmor.CHEST_CONTEXT, bodyItem);
                     if (state instanceof AvatarRenderState avatarState) {
                         //Hide the player's cape if they have a thick armor piece on that would clip with it
                         //TODO - 26.3: Look into the translations that CapeLayer does if the chest equipment has the humanoid layer type
@@ -571,7 +578,7 @@ public class ClientRegistration {
         event.registerItem(new MekCustomArmorRenderProperties(JetpackArmor.JETPACK), MekanismItems.JETPACK);
         event.registerItem(new MekCustomArmorRenderProperties(FreeRunnerArmor.ARMORED_FREE_RUNNERS), MekanismItems.ARMORED_FREE_RUNNERS);
         event.registerItem(new MekCustomArmorRenderProperties(FreeRunnerArmor.FREE_RUNNERS), MekanismItems.FREE_RUNNERS);
-        event.registerItem(new MekCustomArmorRenderProperties(ScubaTankArmor.SCUBA_TANK), MekanismItems.SCUBA_TANK);
+        event.registerItem(new MekCustomArmorRenderProperties(ChestArmor.ARMOR), MekanismItems.SCUBA_TANK);
 
         event.registerItem(MekaSuitArmor.HELMET, MekanismItems.MEKASUIT_HELMET);
         event.registerItem(MekaSuitArmor.BODYARMOR, MekanismItems.MEKASUIT_BODYARMOR);
@@ -613,7 +620,7 @@ public class ClientRegistration {
                 if (layerClass == HumanoidArmorLayer.class) {
                     //Note: We know that the MODEL is actually an instance of HumanoidModel, or there wouldn't be a
                     //noinspection unchecked,rawtypes
-                    renderer.addLayer(new MekanismArmorLayer(renderer, (HumanoidArmorLayer<?, ?, ?>) layerRenderer, context.getEquipmentRenderer()));
+                    renderer.addLayer(new MekanismArmorLayer(renderer, (HumanoidArmorLayer<?, ?, ?>) layerRenderer, context));
                     Mekanism.logger.debug("Added Mekanism Armor Layer to entity of type: {}", Util.getRegisteredName(BuiltInRegistries.ENTITY_TYPE, type));
                     break;
                 }

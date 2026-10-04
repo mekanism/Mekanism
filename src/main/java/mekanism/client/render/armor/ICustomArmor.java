@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.ItemStack;
 
-@FunctionalInterface
 public interface ICustomArmor {
 
     default <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
@@ -24,10 +23,7 @@ public interface ICustomArmor {
         }
     }
 
-    default <STATE extends HumanoidRenderState> boolean isVisible(HumanoidModel<STATE> baseModel, STATE state) {
-        //TODO - 26.3: Implement this for the mekasuit?
-        return true;
-    }
+    <STATE extends HumanoidRenderState> boolean isVisible(HumanoidModel<STATE> baseModel, STATE state);
 
     <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, STATE state,
           boolean isBaby, ItemStack stack);

@@ -162,6 +162,12 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     }
 
     @Override
+    public <STATE extends HumanoidRenderState> boolean isVisible(HumanoidModel<STATE> baseModel, STATE state) {
+        //TODO - 26.3: Implement this for the mekasuit?
+        return true;
+    }
+
+    @Override
     public <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
           STATE state, boolean isBaby, ItemStack stack) {
         ArmorQuads armorQuads = cache.getUnchecked(key(state));
