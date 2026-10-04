@@ -26,7 +26,6 @@ import mekanism.client.render.item.RenderRobitItem;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.gear.RenderJetpack;
-import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.common.Mekanism;
 import mekanism.common.base.holiday.Holiday;
 import mekanism.common.block.BlockPersonalBarrel;
@@ -201,7 +200,6 @@ public class MekanismModelProvider extends BaseModelProvider {
 
         simpleISTER(itemModels, MekanismItems.JETPACK, RenderJetpack.REGULAR);
         simpleISTER(itemModels, MekanismItems.ARMORED_JETPACK, RenderJetpack.ARMORED);
-        simpleISTER(itemModels, MekanismItems.SCUBA_TANK, RenderScubaTank.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismItems.ROBIT, RenderRobitItem.Unbaked.INSTANCE, existingModel("item/robit_transforms"));
 
         //TODO - 26.3: we could possibly merge the base item models to one now? Assuming the perspective translations are the same
@@ -582,6 +580,7 @@ public class MekanismModelProvider extends BaseModelProvider {
         itemModels.declareCustomModelItem(MekanismItems.FREE_RUNNERS.asItem());
         itemModels.declareCustomModelItem(MekanismItems.FLAMETHROWER.asItem());
         itemModels.declareCustomModelItem(MekanismItems.SCUBA_MASK.asItem());
+        itemModels.declareCustomModelItem(MekanismItems.SCUBA_TANK.asItem());
         itemModels.declareCustomModelItem(MekanismItems.GAUGE_DROPPER.asItem());
         itemModels.declareCustomModelItem(MekanismItems.HAZMAT_BOOTS.asItem());
         itemModels.declareCustomModelItem(MekanismItems.HAZMAT_GOWN.asItem());

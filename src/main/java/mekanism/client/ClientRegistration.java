@@ -73,7 +73,6 @@ import mekanism.client.model.MekanismModelCache;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.client.model.ModelJetpack;
-import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.model.blockstate.HolidayBasedModelSelector;
 import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel.Unbaked;
@@ -115,7 +114,6 @@ import mekanism.client.render.item.TransmitterTypeDecorator;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.gear.RenderJetpack;
-import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.lib.effect.BillboardingEffectFeatureRenderer;
 import mekanism.client.render.lib.effect.BoltFeatureRenderer;
@@ -377,10 +375,6 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModelArmoredJetpack.ARMORED_JETPACK_LAYER, () -> armoredJetpackLayer);
         event.registerLayerDefinition(ModelArmoredJetpack.ARMORED_JETPACK_BABY_LAYER, () -> armoredJetpackLayer.apply(babyTransformer));
 
-        LayerDefinition scubaTankLayer = ModelScubaTank.createLayerDefinition();
-        event.registerLayerDefinition(ModelScubaTank.TANK_LAYER, () -> scubaTankLayer);
-        event.registerLayerDefinition(ModelScubaTank.TANK_BABY_LAYER, () -> scubaTankLayer.apply(babyTransformer));
-
         event.registerLayerDefinition(RenderEnergyCube.CORE_LAYER, RenderEnergyCube::createCoreLayer);
         event.registerLayerDefinition(ModelIndustrialAlarm.ALARM_LAYER, ModelIndustrialAlarm::createLayerDefinition);
         event.registerLayerDefinition(RenderIndustrialAlarm.LIGHT_BOX_LAYER, RenderIndustrialAlarm::createLightBoxLayer);
@@ -394,14 +388,12 @@ public class ClientRegistration {
         //Custom Armor
         event.addListener(Mekanism.rl("jetpack_armor_armored"), JetpackArmor.ARMORED_JETPACK);
         event.addListener(Mekanism.rl("jetpack_armor_jetpack"), JetpackArmor.JETPACK);
-        event.addListener(Mekanism.rl("scuba_tank_armor"), ScubaTankArmor.SCUBA_TANK);
     }
 
     @SubscribeEvent
     public static void registerSpecialRenderer(RegisterSpecialModelRendererEvent event) {
         event.register(Mekanism.rl("fluid_tank"), RenderFluidTankItem.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("jetpack"), RenderJetpack.Unbaked.MAP_CODEC);
-        event.register(Mekanism.rl("scuba_tank"), RenderScubaTank.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("energy_cube"), RenderEnergyCubeItem.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("robit"), RenderRobitItem.Unbaked.MAP_CODEC);
     }
