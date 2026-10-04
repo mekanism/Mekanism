@@ -196,10 +196,15 @@ public class RenderTickHandler {
         float random = (world.getRandom().nextFloat() - 0.5F) * 0.1F;
         //This positioning code is somewhat cursed, but it seems to be mostly working and entity pose code seems cursed in general
         float xAngle;
-        float bodyYRot = -p.yBodyRot * Mth.DEG_TO_RAD;
+        float yBodyRot = Mth.rotLerp(partialTicks, p.yBodyRotO, p.yBodyRot);
+        float bodyYRot = -yBodyRot * Mth.DEG_TO_RAD;
+        double sideZ = -0.54;
+        double centerZ = -0.3;
         if (p.isCrouching()) {
             xAngle = 20 * Mth.DEG_TO_RAD;
-            playerPos = playerPos.add(0, 0.125, 0);
+            playerPos = playerPos.add(0, 0.5, 0);
+            centerZ = -0.9;
+            sideZ = -0.8;
         } else {
             float swimAmount = p.getSwimAmount(partialTicks);
             if (p.isFallFlying()) {
@@ -223,14 +228,15 @@ public class RenderTickHandler {
                 if (p.isVisuallySwimming()) {
                     eyeAdjustments = eyeAdjustments.add(0, 0.5, 0);
                 }
+                centerZ = -0.2;
             }
             playerPos = p.position().add(eyeAdjustments);
         }
-        Vec3 vLeft = new Vec3(-0.43, -0.55, -0.54).xRot(xAngle).yRot(bodyYRot);
+        Vec3 vLeft = new Vec3(-0.43, -0.55, sideZ).xRot(xAngle).yRot(bodyYRot);
         renderJetpackSmoke(world, playerPos.add(vLeft).add(playerMotion), vLeft.scale(0.2).add(playerMotion).add(vLeft.scale(random)));
-        Vec3 vRight = new Vec3(0.43, -0.55, -0.54).xRot(xAngle).yRot(bodyYRot);
+        Vec3 vRight = new Vec3(0.43, -0.55, sideZ).xRot(xAngle).yRot(bodyYRot);
         renderJetpackSmoke(world, playerPos.add(vRight).add(playerMotion), vRight.scale(0.2).add(playerMotion).add(vRight.scale(random)));
-        Vec3 vCenter = new Vec3((world.getRandom().nextFloat() - 0.5) * 0.4, -0.86, -0.30).xRot(xAngle).yRot(bodyYRot);
+        Vec3 vCenter = new Vec3((world.getRandom().nextFloat() - 0.5) * 0.4, -0.86, centerZ).xRot(xAngle).yRot(bodyYRot);
         renderJetpackSmoke(world, playerPos.add(vCenter).add(playerMotion), vCenter.scale(0.2).add(playerMotion));
     }
 

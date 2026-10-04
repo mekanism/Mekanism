@@ -23,8 +23,6 @@ public class MekanismRenderType {
 
     public static final Function<Identifier, RenderType> STANDARD = RenderTypes::entityTranslucent;
     public static final Function<Identifier, RenderType> ALARM = RenderTypes::entityTranslucent;
-    //Similar to mekStandard but blurs the texture
-    public static final Function<Identifier, RenderType> JETPACK_GLASS = RenderTypes::entityTranslucent;
 
     public static final Function<Identifier, RenderType> FLAME = RenderTypes::entityTranslucent;
 

@@ -70,9 +70,7 @@ import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.model.MekanismModelCache;
-import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelIndustrialAlarm;
-import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.model.blockstate.HolidayBasedModelSelector;
 import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel.Unbaked;
@@ -97,10 +95,9 @@ import mekanism.client.pip.RobitSkinPreviewPiP;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.client.render.RenderPropertiesProvider.MekCustomArmorRenderProperties;
 import mekanism.client.render.RenderTickHandler;
-import mekanism.client.render.armor.FreeRunnerArmor;
-import mekanism.client.render.armor.JetpackArmor;
-import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.armor.ChestArmor;
+import mekanism.client.render.armor.FreeRunnerArmor;
+import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.entity.FlameModel;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
@@ -113,7 +110,6 @@ import mekanism.client.render.item.RenderRobitItem;
 import mekanism.client.render.item.TransmitterTypeDecorator;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
-import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.lib.effect.BillboardingEffectFeatureRenderer;
 import mekanism.client.render.lib.effect.BoltFeatureRenderer;
@@ -160,8 +156,6 @@ import mekanism.common.tile.transmitter.LogisticalTransporterBlockTintSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.PartNames;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshTransformer;
 import net.minecraft.client.model.object.armorstand.ArmorStandModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -189,7 +183,6 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
@@ -350,7 +343,6 @@ public class ClientRegistration {
                     }
                 } else if (chest instanceof ItemJetpack || chest instanceof ItemScubaTank) {
                     ItemStackRenderState bodyItem = new ItemStackRenderState();
-                    //TODO - 26.3: If the jetpack and scuba tank need different transforms from each other, add a custom display context for back
                     Minecraft.getInstance().getEntityRenderDispatcher().itemModelResolver.updateForLiving(bodyItem, state.chestEquipment, ItemDisplayContext.NONE, entity);
                     state.setRenderData(ChestArmor.CHEST_CONTEXT, bodyItem);
                     if (state instanceof AvatarRenderState avatarState) {
@@ -374,14 +366,6 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        MeshTransformer babyTransformer = MeshTransformer.scaling(0.5F);
-        LayerDefinition jetpackLayer = ModelJetpack.createLayerDefinition();
-        event.registerLayerDefinition(ModelJetpack.JETPACK_LAYER, () -> jetpackLayer);
-        event.registerLayerDefinition(ModelJetpack.JETPACK_BABY_LAYER, () -> jetpackLayer.apply(babyTransformer));
-        LayerDefinition armoredJetpackLayer = ModelArmoredJetpack.createLayerDefinition();
-        event.registerLayerDefinition(ModelArmoredJetpack.ARMORED_JETPACK_LAYER, () -> armoredJetpackLayer);
-        event.registerLayerDefinition(ModelArmoredJetpack.ARMORED_JETPACK_BABY_LAYER, () -> armoredJetpackLayer.apply(babyTransformer));
-
         event.registerLayerDefinition(RenderEnergyCube.CORE_LAYER, RenderEnergyCube::createCoreLayer);
         event.registerLayerDefinition(ModelIndustrialAlarm.ALARM_LAYER, ModelIndustrialAlarm::createLayerDefinition);
         event.registerLayerDefinition(RenderIndustrialAlarm.LIGHT_BOX_LAYER, RenderIndustrialAlarm::createLightBoxLayer);
@@ -391,16 +375,8 @@ public class ClientRegistration {
     }
 
     @SubscribeEvent
-    public static void registerClientReloadListeners(AddClientReloadListenersEvent event) {
-        //Custom Armor
-        event.addListener(Mekanism.rl("jetpack_armor_armored"), JetpackArmor.ARMORED_JETPACK);
-        event.addListener(Mekanism.rl("jetpack_armor_jetpack"), JetpackArmor.JETPACK);
-    }
-
-    @SubscribeEvent
     public static void registerSpecialRenderer(RegisterSpecialModelRendererEvent event) {
         event.register(Mekanism.rl("fluid_tank"), RenderFluidTankItem.Unbaked.MAP_CODEC);
-        event.register(Mekanism.rl("jetpack"), RenderJetpack.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("energy_cube"), RenderEnergyCubeItem.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("robit"), RenderRobitItem.Unbaked.MAP_CODEC);
     }
@@ -574,11 +550,10 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(new MekCustomArmorRenderProperties(JetpackArmor.ARMORED_JETPACK), MekanismItems.ARMORED_JETPACK);
-        event.registerItem(new MekCustomArmorRenderProperties(JetpackArmor.JETPACK), MekanismItems.JETPACK);
         event.registerItem(new MekCustomArmorRenderProperties(FreeRunnerArmor.ARMORED_FREE_RUNNERS), MekanismItems.ARMORED_FREE_RUNNERS);
         event.registerItem(new MekCustomArmorRenderProperties(FreeRunnerArmor.FREE_RUNNERS), MekanismItems.FREE_RUNNERS);
-        event.registerItem(new MekCustomArmorRenderProperties(ChestArmor.ARMOR), MekanismItems.SCUBA_TANK);
+        event.registerItem(new MekCustomArmorRenderProperties(ChestArmor.JETPACK), MekanismItems.ARMORED_JETPACK, MekanismItems.JETPACK);
+        event.registerItem(new MekCustomArmorRenderProperties(ChestArmor.SCUBA_TANK), MekanismItems.SCUBA_TANK);
 
         event.registerItem(MekaSuitArmor.HELMET, MekanismItems.MEKASUIT_HELMET);
         event.registerItem(MekaSuitArmor.BODYARMOR, MekanismItems.MEKASUIT_BODYARMOR);

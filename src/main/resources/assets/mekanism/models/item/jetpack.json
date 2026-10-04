@@ -1,42 +1,108 @@
 {
+    "loader": "neoforge:composite",
     "textures": {
-        "particle": "mekanism:block/block_steel"
+        "particle": "mekanism:item/jetpack"
+    },
+    "children": {
+        "base": {
+            "parent": "mekanism:item/jetpack_no_thrusters"
+        },
+        "thrusters": {
+            "textures": {
+                "jetpack": "mekanism:item/jetpack",
+                "particle": "#jetpack"
+            },
+            "elements": [
+                {
+                    "name": "left_thruster",
+                    "from": [13.80619, 7.08329, 7.82868],
+                    "to": [16.80619, 10.08329, 10.82868],
+                    "rotation": {"x": -135, "y": 41, "z": -20, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [2, 8.25, 2.75, 9], "texture": "#jetpack"},
+                        "east": {"uv": [1.25, 8.25, 2, 9], "texture": "#jetpack"},
+                        "south": {"uv": [3.5, 8.25, 4.25, 9], "texture": "#jetpack"},
+                        "west": {"uv": [2.75, 8.25, 3.5, 9], "texture": "#jetpack"},
+                        "up": {"uv": [3.5, 8.25, 2.75, 7.5], "texture": "#jetpack"},
+                        "down": {"uv": [2.75, 7.5, 2, 8.25], "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "left_thruster_fuel",
+                    "from": [9.20619, 7.58329, 8.32868],
+                    "to": [17.20619, 9.58329, 10.32868],
+                    "rotation": {"x": -135, "y": 41, "z": -20, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [7.5, 6.25, 9.5, 6.75], "texture": "#jetpack"},
+                        "east": {"uv": [7, 6.25, 7.5, 6.75], "rotation": 180, "texture": "#jetpack"},
+                        "south": {"uv": [10, 6.25, 12, 6.75], "texture": "#jetpack"},
+                        "up": {"uv": [9.5, 6.25, 7.5, 5.75], "texture": "#jetpack"},
+                        "down": {"uv": [11.5, 5.75, 9.5, 6.25], "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "right_thruster",
+                    "from": [-0.52665, 6.43178, 7.64211],
+                    "to": [2.47335, 9.43178, 10.64211],
+                    "rotation": {"x": -135, "y": -41, "z": 20, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [2, 8.25, 2.75, 9], "texture": "#jetpack"},
+                        "east": {"uv": [1.25, 8.25, 2, 9], "texture": "#jetpack"},
+                        "south": {"uv": [3.5, 8.25, 4.25, 9], "texture": "#jetpack"},
+                        "west": {"uv": [2.75, 8.25, 3.5, 9], "texture": "#jetpack"},
+                        "up": {"uv": [2.75, 8.25, 3.5, 7.5], "texture": "#jetpack"},
+                        "down": {"uv": [2.75, 7.5, 2, 8.25], "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "right_thruster_fuel",
+                    "from": [-0.92665, 6.93178, 8.14211],
+                    "to": [7.07335, 8.93178, 10.14211],
+                    "rotation": {"x": -135, "y": -41, "z": 20, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [7.5, 6.25, 9.5, 6.75], "texture": "#jetpack"},
+                        "south": {"uv": [10, 6.25, 12, 6.75], "texture": "#jetpack"},
+                        "west": {"uv": [9.5, 6.25, 10, 6.75], "rotation": 90, "texture": "#jetpack"},
+                        "up": {"uv": [9.5, 6.25, 7.5, 5.75], "texture": "#jetpack"},
+                        "down": {"uv": [11.5, 5.75, 9.5, 6.25], "texture": "#jetpack"}
+                    }
+                }
+            ]
+        }
     },
     "display": {
-        "gui": {
-            "rotation": [ 30, 45, 0 ],
-            "translation": [ -1, 4, 0],
-            "scale":[ 0.625, 0.625, 0.625 ]
-        },
-        "ground": {
-            "rotation": [ 0, 90, 0 ],
-            "translation": [ 0, 2, 0],
-            "scale":[ 0.25, 0.25, 0.25 ]
-        },
         "thirdperson_righthand": {
-            "rotation": [ 75, 135, 0 ],
-            "translation": [ 0, 0, 2],
-            "scale": [ 0.375, 0.375, 0.375 ]
-        },
-        "firstperson_righthand": {
-            "rotation": [ 0, 135, 0 ],
-            "translation": [ 0, 1, 0],
-            "scale": [ 0.4, 0.4, 0.4 ]
+            "rotation": [75, 0, 0],
+            "scale": [0.75, 0.75, 0.75]
         },
         "thirdperson_lefthand": {
-            "rotation": [ 75, 135, 0 ],
-            "translation": [ 0, 0, 2],
-            "scale": [ 0.375, 0.375, 0.375 ]
+            "rotation": [75, 0, 0],
+            "scale": [0.75, 0.75, 0.75]
+        },
+        "firstperson_righthand": {
+            "rotation": [15, 15, 0],
+            "scale": [0.75, 0.75, 0.75]
         },
         "firstperson_lefthand": {
-            "rotation": [ 0, 135, 0 ],
-            "translation": [ 0, 1, 0],
-            "scale": [ 0.4, 0.4, 0.4 ]
+            "rotation": [15, 15, 0],
+            "scale": [0.75, 0.75, 0.75]
+        },
+        "gui": {
+            "rotation": [-30, 130, 25],
+            "translation": [0.75, 0, 0],
+            "scale": [0.75, 0.75, 0.75]
+        },
+        "head": {
+            "rotation": [-90, -180, 0],
+            "translation": [0, 7.5, 0]
         },
         "fixed": {
-            "rotation": [ 0, 180, 0 ],
-            "translation": [ 0, 3.5, 2],
-            "scale":[ 1, 1, 1 ]
+            "translation": [-0.5, 0, 0],
+            "scale": [0.7, 0.7, 0.7]
+        },
+        "on_shelf": {
+            "rotation": [0, -180, -90],
+            "scale": [0.9, 0.9, 0.9]
         }
     }
 }

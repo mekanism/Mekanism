@@ -13,9 +13,15 @@ import net.minecraft.world.item.ItemStack;
 public class ChestArmor implements ICustomArmor {
 
     public static final ContextKey<ItemStackRenderState> CHEST_CONTEXT = new ContextKey<>(Mekanism.rl("chest"));
-    public static final ChestArmor ARMOR = new ChestArmor();
+    //TODO: See if we can replace having separate ones like this with just having a custom ItemDisplayContext that is defined in the json
+    // and parsed in ClientRegistration#registerRenderStateModifiers
+    public static final ChestArmor JETPACK = new ChestArmor(true);
+    public static final ChestArmor SCUBA_TANK = new ChestArmor(false);
 
-    private ChestArmor() {
+    private final boolean jetpack;
+
+    private ChestArmor(boolean jetpack) {
+        this.jetpack = jetpack;
     }
 
     @Override
@@ -32,11 +38,21 @@ public class ChestArmor implements ICustomArmor {
             baseModel.body.translateAndRotate(poseStack);
             if (isBaby) {
                 poseStack.scale(state.ageScale, state.ageScale, state.ageScale);
+                if (jetpack) {
+                    poseStack.translate(0, -0.05, 0);
+                }
+            } else if (jetpack) {
+                poseStack.translate(0, 0.3, 0);
             } else {
                 poseStack.translate(0, 0.41, 0);
             }
-            poseStack.translate(0, 0, 0.28);
-            poseStack.scale(1, -1, -1);
+            if (jetpack) {
+                poseStack.translate(0, 0, 0.145);
+                poseStack.scale(1.02F, -1.02F, -1.02F);
+            } else {
+                poseStack.translate(0, 0, 0.28);
+                poseStack.scale(1, -1, -1);
+            }
             bodyItem.submit(poseStack, collector, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
             poseStack.popPose();
         }

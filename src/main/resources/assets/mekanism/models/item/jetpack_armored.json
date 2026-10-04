@@ -1,3 +1,217 @@
 {
-    "parent": "mekanism:item/jetpack"
+    "loader": "neoforge:composite",
+    "textures": {
+        "particle": "mekanism:item/jetpack"
+    },
+    "children": {
+        "base": {
+            "parent": "mekanism:item/jetpack_no_thrusters"
+        },
+        "armored": {
+            "textures": {
+                "jetpack": "mekanism:item/jetpack",
+                "particle": "#jetpack"
+            },
+            "elements": [
+                {
+                    "name": "armored_left_thruster",
+                    "from": [13.80619, 7.08329, 8.92868],
+                    "to": [16.80619, 10.08329, 11.92868],
+                    "rotation": {"x": -135, "y": 41, "z": -20, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [2, 8.25, 2.75, 9], "texture": "#jetpack"},
+                        "east": {"uv": [1.25, 8.25, 2, 9], "texture": "#jetpack"},
+                        "south": {"uv": [3.5, 8.25, 4.25, 9], "texture": "#jetpack"},
+                        "west": {"uv": [2.75, 8.25, 3.5, 9], "texture": "#jetpack"},
+                        "up": {"uv": [3.5, 8.25, 2.75, 7.5], "texture": "#jetpack"},
+                        "down": {"uv": [2.75, 7.5, 2, 8.25], "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "armored_left_thruster_fuel",
+                    "from": [9.20619, 7.58329, 9.42868],
+                    "to": [17.20619, 9.58329, 11.42868],
+                    "rotation": {"x": -135, "y": 41, "z": -20, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [7.5, 6.25, 9.5, 6.75], "texture": "#jetpack"},
+                        "east": {"uv": [7, 6.25, 7.5, 6.75], "rotation": 180, "texture": "#jetpack"},
+                        "south": {"uv": [10, 6.25, 12, 6.75], "texture": "#jetpack"},
+                        "up": {"uv": [9.5, 6.25, 7.5, 5.75], "texture": "#jetpack"},
+                        "down": {"uv": [11.5, 5.75, 9.5, 6.25], "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "armored_right_thruster",
+                    "from": [-0.52665, 6.43178, 8.74211],
+                    "to": [2.47335, 9.43178, 11.74211],
+                    "rotation": {"x": -135, "y": -41, "z": 20, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [2, 8.25, 2.75, 9], "texture": "#jetpack"},
+                        "east": {"uv": [1.25, 8.25, 2, 9], "texture": "#jetpack"},
+                        "south": {"uv": [3.5, 8.25, 4.25, 9], "texture": "#jetpack"},
+                        "west": {"uv": [2.75, 8.25, 3.5, 9], "texture": "#jetpack"},
+                        "up": {"uv": [2.75, 8.25, 3.5, 7.5], "texture": "#jetpack"},
+                        "down": {"uv": [2.75, 7.5, 2, 8.25], "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "armored_right_thruster_fuel",
+                    "from": [-0.92665, 6.93178, 9.24211],
+                    "to": [7.07335, 8.93178, 11.24211],
+                    "rotation": {"x": -135, "y": -41, "z": 20, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [7.5, 6.25, 9.5, 6.75], "texture": "#jetpack"},
+                        "south": {"uv": [10, 6.25, 12, 6.75], "texture": "#jetpack"},
+                        "west": {"uv": [9.5, 6.25, 10, 6.75], "rotation": 90, "texture": "#jetpack"},
+                        "up": {"uv": [9.5, 6.25, 7.5, 5.75], "texture": "#jetpack"},
+                        "down": {"uv": [11.5, 5.75, 9.5, 6.25], "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "armored_light1",
+                    "from": [5, 8, 2.4375],
+                    "to": [6, 11, 3.4375],
+                    "light_emission": 15,
+                    "rotation": {"x": -180, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [4.5, 0.25, 4.75, 1], "texture": "#jetpack"},
+                        "east": {"uv": [4.25, 0.25, 4.5, 1], "texture": "#jetpack"},
+                        "west": {"uv": [4.75, 0.25, 5, 1], "texture": "#jetpack"},
+                        "up": {"uv": [4.75, 0.25, 4.5, 0], "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "armored_light2",
+                    "from": [10, 8, 2.4375],
+                    "to": [11, 11, 3.4375],
+                    "light_emission": 15,
+                    "rotation": {"x": -180, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [4.5, 0.25, 4.75, 1], "texture": "#jetpack"},
+                        "east": {"uv": [4.25, 0.25, 4.5, 1], "texture": "#jetpack"},
+                        "west": {"uv": [4.75, 0.25, 5, 1], "texture": "#jetpack"},
+                        "up": {"uv": [4.75, 0.25, 4.5, 0], "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "chestplate",
+                    "from": [4, 6.17085, 2.52334],
+                    "to": [12, 10.17085, 5.52334],
+                    "rotation": {"x": 159, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [10.75, 6.25, 12.75, 7.25], "rotation": 180, "texture": "#jetpack"},
+                        "east": {"uv": [12.75, 6.25, 13.5, 7.25], "rotation": 180, "texture": "#jetpack"},
+                        "south": {"uv": [13.5, 6.25, 15.5, 7.25], "rotation": 180, "texture": "#jetpack"},
+                        "west": {"uv": [10, 6.25, 10.75, 7.25], "rotation": 180, "texture": "#jetpack"},
+                        "up": {"uv": [12.75, 6.25, 10.75, 5.5], "texture": "#jetpack"},
+                        "down": {"uv": [14.75, 5.5, 12.75, 6.25], "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "plate_middle",
+                    "from": [6.5, 6.75144, 1.71961],
+                    "to": [9.5, 11.75144, 4.71961],
+                    "rotation": {"x": -168, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [8, 5.75, 8.75, 7], "rotation": 180, "texture": "#jetpack"},
+                        "east": {"uv": [7.25, 5.75, 8, 7], "rotation": 180, "texture": "#jetpack"},
+                        "south": {"uv": [9.5, 5.75, 10.25, 7], "rotation": 180, "texture": "#jetpack"},
+                        "west": {"uv": [8.75, 5.75, 9.5, 7], "rotation": 180, "texture": "#jetpack"},
+                        "up": {"uv": [8.75, 5.75, 8, 5], "rotation": 180, "texture": "#jetpack"},
+                        "down": {"uv": [9.5, 5, 8.75, 5.75], "rotation": 180, "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "plate_middle_left_guard",
+                    "from": [8.95, 6.75144, 2.91961],
+                    "to": [11.95, 10.75144, 4.91961],
+                    "rotation": {"x": -168, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [6.25, 8.25, 7, 9.25], "texture": "#jetpack"},
+                        "east": {"uv": [5.75, 8.25, 6.25, 9.25], "texture": "#jetpack"},
+                        "south": {"uv": [7.5, 8.25, 8.25, 9.25], "texture": "#jetpack"},
+                        "west": {"uv": [7, 8.25, 7.5, 9.25], "texture": "#jetpack"},
+                        "up": {"uv": [7, 8.25, 6.25, 7.75], "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "plate_middle_right_guard",
+                    "from": [4.05, 6.75144, 2.91961],
+                    "to": [7.05, 10.75144, 4.91961],
+                    "rotation": {"x": -168, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [6.25, 8.25, 7, 9.25], "texture": "#jetpack"},
+                        "east": {"uv": [5.75, 8.25, 6.25, 9.25], "texture": "#jetpack"},
+                        "south": {"uv": [7.5, 8.25, 8.25, 9.25], "texture": "#jetpack"},
+                        "west": {"uv": [7, 8.25, 7.5, 9.25], "texture": "#jetpack"},
+                        "up": {"uv": [7, 8.25, 6.25, 7.75], "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "bottom_left_guard",
+                    "from": [9.5, 9.2177, 2.60867],
+                    "to": [11.5, 11.2177, 4.60867],
+                    "rotation": {"x": -153, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [5.5, 8, 6, 8.5], "texture": "#jetpack"},
+                        "east": {"uv": [5, 8, 5.5, 8.5], "rotation": 180, "texture": "#jetpack"},
+                        "south": {"uv": [6.5, 8, 7, 8.5], "texture": "#jetpack"},
+                        "west": {"uv": [6, 8, 6.5, 8.5], "texture": "#jetpack"},
+                        "up": {"uv": [6, 8, 5.5, 7.5], "texture": "#jetpack"},
+                        "down": {"uv": [6.5, 7.5, 6, 8], "texture": "#jetpack"}
+                    }
+                },
+                {
+                    "name": "bottom_right_guard",
+                    "from": [4.5, 9.2177, 2.60867],
+                    "to": [6.5, 11.2177, 4.60867],
+                    "rotation": {"x": -153, "origin": [8.48063, 8.25048, 8.57977]},
+                    "faces": {
+                        "north": {"uv": [5.5, 8, 6, 8.5], "rotation": 180, "texture": "#jetpack"},
+                        "east": {"uv": [6, 8, 6.5, 8.5], "texture": "#jetpack"},
+                        "south": {"uv": [6.5, 8, 7, 8.5], "texture": "#jetpack"},
+                        "west": {"uv": [5, 8, 5.5, 8.5], "texture": "#jetpack"},
+                        "up": {"uv": [6, 8, 5.5, 7.5], "texture": "#jetpack"},
+                        "down": {"uv": [6.5, 7.5, 6, 8], "texture": "#jetpack"}
+                    }
+                }
+            ]
+        }
+    },
+    "display": {
+        "thirdperson_righthand": {
+            "rotation": [75, 0, 0],
+            "scale": [0.75, 0.75, 0.75]
+        },
+        "thirdperson_lefthand": {
+            "rotation": [75, 0, 0],
+            "scale": [0.75, 0.75, 0.75]
+        },
+        "firstperson_righthand": {
+            "rotation": [15, 15, 0],
+            "scale": [0.75, 0.75, 0.75]
+        },
+        "firstperson_lefthand": {
+            "rotation": [15, 15, 0],
+            "scale": [0.75, 0.75, 0.75]
+        },
+        "gui": {
+            "rotation": [-30, 130, 25],
+            "translation": [0.75, 0, 0],
+            "scale": [0.75, 0.75, 0.75]
+        },
+        "head": {
+            "rotation": [-40, -180, 0],
+            "translation": [0, 9.75, -7]
+        },
+        "fixed": {
+            "translation": [-0.5, 0, -3.5],
+            "scale": [0.7, 0.7, 0.7]
+        },
+        "on_shelf": {
+            "rotation": [0, 180, -90],
+            "translation": [0, 0, 2.75],
+            "scale": [0.9, 0.9, 0.9]
+        }
+    }
 }

@@ -30,12 +30,12 @@ public class ModelIndustrialAlarm extends Model<IndustrialAlarmRenderState> {
 
         root.addOrReplaceChild("bulb", CubeListBuilder.create()
                     .texOffs(16, 0)
-                    .addBox(-1F, 1F, -1F, 2, 3, 2),
+                    .addBox(-1, 1, -1, 2, 3, 2),
               PartPose.ZERO
         );
         root.addOrReplaceChild("aura", CubeListBuilder.create()
                     .texOffs(0, 16)
-                    .addBox(-6F, 2F, -1F, 12, 1, 2, new CubeDeformation(0.01F)),
+                    .addBox(-6, 2, -1, 12, 1, 2, new CubeDeformation(0.01F)),
               PartPose.ZERO
         );
 
