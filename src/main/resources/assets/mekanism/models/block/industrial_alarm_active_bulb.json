@@ -1,0 +1,38 @@
+{
+	"format_version": "26.3",
+	"credit": "Made with Blockbench",
+	"texture_size": [8, 8],
+	"textures": {
+		"0": "mekanism:block/models/industrial_alarm_active",
+		"particle": "mekanism:block/models/industrial_alarm_active"
+	},
+	"elements": [
+		{
+			"name": "bulb",
+			"from": [-1, 1, -1],
+			"to": [1, 4, 1],
+			"light_emission": 15,
+			"faces": {
+				"north": {"uv": [9, 1, 10, 2.5], "texture": "#0", "tintindex": 0},
+				"east": {"uv": [8, 1, 9, 2.5], "texture": "#0", "tintindex": 0},
+				"south": {"uv": [11, 1, 12, 2.5], "texture": "#0", "tintindex": 0},
+				"west": {"uv": [10, 1, 11, 2.5], "texture": "#0", "tintindex": 0},
+				"up": {"uv": [10, 1, 9, 0], "texture": "#0", "tintindex": 0}
+			}
+		},
+		{
+			"name": "aura",
+			"from": [-6.01, 1.99, -1.01],
+			"to": [6.01, 3.01, 1.01],
+			"light_emission": 15,
+			"faces": {
+				"north": {"uv": [2, 9.5, 8, 10], "texture": "#0", "tintindex": 0},
+				"east": {"uv": [1, 9.5, 2, 10], "texture": "#0", "tintindex": 0},
+				"south": {"uv": [9, 9.5, 15, 10], "texture": "#0", "tintindex": 0},
+				"west": {"uv": [8, 9.5, 9, 10], "texture": "#0", "tintindex": 0},
+				"up": {"uv": [8, 9.5, 2, 8.5], "texture": "#0", "tintindex": 0},
+				"down": {"uv": [14, 8.5, 8, 9.5], "texture": "#0", "tintindex": 0}
+			}
+		}
+	]
+}

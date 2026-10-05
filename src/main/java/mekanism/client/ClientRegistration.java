@@ -70,7 +70,6 @@ import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.model.MekanismModelCache;
-import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.model.blockstate.HolidayBasedModelSelector;
 import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel.Unbaked;
@@ -367,8 +366,6 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(RenderEnergyCube.CORE_LAYER, RenderEnergyCube::createCoreLayer);
-        event.registerLayerDefinition(ModelIndustrialAlarm.ALARM_LAYER, ModelIndustrialAlarm::createLayerDefinition);
-        event.registerLayerDefinition(RenderIndustrialAlarm.LIGHT_BOX_LAYER, RenderIndustrialAlarm::createLightBoxLayer);
 
         //Entity layer definitions
         event.registerLayerDefinition(FlameModel.FLAME_LAYER, FlameModel::createLayerDefinition);

@@ -2,53 +2,30 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import mekanism.client.model.ModelIndustrialAlarm;
-import mekanism.client.model.ModelIndustrialAlarm.IndustrialAlarmRenderState;
+import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.tileentity.RenderIndustrialAlarm.AlarmRenderState;
-import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntityIndustrialAlarm, AlarmRenderState> {
 
-    public static final ModelLayerLocation LIGHT_BOX_LAYER = new ModelLayerLocation(Mekanism.rl("industrial_alarm/light_box"), "main");
     private static final float ROTATE_SPEED = 10F;
-
-    public static LayerDefinition createLightBoxLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        root.addOrReplaceChild("light_box",
-              CubeListBuilder.create().addBox(-2F, 1F, -2F, 4, 4, 4, new CubeDeformation(0.01F)),
-              PartPose.ZERO
-        );
-        return LayerDefinition.create(mesh, 64, 64);
-    }
-
-    private final ModelIndustrialAlarm model;
-    private final ModelPart lightBox;
 
     public RenderIndustrialAlarm(BlockEntityRendererProvider.Context context) {
         super(context);
-        this.model = new ModelIndustrialAlarm(context.entityModelSet());
-        this.lightBox = context.bakeLayer(LIGHT_BOX_LAYER);
     }
 
     @Override
@@ -62,7 +39,7 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
         super.extractRenderState(alarm, state, partialTick, cameraPosition, breakProgress);
         state.direction = alarm.getDirection();
         //TODO - 26.3: Do we want to use game time as a basis or some other value?
-        state.modelState.setRotation((alarm.getGameTime() + partialTick) * ROTATE_SPEED % 360);
+        state.setRotation((alarm.getGameTime() + partialTick) * ROTATE_SPEED % 360);
     }
 
     @Override
@@ -94,9 +71,9 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
                 poseStack.rotate(Axis.ZP, Mth.HALF_PI);
             }
         }
-        submitCrumblingModel(nodeCollector, this.model, state.modelState, poseStack, this.model.getRenderType(), state);
-        RenderType renderType = this.model.getRenderType();
-        nodeCollector.submitModelPart(this.lightBox, poseStack, renderType, state.lightCoords, OverlayTexture.NO_OVERLAY, null);
+        poseStack.rotateDegrees(Axis.YP, state.rotation);
+        nodeCollector.submitBlockModel(poseStack, Sheets.translucentBlockItemSheet(), MekanismModelCache.INSTANCE.ALARM_BULB.getBakedModel(),
+              new int[]{state.tint}, state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
         poseStack.popPose();
     }
 
@@ -109,6 +86,13 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
 
         @Nullable
         public Direction direction;
-        public IndustrialAlarmRenderState modelState = new IndustrialAlarmRenderState();
+        private float rotation;
+        private int tint = CommonColors.WHITE;
+
+        public void setRotation(float rotation) {
+            this.rotation = rotation;
+            //Apply a changing alpha based on how far it is through the rotation
+            this.tint = ARGB.white(0.7F + 0.3F * (Math.abs(((this.rotation * 2) % 360) - 180F) / 180F));
+        }
     }
 }
