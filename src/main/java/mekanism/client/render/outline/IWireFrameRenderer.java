@@ -19,6 +19,6 @@ public interface IWireFrameRenderer {
     }
 
     default boolean isCombined() {
-        return false;
+        return true;
     }
 }

@@ -15,7 +15,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.BlockItem;
@@ -32,17 +31,22 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
     private final Lazy<Vector3fc[]> extents = Lazy.of(() -> ModelUtil.computeExtents(MekanismBlocks.CREATIVE_FLUID_TANK));
 
     @Override
-    public void submit(@Nullable TankRenderState argument, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
-        if (argument == null) {
+    public void submit(@Nullable TankRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
+        if (state == null) {
             return;
         }
-        if (argument.contentsMaxY > 0 && argument.fluidTexture != null) {
+        if (state.contentsMaxY > 0 && state.fluidTexture != null) {
             RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.NOT_DOWN, RenderFluidTank.CONTENTS_MIN_XZ, RenderFluidTank.CONTENTS_MIN_Y,
-                  RenderFluidTank.CONTENTS_MIN_XZ, RenderFluidTank.CONTENTS_MAX_XZ, argument.contentsMaxY, RenderFluidTank.CONTENTS_MAX_XZ, poseStack,
-                  Sheets.translucentBlockItemSheet(), submitNodeCollector, argument.fluidColor, LightCoordsUtil.lightCoordsWithEmission(lightCoords, argument.fluidLight),
-                  overlayCoords, RenderResizableCuboid.FaceDisplay.FRONT, null, null, argument.fluidTexture);
+                  RenderFluidTank.CONTENTS_MIN_XZ, RenderFluidTank.CONTENTS_MAX_XZ, state.contentsMaxY, RenderFluidTank.CONTENTS_MAX_XZ, poseStack,
+                  Sheets.translucentBlockItemSheet(), submitNodeCollector, state.fluidColor, LightCoordsUtil.lightCoordsWithEmission(lightCoords, state.fluidLight),
+                  overlayCoords, RenderResizableCuboid.FaceDisplay.FRONT, null, null, state.fluidTexture);
         }
-        argument.blockModelRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
+        if (hasFoil) {
+            state.blockRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor, true);
+        } else {
+            //Use vanilla's normal rendering submit chain so that if something breaks when updating, we only have things break when using glint
+            state.blockRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
+        }
     }
 
     @Override
@@ -72,14 +76,14 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
         }
         //TODO - 26.3: do this with the block model from model manager (copy Energy cube item)
         BlockState blockState = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
-        BlockModelRenderState blockModel = new BlockModelRenderState();
-        mc().getBlockModelResolver().update(blockModel, blockState, ModelUtil.BLOCK_DISPLAY_NO_CONTEXT);
+        FoilableBlockModelRenderState modelRenderState = new FoilableBlockModelRenderState();
+        mc().getBlockModelResolver().update(modelRenderState, blockState, ModelUtil.BLOCK_DISPLAY_NO_CONTEXT);
         //blockModel.tintLayers().add(tierTint);
-        return new TankRenderState(fluidLight, fluidColor, contentsMaxY, fluidTexture, blockModel);
+        return new TankRenderState(fluidLight, fluidColor, contentsMaxY, fluidTexture, modelRenderState);
     }
 
     public record TankRenderState(int fluidLight, int fluidColor, float contentsMaxY, @Nullable TexturePicker fluidTexture,
-                                  BlockModelRenderState blockModelRenderState) {
+                                  FoilableBlockModelRenderState blockRenderState) {
     }
 
     private static Minecraft mc() {

@@ -18,8 +18,8 @@ import mekanism.generators.client.gui.GuiIndustrialTurbine;
 import mekanism.generators.client.gui.GuiSolarGenerator;
 import mekanism.generators.client.gui.GuiTurbineStats;
 import mekanism.generators.client.gui.GuiWindGenerator;
+import mekanism.generators.client.model.GeneratorsModelCache;
 import mekanism.generators.client.model.ModelTurbine;
-import mekanism.generators.client.model.ModelWindGenerator;
 import mekanism.generators.client.render.RenderBioGenerator;
 import mekanism.generators.client.render.RenderFissionReactor;
 import mekanism.generators.client.render.RenderFusionReactor;
@@ -44,6 +44,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
@@ -83,7 +84,6 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(ModelWindGenerator.GENERATOR_LAYER, ModelWindGenerator::createLayerDefinition);
         event.registerLayerDefinition(ModelTurbine.TURBINE_LAYER, ModelTurbine::createLayerDefinition);
     }
 
@@ -126,6 +126,18 @@ public class GeneratorsClientRegistration {
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         ClientRegistrationUtil.registerBlockExtensions(event, GeneratorsBlocks.BLOCKS);
         ClientRegistrationUtil.registerFluidExtensions(event, GeneratorsFluids.FLUIDS);
+    }
+
+    @SubscribeEvent
+    public static void registerAdditionalModels(ModelEvent.RegisterStandalone event) {
+        GeneratorsModelCache.INSTANCE.setup(event);
+    }
+
+    @SubscribeEvent
+    public static void onModelBake(ModelEvent.BakingCompleted event) {
+        GeneratorsModelCache.INSTANCE.onBake(event);
+        //Reset any cached models now that the atlases are built
+        RenderWindGenerator.resetCached();
     }
 
     @SubscribeEvent

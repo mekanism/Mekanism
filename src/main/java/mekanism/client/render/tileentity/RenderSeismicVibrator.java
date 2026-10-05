@@ -58,11 +58,6 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     }
 
     @Override
-    public boolean isCombined() {
-        return true;
-    }
-
-    @Override
     public Collection<Line> applyTransformAndGetFrame(BlockEntity tile, float partialTick, PoseStack poseStack, LevelRenderState levelRenderState) {
         if (!(tile instanceof TileEntitySeismicVibrator vibrator)) {
             return Collections.emptyList();

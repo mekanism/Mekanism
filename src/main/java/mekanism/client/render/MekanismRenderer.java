@@ -17,8 +17,6 @@ import mekanism.api.tier.BaseTier;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.lib.ColorAtlas;
-import mekanism.client.render.tileentity.RenderPigmentMixer;
-import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -233,10 +231,6 @@ public class MekanismRenderer {
             teleporterPortal = new SingleTexturePicker(atlas.getSprite(Mekanism.rl("block/teleporter_portal")));
 
             //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
-            //Reset any cached models now that the atlases are built
-            //TODO - 26.3: Move model cache clearing to the baking complete event?
-            RenderPigmentMixer.resetCached();
-            RenderSeismicVibrator.resetCached();
             SINGLE_TEXTURE_PICKERS.clear();
             VALVE_FLUID_TEX_CACHE.clear();
 

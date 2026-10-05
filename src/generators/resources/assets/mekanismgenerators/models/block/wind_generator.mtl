@@ -1,0 +1,8 @@
+# Made in Blockbench 5.2.1
+newmtl m_6bbea4dc-b2c1-952e-8226-45e26a80f6bc
+map_Kd #wind_generator
+newmtl m_0f0a58fd-1b44-f0e5-bdfa-41fdbd9364da
+map_Kd #ports_led
+Ka 1 1 1
+newmtl m_6e0c5229-7be1-fa3c-5b4e-9e09f6e4d080
+map_Kd #ports

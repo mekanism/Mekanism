@@ -1,47 +1,49 @@
 {
   "textures": {
-    "particle": "mekanism:block/block_steel"
+    "particle": "mekanismgenerators:block/model/wind_generator"
   },
   "display": {
-    "gui": {
-      "rotation": [ 30, 225, 0 ],
-      "translation": [ 0, -3.5, 0],
-      "scale":[ 0.16, 0.16, 0.16 ]
-    },
-    "ground": {
-      "rotation": [ 0, 0, 0 ],
-      "translation": [ 0, 3, 0],
-      "scale":[ 0.128, 0.128, 0.128 ]
-    },
     "thirdperson_righthand": {
-      "rotation": [ 25, 45, 0 ],
-      "translation": [ 0, 2.5, 0],
-      "scale": [ 0.192, 0.192, 0.192 ]
-    },
-    "firstperson_righthand": {
-      "rotation": [ 0, 45, 0 ],
-      "translation": [ 0, -2.5, 0],
-      "scale": [ 0.1024, 0.1024, 0.1024 ]
+      "rotation": [ 0, 90, 0 ],
+      "translation": [ 0, -1, 1 ],
+      "scale": [ 0.2, 0.2, 0.2 ]
     },
     "thirdperson_lefthand": {
-      "rotation": [ 25, 45, 0 ],
-      "translation": [ 0, 2.5, 0],
-      "scale": [ 0.192, 0.192, 0.192 ]
+      "rotation": [ 0, 90, 0 ],
+      "translation": [ 0, -1, 1 ],
+      "scale": [ 0.2, 0.2, 0.2 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ -40, 90, 0 ],
+      "translation": [ 0, -4, 7 ],
+      "scale": [ 0.2, 0.2, 0.2 ]
     },
     "firstperson_lefthand": {
-      "rotation": [ 0, 45, 0 ],
-      "translation": [ 0, -2.5, 0],
-      "scale": [ 0.1024, 0.1024, 0.1024 ]
+      "rotation": [ -40, 90, 0 ],
+      "translation": [ 0, -4, 7 ],
+      "scale": [ 0.2, 0.2, 0.2 ]
+    },
+    "ground": {
+      "translation": [ 0, 1.25, 0 ],
+      "scale": [ 0.3, 0.3, 0.3 ]
+    },
+    "gui": {
+      "rotation": [ 30, 135, 0 ],
+      "translation": [ 0, -5.5, 0 ],
+      "scale": [ 0.16, 0.16, 0.16 ]
     },
     "head": {
-      "rotation": [ 0, 0, 0 ],
-      "translation": [ 0, 0, 0],
-      "scale":[ 0.256, 0.256, 0.256]
+      "translation": [ 0, 12.75, 0 ],
+      "scale": [ 0.8, 0.8, 0.8 ]
     },
     "fixed": {
-      "rotation": [ 0, 0, 0 ],
-      "translation": [ 0, -3.5, 0],
-      "scale":[ 0.256, 0.256, 0.256 ]
+      "translation": [ 0, -8.5, 0 ],
+      "scale": [ 0.2, 0.2, 0.2 ]
+    },
+    "on_shelf": {
+      "rotation": [ 0, -180, 0 ],
+      "translation": [ 0, -5.5, 0 ],
+      "scale": [ 0.3, 0.3, 0.3 ]
     }
   }
 }

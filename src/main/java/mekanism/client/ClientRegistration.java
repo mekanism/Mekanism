@@ -498,6 +498,9 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void onModelBake(ModelEvent.BakingCompleted event) {
         MekanismModelCache.INSTANCE.onBake(event);
+        //Reset any cached models now that the atlases are built
+        RenderPigmentMixer.resetCached();
+        RenderSeismicVibrator.resetCached();
     }
 
     @SubscribeEvent

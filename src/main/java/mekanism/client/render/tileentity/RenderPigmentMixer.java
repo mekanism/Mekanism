@@ -84,11 +84,6 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     }
 
     @Override
-    public boolean isCombined() {
-        return true;
-    }
-
-    @Override
     public Collection<Line> applyTransformAndGetFrame(BlockEntity tile, float partialTick, PoseStack poseStack, LevelRenderState levelRenderState) {
         if (!(tile instanceof TileEntityPigmentMixer mixer)) {
             return Collections.emptyList();

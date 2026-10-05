@@ -1,3 +1,15 @@
 {
-  "parent": "mekanism:block/nothing"
+  "loader": "neoforge:obj",
+  "model": "mekanismgenerators:models/block/wind_generator.obj",
+  "flip_v": true,
+  "textures": {
+    "particle": "mekanismgenerators:block/model/wind_generator",
+    "wind_generator": "mekanismgenerators:block/model/wind_generator",
+    "ports": "mekanism:block/models/ports",
+    "ports_led": "mekanism:block/models/ports_led"
+  },
+  "__comment": "this exists because the model is offset so that the item rotates appropriately on the ground",
+  "transform": {
+    "translation": [0.5, 0, 0.5]
+  }
 }
