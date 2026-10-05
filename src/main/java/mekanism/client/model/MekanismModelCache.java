@@ -31,6 +31,7 @@ public class MekanismModelCache extends BaseModelCache {
     public final Set<ModuleOBJModelData> MEKASUIT_MODULES = Collections.unmodifiableSet(mekaSuitModules);
 
     public final BlockStateModelPartHelper ALARM_BULB = registerJSON("block/industrial_alarm_active_bulb");
+    public final BlockStateModelPartHelper ENERGY_CORE = registerJSON("block/energy_core");
     public final BlockStateModelPartHelper LIQUIFIER_BLADE = registerJSON("block/liquifier_blade");
     public final BlockStateModelPartHelper VIBRATOR_SHAFT = registerJSON("block/vibrator_shaft");
     public final BlockStateModelPartHelper PIGMENT_MIXER_SHAFT = registerJSON("block/pigment_mixer_shaft");

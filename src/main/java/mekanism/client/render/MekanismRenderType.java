@@ -21,9 +21,6 @@ public class MekanismRenderType {
           .createRenderSetup()
     );
 
-    public static final Function<Identifier, RenderType> STANDARD = RenderTypes::entityTranslucent;
-    public static final Function<Identifier, RenderType> ALARM = RenderTypes::entityTranslucent;
-
     public static final Function<Identifier, RenderType> FLAME = RenderTypes::entityTranslucent;
 
     public static final RenderType MEKASUIT = RenderType.create("mekanism_mekasuit", RenderSetup.builder(MekanismRenderPipelines.MEKASUIT)

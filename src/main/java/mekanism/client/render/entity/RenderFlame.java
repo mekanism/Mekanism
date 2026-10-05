@@ -2,7 +2,6 @@ package mekanism.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.entity.RenderFlame.FlameRenderState;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.util.MekanismUtils;
@@ -58,7 +57,7 @@ public class RenderFlame extends EntityRenderer<EntityFlame, FlameRenderState> {
               this.model,
               state,
               poseStack,
-              MekanismRenderType.FLAME.apply(TEXTURE),
+              model.renderType(TEXTURE),
               state.lightCoords,
               OverlayTexture.NO_OVERLAY,
               state.tintColor,

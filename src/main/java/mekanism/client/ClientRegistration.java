@@ -365,9 +365,6 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(RenderEnergyCube.CORE_LAYER, RenderEnergyCube::createCoreLayer);
-
-        //Entity layer definitions
         event.registerLayerDefinition(FlameModel.FLAME_LAYER, FlameModel::createLayerDefinition);
     }
 

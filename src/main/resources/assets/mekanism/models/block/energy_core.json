@@ -1,0 +1,22 @@
+{
+	"textures": {
+		"particle": "mekanism:block/energy_core",
+		"core": "mekanism:block/energy_core"
+	},
+	"elements": [
+		{
+			"name": "core",
+			"from": [-8, -8, -8],
+			"to": [8, 8, 8],
+			"light_emission": 15,
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#core", "tintindex": 0},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#core", "tintindex": 0},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#core", "tintindex": 0},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#core", "tintindex": 0},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#core", "tintindex": 0},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#core", "tintindex": 0}
+			}
+		}
+	]
+}

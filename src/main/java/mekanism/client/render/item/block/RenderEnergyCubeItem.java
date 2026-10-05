@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
 import mekanism.client.ModelUtil;
+import mekanism.client.model.MekanismModelCache;
 import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
@@ -21,11 +22,11 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.IPersistentConfigInfo;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelManager;
@@ -40,24 +41,22 @@ import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCubeItem.CubeState> {
-    
-    private final ModelPart energyCore;
+
     private final Lazy<Vector3fc[]> extents = Lazy.of(() -> ModelUtil.computeExtents(MekanismBlocks.CREATIVE_ENERGY_CUBE));
 
-    public RenderEnergyCubeItem(EntityModelSet entityModels) {
-        this.energyCore = entityModels.bakeLayer(RenderEnergyCube.CORE_LAYER);
+    private RenderEnergyCubeItem() {
     }
 
     @Override
-    public void submit(@Nullable CubeState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
+    public void submit(@Nullable CubeState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
         if (state == null) {
             return;
         }
         if (hasFoil) {
-            state.blockRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor, true);
+            state.blockRenderState.submit(poseStack, nodeCollector, lightCoords, overlayCoords, outlineColor, true);
         } else {
             //Use vanilla's normal rendering submit chain so that if something breaks when updating, we only have things break when using glint
-            state.blockRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
+            state.blockRenderState.submit(poseStack, nodeCollector, lightCoords, overlayCoords, outlineColor);
         }
         if (state.coreTint != null) {
             float scaledTicks = 4 * state.ticks();
@@ -67,15 +66,8 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
             poseStack.translate(0, Math.sin(Math.toRadians(3 * state.ticks())) / 7, 0);
             poseStack.rotateDegrees(Axis.YP, scaledTicks);
             poseStack.rotateDegrees(RenderEnergyCube.coreVec, 36F + scaledTicks);
-            submitNodeCollector.submitModelPart(
-                  this.energyCore,
-                  poseStack,
-                  RenderEnergyCube.RENDER_TYPE,
-                  LightCoordsUtil.FULL_BRIGHT,
-                  OverlayTexture.NO_OVERLAY,
-                  null,
-                  state.coreTint
-            );
+            nodeCollector.submitBlockModel(poseStack, Sheets.translucentBlockItemSheet(), MekanismModelCache.INSTANCE.ENERGY_CORE.getBakedModel(),
+              new int[]{state.coreTint}, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
             poseStack.popPose();
         }
     }
@@ -147,7 +139,7 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
         @Override
         @Nullable
         public SpecialModelRenderer<CubeState> bake(BakingContext context) {
-            return new RenderEnergyCubeItem(context.entityModelSet());
+            return new RenderEnergyCubeItem();
         }
 
         @Override

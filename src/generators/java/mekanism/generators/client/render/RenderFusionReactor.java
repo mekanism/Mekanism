@@ -3,6 +3,7 @@ package mekanism.generators.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mekanism.api.text.EnumColor;
+import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MultiblockContentsRenderState;
 import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
@@ -10,9 +11,10 @@ import mekanism.generators.client.render.RenderFusionReactor.FusionRenderState;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -25,11 +27,8 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
 
     private static final double SCALE = 100_000_000;
 
-    private final ModelPart energyCore;
-
     public RenderFusionReactor(BlockEntityRendererProvider.Context context) {
         super(context);
-        this.energyCore = context.bakeLayer(RenderEnergyCube.CORE_LAYER);
     }
 
     @Override
@@ -71,15 +70,8 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
         poseStack.scale(scale, scale, scale);
         poseStack.rotateDegrees(Axis.YP, state.ticks * mult1 + shift1);
         poseStack.rotateDegrees(RenderEnergyCube.coreVec, state.ticks * mult2 + shift2);
-        nodeCollector.submitModelPart(
-              this.energyCore,
-              poseStack,
-              RenderEnergyCube.RENDER_TYPE,
-              LightCoordsUtil.FULL_BRIGHT,
-              OverlayTexture.NO_OVERLAY,
-              null,
-              color.getPackedColor()
-        );
+        nodeCollector.submitBlockModel(poseStack, Sheets.translucentBlockItemSheet(), MekanismModelCache.INSTANCE.ENERGY_CORE.getBakedModel(),
+              new int[]{color.getPackedColor()}, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
         poseStack.popPose();
     }
 
