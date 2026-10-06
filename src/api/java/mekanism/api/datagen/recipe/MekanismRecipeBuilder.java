@@ -121,11 +121,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     /// @param output       Output to base the recipe name off of.
     /// @since 10.7.11
     protected void save(RecipeOutput recipeOutput, Holder<Item> output) {
-        ResourceKey<Item> key = output.key();
-        if (key == null) {
-            throw new IllegalStateException("Could not retrieve registry name for output.");
-        }
-        save(recipeOutput, key.identifier());
+        save(recipeOutput, output.key().identifier());
     }
 
     public static ResourceKey<Recipe<?>> getDefaultRecipeId(FluidInstance fluid) {

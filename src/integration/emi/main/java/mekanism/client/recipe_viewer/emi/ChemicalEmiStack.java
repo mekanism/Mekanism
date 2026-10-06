@@ -108,7 +108,7 @@ public class ChemicalEmiStack extends EmiStack {
 
     @Override
     public Identifier getId() {
-        ResourceKey<Chemical> key = chemical.key();
+        ResourceKey<Chemical> key = chemical.keyOrNull();
         return key == null ? ChemicalIds.EMPTY.identifier() : key.identifier();
     }
 

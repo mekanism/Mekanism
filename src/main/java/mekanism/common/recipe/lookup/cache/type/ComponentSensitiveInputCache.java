@@ -46,7 +46,12 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
         if (componentInputCache.isEmpty()) {
             return false;
         }
-        Map<DataComponentMap, List<RECIPE>> holderMatch = componentInputCache.get(input.typeHolder().key());
+        ResourceKey<KEY> key = input.typeHolder().keyOrNull();
+        if (key == null) {
+            Mekanism.logger.warn("Component Input cache contains check received a direct holder or an unbound intrusive holder");
+            return false;
+        }
+        Map<DataComponentMap, List<RECIPE>> holderMatch = componentInputCache.get(key);
         return holderMatch != null && holderMatch.containsKey(asDCHolder.getComponents());
     }
 
@@ -69,7 +74,12 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
 
     @Nullable
     private List<RECIPE> getComponentMatches(TypedInstance<KEY> input, DataComponentHolder asDCHolder) {
-        Map<DataComponentMap, List<RECIPE>> holderMatches = componentInputCache.get(input.typeHolder().key());
+        ResourceKey<KEY> key = input.typeHolder().keyOrNull();
+        if (key == null) {
+            Mekanism.logger.warn("Component Input matches check received a direct holder or an unbound intrusive holder");
+            return null;
+        }
+        Map<DataComponentMap, List<RECIPE>> holderMatches = componentInputCache.get(key);
         if (holderMatches == null) {
             return null;
         }
@@ -82,9 +92,9 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
     /// @param patch       The component patch to apply against inputHolder for storing in the index
     /// @param recipe      Recipe to add.
     protected void addComponentInputCache(Holder<KEY> inputHolder, DataComponentPatch patch, RECIPE recipe) {
-        ResourceKey<KEY> key = inputHolder.key();
+        ResourceKey<KEY> key = inputHolder.keyOrNull();
         if (key == null) {
-            Mekanism.logger.warn("Component Input Cache received a direct holder");
+            Mekanism.logger.warn("Component Input Cache received a direct holder or an unbound intrusive holder");
             return;
         }
         DataComponentMap components = PatchedDataComponentMap.fromPatch(inputHolder.components(), patch);

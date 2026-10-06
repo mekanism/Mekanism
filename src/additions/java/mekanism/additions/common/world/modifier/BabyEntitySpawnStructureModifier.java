@@ -42,7 +42,7 @@ public record BabyEntitySpawnStructureModifier(BabyType babyType, AdditionsConfi
                 Registry<EntityType<?>> entityTypes = registries.lookupOrThrow(Registries.ENTITY_TYPE);
                 for (Weighted<MobSpawnSettings.SpawnerData> spawner : spawnConfig.getSpawnersToAdd(spawnOverrides.getSpawns())) {
                     spawnOverrides.addSpawn(spawner);
-                    ResourceKey<Structure> structureKey = structure.key();
+                    ResourceKey<Structure> structureKey = structure.keyOrNull();
                     Mekanism.logger.debug("Adding spawn rate for '{}' in structure '{}', with weight: {}, minSize: {}, maxSize: {}",
                           Util.getRegisteredName(entityTypes, spawner.value().type()), structureKey == null ? null : structureKey.identifier(), spawner.weight(),
                           spawner.value().count().minInclusive(), spawner.value().count().maxInclusive());

@@ -47,7 +47,7 @@ public class RegistryUtils {
     }
 
     public static <TYPE> Identifier getName(Holder<TYPE> element, DefaultedRegistry<TYPE> registry) {
-        ResourceKey<?> key = element.key();
+        ResourceKey<?> key = element.keyOrNull();
         if (key == null) {
             return registry.getKey(element.value());
         }
@@ -56,7 +56,7 @@ public class RegistryUtils {
 
     @Nullable
     public static Identifier getName(Holder<?> element) {
-        ResourceKey<?> key = element.key();
+        ResourceKey<?> key = element.keyOrNull();
         return key == null ? null : key.identifier();
     }
 

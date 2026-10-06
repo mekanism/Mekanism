@@ -16,6 +16,7 @@ import mekanism.client.render.lib.effect.BoltFeatureRenderer;
 import mekanism.client.render.lib.effect.BoltFeatureRenderer.BoltRenderState;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.tileentity.RenderSPS.SPSRenderState;
+import mekanism.common.Mekanism;
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.content.sps.SPSMultiblockData.CoilData;
 import mekanism.common.lib.effect.BoltEffect;
@@ -25,7 +26,6 @@ import mekanism.common.lib.math.Plane;
 import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
 import mekanism.common.particle.SPSOrbitEffect;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
@@ -43,7 +43,7 @@ import org.jspecify.annotations.Nullable;
 
 public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, TileEntitySPSCasing, SPSRenderState> {
 
-    private static final RenderType CORE_RENDER_TYPE = MekanismRenderType.SPS.apply(MekanismUtils.getRenderResource("energy_effect.png"));
+    private static final RenderType CORE_RENDER_TYPE = MekanismRenderType.SPS.apply(Mekanism.rl("render/energy_effect.png"));
     private static final Map<UUID, BoltRenderer> boltRendererMap = new HashMap<>();
 
     public static void clearBoltRenderers() {

@@ -3,8 +3,8 @@ package mekanism.client.render.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mekanism.client.render.entity.RenderFlame.FlameRenderState;
+import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityFlame;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -18,7 +18,7 @@ import net.minecraft.util.CommonColors;
 
 public class RenderFlame extends EntityRenderer<EntityFlame, FlameRenderState> {
 
-    private static final Identifier TEXTURE = MekanismUtils.getRenderResource("flame.png");
+    private static final Identifier TEXTURE = Mekanism.rl("render/flame.png");
 
     private final FlameModel model;
 

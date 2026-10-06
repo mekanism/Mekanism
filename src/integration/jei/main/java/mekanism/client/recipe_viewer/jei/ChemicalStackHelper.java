@@ -68,7 +68,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
 
     @Override
     public Identifier getIdentifier(ChemicalStack ingredient) {
-        ResourceKey<Chemical> key = ingredient.typeHolder().key();
+        ResourceKey<Chemical> key = ingredient.typeHolder().keyOrNull();
         if (key != null) {
             return key.identifier();
         } else if (chemicalLookup instanceof Registry<Chemical> registry) {

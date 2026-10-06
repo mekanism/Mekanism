@@ -36,7 +36,7 @@ public class RecipeTestHelper extends MissingElementTestHelper {
             if (representation.is(knownMissingTag)) {
                 fail("Item " + representation.getItem() + " is marked as being known to be missing, but has a " + type + " recipe.");
             }
-            ResourceKey<Item> key = representation.typeHolder().key();
+            ResourceKey<Item> key = representation.typeHolder().keyOrNull();
             if (key != null) {
                 inputs.add(key);
             }

@@ -1,6 +1,5 @@
 package mekanism.additions.common;
 
-import java.util.Objects;
 import mekanism.additions.common.advancements.AdditionsAdvancements;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
@@ -72,7 +71,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
     }
 
     private String getName(Holder<?> holder) {
-        return Objects.requireNonNull(holder.key()).identifier().getPath();
+        return holder.key().identifier().getPath();
     }
 
     private Criterion<EntityHurtPlayerTrigger.TriggerInstance> damaged(HolderGetter<EntityType<?>> entityTypeLookup, Holder<EntityType<?>> type) {

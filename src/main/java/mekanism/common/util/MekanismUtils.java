@@ -45,7 +45,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -285,15 +284,6 @@ public final class MekanismUtils {
             return scale == 0 || scale == 1 || prevScale == 1 || prevScale == 0;
         }
         return true;
-    }
-
-    /// Gets a ResourceLocation that is in the render folder.
-    ///
-    /// @param name simple name of file to retrieve as a ResourceLocation
-    ///
-    /// @return the corresponding ResourceLocation
-    public static Identifier getRenderResource(String name) {
-        return Mekanism.rl("render/" + name);
     }
 
     public static boolean lighterThanAirGas(FluidResource resource) {
