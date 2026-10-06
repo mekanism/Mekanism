@@ -94,7 +94,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         GeneratorsConfigTranslations.SERVER_GENERATOR_BIO.applyToBuilder(builder).push("bio_generator");
         bioGeneration = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_BIO_GENERATION.applyToBuilder(builder)
               .defineInRange("bioGeneration", 25, 0, Integer.MAX_VALUE));
-        bioFuelPerItem = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_BIO_GENERATION.applyToBuilder(builder).defineInRange(
+        bioFuelPerItem = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_BIO_FUEL_PER_ITEM.applyToBuilder(builder).defineInRange(
               "bioFuelPerItem", 64, 1, Integer.MAX_VALUE));
         bioTankCapacity = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_BIO_TANK_CAPACITY.applyToBuilder(builder)
               .defineInRange("tankCapacity", 200, 1, Long.MAX_VALUE));
