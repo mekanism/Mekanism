@@ -37,24 +37,39 @@ public class MekanismRenderPipelines {
           .withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP)
           .build();
 
-    //TODO - 26.3: Double check we updated this from 26.2 properly
-    public static final RenderPipeline MEKASUIT = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_LIGHT_DIR_SNIPPET)
-          .withLocation(Mekanism.rl("pipeline/mekasuit"))
+    private static final RenderPipeline.Snippet MEKASUIT_SNIPPET = RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
           .withVertexShader(Mekanism.rl("core/mekasuit"))
           .withFragmentShader(Mekanism.rl("core/mekasuit"))
-          .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
-          .withVertexBinding(0, DefaultVertexFormat.ENTITY)
-          .withPrimitiveTopology(PrimitiveTopology.QUADS)
-          .withDepthStencilState(DepthStencilState.DEFAULT)
-          .withBindGroupLayout(BindGroupLayouts.LIGHTING)
-          .withBindGroupLayout(BindGroupLayouts.SAMPLER2)
-          //The above is from ENTITY_SNIPPET, the below is from ENTITY_CUTOUT
+          .buildSnippet();
+
+    /// Based on [RenderPipelines#ARMOR_CUTOUT_NO_CULL] but without the alpha cutout
+    public static final RenderPipeline MEKASUIT = RenderPipeline.builder(MEKASUIT_SNIPPET)
+          .withLocation(Mekanism.rl("pipeline/mekasuit"))
           //Note: Don't limit the alpha of the passed tint, we skip using this if the tint is fully transparent anyway
           //.withShaderDefine("ALPHA_CUTOUT", 0.1F)
+          .withShaderDefine("NO_OVERLAY")
           .withShaderDefine("PER_FACE_LIGHTING")
-          .withBindGroupLayout(BindGroupLayouts.SAMPLER1)
           .withCull(false)
           .withColorTargetState(ColorTargetState.DEFAULT)
+          .build();
+    /// Based on [RenderPipelines#ARMOR_CUTOUT_NO_CULL_GLINT] but without the alpha cutout
+    public static final RenderPipeline MEKASUIT_GLINT = RenderPipeline.builder(MEKASUIT_SNIPPET, RenderPipelines.GLINT_SNIPPET)
+          .withLocation(Mekanism.rl("pipeline/mekasuit_glint"))
+          //TODO - 26.3: Do we want this
+          .withShaderDefine("ALPHA_CUTOUT", 0.1F)
+          .withShaderDefine("NO_OVERLAY")
+          .withShaderDefine("PER_FACE_LIGHTING")
+          .withCull(false)
+          .withColorTargetState(ColorTargetState.DEFAULT)
+          .build();
+    //TODO: Is there a vanilla OitPipelineSet we can use in place of this?
+    public static final OitPipelineSet OIT_ARMOR_TRANSLUCENT_GLINT = OitPipelineSet.builder(Mekanism.rl("pipeline/armor_translucent_glint"), RenderPipeline.builder(RenderPipelines.OIT_ENTITY_SNIPPET))
+          .withAccumulateModifier(accumulate -> accumulate
+                .withShaderDefine("PER_FACE_LIGHTING")
+                .withBindGroupLayout(BindGroupLayouts.GLOBALS)
+                .withBindGroupLayout(BindGroupLayouts.SAMPLER1)
+                .withBindGroupLayout(BindGroupLayouts.SAMPLER2)
+          )
           .build();
 
     //Pipeline is from lightning
@@ -85,6 +100,10 @@ public class MekanismRenderPipelines {
         event.registerPipeline(GUI_TEXTURED_DST_COLOR);
         event.registerPipeline(GUI_TRIANGLE_STRIP);
         event.registerPipeline(MEKASUIT);
+        event.registerPipeline(MEKASUIT_GLINT);
+
+        event.registerOitPipelineSet(OIT_ARMOR_TRANSLUCENT_GLINT);
+
         event.registerPipeline(SPS);
         event.registerOitPipelineSet(OIT_SPS);
     }

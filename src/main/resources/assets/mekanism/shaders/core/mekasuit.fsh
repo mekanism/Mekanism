@@ -47,7 +47,15 @@ layout(location = 7) in vec2 texCoordGlint;
 layout(location = 0) out vec4 fragColor;
 #endif
 
-bool shouldTint(float red, float green, float blue);
+bool shouldTint(float red, float green, float blue) {
+    float min = min(min(red, green), blue);
+    float max = max(max(red, green), blue);
+    float delta = max - min;
+    //Calculate Saturation and Value components of HSV
+    float saturation = max == 0.0 ? 0.0 : delta / max;
+    float value = max;
+    return value >= 0.48 && saturation <= 0.15;
+}
 
 vec4 calculateFinalColor(vec4 color) {
     #ifndef NO_OVERLAY
@@ -76,6 +84,7 @@ vec4 calculateFinalColor(vec4 color) {
 
 void main() {
     vec4 color = texture(Sampler0, texCoord0);
+    bool applyTint = shouldTint(color.r, color.g, color.b);
 
     #ifdef OIT_ADDITIVE
     color.a = min(0.99, color.a);
@@ -90,13 +99,13 @@ void main() {
     //Move face vertex color out of the sub parts, mek
     vec4 faceVertexColor;
     #ifdef PER_FACE_LIGHTING
-        if (shouldTint(color.r, color.g, color.b)) {
+        if (applyTint) {
             faceVertexColor = gl_FrontFacing ? shadedVertexPerFaceColorFront : shadedVertexPerFaceColorBack;
         } else {
             faceVertexColor = gl_FrontFacing ? vertexPerFaceColorFront : vertexPerFaceColorBack;
         }
     #else
-        if (shouldTint(color.r, color.g, color.b)) {
+        if (applyTint) {
             faceVertexColor = shadedVertexColor;
         } else {
             faceVertexColor = vertexColor;
@@ -122,14 +131,4 @@ void main() {
     #else
         fragColor = calculateFinalColor(color);
     #endif
-}
-
-bool shouldTint(float red, float green, float blue) {
-    float min = min(min(red, green), blue);
-    float max = max(max(red, green), blue);
-    float delta = max - min;
-    //Calculate Saturation and Value components of HSV
-    float saturation = max == 0.0 ? 0.0 : delta / max;
-    float value = max;
-    return value >= 0.48 && saturation <= 0.15;
 }

@@ -103,7 +103,8 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     public static final ContextKey<Double> DELTA_Y_CONTEXT = new ContextKey<>(Mekanism.rl("delta_y"));
 
     private static final Vector3fc BASE_TRANSLATION = new Vector3f(-1, 0.5F, 0);
-    private static final RenderType NO_TINT = RenderTypes.entityCutout(TextureAtlas.LOCATION_ITEMS);
+    private static final RenderType NO_TINT = RenderTypes.armorCutoutNoCull(TextureAtlas.LOCATION_ITEMS);
+    private static final RenderType BASE_GLINT = RenderTypes.armorCutoutNoCullGlint(TextureAtlas.LOCATION_ITEMS);
     private static final RenderType TRANSLUCENT = RenderTypes.entityTranslucent(TextureAtlas.LOCATION_ITEMS);
 
     private final LoadingCache<QuickHash, ArmorQuads> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
@@ -142,10 +143,10 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             int nextOrder = 1;
             if (hasOpaqueArm) {
                 List<BlockStateModelPart> opaqueParts = armorQuads.opaqueParts().get(armPos);
-                submitModel(nodeCollector.order(nextOrder++), poseStack, opaqueParts, lightCoords, avatarRenderState.outlineColor, getColor(avatarRenderState.chestEquipment));
+                int color = getColor(avatarRenderState.chestEquipment);
+                submitModel(nodeCollector.order(nextOrder++), poseStack, opaqueParts, lightCoords, avatarRenderState.outlineColor, color, NO_TINT, MekanismRenderType.MEKASUIT);
                 if (hasFoil) {
-                    nodeCollector.order(nextOrder++).submitBlockModel(poseStack, MekanismRenderType.ARMOR_GLINT, opaqueParts, BlockModelRenderState.EMPTY_TINTS, lightCoords,
-                          OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+                    submitModel(nodeCollector.order(nextOrder++), poseStack, opaqueParts, lightCoords, EntityRenderState.NO_OUTLINE, color, BASE_GLINT, MekanismRenderType.MEKASUIT_GLINT);
                 }
             }
             if (hasTransparentArm) {
@@ -153,8 +154,8 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                 nodeCollector.order(nextOrder++).submitBlockModel(poseStack, TRANSLUCENT, transparentParts, BlockModelRenderState.EMPTY_TINTS,
                       lightCoords, OverlayTexture.NO_OVERLAY, avatarRenderState.outlineColor);
                 if (hasFoil) {
-                    nodeCollector.order(nextOrder).submitBlockModel(poseStack, MekanismRenderType.ARMOR_GLINT, transparentParts, BlockModelRenderState.EMPTY_TINTS,
-                          lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+                    nodeCollector.order(nextOrder).submitBlockModel(poseStack, MekanismRenderType.ARMOR_TRANSLUCENT_GLINT, transparentParts,
+                          BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
                 }
             }
             poseStack.popPose();
@@ -217,12 +218,16 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                 OrderedSubmitNodeCollector orderedCollector = nodeCollector.order(nextOrder++);
                 if (transparent) {
                     orderedCollector.submitBlockModel(poseStack, TRANSLUCENT, entry.getValue(), BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
+                    if (renderFoil) {
+                        nodeCollector.order(nextOrder++).submitBlockModel(poseStack, MekanismRenderType.ARMOR_TRANSLUCENT_GLINT, entry.getValue(),
+                              BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+                    }
                 } else {
-                    submitModel(orderedCollector, poseStack, entry.getValue(), lightCoords, state.outlineColor, color);
-                }
-                if (renderFoil) {
-                    nodeCollector.order(nextOrder++).submitBlockModel(poseStack, MekanismRenderType.ARMOR_GLINT, entry.getValue(), BlockModelRenderState.EMPTY_TINTS,
-                          lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+                    submitModel(orderedCollector, poseStack, entry.getValue(), lightCoords, state.outlineColor, color, NO_TINT, MekanismRenderType.MEKASUIT);
+                    if (renderFoil) {
+                        submitModel(nodeCollector.order(nextOrder++), poseStack, entry.getValue(), lightCoords, EntityRenderState.NO_OUTLINE, color,
+                              BASE_GLINT, MekanismRenderType.MEKASUIT_GLINT);
+                    }
                 }
                 poseStack.popPose();
             }
@@ -230,18 +235,19 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         return nextOrder;
     }
 
-    private void submitModel(OrderedSubmitNodeCollector orderedCollector, PoseStack poseStack, List<BlockStateModelPart> parts, int lightCoords, int outlineColor, int tintColor) {
+    private void submitModel(OrderedSubmitNodeCollector orderedCollector, PoseStack poseStack, List<BlockStateModelPart> parts, int lightCoords, int outlineColor,
+          int tintColor, RenderType noTint, RenderType withTint) {
         if (tintColor == CommonColors.WHITE || ARGB.alpha(tintColor) == 0) {
             //If it is white or fully transparent, just render it without tint
-            orderedCollector.submitBlockModel(poseStack, NO_TINT, parts, BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, outlineColor);
+            orderedCollector.submitBlockModel(poseStack, noTint, parts, BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, outlineColor);
             return;
         }
-        //Based on submitBlockModel, but using a custom render type for when we don't render the mekasuit
+        //Based on submitBlockModel, but using a custom render type and passing a tint color
         PoseStack.Pose pose = poseStack.last().copy();
-        if (!MekanismRenderType.MEKASUIT.isOutline()) {
-            BlockModelFeatureRenderer.Submit submit = new BlockModelFeatureRenderer.Submit(pose, MekanismRenderType.MEKASUIT, parts, BlockModelRenderState.EMPTY_TINTS,
-                  lightCoords, OverlayTexture.NO_OVERLAY, tintColor, null);
-            if (MekanismRenderType.MEKASUIT.hasBlending()) {
+        if (!withTint.isOutline()) {
+            BlockModelFeatureRenderer.Submit submit = new BlockModelFeatureRenderer.Submit(pose, withTint, parts, BlockModelRenderState.EMPTY_TINTS, lightCoords,
+                  OverlayTexture.NO_OVERLAY, tintColor, null);
+            if (withTint.hasBlending()) {
                 orderedCollector.submitSpecial(RenderPhaseKeys.TRANSLUCENT_BLOCKS_AND_ITEMS, submit);
             } else {
                 orderedCollector.submitSpecial(RenderPhaseKeys.SOLID, submit);
@@ -249,7 +255,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         }
         if (outlineColor != 0) {
             //Note: We don't need to color
-            RenderType outlineRenderType = NO_TINT.outline().isPresent() ? NO_TINT.outline().get() : null;
+            RenderType outlineRenderType = noTint.outline().isPresent() ? noTint.outline().get() : null;
             if (outlineRenderType != null) {
                 orderedCollector.submitSpecial(RenderPhaseKeys.OUTLINE, new BlockModelFeatureRenderer.Submit(pose, outlineRenderType, parts,
                       BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, outlineColor, null));

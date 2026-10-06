@@ -55,11 +55,10 @@ layout(location = 7) out vec2 texCoordGlint;
 void main() {
     //Like core/entity.vsh except we calculate vertex colors for passed in and for non recoloring
     gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);
-    //Calculate the actual tint to apply based on the passed in alpha value
-    vec4 tint = vec4(mix(MEKANISM_NO_COLOR.rgb, Color.rgb, Color.a), MEKANISM_NO_COLOR.a);
-
     sphericalVertexDistance = fog_spherical_distance(Position);
     cylindricalVertexDistance = fog_cylindrical_distance(Position);
+    //Calculate the actual tint to apply based on the passed in alpha value
+    vec4 tint = vec4(mix(MEKANISM_NO_COLOR.rgb, Color.rgb, Color.a), MEKANISM_NO_COLOR.a);
 
 #ifdef PER_FACE_LIGHTING
     vec2 light = minecraft_compute_light(Light0_Direction, Light1_Direction, Normal);
