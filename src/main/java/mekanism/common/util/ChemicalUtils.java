@@ -10,6 +10,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -29,8 +30,8 @@ public class ChemicalUtils {
     public static final int DEFAULT_HYDROGEN_ENERGY_DENSITY = 2;
 
     //TODO - 26.3: Evaluate callers and see if we can cache any of them
-    public static ChemicalResource getResource(RegistryAccess registryAccess, ResourceKey<Chemical> key) {
-        return registryAccess.get(key).map(ChemicalResource::of).orElse(ChemicalResource.EMPTY);
+    public static ChemicalResource getResource(HolderGetter.Provider holderGetter, ResourceKey<Chemical> key) {
+        return holderGetter.get(key).map(ChemicalResource::of).orElse(ChemicalResource.EMPTY);
     }
 
     public static boolean hasChemicalOfType(ItemAccess itemAccess, Holder<Chemical> type) {
@@ -69,7 +70,11 @@ public class ChemicalUtils {
             }
             registryAccess = server.registryAccess();
         }
-        return getResource(registryAccess, ChemicalIds.HYDROGEN).fuelEnergyDensity(registryAccess);
+        return hydrogenEnergyDensity(registryAccess);
+    }
+
+    public static int hydrogenEnergyDensity(HolderGetter.Provider holderGetter) {
+        return getResource(holderGetter, ChemicalIds.HYDROGEN).fuelEnergyDensity(holderGetter instanceof RegistryAccess registryAccess ? registryAccess : null);
     }
 
     public static void dump(IChemicalTank chemicalTank, GasMode dumpMode, long dumpingAmount) {

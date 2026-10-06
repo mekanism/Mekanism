@@ -54,7 +54,7 @@ public class MekanismStatusOverlay implements GuiLayer {
                     Matrix3x2fStack pose = graphics.pose();
                     pose.pushMatrix();
                     pose.translate((graphics.guiWidth() - componentWidth) / 2F, graphics.guiHeight() - targetShift);
-                    GuiUtils.drawBackdrop(graphics, minecraft, 0, 0, componentWidth, color.a());
+                    GuiUtils.drawBackdrop(graphics, minecraft, 0, 0, componentWidth, color.af());
                     graphics.text(font, scrollTextComponent, 0, 0, color.argb());
                     pose.popMatrix();
                 }

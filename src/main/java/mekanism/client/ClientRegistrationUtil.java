@@ -164,7 +164,7 @@ public class ClientRegistrationUtil {
 
                     @Override
                     public void modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector4f fluidFogColor) {
-                        //TODO - 26.3: is alpha needed?
+                        //Note: Similarly to vanilla we don't bother applying a different value for alpha
                         fluidFogColor.set(ARGB.redFloat(fluidType.color), ARGB.greenFloat(fluidType.color), ARGB.blueFloat(fluidType.color));
                     }
 
