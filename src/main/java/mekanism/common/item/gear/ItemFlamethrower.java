@@ -57,6 +57,7 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Unmodifiable;
 
 public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemicalItem, IAttachmentBasedModeItem<FlamethrowerMode> {
 
@@ -222,6 +223,8 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
         HEAT(MekanismLang.FLAMETHROWER_HEAT, EnumColor.ORANGE),
         INFERNO(MekanismLang.FLAMETHROWER_INFERNO, EnumColor.DARK_RED);
 
+        @Unmodifiable
+        public static final List<FlamethrowerMode> VALUES = List.of(values());
         public static final Codec<FlamethrowerMode> CODEC = StringRepresentable.fromEnum(FlamethrowerMode::values);
         public static final IntFunction<FlamethrowerMode> BY_ID = ByIdMap.continuous(FlamethrowerMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, FlamethrowerMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FlamethrowerMode::ordinal);
@@ -239,6 +242,11 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
         @Override
         public Component getTextComponent() {
             return langEntry.translateColored(color);
+        }
+
+        @Override
+        public int valueCount() {
+            return VALUES.size();
         }
 
         @Override

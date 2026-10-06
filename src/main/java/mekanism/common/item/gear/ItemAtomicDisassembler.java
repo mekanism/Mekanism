@@ -82,6 +82,7 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode>, IHasConditionalAttributes {
@@ -259,6 +260,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         VEIN(MekanismLang.RADIAL_VEIN_NORMAL, 20, MekanismConfig.gear.disassemblerVeinMining, EnumColor.AQUA, Mekanism.rl("radial/vein_normal")),
         OFF(MekanismLang.RADIAL_EXCAVATION_SPEED_OFF, 0, ConstantPredicates.ALWAYS_TRUE, EnumColor.WHITE, ExcavationMode.OFF.icon());
 
+        @Unmodifiable
+        public static final List<DisassemblerMode> VALUES = List.of(values());
         //We only allow deserializing to enabled modes
         public static final Codec<DisassemblerMode> CODEC = StringRepresentable.fromEnum(DisassemblerMode::values)
               .xmap(mode -> mode.isEnabled() ? mode : NORMAL, Function.identity());
@@ -280,6 +283,11 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             this.checkEnabled = checkEnabled;
             this.color = color;
             this.icon = icon;
+        }
+
+        @Override
+        public int valueCount() {
+            return VALUES.size();
         }
 
         @Override

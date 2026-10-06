@@ -2,6 +2,7 @@ package mekanism.common.item.interfaces;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
@@ -36,6 +37,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public interface IJetpackItem {
@@ -53,6 +55,8 @@ public interface IJetpackItem {
         VECTOR(MekanismLang.JETPACK_VECTOR, EnumColor.ORANGE, "jetpack_vector"),
         DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED, "jetpack_off");
 
+        @Unmodifiable
+        public static final List<JetpackMode> VALUES = List.of(values());
         public static final Codec<JetpackMode> CODEC = StringRepresentable.fromEnum(JetpackMode::values);
         public static final IntFunction<JetpackMode> BY_ID = ByIdMap.continuous(JetpackMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, JetpackMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, JetpackMode::ordinal);
@@ -74,6 +78,11 @@ public interface IJetpackItem {
         @Override
         public Component getTextComponent() {
             return langEntry.translateColored(color);
+        }
+
+        @Override
+        public int valueCount() {
+            return VALUES.size();
         }
 
         @Override

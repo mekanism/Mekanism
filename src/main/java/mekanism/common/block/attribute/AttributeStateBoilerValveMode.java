@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.jetbrains.annotations.Unmodifiable;
 
 public class AttributeStateBoilerValveMode implements AttributeState {
 
@@ -45,6 +46,8 @@ public class AttributeStateBoilerValveMode implements AttributeState {
         OUTPUT_STEAM("output_steam", MekanismLang.BOILER_VALVE_MODE_OUTPUT_STEAM, EnumColor.RED),
         OUTPUT_COOLANT("output_coolant", MekanismLang.BOILER_VALVE_MODE_OUTPUT_COOLANT, EnumColor.DARK_AQUA);
 
+        @Unmodifiable
+        public static final List<BoilerValveMode> VALUES = List.of(values());
         public static final IntFunction<BoilerValveMode> BY_ID = ByIdMap.continuous(BoilerValveMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, BoilerValveMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, BoilerValveMode::ordinal);
 
@@ -66,6 +69,11 @@ public class AttributeStateBoilerValveMode implements AttributeState {
         @Override
         public Component getTextComponent() {
             return langEntry.translateColored(color);
+        }
+
+        @Override
+        public int valueCount() {
+            return VALUES.size();
         }
 
         @Override

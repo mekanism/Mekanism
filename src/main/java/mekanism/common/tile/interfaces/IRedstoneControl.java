@@ -2,6 +2,7 @@ package mekanism.common.tile.interfaces;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
@@ -13,6 +14,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.Unmodifiable;
 
 public interface IRedstoneControl {
 
@@ -43,6 +45,8 @@ public interface IRedstoneControl {
         LOW(MekanismLang.REDSTONE_CONTROL_LOW),
         PULSE(MekanismLang.REDSTONE_CONTROL_PULSE);
 
+        @Unmodifiable
+        public static final List<RedstoneControl> VALUES = List.of(values());
         public static final Codec<RedstoneControl> CODEC = StringRepresentable.fromEnum(RedstoneControl::values);
         public static final IntFunction<RedstoneControl> BY_ID = ByIdMap.continuous(RedstoneControl::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, RedstoneControl> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, RedstoneControl::ordinal);
@@ -58,6 +62,11 @@ public interface IRedstoneControl {
         @Override
         public Component getTextComponent() {
             return langEntry.translate();
+        }
+
+        @Override
+        public int valueCount() {
+            return VALUES.size();
         }
 
         @Override

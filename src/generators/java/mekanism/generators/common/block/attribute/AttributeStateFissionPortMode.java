@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.jetbrains.annotations.Unmodifiable;
 
 public class AttributeStateFissionPortMode implements AttributeState {
 
@@ -47,6 +48,8 @@ public class AttributeStateFissionPortMode implements AttributeState {
         OUTPUT_WASTE("output_waste", GeneratorsLang.FISSION_PORT_MODE_OUTPUT_WASTE, EnumColor.BROWN),
         OUTPUT_COOLANT("output_coolant", GeneratorsLang.FISSION_PORT_MODE_OUTPUT_COOLANT, EnumColor.DARK_AQUA);
 
+        @Unmodifiable
+        public static final List<FissionPortMode> VALUES = List.of(values());
         public static final IntFunction<FissionPortMode> BY_ID = ByIdMap.continuous(FissionPortMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, FissionPortMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FissionPortMode::ordinal);
 
@@ -68,6 +71,11 @@ public class AttributeStateFissionPortMode implements AttributeState {
         @Override
         public Component getTextComponent() {
             return langEntry.translateColored(color);
+        }
+
+        @Override
+        public int valueCount() {
+            return VALUES.size();
         }
 
         @Override

@@ -2,6 +2,7 @@ package mekanism.api.security;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
@@ -14,6 +15,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /// Simple security enum for defining different access levels.
 ///
@@ -26,11 +28,16 @@ public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasEnumName
     /// Trusted Security: The owner and anyone they mark as trusted in their security desk are allowed access.
     TRUSTED(APILang.TRUSTED, EnumColor.INDIGO);
 
+    /// Cached value of [SecurityMode#values()]
+    ///
+    /// @since 10.8.0
+    @Unmodifiable
+    public static final List<SecurityMode> VALUES = List.of(values());
     /// Codec for serializing security modes based on their name.
     ///
     /// @since 10.6.0
     public static final Codec<SecurityMode> CODEC = StringRepresentable.fromEnum(SecurityMode::values);
-    /// Gets a security mode by index, wrapping for out of bounds indices.
+    /// Gets a security mode by index, public for out of bounds indices.
     ///
     /// @since 10.6.0
     public static final IntFunction<SecurityMode> BY_ID = ByIdMap.continuous(SecurityMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
@@ -52,6 +59,11 @@ public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasEnumName
     @Override
     public Component getTextComponent() {
         return langEntry.translateColored(color);
+    }
+
+    @Override
+    public int valueCount() {
+        return VALUES.size();
     }
 
     @Override

@@ -2,6 +2,7 @@ package mekanism.common.content.gear.mekasuit;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
@@ -24,6 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements ICustomModule<ModuleLocomotiveBoostingUnit> {
@@ -94,6 +96,8 @@ public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements I
         HIGH(0.25F),
         ULTRA(0.5F);
 
+        @Unmodifiable
+        public static final List<SprintBoost> VALUES = List.of(values());
         public static final Codec<SprintBoost> CODEC = StringRepresentable.fromEnum(SprintBoost::values);
         public static final IntFunction<SprintBoost> BY_ID = ByIdMap.continuous(SprintBoost::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         public static final StreamCodec<ByteBuf, SprintBoost> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, SprintBoost::ordinal);
@@ -106,6 +110,11 @@ public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements I
             this.serializedName = name().toLowerCase(Locale.ROOT);
             this.boost = boost;
             this.label = TextComponentUtil.getString(Float.toString(boost));
+        }
+
+        @Override
+        public int valueCount() {
+            return VALUES.size();
         }
 
         @Override

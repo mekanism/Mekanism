@@ -3,6 +3,7 @@ package mekanism.common.tile.laser;
 import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.IContentsListener;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.Unmodifiable;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
 
@@ -279,6 +281,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         ENTITY_DETECTION(MekanismLang.ENTITY_DETECTION),
         ENERGY_CONTENTS(MekanismLang.ENERGY_CONTENTS);
 
+        @Unmodifiable
+        public static final List<RedstoneOutput> VALUES = List.of(values());
         public static final Codec<RedstoneOutput> CODEC = StringRepresentable.fromEnum(RedstoneOutput::values);
         public static final IntFunction<RedstoneOutput> BY_ID = ByIdMap.continuous(RedstoneOutput::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, RedstoneOutput> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, RedstoneOutput::ordinal);
@@ -294,6 +298,11 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         @Override
         public String getTranslationKey() {
             return langEntry.getTranslationKey();
+        }
+
+        @Override
+        public int valueCount() {
+            return VALUES.size();
         }
 
         @Override

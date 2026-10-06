@@ -66,6 +66,7 @@ import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public class ItemConfigurator extends Item implements IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
@@ -243,6 +244,8 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         ROTATE(MekanismLang.CONFIGURATOR_ROTATE, null, EnumColor.YELLOW, false, Mekanism.rl("radial/rotate")),
         WRENCH(MekanismLang.CONFIGURATOR_WRENCH, null, EnumColor.PINK, false, Mekanism.rl("radial/wrench"));
 
+        @Unmodifiable
+        public static final List<ConfiguratorMode> VALUES = List.of(values());
         public static final Codec<ConfiguratorMode> CODEC = StringRepresentable.fromEnum(ConfiguratorMode::values);
         public static final IntFunction<ConfiguratorMode> BY_ID = ByIdMap.continuous(ConfiguratorMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, ConfiguratorMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ConfiguratorMode::ordinal);
@@ -288,6 +291,11 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         @Nullable
         public TransmissionType getTransmission() {
             return transmissionType;
+        }
+
+        @Override
+        public int valueCount() {
+            return VALUES.size();
         }
 
         @Override

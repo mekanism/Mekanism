@@ -54,7 +54,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     ///
     /// @since 10.6.0
     public static final Codec<EnumColor> CODEC = StringRepresentable.fromEnum(EnumColor::values);
-    /// Gets a color by index, wrapping for out of bounds indices.
+    /// Gets a color by index, zeroing to the first index for out of bound indices.
     ///
     /// @since 10.6.0
     public static final IntFunction<EnumColor> BY_ID = ByIdMap.continuous(EnumColor::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
@@ -132,6 +132,11 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     @Override
     public TextColor getTextColor() {
         return color;
+    }
+
+    @Override
+    public int valueCount() {
+        return VALUES.size();
     }
 
     @Override

@@ -53,6 +53,11 @@ public enum ConnectionType implements IIncrementalEnum<ConnectionType>, StringRe
     }
 
     @Override
+    public int valueCount() {
+        return VALUES.size();
+    }
+
+    @Override
     public ConnectionType byIndex(int index) {
         return BY_ID.apply(index);
     }

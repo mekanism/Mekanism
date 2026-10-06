@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.IContentsListener;
@@ -60,6 +61,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jetbrains.annotations.Unmodifiable;
 
 public class TileEntityChemicalTank extends TileEntityConfigurableMachine implements IHasGasMode {
 
@@ -234,6 +236,8 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         DUMPING_EXCESS(MekanismLang.DUMPING_EXCESS),
         DUMPING(MekanismLang.DUMPING);
 
+        @Unmodifiable
+        public static final List<GasMode> VALUES = List.of(values());
         public static final Codec<GasMode> CODEC = StringRepresentable.fromEnum(GasMode::values);
         public static final IntFunction<GasMode> BY_ID = ByIdMap.continuous(GasMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, GasMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, GasMode::ordinal);
@@ -249,6 +253,11 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         @Override
         public Component getTextComponent() {
             return langEntry.translate();
+        }
+
+        @Override
+        public int valueCount() {
+            return VALUES.size();
         }
 
         @Override

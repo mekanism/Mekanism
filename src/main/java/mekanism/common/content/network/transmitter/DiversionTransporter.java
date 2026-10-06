@@ -2,6 +2,7 @@ package mekanism.common.content.network.transmitter;
 
 import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
@@ -25,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public class DiversionTransporter extends LogisticalTransporterBase {
@@ -198,6 +200,8 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         HIGH(MekanismLang.DIVERSION_CONTROL_HIGH),
         LOW(MekanismLang.DIVERSION_CONTROL_LOW);
 
+        @Unmodifiable
+        public static final List<DiversionControl> VALUES = List.of(values());
         public static final IntFunction<DiversionControl> BY_ID = ByIdMap.continuous(DiversionControl::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         public static final StreamCodec<ByteBuf, DiversionControl> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DiversionControl::ordinal);
 
@@ -210,6 +214,11 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         @Override
         public Component getTextComponent() {
             return langEntry.translate();
+        }
+
+        @Override
+        public int valueCount() {
+            return VALUES.size();
         }
 
         @Override

@@ -2,6 +2,7 @@ package mekanism.common.tile.component.config;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
@@ -13,6 +14,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.Unmodifiable;
 
 //TODO: Re-evaluate how we do colors, given for say energy as the transmission type it makes more sense to have input be green?
 // Maybe we should make some way to specify a color override?
@@ -28,6 +30,8 @@ public enum DataType implements IIncrementalEnum<DataType>, IHasEnumNameTranslat
     ENERGY(MekanismLang.SIDE_DATA_ENERGY, EnumColor.DARK_GREEN),
     EXTRA(MekanismLang.SIDE_DATA_EXTRA, EnumColor.YELLOW);
 
+    @Unmodifiable
+    public static final List<DataType> VALUES = List.of(values());
     public static final Codec<DataType> CODEC = StringRepresentable.fromEnum(DataType::values);
     public static final IntFunction<DataType> BY_ID = ByIdMap.continuous(DataType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, DataType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DataType::ordinal);
@@ -49,6 +53,11 @@ public enum DataType implements IIncrementalEnum<DataType>, IHasEnumNameTranslat
     @Override
     public String getTranslationKey() {
         return langEntry.getTranslationKey();
+    }
+
+    @Override
+    public int valueCount() {
+        return VALUES.size();
     }
 
     @Override
