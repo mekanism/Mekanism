@@ -38,7 +38,6 @@ public class MekanismArmorLayer<STATE extends HumanoidRenderState, MODEL extends
         Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
         if (equippable != null && equippable.slot() == slot && IClientItemExtensions.of(stack.getItem()) instanceof ISpecialGear specialGear) {
             ICustomArmor model = specialGear.gearModel();
-            //TODO - 26.3: Fix this as it seems baby models now get handled via this, and baby mobs wearing our gear now don't have it scale properly
             A coreModel = getArmorModel(state, slot);
             model.render(coreModel, poseStack, nodeCollector, lightCoords, state, stack);
         }

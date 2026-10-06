@@ -163,7 +163,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
     @Override
     public <STATE extends HumanoidRenderState> boolean isVisible(HumanoidModel<STATE> baseModel, STATE state) {
-        //TODO - 26.3: Implement this for the mekasuit?
+        //We hide the parts, so they will be invisible, so we always want to render this regardless
         return true;
     }
 
@@ -173,7 +173,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         ArmorQuads armorQuads = cache.getUnchecked(key(state));
         boolean renderFoil = stack.hasFoil();
         //Same as what HumanoidArmorLayer does for the starting order index
-        int nextOrder = render(baseModel, nodeCollector, poseStack, lightCoords, renderFoil, 1, getColor(stack), state, armorQuads.opaqueParts(), false);
+        int nextOrder = render(baseModel, nodeCollector, poseStack, lightCoords, renderFoil, 1, getColor(stack), state, isBaby, armorQuads.opaqueParts(), false);
 
         if (type == EquipmentSlot.CHEST) {
             UUID entityUUID = state.getRenderData(UUID_CONTEXT);
@@ -200,16 +200,19 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         }
 
         //Pass white as the color because we don't want to tint transparent quads
-        render(baseModel, nodeCollector, poseStack, lightCoords, renderFoil, nextOrder, CommonColors.WHITE, state, armorQuads.transparentParts(), true);
+        render(baseModel, nodeCollector, poseStack, lightCoords, renderFoil, nextOrder, CommonColors.WHITE, state, isBaby, armorQuads.transparentParts(), true);
     }
 
     private <STATE extends HumanoidRenderState> int render(HumanoidModel<STATE> baseModel, SubmitNodeCollector nodeCollector, PoseStack poseStack, int lightCoords,
-          boolean renderFoil, int nextOrder, int color, STATE state, Map<ModelPos, List<BlockStateModelPart>> quadMap, boolean transparent) {
+          boolean renderFoil, int nextOrder, int color, STATE state, boolean isBaby, Map<ModelPos, List<BlockStateModelPart>> quadMap, boolean transparent) {
         if (!quadMap.isEmpty()) {
             for (Map.Entry<ModelPos, List<BlockStateModelPart>> entry : quadMap.entrySet()) {
                 ModelPos modelPos = entry.getKey();
                 poseStack.pushPose();
                 modelPos.translate(baseModel, poseStack, state);
+                if (isBaby) {
+                    modelPos.scaleBaby(poseStack, state);
+                }
                 modelPos.translateModel(poseStack);
                 OrderedSubmitNodeCollector orderedCollector = nodeCollector.order(nextOrder++);
                 if (transparent) {
@@ -300,6 +303,19 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                 }
             }
             return null;
+        }
+
+        public <STATE extends HumanoidRenderState> void scaleBaby(PoseStack poseStack, STATE state) {
+            if (this != HEAD) {
+                poseStack.scale(state.ageScale, state.ageScale, state.ageScale);
+            }
+            switch (this) {
+                case BODY -> poseStack.translate(0, -0.55, 0);
+                case LEFT_ARM, LEFT_WING -> poseStack.translate(-0.15625, 0, 0);
+                case RIGHT_ARM, RIGHT_WING -> poseStack.translate(0.15625, 0, 0);
+                case LEFT_LEG -> poseStack.translate(-0.0625, -0.25, 0);
+                case RIGHT_LEG -> poseStack.translate(0.0625, -0.25, 0);
+            }
         }
 
         public void translateModel(PoseStack poseStack) {

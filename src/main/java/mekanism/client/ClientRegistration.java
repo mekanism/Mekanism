@@ -323,7 +323,7 @@ public class ClientRegistration {
                 }
                 Item chest = state.chestEquipment.getItem();
                 if (chest instanceof ItemMekaSuitArmor) {
-                    //state.changeModelPartVisibility(PartNames.BODY, false);
+                    state.overrideModelPartVisibility(PartNames.BODY, false);
                     if (state instanceof ArmorStandRenderState armorStandState) {
                         armorStandState.showArms = false;
                         state.overrideModelPartVisibility(ArmorStandModel.RIGHT_BODY_STICK, false);
