@@ -10,7 +10,6 @@ import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.generators.client.render.RenderFusionReactor.FusionRenderState;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -37,11 +36,10 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
     }
 
     @Override
-    public void extractRenderState(TileEntityFusionReactorController controller, FusionReactorMultiblockData multiblock, FusionRenderState state, float partialTick,
+    public void extractRenderState(TileEntityFusionReactorController controller, FusionReactorMultiblockData multiblock, FusionRenderState state, float partialTicks,
           Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         state.scaledTemp = Math.round(multiblock.getLastPlasmaTemp() / SCALE);
-        //TODO - 26.3: Is this what we should be using in BERs or should we use the game time?
-        state.ticks = Minecraft.getInstance().gameRenderer.gameRenderState().levelRenderState.gameTime + partialTick;
+        state.animationTime = getAnimationTime(controller, partialTicks);
     }
 
     @Override
@@ -68,8 +66,8 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
           int shift1, int shift2) {
         poseStack.pushPose();
         poseStack.scale(scale, scale, scale);
-        poseStack.rotateDegrees(Axis.YP, state.ticks * mult1 + shift1);
-        poseStack.rotateDegrees(RenderEnergyCube.coreVec, state.ticks * mult2 + shift2);
+        poseStack.rotateDegrees(Axis.YP, state.animationTime * mult1 + shift1);
+        poseStack.rotateDegrees(RenderEnergyCube.coreVec, state.animationTime * mult2 + shift2);
         nodeCollector.submitBlockModel(poseStack, Sheets.translucentBlockItemSheet(), MekanismModelCache.INSTANCE.ENERGY_CORE.getBakedModel(),
               new int[]{color.getPackedColor()}, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
         poseStack.popPose();
@@ -83,6 +81,6 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
     public static class FusionRenderState extends MultiblockContentsRenderState {
 
         public long scaledTemp;
-        public float ticks;
+        public float animationTime;
     }
 }

@@ -49,7 +49,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     public void extractRenderState(TileEntityPigmentMixer mixer, PigmentMixerRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(mixer, state, partialTick, cameraPosition, breakProgress);
         state.direction = mixer.getDirection();
-        state.rotation = (mixer.getGameTime() + partialTick) * SHAFT_SPEED % 360;
+        state.rotation = getAnimationTime(mixer, partialTick) * SHAFT_SPEED % 360;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         }
         float shift = 1 / 16F;
         poseStack.translate(shift, 0, shift);
-        poseStack.rotateDegrees(Axis.YN, (levelRenderState.gameTime + partialTick) * SHAFT_SPEED % 360);
+        poseStack.rotateDegrees(Axis.YN, getAnimationTime(levelRenderState.gameTime, partialTick) * SHAFT_SPEED % 360);
         poseStack.translate(-shift, 0, -shift);
         return lines;
     }

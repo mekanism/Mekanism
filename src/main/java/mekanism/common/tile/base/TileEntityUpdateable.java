@@ -60,7 +60,6 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     public long getGameTime() {
-        //TODO - 26.3: Re-evaluate this impl
         return level == null ? 0 : level.getGameTime();
     }
 

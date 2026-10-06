@@ -78,9 +78,9 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         }
         state.active = liquifier.getActive();
         if (state.active) {
-            long gameTime = liquifier.getGameTime();
-            state.bladeRotation = ((gameTime + partialTick) * BLADE_SPEED) % 360;
-            state.itemRotation = ((gameTime + partialTick) * ROTATE_SPEED) % 360;
+            float animationTime = getAnimationTime(liquifier, partialTick);
+            state.bladeRotation = (animationTime * BLADE_SPEED) % 360;
+            state.itemRotation = (animationTime * ROTATE_SPEED) % 360;
         }
         ItemStack stack = liquifier.getRenderStack();
         if (!stack.isEmpty()) {

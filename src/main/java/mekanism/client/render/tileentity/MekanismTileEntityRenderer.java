@@ -20,7 +20,6 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.3: Test all our renderers, and figure out if/how to get profiling per type working again
 public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity, STATE extends BlockEntityRenderState> implements BlockEntityRenderer<TILE, STATE> {
 
     protected final BlockEntityRendererProvider.Context context;
@@ -34,6 +33,15 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity, STATE
     public int getViewDistance() {
         //Override and change the default range for TERs for mekanism tiles to the value defined in the config
         return MekanismConfig.client.berRange.get();
+    }
+
+    //TODO - 26.3: Should these be more like the one that BeaconRenderer does where it does a floorMod?
+    protected float getAnimationTime(TILE tile, float partialTicks) {
+        return tile.getLevel() == null ? 0 : getAnimationTime(tile.getLevel().getGameTime(), partialTicks);
+    }
+
+    protected float getAnimationTime(long gameTime, float partialTicks) {
+        return gameTime + partialTicks;
     }
 
     protected boolean isTickingNormally(TILE tile) {

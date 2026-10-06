@@ -35,11 +35,11 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
     }
 
     @Override
-    public void extractRenderState(TileEntityEnergyCube cube, EnergyCubeRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+    public void extractRenderState(TileEntityEnergyCube cube, EnergyCubeRenderState state, float partialTick, Vec3 cameraPosition,
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(cube, state, partialTick, cameraPosition, breakProgress);
         state.coreTint = cube.getTier().getBaseTier().getPackedColor(ARGB.as8BitChannel(cube.getEnergyScale()));
-        //TODO - 26.3: Do we want to use game time as a basis or some other value?
-        state.ticks = cube.getGameTime() + partialTick;
+        state.animationTime = getAnimationTime(cube, partialTick);
     }
 
     @Override
@@ -47,10 +47,10 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
         poseStack.scale(0.4F, 0.4F, 0.4F);
-        poseStack.translate(0, Math.sin(Math.toRadians(3 * state.ticks)) / 7, 0);
-        float scaledTicks = 4 * state.ticks;
-        poseStack.rotateDegrees(Axis.YP, scaledTicks);
-        poseStack.rotateDegrees(coreVec, 36F + scaledTicks);
+        poseStack.translate(0, Math.sin(Math.toRadians(3 * state.animationTime)) / 7, 0);
+        float scaledTime = 4 * state.animationTime;
+        poseStack.rotateDegrees(Axis.YP, scaledTime);
+        poseStack.rotateDegrees(coreVec, 36 + scaledTime);
         nodeCollector.submitBlockModel(poseStack, Sheets.translucentBlockItemSheet(), MekanismModelCache.INSTANCE.ENERGY_CORE.getBakedModel(),
               new int[]{state.coreTint}, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
         poseStack.popPose();
@@ -64,6 +64,6 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
     public static class EnergyCubeRenderState extends BlockEntityRenderState {
 
         public int coreTint = CommonColors.WHITE;
-        public float ticks;
+        public float animationTime;
     }
 }
