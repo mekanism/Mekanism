@@ -30,6 +30,7 @@ import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.capabilities.holder.single.SingleConfigHolder;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerConstants;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -88,6 +89,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     public IChemicalTank outputTank;
     private final ChemicalUsageMultiplier injectUsageMultiplier;
     private double injectUsage = 1;
+    private int baseTotalUsage;
     private int usedSoFar;
 
     private final IOutputHandler<ChemicalStackTemplate> outputHandler;
@@ -121,10 +123,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         itemInputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
         gasInputHandler = InputHelper.getConstantInputHandler(injectTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
-
-        //Note: Statistical mechanics works best by just using the mean gas usage we want to target
-        // rather than adjusting the mean each time to try and reach a given target
-        injectUsageMultiplier = (_, _) -> StatUtils.inversePoisson(injectUsage);
+        baseTotalUsage = baseTicksRequired;
+        if (useStatisticalMechanics()) {
+            //Note: Statistical mechanics works best by just using the mean gas usage we want to target
+            // rather than adjusting the mean each time to try and reach a given target
+            injectUsageMultiplier = (_, _) -> StatUtils.inversePoisson(injectUsage);
+        } else {
+            injectUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> baseTotalUsage, this::getTicksRequired);
+        }
     }
 
     @Override
@@ -162,6 +168,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         outputSlot.drainTankIntoSlot(null);
         recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
         return sendUpdatePacket;
+    }
+
+    private boolean useStatisticalMechanics() {
+        return MekanismConfig.usage.randomizedConsumption.get();
     }
 
     @Override
@@ -204,7 +214,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
         super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.CHEMICAL) || upgrade.is(UpgradeIds.SPEED)) {
-            injectUsage = UpgradeUtils.getGasPerTickMeanMultiplier(upgrades, this);
+            if (useStatisticalMechanics()) {
+                injectUsage = UpgradeUtils.getGasPerTickMeanMultiplier(upgrades, this);
+            } else {
+                baseTotalUsage = UpgradeUtils.getBaseUsage(upgrades, this, baseTicksRequired);
+            }
         }
     }
 

@@ -312,7 +312,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     ENERGY_USAGE_PAINTING(TranslationPreset.ENERGY_USAGE, "Painting Machine"),
     ENERGY_USAGE_DIMENSIONAL_STABILIZER("usage.stabilizer.energy", "Dimensional Stabilizer Energy Usage", "Energy per chunk per tick."),
     SECONDARY_CHEMICAL_USAGE_RANDOMIZED("usage.secondary.chemical.random", "Randomized  Secondary Chemical Usage",
-          "If enabled, Chemical Injectors and Purification Chambers will consume a semi randomized amount of chemical each operation."),
+          "If enabled, Chemical Dissolution Chambers, Chemical Injectors, and Purification Chambers will consume a semi randomized amount of chemical each operation."),
 
     USAGE_TELEPORTER("usage.teleporter", "Teleporter", "Settings for configuring Teleporter Energy Usage", true),
     USAGE_TELEPORTER_BASE("usage.teleporter.base", "Base Energy Usage", "Base energy cost for teleporting an entity."),

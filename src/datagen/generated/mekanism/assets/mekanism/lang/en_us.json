@@ -1608,7 +1608,7 @@
   "configuration.mekanism.usage.rotary_condensentrator.energy": "Rotary Condensentrator Energy Usage",
   "configuration.mekanism.usage.rotary_condensentrator.energy.tooltip": "Energy per operation of: Rotary Condensentrator",
   "configuration.mekanism.usage.secondary.chemical.random": "Randomized  Secondary Chemical Usage",
-  "configuration.mekanism.usage.secondary.chemical.random.tooltip": "If enabled, Chemical Injectors and Purification Chambers will consume a semi randomized amount of chemical each operation.",
+  "configuration.mekanism.usage.secondary.chemical.random.tooltip": "If enabled, Chemical Dissolution Chambers, Chemical Injectors, and Purification Chambers will consume a semi randomized amount of chemical each operation.",
   "configuration.mekanism.usage.seismic_vibrator.energy": "Seismic Vibrator Energy Usage",
   "configuration.mekanism.usage.seismic_vibrator.energy.tooltip": "Energy per operation of: Seismic Vibrator",
   "configuration.mekanism.usage.stabilizer.energy": "Dimensional Stabilizer Energy Usage",
