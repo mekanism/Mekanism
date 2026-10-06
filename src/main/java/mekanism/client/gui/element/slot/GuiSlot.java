@@ -214,8 +214,7 @@ public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, ISu
             guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.getAsInt());
         }
         if (hovered) {
-            //TODO: Should it pass it the proper mouseX and mouseY. Probably, though buttons may have to be redone slightly then
-            renderToolTip(guiGraphics, mouseX - getGuiLeft(), mouseY - getGuiTop());
+            renderToolTip(guiGraphics, mouseX, mouseY);
         }
     }
 
