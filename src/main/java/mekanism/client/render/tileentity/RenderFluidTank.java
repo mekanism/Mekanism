@@ -10,7 +10,6 @@ import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -31,10 +30,6 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     public static final float VALVE_MIN_XZ = 0.3225F;
     public static final float VALVE_MAX_XZ = 0.6775F;
     public static final float VALVE_MAX_Y = 0.87625F;
-
-    public RenderFluidTank(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public FluidTankRenderState createRenderState() {

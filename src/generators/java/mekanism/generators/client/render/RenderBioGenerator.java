@@ -12,7 +12,6 @@ import mekanism.generators.client.render.RenderBioGenerator.BioGeneratorRenderSt
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -36,10 +35,6 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     public static final float MODEL_Z_MIN_SOUTH = 0.125F;
     public static final float MODEL_Z_MIN_WEST = 0.187F;
     public static final float MODEL_Z_MIN_EAST = 0.186F;
-
-    public RenderBioGenerator(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public BioGeneratorRenderState createRenderState() {

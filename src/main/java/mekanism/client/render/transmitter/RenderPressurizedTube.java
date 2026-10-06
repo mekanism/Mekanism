@@ -4,7 +4,6 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
@@ -12,10 +11,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPressurizedTube, TransmitterRenderState> {
-
-    public RenderPressurizedTube(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public TransmitterRenderState createRenderState() {

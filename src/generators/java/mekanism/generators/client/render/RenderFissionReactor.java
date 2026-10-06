@@ -21,7 +21,6 @@ import mekanism.generators.common.content.fission.FissionReactorValidator.Formed
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -39,10 +38,6 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
     //TODO: Replace using a model for glow with using FuelAssemblyBakedModel as it should provide a performance boost
     // The issue and reason it doesn't use it yet is because rendering the coolant hides the FuelAssemblyBakedModel due to
     // transparency sort ordering
-
-    public RenderFissionReactor(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public FissionRenderState createRenderState() {

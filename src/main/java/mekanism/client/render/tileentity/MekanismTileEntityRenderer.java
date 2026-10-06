@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
@@ -22,11 +21,7 @@ import org.jspecify.annotations.Nullable;
 
 public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity, STATE extends BlockEntityRenderState> implements BlockEntityRenderer<TILE, STATE> {
 
-    protected final BlockEntityRendererProvider.Context context;
-
-    //TODO - 26.3: do we want to be passing context all the way up, or just grab what we need where we need it? I think probably the latter
-    protected MekanismTileEntityRenderer(BlockEntityRendererProvider.Context context) {
-        this.context = context;
+    protected MekanismTileEntityRenderer() {
     }
 
     @Override

@@ -15,7 +15,6 @@ import mekanism.generators.client.render.RenderWindGenerator.WindGeneratorRender
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -36,10 +35,6 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
 
     public static void resetCached() {
         lines = null;
-    }
-
-    public RenderWindGenerator(BlockEntityRendererProvider.Context context) {
-        super(context);
     }
 
     @Override

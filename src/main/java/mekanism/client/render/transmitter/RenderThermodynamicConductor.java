@@ -4,7 +4,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.network.transmitter.ThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.util.HeatUtils;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
@@ -14,10 +13,6 @@ import org.jspecify.annotations.Nullable;
 public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEntityThermodynamicConductor, TransmitterRenderState> {
 
     private static final Identifier HEAT_ICON_LOCATION = Mekanism.rl("mek_liquid/heat");
-
-    public RenderThermodynamicConductor(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public TransmitterRenderState createRenderState() {

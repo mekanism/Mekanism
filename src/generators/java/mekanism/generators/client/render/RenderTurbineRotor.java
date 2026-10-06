@@ -26,7 +26,6 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
     private final ModelTurbine model;
 
     public RenderTurbineRotor(BlockEntityRendererProvider.Context context) {
-        super(context);
         this.model = new ModelTurbine(context.entityModelSet());
         INSTANCE = this;
     }

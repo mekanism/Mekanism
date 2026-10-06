@@ -15,7 +15,6 @@ import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -33,10 +32,6 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final int STAGES = 100;
     private static final float HEIGHT = 0.45F;
     private static final float OFFSET = 0.02F;
-
-    public RenderMechanicalPipe(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public PipeRenderState createRenderState() {

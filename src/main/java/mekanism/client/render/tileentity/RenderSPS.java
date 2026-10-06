@@ -27,7 +27,6 @@ import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
 import mekanism.common.particle.SPSOrbitEffect;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -51,10 +50,6 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
     }
 
     private final RandomSource random = RandomSource.create();
-
-    public RenderSPS(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public SPSRenderState createRenderState() {

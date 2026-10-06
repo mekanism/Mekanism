@@ -7,7 +7,6 @@ import mekanism.client.render.tileentity.RenderIndustrialAlarm.AlarmRenderState;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
@@ -23,10 +22,6 @@ import org.jspecify.annotations.Nullable;
 public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntityIndustrialAlarm, AlarmRenderState> {
 
     private static final float ROTATE_SPEED = 10F;
-
-    public RenderIndustrialAlarm(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public AlarmRenderState createRenderState() {

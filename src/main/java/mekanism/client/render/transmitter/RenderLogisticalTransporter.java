@@ -34,7 +34,6 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private final ItemModelResolver itemModelResolver;
 
     public RenderLogisticalTransporter(BlockEntityRendererProvider.Context context) {
-        super(context);
         this.itemModelResolver = context.itemModelResolver();
     }
 

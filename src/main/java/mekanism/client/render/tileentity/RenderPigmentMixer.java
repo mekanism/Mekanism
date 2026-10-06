@@ -14,7 +14,6 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.machine.TileEntityPigmentMixer;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -34,10 +33,6 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
 
     public static void resetCached() {
         lines = null;
-    }
-
-    public RenderPigmentMixer(BlockEntityRendererProvider.Context context) {
-        super(context);
     }
 
     @Override

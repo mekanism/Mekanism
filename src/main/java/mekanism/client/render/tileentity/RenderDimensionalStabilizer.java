@@ -15,7 +15,6 @@ import mekanism.client.render.tileentity.RenderDimensionalStabilizer.StabilizerR
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -37,13 +36,6 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
     // so that it is clearer which ones are rendering and which are not, or maybe evaluate actually having the top and bottom render
     private static final int NORTH_SOUTH_COLOR = ARGB.white(0.82F);
     private static final int EAST_WEST_COLOR = ARGB.white(0.78F);
-
-    public static void resetCachedVisuals() {
-    }
-
-    public RenderDimensionalStabilizer(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public StabilizerRenderState createRenderState() {

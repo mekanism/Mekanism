@@ -9,7 +9,6 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -19,8 +18,7 @@ import net.minecraft.world.phys.Vec3;
 
 public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransmitter, STATE extends TransmitterRenderState> extends MekanismTileEntityRenderer<TRANSMITTER, STATE> {
 
-    protected RenderTransmitterBase(BlockEntityRendererProvider.Context context) {
-        super(context);
+    protected RenderTransmitterBase() {
     }
 
     protected void setContentsModel(TRANSMITTER tile, STATE state, Identifier texture, int tint) {

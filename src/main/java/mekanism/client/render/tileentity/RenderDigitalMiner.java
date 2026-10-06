@@ -8,7 +8,6 @@ import mekanism.client.render.tileentity.RenderDigitalMiner.DigitalMinerRenderSt
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -25,10 +24,6 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
     private static final int UP_DOWN_COLOR = ARGB.white(0.82F);
     private static final int EAST_WEST_COLOR = ARGB.white(0.78F);
     private static final int NORTH_SOUTH_COLOR = ARGB.white(0.8F);
-
-    public RenderDigitalMiner(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public DigitalMinerRenderState createRenderState() {

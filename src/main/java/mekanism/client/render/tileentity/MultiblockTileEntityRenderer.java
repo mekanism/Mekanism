@@ -4,7 +4,6 @@ import java.util.Objects;
 import mekanism.client.render.MultiblockContentsRenderState;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -13,8 +12,7 @@ import org.jspecify.annotations.Nullable;
 public abstract class MultiblockTileEntityRenderer<MULTIBLOCK extends MultiblockData, TILE extends TileEntityMultiblock<MULTIBLOCK>, STATE extends MultiblockContentsRenderState>
       extends MekanismTileEntityRenderer<TILE, STATE> {
 
-    protected MultiblockTileEntityRenderer(BlockEntityRendererProvider.Context context) {
-        super(context);
+    protected MultiblockTileEntityRenderer() {
     }
 
     @Override

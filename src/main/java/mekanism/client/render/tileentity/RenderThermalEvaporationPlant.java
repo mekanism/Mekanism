@@ -16,7 +16,6 @@ import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -27,10 +26,6 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
 public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<EvaporationMultiblockData, TileEntityThermalEvaporationController, TEPRenderState> {
-
-    public RenderThermalEvaporationPlant(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public TEPRenderState createRenderState() {

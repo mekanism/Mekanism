@@ -53,7 +53,6 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
     private final ItemModelResolver itemModelResolver;
 
     public RenderNutritionalLiquifier(Context context) {
-        super(context);
         this.itemModelResolver = context.itemModelResolver();
     }
 

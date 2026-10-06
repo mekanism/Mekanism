@@ -9,7 +9,6 @@ import mekanism.client.render.tileentity.RenderTeleporter.TeleporterRenderState;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -28,10 +27,6 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
     public static final float MIN_SIDE_BOUND2 = 0;
     public static final float MAX_SIDE_BOUND1 = 0.54F;
     public static final float MAX_SIDE_BOUND2 = 1;
-
-    public RenderTeleporter(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public TeleporterRenderState createRenderState() {

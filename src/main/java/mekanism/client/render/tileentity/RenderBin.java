@@ -39,7 +39,6 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
     private final Font font;
 
     public RenderBin(BlockEntityRendererProvider.Context context) {
-        super(context);
         this.font = context.font();
         this.itemModelResolver = context.itemModelResolver();
     }

@@ -70,16 +70,14 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(GeneratorsTileEntityTypes.BIO_GENERATOR.get(), RenderBioGenerator::new);
-        event.registerBlockEntityRenderer(GeneratorsTileEntityTypes.FUSION_REACTOR_CONTROLLER.get(), RenderFusionReactor::new);
-        event.registerBlockEntityRenderer(GeneratorsTileEntityTypes.FISSION_REACTOR_CASING.get(), RenderFissionReactor::new);
-        event.registerBlockEntityRenderer(GeneratorsTileEntityTypes.FISSION_REACTOR_PORT.get(), RenderFissionReactor::new);
-        event.registerBlockEntityRenderer(GeneratorsTileEntityTypes.FISSION_REACTOR_LOGIC_ADAPTER.get(), RenderFissionReactor::new);
-        event.registerBlockEntityRenderer(GeneratorsTileEntityTypes.TURBINE_CASING.get(), RenderIndustrialTurbine::new);
+        event.registerBlockEntityRenderer(GeneratorsTileEntityTypes.BIO_GENERATOR.get(), _ -> new RenderBioGenerator());
+        event.registerBlockEntityRenderer(GeneratorsTileEntityTypes.FUSION_REACTOR_CONTROLLER.get(), _ -> new RenderFusionReactor());
+        ClientRegistrationUtil.bindTileEntityRenderer(event, _ -> new RenderFissionReactor(), GeneratorsTileEntityTypes.FISSION_REACTOR_CASING,
+              GeneratorsTileEntityTypes.FISSION_REACTOR_PORT, GeneratorsTileEntityTypes.FISSION_REACTOR_LOGIC_ADAPTER);
         event.registerBlockEntityRenderer(GeneratorsTileEntityTypes.TURBINE_ROTOR.get(), RenderTurbineRotor::new);
-        event.registerBlockEntityRenderer(GeneratorsTileEntityTypes.TURBINE_VALVE.get(), RenderIndustrialTurbine::new);
-        event.registerBlockEntityRenderer(GeneratorsTileEntityTypes.TURBINE_VENT.get(), RenderIndustrialTurbine::new);
-        event.registerBlockEntityRenderer(GeneratorsTileEntityTypes.WIND_GENERATOR.get(), RenderWindGenerator::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(event, _ -> new RenderIndustrialTurbine(), GeneratorsTileEntityTypes.TURBINE_CASING,
+              GeneratorsTileEntityTypes.TURBINE_VALVE, GeneratorsTileEntityTypes.TURBINE_VENT);
+        event.registerBlockEntityRenderer(GeneratorsTileEntityTypes.WIND_GENERATOR.get(), _ -> new RenderWindGenerator());
     }
 
     @SubscribeEvent

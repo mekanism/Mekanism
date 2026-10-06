@@ -12,7 +12,6 @@ import mekanism.client.render.tileentity.RenderSeismicVibrator.VibratorRenderSta
 import mekanism.common.tile.machine.TileEntitySeismicVibrator;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -31,10 +30,6 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
 
     public static void resetCached() {
         lines = null;
-    }
-
-    public RenderSeismicVibrator(BlockEntityRendererProvider.Context context) {
-        super(context);
     }
 
     @Override

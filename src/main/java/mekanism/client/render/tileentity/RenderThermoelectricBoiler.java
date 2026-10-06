@@ -18,7 +18,6 @@ import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -30,10 +29,6 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
 public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<BoilerMultiblockData, TileEntityBoilerCasing, BoilerRenderState> {
-
-    public RenderThermoelectricBoiler(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public BoilerRenderState createRenderState() {

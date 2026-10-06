@@ -12,7 +12,6 @@ import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -25,10 +24,6 @@ import org.jspecify.annotations.Nullable;
 public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReactorMultiblockData, TileEntityFusionReactorController, FusionRenderState> {
 
     private static final double SCALE = 100_000_000;
-
-    public RenderFusionReactor(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
 
     @Override
     public FusionRenderState createRenderState() {
