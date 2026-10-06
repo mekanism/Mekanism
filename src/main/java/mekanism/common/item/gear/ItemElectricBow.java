@@ -72,10 +72,10 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     }
 
     @Override
-    public boolean isPrimaryItemFor(ItemStack stack, Holder<Enchantment> enchantment) {
+    public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
         //Note: This stops application of it via enchanted books while in survival. We don't override isBookEnchantable as we don't care
         // if someone enchants it in creative and would rather not stop players from enchanting with books that have flame and power on them
-        return !enchantment.is(Enchantments.FLAME) && super.isPrimaryItemFor(stack, enchantment);
+        return !enchantment.is(Enchantments.FLAME) && super.supportsEnchantment(stack, enchantment);
     }
 
     @Override
