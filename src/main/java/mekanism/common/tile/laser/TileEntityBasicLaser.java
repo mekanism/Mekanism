@@ -454,7 +454,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         level.removeBlock(hitPos, false);
         //TODO: We may want to evaluate at some point doing this with our fake player so that it is fired as the "cause"?
         level.gameEvent(GameEvent.BLOCK_DESTROY, hitPos, GameEvent.Context.of(null, state));
-        level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, hitPos, Block.getId(state));
+        level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_DESTROY_BLOCK, hitPos, Block.getId(state));
     }
 
     protected int toFire() {

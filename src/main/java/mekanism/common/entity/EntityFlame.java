@@ -259,7 +259,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
                     item.setDeltaMovement(0, 0, 0);
                     level().addFreshEntity(item);
                 }
-                level().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(hitState));
+                level().levelEvent(LevelEvent.PARTICLES_AND_SOUND_DESTROY_BLOCK, blockPos, Block.getId(hitState));
                 spawnParticlesAt((ServerLevel) level(), blockPos);
             }
         }

@@ -519,7 +519,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                                         // and to actually remove the item we tried to use to replace the block
                                         subTransaction.commit();
                                         missingStack = ItemStack.EMPTY;
-                                        level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
+                                        level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_DESTROY_BLOCK, pos, Block.getId(state));
                                         //Remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
                                         cachedToMine--;
                                         chunkToMine.clear(index);
