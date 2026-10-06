@@ -32,7 +32,7 @@ public class RenderRobitItem implements SpecialModelRenderer<BakeResult> {
         if (argument == null) {
             return;
         }
-        RenderRobit.submitRobitSkin(argument, poseStack, submitNodeCollector, overlayCoords, lightCoords, outlineColor);
+        RenderRobit.submitRobitSkin(argument, poseStack, submitNodeCollector, overlayCoords, lightCoords, outlineColor, hasFoil);
     }
 
     @Override

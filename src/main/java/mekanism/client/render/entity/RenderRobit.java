@@ -14,9 +14,11 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jspecify.annotations.Nullable;
@@ -79,12 +81,16 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, Enti
         poseStack.pushPose();
         poseStack.rotate(Axis.XP, Mth.PI);
         poseStack.translate(-0.5, -1.5, -0.5);
-        submitRobitSkin(state.model, poseStack, nodeCollector, getOverlayCoords(state, this.getWhiteOverlayProgress(state)), state.lightCoords, state.outlineColor);
+        submitRobitSkin(state.model, poseStack, nodeCollector, getOverlayCoords(state, this.getWhiteOverlayProgress(state)), state.lightCoords, state.outlineColor, false);
         poseStack.popPose();
     }
 
-    public static void submitRobitSkin(BakeResult baked, PoseStack poseStack, SubmitNodeCollector nodeCollector, int overlay, int lightCoords, int outlineColor) {
+    public static void submitRobitSkin(BakeResult baked, PoseStack poseStack, SubmitNodeCollector nodeCollector, int overlay, int lightCoords, int outlineColor, boolean hasFoil) {
         nodeCollector.submitBlockModel(poseStack, baked.renderType(), baked.model(), BlockModelRenderState.EMPTY_TINTS, lightCoords, overlay, outlineColor);
+        if (hasFoil) {
+            nodeCollector.submitBlockModel(poseStack, baked.glintRenderType(), baked.model(), BlockModelRenderState.EMPTY_TINTS, lightCoords,
+                  OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+        }
     }
 
     @Override

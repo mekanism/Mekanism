@@ -4,11 +4,11 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mekanism.client.model.robit.RobitSkinManager.BakeResult;
+import mekanism.client.render.entity.RenderRobit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -24,8 +24,7 @@ public class RobitSkinPreviewPiP extends PictureInPictureRenderer<RobitSkinPrevi
         Minecraft.getInstance().gameRenderer.lighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
         poseStack.rotate(Axis.ZP, Mth.PI);
         poseStack.rotateAround(state.rotation, 0.5F, 0.0F, 0.5F);
-        BakeResult model = state.model();
-        nodeCollector.submitBlockModel(poseStack, model.renderType(), model.model(), BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+        RenderRobit.submitRobitSkin(state.model(), poseStack, nodeCollector, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_BRIGHT, EntityRenderState.NO_OUTLINE, false);
     }
 
     @Override

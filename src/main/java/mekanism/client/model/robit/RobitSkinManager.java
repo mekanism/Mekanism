@@ -89,7 +89,7 @@ public class RobitSkinManager {
     private RobitSkinManager(ModelBakery bakery, ModelBakery.MissingModels missingModels) {
         this.resolvedModelMap = bakery.resolvedModels;
         missingModelPart = missingModels.blockPart();
-        this.bakedMissingModel = new BakeResult(Collections.singletonList(missingModelPart), Sheets.cutoutBlockItemSheet());
+        this.bakedMissingModel = new BakeResult(Collections.singletonList(missingModelPart), Sheets.cutoutBlockItemSheet(), Sheets.cutoutBlockItemGlintSheet());
         Objects.requireNonNull(ROBIT_BAKER, "Failed to initialize Robit late material baker");
         ROBIT_BAKER.setMissingSprite();
         modelBaker = bakery.new ModelBakerImpl(ROBIT_BAKER, new ModelBakery.InternerImpl(), missingModels);
@@ -135,7 +135,7 @@ public class RobitSkinManager {
                   resolved.getTopAmbientOcclusion(),
                   missingModelPart.particleMaterial()//we don't intend to use this, so no point resolving it
             );
-            return new BakeResult(Collections.singletonList(bakedModel), RobitSpriteUploader.RENDER_TYPE);
+            return new BakeResult(Collections.singletonList(bakedModel), RobitSpriteUploader.RENDER_TYPE, RobitSpriteUploader.GLINT_RENDER_TYPE);
         } catch (Exception e) {
             Mekanism.logger.error("Unable to bake Robit model {} due to exception", skin, e);
             return bakedMissingModel;
@@ -144,7 +144,7 @@ public class RobitSkinManager {
 
     /// @param model      Model parts for submitting
     /// @param renderType Render type to use - the one for missing will be different, this lets the renderer not care
-    public record BakeResult(List<BlockStateModelPart> model, RenderType renderType) {}
+    public record BakeResult(List<BlockStateModelPart> model, RenderType renderType, RenderType glintRenderType) {}
 
     private static class RobitLateMaterialBaker extends MaterialBaker {
 
