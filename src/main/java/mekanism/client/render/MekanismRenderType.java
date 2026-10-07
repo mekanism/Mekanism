@@ -24,7 +24,7 @@ public class MekanismRenderType {
 
     public static final Function<Identifier, RenderType> FLAME = RenderTypes::entityTranslucent;
 
-    /// Similar to [RenderTypes#armorCutoutNoCull(Identifier)]
+    /// Similar to [RenderTypes#armorCutoutNoCull(Identifier)] but uses our own render pipeline
     public static final RenderType MEKASUIT = RenderType.create("mekanism_mekasuit", RenderSetup.builder(MekanismRenderPipelines.MEKASUIT)
           .withTexture("Sampler0", TextureAtlas.LOCATION_ITEMS)
           .useLightmap()

@@ -37,25 +37,24 @@ public class MekanismRenderPipelines {
           .withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP)
           .build();
 
+    //TODO - 26.3: See if we can add support in some way for ENTITY_EMISSIVE_SNIPPET? Particularly for the glowing parts
     private static final RenderPipeline.Snippet MEKASUIT_SNIPPET = RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
           .withVertexShader(Mekanism.rl("core/mekasuit"))
           .withFragmentShader(Mekanism.rl("core/mekasuit"))
           .buildSnippet();
 
-    /// Based on [RenderPipelines#ARMOR_CUTOUT_NO_CULL] but without the alpha cutout
+    /// Based on [RenderPipelines#ARMOR_CUTOUT_NO_CULL]
     public static final RenderPipeline MEKASUIT = RenderPipeline.builder(MEKASUIT_SNIPPET)
           .withLocation(Mekanism.rl("pipeline/mekasuit"))
-          //Note: Don't limit the alpha of the passed tint, we skip using this if the tint is fully transparent anyway
-          //.withShaderDefine("ALPHA_CUTOUT", 0.1F)
+          .withShaderDefine("ALPHA_CUTOUT", 0.1F)
           .withShaderDefine("NO_OVERLAY")
           .withShaderDefine("PER_FACE_LIGHTING")
           .withCull(false)
           .withColorTargetState(ColorTargetState.DEFAULT)
           .build();
-    /// Based on [RenderPipelines#ARMOR_CUTOUT_NO_CULL_GLINT] but without the alpha cutout
+    /// Based on [RenderPipelines#ARMOR_CUTOUT_NO_CULL_GLINT]
     public static final RenderPipeline MEKASUIT_GLINT = RenderPipeline.builder(MEKASUIT_SNIPPET, RenderPipelines.GLINT_SNIPPET)
           .withLocation(Mekanism.rl("pipeline/mekasuit_glint"))
-          //TODO - 26.3: Do we want this
           .withShaderDefine("ALPHA_CUTOUT", 0.1F)
           .withShaderDefine("NO_OVERLAY")
           .withShaderDefine("PER_FACE_LIGHTING")
