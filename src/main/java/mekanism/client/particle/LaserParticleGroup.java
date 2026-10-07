@@ -52,8 +52,9 @@ public class LaserParticleGroup extends ParticleGroup<LaserParticle> {
         @Override
         public void submit(SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
             for (LaserFeatureRenderer.Submit state : this.states) {
-                //Translucent particles happen during after terrain
-                submitNodeCollector.submitSpecial(RenderPhaseKeys.AFTER_TERRAIN, state);
+                //Translucent particles happen during after terrain, but we use translucent custom geometry instead so that it can render when underwater
+                // as it is not that noticeable that it makes water disappear behind the beam
+                submitNodeCollector.submitSpecial(RenderPhaseKeys.TRANSLUCENT_CUSTOM_GEOMETRY, state);
             }
         }
     }

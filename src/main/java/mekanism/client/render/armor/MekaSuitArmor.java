@@ -191,8 +191,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                     ModelPos.BODY.translate(baseModel, poseStack, state);
                     PoseStack.Pose pose = poseStack.last().copy();
                     for (BoltRenderState boltState : boltRenderStates) {
-                        //TODO - 26.3: Figure out the render phase to target
-                        nodeCollector.submitSpecial(RenderPhaseKeys.AFTER_TERRAIN, new BoltFeatureRenderer.Submit(pose, boltState));
+                        nodeCollector.submitSpecial(RenderPhaseKeys.TRANSLUCENT_CUSTOM_GEOMETRY, new BoltFeatureRenderer.Submit(pose, boltState));
                     }
                     poseStack.popPose();
                 }

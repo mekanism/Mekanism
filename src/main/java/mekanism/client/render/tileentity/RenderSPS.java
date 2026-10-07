@@ -140,7 +140,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         if (!state.boltRenderStates.isEmpty()) {
             Pose pose = poseStack.last().copy();
             for (BoltRenderState boltRenderState : state.boltRenderStates) {
-                nodeCollector.submitSpecial(RenderPhaseKeys.AFTER_TERRAIN, new BoltFeatureRenderer.Submit(pose, boltRenderState));
+                nodeCollector.submitSpecial(RenderPhaseKeys.TRANSLUCENT_CUSTOM_GEOMETRY, new BoltFeatureRenderer.Submit(pose, boltRenderState));
             }
         }
     }

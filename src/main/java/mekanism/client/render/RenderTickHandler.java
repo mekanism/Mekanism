@@ -112,7 +112,7 @@ public class RenderTickHandler {
 
                 PoseStack.Pose pose = poseStack.last().copy();
                 for (BoltRenderState state : boltRenderStates) {
-                    nodeCollector.submitSpecial(RenderPhaseKeys.AFTER_TERRAIN, new BoltFeatureRenderer.Submit(pose, state));
+                    nodeCollector.submitSpecial(RenderPhaseKeys.TRANSLUCENT_CUSTOM_GEOMETRY, new BoltFeatureRenderer.Submit(pose, state));
                 }
                 poseStack.popPose();
             }
