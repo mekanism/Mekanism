@@ -2,6 +2,7 @@ package mekanism.client;
 
 import com.google.common.reflect.TypeToken;
 import mekanism.api.gear.IClientModuleHelper;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalTank;
@@ -140,6 +141,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaTank;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -169,11 +171,13 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.CommonColors;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -310,9 +314,6 @@ public class ClientRegistration {
         }, (entity, renderState) -> {
             if (renderState instanceof HumanoidRenderState state) {
                 renderState.setRenderData(MekaSuitArmor.UUID_CONTEXT, entity.getUUID());
-                if (state.isFallFlying) {
-                    state.setRenderData(MekaSuitArmor.DELTA_Y_CONTEXT, entity.getDeltaMovement().y);
-                }
                 if (state.headEquipment.getItem() instanceof ItemMekaSuitArmor) {
                     //Note: Hiding head also implicitly hides the hat model part as it is a child of head
                     state.overrideModelPartVisibility(PartNames.HEAD, false);
@@ -339,6 +340,34 @@ public class ClientRegistration {
                             avatarState.showLeftSleeve = false;
                             avatarState.showRightSleeve = false;
                         }
+                    }
+                    if (IModuleHelper.INSTANCE.isEnabled(state.chestEquipment, MekanismModules.ELYTRA_UNIT)) {
+                        float scale = 0;
+                        //Note: In theory the entity is always "fall flying" for wing rendering given our conditions
+                        // for it rendering, but we validate it just in case.
+                        //If the entity is not dive-bombing the ground (at which point the wings will be folded)
+                        if (state.isFallFlying && state.xRot < 45) {
+                            // then we check if the entity is not pointing steeply into the sky
+                            double deltaY = entity.getDeltaMovement().y;
+                            // if it isn't or if the entity has a lot of movement
+                            if (state.xRot > -45 || deltaY > 1) {
+                                // then we fully expand the wings
+                                scale = 1;
+                            } else if (deltaY > 0) {
+                                // otherwise, if the entity is pointing steeply into the sky, and we have a small amount
+                                // of movement (y movement between zero and one) then we partially expand the wings
+                                scale = (float) deltaY;
+                            }
+                            // if we don't have any upwards momentum, and we are pointing steeply into the sky then we just fold the wings
+                        }
+                        if (entity instanceof Player) {
+                            //If the entity is a player, then transition the wings gradually to their target position
+                            float yRot = scale * MekaSuitArmor.ModelPos.EXPANDED_WING_Y_ROT;
+                            float targetYRot = Mth.lerp(0.01F, entity.getData(MekanismAttachmentTypes.MEKASUIT_WING_YROT), yRot);
+                            entity.setData(MekanismAttachmentTypes.MEKASUIT_WING_YROT, targetYRot);
+                            scale = targetYRot / MekaSuitArmor.ModelPos.EXPANDED_WING_Y_ROT;
+                        }
+                        state.setRenderData(MekaSuitArmor.WING_SCALE, scale);
                     }
                 } else if (chest instanceof ItemJetpack || chest instanceof ItemScubaTank) {
                     ItemStackRenderState bodyItem = new ItemStackRenderState();

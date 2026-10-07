@@ -65,7 +65,6 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.context.ContextKey;
-import net.minecraft.world.entity.ElytraAnimationState;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.HumanoidArm;
@@ -100,7 +99,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     private static final BoltEffect RIGHT_GRAV_BOLT = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vector3f(0.025F, 0.35F, 0.37F),
           new Vector3f(0.025F, 0.15F, 0.37F), 10).size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
     public static final ContextKey<UUID> UUID_CONTEXT = new ContextKey<>(Mekanism.rl("uuid"));
-    public static final ContextKey<Double> DELTA_Y_CONTEXT = new ContextKey<>(Mekanism.rl("delta_y"));
+    public static final ContextKey<Float> WING_SCALE = new ContextKey<>(Mekanism.rl("wing_scale"));
 
     private static final Vector3fc BASE_TRANSLATION = new Vector3f(-1, 0.5F, 0);
     private static final RenderType NO_TINT = RenderTypes.armorCutoutNoCull(TextureAtlas.LOCATION_ITEMS);
@@ -285,7 +284,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         private static final float EXPANDED_WING_X = 1;
         private static final float EXPANDED_WING_Y = -2.5F;
         private static final float EXPANDED_WING_Z = 5;
-        private static final float EXPANDED_WING_Y_ROT = 45;
+        public static final float EXPANDED_WING_Y_ROT = 45;
         private static final float EXPANDED_WING_Z_ROT = 25;
 
         private final Vector3fc transform;
@@ -342,51 +341,13 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
         private <STATE extends HumanoidRenderState> void translateWings(HumanoidModel<STATE> baseModel, PoseStack poseStack, STATE state) {
             baseModel.body.translateAndRotate(poseStack);
-            float x = 0;
-            float y = 0;
-            float z = 0;
-            float yRot = 0;
-            float zRot = 0;
-            //Note: In theory the entity is always "fall flying" for wing rendering given our conditions
-            // for it rendering, but we validate it just in case.
-            //If the entity is not dive-bombing the ground (at which point the wings will be folded)
-            if (state.isFallFlying && state.xRot < 45) {
-                float scale = 0;
-                // then we check if the entity is not pointing steeply into the sky
-                double deltaY = state.getRenderDataOrDefault(DELTA_Y_CONTEXT, 0D);
-                // if it isn't or if the entity has a lot of movement
-                if (state.xRot > -45 || deltaY > 1) {
-                    // then we fully expand the wings
-                    scale = 1;
-                } else if (deltaY > 0) {
-                    // otherwise, if the entity is pointing steeply into the sky, and we have a small amount
-                    // of movement (y movement between zero and one) then we partially expand the wings
-                    scale = (float) deltaY;
-                }
-                // if we don't have any upwards momentum, and we are pointing steeply into the sky then we just fold the wings
-                x = EXPANDED_WING_X * scale;
-                y = EXPANDED_WING_Y * scale;
-                z = EXPANDED_WING_Z * scale;
-                yRot = EXPANDED_WING_Y_ROT * scale;
-                zRot = EXPANDED_WING_Z_ROT * scale;
-            }
-            //TODO - 26.3: I think we should actually be updating the rotations in entity.elytraAnimationState rather than in the state? Maybe we can do it in the update render state method?
-            // Also is there a reason to only be doing this for players?
-            if (state instanceof AvatarRenderState playerState) {
-                //If the entity is a player, then transition the wings gradually to their target position
-                ElytraAnimationState elytraAnimationState;
-                //TODO - 26.3: What is the difference between playerState.flyingYRot and state.elytraRotY?
-                state.elytraRotX = 0;
-                state.elytraRotY = state.elytraRotY + (yRot - state.elytraRotY) * 0.01F;
-                //Base off of target values
-                float scale = state.elytraRotY / EXPANDED_WING_Y_ROT;
-                state.elytraRotZ = EXPANDED_WING_Z_ROT * scale;
-                x = EXPANDED_WING_X * scale;
-                y = EXPANDED_WING_Y * scale;
-                z = EXPANDED_WING_Z * scale;
-                yRot = state.elytraRotY;
-                zRot = state.elytraRotZ;
-            }
+            float scale = state.getRenderDataOrDefault(WING_SCALE, 0F);
+            // if we don't have any upwards momentum, and we are pointing steeply into the sky then we just fold the wings
+            float x = EXPANDED_WING_X * scale;
+            float y = EXPANDED_WING_Y * scale;
+            float z = EXPANDED_WING_Z * scale;
+            float yRot = EXPANDED_WING_Y_ROT * scale;
+            float zRot = EXPANDED_WING_Z_ROT * scale;
             if (this == RIGHT_WING) {
                 //Invert things that need to be inverted for the right wing to mirror it properly
                 x = -x;
@@ -400,7 +361,6 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             if (zRot != 0.0F) {
                 poseStack.rotateDegrees(Axis.ZP, zRot);
             }
-
         }
     }
 

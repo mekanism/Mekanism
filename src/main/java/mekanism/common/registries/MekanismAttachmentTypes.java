@@ -48,4 +48,7 @@ public class MekanismAttachmentTypes {
                 .copyHandler((version, _, _) -> version > 0 ? version : null)
                 .build()
     );
+
+    //Note: Only used on the client
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Float>> MEKASUIT_WING_YROT = ATTACHMENT_TYPES.register("mekasuit_wing_yrot", () -> AttachmentType.builder(() -> 0F).build());
 }
