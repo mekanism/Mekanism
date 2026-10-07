@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
@@ -49,7 +50,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueInput.ValueInputList;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.ValueOutputList;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -391,10 +391,13 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     public boolean handleUpdateTag(ValueInput input) {
         boolean refreshModelData = super.handleUpdateTag(input);
         transit.clear();
-        ValueInputList itemInputs = input.childrenListOrEmpty(SerializationConstants.ITEMS);
-        for (ValueInput itemInput : itemInputs) {
-            //TODO - 26.3: How do we want to handle if the item input doesn't contain an index?
-            addStack(itemInput.getIntOr(SerializationConstants.INDEX, 0), TransporterStack.readFromUpdate(itemInput));
+        for (ValueInput itemInput : input.childrenListOrEmpty(SerializationConstants.ITEMS)) {
+            Optional<Integer> index = itemInput.getInt(SerializationConstants.INDEX);
+            //noinspection OptionalIsPresent - Capturing lambda
+            if (index.isPresent()) {
+                //If we got an invalid update packet and there is no index present, just ignore the item
+                addStack(index.get(), TransporterStack.readFromUpdate(itemInput));
+            }
         }
         return refreshModelData;
     }
@@ -402,8 +405,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     @Override
     public void read(ValueInput input) {
         super.read(input);
-        ValueInputList itemInputs = input.childrenListOrEmpty(SerializationConstants.ITEMS);
-        for (ValueInput itemInput : itemInputs) {
+        for (ValueInput itemInput : input.childrenListOrEmpty(SerializationConstants.ITEMS)) {
             addStack(nextId++, TransporterStack.read(itemInput));
         }
     }

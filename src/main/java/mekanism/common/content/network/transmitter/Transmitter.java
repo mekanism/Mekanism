@@ -37,6 +37,10 @@ import org.jspecify.annotations.Nullable;
 public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER>,
       TRANSMITTER extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER>> implements ITileWrapper {
 
+    private static final boolean DEFAULT_REDSTONE_REACTIVE = false;
+    private static final byte DEFAULT_TRANSMITTER_CONNECTIONS = 0x00;
+    private static final int[] MISSING_RAW_CONNECTIONS = new int[EnumUtils.DIRECTIONS.length];
+
     public static boolean connectionMapContainsSide(byte connections, Direction side) {
         return connectionMapContainsSide(connections, side.ordinal());
     }
@@ -73,12 +77,12 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     private ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
                                                 ConnectionType.NORMAL};
     private final AcceptorCache<ACCEPTOR> acceptorCache;
-    public byte currentTransmitterConnections = 0x00;
+    public byte currentTransmitterConnections = DEFAULT_TRANSMITTER_CONNECTIONS;
     protected boolean hasPullSide = false;
 
     private final TileEntityTransmitter transmitterTile;
     private final Set<TransmissionType> supportedTransmissionTypes;
-    protected boolean redstoneReactive;
+    protected boolean redstoneReactive = DEFAULT_REDSTONE_REACTIVE;
     private boolean redstonePowered;
     private boolean redstoneSet;
     @Nullable
@@ -437,8 +441,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             oldConnectionData[side.ordinal()] = getConnectionType(side);
         }
 
-        currentTransmitterConnections = input.getByteOr(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
-        acceptorCache.currentAcceptorConnections = input.getByteOr(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
+        currentTransmitterConnections = input.getByteOr(SerializationConstants.CURRENT_CONNECTIONS, DEFAULT_TRANSMITTER_CONNECTIONS);
+        acceptorCache.currentAcceptorConnections = input.getByteOr(SerializationConstants.CURRENT_ACCEPTORS, AcceptorCache.DEFAULT_ACCEPTOR_CONNECTIONS);
         readRawConnections(input);
 
         for (Direction side : EnumUtils.DIRECTIONS) {
@@ -482,9 +486,9 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public void read(ValueInput input) {
-        redstoneReactive = input.getBooleanOr(SerializationConstants.REDSTONE, redstoneReactive);
-        currentTransmitterConnections = input.getByteOr(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
-        acceptorCache.currentAcceptorConnections = input.getByteOr(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
+        redstoneReactive = input.getBooleanOr(SerializationConstants.REDSTONE, DEFAULT_REDSTONE_REACTIVE);
+        currentTransmitterConnections = input.getByteOr(SerializationConstants.CURRENT_CONNECTIONS, DEFAULT_TRANSMITTER_CONNECTIONS);
+        acceptorCache.currentAcceptorConnections = input.getByteOr(SerializationConstants.CURRENT_ACCEPTORS, AcceptorCache.DEFAULT_ACCEPTOR_CONNECTIONS);
         readRawConnections(input);
     }
 
@@ -504,12 +508,9 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     private void readRawConnections(ValueInput input) {
-        Optional<int[]> optionalRaw = input.getIntArray(SerializationConstants.CONNECTION);
-        if (optionalRaw.isPresent()) {
-            int[] raw = optionalRaw.get();
-            for (int i = 0; i < raw.length && i < EnumUtils.DIRECTIONS.length; i++) {
-                setConnectionTypeRaw(EnumUtils.DIRECTIONS[i], ConnectionType.BY_ID.apply(raw[i]));
-            }
+        int[] raw = input.getIntArray(SerializationConstants.CONNECTION).orElse(MISSING_RAW_CONNECTIONS);
+        for (int i = 0; i < raw.length && i < EnumUtils.DIRECTIONS.length; i++) {
+            setConnectionTypeRaw(EnumUtils.DIRECTIONS[i], ConnectionType.BY_ID.apply(raw[i]));
         }
     }
 

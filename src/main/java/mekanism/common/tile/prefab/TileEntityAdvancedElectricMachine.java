@@ -235,7 +235,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        usedSoFar = input.getIntOr(SerializationConstants.USED_SO_FAR, usedSoFar);
+        usedSoFar = input.getIntOr(SerializationConstants.USED_SO_FAR, 0);
     }
 
     @Override

@@ -132,9 +132,9 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         itemType = input.read(SerializationConstants.SINGLE_ITEM, ItemResource.CODEC).orElse(ItemResource.EMPTY);
-        count = input.getLongOr(SerializationConstants.AMOUNT, count);
-        fuzzy = input.getBooleanOr(SerializationConstants.FUZZY, fuzzy);
-        inverted = input.getBooleanOr(SerializationConstants.INVERSE, inverted);
+        count = input.getLongOr(SerializationConstants.AMOUNT, 0);
+        fuzzy = input.getBooleanOr(SerializationConstants.FUZZY, false);
+        inverted = input.getBooleanOr(SerializationConstants.INVERSE, false);
     }
 
     @Override
@@ -151,7 +151,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        boolean emitting = input.getBooleanOr(SerializationConstants.EMITTING, isEmitting);
+        boolean emitting = input.getBooleanOr(SerializationConstants.EMITTING, false);
         if (isEmitting != emitting) {
             isEmitting = emitting;
             updateModelData();
@@ -171,9 +171,9 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         itemType = input.getOrDefault(MekanismDataComponents.ITEM_TARGET, ItemResource.EMPTY);
-        count = input.getOrDefault(MekanismDataComponents.LONG_AMOUNT, count);
-        fuzzy = input.getOrDefault(MekanismDataComponents.FUZZY, fuzzy);
-        inverted = input.getOrDefault(MekanismDataComponents.INVERSE, inverted);
+        count = input.getOrDefault(MekanismDataComponents.LONG_AMOUNT, 0L);
+        fuzzy = input.getOrDefault(MekanismDataComponents.FUZZY, false);
+        inverted = input.getOrDefault(MekanismDataComponents.INVERSE, false);
     }
 
     @ComputerMethod(nameOverride = "getTargetItem")

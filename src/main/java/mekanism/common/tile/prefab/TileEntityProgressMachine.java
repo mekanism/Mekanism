@@ -57,7 +57,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
+        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, 0);
     }
 
     @Override

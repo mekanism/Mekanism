@@ -46,8 +46,9 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     private static final EntityDataAccessor<Optional<BlockPos>> LATCHED_POS = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> LATCHED_ENTITY = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
     public static final float OFFSET = -0.275F;
+    private static final EnumColor DEFAULT_COLOR = EnumColor.DARK_BLUE;
 
-    private EnumColor color = EnumColor.DARK_BLUE;
+    private EnumColor color = DEFAULT_COLOR;
 
     public EntityBalloon(EntityType<EntityBalloon> type, Level world) {
         super(type, world);
@@ -232,7 +233,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     public void readAdditionalSaveData(ValueInput input) {
-        input.read(SerializationConstants.COLOR, EnumColor.CODEC).ifPresent(color -> this.color = color);
+        this.color = input.read(SerializationConstants.COLOR, EnumColor.CODEC).orElse(DEFAULT_COLOR);
         entityData.set(LATCHED_POS, input.read(SerializationConstants.LATCHED, BlockPos.CODEC));
         entityData.set(LATCHED_ENTITY, input.read(SerializationConstants.LATCHED_ENTITY, EntityReference.codec()));
     }

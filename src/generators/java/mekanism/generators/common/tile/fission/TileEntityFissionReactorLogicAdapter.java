@@ -163,7 +163,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        input.read(SerializationConstants.LOGIC_TYPE, FissionReactorLogic.CODEC).ifPresent(logicType -> this.logicType = logicType);
+        this.logicType = input.read(SerializationConstants.LOGIC_TYPE, FissionReactorLogic.CODEC).orElse(FissionReactorLogic.DISABLED);
     }
 
     @Override
@@ -181,7 +181,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        logicType = input.getOrDefault(GeneratorsDataComponents.FISSION_LOGIC_TYPE, logicType);
+        logicType = input.getOrDefault(GeneratorsDataComponents.FISSION_LOGIC_TYPE, FissionReactorLogic.DISABLED);
     }
 
     @Override

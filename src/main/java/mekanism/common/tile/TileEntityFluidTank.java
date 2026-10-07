@@ -67,6 +67,8 @@ import org.jspecify.annotations.Nullable;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager {
 
+    private static final ContainerEditMode DEFAULT_EDIT_MODE = ContainerEditMode.BOTH;
+
     @UnknownNullability//Initialized via getInitialFluidTanks
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded",
                                                                                      "getFilledPercentage"}, docPlaceholder = "tank")
@@ -75,7 +77,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Nullable
     private BelowContainerCache<FluidResource, IFluidTank> belowTankCache;
 
-    private ContainerEditMode editMode = ContainerEditMode.BOTH;
+    private ContainerEditMode editMode = DEFAULT_EDIT_MODE;
 
     public final FluidTankTier tier;
 
@@ -205,7 +207,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        input.read(SerializationConstants.EDIT_MODE, ContainerEditMode.CODEC).ifPresent(mode -> editMode = mode);
+        this.editMode = input.read(SerializationConstants.EDIT_MODE, ContainerEditMode.CODEC).orElse(DEFAULT_EDIT_MODE);
     }
 
     @Override
@@ -217,7 +219,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        editMode = input.getOrDefault(MekanismDataComponents.EDIT_MODE, editMode);
+        editMode = input.getOrDefault(MekanismDataComponents.EDIT_MODE, DEFAULT_EDIT_MODE);
     }
 
     @Override
@@ -301,7 +303,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        lightUpdateDelay = input.getIntOr(SerializationConstants.DELAY, lightUpdateDelay);
+        lightUpdateDelay = input.getIntOr(SerializationConstants.DELAY, 0);
     }
 
     @Override
@@ -328,7 +330,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         super.handleUpdateTag(input);
         //input.child(SerializationConstants.FLUID).ifPresent(fluidTank::deserialize);
         //valveFluid = input.read(SerializationConstants.VALVE, FluidStack.OPTIONAL_CODEC).orElse(FluidStack.EMPTY);
-        float scale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
+        float scale = input.getFloatOr(SerializationConstants.SCALE, 0);
         if (lightUpdateDelay == 0 && MekanismUtils.scaleChanged(prevScale, scale)) {
             if (prevScale == 0 || scale == 0) {
                 //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting

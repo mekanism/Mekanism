@@ -85,7 +85,7 @@ public class TransporterStack {
 
     private TransporterStack(ValueInput input) {
         this.color = input.read(SerializationConstants.COLOR, EnumColor.CODEC).orElse(null);
-        this.progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
+        this.progress = input.getIntOr(SerializationConstants.PROGRESS, 0);
         this.originalLocation = input.getLongOr(SerializationConstants.ORIGINAL_LOCATION, Long.MAX_VALUE);
         this.pathType = input.read(SerializationConstants.PATH_TYPE, Path.CODEC).orElse(null);
         this.itemStack = LargeResourceStack.ITEM_HELPER.readOrEmpty(input, SerializationConstants.ITEM);

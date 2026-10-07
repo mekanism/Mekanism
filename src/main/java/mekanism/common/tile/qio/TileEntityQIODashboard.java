@@ -29,9 +29,11 @@ import org.jspecify.annotations.Nullable;
 
 public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQIOCraftingWindowHolder {
 
+    private static final boolean DEFAULT_INSERT_INTO_FREQUENCY = true;
+
     /// @apiNote This is only not final for purposes of being able to assign it in presetVariables so that we can use it in getInitialInventory.
     private final QIOCraftingWindow[] craftingWindows;
-    private boolean insertIntoFrequency = true;
+    private boolean insertIntoFrequency = DEFAULT_INSERT_INTO_FREQUENCY;
     private boolean recipesChecked = false;
 
     public TileEntityQIODashboard(BlockPos pos, BlockState state) {
@@ -97,7 +99,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        insertIntoFrequency = input.getBooleanOr(SerializationConstants.INSERT_INTO_FREQUENCY, insertIntoFrequency);
+        insertIntoFrequency = input.getBooleanOr(SerializationConstants.INSERT_INTO_FREQUENCY, DEFAULT_INSERT_INTO_FREQUENCY);
     }
 
     @Override
@@ -109,7 +111,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        insertIntoFrequency = input.getOrDefault(MekanismDataComponents.INSERT_INTO_FREQUENCY, insertIntoFrequency);
+        insertIntoFrequency = input.getOrDefault(MekanismDataComponents.INSERT_INTO_FREQUENCY, DEFAULT_INSERT_INTO_FREQUENCY);
     }
 
     public boolean shiftClickIntoFrequency() {

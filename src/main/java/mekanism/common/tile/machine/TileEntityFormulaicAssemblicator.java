@@ -83,13 +83,15 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
 
     private static final int BASE_TICKS_REQUIRED = 2 * SharedConstants.TICKS_PER_SECOND;
+    private static final boolean DEFAULT_AUTO_MODE = false;
+    private static final boolean DEFAULT_STOCK_CONTROL = false;
 
     private int ticksRequired = BASE_TICKS_REQUIRED;
     private int operatingTicks;
     private boolean usedEnergy = false;
-    private boolean autoMode = false;
+    private boolean autoMode = DEFAULT_AUTO_MODE;
     private boolean isRecipe = false;
-    private boolean stockControl = false;
+    private boolean stockControl = DEFAULT_STOCK_CONTROL;
     private boolean needsOrganize = true; //organize on load
     private boolean canTryToMove = true; //allow trying to move on load
     private final ItemResource[] stockControlMap = Util.make(new ItemResource[18], map -> Arrays.fill(map, ItemResource.EMPTY));
@@ -697,10 +699,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        autoMode = input.getBooleanOr(SerializationConstants.AUTO, autoMode);
-        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
-        pulseOperations = input.getIntOr(SerializationConstants.PULSE, pulseOperations);
-        stockControl = input.getBooleanOr(SerializationConstants.STOCK_CONTROL, stockControl);
+        autoMode = input.getBooleanOr(SerializationConstants.AUTO, DEFAULT_AUTO_MODE);
+        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, 0);
+        pulseOperations = input.getIntOr(SerializationConstants.PULSE, 0);
+        stockControl = input.getBooleanOr(SerializationConstants.STOCK_CONTROL, DEFAULT_STOCK_CONTROL);
     }
 
     @Override

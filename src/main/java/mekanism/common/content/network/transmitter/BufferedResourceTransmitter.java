@@ -80,7 +80,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     @Override
     protected void handleContentsUpdateTag(NETWORK network, ValueInput input) {
         super.handleContentsUpdateTag(network, input);
-        network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
+        network.currentScale = input.getFloatOr(SerializationConstants.SCALE, 0);
         network.setLastType(input.read(SerializationConstants.STORED, resourceCodec()).orElse(stackHelper.empty().resource()));
     }
 

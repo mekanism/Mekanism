@@ -66,6 +66,8 @@ import org.jspecify.annotations.Nullable;
 
 public class TileComponentEjector implements ITileComponent, ISpecificContainerTracker {
 
+    private static final boolean DEFAULT_STRICT_INPUT = false;
+
     private final TileEntityMekanism tile;
     private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
 
@@ -80,7 +82,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private Predicate<TransmissionType> canEject;
     @Nullable//TODO: At some point it would be nice to be able to generify this further
     private Predicate<IChemicalTank> canTankEject;
-    private boolean strictInput;
+    private boolean strictInput = DEFAULT_STRICT_INPUT;
     @Nullable
     private EnumColor outputColor;
     private int tickDelay = 0;
@@ -401,7 +403,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     @Override
     public void deserialize(ValueInput ejectorInput) {
-        strictInput = ejectorInput.getBooleanOr(SerializationConstants.STRICT_INPUT, strictInput);
+        strictInput = ejectorInput.getBooleanOr(SerializationConstants.STRICT_INPUT, DEFAULT_STRICT_INPUT);
         outputColor = ejectorInput.read(SerializationConstants.COLOR, EnumColor.CODEC).orElse(null);
         //Input colors
         Optional<int[]> optionalColors = ejectorInput.getIntArray(SerializationConstants.INPUT_COLOR);

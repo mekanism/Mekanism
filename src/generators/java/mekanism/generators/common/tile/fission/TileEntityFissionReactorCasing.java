@@ -19,7 +19,9 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> {
 
-    private boolean handleSound;
+    private static final boolean DEFAULT_HANDLE_SOUND = false;
+
+    private boolean handleSound = DEFAULT_HANDLE_SOUND;
     private boolean prevBurning;
 
     public TileEntityFissionReactorCasing(BlockPos pos, BlockState state) {
@@ -100,13 +102,13 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         //boolean prevFormedMaster = isMaster() && multiblock.isFormed();
         //UUID previousID = multiblock.inventoryID;
         super.handleUpdateTag(input);
-        handleSound = input.getBooleanOr(SerializationConstants.HANDLE_SOUND, handleSound);
+        handleSound = input.getBooleanOr(SerializationConstants.HANDLE_SOUND, DEFAULT_HANDLE_SOUND);
         //boolean formedMaster = false;
         //boolean wasBurning = false;
         if (multiblock.isFormed()) {
             //formedMaster = isMaster();
             //wasBurning = multiblock.isBurning();
-            multiblock.lastBurnRate = input.getDoubleOr(SerializationConstants.BURNING, multiblock.lastBurnRate);
+            multiblock.lastBurnRate = input.getDoubleOr(SerializationConstants.BURNING, 0);
         }
         //TODO: At some point make use of this if we are able to use the FuelAssemblyBakedModel?
         /*boolean sameID = Objects.equals(previousID, multiblock.inventoryID);

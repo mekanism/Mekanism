@@ -53,6 +53,7 @@ import org.jspecify.annotations.Nullable;
 public class TurbineMultiblockData extends MultiblockData {
 
     public static final float ROTATION_THRESHOLD = 0.001F;
+    public static final GasMode DEFAULT_DUMP_MODE = GasMode.IDLE;
 
     private final List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> fluidOutputTargets = new ArrayList<>();
     private final List<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> energyOutputTargets = new ArrayList<>();
@@ -66,7 +67,7 @@ public class TurbineMultiblockData extends MultiblockData {
     private final IEnergyContainer energyContainer;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getDumpingMode")
-    public GasMode dumpMode = GasMode.IDLE;
+    public GasMode dumpMode = DEFAULT_DUMP_MODE;
     private long energyCapacity = 0;
 
     @ContainerSync
@@ -212,13 +213,13 @@ public class TurbineMultiblockData extends MultiblockData {
     @Override
     public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
-        prevSteamScale = input.getFloatOr(SerializationConstants.SCALE, prevSteamScale);
-        input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
-        lowerVolume = input.getIntOr(SerializationConstants.LOWER_VOLUME, lowerVolume);
+        prevSteamScale = input.getFloatOr(SerializationConstants.SCALE, 0);
+        setVolume(input.getIntOr(SerializationConstants.VOLUME, 0));
+        lowerVolume = input.getIntOr(SerializationConstants.LOWER_VOLUME, 0);
         ValueUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, chemicalTank);
         ValueUtils.readOrEmpty(input, SerializationConstants.FLUID, ventTank);
-        input.read(SerializationConstants.COMPLEX, BlockPos.CODEC).ifPresent(value -> complex = value);
-        clientRotation = input.getFloatOr(SerializationConstants.ROTATION, clientRotation);
+        complex = input.read(SerializationConstants.COMPLEX, BlockPos.CODEC).orElse(null);
+        clientRotation = input.getFloatOr(SerializationConstants.ROTATION, 0);
     }
 
     @Override

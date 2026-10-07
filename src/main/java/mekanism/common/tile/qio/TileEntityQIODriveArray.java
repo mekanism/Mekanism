@@ -144,7 +144,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        long status = input.getLongOr(SerializationConstants.DRIVES, driveStatus);
+        long status = input.getLongOr(SerializationConstants.DRIVES, 0);
         if (status != driveStatus) {
             driveStatus = status;
             updateModelData();

@@ -19,11 +19,13 @@ import org.jspecify.annotations.Nullable;
 
 public class AcceptorCache<ACCEPTOR> {
 
+    public static final byte DEFAULT_ACCEPTOR_CONNECTIONS = 0x00;
+
     private final Map<Direction, RefreshListener> cachedListeners = new EnumMap<>(Direction.class);
     private final Map<Direction, CacheBasedInfo<ACCEPTOR>> cachedAcceptors = new EnumMap<>(Direction.class);
     private final BlockCapability<ACCEPTOR, @Nullable Direction> capability;
     private final TileEntityTransmitter transmitterTile;
-    public byte currentAcceptorConnections = 0x00;
+    public byte currentAcceptorConnections = DEFAULT_ACCEPTOR_CONNECTIONS;
 
     public AcceptorCache(TileEntityTransmitter transmitterTile, BlockCapability<ACCEPTOR, @Nullable Direction> capability) {
         this.transmitterTile = transmitterTile;

@@ -357,7 +357,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
+        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, 0);
         activeType = input.read(SerializationConstants.FLUID, FluidResource.CODEC).orElse(FluidResource.EMPTY);
         for (BlockPos pos : input.listOrEmpty(SerializationConstants.RECURRING_NODES, BlockPos.CODEC)) {
             recurringNodes.add(pos);

@@ -261,10 +261,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        isMaster = input.getBooleanOr(SerializationConstants.RENDERING, isMaster);
+        isMaster = input.getBooleanOr(SerializationConstants.RENDERING, false);
         T multiblock = getMultiblock();
-        //TODO - 26.3: Re-evaluate the following line about how we decide to be setting the multiblock as formed (and namely the fallback default value)
-        multiblock.setFormedForce(input.getBooleanOr(SerializationConstants.HAS_STRUCTURE, multiblock.isFormed()));
+        multiblock.setFormedForce(input.getBooleanOr(SerializationConstants.HAS_STRUCTURE, false));
         if (isMaster()) {
             if (multiblock.isFormed()) {
                 multiblock.readUpdateTag(input);
@@ -298,7 +297,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         if (!getMultiblock().isFormed()) {
-            input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).ifPresent(id -> cachedID = id);
+            cachedID = input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).orElse(null);
         }
     }
 

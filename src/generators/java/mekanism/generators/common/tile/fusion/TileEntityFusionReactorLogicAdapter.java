@@ -45,8 +45,10 @@ import org.jetbrains.annotations.Unmodifiable;
 
 public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactorBlock implements IReactorLogic<FusionReactorLogic>, IHasMode {
 
+    private static final boolean DEFAULT_ACTIVE_COOLED = false;
+
     public FusionReactorLogic logicType = FusionReactorLogic.DISABLED;
-    private boolean activeCooled;
+    private boolean activeCooled = DEFAULT_ACTIVE_COOLED;
     private boolean prevOutputting;
 
     public TileEntityFusionReactorLogicAdapter(BlockPos pos, BlockState state) {
@@ -103,8 +105,8 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        input.read(SerializationConstants.LOGIC_TYPE, FusionReactorLogic.CODEC).ifPresent(logicType -> this.logicType = logicType);
-        activeCooled = input.getBooleanOr(SerializationConstants.ACTIVE_COOLED, activeCooled);
+        this.logicType = input.read(SerializationConstants.LOGIC_TYPE, FusionReactorLogic.CODEC).orElse(FusionReactorLogic.DISABLED);
+        activeCooled = input.getBooleanOr(SerializationConstants.ACTIVE_COOLED, DEFAULT_ACTIVE_COOLED);
     }
 
     @Override
@@ -124,8 +126,8 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        logicType = input.getOrDefault(GeneratorsDataComponents.FUSION_LOGIC_TYPE, logicType);
-        activeCooled = input.getOrDefault(GeneratorsDataComponents.ACTIVE_COOLED, activeCooled);
+        logicType = input.getOrDefault(GeneratorsDataComponents.FUSION_LOGIC_TYPE, FusionReactorLogic.DISABLED);
+        activeCooled = input.getOrDefault(GeneratorsDataComponents.ACTIVE_COOLED, DEFAULT_ACTIVE_COOLED);
     }
 
     @Override

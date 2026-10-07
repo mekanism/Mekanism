@@ -77,7 +77,9 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public static final String FUEL_TAB = "fuel";
     public static final String STATS_TAB = "stats";
 
+    public static final int DEFAULT_INJECTION_RATE = 2;
     public static final int MAX_INJECTION = 98;//this is the effective cap in the GUI, as text field is limited to 2 chars
+    public static final boolean DEFAULT_BURNING = false;
     //Reaction characteristics
     public static final double BURN_TEMPERATURE = 100_000_000;
     private static final double BURN_RATIO = 1;
@@ -93,7 +95,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private final Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
 
     @ContainerSync
-    private boolean burning = false;
+    private boolean burning = DEFAULT_BURNING;
 
     @ContainerSync
     private final IEnergyContainer energyContainer;
@@ -135,7 +137,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                                                                                         "getDTFuelFilledPercentage"}, docPlaceholder = "fuel tank")
     public IChemicalTank fuelTank;
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB}, getter = "getInjectionRate")
-    private int injectionRate = 2;
+    private int injectionRate = DEFAULT_INJECTION_RATE;
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB})
     private int lastBurned;
 
@@ -203,8 +205,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @Override
     public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
-        lastPlasmaTemperature = input.getDoubleOr(SerializationConstants.PLASMA_TEMP, getPlasmaTemp());
-        setBurning(input.getBooleanOr(SerializationConstants.BURNING, isBurning()));
+        lastPlasmaTemperature = input.getDoubleOr(SerializationConstants.PLASMA_TEMP, biomeAmbientTemp);
+        setBurning(input.getBooleanOr(SerializationConstants.BURNING, DEFAULT_BURNING));
     }
 
     @Override

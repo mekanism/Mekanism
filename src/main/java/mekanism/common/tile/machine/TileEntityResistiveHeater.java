@@ -45,13 +45,14 @@ import org.jetbrains.annotations.UnknownNullability;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism {
 
+    private static final float DEFAULT_SOUND_SCALE = 1;
     public static final double HEAT_CAPACITY = 100;
     public static final double INVERSE_CONDUCTION_COEFFICIENT = 5;
     public static final double INVERSE_INSULATION_COEFFICIENT = 10;
     //TODO: Eventually make this into a config at some point?
     public static final int BASE_USAGE = 100;
 
-    private float soundScale = 1;
+    private float soundScale = DEFAULT_SOUND_SCALE;
     private double lastEnvironmentLoss;
     private double lastTransferLoss;
     private int clientEnergyUsed = 0;
@@ -177,7 +178,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        soundScale = input.getFloatOr(SerializationConstants.SOUND_SCALE, soundScale);
+        soundScale = input.getFloatOr(SerializationConstants.SOUND_SCALE, DEFAULT_SOUND_SCALE);
     }
 
     @Override

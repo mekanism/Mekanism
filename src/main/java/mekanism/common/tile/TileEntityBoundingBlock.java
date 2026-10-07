@@ -158,8 +158,8 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        input.read(SerializationConstants.OFFSET, Vec3i.CODEC).ifPresent(pos -> mainPosOffset = pos);
-        currentRedstoneLevel = input.getIntOr(SerializationConstants.REDSTONE, currentRedstoneLevel);
+        mainPosOffset = input.read(SerializationConstants.OFFSET, Vec3i.CODEC).orElse(null);
+        currentRedstoneLevel = input.getIntOr(SerializationConstants.REDSTONE, 0);
     }
 
     @Override
@@ -179,8 +179,8 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.loadAdditional(input);//we do NOT call super directly, as it will call a load (like from disk) and BEs will never see their changes
-        input.read(SerializationConstants.OFFSET, Vec3i.CODEC).ifPresent(pos -> mainPosOffset = pos);
-        currentRedstoneLevel = input.getIntOr(SerializationConstants.REDSTONE, currentRedstoneLevel);
+        mainPosOffset = input.read(SerializationConstants.OFFSET, Vec3i.CODEC).orElse(null);
+        currentRedstoneLevel = input.getIntOr(SerializationConstants.REDSTONE, 0);
     }
 
     @Override

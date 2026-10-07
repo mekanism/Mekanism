@@ -215,7 +215,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
         ValueUtils.readOrEmpty(input, SerializationConstants.FLUID, inputTank);
-        prevScale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
+        prevScale = input.getFloatOr(SerializationConstants.SCALE, 0);
         readValves(input);
     }
 

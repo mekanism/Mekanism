@@ -131,6 +131,9 @@ import org.jspecify.annotations.Nullable;
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
 public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
+    private static final boolean DEFAULT_FOLLOW = false;
+    private static final boolean DEFAULT_DROP_PICKUP = false;
+
     public static AttributeSupplier.Builder getDefaultAttributes() {
         return createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
     }
@@ -258,8 +261,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         builder.define(OWNER_UUID, Mekanism.gameProfile.id());
         builder.define(OWNER_NAME, "");
         builder.define(SECURITY, SecurityMode.PUBLIC);
-        builder.define(FOLLOW, false);
-        builder.define(DROP_PICKUP, false);
+        builder.define(FOLLOW, DEFAULT_FOLLOW);
+        builder.define(DROP_PICKUP, DEFAULT_DROP_PICKUP);
         builder.define(DEFAULT_SKIN_MANUALLY_SELECTED, false);
         builder.define(SKIN, MekanismRobitSkins.BASE);
     }
@@ -474,13 +477,13 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     public void readAdditionalSaveData(ValueInput input) {
         super.readAdditionalSaveData(input);
         input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(ownerUUID -> setOwnerUUID(ownerUUID, null));
-        input.read(SerializationConstants.SECURITY_MODE, SecurityMode.CODEC).ifPresent(mode -> setSecurityMode(mode, null));
-        setFollowing(input.getBooleanOr(SerializationConstants.FOLLOW, getFollowing()));
-        setDropPickup(input.getBooleanOr(SerializationConstants.PICKUP_DROPS, getDropPickup()));
+        setSecurityMode(input.read(SerializationConstants.SECURITY_MODE, SecurityMode.CODEC).orElse(SecurityMode.PUBLIC), null);
+        setFollowing(input.getBooleanOr(SerializationConstants.FOLLOW, DEFAULT_FOLLOW));
+        setDropPickup(input.getBooleanOr(SerializationConstants.PICKUP_DROPS, DEFAULT_DROP_PICKUP));
         homeLocation = input.read(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC).orElse(null);
         ContainerType.ITEM.readFrom(input, inventorySlots);
         ContainerType.ENERGY.readFrom(input, energyContainer);
-        progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
+        progress = input.getIntOr(SerializationConstants.PROGRESS, 0);
         setSkin(input.read(SerializationConstants.SKIN, SKIN_KEY_CODEC).orElse(MekanismRobitSkins.BASE), null);
     }
 

@@ -53,6 +53,12 @@ import org.jspecify.annotations.Nullable;
 
 public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
+    public static final double DEFAULT_PROGRESS = 0;
+    public static final int DEFAULT_INPUT_PROCESSED = 0;
+    public static final double DEFAULT_LAST_PROCESSED = 0;
+    public static final long DEFAULT_RECEIVED_ENERGY = 0;
+    public static final boolean DEFAULT_COULD_OPERATE = false;
+
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded",
                                                                                         "getInputFilledPercentage"}, docPlaceholder = "input tank")
@@ -66,17 +72,17 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     private final List<CapabilityOutputTarget<ResourceHandler<ChemicalResource>>> chemicalOutputTargets = new ArrayList<>();
 
     @ContainerSync
-    public double progress;
+    public double progress = DEFAULT_PROGRESS;
     @ContainerSync
-    public int inputProcessed = 0;
+    public int inputProcessed = DEFAULT_INPUT_PROCESSED;
 
-    public long receivedEnergy = 0;
+    public long receivedEnergy = DEFAULT_RECEIVED_ENERGY;
     @ContainerSync
-    public long lastReceivedEnergy = 0;
+    public long lastReceivedEnergy = DEFAULT_RECEIVED_ENERGY;
     @ContainerSync
-    public double lastProcessed;
+    public double lastProcessed = DEFAULT_LAST_PROCESSED;
 
-    public boolean couldOperate;
+    public boolean couldOperate = DEFAULT_COULD_OPERATE;
     @Nullable
     private AABB deathZone, advancementArea;
 
@@ -161,8 +167,8 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
         coilData.read(input);
-        lastReceivedEnergy = input.getLongOr(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
-        lastProcessed = input.getDoubleOr(SerializationConstants.LAST_PROCESSED, lastProcessed);
+        lastReceivedEnergy = input.getLongOr(SerializationConstants.ENERGY_USAGE, DEFAULT_RECEIVED_ENERGY);
+        lastProcessed = input.getDoubleOr(SerializationConstants.LAST_PROCESSED, DEFAULT_LAST_PROCESSED);
     }
 
     @Override
@@ -326,7 +332,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                 if (pos.isPresent()) {
                     Direction side = coilInput.read(SerializationConstants.SIDE, Direction.CODEC).orElse(Direction.DOWN);
                     CoilData data = new CoilData(pos.get(), side);
-                    data.prevLevel = coilInput.getIntOr(SerializationConstants.LEVEL, data.prevLevel);
+                    data.prevLevel = coilInput.getIntOr(SerializationConstants.LEVEL, 0);
                     coilMap.put(data.coilPos, data);
                 }
             }

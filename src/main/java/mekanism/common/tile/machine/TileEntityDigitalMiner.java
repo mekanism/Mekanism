@@ -121,6 +121,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     public static final int DEFAULT_HEIGHT_RANGE = 60;
     public static final int DEFAULT_RADIUS = 10;
+    private static final boolean DEFAULT_INVERSE = false;
+    private static final boolean DEFAULT_INVERSE_REQUIRES_REPLACEMENT = false;
+    private static final Item DEFAULT_INVERSE_REPLACE_TARGET = Items.AIR;
+    private static final boolean DEFAULT_DO_EJECT = false;
+    private static final boolean DEFAULT_DO_PULL = false;
+    private static final boolean DEFAULT_SILK_TOUCH = false;
+    private static final int DEFAULT_MIN_Y = 0;
+    private static final int DEFAULT_MAX_Y = DEFAULT_MIN_Y + DEFAULT_HEIGHT_RANGE;
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private final SortableFilterManager<MinerFilter<?>> filterManager = new SortableFilterManager<MinerFilter<?>>((Class) MinerFilter.class, this::markForSave, this::getLevel);
@@ -134,14 +142,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Nullable
     private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> ejectInventory;
 
-    private int radius;
-    private boolean inverse;
-    private boolean inverseRequiresReplacement;
-    private Item inverseReplaceTarget = Items.AIR;
-    private int minY;
-    private int maxY = minY + DEFAULT_HEIGHT_RANGE;
-    private boolean doEject = false;
-    private boolean doPull = false;
+    private int radius = DEFAULT_RADIUS;
+    private boolean inverse = DEFAULT_INVERSE;
+    private boolean inverseRequiresReplacement = DEFAULT_INVERSE_REQUIRES_REPLACEMENT;
+    private Item inverseReplaceTarget = DEFAULT_INVERSE_REPLACE_TARGET;
+    private int minY = DEFAULT_MIN_Y;
+    private int maxY = DEFAULT_MAX_Y;
+    private boolean doEject = DEFAULT_DO_EJECT;
+    private boolean doPull = DEFAULT_DO_PULL;
     public ItemStack missingStack = ItemStack.EMPTY;
 
     private final Predicate<ItemStack> overflowCollector = this::trackOverflow;
@@ -153,7 +161,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private int delay;
     private int delayLength = MekanismConfig.general.minerTicksPerMine.get();
     private int cachedToMine;
-    private boolean silkTouch;
+    private boolean silkTouch = DEFAULT_SILK_TOUCH;
     private boolean running;
     private int delayTicks;
     private boolean initCalc = false;
@@ -180,7 +188,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     public TileEntityDigitalMiner(BlockPos pos, BlockState state) {
         mainSlots = new ArrayList<>();
         super(MekanismBlocks.DIGITAL_MINER, pos, state);
-        radius = DEFAULT_RADIUS;
         directMainHandler = () -> mainSlots;
     }
 
@@ -802,17 +809,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        running = input.getBooleanOr(SerializationConstants.RUNNING, running);
-        delay = input.getIntOr(SerializationConstants.DELAY, delay);
-        numPowering = input.getIntOr(SerializationConstants.NUM_POWERING, numPowering);
-        input.read(SerializationConstants.STATE, State.CODEC).ifPresent(s -> {
-            if (!initCalc && s == State.SEARCHING) {
-                //If we loaded and haven't started yet, but we were searching when we saved
-                // pretend we had finished searching so that we will start again on the first tick
-                s = State.FINISHED;
-            }
-            searcher.state = s;
-        });
+        running = input.getBooleanOr(SerializationConstants.RUNNING, false);
+        delay = input.getIntOr(SerializationConstants.DELAY, 0);
+        numPowering = input.getIntOr(SerializationConstants.NUM_POWERING, 0);
+        searcher.state = input.read(SerializationConstants.STATE, State.CODEC).orElse(State.IDLE);
+        if (!initCalc && searcher.state == State.SEARCHING) {
+            //If we loaded and haven't started yet, but we were searching when we saved
+            // pretend we had finished searching so that we will start again on the first tick
+            searcher.state = State.FINISHED;
+        }
         //Update energy per tick in case any of the values changed. It would be slightly cleaner to also validate the fact
         // the values changed, but it would make the code a decent bit messier, as we couldn't use NBTUtils, and it is a
         // rather quick check to update the energy per tick, and in most cases at least one of the settings will not be at
@@ -966,26 +971,21 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         setRadius(Math.min(input.getIntOr(SerializationConstants.RADIUS, DEFAULT_RADIUS), MekanismConfig.general.minerMaxRadius.get()));
-        input.getInt(SerializationConstants.MIN).ifPresent(newMinY -> {
-            if (level != null && !level.isClientSide()) {
-                setMinY(Math.max(newMinY, level.getMinY()));
-            } else {
-                setMinY(newMinY);
-            }
-        });
-        input.getInt(SerializationConstants.MAX).ifPresent(newMaxY -> {
-            if (level != null && !level.isClientSide()) {
-                setMaxY(Math.min(newMaxY, level.getMaxY()));
-            } else {
-                setMaxY(newMaxY);
-            }
-        });
-        doEject = input.getBooleanOr(SerializationConstants.EJECT, doEject);
-        doPull = input.getBooleanOr(SerializationConstants.PULL, doPull);
-        setSilkTouch(input.getBooleanOr(SerializationConstants.SILK_TOUCH, silkTouch));
-        inverse = input.getBooleanOr(SerializationConstants.INVERSE, inverse);
-        inverseReplaceTarget = input.read(SerializationConstants.REPLACE_TARGET, BuiltInRegistries.ITEM.byNameCodec()).orElse(Items.AIR);
-        inverseRequiresReplacement = input.getBooleanOr(SerializationConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
+        int newMinY = input.getInt(SerializationConstants.MIN).orElse(DEFAULT_MIN_Y);
+        int newMaxY = input.getInt(SerializationConstants.MAX).orElse(DEFAULT_MAX_Y);
+        if (level != null && !level.isClientSide()) {
+            setMinY(Math.max(newMinY, level.getMinY()));
+            setMaxY(Math.min(newMaxY, level.getMaxY()));
+        } else {
+            setMinY(newMinY);
+            setMaxY(newMaxY);
+        }
+        doEject = input.getBooleanOr(SerializationConstants.EJECT, DEFAULT_DO_EJECT);
+        doPull = input.getBooleanOr(SerializationConstants.PULL, DEFAULT_DO_PULL);
+        setSilkTouch(input.getBooleanOr(SerializationConstants.SILK_TOUCH, DEFAULT_SILK_TOUCH));
+        inverse = input.getBooleanOr(SerializationConstants.INVERSE, DEFAULT_INVERSE);
+        inverseReplaceTarget = input.read(SerializationConstants.REPLACE_TARGET, BuiltInRegistries.ITEM.byNameCodec()).orElse(DEFAULT_INVERSE_REPLACE_TARGET);
+        inverseRequiresReplacement = input.getBooleanOr(SerializationConstants.INVERSE_REQUIRES_REPLACE, DEFAULT_INVERSE_REQUIRES_REPLACEMENT);
         filterManager.deserialize(input);
         //Note: We read the overflow information if it is present in sustained data in order to grab the information from the digital miner item
         // when it is placed or when the BE is loaded from NBT, but the corresponding writing of the data is done in the saveAdditional method
@@ -1021,9 +1021,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        setRadius(Math.min(input.getOrDefault(MekanismDataComponents.RADIUS, radius), MekanismConfig.general.minerMaxRadius.get()));
-        int newMinY = input.getOrDefault(MekanismDataComponents.MIN_Y, minY);
-        int newMaxY = input.getOrDefault(MekanismDataComponents.MAX_Y, minY);
+        setRadius(Math.min(input.getOrDefault(MekanismDataComponents.RADIUS, DEFAULT_RADIUS), MekanismConfig.general.minerMaxRadius.get()));
+        int newMinY = input.getOrDefault(MekanismDataComponents.MIN_Y, DEFAULT_MIN_Y);
+        int newMaxY = input.getOrDefault(MekanismDataComponents.MAX_Y, DEFAULT_MAX_Y);
         if (level != null && !level.isClientSide()) {
             setMinY(Math.max(newMinY, level.getMinY()));
             setMaxY(Math.min(newMaxY, level.getMaxY()));
@@ -1031,12 +1031,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             setMinY(newMinY);
             setMaxY(newMaxY);
         }
-        doEject = input.getOrDefault(MekanismDataComponents.EJECT, doEject);
-        doPull = input.getOrDefault(MekanismDataComponents.PULL, doPull);
-        setSilkTouch(input.getOrDefault(MekanismDataComponents.SILK_TOUCH, silkTouch));
-        inverse = input.getOrDefault(MekanismDataComponents.INVERSE, inverse);
-        inverseReplaceTarget = input.getOrDefault(MekanismDataComponents.REPLACE_STACK, inverseReplaceTarget);
-        inverseRequiresReplacement = input.getOrDefault(MekanismDataComponents.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
+        doEject = input.getOrDefault(MekanismDataComponents.EJECT, DEFAULT_DO_EJECT);
+        doPull = input.getOrDefault(MekanismDataComponents.PULL, DEFAULT_DO_PULL);
+        setSilkTouch(input.getOrDefault(MekanismDataComponents.SILK_TOUCH, DEFAULT_SILK_TOUCH));
+        inverse = input.getOrDefault(MekanismDataComponents.INVERSE, DEFAULT_INVERSE);
+        inverseReplaceTarget = input.getOrDefault(MekanismDataComponents.REPLACE_STACK, DEFAULT_INVERSE_REPLACE_TARGET);
+        inverseRequiresReplacement = input.getOrDefault(MekanismDataComponents.INVERSE_REQUIRES_REPLACE, DEFAULT_INVERSE_REQUIRES_REPLACEMENT);
         //Clear any existing overflow and read what is the actual overflow from the stack
         overflow.clear();
         overflow.putAll(input.getOrDefault(MekanismDataComponents.OVERFLOW_AWARE, OverflowAware.EMPTY).overflow());
@@ -1219,9 +1219,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        input.getInt(SerializationConstants.RADIUS).ifPresent(this::setRadius);//the client is allowed to use whatever server sends
-        input.getInt(SerializationConstants.MIN).ifPresent(this::setMinY);
-        input.getInt(SerializationConstants.MAX).ifPresent(this::setMaxY);
+        setRadius(input.getIntOr(SerializationConstants.RADIUS, DEFAULT_RADIUS));//the client is allowed to use whatever server sends
+        setMinY(input.getIntOr(SerializationConstants.MIN, DEFAULT_MIN_Y));
+        setMaxY(input.getIntOr(SerializationConstants.MAX, DEFAULT_MAX_Y));
     }
 
     private List<ItemStack> getDrops(ServerLevel level, BlockState state, BlockPos pos, TransactionContext transaction) {

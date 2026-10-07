@@ -17,11 +17,14 @@ import org.jspecify.annotations.Nullable;
 
 public class TileEntityTurbineRotor extends TileEntityInternalMultiblock implements Clearable {
 
+    private static final int DEFAULT_BLADES = 0;
+    private static final int DEFAULT_POSITION = -1;
+
     // Blades on this rotor
-    public int blades = 0;
+    public int blades = DEFAULT_BLADES;
 
     // Position of this rotor, relative to bottom
-    private int position = -1;
+    private int position = DEFAULT_POSITION;
     //Rough radius of blades
     private int radius = -1;
 
@@ -149,7 +152,11 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     private void updateRadius() {
-        radius = 1 + position / 4;
+        if (position < 0) {
+            radius = -1;
+        } else {
+            radius = 1 + position / 4;
+        }
     }
 
     public int getRadius() {
@@ -175,8 +182,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        blades = input.getIntOr(SerializationConstants.BLADES, blades);
-        position = input.getIntOr(SerializationConstants.POSITION, position);
+        blades = input.getIntOr(SerializationConstants.BLADES, DEFAULT_BLADES);
+        position = input.getIntOr(SerializationConstants.POSITION, DEFAULT_POSITION);
         updateRadius();
     }
 
@@ -199,8 +206,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
         super.handleUpdateTag(input);
         int prevBlades = blades;
         int prevPosition = position;
-        blades = input.getIntOr(SerializationConstants.BLADES, blades);
-        position = input.getIntOr(SerializationConstants.POSITION, position);
+        blades = input.getIntOr(SerializationConstants.BLADES, DEFAULT_BLADES);
+        position = input.getIntOr(SerializationConstants.POSITION, DEFAULT_POSITION);
         if (position != prevPosition) {
             updateRadius();
         }

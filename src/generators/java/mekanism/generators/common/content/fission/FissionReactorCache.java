@@ -9,15 +9,17 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class FissionReactorCache extends MultiblockCache<FissionReactorMultiblockData> {
 
-    private double reactorDamage;
-    private double rateLimit = -1;
-    private double burnRemaining;
-    private double partialWaste;
-    private boolean active;
-    private boolean forceDisable;
+    private static final double NO_RATE_LIMIT_SET = -1;
+
+    private double reactorDamage = FissionReactorMultiblockData.DEFAULT_REACTOR_DAMAGE;
+    private double rateLimit = NO_RATE_LIMIT_SET;
+    private double burnRemaining = FissionReactorMultiblockData.DEFAULT_BURN_REMAINING;
+    private double partialWaste = FissionReactorMultiblockData.DEFAULT_PARTIAL_WASTE;
+    private boolean active = FissionReactorMultiblockData.DEFAULT_ACTIVE;
+    private boolean forceDisable = FissionReactorMultiblockData.DEFAULT_FORCE_DISABLE;
 
     private double getRateLimit() {
-        if (rateLimit == -1) {
+        if (rateLimit == NO_RATE_LIMIT_SET) {
             //If it never got set it to the default
             return MekanismGeneratorsConfig.generators.defaultBurnRate.get();
         }
@@ -65,20 +67,19 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     @Override
     public void load(ValueInput input) {
         super.load(input);
-        //TODO - 26.3: These (except injection rate) used to just get instead of only getting if present, should the fallback be zero or the existing value?
-        reactorDamage = input.getDoubleOr(SerializationConstants.REACTOR_DAMAGE, reactorDamage);
-        rateLimit = input.getDoubleOr(SerializationConstants.INJECTION_RATE, rateLimit);
-        burnRemaining = input.getDoubleOr(SerializationConstants.BURN_TIME, burnRemaining);
-        partialWaste = input.getDoubleOr(SerializationConstants.PARTIAL_WASTE, partialWaste);
-        forceDisable = input.getBooleanOr(SerializationConstants.DISABLED, forceDisable);
-        active = input.getBooleanOr(SerializationConstants.ACTIVE, active);
+        reactorDamage = input.getDoubleOr(SerializationConstants.REACTOR_DAMAGE, FissionReactorMultiblockData.DEFAULT_REACTOR_DAMAGE);
+        rateLimit = input.getDoubleOr(SerializationConstants.INJECTION_RATE, NO_RATE_LIMIT_SET);
+        burnRemaining = input.getDoubleOr(SerializationConstants.BURN_TIME, FissionReactorMultiblockData.DEFAULT_BURN_REMAINING);
+        partialWaste = input.getDoubleOr(SerializationConstants.PARTIAL_WASTE, FissionReactorMultiblockData.DEFAULT_PARTIAL_WASTE);
+        forceDisable = input.getBooleanOr(SerializationConstants.DISABLED, FissionReactorMultiblockData.DEFAULT_FORCE_DISABLE);
+        active = input.getBooleanOr(SerializationConstants.ACTIVE, FissionReactorMultiblockData.DEFAULT_ACTIVE);
     }
 
     @Override
     public void save(ValueOutput output) {
         super.save(output);
         output.putDouble(SerializationConstants.REACTOR_DAMAGE, reactorDamage);
-        output.putDouble(SerializationConstants.INJECTION_RATE, getRateLimit());
+        output.putDouble(SerializationConstants.INJECTION_RATE, rateLimit);
         output.putDouble(SerializationConstants.BURN_TIME, burnRemaining);
         output.putDouble(SerializationConstants.PARTIAL_WASTE, partialWaste);
         output.putBoolean(SerializationConstants.DISABLED, forceDisable);

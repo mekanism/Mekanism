@@ -267,12 +267,14 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     }
 
     public void readUpdateTag(ValueInput input) {
-        input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
-        input.read(SerializationConstants.RENDER_LOCATION, BlockPos.CODEC).ifPresent(value -> renderLocation = value);
+        setVolume(input.getIntOr(SerializationConstants.VOLUME, 0));
+        renderLocation = input.read(SerializationConstants.RENDER_LOCATION, BlockPos.CODEC).orElse(null);
         Optional<BlockPos> minPos = input.read(SerializationConstants.MIN, BlockPos.CODEC);
         Optional<BlockPos> maxPos = input.read(SerializationConstants.MAX, BlockPos.CODEC);
         if (minPos.isPresent() && maxPos.isPresent()) {
             bounds = new VoxelCuboid(minPos.get(), maxPos.get());
+        } else {
+            bounds = new VoxelCuboid(0, 0, 0);
         }
         inventoryID = input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).orElse(null);
     }

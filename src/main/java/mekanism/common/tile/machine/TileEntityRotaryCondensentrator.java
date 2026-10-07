@@ -88,6 +88,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
     public static final long CAPACITY = 10L * FluidType.BUCKET_VOLUME;
+    private static final boolean DEFAULT_MODE = false;
 
     @UnknownNullability//Initialized via getInitialChemicalTanks
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getGas", "getGasCapacity", "getGasNeeded",
@@ -100,7 +101,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     /// True: fluid -> chemical
     ///
     /// False: chemical -> fluid
-    private boolean mode;
+    private boolean mode = DEFAULT_MODE;
 
     private final IOutputHandler<ChemicalStackTemplate> gasOutputHandler;
     private final IOutputHandler<FluidStackTemplate> fluidOutputHandler;
@@ -234,7 +235,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        mode = input.getBooleanOr(SerializationConstants.MODE, mode);
+        mode = input.getBooleanOr(SerializationConstants.MODE, DEFAULT_MODE);
     }
 
     @Override
@@ -246,7 +247,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        mode = input.getOrDefault(MekanismDataComponents.ROTARY_MODE, mode);
+        mode = input.getOrDefault(MekanismDataComponents.ROTARY_MODE, DEFAULT_MODE);
     }
 
     @Override

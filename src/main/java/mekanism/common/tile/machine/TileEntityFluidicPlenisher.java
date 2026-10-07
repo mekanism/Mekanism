@@ -262,8 +262,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
-        finishedCalc = input.getBooleanOr(SerializationConstants.FINISHED, finishedCalc);
+        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, 0);
+        finishedCalc = input.getBooleanOr(SerializationConstants.FINISHED, false);
         for (BlockPos pos : input.listOrEmpty(SerializationConstants.ACTIVE_NODES, BlockPos.CODEC)) {
             activeNodes.add(pos);
         }

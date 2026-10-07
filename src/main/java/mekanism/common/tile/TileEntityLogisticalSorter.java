@@ -60,6 +60,10 @@ import org.jspecify.annotations.Nullable;
 
 public class TileEntityLogisticalSorter extends TileEntityMekanism implements ITileFilterHolder<SorterFilter<?>>, IAdvancedTransportEjector {
 
+    private static final boolean DEFAULT_AUTO_EJECT = false;
+    private static final boolean DEFAULT_RR = false;
+    private static final boolean DEFAULT_SINGLE_ITEM = false;
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     private final SortableFilterManager<SorterFilter<?>> filterManager = new SortableFilterManager<SorterFilter<?>>((Class) SorterFilter.class, this::markForSave, this::getLevel);
     private final Finder strictFinder = itemType -> {
@@ -79,9 +83,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @Nullable
     @SyntheticComputerMethod(getter = "getDefaultColor")
     public EnumColor color;
-    private boolean autoEject;
-    private boolean roundRobin;
-    private boolean singleItem;
+    private boolean autoEject = DEFAULT_AUTO_EJECT;
+    private boolean roundRobin = DEFAULT_RR;
+    private boolean singleItem = DEFAULT_SINGLE_ITEM;
     @Nullable
     private SidedBlockPos rrTarget;
     private int delayTicks;
@@ -163,7 +167,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        input.read(SerializationConstants.ROUND_ROBIN_TARGET, SidedBlockPos.CODEC).ifPresent(this::setRoundRobinTarget);
+        setRoundRobinTarget(input.read(SerializationConstants.ROUND_ROBIN_TARGET, SidedBlockPos.CODEC).orElse(null));
     }
 
     @Override
@@ -313,9 +317,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         this.color = input.read(SerializationConstants.COLOR, EnumColor.CODEC).orElse(null);
-        autoEject = input.getBooleanOr(SerializationConstants.EJECT, autoEject);
-        roundRobin = input.getBooleanOr(SerializationConstants.ROUND_ROBIN, roundRobin);
-        singleItem = input.getBooleanOr(SerializationConstants.SINGLE_ITEM, singleItem);
+        autoEject = input.getBooleanOr(SerializationConstants.EJECT, DEFAULT_AUTO_EJECT);
+        roundRobin = input.getBooleanOr(SerializationConstants.ROUND_ROBIN, DEFAULT_RR);
+        singleItem = input.getBooleanOr(SerializationConstants.SINGLE_ITEM, DEFAULT_SINGLE_ITEM);
         filterManager.deserialize(input);
     }
 
@@ -341,9 +345,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         color = input.get(MekanismDataComponents.COLOR);
-        autoEject = input.getOrDefault(MekanismDataComponents.EJECT, autoEject);
-        roundRobin = input.getOrDefault(MekanismDataComponents.ROUND_ROBIN, roundRobin);
-        singleItem = input.getOrDefault(MekanismDataComponents.SINGLE_ITEM, singleItem);
+        autoEject = input.getOrDefault(MekanismDataComponents.EJECT, DEFAULT_AUTO_EJECT);
+        roundRobin = input.getOrDefault(MekanismDataComponents.ROUND_ROBIN, DEFAULT_RR);
+        singleItem = input.getOrDefault(MekanismDataComponents.SINGLE_ITEM, DEFAULT_SINGLE_ITEM);
     }
 
     @Override

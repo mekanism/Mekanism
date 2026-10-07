@@ -32,13 +32,14 @@ import org.jspecify.annotations.Nullable;
 public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
 
     private static final int MAX_DELAY = MekanismUtils.TICKS_PER_HALF_SECOND;
+    private static final boolean DEFAULT_IMPORT_WITHOUT_FILTER = true;
 
     private final Predicate<ItemResource> FILTER_ENABLED = resource -> getFilterManager().anyEnabledMatch(resource, QIOFilter::test);
 
     @Nullable
     private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> backInventory;
     private int delay = 0;
-    private boolean importWithoutFilter = true;
+    private boolean importWithoutFilter = DEFAULT_IMPORT_WITHOUT_FILTER;
 
     public TileEntityQIOImporter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.QIO_IMPORTER, pos, state);
@@ -145,7 +146,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        importWithoutFilter = input.getBooleanOr(SerializationConstants.AUTO, importWithoutFilter);
+        importWithoutFilter = input.getBooleanOr(SerializationConstants.AUTO, DEFAULT_IMPORT_WITHOUT_FILTER);
     }
 
     @Override
@@ -157,7 +158,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        importWithoutFilter = input.getOrDefault(MekanismDataComponents.AUTO, importWithoutFilter);
+        importWithoutFilter = input.getOrDefault(MekanismDataComponents.AUTO, DEFAULT_IMPORT_WITHOUT_FILTER);
     }
 
     //Methods relating to IComputerTile

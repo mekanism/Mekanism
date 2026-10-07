@@ -67,12 +67,14 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     private static final EfficientEjector<Map.Entry<ItemResource, QIOItemTypeData>> FILTERLESS_EJECTOR = new EfficientEjector<>(Entry::getKey,
           e -> e.getValue().getCount(), (_, freq) -> freq.getItemDataMap().entrySet());
     private static final int MAX_DELAY = MekanismUtils.TICKS_PER_HALF_SECOND;
+    private static final boolean DEFAULT_EXPORT_WITHOUT_FILTER = false;
+    private static final boolean DEFAULT_RR = false;
 
     @Nullable
     private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> backInventory;
     private int delay = 0;
-    private boolean exportWithoutFilter;
-    private boolean roundRobin;
+    private boolean exportWithoutFilter = DEFAULT_EXPORT_WITHOUT_FILTER;
+    private boolean roundRobin = DEFAULT_RR;
     @Nullable
     private SidedBlockPos rrTarget;
 
@@ -175,7 +177,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        input.read(SerializationConstants.ROUND_ROBIN_TARGET, SidedBlockPos.CODEC).ifPresent(this::setRoundRobinTarget);
+        setRoundRobinTarget(input.read(SerializationConstants.ROUND_ROBIN_TARGET, SidedBlockPos.CODEC).orElse(null));
     }
 
     @Override
@@ -195,9 +197,8 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        exportWithoutFilter = input.getBooleanOr(SerializationConstants.AUTO, exportWithoutFilter);
-        //TODO - 26.3: Should the default value be the current round robin value?
-        roundRobin = input.getBooleanOr(SerializationConstants.ROUND_ROBIN, false);
+        exportWithoutFilter = input.getBooleanOr(SerializationConstants.AUTO, DEFAULT_EXPORT_WITHOUT_FILTER);
+        roundRobin = input.getBooleanOr(SerializationConstants.ROUND_ROBIN, DEFAULT_RR);
     }
 
     @Override
@@ -210,8 +211,8 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        exportWithoutFilter = input.getOrDefault(MekanismDataComponents.AUTO, exportWithoutFilter);
-        roundRobin = input.getOrDefault(MekanismDataComponents.ROUND_ROBIN, roundRobin);
+        exportWithoutFilter = input.getOrDefault(MekanismDataComponents.AUTO, DEFAULT_EXPORT_WITHOUT_FILTER);
+        roundRobin = input.getOrDefault(MekanismDataComponents.ROUND_ROBIN, DEFAULT_RR);
     }
 
     @Nullable

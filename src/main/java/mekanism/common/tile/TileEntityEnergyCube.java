@@ -163,7 +163,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
             }
         }
         super.handleUpdateTag(input);
-        prevScale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
+        prevScale = input.getFloatOr(SerializationConstants.SCALE, 0);
         if (config != null) {
             for (RelativeSide side : RelativeSide.VALUES) {
                 if (currentConfig[side.ordinal()] != config.getDataType(side)) {

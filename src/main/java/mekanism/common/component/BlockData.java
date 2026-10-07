@@ -53,7 +53,6 @@ import net.minecraft.world.level.block.entity.trialspawner.TrialSpawnerStateData
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jspecify.annotations.Nullable;
@@ -122,8 +121,7 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
             BlockEntity tile = WorldUtils.getTileEntity(level, pos);
             if (tile != null) {
                 try (ProblemReporter.ScopedCollector problemRep = new ProblemReporter.ScopedCollector(tile.problemPath(), Mekanism.logger)) {
-                    ValueInput valueInput = TagValueInput.create(problemRep, level.registryAccess(), blockEntityTag);
-                    tile.loadWithComponents(valueInput);
+                    tile.loadWithComponents(TagValueInput.create(problemRep, level.registryAccess(), blockEntityTag));
                 }
             }
         }

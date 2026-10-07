@@ -217,8 +217,8 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        hasFormedMultiblock = input.getBooleanOr(SerializationConstants.FORMED, hasFormedMultiblock);
-        canAccessGui = input.getBooleanOr(SerializationConstants.GUI, canAccessGui);
+        hasFormedMultiblock = input.getBooleanOr(SerializationConstants.FORMED, false);
+        canAccessGui = input.getBooleanOr(SerializationConstants.GUI, false);
     }
 
     @Override

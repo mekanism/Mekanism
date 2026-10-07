@@ -684,7 +684,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        shouldRender = input.getBooleanOr(SerializationConstants.RENDERING, shouldRender);
+        shouldRender = input.getBooleanOr(SerializationConstants.RENDERING, false);
         color = input.read(SerializationConstants.COLOR, EnumColor.CODEC).orElse(null);
     }
 

@@ -33,10 +33,10 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
         setMultiblock(level, multiblock == null ? null : multiblock.inventoryID);
     }
 
-    private void setMultiblock(LevelReader level, @Nullable UUID id) {
+    private void setMultiblock(@Nullable LevelReader level, @Nullable UUID id) {
         UUID old = multiblockUUID;
         multiblockUUID = id;
-        if (!Objects.equals(old, id)) {
+        if (level!= null && !Objects.equals(old, id)) {
             multiblockChanged(level, old);
         }
     }
@@ -102,7 +102,6 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        //TODO - 26.3: Re-evaluate uses of Optional#ifPresentOrElse, and for optionals returned from ValueInput if we can make any of the ifPresent cases not be capturing that currently might be
-        input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).ifPresentOrElse(uuid -> setMultiblock(level, uuid), () -> multiblockUUID = null);
+        setMultiblock(level, input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).orElse(null));
     }
 }

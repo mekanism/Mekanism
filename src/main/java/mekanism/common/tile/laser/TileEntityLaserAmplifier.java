@@ -46,10 +46,17 @@ import org.jetbrains.annotations.Unmodifiable;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
 
-    private int minThreshold = 0;
-    private int maxThreshold = Ints.saturatedCast(MekanismConfig.storage.laserAmplifier.get());
+    private static final int DEFAULT_MIN_THRESHOLD = 0;
+    private static final int DEFAULT_DELAY = 0;
+
+    private static int getDefaultMaxThreshold() {
+        return Ints.saturatedCast(MekanismConfig.storage.laserAmplifier.get());
+    }
+
+    private int minThreshold = DEFAULT_MIN_THRESHOLD;
+    private int maxThreshold = getDefaultMaxThreshold();
     private int ticks = 0;
-    private int delay = 0;
+    private int delay = DEFAULT_DELAY;
     private boolean emittingRedstone;
     private RedstoneOutput outputMode = RedstoneOutput.OFF;
 
@@ -176,11 +183,10 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        input.getInt(SerializationConstants.MIN).ifPresent(this::updateMinThreshold);
-        input.getInt(SerializationConstants.MAX).ifPresent(this::updateMaxThreshold);
-        //TODO - 26.3: Re-evaluate all the cases we have an or that support optional if we should just use the optional
-        delay = input.getIntOr(SerializationConstants.TIME, delay);
-        input.read(SerializationConstants.OUTPUT_MODE, RedstoneOutput.CODEC).ifPresent(mode -> outputMode = mode);
+        updateMinThreshold(input.getIntOr(SerializationConstants.MIN, DEFAULT_MIN_THRESHOLD));
+        updateMaxThreshold(input.getInt(SerializationConstants.MAX).orElseGet(TileEntityLaserAmplifier::getDefaultMaxThreshold));
+        delay = input.getIntOr(SerializationConstants.TIME, DEFAULT_DELAY);
+        outputMode = input.read(SerializationConstants.OUTPUT_MODE, RedstoneOutput.CODEC).orElse(RedstoneOutput.OFF);
     }
 
     @Override
@@ -195,10 +201,10 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        updateMinThreshold(input.getOrDefault(MekanismDataComponents.MIN_THRESHOLD, minThreshold));
-        updateMaxThreshold(input.getOrDefault(MekanismDataComponents.MAX_THRESHOLD, maxThreshold));
-        setDelay(input.getOrDefault(MekanismDataComponents.DELAY, delay));
-        outputMode = input.getOrDefault(MekanismDataComponents.REDSTONE_OUTPUT, outputMode);
+        updateMinThreshold(input.getOrDefault(MekanismDataComponents.MIN_THRESHOLD, DEFAULT_MIN_THRESHOLD));
+        updateMaxThreshold(input.getOrDefault(MekanismDataComponents.MAX_THRESHOLD, getDefaultMaxThreshold()));
+        setDelay(input.getOrDefault(MekanismDataComponents.DELAY, DEFAULT_DELAY));
+        outputMode = input.getOrDefault(MekanismDataComponents.REDSTONE_OUTPUT, RedstoneOutput.OFF);
     }
 
     @Override

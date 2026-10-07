@@ -464,7 +464,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        lastFired = input.getIntOr(SerializationConstants.LAST_FIRED, lastFired);
+        lastFired = input.getIntOr(SerializationConstants.LAST_FIRED, 0);
     }
 
     @Override
@@ -489,7 +489,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        lastFired = input.getIntOr(SerializationConstants.LAST_FIRED, lastFired);
+        lastFired = input.getIntOr(SerializationConstants.LAST_FIRED, 0);
     }
 
     public LaserEnergyContainer energyContainer() {

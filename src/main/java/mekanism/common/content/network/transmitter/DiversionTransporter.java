@@ -94,6 +94,8 @@ public class DiversionTransporter extends LogisticalTransporterBase {
             for (int i = 0; i < modeIndices.length && i < modes.length; i++) {
                 modes[i] = DiversionControl.BY_ID.apply(modeIndices[i]);
             }
+        } else {
+            Arrays.fill(modes, DiversionControl.DISABLED);
         }
     }
 

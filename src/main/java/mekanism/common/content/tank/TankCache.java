@@ -9,7 +9,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class TankCache extends MultiblockCache<TankMultiblockData> {
 
-    private ContainerEditMode editMode = ContainerEditMode.BOTH;
+    private ContainerEditMode editMode = TankMultiblockData.DEFAULT_EDIT_MODE;
 
     @Override
     public void merge(MultiblockCache<TankMultiblockData> mergeCache, RejectContents rejectContents) {
@@ -32,7 +32,7 @@ public class TankCache extends MultiblockCache<TankMultiblockData> {
     @Override
     public void load(ValueInput input) {
         super.load(input);
-        input.read(SerializationConstants.EDIT_MODE, ContainerEditMode.CODEC).ifPresent(mode -> editMode = mode);
+        editMode = input.read(SerializationConstants.EDIT_MODE, ContainerEditMode.CODEC).orElse(TankMultiblockData.DEFAULT_EDIT_MODE);
     }
 
     @Override

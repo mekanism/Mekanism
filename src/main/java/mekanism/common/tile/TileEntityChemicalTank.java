@@ -186,7 +186,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        input.read(SerializationConstants.DUMP_MODE, GasMode.CODEC).ifPresent(mode -> dumping = mode);
+        this.dumping = input.read(SerializationConstants.DUMP_MODE, GasMode.CODEC).orElse(GasMode.IDLE);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        dumping = input.getOrDefault(MekanismDataComponents.DUMP_MODE, dumping);
+        dumping = input.getOrDefault(MekanismDataComponents.DUMP_MODE, GasMode.IDLE);
     }
 
     @Override

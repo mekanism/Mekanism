@@ -83,6 +83,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
 
     /// How many ticks it takes, by default, to run an operation.
     protected static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
+    private static final boolean DEFAULT_SORTING = false;
 
     protected final FactoryRecipeCacheLookupMonitor<RECIPE>[] recipeCacheLookupMonitors;
     protected BooleanSupplier[] recheckAllRecipeErrors;
@@ -96,7 +97,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     /// How many ticks it takes, with upgrades, to run an operation
     private int ticksRequired = BASE_TICKS_REQUIRED;
     private int operationsPerTick = 1;//will increase for modified upgrade multipliers
-    private boolean sorting;
+    private boolean sorting = DEFAULT_SORTING;
     private boolean sortingNeeded = true;
     //Note: We store this in a long as if the per tick is high for multiple recipes it could be over an int
     private long lastUsage = 0;
@@ -382,6 +383,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             for (int i = 0; i < tier.processes && i < savedProgress.length; i++) {
                 progress[i] = savedProgress[i];
             }
+        } else {
+            Arrays.fill(progress, 0);
         }
     }
 
@@ -400,7 +403,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        sorting = input.getBooleanOr(SerializationConstants.SORTING, sorting);
+        sorting = input.getBooleanOr(SerializationConstants.SORTING, DEFAULT_SORTING);
     }
 
     @Override
@@ -412,7 +415,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        sorting = input.getOrDefault(MekanismDataComponents.SORTING, sorting);
+        sorting = input.getOrDefault(MekanismDataComponents.SORTING, DEFAULT_SORTING);
     }
 
     @Override

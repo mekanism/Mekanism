@@ -268,13 +268,13 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     @Override
     public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
-        prevWaterScale = input.getFloatOr(SerializationConstants.SCALE, prevWaterScale);
-        prevSteamScale = input.getFloatOr(SerializationConstants.SCALE_ALT, prevSteamScale);
-        input.getInt(SerializationConstants.VOLUME).ifPresent(this::setWaterVolume);
-        input.getInt(SerializationConstants.LOWER_VOLUME).ifPresent(this::setSteamVolume);
+        prevWaterScale = input.getFloatOr(SerializationConstants.SCALE, 0);
+        prevSteamScale = input.getFloatOr(SerializationConstants.SCALE_ALT, 0);
+        setWaterVolume(input.getIntOr(SerializationConstants.VOLUME, 0));
+        setSteamVolume(input.getIntOr(SerializationConstants.LOWER_VOLUME, 0));
         ValueUtils.readOrEmpty(input, SerializationConstants.FLUID, waterTank);
         ValueUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, steamTank);
-        input.read(SerializationConstants.RENDER_Y, BlockPos.CODEC).ifPresent(value -> upperRenderLocation = value);
+        upperRenderLocation = input.read(SerializationConstants.RENDER_Y, BlockPos.CODEC).orElse(null);
         readValves(input);
     }
 

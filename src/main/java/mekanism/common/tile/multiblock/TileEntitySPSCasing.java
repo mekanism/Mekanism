@@ -20,9 +20,11 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData> {
 
+    private static final boolean DEFAULT_HANDLE_SOUND = false;
+
     public final Queue<SPSOrbitEffect> orbitEffects = new LinkedList<>();
 
-    private boolean handleSound;
+    private boolean handleSound = DEFAULT_HANDLE_SOUND;
     private boolean prevActive;
 
     public TileEntitySPSCasing(BlockPos pos, BlockState state) {
@@ -93,6 +95,6 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        handleSound = input.getBooleanOr(SerializationConstants.HANDLE_SOUND, handleSound);
+        handleSound = input.getBooleanOr(SerializationConstants.HANDLE_SOUND, DEFAULT_HANDLE_SOUND);
     }
 }

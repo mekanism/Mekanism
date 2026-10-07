@@ -9,11 +9,11 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class SPSCache extends MultiblockCache<SPSMultiblockData> {
 
-    private double progress;
-    private int inputProcessed;
-    private boolean couldOperate;
-    private long receivedEnergy;
-    private double lastProcessed;
+    private double progress = SPSMultiblockData.DEFAULT_PROGRESS;
+    private int inputProcessed = SPSMultiblockData.DEFAULT_INPUT_PROCESSED;
+    private boolean couldOperate = SPSMultiblockData.DEFAULT_COULD_OPERATE;
+    private long receivedEnergy = SPSMultiblockData.DEFAULT_RECEIVED_ENERGY;
+    private double lastProcessed = SPSMultiblockData.DEFAULT_LAST_PROCESSED;
 
     @Override
     public void merge(MultiblockCache<SPSMultiblockData> mergeCache, RejectContents rejectContents) {
@@ -49,11 +49,11 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     @Override
     public void load(ValueInput input) {
         super.load(input);
-        progress = input.getDoubleOr(SerializationConstants.PROGRESS, progress);
-        inputProcessed = input.getIntOr(SerializationConstants.PROCESSED, inputProcessed);
-        couldOperate = input.getBooleanOr(SerializationConstants.COULD_OPERATE, couldOperate);
-        receivedEnergy = input.getLongOr(SerializationConstants.ENERGY_USAGE, receivedEnergy);
-        lastProcessed = input.getDoubleOr(SerializationConstants.LAST_PROCESSED, lastProcessed);
+        progress = input.getDoubleOr(SerializationConstants.PROGRESS, SPSMultiblockData.DEFAULT_PROGRESS);
+        inputProcessed = input.getIntOr(SerializationConstants.PROCESSED, SPSMultiblockData.DEFAULT_INPUT_PROCESSED);
+        couldOperate = input.getBooleanOr(SerializationConstants.COULD_OPERATE, SPSMultiblockData.DEFAULT_COULD_OPERATE);
+        receivedEnergy = input.getLongOr(SerializationConstants.ENERGY_USAGE, SPSMultiblockData.DEFAULT_RECEIVED_ENERGY);
+        lastProcessed = input.getDoubleOr(SerializationConstants.LAST_PROCESSED, SPSMultiblockData.DEFAULT_LAST_PROCESSED);
     }
 
     @Override

@@ -9,7 +9,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
 
-    private GasMode dumpMode = GasMode.IDLE;
+    private GasMode dumpMode = TurbineMultiblockData.DEFAULT_DUMP_MODE;
 
     @Override
     public void merge(MultiblockCache<TurbineMultiblockData> mergeCache, RejectContents rejectContents) {
@@ -32,7 +32,7 @@ public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
     @Override
     public void load(ValueInput input) {
         super.load(input);
-        input.read(SerializationConstants.DUMP_MODE, GasMode.CODEC).ifPresent(mode -> dumpMode = mode);
+        dumpMode = input.read(SerializationConstants.DUMP_MODE, GasMode.CODEC).orElse(TurbineMultiblockData.DEFAULT_DUMP_MODE);
     }
 
     @Override

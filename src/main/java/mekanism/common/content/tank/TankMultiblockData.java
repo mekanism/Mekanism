@@ -45,13 +45,15 @@ import org.jetbrains.annotations.UnknownNullability;
 
 public class TankMultiblockData extends MultiblockData implements IValveHandler {
 
+    public static final ContainerEditMode DEFAULT_EDIT_MODE = ContainerEditMode.BOTH;
+
     private final ResourceHandler<FluidResource> directFluidHandler;
     private final ResourceHandler<ChemicalResource> directChemicalHandler;
     @ContainerSync
     public final MergedTank mergedTank;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getContainerEditMode")
-    public ContainerEditMode editMode = ContainerEditMode.BOTH;
+    public ContainerEditMode editMode = DEFAULT_EDIT_MODE;
 
     @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
@@ -119,7 +121,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @Override
     public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
-        prevScale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
+        prevScale = input.getFloatOr(SerializationConstants.SCALE, 0);
         mergedTank.readFromUpdateTag(input);
         readValves(input);
     }

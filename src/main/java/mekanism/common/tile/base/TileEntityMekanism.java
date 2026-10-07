@@ -750,7 +750,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        redstone = input.getBooleanOr(SerializationConstants.REDSTONE, redstone);
+        redstone = input.getBooleanOr(SerializationConstants.REDSTONE, false);
         for (ITileComponent component : components) {
             component.read(input);
         }
@@ -761,11 +761,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
         }
         if (isActivatable()) {
-            currentActive = input.getBooleanOr(SerializationConstants.ACTIVE_STATE, currentActive);
-            updateDelay = input.getIntOr(SerializationConstants.UPDATE_DELAY, updateDelay);
+            currentActive = input.getBooleanOr(SerializationConstants.ACTIVE_STATE, false);
+            updateDelay = input.getIntOr(SerializationConstants.UPDATE_DELAY, 0);
         }
         if (supportsComparator()) {
-            currentRedstoneLevel = input.getIntOr(SerializationConstants.CURRENT_REDSTONE, currentRedstoneLevel);
+            currentRedstoneLevel = input.getIntOr(SerializationConstants.CURRENT_REDSTONE, 0);
         }
         if (isNameable()) {
             customName = parseCustomNameSafe(input, SerializationConstants.CUSTOM_NAME);
@@ -809,7 +809,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public void readSustainedData(ValueInput input) {
         if (supportsRedstone()) {
-            input.read(SerializationConstants.CONTROL_TYPE, RedstoneControl.CODEC).ifPresent(type -> controlType = supportedOrNextType(type));
+            controlType = supportedOrNextType(input.read(SerializationConstants.CONTROL_TYPE, RedstoneControl.CODEC).orElse(RedstoneControl.DISABLED));
         }
     }
 
@@ -852,7 +852,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
         }
         if (supportsRedstone()) {
-            setControlType(input.getOrDefault(MekanismDataComponents.REDSTONE_CONTROL, getControlType()));
+            setControlType(input.getOrDefault(MekanismDataComponents.REDSTONE_CONTROL, RedstoneControl.DISABLED));
         }
     }
 
@@ -990,7 +990,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.readFromUpdateTag(input);
         }
-        radiationScale = input.getFloatOr(SerializationConstants.RADIATION, radiationScale);
+        radiationScale = input.getFloatOr(SerializationConstants.RADIATION, 0);
     }
 
     public void onNeighborChange(LevelReader level, BlockPos neighborPos) {

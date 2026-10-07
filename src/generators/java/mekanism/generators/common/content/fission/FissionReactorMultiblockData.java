@@ -84,6 +84,12 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     private static final double EXPLOSION_CHANCE = 1D / 512_000;
 
+    public static final double DEFAULT_REACTOR_DAMAGE = 0;
+    public static final double DEFAULT_BURN_REMAINING = 0;
+    public static final double DEFAULT_PARTIAL_WASTE = 0;
+    public static final boolean DEFAULT_ACTIVE = false;
+    public static final boolean DEFAULT_FORCE_DISABLE = false;
+
     private final List<AdvancedCapabilityOutputTarget<ResourceHandler<ChemicalResource>, FissionPortMode>> chemicalOutputTargets = new ArrayList<>();
     public final Set<FormedAssembly> assemblies = new LinkedHashSet<>();
     private final List<IChemicalTank> inputTanks;
@@ -128,16 +134,17 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     public double lastBurnRate = 0;
     private boolean clientBurning;
     @ContainerSync
-    public double reactorDamage = 0;
+    public double reactorDamage = DEFAULT_REACTOR_DAMAGE;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getBurnRate", getterDescription = "Configured burn rate")
     public double rateLimit = MekanismGeneratorsConfig.generators.defaultBurnRate.get();
-    public double burnRemaining = 0, partialWaste = 0;
+    public double burnRemaining = DEFAULT_BURN_REMAINING;
+    public double partialWaste = DEFAULT_PARTIAL_WASTE;
     @ContainerSync
-    private boolean active;
+    private boolean active = DEFAULT_ACTIVE;
     //For use when meltdowns are disabled to make the reactor stop and require going under the threshold
     @ContainerSync
-    private boolean forceDisable;
+    private boolean forceDisable = DEFAULT_FORCE_DISABLE;
 
     private long cooledCoolantCapacity;
     private long heatedCoolantCapacity;
@@ -281,11 +288,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @Override
     public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
-        prevCoolantScale = input.getFloatOr(SerializationConstants.SCALE, prevCoolantScale);
-        prevFuelScale = input.getFloatOr(SerializationConstants.SCALE_ALT, prevFuelScale);
-        prevHeatedCoolantScale = input.getFloatOr(SerializationConstants.SCALE_ALT_2, prevHeatedCoolantScale);
-        prevWasteScale = input.getFloatOr(SerializationConstants.SCALE_ALT_3, prevWasteScale);
-        input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
+        prevCoolantScale = input.getFloatOr(SerializationConstants.SCALE, 0);
+        prevFuelScale = input.getFloatOr(SerializationConstants.SCALE_ALT, 0);
+        prevHeatedCoolantScale = input.getFloatOr(SerializationConstants.SCALE_ALT_2, 0);
+        prevWasteScale = input.getFloatOr(SerializationConstants.SCALE_ALT_3, 0);
+        setVolume(input.getIntOr(SerializationConstants.VOLUME, 0));
         ValueUtils.readOrEmpty(input, SerializationConstants.FLUID, coolantTank.getFluidTank());
         ValueUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, fuelTank);
         ValueUtils.readOrEmpty(input, SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank);

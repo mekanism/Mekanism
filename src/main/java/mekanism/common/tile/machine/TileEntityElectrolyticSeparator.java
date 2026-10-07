@@ -354,8 +354,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        input.read(SerializationConstants.DUMP_LEFT, GasMode.CODEC).ifPresent(mode -> dumpLeft = mode);
-        input.read(SerializationConstants.DUMP_RIGHT, GasMode.CODEC).ifPresent(mode -> dumpRight = mode);
+        dumpLeft = input.read(SerializationConstants.DUMP_LEFT, GasMode.CODEC).orElse(GasMode.IDLE);
+        dumpRight = input.read(SerializationConstants.DUMP_RIGHT, GasMode.CODEC).orElse(GasMode.IDLE);
     }
 
     @Override
@@ -368,8 +368,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        dumpLeft = input.getOrDefault(MekanismDataComponents.DUMP_MODE, dumpLeft);
-        dumpRight = input.getOrDefault(MekanismDataComponents.SECONDARY_DUMP_MODE, dumpRight);
+        dumpLeft = input.getOrDefault(MekanismDataComponents.DUMP_MODE, GasMode.IDLE);
+        dumpRight = input.getOrDefault(MekanismDataComponents.SECONDARY_DUMP_MODE, GasMode.IDLE);
     }
 
     @Override
