@@ -77,7 +77,6 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.3: Part of leg LED is not glowing
 public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
     private static final String INACTIVE_TAG = "inactive_";

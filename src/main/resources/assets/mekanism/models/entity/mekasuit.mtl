@@ -1,4 +1,4 @@
-# Made in Blockbench 4.3.1
+# Made in Blockbench 5.2.1
 newmtl player
 map_Kd #mekasuit_player
 newmtl body
@@ -13,5 +13,3 @@ map_Kd #mekasuit_armor_helmet
 Ka 1 1 1
 newmtl exoskeleton
 map_Kd #mekasuit_armor_exoskeleton
-newmtl none
-map_Kd #ignored
