@@ -37,7 +37,6 @@ public class MekanismRenderPipelines {
           .withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP)
           .build();
 
-    //TODO - 26.3: See if we can add support in some way for ENTITY_EMISSIVE_SNIPPET? Particularly for the glowing parts
     private static final RenderPipeline.Snippet MEKASUIT_SNIPPET = RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
           .withVertexShader(Mekanism.rl("core/mekasuit"))
           .withFragmentShader(Mekanism.rl("core/mekasuit"))

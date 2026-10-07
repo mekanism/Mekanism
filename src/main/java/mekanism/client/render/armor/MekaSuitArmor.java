@@ -84,6 +84,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     private static final String EXCLUSIVE_TAG = "excl_";
     private static final String SHARED_TAG = "shared_";
     private static final String GLASS_TAG = "glass";
+    private static final String EMISSIVE_TAG = "_led";
 
     public static final MekaSuitArmor HELMET = new MekaSuitArmor(EquipmentSlot.HEAD, EquipmentSlot.CHEST);
     public static final MekaSuitArmor BODYARMOR = new MekaSuitArmor(EquipmentSlot.CHEST, EquipmentSlot.HEAD);
@@ -103,12 +104,13 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     private static final Vector3fc BASE_TRANSLATION = new Vector3f(-1, 0.5F, 0);
     private static final RenderType NO_TINT = RenderTypes.armorCutoutNoCull(TextureAtlas.LOCATION_ITEMS);
     private static final RenderType BASE_GLINT = RenderTypes.armorCutoutNoCullGlint(TextureAtlas.LOCATION_ITEMS);
+    private static final RenderType EMISSIVE = RenderTypes.eyes(TextureAtlas.LOCATION_ITEMS);
     private static final RenderType TRANSLUCENT = RenderTypes.entityTranslucent(TextureAtlas.LOCATION_ITEMS);
 
-    private final LoadingCache<QuickHash, ArmorQuads> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
+    private final LoadingCache<QuickHash, Map<ModelPos, PartData>> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
         @Override
         @SuppressWarnings("unchecked")
-        public ArmorQuads load(QuickHash key) {
+        public Map<ModelPos, PartData> load(QuickHash key) {
             return createQuads((Object2BooleanMap<ModuleModelSpec>) key.objs()[0], (Set<EquipmentSlot>) key.objs()[1], (boolean) key.objs()[2], (boolean) key.objs()[3]);
         }
     });
@@ -129,31 +131,13 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
     public void renderArm(AvatarRenderState avatarRenderState, ModelPart armPart, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, boolean rightHand) {
         ModelPos armPos = rightHand ? ModelPos.RIGHT_ARM : ModelPos.LEFT_ARM;
-        ArmorQuads armorQuads = cache.getUnchecked(key(avatarRenderState));
-        boolean hasOpaqueArm = armorQuads.opaqueParts().containsKey(armPos);
-        boolean hasTransparentArm = armorQuads.transparentParts().containsKey(armPos);
-        if (hasOpaqueArm || hasTransparentArm) {
+        Map<ModelPos, PartData> armorQuads = cache.getUnchecked(key(avatarRenderState));
+        PartData armData = armorQuads.get(armPos);
+        if (armData != null) {
             poseStack.pushPose();
             armPart.translateAndRotate(poseStack);
             armPos.translateModel(poseStack);
-            boolean hasFoil = avatarRenderState.chestEquipment.hasFoil();
-            if (hasOpaqueArm) {
-                List<BlockStateModelPart> opaqueParts = armorQuads.opaqueParts().get(armPos);
-                int color = getColor(avatarRenderState.chestEquipment);
-                submitModel(nodeCollector, poseStack, opaqueParts, lightCoords, avatarRenderState.outlineColor, color, NO_TINT, MekanismRenderType.MEKASUIT);
-                if (hasFoil) {
-                    submitModel(nodeCollector.order(1), poseStack, opaqueParts, lightCoords, EntityRenderState.NO_OUTLINE, color, BASE_GLINT, MekanismRenderType.MEKASUIT_GLINT);
-                }
-            }
-            if (hasTransparentArm) {
-                List<BlockStateModelPart> transparentParts = armorQuads.transparentParts().get(armPos);
-                nodeCollector.submitBlockModel(poseStack, TRANSLUCENT, transparentParts, BlockModelRenderState.EMPTY_TINTS,
-                      lightCoords, OverlayTexture.NO_OVERLAY, avatarRenderState.outlineColor);
-                if (hasFoil) {
-                    nodeCollector.order(1).submitBlockModel(poseStack, MekanismRenderType.ARMOR_TRANSLUCENT_GLINT, transparentParts,
-                          BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
-                }
-            }
+            armData.render(poseStack, nodeCollector, lightCoords, avatarRenderState.outlineColor, getColor(avatarRenderState.chestEquipment), avatarRenderState.chestEquipment.hasFoil());
             poseStack.popPose();
         }
     }
@@ -167,9 +151,24 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     @Override
     public <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
           STATE state, boolean isBaby, ItemStack stack) {
-        ArmorQuads armorQuads = cache.getUnchecked(key(state));
+        Map<ModelPos, PartData> armorQuads = cache.getUnchecked(key(state));
         boolean renderFoil = stack.hasFoil();
-        render(baseModel, nodeCollector, poseStack, lightCoords, renderFoil, getColor(stack), state, isBaby, armorQuads.opaqueParts(), false);
+
+        if (!armorQuads.isEmpty()) {
+            int tintColor = getColor(stack);
+            for (Map.Entry<ModelPos, PartData> entry : armorQuads.entrySet()) {
+                ModelPos modelPos = entry.getKey();
+                poseStack.pushPose();
+                modelPos.translate(baseModel, poseStack, state);
+                if (isBaby) {
+                    modelPos.scaleBaby(poseStack, state);
+                }
+                modelPos.translateModel(poseStack);
+                entry.getValue().render(poseStack, nodeCollector, lightCoords, state.outlineColor, tintColor, renderFoil);
+                poseStack.popPose();
+            }
+        }
+
 
         if (type == EquipmentSlot.CHEST) {
             UUID entityUUID = state.getRenderData(UUID_CONTEXT);
@@ -191,65 +190,6 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                     }
                     poseStack.popPose();
                 }
-            }
-        }
-
-        //Pass white as the color because we don't want to tint transparent quads
-        render(baseModel, nodeCollector, poseStack, lightCoords, renderFoil, CommonColors.WHITE, state, isBaby, armorQuads.transparentParts(), true);
-    }
-
-    private <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, SubmitNodeCollector nodeCollector, PoseStack poseStack, int lightCoords,
-          boolean renderFoil, int color, STATE state, boolean isBaby, Map<ModelPos, List<BlockStateModelPart>> quadMap, boolean transparent) {
-        if (!quadMap.isEmpty()) {
-            for (Map.Entry<ModelPos, List<BlockStateModelPart>> entry : quadMap.entrySet()) {
-                ModelPos modelPos = entry.getKey();
-                poseStack.pushPose();
-                modelPos.translate(baseModel, poseStack, state);
-                if (isBaby) {
-                    modelPos.scaleBaby(poseStack, state);
-                }
-                modelPos.translateModel(poseStack);
-                if (transparent) {
-                    nodeCollector.submitBlockModel(poseStack, TRANSLUCENT, entry.getValue(), BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
-                    if (renderFoil) {
-                        nodeCollector.order(1).submitBlockModel(poseStack, MekanismRenderType.ARMOR_TRANSLUCENT_GLINT, entry.getValue(),
-                              BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
-                    }
-                } else {
-                    submitModel(nodeCollector, poseStack, entry.getValue(), lightCoords, state.outlineColor, color, NO_TINT, MekanismRenderType.MEKASUIT);
-                    if (renderFoil) {
-                        submitModel(nodeCollector.order(1), poseStack, entry.getValue(), lightCoords, EntityRenderState.NO_OUTLINE, color, BASE_GLINT, MekanismRenderType.MEKASUIT_GLINT);
-                    }
-                }
-                poseStack.popPose();
-            }
-        }
-    }
-
-    private void submitModel(OrderedSubmitNodeCollector orderedCollector, PoseStack poseStack, List<BlockStateModelPart> parts, int lightCoords, int outlineColor,
-          int tintColor, RenderType noTint, RenderType withTint) {
-        if (tintColor == CommonColors.WHITE || ARGB.alpha(tintColor) == 0) {
-            //If it is white or fully transparent, just render it without tint
-            orderedCollector.submitBlockModel(poseStack, noTint, parts, BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, outlineColor);
-            return;
-        }
-        //Based on submitBlockModel, but using a custom render type and passing a tint color
-        PoseStack.Pose pose = poseStack.last().copy();
-        if (!withTint.isOutline()) {
-            BlockModelFeatureRenderer.Submit submit = new BlockModelFeatureRenderer.Submit(pose, withTint, parts, BlockModelRenderState.EMPTY_TINTS, lightCoords,
-                  OverlayTexture.NO_OVERLAY, tintColor, null);
-            if (withTint.hasBlending()) {
-                orderedCollector.submitSpecial(RenderPhaseKeys.TRANSLUCENT_BLOCKS_AND_ITEMS, submit);
-            } else {
-                orderedCollector.submitSpecial(RenderPhaseKeys.SOLID, submit);
-            }
-        }
-        if (outlineColor != 0) {
-            //Note: We don't need to color
-            RenderType outlineRenderType = noTint.outline().isPresent() ? noTint.outline().get() : null;
-            if (outlineRenderType != null) {
-                orderedCollector.submitSpecial(RenderPhaseKeys.OUTLINE, new BlockModelFeatureRenderer.Submit(pose, outlineRenderType, parts,
-                      BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, outlineColor, null));
             }
         }
     }
@@ -359,7 +299,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     private record OverrideData(OBJModelData modelData, String name) {
     }
 
-    private ArmorQuads createQuads(Object2BooleanMap<ModuleModelSpec> modules, Set<EquipmentSlot> wornParts, boolean hasMekaToolLeft, boolean hasMekaToolRight) {
+    private Map<ModelPos, PartData> createQuads(Object2BooleanMap<ModuleModelSpec> modules, Set<EquipmentSlot> wornParts, boolean hasMekaToolLeft, boolean hasMekaToolRight) {
         Map<OBJModelData, Map<ModelPos, Set<String>>> specialQuadsToRender = new Object2ObjectOpenHashMap<>();
         // map of normal model part name to overwritten model part name (i.e. helmet_head_center1 -> override_solar_helmet_helmet_head_center1)
         Map<String, OverrideData> overrides = new Object2ObjectOpenHashMap<>();
@@ -438,15 +378,14 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             }
         }
 
-        Map<ModelPos, List<BlockStateModelPart>> opaqueMap = new EnumMap<>(ModelPos.class);
-        Map<ModelPos, List<BlockStateModelPart>> transparentMap = new EnumMap<>(ModelPos.class);
+        Map<ModelPos, PartData> armorQuads = new EnumMap<>(ModelPos.class);
         for (ModelPos pos : ModelPos.VALUES) {
             for (OBJModelData modelData : MekanismModelCache.INSTANCE.MEKASUIT_MODULES) {
-                parseTransparency(modelData, pos, opaqueMap, transparentMap, specialQuadsToRender.getOrDefault(modelData, Collections.emptyMap()));
+                parseTransparency(modelData, pos, armorQuads, specialQuadsToRender.getOrDefault(modelData, Collections.emptyMap()));
             }
-            parseTransparency(MekanismModelCache.INSTANCE.MEKASUIT, pos, opaqueMap, transparentMap, armorQuadsToRender);
+            parseTransparency(MekanismModelCache.INSTANCE.MEKASUIT, pos, armorQuads, armorQuadsToRender);
         }
-        return new ArmorQuads(opaqueMap, transparentMap);
+        return armorQuads.isEmpty() ? Collections.emptyMap() : armorQuads;
     }
 
     private static void addQuadsToRender(ModelPos pos, String name, Map<String, OverrideData> overrides, Map<MekaSuitArmor.ModelPos, Set<String>> quadsToRender,
@@ -463,29 +402,34 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         quadsToRender.computeIfAbsent(pos, _ -> new HashSet<>()).add(name);
     }
 
-    private static void parseTransparency(OBJModelData modelData, ModelPos pos, Map<ModelPos, List<BlockStateModelPart>> opaqueMap, Map<ModelPos, List<BlockStateModelPart>> transparentMap,
-          Map<ModelPos, Set<String>> regularQuads) {
-        Set<String> opaqueRegularQuads = new HashSet<>();
-        Set<String> transparentRegularQuads = new HashSet<>();
-        parseTransparency(pos, opaqueRegularQuads, transparentRegularQuads, regularQuads);
-        addParsedQuads(modelData, pos, opaqueMap, opaqueRegularQuads);
-        addParsedQuads(modelData, pos, transparentMap, transparentRegularQuads);
-    }
-
-    private static void addParsedQuads(OBJModelData modelData, ModelPos pos, Map<ModelPos, List<BlockStateModelPart>> map, Set<String> quads) {
-        //Only add a new entry to our map if we will have any parts. Our getParts method will return empty if there are no quads
-        List<BlockStateModelPart> allParts = modelData.getParts(quads);
-        if (!allParts.isEmpty()) {
-            map.computeIfAbsent(pos, _ -> new ArrayList<>()).addAll(allParts);
-        }
-    }
-
-    private static void parseTransparency(ModelPos pos, Set<String> opaqueQuads, Set<String> transparentQuads, Map<ModelPos, Set<String>> quads) {
-        for (String quad : quads.getOrDefault(pos, Collections.emptySet())) {
-            if (quad.contains(GLASS_TAG)) {
-                transparentQuads.add(quad);
-            } else {
-                opaqueQuads.add(quad);
+    private static void parseTransparency(OBJModelData modelData, ModelPos pos, Map<ModelPos, PartData> armorQuads, Map<ModelPos, Set<String>> regularQuads) {
+        Set<String> allQuads = regularQuads.getOrDefault(pos, Collections.emptySet());
+        if (!allQuads.isEmpty()) {
+            Set<String> opaqueQuads = new HashSet<>();
+            Set<String> opaqueEmissiveQuads = new HashSet<>();
+            Set<String> translucentQuads = new HashSet<>();
+            PartData partData = armorQuads.computeIfAbsent(pos, _ -> new PartData());
+            for (String quad : allQuads) {
+                if (quad.contains(GLASS_TAG)) {
+                    translucentQuads.add(quad);
+                } else if (quad.contains(EMISSIVE_TAG)) {
+                    opaqueEmissiveQuads.add(quad);
+                } else {
+                    opaqueQuads.add(quad);
+                }
+            }
+            //Only add a new entry to our map if we will have any parts. Our getParts method will return empty if there are no quads
+            List<BlockStateModelPart> opaqueParts = modelData.getParts(opaqueQuads);
+            List<BlockStateModelPart> opaqueEmissiveParts = modelData.getParts(opaqueEmissiveQuads);
+            List<BlockStateModelPart> translucentParts = modelData.getParts(translucentQuads);
+            if (!opaqueParts.isEmpty()) {
+                partData.opaque().addAll(opaqueParts);
+            }
+            if (!opaqueEmissiveParts.isEmpty()) {
+                partData.emissive().addAll(opaqueEmissiveParts);
+            }
+            if (!translucentParts.isEmpty()) {
+                partData.translucent().addAll(translucentParts);
             }
         }
     }
@@ -500,14 +444,60 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         };
     }
 
-    private record ArmorQuads(Map<ModelPos, List<BlockStateModelPart>> opaqueParts, Map<ModelPos, List<BlockStateModelPart>> transparentParts) {
+    private record PartData(List<BlockStateModelPart> opaque, List<BlockStateModelPart> emissive, List<BlockStateModelPart> translucent) {
 
-        private ArmorQuads {
-            if (opaqueParts.isEmpty()) {
-                opaqueParts = Collections.emptyMap();
+        public PartData() {
+            this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        }
+
+        public void render(PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int outlineColor, int tintColor, boolean renderFoil) {
+            if (!opaque.isEmpty()) {
+                submitModel(nodeCollector, poseStack, opaque, lightCoords, outlineColor, tintColor, NO_TINT, MekanismRenderType.MEKASUIT);
+                if (renderFoil) {
+                    submitModel(nodeCollector.order(1), poseStack, opaque, lightCoords, EntityRenderState.NO_OUTLINE, tintColor, BASE_GLINT, MekanismRenderType.MEKASUIT_GLINT);
+                }
             }
-            if (transparentParts.isEmpty()) {
-                transparentParts = Collections.emptyMap();
+            if (!emissive.isEmpty()) {
+                nodeCollector.submitBlockModel(poseStack, EMISSIVE, emissive, BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, outlineColor);
+                if (renderFoil) {
+                    nodeCollector.order(1).submitBlockModel(poseStack, BASE_GLINT, emissive, BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY,
+                          EntityRenderState.NO_OUTLINE);
+                }
+            }
+            if (!translucent.isEmpty()) {
+                nodeCollector.submitBlockModel(poseStack, TRANSLUCENT, translucent, BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, outlineColor);
+                if (renderFoil) {
+                    nodeCollector.order(1).submitBlockModel(poseStack, MekanismRenderType.ARMOR_TRANSLUCENT_GLINT, translucent,
+                          BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
+                }
+            }
+        }
+
+        private void submitModel(OrderedSubmitNodeCollector orderedCollector, PoseStack poseStack, List<BlockStateModelPart> parts, int lightCoords, int outlineColor,
+              int tintColor, RenderType noTint, RenderType withTint) {
+            if (tintColor == CommonColors.WHITE || ARGB.alpha(tintColor) == 0) {
+                //If it is white or fully transparent, just render it without tint
+                orderedCollector.submitBlockModel(poseStack, noTint, parts, BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, outlineColor);
+                return;
+            }
+            //Based on submitBlockModel, but using a custom render type and passing a tint color
+            PoseStack.Pose pose = poseStack.last().copy();
+            if (!withTint.isOutline()) {
+                BlockModelFeatureRenderer.Submit submit = new BlockModelFeatureRenderer.Submit(pose, withTint, parts, BlockModelRenderState.EMPTY_TINTS, lightCoords,
+                      OverlayTexture.NO_OVERLAY, tintColor, null);
+                if (withTint.hasBlending()) {
+                    orderedCollector.submitSpecial(RenderPhaseKeys.TRANSLUCENT_BLOCKS_AND_ITEMS, submit);
+                } else {
+                    orderedCollector.submitSpecial(RenderPhaseKeys.SOLID, submit);
+                }
+            }
+            if (outlineColor != 0) {
+                //Note: We don't need to color
+                RenderType outlineRenderType = noTint.outline().isPresent() ? noTint.outline().get() : null;
+                if (outlineRenderType != null) {
+                    orderedCollector.submitSpecial(RenderPhaseKeys.OUTLINE, new BlockModelFeatureRenderer.Submit(pose, outlineRenderType, parts,
+                          BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, outlineColor, null));
+                }
             }
         }
     }
