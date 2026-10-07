@@ -138,22 +138,20 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             armPart.translateAndRotate(poseStack);
             armPos.translateModel(poseStack);
             boolean hasFoil = avatarRenderState.chestEquipment.hasFoil();
-            //Same as what HumanoidArmorLayer does for the starting order index
-            int nextOrder = 1;
             if (hasOpaqueArm) {
                 List<BlockStateModelPart> opaqueParts = armorQuads.opaqueParts().get(armPos);
                 int color = getColor(avatarRenderState.chestEquipment);
-                submitModel(nodeCollector.order(nextOrder++), poseStack, opaqueParts, lightCoords, avatarRenderState.outlineColor, color, NO_TINT, MekanismRenderType.MEKASUIT);
+                submitModel(nodeCollector, poseStack, opaqueParts, lightCoords, avatarRenderState.outlineColor, color, NO_TINT, MekanismRenderType.MEKASUIT);
                 if (hasFoil) {
-                    submitModel(nodeCollector.order(nextOrder++), poseStack, opaqueParts, lightCoords, EntityRenderState.NO_OUTLINE, color, BASE_GLINT, MekanismRenderType.MEKASUIT_GLINT);
+                    submitModel(nodeCollector.order(1), poseStack, opaqueParts, lightCoords, EntityRenderState.NO_OUTLINE, color, BASE_GLINT, MekanismRenderType.MEKASUIT_GLINT);
                 }
             }
             if (hasTransparentArm) {
                 List<BlockStateModelPart> transparentParts = armorQuads.transparentParts().get(armPos);
-                nodeCollector.order(nextOrder++).submitBlockModel(poseStack, TRANSLUCENT, transparentParts, BlockModelRenderState.EMPTY_TINTS,
+                nodeCollector.submitBlockModel(poseStack, TRANSLUCENT, transparentParts, BlockModelRenderState.EMPTY_TINTS,
                       lightCoords, OverlayTexture.NO_OVERLAY, avatarRenderState.outlineColor);
                 if (hasFoil) {
-                    nodeCollector.order(nextOrder).submitBlockModel(poseStack, MekanismRenderType.ARMOR_TRANSLUCENT_GLINT, transparentParts,
+                    nodeCollector.order(1).submitBlockModel(poseStack, MekanismRenderType.ARMOR_TRANSLUCENT_GLINT, transparentParts,
                           BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
                 }
             }
@@ -172,8 +170,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
           STATE state, boolean isBaby, ItemStack stack) {
         ArmorQuads armorQuads = cache.getUnchecked(key(state));
         boolean renderFoil = stack.hasFoil();
-        //Same as what HumanoidArmorLayer does for the starting order index
-        int nextOrder = render(baseModel, nodeCollector, poseStack, lightCoords, renderFoil, 1, getColor(stack), state, isBaby, armorQuads.opaqueParts(), false);
+        render(baseModel, nodeCollector, poseStack, lightCoords, renderFoil, getColor(stack), state, isBaby, armorQuads.opaqueParts(), false);
 
         if (type == EquipmentSlot.CHEST) {
             UUID entityUUID = state.getRenderData(UUID_CONTEXT);
@@ -199,11 +196,11 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         }
 
         //Pass white as the color because we don't want to tint transparent quads
-        render(baseModel, nodeCollector, poseStack, lightCoords, renderFoil, nextOrder, CommonColors.WHITE, state, isBaby, armorQuads.transparentParts(), true);
+        render(baseModel, nodeCollector, poseStack, lightCoords, renderFoil, CommonColors.WHITE, state, isBaby, armorQuads.transparentParts(), true);
     }
 
-    private <STATE extends HumanoidRenderState> int render(HumanoidModel<STATE> baseModel, SubmitNodeCollector nodeCollector, PoseStack poseStack, int lightCoords,
-          boolean renderFoil, int nextOrder, int color, STATE state, boolean isBaby, Map<ModelPos, List<BlockStateModelPart>> quadMap, boolean transparent) {
+    private <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, SubmitNodeCollector nodeCollector, PoseStack poseStack, int lightCoords,
+          boolean renderFoil, int color, STATE state, boolean isBaby, Map<ModelPos, List<BlockStateModelPart>> quadMap, boolean transparent) {
         if (!quadMap.isEmpty()) {
             for (Map.Entry<ModelPos, List<BlockStateModelPart>> entry : quadMap.entrySet()) {
                 ModelPos modelPos = entry.getKey();
@@ -213,24 +210,21 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                     modelPos.scaleBaby(poseStack, state);
                 }
                 modelPos.translateModel(poseStack);
-                OrderedSubmitNodeCollector orderedCollector = nodeCollector.order(nextOrder++);
                 if (transparent) {
-                    orderedCollector.submitBlockModel(poseStack, TRANSLUCENT, entry.getValue(), BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
+                    nodeCollector.submitBlockModel(poseStack, TRANSLUCENT, entry.getValue(), BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
                     if (renderFoil) {
-                        nodeCollector.order(nextOrder++).submitBlockModel(poseStack, MekanismRenderType.ARMOR_TRANSLUCENT_GLINT, entry.getValue(),
+                        nodeCollector.order(1).submitBlockModel(poseStack, MekanismRenderType.ARMOR_TRANSLUCENT_GLINT, entry.getValue(),
                               BlockModelRenderState.EMPTY_TINTS, lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE);
                     }
                 } else {
-                    submitModel(orderedCollector, poseStack, entry.getValue(), lightCoords, state.outlineColor, color, NO_TINT, MekanismRenderType.MEKASUIT);
+                    submitModel(nodeCollector, poseStack, entry.getValue(), lightCoords, state.outlineColor, color, NO_TINT, MekanismRenderType.MEKASUIT);
                     if (renderFoil) {
-                        submitModel(nodeCollector.order(nextOrder++), poseStack, entry.getValue(), lightCoords, EntityRenderState.NO_OUTLINE, color,
-                              BASE_GLINT, MekanismRenderType.MEKASUIT_GLINT);
+                        submitModel(nodeCollector.order(1), poseStack, entry.getValue(), lightCoords, EntityRenderState.NO_OUTLINE, color, BASE_GLINT, MekanismRenderType.MEKASUIT_GLINT);
                     }
                 }
                 poseStack.popPose();
             }
         }
-        return nextOrder;
     }
 
     private void submitModel(OrderedSubmitNodeCollector orderedCollector, PoseStack poseStack, List<BlockStateModelPart> parts, int lightCoords, int outlineColor,
