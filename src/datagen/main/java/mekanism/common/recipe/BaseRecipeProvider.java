@@ -3,8 +3,6 @@ package mekanism.common.recipe;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.function.BiFunction;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStackTemplate;
@@ -15,8 +13,6 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.MultiRegistryBootstrap;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -33,20 +29,6 @@ import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
 public abstract class BaseRecipeProvider extends RecipeProvider {
-
-    public static MultiRegistryBootstrap registerRecipes(BiFunction<BootstrapContext<Recipe<?>>, BootstrapContext<Advancement>, BaseRecipeProvider> recipeProvider) {
-        return new MultiRegistryBootstrap() {
-            @Override
-            public Set<ResourceKey<? extends Registry<?>>> requestedRegistries() {
-                return Set.of(Registries.RECIPE, Registries.ADVANCEMENT);
-            }
-
-            @Override
-            public void run(MultiRegistryBootstrap.BootstrapGetter registries) {
-                recipeProvider.apply(registries.get(Registries.RECIPE), registries.get(Registries.ADVANCEMENT)).buildRecipes();
-            }
-        };
-    }
 
     protected final HolderGetter<Fluid> fluids;
     protected final HolderGetter<Chemical> chemicals;

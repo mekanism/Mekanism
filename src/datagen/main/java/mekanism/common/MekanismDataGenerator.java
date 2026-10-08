@@ -13,9 +13,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -45,9 +43,7 @@ import net.neoforged.fml.config.ConfigTracker;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber(modid = Mekanism.MODID)
 public class MekanismDataGenerator {
@@ -69,24 +65,14 @@ public class MekanismDataGenerator {
         SET_CONFIG = ObfuscationReflectionHelper.findMethod(ModConfig.class, "setConfig", loadedConfig, Function.class);
     }
 
-    @Nullable
-    private static CompletableFuture<HolderLookup.Provider> reloadableLookupProvider = null;
-    @Nullable
-    private static CompletableFuture<HolderLookup.Provider> worldLookupProvider = null;
-
     private MekanismDataGenerator() {
     }
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event) {
-        bootstrapConfigs(Mekanism.MODID);
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
-        DatapackBuiltinEntriesProvider worldRegistryProvider = MekanismRegistryProvider.forWorldLayer(output, event.getWorldLookupProvider());
-        worldLookupProvider = worldRegistryProvider.getRegistryProvider();
-        HashSet<String> disabledCompats = new HashSet<>();
-        DatapackBuiltinEntriesProvider reloadableRegistryProvider = MekanismRegistryProvider.forReloadableLayer(output, worldLookupProvider, event.getReloadableLookupProvider(), disabledCompats);
-        reloadableLookupProvider = reloadableRegistryProvider.getRegistryProvider();
+        CompletableFuture<HolderLookup.Provider> reloadableLookupProvider = event.getReloadableLookupProvider();
 
         ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         //Client side data generators
@@ -99,22 +85,12 @@ public class MekanismDataGenerator {
         gen.addProvider(true, new MekanismEquipmentAssetProvider(output));
         //Server side data generators
         gen.addProvider(true, new MekanismTagProvider(output, reloadableLookupProvider));
-        gen.addProvider(true, worldRegistryProvider);
-        gen.addProvider(true, reloadableRegistryProvider);
         gen.addProvider(true, new MekanismDataMapsProvider(output, reloadableLookupProvider));
         gen.addProvider(true, new ComputerHelpProvider(output, reloadableLookupProvider, Mekanism.MODID));
         gen.addProvider(true, new MekanismEmiDefaults(output, reloadableLookupProvider));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        PersistingDisabledProvidersProvider.addDisableableProviders(gen, reloadableLookupProvider, disabledCompats);
-    }
-
-    public static CompletableFuture<HolderLookup.Provider> getReloadableLookupProvider() {
-        return Objects.requireNonNull(reloadableLookupProvider);
-    }
-
-    public static CompletableFuture<HolderLookup.Provider> getWorldLookupProvider() {
-        return Objects.requireNonNull(worldLookupProvider);
+        PersistingDisabledProvidersProvider.addDisableableProviders(gen, reloadableLookupProvider, MekanismRegistryProvider.DISABLED_COMPATS);
     }
 
     /// Used to bootstrap configs to their default values so that if we are querying if things exist we don't have issues with it happening to early or in cases we have

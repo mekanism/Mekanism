@@ -1,30 +1,23 @@
 package mekanism.tools.common;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import mekanism.common.recipe.BaseRecipeProvider;
+import mekanism.common.MekanismDataGenerator;
 import mekanism.common.registries.BaseRegistryProvider;
 import mekanism.tools.common.recipe.ToolsRecipeProvider;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.advancements.AdvancementProvider;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 
+@EventBusSubscriber(modid = MekanismTools.MODID)
 public class ToolsRegistryProvider extends BaseRegistryProvider {
 
-    public static DatapackBuiltinEntriesProvider forWorldLayer(PackOutput output, CompletableFuture<HolderLookup.Provider> worldRegistries) {
-        return forWorldLayer(output, worldRegistries, MekanismTools.MODID, new RegistrySetBuilder()
-
-        );
+    private ToolsRegistryProvider() {
     }
 
-    public static DatapackBuiltinEntriesProvider forReloadableLayer(PackOutput output, CompletableFuture<HolderLookup.Provider> worldRegistries,
-          CompletableFuture<HolderLookup.Provider> reloadableRegistries) {
-        return forReloadableLayer(output, worldRegistries, reloadableRegistries, MekanismTools.MODID, new RegistrySetBuilder()
-              .add(Registries.ADVANCEMENT, new AdvancementProvider(List.of(ToolsAdvancementProvider::new)))
-              .add(BaseRecipeProvider.registerRecipes(ToolsRecipeProvider::new))
-        );
+    @SubscribeEvent
+    public static void onGatherRegistries(GatherDataRegistryEntriesEvent event) {
+        MekanismDataGenerator.bootstrapConfigs(MekanismTools.MODID);
+        event.advancement(ToolsAdvancementProvider::new)
+              .recipe(ToolsRecipeProvider::new)
+        ;
     }
 }

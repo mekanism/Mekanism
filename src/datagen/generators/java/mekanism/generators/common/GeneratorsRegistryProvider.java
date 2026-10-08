@@ -1,31 +1,30 @@
 package mekanism.generators.common;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.BasicChemical;
 import mekanism.api.chemical.ChemicalIds;
-import mekanism.common.recipe.BaseRecipeProvider;
+import mekanism.common.MekanismDataGenerator;
 import mekanism.common.registration.impl.MekanismDamageType;
 import mekanism.common.registries.BaseRegistryProvider;
 import mekanism.generators.common.loot.GeneratorsBlockLootTables;
 import mekanism.generators.common.registries.GeneratorsDamageTypes;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.advancements.AdvancementProvider;
-import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableProvider.SubProviderEntry;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 
+@EventBusSubscriber(modid = MekanismGenerators.MODID)
 public class GeneratorsRegistryProvider extends BaseRegistryProvider {
 
-    public static DatapackBuiltinEntriesProvider forWorldLayer(PackOutput output, CompletableFuture<HolderLookup.Provider> worldRegistries) {
-        return forWorldLayer(output, worldRegistries, MekanismGenerators.MODID, new RegistrySetBuilder()
-              .add(Registries.DAMAGE_TYPE, context -> {
+    private GeneratorsRegistryProvider() {
+    }
+
+    @SubscribeEvent
+    public static void onGatherRegistries(GatherDataRegistryEntriesEvent event) {
+        MekanismDataGenerator.bootstrapConfigs(MekanismGenerators.MODID);
+        event.add(Registries.DAMAGE_TYPE, context -> {
                   for (MekanismDamageType damageType : GeneratorsDamageTypes.DAMAGE_TYPES.damageTypes()) {
                       context.register(damageType.key(), damageType.toVanilla());
                   }
@@ -37,17 +36,9 @@ public class GeneratorsRegistryProvider extends BaseRegistryProvider {
                   context.register(ChemicalIds.TRITIUM, BasicChemical.builder().tint(0xFF64FF70).build());
                   context.register(ChemicalIds.FUSION_FUEL, BasicChemical.builder().tint(0xFF7E007D).build());
               })
-        );
-    }
-
-    public static DatapackBuiltinEntriesProvider forReloadableLayer(PackOutput output, CompletableFuture<HolderLookup.Provider> worldRegistries,
-          CompletableFuture<HolderLookup.Provider> reloadableRegistries) {
-        return forReloadableLayer(output, worldRegistries, reloadableRegistries, MekanismGenerators.MODID, new RegistrySetBuilder()
-              .add(Registries.LOOT_TABLE, new LootTableProvider(Collections.emptySet(), List.of(
-                    new SubProviderEntry(GeneratorsBlockLootTables::new, LootContextParamSets.BLOCK)
-              )))
-              .add(Registries.ADVANCEMENT, new AdvancementProvider(List.of(GeneratorsAdvancementProvider::new)))
-              .add(BaseRecipeProvider.registerRecipes(GeneratorsRecipeProvider::new))
-        );
+              .lootTable(new SubProviderEntry(GeneratorsBlockLootTables::new, LootContextParamSets.BLOCK))
+              .advancement(GeneratorsAdvancementProvider::new)
+              .recipe(GeneratorsRecipeProvider::new)
+        ;
     }
 }

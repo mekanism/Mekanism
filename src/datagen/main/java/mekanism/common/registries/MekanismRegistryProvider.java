@@ -1,12 +1,11 @@
 package mekanism.common.registries;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import java.util.Set;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.BasicChemical;
 import mekanism.api.chemical.Chemical;
@@ -21,6 +20,7 @@ import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.ChemicalConstants;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismDataGenerator;
 import mekanism.common.advancements.MekanismAdvancementProvider;
 import mekanism.common.chemical.EnumColorPigment;
 import mekanism.common.config.MekanismConfig;
@@ -28,7 +28,6 @@ import mekanism.common.config.WorldConfig.OreVeinConfig;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.loot.MekanismBlockLootTables;
 import mekanism.common.loot.MekanismEntityLootTables;
-import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.registration.impl.MekanismDamageType;
 import mekanism.common.resource.PrimaryResource;
@@ -46,13 +45,8 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.advancements.AdvancementProvider;
-import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableProvider.SubProviderEntry;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.Identifier;
@@ -78,19 +72,28 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ints.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
 import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.world.BiomeModifiers.AddFeaturesBiomeModifier;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
+//TODO - 26.3: Move to the main mod so that this is present at runtime for mods trying to reference our things
+@EventBusSubscriber(modid = Mekanism.MODID)
 public class MekanismRegistryProvider extends BaseRegistryProvider {
 
+    public static final Set<String> DISABLED_COMPATS = new HashSet<>();
     private static final Map<OreType, List<BlockReplacement>> ORE_STONE_TARGETS = new EnumMap<>(OreType.class);
     private static final RuleTest STONE_ORE_REPLACEABLES = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
     private static final RuleTest DEEPSLATE_ORE_REPLACEABLES = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
 
-    public static DatapackBuiltinEntriesProvider forWorldLayer(PackOutput output, CompletableFuture<HolderLookup.Provider> worldRegistries) {
-        return forWorldLayer(output, worldRegistries, Mekanism.MODID, new RegistrySetBuilder()
-              .add(Registries.FEATURE, context -> {
+    private MekanismRegistryProvider() {
+    }
+
+    @SubscribeEvent
+    public static void onGatherRegistries(GatherDataRegistryEntriesEvent event) {
+        MekanismDataGenerator.bootstrapConfigs(Mekanism.MODID);
+        event.add(Registries.FEATURE, context -> {
                   for (OreType type : OreType.VALUES) {
                       int features = type.getBaseConfigs().size();
                       for (int vein = 0; vein < features; vein++) {
@@ -229,17 +232,11 @@ public class MekanismRegistryProvider extends BaseRegistryProvider {
                   registerTrimMaterial(context, MekanismTrimMaterials.TIN, 0xAA7AEAD);
                   registerTrimMaterial(context, MekanismTrimMaterials.URANIUM, 0x76B36A);
               })
-        );
-    }
-
-    public static DatapackBuiltinEntriesProvider forReloadableLayer(PackOutput output, CompletableFuture<HolderLookup.Provider> worldRegistries,
-          CompletableFuture<HolderLookup.Provider> reloadableRegistries, HashSet<String> disabledCompats) {
-        return forReloadableLayer(output, worldRegistries, reloadableRegistries, Mekanism.MODID, new RegistrySetBuilder()
-              .add(Registries.LOOT_TABLE, new LootTableProvider(Collections.emptySet(), List.of(
+              .lootTable(
                     new SubProviderEntry(MekanismBlockLootTables::new, LootContextParamSets.BLOCK),
                     new SubProviderEntry(MekanismEntityLootTables::new, LootContextParamSets.ENTITY)
-              )))
-              .add(Registries.ADVANCEMENT, new AdvancementProvider(List.of(MekanismAdvancementProvider::new)))
+              )
+              .advancement(MekanismAdvancementProvider::new)
               .add(Registries.CONTEXT_INT_PROVIDER, context -> {
                   HolderGetter<LootItemCondition> predicates = context.lookup(Registries.PREDICATE);
 
@@ -252,8 +249,8 @@ public class MekanismRegistryProvider extends BaseRegistryProvider {
                   // so that you get a little bit more bang for your buck
                   context.register(MekanismContextIntProviders.COOKING_TIME_BIO_FUEL_BLOCK, cooking(predicates, normalBurnTime, fastBurnTime, 10 * bioFuelBurnTime));
               })
-              .add(BaseRecipeProvider.registerRecipes((recipeOutput, advancementOutput) -> new MekanismRecipeProvider(recipeOutput, advancementOutput, disabledCompats)))
-        );
+              .recipe((recipeOutput, advancementOutput) -> new MekanismRecipeProvider(recipeOutput, advancementOutput, DISABLED_COMPATS))
+        ;
     }
 
     private static ResizableOreFeature configureOreFeature(OreVeinType oreVeinType, boolean retrogen) {
