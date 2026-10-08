@@ -3,6 +3,7 @@ package mekanism.tools.common;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.common.registries.BaseRegistryProvider;
 import mekanism.tools.common.recipe.ToolsRecipeProvider;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
@@ -13,7 +14,7 @@ public class ToolsRegistryProvider extends BaseRegistryProvider {
     private ToolsRegistryProvider() {
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void onGatherRegistries(GatherDataRegistryEntriesEvent event) {
         MekanismDataGenerator.bootstrapConfigs(MekanismTools.MODID);
         event.advancement(ToolsAdvancementProvider::new)

@@ -72,6 +72,7 @@ import mekanism.common.registries.MekanismDataComponentPredicates;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.registries.MekanismDataSerializers;
+import mekanism.common.registries.MekanismDatapackRegistries;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFeatureTypes;
 import mekanism.common.registries.MekanismFluids;
@@ -113,6 +114,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
@@ -218,6 +220,7 @@ public class Mekanism {
     private void addRegistrationListeners(IEventBus modEventBus) {
         modEventBus.addListener(NewRegistryEvent.class, this::registerRegistries);
         modEventBus.addListener(NewDatapackRegistryEvent.class, this::registerSimpleDPRegistries);
+        modEventBus.addListener(GatherDataRegistryEntriesEvent.class, MekanismDatapackRegistries::register);
 
         MekanismItems.ITEMS.register(modEventBus);
         MekanismBlocks.BLOCKS.register(modEventBus);

@@ -8,6 +8,7 @@ import mekanism.additions.common.registries.AdditionsBiomeModifierSerializers;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsCreativeTabs;
 import mekanism.additions.common.registries.AdditionsDataComponents;
+import mekanism.additions.common.registries.AdditionsDatapackRegistries;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsIntProviderTypes;
 import mekanism.additions.common.registries.AdditionsItems;
@@ -36,6 +37,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import org.jspecify.annotations.Nullable;
@@ -66,6 +68,7 @@ public class MekanismAdditions implements IModModule {
 
         modEventBus.addListener(FMLCommonSetupEvent.class, this::commonSetup);
         modEventBus.addListener(ModConfigEvent.class, MekanismAdditionsConfig::onConfigLoad);
+        modEventBus.addListener(GatherDataRegistryEntriesEvent.class, AdditionsDatapackRegistries::register);
         AdditionsDataComponents.register(modEventBus);
         AdditionsItems.ITEMS.register(modEventBus);
         AdditionsBlocks.BLOCKS.register(modEventBus);

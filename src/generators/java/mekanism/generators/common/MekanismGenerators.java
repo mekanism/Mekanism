@@ -16,6 +16,7 @@ import mekanism.generators.common.registries.GeneratorsBuilders.TurbineBuilder;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.registries.GeneratorsCreativeTabs;
 import mekanism.generators.common.registries.GeneratorsDataComponents;
+import mekanism.generators.common.registries.GeneratorsDatapackRegistries;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.registries.GeneratorsModules;
@@ -27,6 +28,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 import org.jspecify.annotations.Nullable;
 
 @Mod(MekanismGenerators.MODID)
@@ -50,6 +52,7 @@ public class MekanismGenerators implements IModModule {
         modEventBus.addListener(FMLCommonSetupEvent.class, this::commonSetup);
         modEventBus.addListener(ModConfigEvent.class, MekanismGeneratorsConfig::onConfigLoad);
 
+        modEventBus.addListener(GatherDataRegistryEntriesEvent.class, GeneratorsDatapackRegistries::register);
         GeneratorsDataComponents.register(modEventBus);
         GeneratorsItems.ITEMS.register(modEventBus);
         GeneratorsBlocks.BLOCKS.register(modEventBus);
