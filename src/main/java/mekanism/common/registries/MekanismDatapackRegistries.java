@@ -60,6 +60,8 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.structure.templatesystem.HeightMatchTest;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -77,13 +79,17 @@ public class MekanismDatapackRegistries {
 
     public static void register(GatherDataRegistryEntriesEvent event) {
         event.add(Registries.FEATURE, context -> {
+                  RuleTest stoneOreReplaceables = RuleTest.either(new TagMatchTest(BlockTags.HEIGHT_SPECIFIC_ORE_REPLACEABLES), HeightMatchTest.min(0),
+                        new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES));
+                  RuleTest deepslateOreReplaceables = RuleTest.either(new TagMatchTest(BlockTags.HEIGHT_SPECIFIC_ORE_REPLACEABLES), HeightMatchTest.max(8),
+                        new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES));
                   for (OreType type : OreType.VALUES) {
                       int features = type.getBaseConfigs().size();
                       for (int vein = 0; vein < features; vein++) {
                           OreVeinType oreVeinType = new OreVeinType(type, vein);
                           Identifier name = Mekanism.rl(oreVeinType.name());
-                          context.register(feature(name), configureOreFeature(oreVeinType, false));
-                          context.register(feature(name.withSuffix("_retrogen")), configureOreFeature(oreVeinType, true));
+                          context.register(feature(name), configureOreFeature(stoneOreReplaceables, deepslateOreReplaceables, oreVeinType, false));
+                          context.register(feature(name.withSuffix("_retrogen")), configureOreFeature(stoneOreReplaceables, deepslateOreReplaceables, oreVeinType, true));
                       }
                   }
                   context.register(feature(Mekanism.rl("salt")), new ResizableDiskReplaceFeature(
@@ -253,14 +259,13 @@ public class MekanismDatapackRegistries {
         return ResourceKey.create(Registries.PLACED_FEATURE, name);
     }
 
-    private static ResizableOreFeature configureOreFeature(OreVeinType oreVeinType, boolean retrogen) {
+    private static ResizableOreFeature configureOreFeature(RuleTest stoneOreReplaceables, RuleTest deepslateOreReplaceables, OreVeinType oreVeinType, boolean retrogen) {
         OreVeinConfig oreVeinConfig = MekanismConfig.world.getVeinConfig(oreVeinType);
         OreBlockType oreBlockType = MekanismBlocks.ORES.get(oreVeinType.type());
-        List<BlockReplacement> targetStates = List.of(
-              BlockReplacement.replace(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), oreBlockType.stone().defaultState()),
-              BlockReplacement.replace(new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), oreBlockType.deepslate().defaultState())
-        );
-        return new ResizableOreFeature(targetStates, oreVeinType, oreVeinConfig.maxVeinSize(), oreVeinConfig.discardChanceOnAirExposure(), retrogen);
+        return new ResizableOreFeature(List.of(
+              BlockReplacement.replace(stoneOreReplaceables, oreBlockType.stone().defaultState()),
+              BlockReplacement.replace(deepslateOreReplaceables, oreBlockType.deepslate().defaultState())
+        ), oreVeinType, oreVeinConfig.maxVeinSize(), oreVeinConfig.discardChanceOnAirExposure(), retrogen);
     }
 
     private static RobitSkin makeRobitSkin(Identifier name, int variants) {
