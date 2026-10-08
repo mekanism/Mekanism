@@ -5,6 +5,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.Input
@@ -25,10 +26,10 @@ abstract class OutputChangelog extends DefaultTask {
     final Provider<String> modVersion
     @Input
     @Optional
-    final Provider<String> currentCommit
+    final Property<String> currentCommit
     @Input
     @Optional
-    final Provider<String> previousCommit
+    final Property<String> previousCommit
     @Optional
     @InputFile
     final RegularFileProperty releaseNotes
@@ -41,9 +42,11 @@ abstract class OutputChangelog extends DefaultTask {
         usesService(grgitService)
         releaseType = providerFactory.gradleProperty('release_type')
         modVersion = providerFactory.gradleProperty('mod_version')
-        currentCommit = providerFactory.environmentVariable('GIT_COMMIT')
-        previousCommit = providerFactory.environmentVariable('GIT_PREVIOUS_SUCCESSFUL_COMMIT')
-                .orElse(providerFactory.environmentVariable('GIT_PREVIOUS_COMMIT'))
+        currentCommit = objectFactory.property(String.class)
+        previousCommit = objectFactory.property(String.class)
+        currentCommit.convention(providerFactory.environmentVariable('GIT_COMMIT'))
+        previousCommit.convention(providerFactory.environmentVariable('GIT_PREVIOUS_SUCCESSFUL_COMMIT')
+                .orElse(providerFactory.environmentVariable('GIT_PREVIOUS_COMMIT')))
         releaseNotes = objectFactory.fileProperty()
         outputFile = objectFactory.fileProperty().convention(projectLayout.buildDirectory.file('changelog.md'))
     }
