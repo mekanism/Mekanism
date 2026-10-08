@@ -7,6 +7,7 @@
 		"scuba_set": "mekanism:item/scuba_mask",
 		"glass": "mekanism:item/scuba_glass"
 	},
+	"gui_light": "front",
 	"elements": [
 		{
 			"name": "filter_pipe_back_right_corner",

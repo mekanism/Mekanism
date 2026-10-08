@@ -3,6 +3,7 @@
     "textures": {
         "particle": "mekanism:item/free_runners"
     },
+    "gui_light": "front",
     "children": {
         "left": {
             "parent": "mekanism:item/left_free_runner_armored"

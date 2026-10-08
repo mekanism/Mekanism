@@ -5,6 +5,7 @@
         "flamethrower": "mekanism:item/flamethrower",
         "particle": "#flamethrower"
     },
+    "gui_light": "front",
     "elements": [
         {
             "name": "axle",

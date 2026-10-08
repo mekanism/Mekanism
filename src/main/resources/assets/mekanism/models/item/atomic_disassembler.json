@@ -5,6 +5,7 @@
 		"disassembler": "mekanism:item/atomic_disassembler",
 		"particle": "mekanism:block/block_steel"
 	},
+	"gui_light": "front",
 	"elements": [
 		{
 			"name": "handleTopBack",

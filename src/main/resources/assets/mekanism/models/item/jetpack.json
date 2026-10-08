@@ -3,6 +3,7 @@
     "textures": {
         "particle": "mekanism:item/jetpack"
     },
+    "gui_light": "front",
     "children": {
         "base": {
             "parent": "mekanism:item/jetpack_no_thrusters"

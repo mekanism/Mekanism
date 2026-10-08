@@ -5,6 +5,7 @@
         "tank": "mekanism:item/scuba_tank",
         "particle": "#tank"
     },
+    "gui_light": "front",
     "elements": [
         {
             "name": "tank_dock",
