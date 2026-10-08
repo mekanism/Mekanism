@@ -317,7 +317,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 case HEAD:
                     if (this.preview.headEquipment.isEmpty()) {
                         this.preview.headItem.clear();
-                    } else {
+                    } else if (!this.preview.headItem.isEmpty()) {
                         itemModelResolver.updateForTopItem(this.preview.headItem, this.preview.headEquipment, ItemDisplayContext.HEAD, null, null, 0);
                     }
                     break;
