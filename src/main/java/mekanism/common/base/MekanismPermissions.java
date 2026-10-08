@@ -44,6 +44,9 @@ public class MekanismPermissions {
     public static final CommandPermissionNode COMMAND_DEBUG = nodeOpCommand("debug");
     public static final CommandPermissionNode COMMAND_FORCE_RETROGEN = nodeOpCommand("force_retrogen");
 
+    public static final CommandPermissionNode COMMAND_GIVE_GEAR = nodeOpCommand("give_gear");
+    public static final CommandPermissionNode COMMAND_GIVE_GEAR_OTHERS = nodeSubCommand(COMMAND_GIVE_GEAR, "others");
+
     public static final CommandPermissionNode COMMAND_RADIATION = nodeOpCommand("radiation");
     public static final CommandPermissionNode COMMAND_RADIATION_ADD = nodeSubCommand(COMMAND_RADIATION, "add");
     public static final CommandPermissionNode COMMAND_RADIATION_ADD_ENTITY = nodeSubCommand(COMMAND_RADIATION, "add_entity");

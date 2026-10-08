@@ -1131,6 +1131,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.COMMAND_CHUNK_TICKET_LEVEL_CHANGED_NAMED, "Chunk %1$s (%2$s) ticket level changed from: %3$s to: %4$s.");
         add(MekanismLang.COMMAND_DEBUG, "Toggled debug mode: %1$s.");
         add(MekanismLang.COMMAND_TEST_RULES, "Enabled keepInventory, and disabled doMobSpawning, doDaylightCycle, doWeatherCycle and mobGriefing!");
+        add(MekanismLang.COMMAND_GIVE_GEAR_SUCCESS_SINGLE, "Gave all module containers to %1$s.");
+        add(MekanismLang.COMMAND_GIVE_GEAR_SUCCESS_MULTIPLE, "Gave all module containers to %1$s players.");
+        add(MekanismLang.COMMAND_ERROR_GEAR_NO_CONTAINERS, "No items are valid module containers.");
         add(MekanismLang.COMMAND_TP, "Teleported to (%1$s) - saved last position on stack.");
         add(MekanismLang.COMMAND_TPOP, "Returned to (%1$s); %2$s positions on stack.");
         add(MekanismLang.COMMAND_ERROR_TPOP_EMPTY, "No positions on stack.");
@@ -1141,9 +1144,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.COMMAND_RADIATION_ADD, "Added %1$s radiation at (%2$s) in %3$s.");
         add(MekanismLang.COMMAND_RADIATION_ADD_ENTITY, "Added %1$s radiation to player.");
         add(MekanismLang.COMMAND_RADIATION_ADD_ENTITY_TARGET, "Added %1$s radiation to entity: %2$s.");
+        add(MekanismLang.COMMAND_RADIATION_ADD_ENTITY_TARGET_MULTIPLE, "Added %1$s radiation to %2$s entities.");
         add(MekanismLang.COMMAND_RADIATION_GET, "Current radiation at (%1$s) in %2$s: %3$s");
         add(MekanismLang.COMMAND_RADIATION_CLEAR, "Cleared player radiation.");
         add(MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY, "Cleared entity radiation for: %1$s.");
+        add(MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY_MULTIPLE, "Cleared entity radiation for %1$s entities.");
         add(MekanismLang.COMMAND_RADIATION_REDUCE, "Reduced player radiation by %1$s.");
         add(MekanismLang.COMMAND_RADIATION_REDUCE_TARGET, "Reduced entity radiation for %1$s by %2$s.");
         add(MekanismLang.COMMAND_RADIATION_REMOVE_ALL, "Removed all radiation sources.");

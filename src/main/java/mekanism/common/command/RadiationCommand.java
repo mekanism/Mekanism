@@ -22,12 +22,26 @@ import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.commands.CommandResponseTracker;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class RadiationCommand {
+
+    private static final CommandResponseTracker.Messages<LivingEntity> HEAL_RESPONSE = CommandResponseTracker.messages(
+          (living, _) -> MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, living.getDisplayName()),
+          (entityCount, _) -> MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY_MULTIPLE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, entityCount)
+    );
+    private static final CommandResponseTracker.MessagesWithArg<LivingEntity, Double> RADIATE_RESPONSE = CommandResponseTracker.messages(
+          (living, _, magnitude) -> MekanismLang.COMMAND_RADIATION_ADD_ENTITY_TARGET.translate(EnumColor.GRAY,
+                RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3),
+                EnumColor.INDIGO, living.getDisplayName()),
+          (entityCount, _, magnitude) -> MekanismLang.COMMAND_RADIATION_ADD_ENTITY_TARGET_MULTIPLE.translate(EnumColor.GRAY,
+                RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3),
+                EnumColor.INDIGO, entityCount)
+    );
 
     static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("radiation")
@@ -93,22 +107,18 @@ public class RadiationCommand {
                     .requires(MekanismPermissions.COMMAND_RADIATION_ADD_ENTITY_OTHERS)
                     .then(Commands.argument("magnitude", DoubleArgumentType.doubleArg(Double.MIN_VALUE, 10_000))
                           .executes(ctx -> {
-                              CommandSourceStack source = ctx.getSource();
                               double magnitude = DoubleArgumentType.getDouble(ctx, "magnitude");
-                              int addedTo = 0;
+                              CommandResponseTracker<LivingEntity> tracker = CommandResponseTracker.create();
                               for (Entity entity : EntityArgument.getEntities(ctx, "targets")) {
-                                  if (entity instanceof LivingEntity) {
-                                      IRadiationEntity cap = entity.getCapability(Capabilities.RADIATION_ENTITY);
+                                  if (entity instanceof LivingEntity living) {
+                                      IRadiationEntity cap = living.getCapability(Capabilities.RADIATION_ENTITY);
                                       if (cap != null) {
                                           cap.radiate(magnitude);
-                                          source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_ADD_ENTITY_TARGET.translateColored(EnumColor.GRAY,
-                                                RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3),
-                                                EnumColor.INDIGO, entity.getDisplayName()), true);
+                                          tracker.track(living);
                                       }
-                                      addedTo++;
                                   }
                               }
-                              return addedTo;
+                              return tracker.sendFeedback(ctx.getSource(), true, RADIATE_RESPONSE, magnitude);
                           })
                     )
               );
@@ -150,20 +160,17 @@ public class RadiationCommand {
               }).then(Commands.argument("targets", EntityArgument.entities())
                     .requires(MekanismPermissions.COMMAND_RADIATION_HEAL_OTHERS)
                     .executes(ctx -> {
-                        CommandSourceStack source = ctx.getSource();
-                        int healed = 0;
+                        CommandResponseTracker<LivingEntity> tracker = CommandResponseTracker.create();
                         for (Entity entity : EntityArgument.getEntities(ctx, "targets")) {
-                            if (entity instanceof LivingEntity) {
-                                IRadiationEntity cap = entity.getCapability(Capabilities.RADIATION_ENTITY);
+                            if (entity instanceof LivingEntity living) {
+                                IRadiationEntity cap = living.getCapability(Capabilities.RADIATION_ENTITY);
                                 if (cap != null) {
                                     cap.set(IRadiationManager.INSTANCE.baselineRadiation());
-                                    source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                                          entity.getDisplayName()), true);
+                                    tracker.track(living);
                                 }
-                                healed++;
                             }
                         }
-                        return healed;
+                        return tracker.sendFeedback(ctx.getSource(), true, HEAL_RESPONSE);
                     })
               );
     }
@@ -193,23 +200,23 @@ public class RadiationCommand {
                           .executes(ctx -> {
                               CommandSourceStack source = ctx.getSource();
                               double magnitude = DoubleArgumentType.getDouble(ctx, "magnitude");
-                              int reducedFrom = 0;
+                              CommandResponseTracker<LivingEntity> tracker = CommandResponseTracker.create();
                               for (Entity entity : EntityArgument.getEntities(ctx, "targets")) {
-                                  if (entity instanceof LivingEntity) {
-                                      IRadiationEntity cap = entity.getCapability(Capabilities.RADIATION_ENTITY);
+                                  if (entity instanceof LivingEntity living) {
+                                      IRadiationEntity cap = living.getCapability(Capabilities.RADIATION_ENTITY);
                                       if (cap != null) {
                                           double radiation = cap.getRadiation();
                                           double newValue = Math.max(IRadiationManager.INSTANCE.baselineRadiation(), radiation - magnitude);
                                           double reduced = radiation - newValue;
                                           cap.set(newValue);
                                           source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REDUCE_TARGET.translateColored(EnumColor.GRAY,
-                                                EnumColor.INDIGO, entity.getDisplayName(), RadiationScale.getSeverityColor(reduced),
+                                                EnumColor.INDIGO, living.getDisplayName(), RadiationScale.getSeverityColor(reduced),
                                                 UnitDisplayUtils.getDisplayShort(reduced, RadiationUnit.SVH, 3)), true);
+                                          tracker.track(living);
                                       }
-                                      reducedFrom++;
                                   }
                               }
-                              return reducedFrom;
+                              return tracker.totalValue();
                           })
                     )
               );
