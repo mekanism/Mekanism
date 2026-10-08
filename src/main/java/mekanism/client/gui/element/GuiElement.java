@@ -334,7 +334,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     @Override
     public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
         if (checkWindows(mouseX, mouseY)) {
-            //If we are are not covered by a window, try to locate which child we are over
+            //If we are not covered by a window, try to locate which child we are over
             return Optional.ofNullable(GuiUtils.findChild(children, mouseX, mouseY, GuiElement::isMouseOver));
         }
         return Optional.empty();
@@ -455,17 +455,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
             element.onRelease(event);
         }
         super.onRelease(event);
-    }
-
-    @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
-        for (int i = children.size() - 1; i >= 0; i--) {
-            GuiElement child = children.get(i);
-            if (child.mouseScrolled(mouseX, mouseY, xDelta, yDelta)) {
-                return true;
-            }
-        }
-        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta);
     }
 
     @Override

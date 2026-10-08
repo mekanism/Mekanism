@@ -65,11 +65,11 @@ public class GuiEntityPreview extends GuiElement {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (isMouseOver(mouseX, mouseY)) {
-            rotation = Mth.wrapDegrees(rotation + (float) deltaY);
+            rotation = Mth.wrapDegrees(rotation + (float) scrollY);
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 }
