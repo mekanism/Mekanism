@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,12 +34,14 @@ public class CommonWorldTickHandler {
     public void onEntitySpawn(EntityJoinLevelEvent event) {
         //If we are in the middle of breaking a block using a cardboard box, cancel any items
         // that are dropped, we do this at highest priority to ensure we cancel it the same tick
-        // before forge replaces items with custom item entities with a tick delay
+        // before neo replaces items with custom item entities with a tick delay
         // We also cancel any experience orbs from spawning as things like the furnace will store
         // how much xp they have but also try to drop it on replace
+        // Likewise, we skip wardens to avoid https://github.com/mekanism/Mekanism/issues/8637 and effectively duping their summons
+        // as SculkShriekerBlockEntity, tries to summon them immediately on removal if the warning level is 4
         if (monitoringCardboardBox) {
             Entity entity = event.getEntity();
-            if (entity instanceof ItemEntity || entity instanceof ExperienceOrb) {
+            if (entity instanceof ItemEntity || entity instanceof ExperienceOrb || entity instanceof Warden) {
                 entity.discard();
                 event.setCanceled(true);
             }
