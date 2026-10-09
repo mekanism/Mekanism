@@ -27,13 +27,9 @@ import mekanism.client.texture.MekanismSpriteSourceProvider;
 import mekanism.client.texture.PrideRobitTextureProvider;
 import mekanism.common.integration.computer.ComputerHelpProvider;
 import mekanism.common.lib.FieldReflectionHelper;
-import mekanism.common.registries.MekanismRegistryProvider;
 import mekanism.common.tag.MekanismTagProvider;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Util;
@@ -70,27 +66,23 @@ public class MekanismDataGenerator {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event) {
-        DataGenerator gen = event.getGenerator();
-        PackOutput output = gen.getPackOutput();
-        CompletableFuture<HolderLookup.Provider> reloadableLookupProvider = event.getReloadableLookupProvider();
-
         ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         //Client side data generators
-        gen.addProvider(true, new MekanismLangProvider(output));
-        gen.addProvider(true, new PrideRobitTextureProvider(output, clientResources));
-        gen.addProvider(true, new MekanismSoundProvider(output));
-        gen.addProvider(true, new MekanismSplashProvider(output));
-        gen.addProvider(true, new MekanismSpriteSourceProvider(output, reloadableLookupProvider));
-        gen.addProvider(true, new MekanismModelProvider(output, clientResources));
-        gen.addProvider(true, new MekanismEquipmentAssetProvider(output));
+        event.createProvider(MekanismLangProvider::new);
+        event.createProvider(output -> new PrideRobitTextureProvider(output, clientResources));
+        event.createProvider(MekanismSoundProvider::new);
+        event.createProvider(MekanismSplashProvider::new);
+        event.createProvider(MekanismSpriteSourceProvider::new);
+        event.createProvider(output -> new MekanismModelProvider(output, clientResources));
+        event.createProvider(MekanismEquipmentAssetProvider::new);
         //Server side data generators
-        gen.addProvider(true, new MekanismTagProvider(output, reloadableLookupProvider));
-        gen.addProvider(true, new MekanismDataMapsProvider(output, reloadableLookupProvider));
-        gen.addProvider(true, new ComputerHelpProvider(output, reloadableLookupProvider, Mekanism.MODID));
-        gen.addProvider(true, new MekanismEmiDefaults(output, reloadableLookupProvider));
+        event.createProvider(MekanismTagProvider::new);
+        event.createProvider(MekanismDataMapsProvider::new);
+        event.createProvider((output, lookup) -> new ComputerHelpProvider(output, lookup, Mekanism.MODID));
+        event.createProvider(MekanismEmiDefaults::new);
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        PersistingDisabledProvidersProvider.addDisableableProviders(gen, reloadableLookupProvider, MekanismRegistryProvider.DISABLED_COMPATS);
+        PersistingDisabledProvidersProvider.addDisableableProviders(event);
     }
 
     /// Used to bootstrap configs to their default values so that if we are querying if things exist we don't have issues with it happening to early or in cases we have

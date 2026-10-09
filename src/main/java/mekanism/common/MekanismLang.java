@@ -5,7 +5,6 @@ import mekanism.api.text.ILangEntry;
 public enum MekanismLang implements ILangEntry {
     //Vanilla lang strings we use, for purposes of not having to have them copy-pasted all over the place
     REPAIR_COST("container.repair.cost"),
-    REPAIR_EXPENSIVE("container.repair.expensive"),
     //Gui lang strings
     MEKANISM("constants", "mod_name"),
     DEBUG_TITLE("constants", "debug_title"),

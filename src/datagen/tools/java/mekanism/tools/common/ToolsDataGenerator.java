@@ -1,6 +1,5 @@
 package mekanism.tools.common;
 
-import java.util.concurrent.CompletableFuture;
 import mekanism.common.PersistingDisabledProvidersProvider;
 import mekanism.tools.client.ToolsEquipmentAssetProvider;
 import mekanism.tools.client.ToolsLangProvider;
@@ -9,11 +8,7 @@ import mekanism.tools.client.ToolsSplashProvider;
 import mekanism.tools.client.ToolsSpriteSourceProvider;
 import mekanism.tools.client.integration.emi.ToolsEmiDefaults;
 import mekanism.tools.client.recipe_viewer.aliases.ToolsAliasMapping;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -26,21 +21,17 @@ public class ToolsDataGenerator {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event) {
-        DataGenerator gen = event.getGenerator();
-        PackOutput output = gen.getPackOutput();
-        CompletableFuture<HolderLookup.Provider> reloadableLookupProvider = event.getReloadableLookupProvider();
-        ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         //Client side data generators
-        gen.addProvider(true, new ToolsLangProvider(output));
-        gen.addProvider(true, new ToolsSpriteSourceProvider(output, reloadableLookupProvider));
-        gen.addProvider(true, new ToolsModelProvider(output, clientResources));
-        gen.addProvider(true, new ToolsEquipmentAssetProvider(output));
-        gen.addProvider(true, new ToolsSplashProvider(output));
+        event.createProvider(ToolsLangProvider::new);
+        event.createProvider(ToolsSpriteSourceProvider::new);
+        event.createProvider(output -> new ToolsModelProvider(output, event.getResourceManager(PackType.CLIENT_RESOURCES)));
+        event.createProvider(ToolsEquipmentAssetProvider::new);
+        event.createProvider(ToolsSplashProvider::new);
         //Server side data generators
-        gen.addProvider(true, new ToolsTagProvider(output, reloadableLookupProvider));
-        gen.addProvider(true, new ToolsEmiDefaults(output, reloadableLookupProvider));
+        event.createProvider(ToolsTagProvider::new);
+        event.createProvider(ToolsEmiDefaults::new);
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, reloadableLookupProvider, MekanismTools.MODID, ToolsAliasMapping::new);
+        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, ToolsAliasMapping::new);
     }
 }

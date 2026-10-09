@@ -1,6 +1,5 @@
 package mekanism.generators.common;
 
-import java.util.concurrent.CompletableFuture;
 import mekanism.common.PersistingDisabledProvidersProvider;
 import mekanism.generators.client.GeneratorsLangProvider;
 import mekanism.generators.client.GeneratorsModelProvider;
@@ -8,11 +7,7 @@ import mekanism.generators.client.GeneratorsSoundProvider;
 import mekanism.generators.client.GeneratorsSplashProvider;
 import mekanism.generators.client.integration.emi.GeneratorsEmiDefaults;
 import mekanism.generators.client.recipe_viewer.alias.GeneratorsAliasMapping;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -25,21 +20,17 @@ public class GeneratorsDataGenerator {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event) {
-        DataGenerator gen = event.getGenerator();
-        PackOutput output = gen.getPackOutput();
-        CompletableFuture<HolderLookup.Provider> reloadableLookupProvider = event.getReloadableLookupProvider();
-        ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         //Client side data generators
-        gen.addProvider(true, new GeneratorsLangProvider(output));
-        gen.addProvider(true, new GeneratorsSoundProvider(output));
-        gen.addProvider(true, new GeneratorsModelProvider(output, clientResources));
-        gen.addProvider(true, new GeneratorsSplashProvider(output));
+        event.createProvider(GeneratorsLangProvider::new);
+        event.createProvider(GeneratorsSoundProvider::new);
+        event.createProvider(output -> new GeneratorsModelProvider(output, event.getResourceManager(PackType.CLIENT_RESOURCES)));
+        event.createProvider(GeneratorsSplashProvider::new);
         //Server side data generators
-        gen.addProvider(true, new GeneratorsTagProvider(output, reloadableLookupProvider));
-        gen.addProvider(true, new GeneratorsDataMapsProvider(output, reloadableLookupProvider));
-        gen.addProvider(true, new GeneratorsEmiDefaults(output, reloadableLookupProvider));
+        event.createProvider(GeneratorsTagProvider::new);
+        event.createProvider(GeneratorsDataMapsProvider::new);
+        event.createProvider(GeneratorsEmiDefaults::new);
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, reloadableLookupProvider, MekanismGenerators.MODID, GeneratorsAliasMapping::new);
+        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, GeneratorsAliasMapping::new);
     }
 }

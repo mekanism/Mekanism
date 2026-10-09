@@ -6,11 +6,11 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundRenameItemPacket;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,11 +24,6 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements ContainerListener {
 
-    //Use the vanilla anvil's gui texture
-    private static final Identifier TEXT_FIELD_SPRITE = Identifier.withDefaultNamespace("container/anvil/text_field");
-    private static final Identifier TEXT_FIELD_DISABLED_SPRITE = Identifier.withDefaultNamespace("container/anvil/text_field_disabled");
-    private static final Identifier ERROR_SPRITE = Identifier.withDefaultNamespace("container/anvil/error");
-    private static final Identifier ANVIL_LOCATION = Identifier.withDefaultNamespace("textures/gui/container/anvil.png");
     private static final int ITEM_NAME_X = 60;
     private static final int ITEM_NAME_WIDTH = 103;
 
@@ -100,8 +95,8 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
             }
             int textColor = 0xFF80FF20;
             Component component = MekanismLang.REPAIR_COST.translate(maximumCost);
-            if (maximumCost >= 40 && !player.getAbilities().instabuild) {
-                component = MekanismLang.REPAIR_EXPENSIVE.translate();
+            if (maximumCost >= 40 && !player.hasInfiniteMaterials()) {
+                component = AnvilScreen.TOO_EXPENSIVE_TEXT;
                 textColor = 0xFFFF6060;
             } else {
                 Slot slot = menu.getSlot(AnvilMenu.RESULT_SLOT);
@@ -133,10 +128,11 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     @Override
     public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
         super.extractBackground(guiGraphics, mouseX, mouseY, a);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, ANVIL_LOCATION, leftPos, topPos, 0, 0, imageWidth, imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, menu.getSlot(AnvilMenu.INPUT_SLOT).hasItem() ? TEXT_FIELD_SPRITE : TEXT_FIELD_DISABLED_SPRITE, leftPos + 59, topPos + 20, 110, 16);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, AnvilScreen.ANVIL_LOCATION, leftPos, topPos, 0, 0, imageWidth, imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, menu.getSlot(AnvilMenu.INPUT_SLOT).hasItem() ? AnvilScreen.TEXT_FIELD_SPRITE : AnvilScreen.TEXT_FIELD_DISABLED_SPRITE,
+              leftPos + 59, topPos + 20, 110, 16);
         if ((menu.getSlot(AnvilMenu.INPUT_SLOT).hasItem() || menu.getSlot(AnvilMenu.ADDITIONAL_SLOT).hasItem()) && !menu.getSlot(AnvilMenu.RESULT_SLOT).hasItem()) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ERROR_SPRITE, leftPos + 99, topPos + 45, 28, 21);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, AnvilScreen.ERROR_SPRITE, leftPos + 99, topPos + 45, 28, 21);
         }
     }
 
