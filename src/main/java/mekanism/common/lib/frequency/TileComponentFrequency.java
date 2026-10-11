@@ -12,16 +12,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-
-import org.jspecify.annotations.Nullable;
-
 import mekanism.api.SerializationConstants;
 import mekanism.api.functions.TriConsumer;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.component.FrequencyAware;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableFrequencyList;
 import mekanism.common.inventory.container.sync.SyncableStreamCodec;
+import mekanism.common.inventory.container.sync.SyncableFrequencyList;
 import mekanism.common.lib.CustomObjectToObjectArrayMap;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
@@ -38,6 +35,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jspecify.annotations.Nullable;
 
 public class TileComponentFrequency implements ITileComponent {
 
@@ -151,9 +149,7 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     public <FREQ extends Frequency> void setFrequencyFromData(FrequencyType<FREQ> type, FrequencyIdentity data, @Nullable UUID player) {
-        //Frequency controllers only exist on the server, the client gets the frequency via sync
-        Level level = tile.getLevel();
-        if (player != null && (level == null || !level.isClientSide())) {
+        if (player != null) {
             FrequencyData frequencyData = getFrequencyData(type);
             if (frequencyData != null) {
                 setFrequencyFromData(type, data, player, frequencyData);
