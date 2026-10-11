@@ -61,7 +61,7 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
 
         private static ModuleConfigTarget<?> decode(RegistryFriendlyByteBuf buffer) {
             Holder<ModuleData<?>> moduleType = REGISTRY_CODEC.decode(buffer);
-            int installed = buffer.readVarInt();
+            int installed = ByteBufCodecs.VAR_INT.decode(buffer);
             Identifier name = Identifier.STREAM_CODEC.decode(buffer);
             ModuleConfig<?> defaultConfig = moduleType.value().getNamedConfig(installed, name);
             if (defaultConfig == null) {
@@ -72,7 +72,7 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
 
         private void encode(RegistryFriendlyByteBuf buffer) {
             REGISTRY_CODEC.encode(buffer, moduleType);
-            buffer.writeVarInt(installed);
+            ByteBufCodecs.VAR_INT.encode(buffer, installed);
             Identifier.STREAM_CODEC.encode(buffer, config.name());
             config.namedStreamCodec(config.name()).encode(buffer, config);
         }

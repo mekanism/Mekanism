@@ -11,6 +11,7 @@ import mekanism.api.MekanismPreconditions;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.storage.ValueInput;
@@ -183,7 +184,7 @@ public record LargeResourceStack<RESOURCE extends Resource>(RESOURCE resource, @
             return new StackHelper<>(emptyStack, codec, optionalCodec, orEmptyCodec, new StreamCodec<>() {
                 @Override
                 public LargeResourceStack<RESOURCE> decode(RegistryFriendlyByteBuf buf) {
-                    long amount = buf.readVarLong();
+                    long amount = ByteBufCodecs.VAR_LONG.decode(buf);
                     if (amount <= 0) {
                         return emptyStack;
                     }
@@ -198,10 +199,8 @@ public record LargeResourceStack<RESOURCE extends Resource>(RESOURCE resource, @
 
                 @Override
                 public void encode(RegistryFriendlyByteBuf buf, LargeResourceStack<RESOURCE> stack) {
-                    if (stack.isEmpty()) {
-                        buf.writeVarLong(0);
-                    } else {
-                        buf.writeVarLong(stack.amount());
+                    ByteBufCodecs.VAR_LONG.encode(buf, stack.amount());
+                    if (!stack.isEmpty()) {
                         resourceStreamCodec.encode(buf, stack.resource());
                     }
                 }

@@ -1,10 +1,12 @@
 package mekanism.common.inventory.container.type;
 
 import io.netty.handler.codec.DecoderException;
-import mekanism.common.network.to_client.qio.BulkQIOData;
+import mekanism.common.inventory.container.EntityContainerProvider;
+import mekanism.common.inventory.container.TileContainerProvider;
 import mekanism.common.inventory.container.entity.IEntityContainer;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.inventory.container.type.MekanismContainerType.IMekanismContainerFactory;
+import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import mekanism.common.util.WorldUtils;
@@ -73,13 +75,13 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
         return null;
     }
 
-    private static <TILE extends BlockEntity> TILE getTileFromBuf(FriendlyByteBuf buf, Class<TILE> type) {
+    private static <TILE extends BlockEntity> TILE getTileFromBuf(@Nullable FriendlyByteBuf buf, Class<TILE> type) {
         if (buf == null) {
             throw new DecoderException("Null packet buffer");
         } else if (!FMLEnvironment.getDist().isClient()) {
             throw new UnsupportedOperationException("This method is only supported on the client.");
         }
-        BlockPos pos = buf.readBlockPos();
+        BlockPos pos = TileContainerProvider.TILE_DATA.decode(buf);
         TILE tile = WorldUtils.getTileEntity(type, Minecraft.getInstance().level, pos);
         if (tile == null) {
             throw new DecoderException("Client could not locate tile at " + pos + " for tile container. "
@@ -88,7 +90,7 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
         return tile;
     }
 
-    private static <ENTITY extends Entity> ENTITY getEntityFromBuf(FriendlyByteBuf buf, Class<ENTITY> type) {
+    private static <ENTITY extends Entity> ENTITY getEntityFromBuf(@Nullable FriendlyByteBuf buf, Class<ENTITY> type) {
         if (buf == null) {
             throw new DecoderException("Null packet buffer");
         } else if (!FMLEnvironment.getDist().isClient()) {
@@ -97,7 +99,7 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
         if (Minecraft.getInstance().level == null) {
             throw new DecoderException("Client world is null.");
         }
-        int entityId = buf.readVarInt();
+        int entityId = EntityContainerProvider.ENTITY_DATA.decode(buf);
         Entity e = Minecraft.getInstance().level.getEntity(entityId);
         if (type.isInstance(e)) {
             //noinspection unchecked

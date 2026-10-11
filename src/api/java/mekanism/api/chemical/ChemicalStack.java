@@ -19,6 +19,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item.TooltipContext;
@@ -53,7 +54,7 @@ public final class ChemicalStack implements SizedChemicalInstance {
     public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalStack> OPTIONAL_STREAM_CODEC = new StreamCodec<>() {
         @Override
         public ChemicalStack decode(RegistryFriendlyByteBuf buffer) {
-            int amount = buffer.readVarInt();
+            int amount = ByteBufCodecs.VAR_INT.decode(buffer);
             if (amount <= 0) {
                 return EMPTY;
             }
@@ -62,7 +63,7 @@ public final class ChemicalStack implements SizedChemicalInstance {
 
         @Override
         public void encode(RegistryFriendlyByteBuf buffer, ChemicalStack stack) {
-            buffer.writeVarInt(stack.amount());
+            ByteBufCodecs.VAR_INT.encode(buffer, stack.amount());
             if (!stack.isEmpty()) {
                 CHEMICAL_HOLDER_STREAM_CODEC.encode(buffer, stack.typeHolder());
             }

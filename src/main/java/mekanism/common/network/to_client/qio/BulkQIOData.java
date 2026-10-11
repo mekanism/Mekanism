@@ -11,7 +11,9 @@ import mekanism.common.content.qio.QIOFrequency.QIOItemTypeData;
 import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.inventory.container.QIOItemViewerContainer.ItemSlotData;
 import mekanism.common.lib.inventory.UUIDItemResource;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
@@ -24,16 +26,16 @@ public record BulkQIOData(Map<UUID, ItemSlotData> inventory, long countCapacity,
         if (frequency != null) {
             Map<ItemResource, QIOItemTypeData> itemDataMap = frequency.getItemDataMap();
             //Manual implementation of encoding PacketUpdateItemViewer.ITEM_MAP_CODEC without having to actually create the intermediary UUIDItemResource instance
-            buffer.writeVarInt(itemDataMap.size());
+            ByteBufCodecs.VAR_INT.encode(buffer, itemDataMap.size());
             for (QIOItemTypeData data : itemDataMap.values()) {
                 //The following two lines are equivalent to encoding UUIDItemResource.STREAM_CODEC
-                buffer.writeUUID(data.getItemUUID());
+                UUIDUtil.STREAM_CODEC.encode(buffer, data.getItemUUID());
                 ItemResource.STREAM_CODEC.encode(buffer, data.getItemType());
-                buffer.writeVarLong(data.getCount());
+                ByteBufCodecs.VAR_LONG.encode(buffer, data.getCount());
             }
             //End implementation of encoding ITEM_MAP_CODEC
-            buffer.writeVarLong(frequency.getTotalItemCountCapacity());
-            buffer.writeVarInt(frequency.getTotalItemTypeCapacity());
+            ByteBufCodecs.VAR_LONG.encode(buffer, frequency.getTotalItemCountCapacity());
+            ByteBufCodecs.VAR_INT.encode(buffer, frequency.getTotalItemTypeCapacity());
         }
     }
 
@@ -41,17 +43,17 @@ public record BulkQIOData(Map<UUID, ItemSlotData> inventory, long countCapacity,
         if (buffer.readBoolean()) {
             long totalItems = 0;
             //Note: We manually handle decoding the map so that we can avoid having to create an intermediary holding map
-            int itemMapSize = buffer.readVarInt();
+            int itemMapSize = ByteBufCodecs.VAR_INT.decode(buffer);
             //Note: Use a ReferenceArrayList to allow for instance equality checking when removing elements
             List<IScrollableSlot> itemList = new ReferenceArrayList<>(itemMapSize);
             Map<UUID, ItemSlotData> inventory = new Object2ObjectOpenHashMap<>(itemMapSize);
             for (int i = 0; i < itemMapSize; i++) {
-                ItemSlotData slotData = new ItemSlotData(UUIDItemResource.STREAM_CODEC.decode(buffer), buffer.readVarLong(), buffer.registryAccess());
+                ItemSlotData slotData = new ItemSlotData(UUIDItemResource.STREAM_CODEC.decode(buffer), ByteBufCodecs.VAR_LONG.decode(buffer), buffer.registryAccess());
                 totalItems += slotData.count();
                 itemList.add(slotData);
                 inventory.put(slotData.itemUUID(), slotData);
             }
-            return new BulkQIOData(inventory, buffer.readVarLong(), buffer.readVarInt(), totalItems, itemList);
+            return new BulkQIOData(inventory, ByteBufCodecs.VAR_LONG.decode(buffer), ByteBufCodecs.VAR_INT.decode(buffer), totalItems, itemList);
         }
         //If we don't have a frequency, just use empty uninitialized data that is modifiable
         //TODO: Do we even need to be using a modifiable version, instead of say INITIAL_SERVER?
