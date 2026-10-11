@@ -87,6 +87,11 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
     }
 
     @Override
+    protected long getSaveShareBufferAmount() {
+        return energyContainer.getAmountAsLong();
+    }
+
+    @Override
     protected void updateSaveShares(@Nullable UniversalCable triggerTransmitter, TransactionContext transaction) {
         super.updateSaveShares(triggerTransmitter, transaction);
         if (!isEmpty()) {

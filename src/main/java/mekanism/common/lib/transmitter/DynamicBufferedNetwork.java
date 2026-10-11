@@ -28,7 +28,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     protected long capacity;
     protected boolean needsUpdate;
     private boolean forceScaleUpdate;
-    private long lastSaveShareWriteTime;
+    private final SaveShareTracker saveShareTracker = new SaveShareTracker();
     private long lastMarkDirtyTime;
     public float currentScale;
 
@@ -162,13 +162,27 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
             // Note: This also in theory could be null, so we double-check it is not before grabbing the game time
             world = triggerTransmitter.getLevel();
         }
-        if (world != null && world.getGameTime() != lastSaveShareWriteTime) {
-            lastSaveShareWriteTime = world.getGameTime();
-            try (Transaction subTransaction = Transaction.open(transaction)) {
-                updateSaveShares(triggerTransmitter, subTransaction);
-                subTransaction.commit();
+        if (world != null) {
+            long gameTime = world.getGameTime();
+            if (saveShareTracker.needsRecalculation(gameTime, getSaveShareBufferAmount())) {
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    updateSaveShares(triggerTransmitter, subTransaction);
+                    subTransaction.commit();
+                }
+                saveShareTracker.recalculated(gameTime, getSaveShareBufferAmount());
             }
         }
+    }
+
+    /// @return The amount in the buffer that is split into save shares, used to detect the buffer changing after the shares were calculated. Networks whose buffer is not
+    /// split by amount can keep the default, so shares are then only recalculated once per tick.
+    protected long getSaveShareBufferAmount() {
+        return 0;
+    }
+
+    /// Should be called by a transmitter after it took its share out of the buffer.
+    public void onShareTaken(long amount) {
+        saveShareTracker.shareTaken(amount);
     }
 
     public void markDirty() {
