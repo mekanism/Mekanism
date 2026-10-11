@@ -3,6 +3,7 @@ package mekanism.common.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.Long2DoubleArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -33,7 +34,9 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.slot.VanillaSlotAccess;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
@@ -66,6 +69,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.minecraft.world.item.slot.SlotCollection;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -130,6 +134,12 @@ public final class MekanismUtils {
         @Override
         public @Nullable SlotAccess getSlot(int slot) {
             return null;
+        }
+
+        @Override
+        public SlotCollection getSlotsFromRange(IntList slots) {
+            //Short circuit to empty slot collection
+            return SlotCollection.EMPTY;
         }
     };
 
@@ -460,20 +470,40 @@ public final class MekanismUtils {
     }
 
     public static int getBurnTime(ServerLevel level, BlockEntity blockEntity, ItemStack fuelItem) {
-        return ResolvableInt.getFromItem(fuelItem, DataComponents.COOKING_FUEL, CookingFuel::burnTime, getLootContext(level, blockEntity, fuelItem), 0);
+        //TODO: How important is this context for cooking fuel time in terms of actually returning a container that has similar slot indices to a furnace
+        // and potentially even provides the fuel item as a stack that is stored in that slot provider
+        LootContext lootContext = getLootContext(level, blockEntity, fuelItem, getSlotProvider(blockEntity));
+        return ResolvableInt.getFromItem(fuelItem, DataComponents.COOKING_FUEL, CookingFuel::burnTime, lootContext, 0);
     }
 
     /// Copy of [BaseContainerBlockEntity#getLootContext(ServerLevel, ItemStack)]
-    private static LootContext getLootContext(ServerLevel level, BlockEntity blockEntity, ItemStack queriedStack) {
+    private static LootContext getLootContext(ServerLevel level, BlockEntity blockEntity, ItemStack queriedStack, SlotProvider slotProvider) {
         return new LootContext.Builder(new LootParams.Builder(level)
               .withParameter(LootContextParams.BLOCK_STATE, blockEntity.getBlockState())
               .withParameter(LootContextParams.BLOCK_ENTITY, blockEntity)
               .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockEntity.getBlockPos()))
-              //TODO - 26.3: How important is this context for cooking fuel time in terms of actually returning a furnace like container?
-              .withParameter(LootContextParams.CONTAINER, EMPTY_SLOT_PROVIDER)
+              .withParameter(LootContextParams.CONTAINER, slotProvider)
               .withOptionalParameter(NeoForgeLootContextParams.QUERIED_STACK, queriedStack.isEmpty() ? null : queriedStack)
               .create(LootContextParamSets.CONTAINER_PROCESS)
         ).create(Optional.empty());
+    }
+
+    private static SlotProvider getSlotProvider(BlockEntity blockEntity) {
+        if (blockEntity instanceof TileEntityMekanism tile && tile.hasInventory()) {
+            List<IInventorySlot> slots = tile.getInventorySlots();
+            return new SlotProvider() {
+                @Override
+                public @Nullable SlotAccess getSlot(int slot) {
+                    if (slot < 0 || slot >= slots.size()) {
+                        return null;
+                    }
+                    //TODO: This probably shouldn't be read-only, but for now until we have a better sense of how people are trying to use things
+                    // I think this is the best way to go about it
+                    return new VanillaSlotAccess(slots.get(slot), true);
+                }
+            };
+        }
+        return EMPTY_SLOT_PROVIDER;
     }
 
     /// @param amount   Amount currently stored
