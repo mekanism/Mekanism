@@ -30,12 +30,12 @@ public class MissingTagsTest {
     @TestHolder(description = "Tests to make sure that we didn't accidentally forget to add any blocks to the block motion tag.")
     public static void testMissingBlocksMotionTags(final DynamicTest test, final RegistrationHelper reg) {
         final TagKey<Block> KNOWN_MISSING = BlockTags.create(Identifier.fromNamespaceAndPath(reg.modId(), "known_missing"));
-        reg.addClientProvider(event -> new BlockTagsProvider(event.getGenerator().getPackOutput(), event.getWorldLookupProvider(), reg.modId()) {
+        reg.addClientProvider(event -> event.createProvider((output, lookup) -> new BlockTagsProvider(output, lookup, reg.modId()) {
             @Override
             protected void addTags(HolderLookup.Provider provider) {
                 tag(KNOWN_MISSING);
             }
-        });
+        }));
 
         test.onGameTest(MissingElementTestHelper.class, helper -> helper.succeedIf(() -> {
             Set<ResourceKey<Block>> missingTags = BuiltInRegistries.BLOCK.listElements()

@@ -297,11 +297,11 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
 
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
-        buffer.writeEnum(getData(MekanismAttachmentTypes.FLAMETHROWER_MODE));
+        FlamethrowerMode.STREAM_CODEC.encode(buffer, getData(MekanismAttachmentTypes.FLAMETHROWER_MODE));
     }
 
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf buffer) {
-        setData(MekanismAttachmentTypes.FLAMETHROWER_MODE, buffer.readEnum(FlamethrowerMode.class));
+        setData(MekanismAttachmentTypes.FLAMETHROWER_MODE, FlamethrowerMode.STREAM_CODEC.decode(buffer));
     }
 }

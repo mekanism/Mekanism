@@ -256,12 +256,12 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
-        buffer.writeEnum(color);
+        EnumColor.STREAM_CODEC.encode(buffer, this.color);
     }
 
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf buffer) {
-        color = buffer.readEnum(EnumColor.class);
+        color = EnumColor.STREAM_CODEC.decode(buffer);
     }
 
     @Override

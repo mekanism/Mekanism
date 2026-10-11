@@ -1,7 +1,6 @@
 package mekanism.common.network.to_server.button;
 
 import io.netty.buffer.ByteBuf;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import mekanism.common.Mekanism;
@@ -15,7 +14,6 @@ import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -24,7 +22,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
 /// Used for informing the server that a click happened in a GUI and the gui window needs to change
@@ -50,12 +47,8 @@ public record PacketTileButtonPress(ClickedTileButton buttonClicked, BlockPos po
     public void handle(IPayloadContext context) {
         Player player = context.player();
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), pos);
-        MenuProvider provider = buttonClicked.getProvider(tile);
-        if (provider != null) {
-            player.openMenu(provider, buf -> {
-                buf.writeBlockPos(pos);
-                buttonClicked.encodeExtraData(buf, tile);
-            });
+        if (tile != null) {
+            player.openMenu(buttonClicked.getProvider(tile));
         }
     }
 
@@ -63,19 +56,10 @@ public record PacketTileButtonPress(ClickedTileButton buttonClicked, BlockPos po
         BACK_BUTTON(tile -> {
             //Special handling to basically reset to the tiles default gui container
             AttributeGui attributeGui = Attribute.get(tile.getBlockHolder(), AttributeGui.class);
-            if (attributeGui != null) {
-                return attributeGui.getProvider(tile, false);
-            }
-            return null;
-        }, (buffer, tile) -> {
-            //Note: This should always be true, as otherwise we wouldn't have a provider at the various call sites
-            if (tile.hasGui()) {
-                //Mirror the logic from TileEntityMekanism#openGui for what data we write so that we properly reinitialize the initial GUI
-                tile.encodeExtraContainerData(buffer);
-            }
+            return attributeGui == null ? null : attributeGui.getProvider(tile, false);
         }),
-        QIO_FREQUENCY_SELECT(tile -> MekanismContainerTypes.QIO_FREQUENCY_SELECT_TILE.getProvider(MekanismLang.QIO_FREQUENCY_SELECT, tile)),
-        DIGITAL_MINER_CONFIG(tile -> MekanismContainerTypes.DIGITAL_MINER_CONFIG.getProvider(MekanismLang.MINER_CONFIG, tile)),
+        QIO_FREQUENCY_SELECT(tile -> MekanismContainerTypes.QIO_FREQUENCY_SELECT_TILE.getProviderNoTileData(MekanismLang.QIO_FREQUENCY_SELECT, tile)),
+        DIGITAL_MINER_CONFIG(tile -> MekanismContainerTypes.DIGITAL_MINER_CONFIG.getProviderNoTileData(MekanismLang.MINER_CONFIG, tile)),
 
         TAB_MAIN(tile -> {
             if (tile instanceof TileEntityInductionCasing) {
@@ -87,9 +71,9 @@ public record PacketTileButtonPress(ClickedTileButton buttonClicked, BlockPos po
         }),
         TAB_STATS(tile -> {
             if (tile instanceof TileEntityInductionCasing) {
-                return MekanismContainerTypes.MATRIX_STATS.getProvider(MekanismLang.MATRIX_STATS, tile);
+                return MekanismContainerTypes.MATRIX_STATS.getProviderNoTileData(MekanismLang.MATRIX_STATS, tile);
             } else if (tile instanceof TileEntityBoilerCasing) {
-                return MekanismContainerTypes.BOILER_STATS.getProvider(MekanismLang.BOILER_STATS, tile);
+                return MekanismContainerTypes.BOILER_STATS.getProviderNoTileData(MekanismLang.BOILER_STATS, tile);
             }
             return null;
         });
@@ -98,29 +82,14 @@ public record PacketTileButtonPress(ClickedTileButton buttonClicked, BlockPos po
         public static final StreamCodec<ByteBuf, ClickedTileButton> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ClickedTileButton::ordinal);
 
         private final Function<TileEntityMekanism, @Nullable MenuProvider> providerFromTile;
-        @Nullable
-        private final BiConsumer<RegistryFriendlyByteBuf, TileEntityMekanism> extraEncodingData;
 
         ClickedTileButton(Function<TileEntityMekanism, @Nullable MenuProvider> providerFromTile) {
-            this(providerFromTile, null);
-        }
-
-        ClickedTileButton(Function<TileEntityMekanism, @Nullable MenuProvider> providerFromTile,
-              @Nullable BiConsumer<RegistryFriendlyByteBuf, TileEntityMekanism> extraEncodingData) {
             this.providerFromTile = providerFromTile;
-            this.extraEncodingData = extraEncodingData;
         }
 
         @Nullable
-        @Contract("null -> null")
-        public MenuProvider getProvider(@Nullable TileEntityMekanism tile) {
-            return tile == null ? null : providerFromTile.apply(tile);
-        }
-
-        private void encodeExtraData(RegistryFriendlyByteBuf buffer, TileEntityMekanism tile) {
-            if (extraEncodingData != null) {
-                extraEncodingData.accept(buffer, tile);
-            }
+        public MenuProvider getProvider(TileEntityMekanism tile) {
+            return providerFromTile.apply(tile);
         }
     }
 }

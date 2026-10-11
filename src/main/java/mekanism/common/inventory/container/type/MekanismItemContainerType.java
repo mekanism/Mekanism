@@ -21,7 +21,7 @@ public class MekanismItemContainerType<CONTAINER extends AbstractContainerMenu> 
     public static <CONTAINER extends AbstractContainerMenu> MekanismItemContainerType<CONTAINER> item(Predicate<Item> typeValidator,
           IMekanismItemContainerFactory<CONTAINER> constructor) {
         return new MekanismItemContainerType<>(typeValidator, constructor, (id, inv, buf) -> {
-            InteractionHand hand = buf.readEnum(InteractionHand.class);
+            InteractionHand hand = InteractionHand.STREAM_CODEC.decode(buf);
             return constructor.create(id, inv, hand, ItemAccessUtils.playerHandAccess(inv.player, hand));
         });
     }
@@ -29,7 +29,7 @@ public class MekanismItemContainerType<CONTAINER extends AbstractContainerMenu> 
     public static <CONTAINER extends AbstractContainerMenu> MekanismItemContainerType<CONTAINER> item(Predicate<Item> typeValidator,
           IMekanismSidedItemContainerFactory<CONTAINER> constructor) {
         return new MekanismItemContainerType<>(typeValidator, constructor, (id, inv, buf) -> {
-            InteractionHand hand = buf.readEnum(InteractionHand.class);
+            InteractionHand hand = InteractionHand.STREAM_CODEC.decode(buf);
             return constructor.create(id, inv, hand, ItemAccessUtils.playerHandAccess(inv.player, hand), true);
         });
     }
@@ -38,7 +38,7 @@ public class MekanismItemContainerType<CONTAINER extends AbstractContainerMenu> 
         return new MekanismItemContainerType<>(MekanismItems.PORTABLE_QIO_DASHBOARD::is,
               (id, inv, hand, itemAccess) -> new PortableQIODashboardContainer(id, inv, hand, itemAccess, false, BulkQIOData.INITIAL_SERVER),
               (id, inv, buf) -> {
-                  InteractionHand hand = buf.readEnum(InteractionHand.class);
+                  InteractionHand hand = InteractionHand.STREAM_CODEC.decode(buf);
                   return new PortableQIODashboardContainer(id, inv, hand, ItemAccessUtils.playerHandAccess(inv.player, hand), true, BulkQIOData.fromPacket(buf));
               }
         );

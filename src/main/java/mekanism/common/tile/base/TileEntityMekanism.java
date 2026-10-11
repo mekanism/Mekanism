@@ -581,10 +581,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
 
-            player.openMenu(Attribute.getOrThrow(getBlockHolder(), AttributeGui.class).getProvider(this, true), buffer -> {
-                buffer.writeBlockPos(worldPosition);
-                encodeExtraContainerData(buffer);
-            });
+            player.openMenu(Attribute.getOrThrow(getBlockHolder(), AttributeGui.class).getProvider(this, true));
             return InteractionResult.CONSUME;
         }
         return InteractionResult.TRY_WITH_EMPTY_HAND;

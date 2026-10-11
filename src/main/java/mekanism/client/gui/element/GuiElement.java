@@ -569,15 +569,15 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public int getFGColor() {
-        if (packedFGColor != UNSET_FG_COLOR) {
-            return packedFGColor;
+    public int getLabelTextColor() {
+        if (labelTextColor != null) {
+            return labelTextColor;
         }
         return this.active ? activeButtonTextColor() : inactiveButtonTextColor();
     }
 
     protected int getButtonTextColor(int mouseX, int mouseY) {
-        return getFGColor();
+        return getLabelTextColor();
     }
 
     protected boolean displayButtonTextShadow() {

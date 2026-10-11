@@ -36,7 +36,7 @@ public class MissingBioFuelRecipeTest {
 
         //TODO: Decide if we want to have things like the biome mods load during game tests as well for purposes of checking if we want to add
         // compat with any of their organic items for making bio-fuel
-        reg.addClientProvider(event -> new ItemTagsProvider(event.getGenerator().getPackOutput(), event.getWorldLookupProvider(), reg.modId()) {
+        reg.addClientProvider(event -> event.createProvider((output, lookup) -> new ItemTagsProvider(output, lookup, reg.modId()) {
             @Override
             @SuppressWarnings("unchecked")
             protected void addTags(HolderLookup.Provider provider) {
@@ -46,7 +46,7 @@ public class MissingBioFuelRecipeTest {
                 );
                 tag(KNOWN_MISSING);
             }
-        });
+        }));
 
         test.onGameTest(RecipeTestHelper.class, helper -> helper.succeedIf(() -> {
             Set<ResourceKey<Item>> bioFuelRecipeInputs = helper.collectKnownMissing(BuiltInRegistries.ITEM, KNOWN_MISSING);

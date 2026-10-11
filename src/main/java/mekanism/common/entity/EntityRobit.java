@@ -94,7 +94,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
@@ -412,12 +411,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
             }
             return InteractionResult.PASS;
         } else if (!level().isClientSide()) {
-            MenuProvider provider = MekanismContainerTypes.MAIN_ROBIT.getProvider(MekanismLang.ROBIT, this, true);
-            if (provider != null) {
-                gameEvent(GameEvent.ENTITY_INTERACT, player);
-                //Validate the provider isn't null, it shouldn't be but just in case
-                player.openMenu(provider, buf -> buf.writeVarInt(getId()));
-            }
+            gameEvent(GameEvent.ENTITY_INTERACT, player);
+            player.openMenu(MekanismContainerTypes.MAIN_ROBIT.getProvider(MekanismLang.ROBIT, this, true));
         }
         return InteractionResult.SUCCESS;
     }
