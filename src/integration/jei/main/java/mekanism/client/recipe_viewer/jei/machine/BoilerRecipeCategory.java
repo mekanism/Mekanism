@@ -11,7 +11,7 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
-import mekanism.client.recipe_viewer.jei.BaseRecipeCategory;
+import mekanism.client.recipe_viewer.jei.SyntheticRecipeCategory;
 import mekanism.client.recipe_viewer.recipe.BoilerRecipeViewerRecipe;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
@@ -26,10 +26,9 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
-public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerRecipe> {
+public class BoilerRecipeCategory extends SyntheticRecipeCategory<BoilerRecipeViewerRecipe> {
 
     private final GuiGauge<?> superHeatedCoolantTank;
     private final GuiGauge<?> waterTank;
@@ -77,12 +76,6 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
             superHeatedCoolantTank.drawBarOverlay(guiGraphics);
             cooledCoolantTank.drawBarOverlay(guiGraphics);
         }
-    }
-
-    @Nullable
-    @Override
-    public Identifier getIdentifier(BoilerRecipeViewerRecipe recipe) {
-        return recipe.id();
     }
 
     @Override

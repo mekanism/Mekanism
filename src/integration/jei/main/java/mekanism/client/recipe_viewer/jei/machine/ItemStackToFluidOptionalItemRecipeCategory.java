@@ -11,7 +11,7 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.recipe_viewer.jei.BaseRecipeCategory;
+import mekanism.client.recipe_viewer.jei.SyntheticRecipeCategory;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
@@ -31,7 +31,7 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import org.jspecify.annotations.Nullable;
 
-public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCategory<BasicItemStackToFluidOptionalItemRecipe> {
+public class ItemStackToFluidOptionalItemRecipeCategory extends SyntheticRecipeCategory<BasicItemStackToFluidOptionalItemRecipe> {
 
     private final GuiGauge<?> outputTank;
     private final GuiSlot outputItem;

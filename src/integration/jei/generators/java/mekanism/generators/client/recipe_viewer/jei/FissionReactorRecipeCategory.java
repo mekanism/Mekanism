@@ -9,7 +9,7 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
-import mekanism.client.recipe_viewer.jei.BaseRecipeCategory;
+import mekanism.client.recipe_viewer.jei.SyntheticRecipeCategory;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
@@ -24,10 +24,8 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.Nullable;
 
-public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionRecipeViewerRecipe> {
+public class FissionReactorRecipeCategory extends SyntheticRecipeCategory<FissionRecipeViewerRecipe> {
 
     private final GuiGauge<?> coolantTank;
     private final GuiGauge<?> fuelTank;
@@ -60,12 +58,6 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReci
         initChemical(builder, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel().display());
         initChemical(builder, RecipeIngredientRole.OUTPUT, heatedCoolantTank, recipe.outputCoolantDisplay());
         initChemical(builder, RecipeIngredientRole.OUTPUT, wasteTank, recipe.wasteDisplay());
-    }
-
-    @Nullable
-    @Override
-    public Identifier getIdentifier(FissionRecipeViewerRecipe recipe) {
-        return recipe.id();
     }
 
     @Override

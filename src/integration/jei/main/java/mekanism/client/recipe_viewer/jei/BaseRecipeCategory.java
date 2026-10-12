@@ -227,6 +227,9 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     public abstract Identifier getIdentifier(RECIPE recipe);
 
     @Override
+    public abstract List<Identifier> getSourceRecipeIds(RECIPE recipe);
+
+    @Override
     public abstract Codec<RECIPE> getCodec(ICodecHelper codecHelper, IRecipeManager recipeManager);
 
     protected IProgressInfoHandler getSimpleProgressTimer() {

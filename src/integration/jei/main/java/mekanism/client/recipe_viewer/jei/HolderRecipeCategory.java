@@ -1,6 +1,8 @@
 package mekanism.client.recipe_viewer.jei;
 
 import com.mojang.serialization.Codec;
+import java.util.Collections;
+import java.util.List;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mezz.jei.api.helpers.ICodecHelper;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -18,6 +20,11 @@ public abstract class HolderRecipeCategory<RECIPE extends Recipe<?>> extends Bas
     @Override
     public Identifier getIdentifier(RecipeHolder<RECIPE> recipe) {
         return recipe.id().identifier();
+    }
+
+    @Override
+    public List<Identifier> getSourceRecipeIds(RecipeHolder<RECIPE> recipe) {
+        return Collections.singletonList(recipe.id().identifier());
     }
 
     @Override

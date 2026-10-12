@@ -9,7 +9,7 @@ import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
-import mekanism.client.recipe_viewer.jei.BaseRecipeCategory;
+import mekanism.client.recipe_viewer.jei.SyntheticRecipeCategory;
 import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
@@ -23,10 +23,8 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.Nullable;
 
-public class SPSRecipeCategory extends BaseRecipeCategory<SPSRecipeViewerRecipe> {
+public class SPSRecipeCategory extends SyntheticRecipeCategory<SPSRecipeViewerRecipe> {
 
     private final GuiGauge<?> input;
     private final GuiGauge<?> output;
@@ -51,12 +49,6 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSRecipeViewerRecipe>
     public void setRecipe(IRecipeLayoutBuilder builder, SPSRecipeViewerRecipe recipe, IFocusGroup focusGroup) {
         initChemical(builder, RecipeIngredientRole.INPUT, input, recipe.input().display());
         initChemical(builder, RecipeIngredientRole.OUTPUT, output, recipe.outputDisplay());
-    }
-
-    @Nullable
-    @Override
-    public Identifier getIdentifier(SPSRecipeViewerRecipe recipe) {
-        return recipe.id();
     }
 
     @Override
