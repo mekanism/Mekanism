@@ -6,8 +6,7 @@
     "fluid": "mekanism:nutritional_paste",
     "textures": {
       "base": "minecraft:item/bucket",
-      "fluid": "neoforge:item/mask/bucket_fluid",
-      "particle": "minecraft:item/bucket"
+      "fluid": "neoforge:item/mask/bucket_fluid"
     }
   }
 }

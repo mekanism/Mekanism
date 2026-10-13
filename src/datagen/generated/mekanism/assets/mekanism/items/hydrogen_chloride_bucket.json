@@ -6,8 +6,7 @@
     "fluid": "mekanism:hydrogen_chloride",
     "textures": {
       "base": "minecraft:item/bucket",
-      "fluid": "neoforge:item/mask/bucket_fluid",
-      "particle": "minecraft:item/bucket"
+      "fluid": "neoforge:item/mask/bucket_fluid"
     }
   }
 }

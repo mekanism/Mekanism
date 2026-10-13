@@ -32,15 +32,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.neoforged.neoforge.client.model.item.DynamicFluidContainerModel;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public abstract class BaseModelProvider extends ModelProvider {
 
     private static final DynamicFluidContainerModel.Textures DEFAULT_BUCKET = new DynamicFluidContainerModel.Textures(
-          Optional.of(new Material(Identifier.parse("minecraft:item/bucket"))),
-          Optional.of(new Material(Identifier.parse("minecraft:item/bucket"))),
-          Optional.of(new Material(Identifier.parse("neoforge:item/mask/bucket_fluid"))),
-          Optional.empty()// Neo bug: cover doesn't work. Optional.of(new Material(Identifier.parse("neoforge:item/mask/bucket_fluid_cover")))
+          Optional.empty(),//Let it use the fluid texture as the particle
+          Optional.of(new Material(Identifier.withDefaultNamespace("item/bucket"))),
+          Optional.of(new Material(Identifier.fromNamespaceAndPath(NeoForgeMod.MOD_ID, "item/mask/bucket_fluid"))),
+          Optional.empty()
     );
     protected final ResourceManager clientResources;
     /// Blocks to ignore for validation of everything generated (i.e. a manual blockstate exists in the normal source set)

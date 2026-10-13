@@ -78,7 +78,7 @@ public class BinExtractRecipe extends BinRecipe {
         for (int i = 0; i < slots; ++i) {
             ItemStack stackInSlot = inv.getItem(i);
             if (stackInSlot.getItem() instanceof ItemBlockBin) {
-                ItemAccess binAccess = ItemAccess.forStack(stackInSlot.copy());
+                ItemAccess binAccess = ItemAccessUtils.sideEffectFreeAccess(stackInSlot, stackInSlot.count());
                 ComponentBackedBinInventorySlot slot = convertToSlot(binAccess);
                 LargeResourceStack<ItemResource> stack = slot.asStack();
                 if (!stack.isEmpty()) {
