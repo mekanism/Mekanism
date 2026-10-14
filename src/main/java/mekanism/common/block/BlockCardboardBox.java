@@ -2,15 +2,16 @@ package mekanism.common.block;
 
 import java.util.Optional;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
-import mekanism.common.component.BlockData;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateStorage;
+import mekanism.common.component.BlockData;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityCardboardBox;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,8 +24,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
+import net.neoforged.neoforge.common.CommonHooks;
 import org.jspecify.annotations.Nullable;
 
 public class BlockCardboardBox extends BlockMekanism implements IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
@@ -61,12 +61,10 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
         if (world.mayInteract(player, pos)) {
             //If they are then check if they can "break" the cardboard block that is in that spot
             //Note: We call this on both the client and the server
-            if (!NeoForge.EVENT_BUS.post(new BreakBlockEvent(world, pos, state, player)).isCanceled()) {
-                //If they can then we need to see if they are allowed to "place" the unboxed block in the given position
-                //TODO: Once forge fixes https://github.com/MinecraftForge/MinecraftForge/issues/7609 use block snapshots
-                // and fire a place event to see if the player is able to "place" the cardboard box
-                return true;
-            }
+            //If they can then we need to see if they are allowed to "place" the unboxed block in the given position
+            //TODO: Once forge fixes https://github.com/MinecraftForge/MinecraftForge/issues/7609 use block snapshots
+            // and fire a place event to see if the player is able to "place" the cardboard box
+            return !CommonHooks.fireBlockBreak(world, MekanismUtils.getGameType(player), player, pos, state).isCanceled();
         }
         return false;
     }

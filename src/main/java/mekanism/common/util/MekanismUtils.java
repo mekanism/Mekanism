@@ -72,6 +72,7 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.item.slot.SlotCollection;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -525,6 +526,15 @@ public final class MekanismUtils {
         return !player.isCreative() && !player.isSpectator();
     }
 
+    /// {@return the game type of the given player, or [GameType#SURVIVAL] if the player doesn't have a game type set}
+    public static GameType getGameType(Player player) {
+        GameType gameType = player.gameMode();
+        if (gameType == null) {
+            return GameType.SURVIVAL;
+        }
+        return gameType;
+    }
+
     /// Helper to read the parameter names from the format saved by our annotation processor param name mapper.
     public static List<String> getParameterNames(@Nullable JsonObject classMethods, String method, String signature) {
         if (classMethods != null) {
@@ -627,8 +637,9 @@ public final class MekanismUtils {
                     // block hardness values in a modded context
                     continue;
                 }
-                //TODO - 26.3: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
-                BreakBlockEvent event = CommonHooks.fireBlockBreak(world, player.gameMode.getGameModeForPlayer(), player, foundPos, targetState);
+                //Note: This only gets fired on the server, so technically it may redundantly sync the cancellation to the client
+                // but it doesn't really matter if the client just thinks the block is what it already was
+                BreakBlockEvent event = CommonHooks.fireBlockBreak(world, player.gameMode(), player, foundPos, targetState);
                 if (event.isCanceled()) {
                     //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
                     continue;

@@ -352,8 +352,9 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     private void withFakePlayer(ServerLevel level, double x, double y, double z, BlockPos hitPos, BlockState hitState, Direction hitSide, TransactionContext transaction) {
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, x, y, z);
         dummy.setEmulatingData(this);//pretend to be the owner
-        //TODO - 26.3: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
         BreakBlockEvent event = new BreakBlockEvent(level, hitPos, hitState, dummy);
+        //Note: We only fire this on the server, so it doesn't matter if the client is marked for notification or not, as the client doesn't know the block was even
+        // trying to be broken
         if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
             if (hitState.getBlock() instanceof TntBlock && hitState.isFlammable(level, hitPos, hitSide)) {
                 //Convert TNT that can be lit on fire into a tnt entity

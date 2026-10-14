@@ -46,13 +46,12 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import org.jspecify.annotations.Nullable;
 
 public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
@@ -152,14 +151,14 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         Direction hitSide = blockRayTrace.getDirection();
         BlockState hitState = level().getBlockState(hitPos);
         boolean hitFluid = !hitState.getFluidState().isEmpty();
-        if (!level().isClientSide() && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
+        if (MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
             FlamethrowerMode mode = getData(MekanismAttachmentTypes.FLAMETHROWER_MODE);
             if (mode == FlamethrowerMode.HEAT) {
                 Entity owner = getOwner();
                 if (owner instanceof Player player) {
                     smeltBlock(player, hitState, hitPos, hitSide);
                 }
-            } else if (mode == FlamethrowerMode.INFERNO) {
+            } else if (mode == FlamethrowerMode.INFERNO && !level().isClientSide()) {
                 Entity owner = getOwner();
                 BlockPos sidePos = hitPos.relative(hitSide);
                 UseOnContext igniterContext = new UseOnContext(level(), owner instanceof Player player ? player : null,
@@ -238,29 +237,29 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         if (stack.isEmpty()) {
             return;
         }
-        SingleRecipeInput input = new SingleRecipeInput(stack);
-        Optional<RecipeHolder<SmeltingRecipe>> recipe;
-        try {
-            recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, input, level());
-        } catch (Exception e) {
+        Level level = level();
+        if (CommonHooks.fireBlockBreak(level, MekanismUtils.getGameType(shooter), shooter, blockPos, hitState).isCanceled()) {
+            //We can't break the block exit
             return;
         }
-        if (recipe.isPresent()) {
-            //TODO - 26.3: Do we need to be firing any of the place methods on the client side now that we also are firing this event on the client side?
-            if (NeoForge.EVENT_BUS.post(new BreakBlockEvent(level(), blockPos, hitState, shooter)).isCanceled()) {
-                //We can't break the block exit
+        if (!level.isClientSide()) {
+            SingleRecipeInput input = new SingleRecipeInput(stack);
+            Optional<RecipeHolder<SmeltingRecipe>> recipe;
+            try {
+                recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, input, level);
+            } catch (Exception e) {
                 return;
             }
-            if (!level().isClientSide()) {
+            if (recipe.isPresent()) {
                 ItemStack result = recipe.get().value().assemble(input);
                 if (!(result.getItem() instanceof BlockItem) || !tryPlace(shooter, blockPos, hitSide, Block.byItem(result.getItem()).defaultBlockState())) {
-                    level().removeBlock(blockPos, false);
-                    ItemEntity item = new ItemEntity(level(), blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, result.copy());
+                    level.removeBlock(blockPos, false);
+                    ItemEntity item = new ItemEntity(level, blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, result.copy());
                     item.setDeltaMovement(0, 0, 0);
-                    level().addFreshEntity(item);
+                    level.addFreshEntity(item);
                 }
-                level().levelEvent(LevelEvent.PARTICLES_AND_SOUND_DESTROY_BLOCK, blockPos, Block.getId(hitState));
-                spawnParticlesAt((ServerLevel) level(), blockPos);
+                level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_DESTROY_BLOCK, blockPos, Block.getId(hitState));
+                spawnParticlesAt((ServerLevel) level, blockPos);
             }
         }
     }

@@ -10,6 +10,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityCardboardBox;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -26,9 +27,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.util.BlockRelocability;
-import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 
 public class ItemBlockCardboardBox extends BlockItem {
 
@@ -41,12 +41,10 @@ public class ItemBlockCardboardBox extends BlockItem {
         if (world.mayInteract(player, pos) && player.mayUseItemAt(pos.relative(sideClicked), sideClicked, stack)) {
             //If they are then check if they can "break" the block that is in that spot
             //Note: This gets fired on both the client and the server
-            if (!NeoForge.EVENT_BUS.post(new BreakBlockEvent(world, pos, state, player)).isCanceled()) {
-                //If they can then we need to see if they are allowed to "place" the cardboard box in the given position
-                //TODO: Once forge fixes https://github.com/MinecraftForge/MinecraftForge/issues/7609 use block snapshots
-                // and fire a place event to see if the player is able to "place" the cardboard box
-                return true;
-            }
+            //If they can then we need to see if they are allowed to "place" the cardboard box in the given position
+            //TODO: Once forge fixes https://github.com/MinecraftForge/MinecraftForge/issues/7609 use block snapshots
+            // and fire a place event to see if the player is able to "place" the cardboard box
+            return !CommonHooks.fireBlockBreak(world, MekanismUtils.getGameType(player), player, pos, state).isCanceled();
         }
         return false;
     }
