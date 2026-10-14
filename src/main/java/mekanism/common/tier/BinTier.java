@@ -9,7 +9,6 @@ import java.util.function.IntFunction;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.value.CachedLongValue;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -76,7 +75,7 @@ public enum BinTier implements IStorageTier, TooltipProvider {
 
     @Override
     public void addToTooltip(TooltipContext context, Consumer<Component> builder, TooltipFlag flag, DataComponentGetter components) {
-        StorageUtils.addCapacity(builder, this, MekanismLang.CAPACITY_ITEMS);
+        addCapacityTooltip(builder, MekanismLang.CAPACITY_ITEMS);
     }
 
     /// ONLY CALL THIS FROM TierConfig. It is used to give the BinTier a reference to the actual config value object

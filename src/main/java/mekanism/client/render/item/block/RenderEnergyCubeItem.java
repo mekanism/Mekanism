@@ -12,6 +12,7 @@ import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.component.component.AttachedSideConfig;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
@@ -20,7 +21,6 @@ import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube.CubeSideState;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.IPersistentConfigInfo;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -112,7 +112,7 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
         }
 
         float ticks = mc().gameRenderer.gameRenderState().levelRenderState.gameTime + MekanismRenderer.getPartialTick();
-        float energyRatio = (float) StorageUtils.getEnergyRatio(stack);
+        float energyRatio = (float) ContainerType.ENERGY.getRatio(stack);
 
         return new CubeState(
               energyRatio > 0 ? tier.getBaseTier().getPackedColor(ARGB.as8BitChannel(energyRatio)) : null,

@@ -20,7 +20,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.util.Unit;
 import net.minecraft.util.Util;
@@ -69,12 +68,12 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip implements ICustomCrea
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return StorageUtils.isEnergyBarVisible(stack);
+        return ContainerType.ENERGY.isBarVisible(stack);
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return StorageUtils.getEnergyBarWidth(stack);
+        return ContainerType.ENERGY.getBarWidth(stack);
     }
 
     @Override

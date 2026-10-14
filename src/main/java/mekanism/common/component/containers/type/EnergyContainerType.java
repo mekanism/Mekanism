@@ -10,7 +10,9 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -87,7 +89,7 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
     ///
     /// @return Stack representation of the item access once it has been filled with energy.
     public ItemStack getFilledVariant(ItemAccess itemAccess, @Nullable TransactionContext transaction) {
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
+        EnergyHandler energyHandler = capability.getCapability(itemAccess);
         IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(energyHandler);
         if (energyContainer != null) {
             //Note: Just directly interact with the containers as we want to change the entire access and don't care about splitting between multiple items
@@ -130,11 +132,44 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
         return MathUtils.divideToLevel(container.getAmountAsLong(), container.getCapacityAsLong());
     }
 
+    public double getRatio(TypedInstance<Item> stack) {
+        return getRatio(ItemAccessUtils.sideEffectFreeAccess(stack));
+    }
+
+    public double getRatio(ItemAccess itemAccess) {
+        EnergyHandler handler = capability.getCapability(itemAccess);
+        return handler == null ? 0 : divideToLevel(handler);
+    }
+
     public long getOrZero(ItemAccess itemAccess) {
         return getOrZero(itemAccess.getResource());
     }
 
     public long getOrZero(DataComponentGetter componentGetter) {
         return componentGetter.getOrDefault(getComponentType(), 0L);
+    }
+
+    public void mergeContainers(@Nullable IEnergyContainer container, @Nullable IEnergyContainer mergeContainer, TransactionContext transaction) {
+        if (container == null || mergeContainer == null) {
+            //Nothing to do here
+            //TODO: Do we want to error if they are different nullabilities?
+            return;
+        }
+        container.setEnergy(MathUtils.addClamped(container.getAmountAsLong(), mergeContainer.getAmountAsLong()), transaction);
+    }
+
+    public boolean isBarVisible(ItemStack stack) {
+        if (StorageUtils.shouldDisplayBar(stack)) {
+            //We also don't display the bar if there is nothing stored in any of the containers
+            EnergyHandler energyHandler = capability.getQueryOnlyCapability(stack);
+            if (energyHandler != null) {
+                return energyHandler.getAmountAsLong() > 0;
+            }
+        }
+        return false;
+    }
+
+    public int getBarWidth(ItemStack stack) {
+        return StorageUtils.getBarWidth(getRatio(stack));
     }
 }

@@ -21,7 +21,6 @@ import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.component.containers.type.IListContainerType;
 import mekanism.common.component.containers.type.ISingleContainerType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
@@ -72,16 +71,11 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         }
 
         try (Transaction transaction = Transaction.openRoot()) {
-            // Items
             ContainerType.ITEM.merge(getInventorySlots(), mergeCache.getInventorySlots(), rejectContents.rejectedItems, transaction);
-            // Fluid
             ContainerType.FLUID.merge(getFluidTanks(), mergeCache.getFluidTanks(), rejectContents.rejectedFluids, transaction);
-            // Chemical
             ContainerType.CHEMICAL.merge(getChemicalTanks(), mergeCache.getChemicalTanks(), rejectContents.rejectedChemicals, transaction);
-            // Energy
-            StorageUtils.mergeEnergyContainers(getEnergyContainer(), mergeCache.getEnergyContainer(), transaction);
-            // Heat
-            StorageUtils.mergeHeatCapacitors(getHeatCapacitor(), mergeCache.getHeatCapacitor(), transaction);
+            ContainerType.ENERGY.mergeContainers(getEnergyContainer(), mergeCache.getEnergyContainer(), transaction);
+            ContainerType.HEAT.mergeCapacitors(getHeatCapacitor(), mergeCache.getHeatCapacitor(), transaction);
             transaction.commit();
         }
     }

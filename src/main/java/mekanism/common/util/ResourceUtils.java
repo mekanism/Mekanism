@@ -8,6 +8,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.common.content.network.distribution.ResourceHandlerTarget;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay.ItemStackSlotDisplay;
@@ -15,6 +16,7 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -27,6 +29,18 @@ public final class ResourceUtils {
 
     public static SlotDisplay asSlotDisplay(ItemResource resource) {
         return resource.isEmpty() ? SlotDisplay.Empty.INSTANCE : new ItemStackSlotDisplay(new ItemStackTemplate(resource.typeHolder(), resource.getComponentsPatch()));
+    }
+
+    public static <TYPE, RESOURCE extends RegisteredResource<TYPE>> long getContainedResource(@Nullable ResourceHandler<RESOURCE> handler, ResourceKey<TYPE> type) {
+        if (handler != null) {
+            for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
+                RESOURCE resource = handler.getResource(tank);
+                if (resource.is(type)) {
+                    return handler.getAmountAsLong(tank);
+                }
+            }
+        }
+        return 0;
     }
 
     /// Gets the current type of resource stored in the container, or if it is empty, gets the first resource that can be extracted from the given handler that is valid

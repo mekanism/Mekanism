@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.Item;
@@ -18,12 +17,12 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return StorageUtils.isEnergyBarVisible(stack);
+        return ContainerType.ENERGY.isBarVisible(stack);
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return StorageUtils.getEnergyBarWidth(stack);
+        return ContainerType.ENERGY.getBarWidth(stack);
     }
 
     @Override

@@ -46,4 +46,13 @@ public final class HeatContainerType extends AbstractContainerType<IHeatCapacito
     public void copy(IHeatCapacitor from, IHeatCapacitor to, @Nullable TransactionContext transaction) {
         to.copyContents(from, transaction);
     }
+
+    public void mergeCapacitors(@Nullable IHeatCapacitor capacitor, @Nullable IHeatCapacitor mergeCapacitor, TransactionContext transaction) {
+        if (capacitor == null || mergeCapacitor == null) {
+            //Nothing to do here
+            //TODO: Do we want to error if they are different nullabilities?
+            return;
+        }
+        capacitor.setHeatAndCapacity(capacitor.getHeat() + mergeCapacitor.getHeat(), capacitor.getHeatCapacity() + mergeCapacitor.getHeatCapacity(), transaction);
+    }
 }

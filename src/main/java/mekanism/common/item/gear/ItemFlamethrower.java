@@ -27,7 +27,6 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
@@ -143,12 +142,12 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return StorageUtils.isBarVisible(stack);
+        return ContainerType.CHEMICAL.isBarVisible(stack);
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return StorageUtils.getBarWidth(stack);
+        return ContainerType.CHEMICAL.getBarWidth(stack);
     }
 
     @Override

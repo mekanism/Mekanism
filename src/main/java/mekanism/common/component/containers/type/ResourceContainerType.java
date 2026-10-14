@@ -277,7 +277,9 @@ public abstract class ResourceContainerType<RESOURCE extends Resource, CONTAINER
     ///
     /// @implNote `toAdd` does not get modified by this method.
     public void merge(List<CONTAINER> orig, List<CONTAINER> toAdd, Object2LongMap<RESOURCE> rejects, TransactionContext transaction) {
-        StorageUtils.validateSizeMatches(orig, toAdd, "container");
+        if (orig.size() != toAdd.size()) {
+            throw new IllegalArgumentException("Mismatched container count, orig: " + orig.size() + ", toAdd: " + toAdd.size());
+        }
         for (int container = 0, size = toAdd.size(); container < size; container++) {
             CONTAINER toAddContainer = toAdd.get(container);
             if (!toAddContainer.isEmpty()) {
@@ -436,5 +438,37 @@ public abstract class ResourceContainerType<RESOURCE extends Resource, CONTAINER
     /// Gets the color that represents the given resource for use in "durability" bars.
     public int getRGBDurabilityForDisplay(RESOURCE resource) {
         return CommonColors.WHITE;
+    }
+
+    public boolean isBarVisible(ItemStack stack) {
+        if (StorageUtils.shouldDisplayBar(stack)) {
+            //We also don't display the bar if there is nothing stored in any of the containers
+            ResourceHandler<RESOURCE> handler = capability.getQueryOnlyCapability(stack);
+            return handler != null && !ResourceHandlerUtil.isEmpty(handler);
+        }
+        return false;
+    }
+
+    public double getBarRatio(ItemAccess itemAccess) {
+        ResourceHandler<RESOURCE> handler = capability.getCapability(itemAccess);
+        if (handler == null) {
+            return 0;
+        }
+        double bestRatio = 0;
+        for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
+            RESOURCE currentType = handler.getResource(tank);
+            long stored = handler.getAmountAsLong(tank);
+            long capacity = handler.getCapacityAsLong(tank, currentType);
+            bestRatio = Math.max(bestRatio, MathUtils.divideToLevel(stored, capacity));
+        }
+        return bestRatio;
+    }
+
+    public int getBarWidth(ItemStack stack) {
+        return getBarWidth(ItemAccessUtils.sideEffectFreeAccess(stack));
+    }
+
+    public int getBarWidth(ItemAccess itemAccess) {
+        return StorageUtils.getBarWidth(getBarRatio(itemAccess));
     }
 }

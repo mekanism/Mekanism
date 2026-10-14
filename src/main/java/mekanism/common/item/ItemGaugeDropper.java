@@ -1,6 +1,8 @@
 package mekanism.common.item;
 
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.component.containers.chemical.ComponentBackedChemicalTank;
 import mekanism.common.component.containers.creator.IBasicContainerCreator;
@@ -17,6 +19,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
@@ -37,12 +41,23 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return StorageUtils.isBarVisible(stack);
+        if (StorageUtils.shouldDisplayBar(stack)) {
+            //We also don't display the bar if there is nothing stored in any of the containers
+            ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
+            if (handler != null && !ResourceHandlerUtil.isEmpty(handler)) {
+                return true;
+            }
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
+            return fluidHandler != null && !ResourceHandlerUtil.isEmpty(fluidHandler);
+        }
+        return false;
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return StorageUtils.getBarWidth(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+        return Math.max(ContainerType.CHEMICAL.getBarWidth(itemAccess), ContainerType.FLUID.getBarWidth(itemAccess));
     }
 
     @Override

@@ -14,7 +14,6 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,12 +37,12 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip {
     }
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return StorageUtils.isBarVisible(stack);
+        return ContainerType.CHEMICAL.isBarVisible(stack);
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return StorageUtils.getBarWidth(stack);
+        return ContainerType.CHEMICAL.getBarWidth(stack);
     }
 
     @Override

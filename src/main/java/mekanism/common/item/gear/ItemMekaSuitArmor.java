@@ -46,7 +46,6 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ChemicalUtils;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.RegistryAccess;
@@ -152,12 +151,12 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return StorageUtils.isEnergyBarVisible(stack);
+        return ContainerType.ENERGY.isBarVisible(stack);
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return StorageUtils.getEnergyBarWidth(stack);
+        return ContainerType.ENERGY.getBarWidth(stack);
     }
 
     @Override

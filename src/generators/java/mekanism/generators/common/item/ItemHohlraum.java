@@ -4,7 +4,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.item.interfaces.IChemicalItem;
-import mekanism.common.util.StorageUtils;
 import mekanism.generators.common.registries.GeneratorsDataComponents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Unit;
@@ -24,12 +23,12 @@ public class ItemHohlraum extends Item implements IChemicalItem {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return StorageUtils.isBarVisible(stack);
+        return ContainerType.CHEMICAL.isBarVisible(stack);
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return StorageUtils.getBarWidth(stack);
+        return ContainerType.CHEMICAL.getBarWidth(stack);
     }
 
     @Override

@@ -9,7 +9,6 @@ import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
@@ -38,12 +37,12 @@ public class ItemCanteen extends Item implements IFluidItem {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return StorageUtils.isBarVisible(stack);
+        return ContainerType.FLUID.isBarVisible(stack);
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return StorageUtils.getBarWidth(stack);
+        return ContainerType.FLUID.getBarWidth(stack);
     }
 
     @Override

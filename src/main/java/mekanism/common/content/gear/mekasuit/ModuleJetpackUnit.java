@@ -23,7 +23,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.StorageUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
@@ -57,7 +57,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
             if (chemicalHandler == null) {
                 hudElementAdder.accept(IClientModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), 1));
             } else {
-                long stored = StorageUtils.getContainedResource(chemicalHandler, ChemicalIds.HYDROGEN);
+                long stored = ResourceUtils.getContainedResource(chemicalHandler, ChemicalIds.HYDROGEN);
                 double ratio = MathUtils.divideToLevel(stored, chemicalHandler.getCapacityAsLong(0, chemicalHandler.getResource(0)));
                 hudElementAdder.accept(IClientModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), ratio));
             }

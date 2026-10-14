@@ -15,7 +15,6 @@ import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
@@ -66,12 +65,12 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return StorageUtils.isEnergyBarVisible(stack);
+        return ContainerType.ENERGY.isBarVisible(stack);
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return StorageUtils.getEnergyBarWidth(stack);
+        return ContainerType.ENERGY.getBarWidth(stack);
     }
 
     @Override

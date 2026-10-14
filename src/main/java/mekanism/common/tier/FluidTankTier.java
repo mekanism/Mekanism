@@ -10,7 +10,6 @@ import mekanism.api.tier.BaseTier;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -84,7 +83,7 @@ public enum FluidTankTier implements IStorageTier, TooltipProvider {//TODO - 26.
 
     @Override
     public void addToTooltip(TooltipContext context, Consumer<Component> builder, TooltipFlag flag, DataComponentGetter components) {
-        StorageUtils.addCapacity(builder, this, MekanismLang.CAPACITY_MB);
+        addCapacityTooltip(builder, MekanismLang.CAPACITY_MB);
     }
 
     /// ONLY CALL THIS FROM TierConfig. It is used to give the FluidTankTier a reference to the actual config value object

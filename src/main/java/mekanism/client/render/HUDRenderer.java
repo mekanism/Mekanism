@@ -9,9 +9,9 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.client.pip.CompassPiP;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -120,7 +120,7 @@ public class HUDRenderer {
     private int renderEnergyIcon(Player player, Font font, GuiGraphicsExtractor guiGraphics, int posX, Identifier icon, EquipmentSlot slot, Predicate<TypedInstance<Item>> showPercent) {
         ItemAccess itemAccess = ItemAccessUtils.forEntitySlot(player, slot);
         if (showPercent.test(itemAccess.getResource())) {
-            renderHUDElement(font, guiGraphics, posX, 0, IClientModuleHelper.INSTANCE.hudElementPercent(icon, StorageUtils.getEnergyRatio(itemAccess)), false);
+            renderHUDElement(font, guiGraphics, posX, 0, IClientModuleHelper.INSTANCE.hudElementPercent(icon, ContainerType.ENERGY.getRatio(itemAccess)), false);
             return 48;
         }
         return 0;
