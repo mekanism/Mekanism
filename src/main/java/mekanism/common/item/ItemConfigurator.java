@@ -151,12 +151,10 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                 if (tile instanceof TileEntityMekanism inv && inv.hasInventory()) {
                     if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                         return InteractionResult.FAIL;
-                    }
-                    boolean creative = player.isCreative();
-                    if (tile instanceof TileEntityBin bin && bin.getTier().isCreative()) {
+                    } else if (tile instanceof TileEntityBin bin && bin.getTier().isCreative()) {
                         //If the tile is a creative bin only allow clearing it if the player is in creative
                         // and don't bother popping the stack out
-                        if (creative) {
+                        if (player.isCreative()) {
                             ContainerType.ITEM.clearContents(bin.getBinSlot(), null);
                             return InteractionResult.SUCCESS;
                         }

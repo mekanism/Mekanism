@@ -250,7 +250,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                 energyHandler.extract(energyRequired, transaction);
                 //AOE/vein mining handling
-                if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative()) {
+                if (!world.isClientSide() && entity instanceof ServerPlayer player && MekanismUtils.isPlayingMode(player)) {
                     boolean hasEnergyToVeinMine;
                     try (Transaction simulation = Transaction.open(transaction)) {
                         hasEnergyToVeinMine = energyHandler.extract(energyRequired, simulation) == energyRequired;
@@ -390,7 +390,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                         }
                         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
                         try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
-                            if (!player.isCreative()) {
+                            if (MekanismUtils.isPlayingMode(player)) {
                                 EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(itemAccess));
                                 if (energyHandler == null) {
                                     return InteractionResult.PASS;

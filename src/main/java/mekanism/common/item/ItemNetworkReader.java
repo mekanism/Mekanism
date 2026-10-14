@@ -57,7 +57,7 @@ public class ItemNetworkReader extends ItemEnergized {
             BlockPos pos = context.getClickedPos();
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile != null) {
-                if (!player.isCreative()) {
+                if (MekanismUtils.isPlayingMode(player)) {
                     int energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
                     if (energyPerUse > 0) {
                         EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccess.forStack(context.getItemInHand())));

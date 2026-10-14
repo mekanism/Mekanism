@@ -35,7 +35,7 @@ public class ItemAccessUtils {
 
     /// Similar to [ItemAccess#forPlayerInteraction(Player, InteractionHand)], except does not act as infinite for cases when the player is in creative.
     public static ItemAccess playerHandAccess(Player player, InteractionHand hand, boolean sideEffectFreeCreative) {
-        if (sideEffectFreeCreative && player.isCreative()) {
+        if (sideEffectFreeCreative && player.hasInfiniteMaterials()) {
             return sideEffectFreeAccess(player.getItemInHand(hand));
         }
         return ItemAccess.forPlayerSlot(player, switch (hand) {

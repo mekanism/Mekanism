@@ -8,7 +8,6 @@ import mekanism.common.item.interfaces.IFluidItem;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
@@ -95,9 +94,7 @@ public class ItemCanteen extends Item implements IFluidItem {
 
     @Override
     public InteractionResult use(Level worldIn, Player player, InteractionHand hand) {
-        if (!MekanismUtils.isPlayingMode(player)) {
-            return InteractionResult.PASS;
-        } else if (player.canEat(false)) {
+        if (player.canEat(false)) {
             ResourceHandler<FluidResource> fluidHandler = AutomatedResourceHandler.manual(Capabilities.FLUID.getCapability(ItemAccessUtils.playerHandAccess(player, hand)));
             if (fluidHandler != null) {
                 //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method

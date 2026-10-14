@@ -154,7 +154,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                 energyHandler.extract(energyRequired, transaction);
                 //Vein mining handling
-                if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative() && getMode(stack) == DisassemblerMode.VEIN) {
+                if (!world.isClientSide() && entity instanceof ServerPlayer player && MekanismUtils.isPlayingMode(player) && getMode(stack) == DisassemblerMode.VEIN) {
                     boolean hasEnergyToVeinMine;
                     try (Transaction simulation = Transaction.open(transaction)) {
                         hasEnergyToVeinMine = energyHandler.extract(energyRequired, simulation) == energyRequired;

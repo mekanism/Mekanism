@@ -30,7 +30,7 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
 
     @Override
     public InteractionResult onRightClick(Level level, Player player) {
-        if (!level.isClientSide() && player.isCreative()) {
+        if (!level.isClientSide() && player.hasInfiniteMaterials()) {
             FusionReactorMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
                 try (Transaction transaction = TransactionHelper.openTransactionSafe()) {

@@ -158,7 +158,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip implements IAttachmentB
                 //Check that mirrors BucketItem#use where it validates if the player may use the item at the given position
                 return InteractionResult.FAIL;
             }
-            if (player.isCreative()) {
+            if (player.hasInfiniteMaterials()) {
                 //Update the item access to take whether the player is in creative into account
                 itemAccess = ItemAccess.forInfiniteMaterials(player, ItemAccessUtils.asStack(itemAccess));
             }

@@ -75,7 +75,7 @@ public class ClientTickHandler {
     }
 
     public static boolean isJetpackInUse(LocalPlayer player, @Nullable ItemAccess jetpack) {
-        if (!player.isSpectator() && jetpack != null) {
+        if (jetpack != null && !player.isSpectator()) {
             ItemResource jetpackType = jetpack.getResource();
             if (jetpackType.isEmpty()) {
                 return false;

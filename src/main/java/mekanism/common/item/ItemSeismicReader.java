@@ -40,7 +40,7 @@ public class ItemSeismicReader extends ItemEnergized {
             return InteractionResult.SUCCESS_SERVER;
         }
         ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
-        if (!player.isCreative()) {
+        if (MekanismUtils.isPlayingMode(player)) {
             EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(itemAccess));
             if (energyHandler == null) {
                 return needsEnergy(player);

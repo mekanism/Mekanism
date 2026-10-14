@@ -14,6 +14,7 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.ItemAccessUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -62,7 +63,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                 if (teleporter != null) {
                     int energyCost;
                     try (Transaction transaction = Transaction.openRoot()) {
-                        if (!player.isCreative()) {
+                        if (MekanismUtils.isPlayingMode(player)) {
                             energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
                             EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccessUtils.playerHandAccess(player, currentHand)));
                             if (energyHandler == null || energyHandler.extract(energyCost, transaction) < energyCost) {

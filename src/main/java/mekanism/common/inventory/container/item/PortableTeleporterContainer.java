@@ -10,6 +10,7 @@ import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityTeleporter.TeleporterStatus;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -63,7 +64,7 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
                 if (freq.getActiveCoords().isEmpty()) {
                     return TeleporterStatus.NO_DESTINATION;
                 }
-                if (!inv.player.isCreative()) {
+                if (MekanismUtils.isPlayingMode(inv.player)) {
                     EnergyHandler energyHandler = getEnergyHandler();
                     if (energyHandler == null) {
                         return TeleporterStatus.NOT_ENOUGH_ENERGY;

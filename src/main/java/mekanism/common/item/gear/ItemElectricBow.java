@@ -14,6 +14,7 @@ import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
@@ -50,7 +51,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
 
     @Override
     public boolean releaseUsing(ItemStack bow, Level world, LivingEntity entity, int timeLeft) {
-        if (!(entity instanceof Player player) || player.isCreative()) {
+        if (!(entity instanceof Player player) || !MekanismUtils.isPlayingMode(player)) {
             return super.releaseUsing(bow, world, entity, timeLeft);
         }
         EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccess.forStack(bow)));

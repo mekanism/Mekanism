@@ -522,8 +522,8 @@ public final class MekanismUtils {
     ///
     /// @return true if the player is neither in creative mode, nor in spectator mode.
     public static boolean isPlayingMode(Player player) {
-        //TODO - 26.3: Look at calls to Player#isCreative, and see what should potentially be going through here
-        return !player.isCreative() && !player.isSpectator();
+        GameType gameType = player.gameMode();
+        return gameType != null && gameType.isSurvival();
     }
 
     /// {@return the game type of the given player, or [GameType#SURVIVAL] if the player doesn't have a game type set}

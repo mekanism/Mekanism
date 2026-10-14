@@ -16,6 +16,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -172,7 +173,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         Reference<BlockTransformer> holder = context.getLevel().registryAccess().getOrThrow(transformer);
         Iterable<BlockTransformData> transforms = DataMapHooks.getAllTransformers(holder);
         Player player = context.getPlayer();
-        if (player != null && player.isCreative()) {
+        if (player != null && !MekanismUtils.isPlayingMode(player)) {
             energyUsage = 0;
         }
         Level level = context.getLevel();

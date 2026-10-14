@@ -153,6 +153,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     private boolean canTeleportEntity(Entity entity, @Nullable Level destinationLevel) {
+        //TODO - 26.3: Allow spectators to interact with the portal to teleport similar to what they can now do?
         if (entity.isSpectator() || !entity.canUsePortal(false) || entity instanceof PartEntity || entity.typeHolder().is(Tags.EntityTypes.TELEPORTING_NOT_SUPPORTED)) {
             return false;
         } else if (destinationLevel != null && !entity.canTeleport(entity.level(), destinationLevel)) {
