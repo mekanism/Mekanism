@@ -149,7 +149,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     }
 
     @Override
-    public Object getNetworkReaderCapacity() {
+    public Long getNetworkReaderCapacity() {
         return getCapacity();
     }
 

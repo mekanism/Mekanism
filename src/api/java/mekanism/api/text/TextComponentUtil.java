@@ -3,8 +3,6 @@ package mekanism.api.text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.Chemical;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -16,13 +14,11 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
@@ -79,8 +75,6 @@ public class TextComponentUtil {
                 case ClickEvent event -> cachedStyle = cachedStyle.withClickEvent(event);
                 case HoverEvent event -> cachedStyle = cachedStyle.withHoverEvent(event);
                 case Block block -> current = block.getName().copy();
-                case Item item -> current = logLiteralItemUsage(item);
-                case Chemical chemical -> current = logLiteralChemicalUsage(chemical);
                 case ItemStack stack -> current = stack.getHoverName().copy();
                 case ItemStackTemplate template -> current = template.create().getHoverName().copy();
                 case ItemResource resource -> current = resource.getHoverName().copy();
@@ -138,6 +132,10 @@ public class TextComponentUtil {
     ///
     /// @return String Text Component.
     public static MutableComponent getString(String component) {
+        if (component.isEmpty()) {
+            //Short circuit to creating a component that uses a constant contents instance (PlainTextContents.EMPTY)
+            return Component.empty();
+        }
         return Component.literal(cleanString(component));
     }
 
@@ -209,10 +207,6 @@ public class TextComponentUtil {
                 current = translate(hasTranslationKey.getTranslationKey());
             } else if (component instanceof Block block) {
                 current = block.getName().copy();
-            } else if (component instanceof Item item) {
-                current = logLiteralItemUsage(item);
-            } else if (component instanceof Chemical chemical) {
-                current = logLiteralChemicalUsage(chemical);
             } else if (component instanceof ItemStack stack) {
                 current = stack.getHoverName().copy();
             } else if (component instanceof ItemStackTemplate template) {
@@ -319,21 +313,5 @@ public class TextComponentUtil {
             case RESET -> current.isEmpty();
             default -> current.getColor() != null;
         };
-    }
-
-    //TODO - 26.3: find and remove these?
-    private static MutableComponent logLiteralItemUsage(Item item) {
-        if (!FMLEnvironment.isProduction()) {
-            MekanismAPI.logger.error("Item instance ({}) passed directly to translate method", item, new Exception());
-        }
-        return item.getName(new ItemStack(item)).copy();
-    }
-
-    //TODO - 26.3: find and remove these?
-    private static MutableComponent logLiteralChemicalUsage(Chemical chemical) {
-        if (!FMLEnvironment.isProduction()) {
-            MekanismAPI.logger.error("Chemical instance ({}) passed directly to translate method", chemical, new Exception());
-        }
-        return getString(chemical.toString());
     }
 }

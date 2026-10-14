@@ -212,7 +212,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
     public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         FREQ frequency = frequencySelector.getFrequency();
-        Object frequencyName;
+        Component frequencyName;
         Component ownerComponent;
         Object frequencySecurity;
         if (frequency == null) {

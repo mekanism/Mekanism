@@ -1,6 +1,7 @@
 package mekanism.generators.client.gui;
 
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.button.ToggleButton;
@@ -57,8 +58,8 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
         drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING.translate(EnumColor.RED, OnOff.of(tile.isActiveCooled())), 23, 20, TextAlignment.LEFT,
               titleTextColor(), this.getImageWidth() - 23, 16, false);
         drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(EnumColor.RED, tile.logicType), 0, 123, TextAlignment.CENTER, titleTextColor(), 4, false);
-        drawScrollingString(guiGraphics, MekanismLang.STATUS.translate(EnumColor.RED, tile.checkMode() ? GeneratorsLang.REACTOR_LOGIC_OUTPUTTING : MekanismLang.IDLE),
-              0, 136, TextAlignment.CENTER, titleTextColor(), 4, false);
+        ILangEntry status = tile.checkMode() ? GeneratorsLang.REACTOR_LOGIC_OUTPUTTING : MekanismLang.IDLE;
+        drawScrollingString(guiGraphics, MekanismLang.STATUS.translate(EnumColor.RED, status), 0, 136, TextAlignment.CENTER, titleTextColor(), 4, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

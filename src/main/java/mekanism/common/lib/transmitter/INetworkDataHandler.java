@@ -21,7 +21,7 @@ public interface INetworkDataHandler {
     }
 
     @Nullable
-    default Object getNetworkReaderCapacity() {
+    default Number getNetworkReaderCapacity() {
         return null;
     }
 }

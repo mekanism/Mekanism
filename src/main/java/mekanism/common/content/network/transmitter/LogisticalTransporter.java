@@ -13,6 +13,7 @@ import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -57,16 +58,19 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
         tile.markForSave();
         notifyTileChange();
         tile.sendUpdatePacket();
-        EnumColor color = getColor();
-        player.sendOverlayMessage(MekanismLang.TOGGLE_COLOR.translateColored(EnumColor.GRAY, color == null ? MekanismLang.NONE.translateColored(EnumColor.WHITE) : color.getColoredName()));
+        player.sendOverlayMessage(MekanismLang.TOGGLE_COLOR.translateColored(EnumColor.GRAY, getColorName()));
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public InteractionResult onRightClick(Level level, Player player, Direction side) {
-        EnumColor color = getColor();
-        player.sendOverlayMessage(MekanismLang.CURRENT_COLOR.translateColored(EnumColor.GRAY, color == null ? MekanismLang.NONE.translateColored(EnumColor.WHITE) : color.getColoredName()));
+        player.sendOverlayMessage(MekanismLang.CURRENT_COLOR.translateColored(EnumColor.GRAY, getColorName()));
         return super.onRightClick(level, player, side);
+    }
+
+    private Component getColorName() {
+        EnumColor color = getColor();
+        return color == null ? MekanismLang.NONE.translateColored(EnumColor.WHITE) : color.getColoredName();
     }
 
     @Override
