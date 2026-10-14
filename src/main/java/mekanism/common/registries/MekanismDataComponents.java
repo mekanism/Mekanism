@@ -97,6 +97,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -123,7 +124,11 @@ public class MekanismDataComponents {
                 .cacheEncoding()
     );
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> ATTACHED_ENERGY = DATA_COMPONENTS.registerNonNegativeLong("energy");
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> ATTACHED_ENERGY = DATA_COMPONENTS.simple("energy", builder -> builder
+          .persistent(ExtraCodecs.NON_NEGATIVE_LONG)
+          .networkSynchronized(ByteBufCodecs.VAR_LONG)
+          .ignoreSwapAnimation()
+    );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ItemResource>>> ATTACHED_ITEMS = DATA_COMPONENTS
           .registerAttachedContents("items", LargeResourceStack.ITEM_HELPER);
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<FluidResource>>> ATTACHED_FLUIDS = DATA_COMPONENTS
@@ -134,6 +139,7 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<HeatCapacitorData>> ATTACHED_HEAT = DATA_COMPONENTS.simple("heat",
           builder -> builder.persistent(HeatCapacitorData.CODEC)
                 .networkSynchronized(HeatCapacitorData.STREAM_CODEC)
+                .ignoreSwapAnimation()
                 .cacheEncoding()
     );
 

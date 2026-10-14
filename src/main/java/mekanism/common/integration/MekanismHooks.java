@@ -122,7 +122,6 @@ public final class MekanismHooks {
               //Used for drawing fluids and chemicals in various GUIs including JEI as well as similar styled things
               () -> "mekanism.client.gui.GuiUtils:drawTiledSprite",
               //MekaSuit HUD rendering (already configurable by the user)
-              () -> "mekanism.client.render.HUDRenderer:renderCompass",
               () -> "mekanism.client.render.HUDRenderer:renderHUDElement"
         );
         for (Supplier<String> method : methodBlacklist) {

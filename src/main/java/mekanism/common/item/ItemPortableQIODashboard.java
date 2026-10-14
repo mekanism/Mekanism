@@ -52,11 +52,6 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged || oldStack.getItem() != newStack.getItem();
-    }
-
-    @Override
     public InteractionResult use(Level world, Player player, InteractionHand hand) {
         return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
     }

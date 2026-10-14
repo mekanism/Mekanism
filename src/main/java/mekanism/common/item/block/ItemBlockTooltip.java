@@ -25,6 +25,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.BlockItem;
@@ -48,24 +49,9 @@ public class ItemBlockTooltip extends BlockItem implements ICapabilityAware, ICo
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        if (exposesEnergyCap()) {
-            //Ignore NBT for energized items causing re-equip animations
-            //TODO - 26.3: Only ignore the energy attachment?
-            // return slotChanged || !ItemStack.matchesIgnoringComponents(oldStack, newStack, );
-            return slotChanged || oldStack.getItem() != newStack.getItem();
-        }
-        return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
-    }
-
-    @Override
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        if (exposesEnergyCap()) {
-            //Ignore NBT for energized items causing block break reset
-            //TODO - 26.3: Only ignore the energy attachment?
-            return oldStack.getItem() != newStack.getItem();
-        }
-        return super.shouldCauseBlockBreakReset(oldStack, newStack);
+        //Ignore NBT for energized items causing block break reset
+        return !ItemStack.matchesIgnoringComponents(oldStack, newStack, DataComponentType::ignoreSwapAnimation);
     }
 
     protected Predicate<AutomationType> getEnergyCapInsertPredicate() {

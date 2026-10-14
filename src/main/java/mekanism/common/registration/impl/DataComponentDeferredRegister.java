@@ -31,7 +31,6 @@ import net.neoforged.neoforge.transfer.resource.Resource;
 
 //TODO - 26.3: Re-evaluate our usages of cacheEncoding. Neo's wiki states: cacheEncoding caches the encoding result of the Codec such that any subsequent encodes
 // uses the cached value if the component value hasn't changed. This should only be used if the component value is expected to rarely or never change.
-//TODO - 26.3: Use ignoreSwapAnimation() for some of our components, most notably probably energy storage
 public class DataComponentDeferredRegister extends MekanismDeferredRegister<DataComponentType<?>> {
 
     public DataComponentDeferredRegister(String namespace) {
@@ -59,13 +58,15 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
     public <RESOURCE extends Resource> MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<RESOURCE>>> registerAttachedContents(String name,
           LargeResourceStack.StackHelper<RESOURCE> stackHelper) {
         return simple(name, builder -> builder.persistent(
-              RecordCodecBuilder.create(instance -> instance.group(
-                    stackHelper.orEmptyCodec().listOf().fieldOf(SerializationConstants.CONTAINERS).forGetter(AttachedResources::containers)
-              ).apply(instance, AttachedResources::new))
-        ).networkSynchronized(stackHelper.streamCodec()
-              .apply(ByteBufCodecs.<RegistryFriendlyByteBuf, LargeResourceStack<RESOURCE>, List<LargeResourceStack<RESOURCE>>>collection(NonNullList::createWithCapacity))
-              .map(AttachedResources::new, AttachedResources::containers)
-        ).cacheEncoding());
+                    RecordCodecBuilder.create(instance -> instance.group(
+                          stackHelper.orEmptyCodec().listOf().fieldOf(SerializationConstants.CONTAINERS).forGetter(AttachedResources::containers)
+                    ).apply(instance, AttachedResources::new))
+              ).networkSynchronized(stackHelper.streamCodec()
+                    .apply(ByteBufCodecs.<RegistryFriendlyByteBuf, LargeResourceStack<RESOURCE>, List<LargeResourceStack<RESOURCE>>>collection(NonNullList::createWithCapacity))
+                    .map(AttachedResources::new, AttachedResources::containers)
+              ).ignoreSwapAnimation()
+              .cacheEncoding()
+        );
     }
 
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Unit>> registerUnit(String name) {

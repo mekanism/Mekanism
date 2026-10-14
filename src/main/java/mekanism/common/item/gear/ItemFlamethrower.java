@@ -67,11 +67,6 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged || oldStack.getItem() != newStack.getItem();
-    }
-
-    @Override
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return APPROXIMATELY_INFINITE_USE_DURATION;
     }

@@ -155,14 +155,8 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        //Ignore NBT for energized items causing re-equip animations
-        return slotChanged || oldStack.getItem() != newStack.getItem();
-    }
-
-    @Override
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
         //Ignore NBT for energized items causing block break reset
-        return oldStack.getItem() != newStack.getItem();
+        return !ItemStack.matchesIgnoringComponents(oldStack, newStack, DataComponentType::ignoreSwapAnimation);
     }
 }

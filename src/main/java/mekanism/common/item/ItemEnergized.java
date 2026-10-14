@@ -5,6 +5,7 @@ import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -36,14 +37,8 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents {
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        //Ignore NBT for energized items causing re-equip animations
-        return slotChanged || oldStack.getItem() != newStack.getItem();
-    }
-
-    @Override
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
         //Ignore NBT for energized items causing block break reset
-        return oldStack.getItem() != newStack.getItem();
+        return !ItemStack.matchesIgnoringComponents(oldStack, newStack, DataComponentType::ignoreSwapAnimation);
     }
 }

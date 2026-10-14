@@ -61,7 +61,6 @@ public class HUDRenderer {
         matrix.translate(yawJitter, pitchJitter);
         int audibleSubtitlesWidth = MekanismConfig.client.hudAvoidSoundSubtitleOverlay.get() ? getAudibleSubtitlesWidth(minecraft, font) : 0;
         if (MekanismConfig.client.hudCompassEnabled.get()) {
-            //renderCompass(player, font, guiGraphics, delta, screenWidth, screenHeight, maxTextHeight, reverseHud, audibleSubtitlesWidth);
             matrix.pushMatrix();
             //Reversed hud causes the compass to render on the right side of the screen
             int posX = reverseHud ? screenWidth - 125 - audibleSubtitlesWidth : 25;

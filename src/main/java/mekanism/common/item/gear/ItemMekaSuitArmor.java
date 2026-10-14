@@ -51,6 +51,7 @@ import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
@@ -328,27 +329,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return 0;
     }
 
-    /*TODO - 26.3: check that these are handled by the item props
-    @Override
-    public int getDefense() {
-        return getMaterial().value().getDefense(getType());
-    }
-
-    @Override
-    public float getToughness() {
-        return getMaterial().value().toughness();
-    }*/
-
-    @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        //Ignore NBT for energized items causing re-equip animations
-        return slotChanged || oldStack.getItem() != newStack.getItem();
-    }
-
     @Override
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
         //Ignore NBT for energized items causing block break reset
-        return oldStack.getItem() != newStack.getItem();
+        return !ItemStack.matchesIgnoringComponents(oldStack, newStack, DataComponentType::ignoreSwapAnimation);
     }
 
     private static float getAbsorption(EquipmentSlot armorType) {
