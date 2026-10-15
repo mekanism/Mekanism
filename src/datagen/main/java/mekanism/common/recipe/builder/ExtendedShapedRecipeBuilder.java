@@ -2,8 +2,6 @@ package mekanism.common.recipe.builder;
 
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
-import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
-import it.unimi.dsi.fastutil.chars.CharSet;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.common.recipe.pattern.RecipePattern;
@@ -124,35 +122,12 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     }
 
     @Override
-    protected void ensureValid(ResourceKey<Recipe<?>> id) {
-        if (pattern.isEmpty()) {
-            throw new IllegalStateException("No pattern is defined for shaped recipe " + id + "!");
-        }
-        CharSet set = new CharOpenHashSet(key.keySet());
-        set.remove(' ');
-        for (String s : pattern) {
-            for (int i = 0; i < s.length(); ++i) {
-                char c = s.charAt(i);
-                if (!key.containsKey(c) && c != ' ') {
-                    throw new IllegalStateException("Pattern in recipe " + id + " uses undefined symbol '" + c + "'");
-                }
-                set.remove(c);
-            }
-        }
-        if (!set.isEmpty()) {
-            throw new IllegalStateException("Ingredients are defined but not used in pattern for recipe " + id);
-        } else if (pattern.size() == 1 && pattern.getFirst().length() == 1) {
-            throw new IllegalStateException("Shaped recipe " + id + " only takes in a single item, and should probably be a shapeless recipe instead");
-        }
-    }
-
-    @Override
     protected Recipe<?> asRecipe() {
         return wrapRecipe(
               RecipeBuilder.createCraftingCommonInfo(this.showNotification),
-              RecipeBuilder.createCraftingBookInfo(this.category, this.group),
+              createCraftingBookInfo(this.category, this.group),
               ShapedRecipePattern.of(this.key, this.pattern),
-              resultStack()
+              this.result
         );
     }
 

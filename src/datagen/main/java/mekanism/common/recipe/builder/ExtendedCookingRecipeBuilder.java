@@ -3,7 +3,6 @@ package mekanism.common.recipe.builder;
 import java.util.Objects;
 import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe.Factory;
@@ -32,12 +31,11 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
         this.factory = factory;
     }
 
-    public static ExtendedCookingRecipeBuilder blasting(Holder<Item> result, Ingredient ingredient, int cookingTime) {
-        return blasting(result, 1, ingredient, cookingTime);
+    public static ExtendedCookingRecipeBuilder blasting(CookingBookCategory bookCategory, Holder<Item> result, Ingredient ingredient, int cookingTime) {
+        return blasting(bookCategory, result, 1, ingredient, cookingTime);
     }
 
-    public static ExtendedCookingRecipeBuilder blasting(Holder<Item> result, int count, Ingredient ingredient, int cookingTime) {
-        CookingBookCategory bookCategory = result.value() instanceof BlockItem ? CookingBookCategory.BLOCKS : CookingBookCategory.MISC;
+    public static ExtendedCookingRecipeBuilder blasting(CookingBookCategory bookCategory, Holder<Item> result, int count, Ingredient ingredient, int cookingTime) {
         return new ExtendedCookingRecipeBuilder(result, count, ingredient, cookingTime, bookCategory, BlastingRecipe::new);
     }
 
@@ -49,18 +47,11 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
         return new ExtendedCookingRecipeBuilder(result, count, ingredient, cookingTime, CookingBookCategory.FOOD, CampfireCookingRecipe::new);
     }
 
-    public static ExtendedCookingRecipeBuilder smelting(Holder<Item> result, Ingredient ingredient, int cookingTime) {
-        return smelting(result, 1, ingredient, cookingTime);
+    public static ExtendedCookingRecipeBuilder smelting(CookingBookCategory bookCategory, Holder<Item> result, Ingredient ingredient, int cookingTime) {
+        return smelting(bookCategory, result, 1, ingredient, cookingTime);
     }
 
-    public static ExtendedCookingRecipeBuilder smelting(Holder<Item> result, int count, Ingredient ingredient, int cookingTime) {
-        CookingBookCategory bookCategory;
-        //This isn't used anywhere where it could be food, and components are no longer available
-        //if (result.value().components().has(DataComponents.FOOD)) {
-        //    bookCategory = CookingBookCategory.FOOD;
-        //} else {
-            bookCategory = result.value() instanceof BlockItem ? CookingBookCategory.BLOCKS : CookingBookCategory.MISC;
-        //}
+    public static ExtendedCookingRecipeBuilder smelting(CookingBookCategory bookCategory, Holder<Item> result, int count, Ingredient ingredient, int cookingTime) {
         return new ExtendedCookingRecipeBuilder(result, count, ingredient, cookingTime, bookCategory, SmeltingRecipe::new);
     }
 
@@ -86,7 +77,7 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
               RecipeBuilder.createCraftingCommonInfo(true),
               new AbstractCookingRecipe.CookingBookInfo(this.bookCategory, Objects.requireNonNullElse(this.group, "")),
               this.ingredient,
-              resultStack(),
+              this.result,
               this.experience,
               this.cookingTime
         );

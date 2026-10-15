@@ -33,6 +33,6 @@ public class ExtendedSmithingRecipeBuilder extends BaseRecipeBuilder<ExtendedSmi
 
     @Override
     protected SmithingRecipe asRecipe() {
-        return new SmithingTransformRecipe(RecipeBuilder.createCraftingCommonInfo(false), Optional.of(template), base, Optional.of(addition), resultStack());
+        return new SmithingTransformRecipe(RecipeBuilder.createCraftingCommonInfo(true), Optional.of(template), base, Optional.of(addition), this.result);
     }
 }

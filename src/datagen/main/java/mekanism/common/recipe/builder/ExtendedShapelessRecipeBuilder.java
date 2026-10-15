@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedShapelessRecipeBuilder> {
@@ -89,18 +88,11 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
     }
 
     @Override
-    protected void ensureValid(ResourceKey<Recipe<?>> id) {
-        if (ingredients.isEmpty()) {
-            throw new IllegalStateException("Shapeless recipe '" + id + "' must have at least one ingredient!");
-        }
-    }
-
-    @Override
     protected ShapelessRecipe asRecipe() {
         return new ShapelessRecipe(
               RecipeBuilder.createCraftingCommonInfo(true),
-              RecipeBuilder.createCraftingBookInfo(this.category, this.group),
-              resultStack(),
+              createCraftingBookInfo(this.category, this.group),
+              this.result,
               this.ingredients
         );
     }

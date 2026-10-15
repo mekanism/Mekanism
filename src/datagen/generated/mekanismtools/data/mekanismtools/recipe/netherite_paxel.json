@@ -5,6 +5,5 @@
   "result": {
     "id": "mekanismtools:netherite_paxel"
   },
-  "show_notification": false,
   "template": "minecraft:netherite_upgrade_smithing_template"
 }

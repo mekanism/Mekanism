@@ -1,4 +1,4 @@
-// 26.3	2026-10-07T22:23:31.8530288	Registries for Reloadable (mekanismtools[0]): [mekanismtools]
+// 26.3	2026-10-15T11:11:45.3962451	Registries for Reloadable (mekanismtools[0]): [mekanismtools]
 595110982a3e3cb91bc33e4f706756718a0dea0d data/mekanismtools/advancement/alternate_armor.json
 5b7d8c1b4ab002c2a3a9b7e8f7b2a0679dbaa771 data/mekanismtools/advancement/alternate_tools.json
 ca49900f56c0b5289ffad1de3dd5bff98559aa6c data/mekanismtools/advancement/better_than_netherite.json
@@ -45,7 +45,7 @@ b6fec8c95856dc9c0779d7eefd9a2c710b6d7686 data/mekanismtools/recipe/lapis_lazuli/
 eaa14b451a942a4b1356e036939e267b9619943d data/mekanismtools/recipe/lapis_lazuli/tools/shovel.json
 591af4ae24539575cb78b5b97229dc4082c084e5 data/mekanismtools/recipe/lapis_lazuli/tools/spear.json
 bbbe41a68d5b603a6c82bc49c0dc9387c903caa4 data/mekanismtools/recipe/lapis_lazuli/tools/sword.json
-f1b66b0ca107f9c63e6fabb4ff53986d4d4b4922 data/mekanismtools/recipe/netherite_paxel.json
+781fe3a392a0f0343075d28d9483c091f1f013f8 data/mekanismtools/recipe/netherite_paxel.json
 cc3c93878719acc84d6a665d69b7ed99377af93a data/mekanismtools/recipe/osmium/armor/boots.json
 b6ee8638446d0cbee92aafc27357a37dbc5729f1 data/mekanismtools/recipe/osmium/armor/chestplate.json
 5b017ba7418c039919e14b6319fe4223f4c04ea7 data/mekanismtools/recipe/osmium/armor/helmet.json

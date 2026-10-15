@@ -12,6 +12,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeUnlockAdvancementBuilder;
 import net.minecraft.resources.Identifier;
@@ -29,6 +30,8 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     protected static final ResourceKey<Recipe<?>> NO_DEFAULT_ID = ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath("if_you_see_this", "you_forgot_an_id"));
     protected final List<ICondition> conditions = new ArrayList<>();
     protected final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
+    @Nullable
+    protected String category;
     @Nullable
     protected String group;
 
@@ -58,6 +61,15 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         return self();
     }
 
+    public BUILDER category(RecipeCategory category) {
+        return category(category.getFolderName());
+    }
+
+    public BUILDER category(String category) {
+        this.category = category;
+        return self();
+    }
+
     @Override
     public BUILDER group(@Nullable String group) {
         this.group = group;
@@ -75,26 +87,12 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     /// Gets a recipe result object.
     protected abstract Recipe<?> asRecipe();
 
-    /// Performs any extra validation.
-    ///
-    /// @param id ID of the recipe validation is being performed on.
-    ///
-    /// @since 10.8.0
-    protected void ensureValid(ResourceKey<Recipe<?>> id) {
-        //TODO - 26.3: Re-evaluate implementations, as it seems that vanilla changed what they are validating
-    }
-
     /// Builds this recipe.
     ///
     /// @param recipeOutput Finished Recipe Consumer.
     /// @param id           Name of the recipe being built.
     public void save(RecipeOutput recipeOutput, Identifier id) {
-        Identifier defaultId = defaultId().identifier();
-        if (id.equals(defaultId)) {
-            throw new IllegalStateException("Recipe " + id + " should remove its 'save' argument as it is equal to default one");
-        } else {
-            save(recipeOutput, ResourceKey.create(Registries.RECIPE, id));
-        }
+        save(recipeOutput, id.toString());
     }
 
     /// Builds this recipe.
@@ -103,14 +101,12 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     /// @param id           Name of the recipe being built.
     @Override
     public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
-        ensureValid(id);
         AdvancementHolder advancementHolder = null;
         if (!this.criteria.isEmpty()) {
             //If there is a way to "unlock" this recipe then add an advancement with the criteria
             RecipeUnlockAdvancementBuilder advancementBuilder = new RecipeUnlockAdvancementBuilder();
             this.criteria.forEach(advancementBuilder::unlockedBy);
-            //TODO - 26.3: Do we care about being able to specify a category?
-            advancementHolder = advancementBuilder.build(recipeOutput, id, (String) null);
+            advancementHolder = advancementBuilder.build(recipeOutput, id, category);
         }
         recipeOutput.accept(id, asRecipe(), advancementHolder, conditions.toArray(new ICondition[0]));
     }

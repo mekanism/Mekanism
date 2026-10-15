@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.Fluid;
@@ -36,8 +37,9 @@ public class RecipeProviderUtil {
 
     public static void addSmeltingBlastingRecipes(RecipeOutput consumer, Ingredient smeltingInput, Holder<Item> output, float experience, int smeltingTime,
           Identifier blastingLocation, Identifier smeltingLocation, RecipeCriterion... criteria) {
-        ExtendedCookingRecipeBuilder blastingRecipe = ExtendedCookingRecipeBuilder.blasting(output, smeltingInput, smeltingTime / 2).experience(experience);
-        ExtendedCookingRecipeBuilder smeltingRecipe = ExtendedCookingRecipeBuilder.smelting(output, smeltingInput, smeltingTime).experience(experience);
+        CookingBookCategory bookCategory = CookingBookCategory.MISC;
+        ExtendedCookingRecipeBuilder blastingRecipe = ExtendedCookingRecipeBuilder.blasting(bookCategory, output, smeltingInput, smeltingTime / 2).experience(experience);
+        ExtendedCookingRecipeBuilder smeltingRecipe = ExtendedCookingRecipeBuilder.smelting(bookCategory, output, smeltingInput, smeltingTime).experience(experience);
         //If there are any criteria add them
         for (RecipeCriterion criterion : criteria) {
             blastingRecipe.unlockedBy(criterion);
