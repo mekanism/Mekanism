@@ -535,6 +535,12 @@ public final class MekanismUtils {
         return gameType;
     }
 
+    public static <TYPE> void appendAllButFirst(List<TYPE> list, List<TYPE> toAdd) {
+        for (int i = 1, size = toAdd.size(); i < size; i++) {
+            list.add(toAdd.get(i));
+        }
+    }
+
     /// Helper to read the parameter names from the format saved by our annotation processor param name mapper.
     public static List<String> getParameterNames(@Nullable JsonObject classMethods, String method, String signature) {
         if (classMethods != null) {

@@ -1,6 +1,8 @@
 package mekanism.api.datamaps.chemical.attribute;
 
 import java.util.List;
+import mekanism.api.chemical.Chemical;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
@@ -19,9 +21,10 @@ public interface IChemicalAttribute {
 
     /// Add text components to this chemical attribute's tooltip.
     ///
-    /// @param context Current tooltip context
-    /// @param tooltips List of tooltips to add to.
+    /// @param chemical    Holder representing the chemical the attribute is attached to.
+    /// @param context     Current tooltip context.
+    /// @param tooltips    List of tooltips to add to.
     /// @param tooltipFlag Flag representing if advanced tooltips are to be shown.
-    default void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
+    default void collectTooltips(Holder<Chemical> chemical, TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
     }
 }

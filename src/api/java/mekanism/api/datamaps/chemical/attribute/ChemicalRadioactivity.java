@@ -5,12 +5,15 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item.TooltipContext;
@@ -49,11 +52,14 @@ public record ChemicalRadioactivity(double radioactivity) implements IChemicalAt
     }
 
     @Override
-    public void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
+    public void collectTooltips(Holder<Chemical> chemical, TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
         if (needsValidation()) {
             //Only show the radioactive tooltip information if radiation is actually enabled
             ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
             tooltips.add(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getRadioactivityDisplayShort(radioactivity)));
+            if (chemical.is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST)) {
+                tooltips.add(APILang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
+            }
         }
     }
 

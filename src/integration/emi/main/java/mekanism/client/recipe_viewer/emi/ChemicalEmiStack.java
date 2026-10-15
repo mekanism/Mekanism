@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer.emi;
 
+import com.google.common.primitives.Ints;
 import dev.emi.emi.api.render.EmiRender;
 import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.stack.EmiStack;
@@ -117,11 +118,8 @@ public class ChemicalEmiStack extends EmiStack {
         if (isEmpty()) {
             return Collections.emptyList();
         }
-        List<Component> tooltips = new ArrayList<>();
-        tooltips.add(getName());
-        ChemicalStack stack = new ChemicalStack(chemical, amount > 1 ? amount : 1);
-        stack.appendHoverText(getRVTooltipContext(), tooltips, TooltipFlag.NORMAL);
-        return tooltips;
+        ChemicalStack stack = new ChemicalStack(chemical, amount > 1 ? Ints.saturatedCast(amount) : 1);
+        return stack.getTooltipLines(getRVTooltipContext(), null, TooltipFlag.NORMAL);
     }
 
     private static TooltipContext getRVTooltipContext() {
@@ -153,6 +151,7 @@ public class ChemicalEmiStack extends EmiStack {
 
     @Override
     public Component getName() {
-        return TextComponentUtil.build(chemical);
+        ResourceKey<Chemical> key = chemical.keyOrNull();
+        return Chemical.getTranslatedName(key == null ? ChemicalIds.EMPTY : key);
     }
 }

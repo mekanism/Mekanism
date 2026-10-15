@@ -8,6 +8,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -31,7 +32,7 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalResource, IChemicalTank> 
         List<Component> tooltip = super.getContentsTooltips(resource, amount, context, player, tooltipFlag);
         ChemicalStack stack = resource.toStack(Ints.saturatedCast(amount));
         if (!stack.isEmpty()) {
-            stack.appendHoverText(context, tooltip, tooltipFlag);
+            MekanismUtils.appendAllButFirst(tooltip, stack.getTooltipLines(context, player, tooltipFlag));
         }
         return tooltip;
     }

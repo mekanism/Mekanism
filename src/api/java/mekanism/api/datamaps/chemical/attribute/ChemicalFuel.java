@@ -6,10 +6,12 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
@@ -49,7 +51,7 @@ public record ChemicalFuel(int maxBurnPerTick, int energyPerTick) implements ICh
     }
 
     @Override
-    public void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
+    public void collectTooltips(Holder<Chemical> chemical, TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
         ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_MAX_BURN.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getFluidDisplay(maxBurnPerTick(), true)));
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,

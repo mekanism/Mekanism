@@ -58,8 +58,8 @@ public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
     }
 
     @Override
-    public void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
-        IChemicalCoolant.super.collectTooltips(context, tooltips, tooltipFlag);
+    public void collectTooltips(Holder<Chemical> chemical, TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
+        IChemicalCoolant.super.collectTooltips(chemical, context, tooltips, tooltipFlag);
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_TEMPERATURE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, ITooltipHelper.INSTANCE.getTemperatureDisplayShort(temperature)));
     }
 }

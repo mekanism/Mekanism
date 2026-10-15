@@ -10,6 +10,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -56,9 +57,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidResource, IFluidTank> {
         List<Component> tooltip = super.getContentsTooltips(type, amount, context, player, tooltipFlag);
         FluidStack stack = type.toStack(Ints.saturatedCast(amount));
         if (!stack.isEmpty()) {
-            //TODO - 26.3: Re-evaluate how tooltips are done for fluids and see if this is correct (especially in relation to it potentially showing the name twice)
-            // We might also want to update chemicals to be similar to this in that there is a getter on the stack rather than a method that appends to list on the stack
-            tooltip.addAll(stack.getTooltipLines(context, player, tooltipFlag));
+            MekanismUtils.appendAllButFirst(tooltip, stack.getTooltipLines(context, player, tooltipFlag));
         }
         return tooltip;
     }

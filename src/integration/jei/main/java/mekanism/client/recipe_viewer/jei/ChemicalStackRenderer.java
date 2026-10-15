@@ -6,7 +6,6 @@ import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -66,15 +65,14 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
 
     @Override
     public List<Component> getTooltip(ChemicalStack stack, Item.TooltipContext tooltipContext, @Nullable Player player, TooltipFlag tooltipFlag) {
-        List<Component> tooltips = new ArrayList<>();
-        if (!stack.isEmpty()) {
-            tooltips.add(TextComponentUtil.build(stack));
-            if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-                tooltips.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.amount()), TextUtils.format(capacityMb)));
-            } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-                tooltips.add(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.amount())));
-            }
-            stack.appendHoverText(tooltipContext, tooltips, tooltipFlag);
+        if (stack.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Component> tooltips = new ArrayList<>(stack.getTooltipLines(tooltipContext, player, tooltipFlag));
+        if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
+            tooltips.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.amount()), TextUtils.format(capacityMb)));
+        } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
+            tooltips.add(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.amount())));
         }
         return tooltips;
     }

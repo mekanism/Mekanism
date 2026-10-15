@@ -35,7 +35,7 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
     Holder<Chemical> otherVariant();
 
     @Override
-    default void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
+    default void collectTooltips(Holder<Chemical> chemical, TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
         ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getPercent(conductivity())));
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,

@@ -5,14 +5,12 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import mekanism.api.MekanismAPITags;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
-import mekanism.api.text.APILang;
-import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -22,8 +20,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import org.jspecify.annotations.Nullable;
 
@@ -238,32 +240,43 @@ public final class ChemicalStack implements SizedChemicalInstance {
         setAmount(this.amount - amount);
     }
 
-    /// Gathers any tooltips this chemical stack has, and adds them to the list. This includes things like if the chemical is immune to decay, or the registry name
+    /// Builds the tooltip lines for this chemical stack, intended for use by mods rendering chemicals in GUIs.
     ///
-    /// @param context     Current tooltip context.
-    /// @param tooltips    List of tooltips to add to.
-    /// @param tooltipFlag Flag representing if advanced tooltips are to be shown.
+    /// This mirrors the behavior of [ItemStack#getTooltipLines(Item.TooltipContext, Player, TooltipFlag)] and
+    /// [net.neoforged.neoforge.fluids.FluidStack#getTooltipLines(TooltipContext, Player, TooltipFlag)] as closely as possible for chemicals.
     ///
-    /// @see IChemicalAttribute#collectTooltips(TooltipContext, List, TooltipFlag)
-    /// @since 10.7.11
-    public void appendHoverText(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
-        if (isEmpty()) {
-            return;
-        }
-        //TODO - 26.3: Fire an event similar to what Neo does for fluid stacks, as we don't provide any other way to add custom tooltip information now
-        for (DataMapType<Chemical, ? extends IChemicalAttribute> attributeType : IMekanismDataMapTypes.INSTANCE.chemicalAttributeTypes()) {
-            IChemicalAttribute attribute = getData(attributeType);
-            if (attribute != null) {
-                attribute.collectTooltips(context, tooltips, tooltipFlag);
+    /// The tooltip consists of:
+    ///  - The styled hover name
+    ///  - Additional lines provided by attributes attached to the chemical
+    ///  - Lines added by [ChemicalTooltipEvent]
+    ///  - The registry name when advanced tooltips are enabled
+    ///
+    /// @param context     the tooltip context
+    /// @param player      the player viewing the tooltip, or `null`
+    /// @param tooltipFlag controls tooltip verbosity and advanced information
+    ///
+    /// @return a list of tooltip components, possibly empty
+    ///
+    /// @see IChemicalAttribute#collectTooltips(Holder, TooltipContext, List, TooltipFlag)
+    /// @since 10.8.0
+    public List<Component> getTooltipLines(Item.TooltipContext context, @Nullable Player player, TooltipFlag tooltipFlag) {
+        Holder<Chemical> chemicalHolder = typeHolder();
+        List<Component> list = new ArrayList<>();
+        list.add(TextComponentUtil.build(this));
+        if (!isEmpty()) {
+            for (DataMapType<Chemical, ? extends IChemicalAttribute> attributeType : IMekanismDataMapTypes.INSTANCE.chemicalAttributeTypes()) {
+                IChemicalAttribute attribute = getData(attributeType);
+                if (attribute != null) {
+                    attribute.collectTooltips(chemicalHolder, context, list, tooltipFlag);
+                }
             }
-        }
-        if (is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST)) {
-            tooltips.add(APILang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
+            NeoForge.EVENT_BUS.post(new ChemicalTooltipEvent(this, player, list, tooltipFlag, context));
         }
         if (tooltipFlag.isAdvanced()) {
             //If advanced tooltips are on, display the registry name
-            tooltips.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, typeHolder().getRegisteredName()));
+            list.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, chemicalHolder.getRegisteredName()));
         }
+        return list;
     }
 
     @Nullable
