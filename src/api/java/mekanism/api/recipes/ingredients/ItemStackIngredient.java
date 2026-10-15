@@ -90,19 +90,16 @@ public final class ItemStackIngredient implements InputIngredient<Item, ItemStac
 
     @Override
     public void logMissingTags() {
-        //TODO - 26.3: Re-evaluate this implementation
         if (hasNoMatchingInstances()) {
             Ingredient unsized = ingredient.ingredient();
-            if (unsized.isCustom()) {
-                MekanismAPI.logger.error("Empty ItemStackIngredient: {}", SerializerHelper.stringify(Ingredient.CODEC, unsized));
-            } else {
+            if (!unsized.isCustom()) {
                 Optional<TagKey<Item>> fluidTagKey = unsized.getValues().unwrapKey();
                 if (fluidTagKey.isPresent()) {
                     MekanismAPI.logger.error("Empty tag: {}", fluidTagKey.get());
-                } else {
-                    MekanismAPI.logger.error("Empty ItemStackIngredient: {}", SerializerHelper.stringify(Ingredient.CODEC, unsized));
+                    return;
                 }
             }
+            MekanismAPI.logger.error("Empty ItemStackIngredient: {}", SerializerHelper.stringify(Ingredient.CODEC, unsized));
         }
     }
 

@@ -6,6 +6,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
@@ -15,6 +16,7 @@ import mekanism.api.recipes.ingredients.chemical.display.ChemicalTagSlotDisplay;
 import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
@@ -90,7 +92,12 @@ public non-sealed class SimpleChemicalIngredient extends ChemicalIngredient {
         if (!chemicalSet.isBound()) {
             MekanismAPI.logger.error("Unbound chemical set: {}", chemicalSet);
         } else if (chemicalSet.size() == 0) {
-            MekanismAPI.logger.error("Empty holder set: {}", chemicalSet);
+            Optional<TagKey<Chemical>> chemicalTagKey = chemicalSet.unwrapKey();
+            if (chemicalTagKey.isPresent()) {
+                MekanismAPI.logger.error("Empty tag: {}", chemicalTagKey.get());
+            } else {
+                MekanismAPI.logger.error("Empty holder set: {}", chemicalSet);
+            }
         }
     }
 

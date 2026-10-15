@@ -79,26 +79,23 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, FluidS
 
     @Override
     public boolean hasNoMatchingInstances() {
-        //TODO - 26.3: Figure out how to reimplement this, or if the entire concept should go away
-        //return ingredient.ingredient().hasNoFluids();
-        return false;
+        //Based on the docs of FluidIngredient#generateFluids:
+        // At least one stack should always be returned, so that the ingredient is not considered empty. Empty ingredients may invalidate recipes!
+        return ingredient.ingredient().fluids().isEmpty();
     }
 
     @Override
     public void logMissingTags() {
-        //TODO - 26.3: Re-evaluate this implementation
         if (hasNoMatchingInstances()) {
             FluidIngredient fluidIngredient = ingredient.ingredient();
             if (fluidIngredient instanceof SimpleFluidIngredient simple) {
                 Optional<TagKey<Fluid>> fluidTagKey = simple.fluidSet().unwrapKey();
                 if (fluidTagKey.isPresent()) {
                     MekanismAPI.logger.error("Empty tag: {}", fluidTagKey.get());
-                } else {
-                    MekanismAPI.logger.error("Empty FluidStackIngredient: {}", SerializerHelper.stringify(FluidIngredient.CODEC, fluidIngredient));
+                    return;
                 }
-            } else {
-                MekanismAPI.logger.error("Empty FluidStackIngredient: {}", SerializerHelper.stringify(FluidIngredient.CODEC, fluidIngredient));
             }
+            MekanismAPI.logger.error("Empty FluidStackIngredient: {}", SerializerHelper.stringify(FluidIngredient.CODEC, fluidIngredient));
         }
     }
 
