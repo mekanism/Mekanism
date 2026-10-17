@@ -12,6 +12,7 @@ import mekanism.common.recipe.builder.ExtendedCookingRecipeBuilder;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.BlockItemId;
 import net.minecraft.references.BlockItemIds;
@@ -21,8 +22,10 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.conditions.ICondition;
@@ -38,8 +41,12 @@ public class RecipeProviderUtil {
     public static void addSmeltingBlastingRecipes(RecipeOutput consumer, Ingredient smeltingInput, Holder<Item> output, float experience, int smeltingTime,
           Identifier blastingLocation, Identifier smeltingLocation, RecipeCriterion... criteria) {
         CookingBookCategory bookCategory = CookingBookCategory.MISC;
-        ExtendedCookingRecipeBuilder blastingRecipe = ExtendedCookingRecipeBuilder.blasting(bookCategory, output, smeltingInput, smeltingTime / 2).experience(experience);
-        ExtendedCookingRecipeBuilder smeltingRecipe = ExtendedCookingRecipeBuilder.smelting(bookCategory, output, smeltingInput, smeltingTime).experience(experience);
+        ExtendedCookingRecipeBuilder<BlastingRecipe> blastingRecipe = ExtendedCookingRecipeBuilder.blasting(bookCategory, output, smeltingInput, smeltingTime / 2)
+              .experience(experience)
+              .category(RecipeCategory.MISC);
+        ExtendedCookingRecipeBuilder<SmeltingRecipe> smeltingRecipe = ExtendedCookingRecipeBuilder.smelting(bookCategory, output, smeltingInput, smeltingTime)
+              .experience(experience)
+              .category(RecipeCategory.MISC);
         //If there are any criteria add them
         for (RecipeCriterion criterion : criteria) {
             blastingRecipe.unlockedBy(criterion);
@@ -163,7 +170,7 @@ public class RecipeProviderUtil {
         ), path, condition);
     }
 
-    public static void save(RecipeOutput consumer, MekanismRecipeBuilder<?> builder, String path, @Nullable ICondition condition) {
+    public static void save(RecipeOutput consumer, MekanismRecipeBuilder<?, ?, ?> builder, String path, @Nullable ICondition condition) {
         if (condition != null) {
             //If there is a condition, add it to the recipe builder
             builder.addCondition(condition);

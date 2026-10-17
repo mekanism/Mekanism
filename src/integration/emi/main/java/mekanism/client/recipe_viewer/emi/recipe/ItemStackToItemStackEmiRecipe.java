@@ -2,6 +2,7 @@ package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -11,13 +12,15 @@ import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class ItemStackToItemStackEmiRecipe extends MekanismEmiHolderRecipe<ItemStackToItemStackRecipe> {
+public class ItemStackToItemStackEmiRecipe<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends MekanismEmiHolderRecipe<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
     private final boolean hideCraftable;
 
-    public ItemStackToItemStackEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ItemStackToItemStackRecipe> recipeHolder) {
+    public ItemStackToItemStackEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeHolder) {
         super(category, recipeHolder);
         this.hideCraftable = recipeHolder.id().getPath().startsWith("/mekanism_generated/");
         addInputDefinition(recipe.getInput());

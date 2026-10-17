@@ -1,7 +1,10 @@
 package mekanism.api.recipes;
 
 import java.util.List;
+import java.util.Objects;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
@@ -10,27 +13,37 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 
 /// Base class for helping wrap our recipes into IRecipes.
-public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recipe<INPUT> {
+public abstract class MekanismRecipe<INPUT extends RecipeInput, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>> implements Recipe<INPUT> {
 
-    private static final Recipe.CommonInfo NO_DISPLAY = new Recipe.CommonInfo(false);
+    protected final Recipe.CommonInfo commonInfo;
+    protected final BOOK_INFO bookInfo;
 
-    private final Recipe.CommonInfo commonInfo;
-    private final String group;
-
-    protected MekanismRecipe() {
-        this(NO_DISPLAY, "");
-        //TODO - 26.3: Vanilla no longer requires group fields for recipes without a recipe book
-        // We should evaluate our recipes for if a group makes sense, and either remove this constructor, or the one that takes a group
+    /// @param commonInfo Common recipe info.
+    /// @param bookInfo   Recipe book info.
+    ///
+    /// @since 10.8.0
+    protected MekanismRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
+        this.commonInfo = Objects.requireNonNull(commonInfo, "Common recipe info cannot be null");
+        this.bookInfo = Objects.requireNonNull(bookInfo, "Recipe Book info cannot be null");
     }
 
-    protected MekanismRecipe(Recipe.CommonInfo commonInfo, String group) {
-        this.commonInfo = commonInfo;
-        this.group = group;
+    /// {@return common recipe information about this recipe}
+    ///
+    /// @since 10.8.0
+    public final Recipe.CommonInfo commonInfo() {
+        return commonInfo;
+    }
+
+    /// {@return recipe book information about this recipe}
+    ///
+    /// @since 10.8.0
+    public final BOOK_INFO bookInfo() {
+        return bookInfo;
     }
 
     @Override
     public final String group() {
-        return group;
+        return bookInfo.group();
     }
 
     @Override
@@ -40,9 +53,8 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
         return true;
     }
 
-    //Force implementation of this method as our ingredients is always empty so the super implementation would have all ours as incomplete
-    //@Override//TODO - 26.3: Re-evaluate this, we might want to keep some form of it?
-    public abstract boolean isIncomplete();//TODO - 26.3: This is now part of PlacementInfo#isImpossibleToPlace ??
+    //TODO - 26.3: Do we want to keep some form of this? Vanilla moved this to being part of PlacementInfo#isImpossibleToPlace ??
+    public abstract boolean isIncomplete();
 
     public abstract void logMissingTags();
 
@@ -66,8 +78,16 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
     public abstract List<RecipeDisplay> display();
 
     @Override
-    public RecipeBookCategory recipeBookCategory() {
-        //TODO: Support custom recipe book categories?
-        return RecipeBookCategories.CRAFTING_MISC;
+    public final RecipeBookCategory recipeBookCategory() {
+        return switch (bookInfo.category()) {
+            case MekanismBookCategory category -> category.toRecipeBookCategory();
+            //From SmeltingRecipe#recipeBookCategory
+            case CookingBookCategory category -> switch (category) {
+                case BLOCKS -> RecipeBookCategories.FURNACE_BLOCKS;
+                case FOOD -> RecipeBookCategories.FURNACE_FOOD;
+                case MISC -> RecipeBookCategories.FURNACE_MISC;
+            };
+            default -> RecipeBookCategories.CRAFTING_MISC;
+        };
     }
 }

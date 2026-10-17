@@ -12,6 +12,8 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
+import mekanism.api.recipes.book.WashingBookCategory;
+import mekanism.api.recipes.book.WashingBookCategory.WashingBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.TwoInputCachedRecipe;
@@ -64,8 +66,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemicalToChemicalRecipe> implements
-      FluidChemicalRecipeLookupHandler<FluidChemicalToChemicalRecipe> {
+public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>>
+      implements FluidChemicalRecipeLookupHandler<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -179,23 +181,24 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<SingleFluidChemicalRecipeInput, FluidChemicalToChemicalRecipe, FluidChemical<FluidChemicalToChemicalRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleFluidChemicalRecipeInput, WashingBookCategory, WashingBookInfo, FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>,
+          FluidChemical<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>>> getRecipeType() {
         return MekanismRecipeType.WASHING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<FluidChemicalToChemicalRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>> recipeViewerType() {
         return RecipeViewerRecipeType.WASHING;
     }
 
     @Nullable
     @Override
-    public FluidChemicalToChemicalRecipe getRecipe(int cacheIndex) {
+    public FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo> getRecipe(int cacheIndex) {
         return getRecipeType().getInputCache().findFirstRecipe(level, fluidInputHandler.getInput(), slurryInputHandler.getInput(), false);
     }
 
     @Override
-    public CachedRecipe<FluidChemicalToChemicalRecipe> createNewCachedRecipe(FluidChemicalToChemicalRecipe recipe, int cacheIndex) {
+    public CachedRecipe<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>> createNewCachedRecipe(FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo> recipe, int cacheIndex) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, fluidInputHandler, slurryInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

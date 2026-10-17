@@ -63,6 +63,9 @@ public class ClearConfigurationRecipe extends CustomRecipe {
     }
 
     private ItemStack getTargetStack(CraftingInput input) {
+        if (input.ingredientCount() != 1) {
+            return ItemStack.EMPTY;
+        }
         ItemStack target = ItemStack.EMPTY;
         //Note: We don't use inv#getItems as that may do unnecessary copies depending on impl
         for (int i = 0, slots = input.size(); i < slots; ++i) {

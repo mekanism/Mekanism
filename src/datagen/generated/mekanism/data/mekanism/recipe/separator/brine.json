@@ -4,12 +4,14 @@
     "amount": 10,
     "ingredient": "#c:brine"
   },
-  "left_chemical_output": {
-    "amount": 1,
-    "id": "mekanism:sodium"
-  },
-  "right_chemical_output": {
-    "amount": 1,
-    "id": "mekanism:chlorine"
+  "output": {
+    "left": {
+      "amount": 1,
+      "id": "mekanism:sodium"
+    },
+    "right": {
+      "amount": 1,
+      "id": "mekanism:chlorine"
+    }
   }
 }

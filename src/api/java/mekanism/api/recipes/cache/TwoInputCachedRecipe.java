@@ -17,7 +17,7 @@ import org.jspecify.annotations.Nullable;
 /// Base class to help implement handling of recipes with two inputs.
 public class TwoInputCachedRecipe<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, INGREDIENT_A extends InputIngredient<HOLDER_A, INPUT_A>,
       HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, INGREDIENT_B extends InputIngredient<HOLDER_B, INPUT_B>,
-      OUTPUT, RECIPE extends TwoInputMekRecipe<HOLDER_A, INPUT_A, INGREDIENT_A, HOLDER_B, INPUT_B, INGREDIENT_B, ?, OUTPUT>> extends CachedRecipe<RECIPE> {
+      OUTPUT, RECIPE extends TwoInputMekRecipe<HOLDER_A, INPUT_A, INGREDIENT_A, HOLDER_B, INPUT_B, INGREDIENT_B, ?, OUTPUT, ?, ?>> extends CachedRecipe<RECIPE> {
 
     protected final IInputHandler<HOLDER_A, INPUT_A> inputHandler;
     protected final IInputHandler<HOLDER_B, INPUT_B> secondaryInputHandler;

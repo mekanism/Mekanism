@@ -31,7 +31,7 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
             return true;
         }
         //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
-        ItemStackToChemicalRecipe foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findTypeBasedRecipe(levelSupplier.get(), itemType);
+        ItemStackToChemicalRecipe<?, ?> foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findTypeBasedRecipe(levelSupplier.get(), itemType);
         if (foundRecipe == null) {
             //No recipe, return that we can't insert it
             return false;
@@ -97,7 +97,7 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
         if (!fillTankFromSlot(transaction)) {
             //If filling from item failed, try doing it by conversion
             ItemStack current = resource().toStack(amountAsInt());
-            ItemStackToChemicalRecipe foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
+            ItemStackToChemicalRecipe<?, ?> foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
             if (foundRecipe != null) {
                 ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
                 if (!itemInput.isEmpty()) {

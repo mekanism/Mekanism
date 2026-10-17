@@ -24,7 +24,7 @@ import org.jspecify.annotations.Nullable;
 
 /// Extended input cache that implements the backend handling to allow for both the basic key based input lookup that [BaseInputCache] provides, and also a more advanced
 /// mapping that is Data Component based.
-public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInstance<KEY> & DataComponentHolder, INGREDIENT extends InputIngredient<KEY, INPUT>, RECIPE extends MekanismRecipe<?>>
+public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInstance<KEY> & DataComponentHolder, INGREDIENT extends InputIngredient<KEY, INPUT>, RECIPE extends MekanismRecipe<?, ?, ?>>
       extends BaseInputCache<KEY, INPUT, INGREDIENT, RECIPE> {
 
     /// Map of ResourceKey to Map of components to lists.

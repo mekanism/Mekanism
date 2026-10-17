@@ -10,30 +10,39 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.CraftingRecipe.CraftingBookInfo;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
+import org.jetbrains.annotations.Contract;
 
-public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShapedRecipeBuilder> {
+public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<CraftingBookCategory, CraftingBookInfo, ExtendedShapedRecipeBuilder> {
 
     private final Char2ObjectMap<Ingredient> key = new Char2ObjectArrayMap<>(9);
     private final List<String> pattern = new ArrayList<>();
-    private boolean showNotification = true;
 
     protected ExtendedShapedRecipeBuilder(Holder<Item> result, int count) {
-        super(result, count);
+        super(CraftingBookInfo::new, CraftingBookCategory.MISC, result, count);
     }
 
     protected ExtendedShapedRecipeBuilder(ItemStackTemplate result) {
-        super(result);
+        super(CraftingBookInfo::new, CraftingBookCategory.MISC, result);
+    }
+
+    @Override
+    @Contract("_ -> this")
+    public ExtendedShapedRecipeBuilder category(RecipeCategory category) {
+        return super.category(category).category(RecipeBuilder.determineCraftingBookCategory(category));
     }
 
     public static ExtendedShapedRecipeBuilder shapedRecipe(BlockRegistryObject<?, ?> result) {
@@ -116,16 +125,11 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         return this;
     }
 
-    public ExtendedShapedRecipeBuilder showNotification(boolean show) {
-        this.showNotification = show;
-        return this;
-    }
-
     @Override
     protected Recipe<?> asRecipe() {
         return wrapRecipe(
-              RecipeBuilder.createCraftingCommonInfo(this.showNotification),
-              createCraftingBookInfo(this.category, this.group),
+              commonInfo(),
+              bookInfo(),
               ShapedRecipePattern.of(this.key, this.pattern),
               this.result
         );

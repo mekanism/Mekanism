@@ -10,7 +10,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import org.jspecify.annotations.Nullable;
 
-public class ChemicalInputCache<RECIPE extends MekanismRecipe<?>> extends BaseInputCache<Chemical, ChemicalStack, ChemicalStackIngredient, RECIPE> {
+public class ChemicalInputCache<RECIPE extends MekanismRecipe<?, ?, ?>> extends BaseInputCache<Chemical, ChemicalStack, ChemicalStackIngredient, RECIPE> {
 
     @Override
     public boolean mapInputs(RECIPE recipe, ChemicalStackIngredient inputIngredient) {

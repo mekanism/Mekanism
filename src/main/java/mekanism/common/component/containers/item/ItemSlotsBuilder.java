@@ -37,6 +37,7 @@ import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.crafting.Recipe.BookInfo;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
@@ -233,8 +234,9 @@ public class ItemSlotsBuilder {
         return addSlot((attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), isItemValid));
     }
 
-    public <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> ItemSlotsBuilder addInput(
-          IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, ItemResource> containsRecipe) {
+    public <VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY, BOOK_INFO extends BookInfo<BOOK_CATEGORY>,
+          RECIPE extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO>, INPUT_CACHE extends IInputRecipeCache> ItemSlotsBuilder addInput(
+          IMekanismRecipeTypeProvider<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, ItemResource> containsRecipe) {
         return addInput(itemType -> containsRecipe.check(recipeType.getInputCache(), null, itemType));
     }
 

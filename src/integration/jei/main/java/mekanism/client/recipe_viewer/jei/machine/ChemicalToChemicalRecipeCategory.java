@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
@@ -14,14 +15,16 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.Recipe.BookInfo;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class ChemicalToChemicalRecipeCategory extends HolderRecipeCategory<ChemicalToChemicalRecipe> {
+public class ChemicalToChemicalRecipeCategory<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends BookInfo<BOOK_CATEGORY>>
+      extends HolderRecipeCategory<ChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
     private final GuiGauge<?> input;
     private final GuiGauge<?> output;
 
-    public ChemicalToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ChemicalToChemicalRecipe> recipeType) {
+    public ChemicalToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType) {
         super(helper, recipeType);
         addSlot(SlotType.INPUT, 5, 56).with(SlotOverlay.MINUS);
         addSlot(SlotType.OUTPUT, 155, 56).with(SlotOverlay.PLUS);
@@ -33,8 +36,8 @@ public class ChemicalToChemicalRecipeCategory extends HolderRecipeCategory<Chemi
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ChemicalToChemicalRecipe> recipeHolder, IFocusGroup focusGroup) {
-        ChemicalToChemicalRecipe recipe = recipeHolder.value();
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeHolder, IFocusGroup focusGroup) {
+        ChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO> recipe = recipeHolder.value();
         initChemical(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().display());
         initChemical(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDisplay());
     }

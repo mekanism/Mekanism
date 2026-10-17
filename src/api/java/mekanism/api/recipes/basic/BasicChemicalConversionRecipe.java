@@ -4,16 +4,18 @@ import java.util.List;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
+import mekanism.api.recipes.book.ChemicalConversionBookCategory;
+import mekanism.api.recipes.book.ChemicalConversionBookCategory.ChemicalConversionBookInfo;
 import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 
-public class BasicChemicalConversionRecipe extends BasicItemStackToChemicalRecipe {
+public class BasicChemicalConversionRecipe extends BasicItemStackToChemicalRecipe<ChemicalConversionBookCategory, ChemicalConversionBookInfo> {
 
-    public BasicChemicalConversionRecipe(ItemStackIngredient input, ChemicalStackTemplate output) {
-        super(input, output, MekanismRecipeTypes.TYPE_CHEMICAL_CONVERSION.value());
+    public BasicChemicalConversionRecipe(CommonInfo commonInfo, ChemicalConversionBookInfo bookInfo, ItemStackIngredient input, ChemicalStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_CHEMICAL_CONVERSION.value(), commonInfo, bookInfo, input, output);
     }
 
     @Override

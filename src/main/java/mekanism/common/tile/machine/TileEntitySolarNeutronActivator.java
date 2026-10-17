@@ -12,6 +12,8 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
+import mekanism.api.recipes.book.ActivatingBookCategory;
+import mekanism.api.recipes.book.ActivatingBookCategory.ActivatingBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
@@ -54,7 +56,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<ChemicalToChemicalRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<ChemicalToChemicalRecipe> {
+public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>>
+      implements IBoundingBlock, ChemicalRecipeLookupHandler<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_INPUT,
@@ -155,18 +158,19 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, ChemicalToChemicalRecipe, SingleChemical<ChemicalToChemicalRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, ActivatingBookCategory, ActivatingBookInfo, ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>,
+          SingleChemical<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>>> getRecipeType() {
         return MekanismRecipeType.ACTIVATING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<ChemicalToChemicalRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>> recipeViewerType() {
         return RecipeViewerRecipeType.ACTIVATING;
     }
 
     @Nullable
     @Override
-    public ChemicalToChemicalRecipe getRecipe(int cacheIndex) {
+    public ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
@@ -193,7 +197,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     }
 
     @Override
-    public CachedRecipe<ChemicalToChemicalRecipe> createNewCachedRecipe(ChemicalToChemicalRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>> createNewCachedRecipe(ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo> recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

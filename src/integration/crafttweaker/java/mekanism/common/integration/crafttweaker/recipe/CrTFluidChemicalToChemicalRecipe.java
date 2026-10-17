@@ -22,21 +22,21 @@ public class CrTFluidChemicalToChemicalRecipe {
     /// Gets the input fluid ingredient.
     @ZenCodeType.Method
     @ZenCodeType.Getter("fluidInput")
-    public static CTFluidIngredient getFluidInput(FluidChemicalToChemicalRecipe _this) {
+    public static CTFluidIngredient getFluidInput(FluidChemicalToChemicalRecipe<?, ?> _this) {
         return CrTUtils.toCrT(_this.getFluidInput());
     }
 
     /// Gets the input chemical ingredient.
     @ZenCodeType.Method
     @ZenCodeType.Getter("chemicalInput")
-    public static ChemicalStackIngredient getChemicalInput(FluidChemicalToChemicalRecipe _this) {
+    public static ChemicalStackIngredient getChemicalInput(FluidChemicalToChemicalRecipe<?, ?> _this) {
         return _this.getChemicalInput();
     }
 
     /// Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
-    public static List<ICrTChemicalStack> getOutputs(FluidChemicalToChemicalRecipe _this) {
+    public static List<ICrTChemicalStack> getOutputs(FluidChemicalToChemicalRecipe<?, ?> _this) {
         return CrTUtils.convertChemical(_this.getOutputDefinition(ContextMap.EMPTY));//TODO - CrT: ContextMap
     }
 }

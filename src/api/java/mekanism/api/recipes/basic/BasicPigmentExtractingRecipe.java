@@ -5,6 +5,8 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
+import mekanism.api.recipes.book.PigmentExtractingBookCategory;
+import mekanism.api.recipes.book.PigmentExtractingBookCategory.PigmentExtractingBookInfo;
 import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
@@ -16,14 +18,14 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-public class BasicPigmentExtractingRecipe extends BasicItemStackToChemicalRecipe {
+public class BasicPigmentExtractingRecipe extends BasicItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo> {
 
     private static final Holder<Item> PIGMENT_EXTRACTOR = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment_extractor"));
 
     /// @param input  Input.
     /// @param output Output.
-    public BasicPigmentExtractingRecipe(ItemStackIngredient input, ChemicalStackTemplate output) {
-        super(input, output, MekanismRecipeTypes.TYPE_PIGMENT_EXTRACTING.value());
+    public BasicPigmentExtractingRecipe(CommonInfo commonInfo, PigmentExtractingBookInfo bookInfo, ItemStackIngredient input, ChemicalStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_PIGMENT_EXTRACTING.value(), commonInfo, bookInfo, input, output);
     }
 
     @Override

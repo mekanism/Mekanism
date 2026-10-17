@@ -4,6 +4,8 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
+import mekanism.api.recipes.book.CrushingBookCategory;
+import mekanism.api.recipes.book.CrushingBookCategory.CrushingBookInfo;
 import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
@@ -16,12 +18,12 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-public class BasicCrushingRecipe extends BasicItemStackToItemStackRecipe {
+public class BasicCrushingRecipe extends BasicItemStackToItemStackRecipe<CrushingBookCategory, CrushingBookInfo> {
 
     private static final Holder<Item> CRUSHER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "crusher"));
 
-    public BasicCrushingRecipe(ItemStackIngredient input, ItemStackTemplate output) {
-        super(input, output, MekanismRecipeTypes.TYPE_CRUSHING.value());
+    public BasicCrushingRecipe(CommonInfo commonInfo, CrushingBookInfo bookInfo, ItemStackIngredient input, ItemStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_CRUSHING.value(), commonInfo, bookInfo, input, output);
     }
 
     @Override

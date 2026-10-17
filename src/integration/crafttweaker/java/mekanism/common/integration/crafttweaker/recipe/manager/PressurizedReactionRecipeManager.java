@@ -154,7 +154,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be positive! Duration: " + duration);
         }
-        return new BasicPressurizedReactionRecipe(CrTUtils.fromCrT(inputSolid), CrTUtils.fromCrT(inputFluid), inputChemical, energyRequired, duration,
+        return new BasicPressurizedReactionRecipe(, , CrTUtils.fromCrT(inputSolid), CrTUtils.fromCrT(inputFluid), inputChemical, energyRequired, duration,
               outputItem, outputChemical);
     }
 

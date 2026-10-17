@@ -16,9 +16,11 @@ import mekanism.common.component.containers.creator.BaseContainerCreator;
 import mekanism.common.component.containers.creator.IBasicContainerCreator;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.resource.Resource;
+import org.jetbrains.annotations.Contract;
 
 public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>,
       BUILDER extends ResourceContainersBuilder<RESOURCE, CONTAINER, BUILDER>> {
@@ -33,6 +35,7 @@ public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTA
     protected abstract IntSupplier defaultRate();
 
     @SuppressWarnings("unchecked")
+    @Contract("_ -> this")
     public final BUILDER addContainer(IBasicContainerCreator<CONTAINER> tank) {
         containerCreators.add(tank);
         return (BUILDER) this;
@@ -41,35 +44,42 @@ public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTA
     protected abstract CONTAINER createBasicContainer(ItemAccess attachedAccess, int tankIndex, BiPredicate<RESOURCE, AutomationType> canExtract,
           BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, IntSupplier rate, LongSupplier capacity);
 
-    public final <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> BUILDER addBasic(long capacity,
-          IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, RESOURCE> containsRecipe) {
+    public final <VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+          RECIPE extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO>, INPUT_CACHE extends IInputRecipeCache> BUILDER addBasic(long capacity,
+          IMekanismRecipeTypeProvider<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, RESOURCE> containsRecipe) {
         return addBasic(capacity, resource -> containsRecipe.check(recipeType.getInputCache(), null, resource));
     }
 
+    @Contract("_, _ -> this")
     public final BUILDER addBasic(long capacity, Predicate<RESOURCE> isValid) {
         return addBasic(() -> capacity, isValid);
     }
 
+    @Contract("_, _ -> this")
     public final BUILDER addBasic(LongSupplier capacity, Predicate<RESOURCE> isValid) {
         return addContainer((attachedAccess, containerIndex) -> createBasicContainer(attachedAccess, containerIndex, ConstantPredicates.notExternal(),
               ConstantPredicates.alwaysTrueBi(), isValid, defaultRate(), capacity));
     }
 
+    @Contract("_ -> this")
     public final BUILDER addBasic(long capacity) {
         return addBasic(() -> capacity);
     }
 
+    @Contract("_ -> this")
     public final BUILDER addBasic(LongSupplier capacity) {
         return addContainer((attachedAccess, containerIndex) -> createBasicContainer(attachedAccess, containerIndex, ConstantPredicates.notExternal(),
               ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
               defaultRate(), capacity));
     }
 
+    @Contract("_, _, _ -> this")
     public final BUILDER addBasicExtractable(IntSupplier rate, LongSupplier capacity, Predicate<RESOURCE> isValid) {
         return addContainer((attachedAccess, containerIndex) -> createBasicContainer(attachedAccess, containerIndex, ConstantPredicates.alwaysTrueBi(),
               ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity));
     }
 
+    @Contract("_, _, _ -> this")
     public final BUILDER addInternalStorage(IntSupplier rate, LongSupplier capacity, Predicate<RESOURCE> isValid) {
         return addContainer((attachedAccess, containerIndex) -> createBasicContainer(attachedAccess, containerIndex, ConstantPredicates.notExternal(),
               ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity));

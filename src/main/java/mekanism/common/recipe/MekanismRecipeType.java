@@ -24,6 +24,56 @@ import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
+import mekanism.api.recipes.book.ActivatingBookCategory;
+import mekanism.api.recipes.book.ActivatingBookCategory.ActivatingBookInfo;
+import mekanism.api.recipes.book.CentrifugingBookCategory;
+import mekanism.api.recipes.book.CentrifugingBookCategory.CentrifugingBookInfo;
+import mekanism.api.recipes.book.ChemicalConversionBookCategory;
+import mekanism.api.recipes.book.ChemicalConversionBookCategory.ChemicalConversionBookInfo;
+import mekanism.api.recipes.book.ChemicalInfusingBookCategory;
+import mekanism.api.recipes.book.ChemicalInfusingBookCategory.ChemicalInfusingBookInfo;
+import mekanism.api.recipes.book.CombiningBookCategory;
+import mekanism.api.recipes.book.CombiningBookCategory.CombiningBookInfo;
+import mekanism.api.recipes.book.CompressingBookCategory;
+import mekanism.api.recipes.book.CompressingBookCategory.CompressingBookInfo;
+import mekanism.api.recipes.book.CrushingBookCategory;
+import mekanism.api.recipes.book.CrushingBookCategory.CrushingBookInfo;
+import mekanism.api.recipes.book.CrystallizingBookCategory;
+import mekanism.api.recipes.book.CrystallizingBookCategory.CrystallizingBookInfo;
+import mekanism.api.recipes.book.DissolutionBookCategory;
+import mekanism.api.recipes.book.DissolutionBookCategory.DissolutionBookInfo;
+import mekanism.api.recipes.book.ElectrolysisBookCategory;
+import mekanism.api.recipes.book.ElectrolysisBookCategory.ElectrolysisBookInfo;
+import mekanism.api.recipes.book.EnergyConversionBookCategory;
+import mekanism.api.recipes.book.EnergyConversionBookCategory.EnergyConversionBookInfo;
+import mekanism.api.recipes.book.EnrichingBookCategory;
+import mekanism.api.recipes.book.EnrichingBookCategory.EnrichingBookInfo;
+import mekanism.api.recipes.book.EvaporatingBookCategory;
+import mekanism.api.recipes.book.EvaporatingBookCategory.EvaporatingBookInfo;
+import mekanism.api.recipes.book.InjectingBookCategory;
+import mekanism.api.recipes.book.InjectingBookCategory.InjectingBookInfo;
+import mekanism.api.recipes.book.MetallurgicInfusingBookCategory;
+import mekanism.api.recipes.book.MetallurgicInfusingBookCategory.MetallurgicInfusingBookInfo;
+import mekanism.api.recipes.book.NucleosynthesizingBookCategory;
+import mekanism.api.recipes.book.NucleosynthesizingBookCategory.NucleosynthesizingBookInfo;
+import mekanism.api.recipes.book.OxidizingBookCategory;
+import mekanism.api.recipes.book.OxidizingBookCategory.OxidizingBookInfo;
+import mekanism.api.recipes.book.PaintingBookCategory;
+import mekanism.api.recipes.book.PaintingBookCategory.PaintingBookInfo;
+import mekanism.api.recipes.book.PigmentExtractingBookCategory;
+import mekanism.api.recipes.book.PigmentExtractingBookCategory.PigmentExtractingBookInfo;
+import mekanism.api.recipes.book.PigmentMixingBookCategory;
+import mekanism.api.recipes.book.PigmentMixingBookCategory.PigmentMixingBookInfo;
+import mekanism.api.recipes.book.PurifyingBookCategory;
+import mekanism.api.recipes.book.PurifyingBookCategory.PurifyingBookInfo;
+import mekanism.api.recipes.book.ReactingBookCategory;
+import mekanism.api.recipes.book.ReactingBookCategory.ReactingBookInfo;
+import mekanism.api.recipes.book.RotaryBookCategory;
+import mekanism.api.recipes.book.RotaryBookCategory.RotaryBookInfo;
+import mekanism.api.recipes.book.SawingBookCategory;
+import mekanism.api.recipes.book.SawingBookCategory.SawingBookInfo;
+import mekanism.api.recipes.book.WashingBookCategory;
+import mekanism.api.recipes.book.WashingBookCategory.WashingBookInfo;
 import mekanism.api.recipes.vanilla_input.BiChemicalRecipeInput;
 import mekanism.api.recipes.vanilla_input.ReactionRecipeInput;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
@@ -52,6 +102,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe.CookingBookInfo;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -66,67 +118,94 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jspecify.annotations.Nullable;
 
-public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache>
-      implements RecipeType<RECIPE>, IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> {
+public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+      RECIPE extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO>, INPUT_CACHE extends IInputRecipeCache>
+      implements RecipeType<RECIPE>, IMekanismRecipeTypeProvider<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> {
 
     public static final RecipeTypeDeferredRegister RECIPE_TYPES = new RecipeTypeDeferredRegister(Mekanism.MODID);
 
-    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> CRUSHING = register(MekanismRecipeTypes.NAME_CRUSHING, recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleRecipeInput, CrushingBookCategory, CrushingBookInfo, ItemStackToItemStackRecipe<CrushingBookCategory, CrushingBookInfo>, SingleItem<ItemStackToItemStackRecipe<CrushingBookCategory, CrushingBookInfo>>> CRUSHING =
+          register(MekanismRecipeTypes.NAME_CRUSHING, recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> ENRICHING = register(MekanismRecipeTypes.NAME_ENRICHING, recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleRecipeInput, EnrichingBookCategory, EnrichingBookInfo, ItemStackToItemStackRecipe<EnrichingBookCategory, EnrichingBookInfo>, SingleItem<ItemStackToItemStackRecipe<EnrichingBookCategory, EnrichingBookInfo>>> ENRICHING =
+          register(MekanismRecipeTypes.NAME_ENRICHING, recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> SMELTING = register(MekanismRecipeTypes.NAME_SMELTING, recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleRecipeInput, CookingBookCategory, CookingBookInfo, ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>, SingleItem<ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>>> SMELTING =
+          register(MekanismRecipeTypes.NAME_SMELTING, recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<BiChemicalRecipeInput, ChemicalChemicalToChemicalRecipe, EitherSideChemical<ChemicalChemicalToChemicalRecipe>> CHEMICAL_INFUSING = register(MekanismRecipeTypes.NAME_CHEMICAL_INFUSING, EitherSideChemical::new);
+    public static final RecipeTypeRegistryObject<BiChemicalRecipeInput, ChemicalInfusingBookCategory, ChemicalInfusingBookInfo, ChemicalChemicalToChemicalRecipe<ChemicalInfusingBookCategory, ChemicalInfusingBookInfo>, EitherSideChemical<ChemicalChemicalToChemicalRecipe<ChemicalInfusingBookCategory, ChemicalInfusingBookInfo>>> CHEMICAL_INFUSING =
+          register(MekanismRecipeTypes.NAME_CHEMICAL_INFUSING, EitherSideChemical::new);
 
-    public static final RecipeTypeRegistryObject<RecipeInput, CombinerRecipe, DoubleItem<CombinerRecipe>> COMBINING = register(MekanismRecipeTypes.NAME_COMBINING, recipeType -> new DoubleItem<>(recipeType, CombinerRecipe::getMainInput, CombinerRecipe::getExtraInput));
+    public static final RecipeTypeRegistryObject<RecipeInput, CombiningBookCategory, CombiningBookInfo, CombinerRecipe, DoubleItem<CombinerRecipe>> COMBINING =
+          register(MekanismRecipeTypes.NAME_COMBINING, recipeType -> new DoubleItem<>(recipeType, CombinerRecipe::getMainInput, CombinerRecipe::getExtraInput));
 
-    public static final RecipeTypeRegistryObject<SingleFluidRecipeInput, ElectrolysisRecipe, SingleFluid<ElectrolysisRecipe>> SEPARATING = register(MekanismRecipeTypes.NAME_SEPARATING, recipeType -> new SingleFluid<>(recipeType, ElectrolysisRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleFluidRecipeInput, ElectrolysisBookCategory, ElectrolysisBookInfo, ElectrolysisRecipe, SingleFluid<ElectrolysisRecipe>> SEPARATING =
+          register(MekanismRecipeTypes.NAME_SEPARATING, recipeType -> new SingleFluid<>(recipeType, ElectrolysisRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleFluidChemicalRecipeInput, FluidChemicalToChemicalRecipe, FluidChemical<FluidChemicalToChemicalRecipe>> WASHING = register(MekanismRecipeTypes.NAME_WASHING, recipeType -> new FluidChemical<>(recipeType, FluidChemicalToChemicalRecipe::getFluidInput, FluidChemicalToChemicalRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleFluidChemicalRecipeInput, WashingBookCategory, WashingBookInfo, FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>, FluidChemical<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>>> WASHING =
+          register(MekanismRecipeTypes.NAME_WASHING, recipeType -> new FluidChemical<>(recipeType, FluidChemicalToChemicalRecipe::getFluidInput, FluidChemicalToChemicalRecipe::getChemicalInput));
 
-    public static final RecipeTypeRegistryObject<SingleFluidRecipeInput, FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> EVAPORATING = register(MekanismRecipeTypes.NAME_EVAPORATING, recipeType -> new SingleFluid<>(recipeType, FluidToFluidRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleFluidRecipeInput, EvaporatingBookCategory, EvaporatingBookInfo, FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo>, SingleFluid<FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo>>> EVAPORATING =
+          register(MekanismRecipeTypes.NAME_EVAPORATING, recipeType -> new SingleFluid<>(recipeType, FluidToFluidRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, ChemicalToChemicalRecipe, SingleChemical<ChemicalToChemicalRecipe>> ACTIVATING = register(MekanismRecipeTypes.NAME_ACTIVATING, recipeType -> new SingleChemical<>(recipeType, ChemicalToChemicalRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, ActivatingBookCategory, ActivatingBookInfo, ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>, SingleChemical<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>>> ACTIVATING =
+          register(MekanismRecipeTypes.NAME_ACTIVATING, recipeType -> new SingleChemical<>(recipeType, ChemicalToChemicalRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, ChemicalToChemicalRecipe, SingleChemical<ChemicalToChemicalRecipe>> CENTRIFUGING = register(MekanismRecipeTypes.NAME_CENTRIFUGING, recipeType -> new SingleChemical<>(recipeType, ChemicalToChemicalRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, CentrifugingBookCategory, CentrifugingBookInfo, ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>, SingleChemical<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>>> CENTRIFUGING =
+          register(MekanismRecipeTypes.NAME_CENTRIFUGING, recipeType -> new SingleChemical<>(recipeType, ChemicalToChemicalRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, ChemicalCrystallizerRecipe, SingleChemical<ChemicalCrystallizerRecipe>> CRYSTALLIZING = register(MekanismRecipeTypes.NAME_CRYSTALLIZING, recipeType -> new SingleChemical<>(recipeType, ChemicalCrystallizerRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, CrystallizingBookCategory, CrystallizingBookInfo, ChemicalCrystallizerRecipe, SingleChemical<ChemicalCrystallizerRecipe>> CRYSTALLIZING =
+          register(MekanismRecipeTypes.NAME_CRYSTALLIZING, recipeType -> new SingleChemical<>(recipeType, ChemicalCrystallizerRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ChemicalDissolutionRecipe, ItemChemical<ChemicalDissolutionRecipe>> DISSOLUTION = register(MekanismRecipeTypes.NAME_DISSOLUTION, recipeType -> new ItemChemical<>(recipeType, ChemicalDissolutionRecipe::getItemInput, ChemicalDissolutionRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, DissolutionBookCategory, DissolutionBookInfo, ChemicalDissolutionRecipe, ItemChemical<ChemicalDissolutionRecipe>> DISSOLUTION =
+          register(MekanismRecipeTypes.NAME_DISSOLUTION, recipeType -> new ItemChemical<>(recipeType, ChemicalDissolutionRecipe::getItemInput, ChemicalDissolutionRecipe::getChemicalInput));
 
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe, ItemChemical<ItemStackChemicalToItemStackRecipe>> COMPRESSING = register(MekanismRecipeTypes.NAME_COMPRESSING, recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput, ItemStackChemicalToItemStackRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, CompressingBookCategory, CompressingBookInfo, ItemStackChemicalToItemStackRecipe<CompressingBookCategory, CompressingBookInfo>, ItemChemical<ItemStackChemicalToItemStackRecipe<CompressingBookCategory, CompressingBookInfo>>> COMPRESSING =
+          register(MekanismRecipeTypes.NAME_COMPRESSING, recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput, ItemStackChemicalToItemStackRecipe::getChemicalInput));
 
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe, ItemChemical<ItemStackChemicalToItemStackRecipe>> PURIFYING = register(MekanismRecipeTypes.NAME_PURIFYING, recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput, ItemStackChemicalToItemStackRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, PurifyingBookCategory, PurifyingBookInfo, ItemStackChemicalToItemStackRecipe<PurifyingBookCategory, PurifyingBookInfo>, ItemChemical<ItemStackChemicalToItemStackRecipe<PurifyingBookCategory, PurifyingBookInfo>>> PURIFYING =
+          register(MekanismRecipeTypes.NAME_PURIFYING, recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput, ItemStackChemicalToItemStackRecipe::getChemicalInput));
 
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe, ItemChemical<ItemStackChemicalToItemStackRecipe>> INJECTING = register(MekanismRecipeTypes.NAME_INJECTING, recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput, ItemStackChemicalToItemStackRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, InjectingBookCategory, InjectingBookInfo, ItemStackChemicalToItemStackRecipe<InjectingBookCategory, InjectingBookInfo>, ItemChemical<ItemStackChemicalToItemStackRecipe<InjectingBookCategory, InjectingBookInfo>>> INJECTING =
+          register(MekanismRecipeTypes.NAME_INJECTING, recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput, ItemStackChemicalToItemStackRecipe::getChemicalInput));
 
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, NucleosynthesizingRecipe, ItemChemical<NucleosynthesizingRecipe>> NUCLEOSYNTHESIZING = register(MekanismRecipeTypes.NAME_NUCLEOSYNTHESIZING, recipeType -> new ItemChemical<>(recipeType, NucleosynthesizingRecipe::getItemInput, NucleosynthesizingRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, NucleosynthesizingBookCategory, NucleosynthesizingBookInfo, NucleosynthesizingRecipe, ItemChemical<NucleosynthesizingRecipe>> NUCLEOSYNTHESIZING =
+          register(MekanismRecipeTypes.NAME_NUCLEOSYNTHESIZING, recipeType -> new ItemChemical<>(recipeType, NucleosynthesizingRecipe::getItemInput, NucleosynthesizingRecipe::getChemicalInput));
 
-    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToEnergyRecipe, SingleItem<ItemStackToEnergyRecipe>> ENERGY_CONVERSION = register(MekanismRecipeTypes.NAME_ENERGY_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToEnergyRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleRecipeInput, EnergyConversionBookCategory, EnergyConversionBookInfo, ItemStackToEnergyRecipe, SingleItem<ItemStackToEnergyRecipe>> ENERGY_CONVERSION =
+          register(MekanismRecipeTypes.NAME_ENERGY_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToEnergyRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToChemicalRecipe, SingleItem<ItemStackToChemicalRecipe>> CHEMICAL_CONVERSION = register(MekanismRecipeTypes.NAME_CHEMICAL_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleRecipeInput, ChemicalConversionBookCategory, ChemicalConversionBookInfo, ItemStackToChemicalRecipe<ChemicalConversionBookCategory, ChemicalConversionBookInfo>, SingleItem<ItemStackToChemicalRecipe<ChemicalConversionBookCategory, ChemicalConversionBookInfo>>> CHEMICAL_CONVERSION =
+          register(MekanismRecipeTypes.NAME_CHEMICAL_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToChemicalRecipe, SingleItem<ItemStackToChemicalRecipe>> OXIDIZING = register(MekanismRecipeTypes.NAME_OXIDIZING, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleRecipeInput, OxidizingBookCategory, OxidizingBookInfo, ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo>, SingleItem<ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo>>> OXIDIZING =
+          register(MekanismRecipeTypes.NAME_OXIDIZING, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToChemicalRecipe, SingleItem<ItemStackToChemicalRecipe>> PIGMENT_EXTRACTING = register(MekanismRecipeTypes.NAME_PIGMENT_EXTRACTING, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleRecipeInput, PigmentExtractingBookCategory, PigmentExtractingBookInfo, ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>, SingleItem<ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>>> PIGMENT_EXTRACTING =
+          register(MekanismRecipeTypes.NAME_PIGMENT_EXTRACTING, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<BiChemicalRecipeInput, ChemicalChemicalToChemicalRecipe, EitherSideChemical<ChemicalChemicalToChemicalRecipe>> PIGMENT_MIXING = register(MekanismRecipeTypes.NAME_PIGMENT_MIXING, EitherSideChemical::new);
+    public static final RecipeTypeRegistryObject<BiChemicalRecipeInput, PigmentMixingBookCategory, PigmentMixingBookInfo, ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>, EitherSideChemical<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>>> PIGMENT_MIXING =
+          register(MekanismRecipeTypes.NAME_PIGMENT_MIXING, EitherSideChemical::new);
 
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe, ItemChemical<ItemStackChemicalToItemStackRecipe>> METALLURGIC_INFUSING = register(MekanismRecipeTypes.NAME_METALLURGIC_INFUSING, recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput, ItemStackChemicalToItemStackRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo, ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>, ItemChemical<ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>>> METALLURGIC_INFUSING =
+          register(MekanismRecipeTypes.NAME_METALLURGIC_INFUSING, recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput, ItemStackChemicalToItemStackRecipe::getChemicalInput));
 
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe, ItemChemical<ItemStackChemicalToItemStackRecipe>> PAINTING = register(MekanismRecipeTypes.NAME_PAINTING, recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput, ItemStackChemicalToItemStackRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, PaintingBookCategory, PaintingBookInfo, ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>, ItemChemical<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>>> PAINTING =
+          register(MekanismRecipeTypes.NAME_PAINTING, recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput, ItemStackChemicalToItemStackRecipe::getChemicalInput));
 
-    public static final RecipeTypeRegistryObject<ReactionRecipeInput, PressurizedReactionRecipe, ItemFluidChemical<PressurizedReactionRecipe>> REACTION = register(MekanismRecipeTypes.NAME_REACTION, recipeType -> new ItemFluidChemical<>(recipeType, PressurizedReactionRecipe::getInputSolid, PressurizedReactionRecipe::getInputFluid, PressurizedReactionRecipe::getInputChemical));
+    public static final RecipeTypeRegistryObject<ReactionRecipeInput, ReactingBookCategory, ReactingBookInfo, PressurizedReactionRecipe, ItemFluidChemical<PressurizedReactionRecipe>> REACTION =
+          register(MekanismRecipeTypes.NAME_REACTION, recipeType -> new ItemFluidChemical<>(recipeType, PressurizedReactionRecipe::getInputSolid, PressurizedReactionRecipe::getInputFluid, PressurizedReactionRecipe::getInputChemical));
 
-    public static final RecipeTypeRegistryObject<RotaryRecipeInput, RotaryRecipe, RotaryInputRecipeCache> ROTARY = register(MekanismRecipeTypes.NAME_ROTARY, RotaryInputRecipeCache::new);
+    public static final RecipeTypeRegistryObject<RotaryRecipeInput, RotaryBookCategory, RotaryBookInfo, RotaryRecipe, RotaryInputRecipeCache> ROTARY = register(MekanismRecipeTypes.NAME_ROTARY, RotaryInputRecipeCache::new);
 
-    public static final RecipeTypeRegistryObject<SingleRecipeInput, SawmillRecipe, SingleItem<SawmillRecipe>> SAWING = register(MekanismRecipeTypes.NAME_SAWING, recipeType -> new SingleItem<>(recipeType, SawmillRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleRecipeInput, SawingBookCategory, SawingBookInfo, SawmillRecipe, SingleItem<SawmillRecipe>> SAWING =
+          register(MekanismRecipeTypes.NAME_SAWING, recipeType -> new SingleItem<>(recipeType, SawmillRecipe::getInput));
 
-    private static <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache>
-    RecipeTypeRegistryObject<VANILLA_INPUT, RECIPE, INPUT_CACHE> register(
+    private static <VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+          RECIPE extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO>, INPUT_CACHE extends IInputRecipeCache>
+    RecipeTypeRegistryObject<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> register(
           Identifier name,
-          Function<MekanismRecipeType<VANILLA_INPUT, RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator
+          Function<MekanismRecipeType<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator
     ) {
         if (!Mekanism.MODID.equals(name.getNamespace())) {
             throw new IllegalStateException("Name must be in " + Mekanism.MODID + " namespace");
@@ -137,7 +216,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     public static void clearCache() {
         for (Holder<RecipeType<?>> entry : RECIPE_TYPES.getEntries()) {
             //Note: We expect all entries to be a MekanismRecipeType, but we validate it just to be sure
-            if (entry.value() instanceof MekanismRecipeType<?, ?, ?> recipeType) {
+            if (entry.value() instanceof MekanismRecipeType<?, ?, ?, ?, ?> recipeType) {
                 recipeType.clearCaches();
             }
         }
@@ -150,7 +229,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     public static boolean checkIncompleteRecipes(RecipeManager recipeManager, RegistryAccess registryAccess) {
         boolean foundIncompleteRecipes = false;
         for (DeferredHolder<RecipeType<?>, ? extends RecipeType<?>> holder : RECIPE_TYPES.getEntries()) {
-            MekanismRecipeType<?, ?, ?> recipeType = (MekanismRecipeType<?, ?, ?>) holder.value();
+            MekanismRecipeType<?, ?, ?, ?, ?> recipeType = (MekanismRecipeType<?, ?, ?, ?, ?>) holder.value();
             foundIncompleteRecipes |= recipeType.checkMyIncompleteRecipes(recipeManager);
         }
         return foundIncompleteRecipes;
@@ -160,7 +239,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     private final Identifier registryName;
     private final INPUT_CACHE inputCache;
 
-    private MekanismRecipeType(Identifier name, Function<MekanismRecipeType<VANILLA_INPUT, RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
+    private MekanismRecipeType(Identifier name, Function<MekanismRecipeType<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
         this.registryName = name;
         this.inputCache = inputCacheCreator.apply(this);
     }
@@ -176,7 +255,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     }
 
     @Override
-    public MekanismRecipeType<VANILLA_INPUT, RECIPE, INPUT_CACHE> getRecipeType() {
+    public MekanismRecipeType<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> getRecipeType() {
         return this;
     }
 
@@ -228,7 +307,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
                 if (smeltingRecipe.input().isEmpty()) {
                     continue;
                 }
-                ItemStackToItemStackRecipe possiblyUnwrapped = WrappedSmelterRecipe.tryUnwrap(smeltingRecipe);
+                ItemStackToItemStackRecipe<?, ?> possiblyUnwrapped = WrappedSmelterRecipe.tryUnwrap(smeltingRecipe);
                 ResourceKey<Recipe<?>> generateId = RegistryUtils.syntheticKey(recipeHolder.id(), "mekanism_generated");
                 recipes.add(new RecipeHolder<>(generateId, castRecipe(possiblyUnwrapped)));
 
@@ -238,7 +317,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     }
 
     @SuppressWarnings("unchecked")
-    private RECIPE castRecipe(MekanismRecipe<?> o) {
+    private RECIPE castRecipe(MekanismRecipe<?, ?, ?> o) {
         if (o.getType() != this) {
             throw new IllegalArgumentException("Wrong recipe type");
         }

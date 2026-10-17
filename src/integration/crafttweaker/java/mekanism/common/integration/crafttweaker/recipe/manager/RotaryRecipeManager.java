@@ -72,7 +72,7 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipeInput
     /// @param fluidInput     [CTFluidIngredient] representing the input of the recipe.
     /// @param chemicalOutput [ICrTChemicalStack] representing the output of the recipe. Will be validated as not empty.
     public final RotaryRecipe makeRecipe(CTFluidIngredient fluidInput, ICrTChemicalStack chemicalOutput) {
-        return new BasicRotaryRecipe(CrTUtils.fromCrT(fluidInput), getAndValidateNotEmpty(chemicalOutput));
+        return new BasicRotaryRecipe(, , CrTUtils.fromCrT(fluidInput), getAndValidateNotEmpty(chemicalOutput));
     }
 
     /// Creates a rotary recipe that converts a chemical into a fluid.
@@ -80,7 +80,7 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipeInput
     /// @param chemicalInput [ChemicalStackIngredient] representing the input of the recipe.
     /// @param fluidOutput   [IFluidStack] representing the output of the recipe. Will be validated as not empty.
     public final RotaryRecipe makeRecipe(ChemicalStackIngredient chemicalInput, IFluidStack fluidOutput) {
-        return new BasicRotaryRecipe(chemicalInput, getAndValidateNotEmpty(fluidOutput));
+        return new BasicRotaryRecipe(, , chemicalInput, getAndValidateNotEmpty(fluidOutput));
     }
 
     /// Creates a rotary recipe that is capable of converting a fluid into a chemical and a chemical into a fluid.
@@ -90,7 +90,7 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipeInput
     /// @param chemicalOutput [ICrTChemicalStack] representing the output of the recipe when converting from a fluid to a chemical. Will be validated as not empty.
     /// @param fluidOutput    [IFluidStack] representing the output of the recipe when converting from a chemical to a fluid. Will be validated as not empty.
     public final RotaryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack chemicalOutput, IFluidStack fluidOutput) {
-        return new BasicRotaryRecipe(CrTUtils.fromCrT(fluidInput), chemicalInput, getAndValidateNotEmpty(chemicalOutput), getAndValidateNotEmpty(fluidOutput));
+        return new BasicRotaryRecipe(, , CrTUtils.fromCrT(fluidInput), chemicalInput, getAndValidateNotEmpty(chemicalOutput), getAndValidateNotEmpty(fluidOutput));
     }
 
     @Override

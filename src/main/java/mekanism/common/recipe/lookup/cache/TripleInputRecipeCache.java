@@ -15,8 +15,10 @@ import net.neoforged.neoforge.common.util.TriPredicate;
 import org.jspecify.annotations.Nullable;
 
 /// Basic implementation for [IInputRecipeCache] for handling recipes with three inputs.
-public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, INGREDIENT_A extends InputIngredient<HOLDER_A, INPUT_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, INGREDIENT_B extends InputIngredient<HOLDER_B, INPUT_B>,
-      HOLDER_C, INPUT_C extends TypedInstance<HOLDER_C>, INGREDIENT_C extends InputIngredient<HOLDER_C, INPUT_C>, RECIPE extends MekanismRecipe<?> & TriPredicate<INPUT_A, INPUT_B, INPUT_C>,
+public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, INGREDIENT_A extends InputIngredient<HOLDER_A, INPUT_A>,
+      HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, INGREDIENT_B extends InputIngredient<HOLDER_B, INPUT_B>,
+      HOLDER_C, INPUT_C extends TypedInstance<HOLDER_C>, INGREDIENT_C extends InputIngredient<HOLDER_C, INPUT_C>,
+      RECIPE extends MekanismRecipe<?, ?, ?> & TriPredicate<INPUT_A, INPUT_B, INPUT_C>,
       CACHE_A extends IInputCache<HOLDER_A, INPUT_A, INGREDIENT_A, RECIPE>, CACHE_B extends IInputCache<HOLDER_B, INPUT_B, INGREDIENT_B, RECIPE>,
       CACHE_C extends IInputCache<HOLDER_C, INPUT_C, INGREDIENT_C, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
 
@@ -31,7 +33,7 @@ public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
     private final CACHE_B cacheB;
     private final CACHE_C cacheC;
 
-    protected TripleInputRecipeCache(MekanismRecipeType<?, RECIPE, ?> recipeType, Function<RECIPE, INGREDIENT_A> inputAExtractor, CACHE_A cacheA,
+    protected TripleInputRecipeCache(MekanismRecipeType<?, ?, ?, RECIPE, ?> recipeType, Function<RECIPE, INGREDIENT_A> inputAExtractor, CACHE_A cacheA,
           Function<RECIPE, INGREDIENT_B> inputBExtractor, CACHE_B cacheB, Function<RECIPE, INGREDIENT_C> inputCExtractor, CACHE_C cacheC) {
         super(recipeType);
         this.inputAExtractor = inputAExtractor;

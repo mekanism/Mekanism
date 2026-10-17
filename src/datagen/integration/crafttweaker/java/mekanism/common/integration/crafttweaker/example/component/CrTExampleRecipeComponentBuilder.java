@@ -23,6 +23,7 @@ import mekanism.common.integration.crafttweaker.example.CrTExampleBuilder;
 import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
 import mekanism.common.util.MekanismUtils;
 import net.neoforged.neoforge.common.util.Lazy;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -123,6 +124,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
         return MekanismUtils.getParameterNames(classMethods, method, signature);
     }
 
+    @Contract("_ -> this")
     public CrTExampleRecipeComponentBuilder<BUILDER_TYPE> addExample(Object... params) {
         if (params == null || params.length == 0) {
             throw new IllegalArgumentException("No parameters specified.");

@@ -4,10 +4,6 @@
     "amount": 100,
     "ingredient": "mekanism:hydrogen"
   },
-  "chemical_output": {
-    "amount": 300,
-    "id": "mekanism:ethene"
-  },
   "duration": 100,
   "fluid_input": {
     "amount": 10,
@@ -17,7 +13,13 @@
     "count": 2,
     "ingredient": "#c:fuels/bio"
   },
-  "item_output": {
-    "id": "mekanism:substrate"
+  "output": {
+    "chemical": {
+      "amount": 300,
+      "id": "mekanism:ethene"
+    },
+    "item": {
+      "id": "mekanism:substrate"
+    }
   }
 }

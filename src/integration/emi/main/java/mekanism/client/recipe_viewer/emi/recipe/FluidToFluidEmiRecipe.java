@@ -4,6 +4,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.List;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiHorizontalRateBar;
@@ -17,11 +18,13 @@ import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class FluidToFluidEmiRecipe extends MekanismEmiHolderRecipe<FluidToFluidRecipe> {
+public class FluidToFluidEmiRecipe<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends MekanismEmiHolderRecipe<FluidToFluidRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
-    public FluidToFluidEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<FluidToFluidRecipe> recipeHolder) {
+    public FluidToFluidEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<FluidToFluidRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getInput());
         //TODO - Emi: ContextMap

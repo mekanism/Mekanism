@@ -1,6 +1,8 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.book.MetallurgicInfusingBookCategory;
+import mekanism.api.recipes.book.MetallurgicInfusingBookCategory.MetallurgicInfusingBookInfo;
 import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.gui.element.bar.GuiEmptyBar;
@@ -19,14 +21,14 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class MetallurgicInfuserRecipeCategory extends HolderRecipeCategory<ItemStackChemicalToItemStackRecipe> {
+public class MetallurgicInfuserRecipeCategory extends HolderRecipeCategory<ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>> {
 
     private final GuiSlot input;
     private final GuiSlot extra;
     private final GuiSlot output;
     private final GuiBar<?> infusionBar;
 
-    public MetallurgicInfuserRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe> recipeType) {
+    public MetallurgicInfuserRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>> recipeType) {
         super(helper, recipeType);
         extra = addSlot(SlotType.EXTRA, 17, 35);
         input = addSlot(SlotType.INPUT, 51, 43);
@@ -38,8 +40,8 @@ public class MetallurgicInfuserRecipeCategory extends HolderRecipeCategory<ItemS
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, IFocusGroup focusGroup) {
-        ItemStackChemicalToItemStackRecipe recipe = recipeHolder.value();
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>> recipeHolder, IFocusGroup focusGroup) {
+        ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo> recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().display());
         WithAmountSlotDisplay chemicalInput = recipe.getChemicalInput().display();
         if (recipe.perTickUsage()) {

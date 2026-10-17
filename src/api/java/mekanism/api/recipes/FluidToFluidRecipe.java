@@ -1,39 +1,37 @@
 package mekanism.api.recipes;
 
-import java.util.List;
-import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.SingleInputRecipe.FluidInputRecipe;
-import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.display.RecipeDisplay;
-import net.minecraft.world.item.crafting.display.SlotDisplay;
+import mekanism.api.recipes.book.MekanismBookCategory;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 /// Input: FluidStack
 ///
 /// Output: FluidStack
 ///
 /// @apiNote Thermal Evaporation Towers can process this recipe type.
-public abstract class FluidToFluidRecipe extends FluidInputRecipe<FluidStackTemplate> {
+public abstract class FluidToFluidRecipe<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends FluidInputRecipe<FluidStackTemplate, BOOK_CATEGORY, BOOK_INFO> {
 
-    private static final Holder<Item> THERMAL_EVAPORATION_CONTROLLER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "thermal_evaporation_controller"));
-
-    @Override
-    public final RecipeType<FluidToFluidRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_EVAPORATING.get();
+    /// @param commonInfo Common recipe info.
+    /// @param bookInfo   Recipe book info.
+    ///
+    /// @since 10.8.0
+    protected FluidToFluidRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
+        super(commonInfo, bookInfo);
     }
 
-    @Override
-    public List<RecipeDisplay> display() {
-        return List.of(new SimpleMachineRecipeDisplay(
-              getInput().display(),
-              getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(THERMAL_EVAPORATION_CONTROLLER)
-        ));
+    /// Helper interface for constructing [FluidToFluidRecipes][FluidToFluidRecipe]
+    ///
+    /// @since 10.8.0
+    @FunctionalInterface
+    public interface Factory<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>, RECIPE extends FluidToFluidRecipe<BOOK_CATEGORY, BOOK_INFO>> {
+
+        /// @param commonInfo Common recipe info.
+        /// @param bookInfo   Recipe book info.
+        /// @param input      Input ingredient.
+        /// @param output     Output fluid.
+        RECIPE create(CommonInfo commonInfo, BOOK_INFO bookInfo, FluidStackIngredient input, FluidStackTemplate output);
     }
 }

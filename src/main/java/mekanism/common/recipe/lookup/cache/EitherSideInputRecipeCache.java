@@ -15,15 +15,15 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 /// Similar in concept to [DoubleInputRecipeCache] except that it requires both input types to be the same and also allows for them to be in any order.
-public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>, RECIPE extends MekanismRecipe<?> & BiPredicate<STACK, STACK>,
-      CACHE extends IInputCache<TYPE, STACK, INGREDIENT, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
+public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>,
+      RECIPE extends MekanismRecipe<?, ?, ?> & BiPredicate<STACK, STACK>, CACHE extends IInputCache<TYPE, STACK, INGREDIENT, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
 
     private final Set<RECIPE> complexRecipes = new HashSet<>();
     private final Function<RECIPE, INGREDIENT> inputAExtractor;
     private final Function<RECIPE, INGREDIENT> inputBExtractor;
     private final CACHE cache;
 
-    protected EitherSideInputRecipeCache(MekanismRecipeType<?, RECIPE, ?> recipeType, Function<RECIPE, INGREDIENT> inputAExtractor,
+    protected EitherSideInputRecipeCache(MekanismRecipeType<?, ?, ?, RECIPE, ?> recipeType, Function<RECIPE, INGREDIENT> inputAExtractor,
           Function<RECIPE, INGREDIENT> inputBExtractor, CACHE cache) {
         super(recipeType);
         this.inputAExtractor = inputAExtractor;

@@ -25,12 +25,15 @@ public class BinInsertRecipe extends BinRecipe {
     public static final BinInsertRecipe INSTANCE = new BinInsertRecipe();
 
     @Override
-    public boolean matches(CraftingInput inv, Level world) {
+    public boolean matches(CraftingInput input, Level world) {
+        if (input.ingredientCount() < 2) {
+            return false;
+        }
         ItemResource binType = ItemResource.EMPTY;
         ItemResource foundType = ItemResource.EMPTY;
         //Note: We don't use inv#getItems as that may do unnecessary copies depending on impl
-        for (int i = 0, slots = inv.size(); i < slots; ++i) {
-            ItemStack stackInSlot = inv.getItem(i);
+        for (int i = 0, slots = input.size(); i < slots; ++i) {
+            ItemStack stackInSlot = input.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
                     if (!binType.isEmpty() || stackInSlot.count() > 1) {

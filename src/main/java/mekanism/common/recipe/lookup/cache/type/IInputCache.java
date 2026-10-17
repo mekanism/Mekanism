@@ -8,7 +8,7 @@ import org.jspecify.annotations.Nullable;
 
 /// Base interface describing how a specific input type is cached to allow for quick lookup of recipes by input both for finding the recipes and checking if any even
 /// exist with the given input.
-public interface IInputCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>, RECIPE extends MekanismRecipe<?>> {
+public interface IInputCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>, RECIPE extends MekanismRecipe<?, ?, ?>> {
 
     /// Checks if this [IInputCache] knows about the given input.
     ///

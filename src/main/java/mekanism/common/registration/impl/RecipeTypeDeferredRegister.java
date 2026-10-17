@@ -7,6 +7,7 @@ import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -16,8 +17,11 @@ public class RecipeTypeDeferredRegister extends MekanismDeferredRegister<RecipeT
         super(Registries.RECIPE_TYPE, modid, RecipeTypeRegistryObject::new);
     }
 
-    public <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache>
-    RecipeTypeRegistryObject<VANILLA_INPUT, RECIPE, INPUT_CACHE> registerMek(String name, Function<Identifier, ? extends MekanismRecipeType<VANILLA_INPUT, RECIPE, INPUT_CACHE>> func) {
-        return (RecipeTypeRegistryObject<VANILLA_INPUT, RECIPE, INPUT_CACHE>) super.register(name, func);
+    @SuppressWarnings("unchecked")
+    public <VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+          RECIPE extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO>, INPUT_CACHE extends IInputRecipeCache>
+    RecipeTypeRegistryObject<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> registerMek(String name,
+          Function<Identifier, ? extends MekanismRecipeType<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE>> func) {
+        return (RecipeTypeRegistryObject<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE>) super.register(name, func);
     }
 }

@@ -12,6 +12,8 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.book.EvaporatingBookCategory;
+import mekanism.api.recipes.book.EvaporatingBookCategory.EvaporatingBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
@@ -68,7 +70,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-public class EvaporationMultiblockData extends MultiblockData implements IValveHandler, FluidRecipeLookupHandler<FluidToFluidRecipe> {
+public class EvaporationMultiblockData extends MultiblockData implements IValveHandler, FluidRecipeLookupHandler<FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_INPUT,
@@ -102,7 +104,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
     public double lastEnvironmentLoss;
 
-    private final RecipeCacheLookupMonitor<FluidToFluidRecipe> recipeCacheLookupMonitor;
+    private final RecipeCacheLookupMonitor<FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo>> recipeCacheLookupMonitor;
     private final BooleanSupplier recheckAllRecipeErrors;
     @ContainerSync
     private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
@@ -262,18 +264,19 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<SingleFluidRecipeInput, FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleFluidRecipeInput, EvaporatingBookCategory, EvaporatingBookInfo, FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo>,
+          SingleFluid<FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo>>> getRecipeType() {
         return MekanismRecipeType.EVAPORATING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<FluidToFluidRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo>> recipeViewerType() {
         return RecipeViewerRecipeType.EVAPORATING;
     }
 
     @Nullable
     @Override
-    public FluidToFluidRecipe getRecipe(int cacheIndex) {
+    public FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
@@ -283,7 +286,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(FluidToFluidRecipe recipe, int cacheIndex) {
+    public CachedRecipe<FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo>> createNewCachedRecipe(FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo> recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(errors -> {
                   for (int i = 0; i < trackedErrors.length; i++) {

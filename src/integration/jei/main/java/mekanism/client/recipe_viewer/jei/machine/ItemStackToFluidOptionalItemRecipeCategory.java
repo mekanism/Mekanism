@@ -3,7 +3,6 @@ package mekanism.client.recipe_viewer.jei.machine;
 import com.mojang.serialization.Codec;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
@@ -14,6 +13,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.jei.SyntheticRecipeCategory;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.impl.NutritionalLiquifierRecipe;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.RegistryUtils;
@@ -31,13 +31,13 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import org.jspecify.annotations.Nullable;
 
-public class ItemStackToFluidOptionalItemRecipeCategory extends SyntheticRecipeCategory<BasicItemStackToFluidOptionalItemRecipe> {
+public class ItemStackToFluidOptionalItemRecipeCategory extends SyntheticRecipeCategory<NutritionalLiquifierRecipe> {
 
     private final GuiGauge<?> outputTank;
     private final GuiSlot outputItem;
     private final GuiSlot input;
 
-    public ItemStackToFluidOptionalItemRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<BasicItemStackToFluidOptionalItemRecipe> recipeType, boolean isConversion) {
+    public ItemStackToFluidOptionalItemRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<NutritionalLiquifierRecipe> recipeType, boolean isConversion) {
         super(helper, recipeType);
         input = addSlot(SlotType.INPUT, 26, 36);
         outputItem = addSlot(SlotType.OUTPUT, 110, 36);
@@ -46,7 +46,7 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends SyntheticRecipeC
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, BasicItemStackToFluidOptionalItemRecipe recipe, IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, NutritionalLiquifierRecipe recipe, IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().display());
         SlotDisplay outputDisplay = recipe.getOutputDisplay();
         initFluid(builder, RecipeIngredientRole.OUTPUT, outputTank, outputDisplay);
@@ -55,7 +55,7 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends SyntheticRecipeC
 
     @Nullable
     @Override
-    public Identifier getIdentifier(BasicItemStackToFluidOptionalItemRecipe recipe) {
+    public Identifier getIdentifier(NutritionalLiquifierRecipe recipe) {
         //TODO - 26.3: Can we grab the context map from jei?
         ContextMap contextMap = SlotDisplayContext.fromLevel(Objects.requireNonNull(Minecraft.getInstance().level));
         List<Identifier> ids = recipe.getInput().display()
@@ -68,7 +68,7 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends SyntheticRecipeC
     }
 
     @Override
-    public Codec<BasicItemStackToFluidOptionalItemRecipe> getCodec(ICodecHelper codecHelper, IRecipeManager recipeManager) {
+    public Codec<NutritionalLiquifierRecipe> getCodec(ICodecHelper codecHelper, IRecipeManager recipeManager) {
         return MekanismRecipeSerializersInternal.LIQUIFIER.value().codec().codec();
     }
 }

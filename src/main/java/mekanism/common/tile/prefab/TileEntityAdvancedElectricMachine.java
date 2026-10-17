@@ -11,6 +11,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
@@ -55,6 +56,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -63,8 +65,9 @@ import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 //TODO: See what classes we can deduplicate by making this a parent class of them
-public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgressMachine<ItemStackChemicalToItemStackRecipe> implements
-      ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
+public abstract class TileEntityAdvancedElectricMachine<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends TileEntityProgressMachine<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>>
+      implements ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>>, ConstantUsageRecipeLookupHandler {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -91,7 +94,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     protected final IInputHandler<Chemical, ChemicalStack> chemicalInputHandler;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
-    private MachineEnergyContainer<TileEntityAdvancedElectricMachine> energyContainer;
+    private MachineEnergyContainer<TileEntityAdvancedElectricMachine<BOOK_CATEGORY, BOOK_INFO>> energyContainer;
     @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
     InputInventorySlot inputSlot;
@@ -105,7 +108,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
-    public TileEntityAdvancedElectricMachine(Holder<Block> blockProvider, BlockPos pos, BlockState state, int ticksRequired) {
+    protected TileEntityAdvancedElectricMachine(Holder<Block> blockProvider, BlockPos pos, BlockState state, int ticksRequired) {
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, ticksRequired);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, secondarySlot, energySlot);
         if (allowExtractingChemical()) {
@@ -175,13 +178,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
 
     @Nullable
     @Override
-    public ItemStackChemicalToItemStackRecipe getRecipe(int cacheIndex) {
+    public ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> getRecipe(int cacheIndex) {
         return findFirstRecipe(itemInputHandler, chemicalInputHandler);
     }
 
     @Override
-    public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
-        CachedRecipe<ItemStackChemicalToItemStackRecipe> cachedRecipe;
+    public CachedRecipe<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe, int cacheIndex) {
+        CachedRecipe<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, chemicalInputHandler,
                   gasUsageMultiplier, used -> usedSoFar = used, outputHandler);
@@ -217,7 +220,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
               energySlot, inputSlot, outputSlot, getComponents(), problemPath());
     }
 
-    public MachineEnergyContainer<TileEntityAdvancedElectricMachine> energyContainer() {
+    public MachineEnergyContainer<TileEntityAdvancedElectricMachine<BOOK_CATEGORY, BOOK_INFO>> energyContainer() {
         return energyContainer;
     }
 

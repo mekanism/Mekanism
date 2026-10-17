@@ -13,6 +13,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
@@ -23,7 +24,7 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
-import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RVRecipeTypeWrapper;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
@@ -39,7 +40,6 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
-import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.DoubleInputRecipeCache.CheckRecipeType;
@@ -57,6 +57,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -67,10 +68,11 @@ import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 //Compressing, injecting, purifying, infusing
-public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityItemToItemFactory<ItemStackChemicalToItemStackRecipe> implements IHasDumpButton,
-      ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
+public class TileEntityItemStackChemicalToItemStackFactory<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends TileEntityItemToItemFactory<BOOK_CATEGORY, BOOK_INFO, ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> implements IHasDumpButton,
+      ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>>, ConstantUsageRecipeLookupHandler {
 
-    private static final CheckRecipeType<Item, ItemResource, Chemical, ChemicalResource, ItemStackChemicalToItemStackRecipe, ItemResource> CAN_OUTPUT_STACK =
+    private static final CheckRecipeType<Item, ItemResource, Chemical, ChemicalResource, ItemStackChemicalToItemStackRecipe<?, ?>, ItemResource> CAN_OUTPUT_STACK =
           (recipe, input, extra, outputContents) -> outputContents.isEmpty() || outputContents.matches(recipe.getOutput(input, extra));
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -159,14 +161,14 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     }
 
     @Override
-    protected int getNeededInput(ItemStackChemicalToItemStackRecipe recipe, ItemResource inputType) {
+    protected int getNeededInput(ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe, ItemResource inputType) {
         return recipe.getItemInput().getNeededAmount(inputType);
     }
 
     @Override
-    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackChemicalToItemStackRecipe> cached, ItemResource itemType) {
+    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> cached, ItemResource itemType) {
         if (cached != null) {
-            ItemStackChemicalToItemStackRecipe cachedRecipe = cached.getRecipe();
+            ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> cachedRecipe = cached.getRecipe();
             return cachedRecipe.getItemInput().testType(itemType) && (chemicalTank.isEmpty() || cachedRecipe.getChemicalInput().testType(chemicalTank.resource()));
         }
         return false;
@@ -174,7 +176,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
 
     @Nullable
     @Override
-    protected ItemStackChemicalToItemStackRecipe findRecipe(ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    protected ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> findRecipe(ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         //TODO: Give it something that is not empty when we don't have a stored gas stack for getting the output?
         return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, chemicalTank.resource(), outputSlot.resource(), CAN_OUTPUT_STACK);
     }
@@ -185,19 +187,16 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe, ItemChemical<ItemStackChemicalToItemStackRecipe>> getRecipeType() {
-        return switch (type) {
-            case COMPRESSING -> MekanismRecipeType.COMPRESSING;
-            case INFUSING -> MekanismRecipeType.METALLURGIC_INFUSING;
-            case INJECTING -> MekanismRecipeType.INJECTING;
-            case PURIFYING -> MekanismRecipeType.PURIFYING;
-            default -> throw new IllegalStateException("Unhandled factory type");
-        };
+    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, BOOK_CATEGORY, BOOK_INFO, ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>,
+          ItemChemical<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>>> getRecipeType() {
+        return recipeViewerType().vanillaProvider();
     }
 
     @Override
-    public IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe> recipeViewerType() {
-        return switch (type) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public RVRecipeTypeWrapper<SingleItemChemicalRecipeInput, BOOK_CATEGORY, BOOK_INFO, ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>,
+          ItemChemical<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>>> recipeViewerType() {
+        return (RVRecipeTypeWrapper) switch (type) {
             case COMPRESSING -> RecipeViewerRecipeType.COMPRESSING;
             case INFUSING -> RecipeViewerRecipeType.METALLURGIC_INFUSING;
             case INJECTING -> RecipeViewerRecipeType.INJECTING;
@@ -216,13 +215,13 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
 
     @Nullable
     @Override
-    public ItemStackChemicalToItemStackRecipe getRecipe(int cacheIndex) {
+    public ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandlers[cacheIndex], chemicalInputHandler);
     }
 
     @Override
-    public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
-        CachedRecipe<ItemStackChemicalToItemStackRecipe> cachedRecipe;
+    public CachedRecipe<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe, int cacheIndex) {
+        CachedRecipe<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], chemicalInputHandler,
                   chemicalUsageMultiplier, used -> usedSoFar[cacheIndex] = used, outputHandlers[cacheIndex]);

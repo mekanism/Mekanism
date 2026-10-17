@@ -64,7 +64,7 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
 
         @Override
         protected ItemStackToEnergyRecipe makeRecipeInternal(IIngredientWithAmount input, int output) {
-            return new BasicItemStackToEnergyRecipe(CrTUtils.fromCrT(input), output);
+            return new BasicItemStackToEnergyRecipe(, , CrTUtils.fromCrT(input), output);
         }
     }
 }

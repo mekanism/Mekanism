@@ -5,6 +5,8 @@ import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.basic.BasicRotaryRecipe;
+import mekanism.api.recipes.book.RotaryBookCategory;
+import mekanism.api.recipes.book.RotaryBookCategory.RotaryBookInfo;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.resources.ResourceKey;
@@ -12,7 +14,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jspecify.annotations.Nullable;
 
-public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuilder> {
+public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryBookCategory, RotaryBookInfo, RotaryRecipeBuilder> {
 
     @Nullable
     private final ChemicalStackIngredient chemicalInput;
@@ -29,6 +31,7 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
         this.fluidInput = fluidInput;
         this.chemicalOutput = chemicalOutput;
         this.fluidOutput = fluidOutput;
+        super(RotaryBookInfo::new, RotaryBookCategory.MISC);
     }
 
     @Override
@@ -76,11 +79,11 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
     protected RotaryRecipe asRecipe() {
         if (fluidInput != null && chemicalOutput != null) {
             if (chemicalInput != null && fluidOutput != null) {
-                return new BasicRotaryRecipe(fluidInput, chemicalInput, chemicalOutput, fluidOutput);
+                return new BasicRotaryRecipe(commonInfo(), bookInfo(), fluidInput, chemicalInput, chemicalOutput, fluidOutput);
             }
-            return new BasicRotaryRecipe(fluidInput, chemicalOutput);
+            return new BasicRotaryRecipe(commonInfo(), bookInfo(), fluidInput, chemicalOutput);
         } else if (chemicalInput != null && fluidOutput != null) {
-            return new BasicRotaryRecipe(chemicalInput, fluidOutput);
+            return new BasicRotaryRecipe(commonInfo(), bookInfo(), chemicalInput, fluidOutput);
         }
         throw new IllegalStateException("Invalid rotary recipe");
     }

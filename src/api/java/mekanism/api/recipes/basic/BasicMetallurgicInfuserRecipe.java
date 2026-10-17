@@ -4,6 +4,8 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
+import mekanism.api.recipes.book.MetallurgicInfusingBookCategory;
+import mekanism.api.recipes.book.MetallurgicInfusingBookCategory.MetallurgicInfusingBookInfo;
 import mekanism.api.recipes.display.PerTickCombiningRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -17,15 +19,16 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-public class BasicMetallurgicInfuserRecipe extends BasicItemStackChemicalToItemStackRecipe {
+public class BasicMetallurgicInfuserRecipe extends BasicItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo> {
 
     private static final Holder<Item> METALLURGIC_INFUSER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"));
 
     /// @param itemInput     Item input.
     /// @param chemicalInput Infusion input.
     /// @param output        Output.
-    public BasicMetallurgicInfuserRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage) {
-        super(itemInput, chemicalInput, output, perTickUsage, MekanismRecipeTypes.TYPE_METALLURGIC_INFUSING.value());
+    public BasicMetallurgicInfuserRecipe(CommonInfo commonInfo, MetallurgicInfusingBookInfo bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput,
+          boolean perTickUsage, ItemStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_METALLURGIC_INFUSING.value(), commonInfo, bookInfo, itemInput, chemicalInput, perTickUsage, output);
     }
 
     @Override

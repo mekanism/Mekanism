@@ -4,6 +4,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.basic.BasicEvaporatingRecipe;
 import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
 import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -16,9 +17,9 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_FLUID_TO_FLUID)
-public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<SingleFluidRecipeInput, FluidToFluidRecipe> {
+public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<SingleFluidRecipeInput, FluidToFluidRecipe<?, ?>> {
 
-    protected FluidToFluidRecipeManager(IMekanismRecipeTypeProvider<SingleFluidRecipeInput, FluidToFluidRecipe, ?> recipeType) {
+    protected FluidToFluidRecipeManager(IMekanismRecipeTypeProvider<SingleFluidRecipeInput, FluidToFluidRecipe<?, ?>, ?> recipeType) {
         super(recipeType);
     }
 
@@ -38,14 +39,14 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Si
     ///
     /// @param input  [CTFluidIngredient] representing the input of the recipe.
     /// @param output [IFluidStack] representing the output of the recipe. Will be validated as not empty.
-    public final BasicFluidToFluidRecipe makeRecipe(CTFluidIngredient input, IFluidStack output) {
+    public final BasicFluidToFluidRecipe<?, ?> makeRecipe(CTFluidIngredient input, IFluidStack output) {
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract BasicFluidToFluidRecipe makeRecipe(CTFluidIngredient input, FluidStackTemplate output);
+    protected abstract BasicFluidToFluidRecipe<?, ?> makeRecipe(CTFluidIngredient input, FluidStackTemplate output);
 
     @Override
-    protected String describeOutputs(FluidToFluidRecipe recipe) {
+    protected String describeOutputs(FluidToFluidRecipe<?, ?> recipe) {
         //TODO - CrT: ContextMap
         return CrTUtils.describeOutputs(recipe.getOutputDefinition(ContextMap.EMPTY), IFluidStack::of);
     }
@@ -61,8 +62,8 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Si
         }
 
         @Override
-        protected BasicFluidToFluidRecipe makeRecipe(CTFluidIngredient input, FluidStackTemplate output) {
-            return new BasicFluidToFluidRecipe(CrTUtils.fromCrT(input), output);
+        protected BasicFluidToFluidRecipe<?, ?> makeRecipe(CTFluidIngredient input, FluidStackTemplate output) {
+            return new BasicEvaporatingRecipe(, , CrTUtils.fromCrT(input), output);
         }
     }
 }

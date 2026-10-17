@@ -36,29 +36,29 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.BRICKS_NORMAL),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismTags.Chemicals.WATER_VAPOR, 1),
-              template(ItemIds.CLAY_BALL),
-              true
+              true,
+              template(ItemIds.CLAY_BALL)
         ).save(consumer, Mekanism.rl(basePath + "brick_to_clay_ball"));
         //Dirt -> mud
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.DIRT),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismTags.Chemicals.WATER_VAPOR, 1),
-              template(BlockItemIds.MUD),
-              true
+              true,
+              template(BlockItemIds.MUD)
         ).save(consumer, Mekanism.rl(basePath + "dirt_to_mud"));
         //Gunpowder -> sulfur
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.GUNPOWDERS),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.HYDROGEN_CHLORIDE, 1),
-              MekanismItems.SULFUR_DUST.asTemplate(),
-              true
+              true,
+              MekanismItems.SULFUR_DUST.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "gunpowder_to_sulfur"));
         //Terracotta -> clay
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.TERRACOTTA),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismTags.Chemicals.WATER_VAPOR, 1),
-              template(BlockItemIds.CLAY),
-              true
+              true,
+              template(BlockItemIds.CLAY)
         ).save(consumer, Mekanism.rl(basePath + "terracotta_to_clay"));
         addChemicalInjectorConcreteRecipes(consumer, basePath + "concrete/");
         addChemicalInjectorCoralRevivalRecipes(consumer, basePath + "coral/");
@@ -69,8 +69,8 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
         ColorCollection.VALUES.forEach(color -> ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.CONCRETE_POWDER.pick(color)),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismTags.Chemicals.WATER_VAPOR, 1),
-              template(BlockItemIds.CONCRETE.pick(color)),
-              true
+              true,
+              template(BlockItemIds.CONCRETE.pick(color))
         ).save(consumer, Mekanism.rl(basePath + color)));
     }
 
@@ -96,8 +96,8 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(this.items, dead),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismTags.Chemicals.WATER_VAPOR, water),
-              template(living),
-              true
+              true,
+              template(living)
         ).save(consumer, Mekanism.rl(basePath + living.item().identifier().getPath()));
     }
 
@@ -112,8 +112,8 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
             ItemStackChemicalToItemStackRecipeBuilder.injecting(
                   IngredientCreatorAccess.item().from(entry.getKey()),
                   oxygen,
-                  new ItemStackTemplate(result.asItem()),
-                  true
+                  true,
+                  new ItemStackTemplate(result.asItem())
             ).save(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result)));
         }
     }

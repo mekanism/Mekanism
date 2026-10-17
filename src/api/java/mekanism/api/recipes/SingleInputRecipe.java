@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
@@ -14,6 +15,7 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
@@ -26,7 +28,16 @@ import org.jetbrains.annotations.Contract;
 ///
 /// @since 10.8.0
 public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>, INPUT extends InputIngredient<HOLDER_TYPE, STACK>,
-      VANILLA_INPUT extends RecipeInput, OUTPUT> extends MekanismRecipe<VANILLA_INPUT> implements Predicate<STACK> {
+      VANILLA_INPUT extends RecipeInput, OUTPUT, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO> implements Predicate<STACK> {
+
+    /// @param commonInfo Common recipe info.
+    /// @param bookInfo   Recipe book info.
+    ///
+    /// @since 10.8.0
+    protected SingleInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
+        super(commonInfo, bookInfo);
+    }
 
     /// Gets the input ingredient.
     public abstract INPUT getInput();
@@ -76,7 +87,16 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
         getInput().logMissingTags();
     }
 
-    public abstract static class ChemicalInputRecipe<OUTPUT> extends SingleInputRecipe<Chemical, ChemicalStack, ChemicalStackIngredient, SingleChemicalRecipeInput, OUTPUT> {
+    public abstract static class ChemicalInputRecipe<OUTPUT, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+          extends SingleInputRecipe<Chemical, ChemicalStack, ChemicalStackIngredient, SingleChemicalRecipeInput, OUTPUT, BOOK_CATEGORY, BOOK_INFO> {
+
+        /// @param commonInfo Common recipe info.
+        /// @param bookInfo   Recipe book info.
+        ///
+        /// @since 10.8.0
+        protected ChemicalInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
+            super(commonInfo, bookInfo);
+        }
 
         @Override
         public boolean matches(SingleChemicalRecipeInput input, Level level) {
@@ -85,7 +105,16 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
         }
     }
 
-    public abstract static class FluidInputRecipe<OUTPUT> extends SingleInputRecipe<Fluid, FluidStack, FluidStackIngredient, SingleFluidRecipeInput, OUTPUT> {
+    public abstract static class FluidInputRecipe<OUTPUT, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+          extends SingleInputRecipe<Fluid, FluidStack, FluidStackIngredient, SingleFluidRecipeInput, OUTPUT, BOOK_CATEGORY, BOOK_INFO> {
+
+        /// @param commonInfo Common recipe info.
+        /// @param bookInfo   Recipe book info.
+        ///
+        /// @since 10.8.0
+        protected FluidInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
+            super(commonInfo, bookInfo);
+        }
 
         @Override
         public boolean matches(SingleFluidRecipeInput input, Level level) {
@@ -94,7 +123,16 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
         }
     }
 
-    public abstract static class ItemInputRecipe<OUTPUT> extends SingleInputRecipe<Item, ItemStack, ItemStackIngredient, SingleRecipeInput, OUTPUT> {
+    public abstract static class ItemInputRecipe<OUTPUT, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+          extends SingleInputRecipe<Item, ItemStack, ItemStackIngredient, SingleRecipeInput, OUTPUT, BOOK_CATEGORY, BOOK_INFO> {
+
+        /// @param commonInfo Common recipe info.
+        /// @param bookInfo   Recipe book info.
+        ///
+        /// @since 10.8.0
+        protected ItemInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
+            super(commonInfo, bookInfo);
+        }
 
         @Override
         public boolean matches(SingleRecipeInput input, Level level) {

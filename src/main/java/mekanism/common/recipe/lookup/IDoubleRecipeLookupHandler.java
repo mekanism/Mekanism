@@ -20,7 +20,7 @@ import org.jspecify.annotations.Nullable;
 
 /// Helper expansion of [IRecipeLookupHandler] for easily implementing contains and find recipe lookups for recipes that takes two inputs.
 public interface IDoubleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>,
-      RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>, INPUT_CACHE extends DoubleInputRecipeCache<HOLDER_A, INPUT_A, ?, HOLDER_B, INPUT_B, ?, RECIPE, ?, ?>>
+      RECIPE extends MekanismRecipe<?, ?, ?> & BiPredicate<INPUT_A, INPUT_B>, INPUT_CACHE extends DoubleInputRecipeCache<HOLDER_A, INPUT_A, ?, HOLDER_B, INPUT_B, ?, RECIPE, ?, ?>>
       extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /// Checks if there is a matching recipe of type [#getRecipeType()] that has the given inputs.
@@ -92,17 +92,17 @@ public interface IDoubleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
     }
 
     /// Helper interface to make the generics that we have to pass to [IDoubleRecipeLookupHandler] not as messy.
-    interface DoubleItemRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & BiPredicate<ItemStack, ItemStack>> extends
+    interface DoubleItemRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?> & BiPredicate<ItemStack, ItemStack>> extends
           IDoubleRecipeLookupHandler<Item, ItemStack, Item, ItemStack, RECIPE, DoubleItem<RECIPE>> {
     }
 
     /// Helper interface to make the generics that we have to pass to [IDoubleRecipeLookupHandler] not as messy.
-    interface ItemChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & BiPredicate<ItemStack, ChemicalStack>> extends
+    interface ItemChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?> & BiPredicate<ItemStack, ChemicalStack>> extends
           IDoubleRecipeLookupHandler<Item, ItemStack, Chemical, ChemicalStack, RECIPE, ItemChemical<RECIPE>> {
     }
 
     /// Helper interface to make the generics that we have to pass to [IDoubleRecipeLookupHandler] not as messy.
-    interface FluidChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & BiPredicate<FluidStack, ChemicalStack>> extends
+    interface FluidChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?> & BiPredicate<FluidStack, ChemicalStack>> extends
           IDoubleRecipeLookupHandler<Fluid, FluidStack, Chemical, ChemicalStack, RECIPE, FluidChemical<RECIPE>> {
     }
 }

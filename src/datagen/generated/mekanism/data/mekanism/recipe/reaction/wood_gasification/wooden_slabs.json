@@ -4,10 +4,6 @@
     "amount": 10,
     "ingredient": "mekanism:oxygen"
   },
-  "chemical_output": {
-    "amount": 10,
-    "id": "mekanism:hydrogen"
-  },
   "duration": 15,
   "fluid_input": {
     "amount": 10,
@@ -21,6 +17,12 @@
         "#minecraft:wooden_slabs",
         "minecraft:bamboo_mosaic_slab"
       ]
+    }
+  },
+  "output": {
+    "chemical": {
+      "amount": 10,
+      "id": "mekanism:hydrogen"
     }
   }
 }

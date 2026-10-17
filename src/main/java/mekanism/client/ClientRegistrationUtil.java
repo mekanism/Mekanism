@@ -106,14 +106,14 @@ public class ClientRegistrationUtil {
 
     //Helper method to register GuiElectricMachine due to generics not being able to be resolved through registerScreen
     @SuppressWarnings("RedundantTypeArguments")
-    public static <TILE extends TileEntityElectricMachine, C extends MekanismTileContainer<TILE>> void registerElectricScreen(RegisterMenuScreensEvent event,
+    public static <TILE extends TileEntityElectricMachine<?, ?>, C extends MekanismTileContainer<TILE>> void registerElectricScreen(RegisterMenuScreensEvent event,
           ContainerTypeRegistryObject<C> type) {
         ClientRegistrationUtil.<C, GuiElectricMachine<TILE, C>>registerScreen(event, type, GuiElectricMachine::new);
     }
 
     //Helper method to register GuiAdvancedElectricMachine due to generics not being able to be resolved through registerScreen
     @SuppressWarnings("RedundantTypeArguments")
-    public static <TILE extends TileEntityAdvancedElectricMachine, C extends MekanismTileContainer<TILE>> void registerAdvancedElectricScreen(RegisterMenuScreensEvent event,
+    public static <TILE extends TileEntityAdvancedElectricMachine<?, ?>, C extends MekanismTileContainer<TILE>> void registerAdvancedElectricScreen(RegisterMenuScreensEvent event,
           ContainerTypeRegistryObject<C> type) {
         ClientRegistrationUtil.<C, GuiAdvancedElectricMachine<TILE, C>>registerScreen(event, type, GuiAdvancedElectricMachine::new);
     }

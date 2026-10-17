@@ -2,6 +2,7 @@ package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.client.gui.element.bar.GuiEmptyBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -11,13 +12,15 @@ import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class ItemStackChemicalToItemStackEmiRecipe extends MekanismEmiHolderRecipe<ItemStackChemicalToItemStackRecipe> {
+public class ItemStackChemicalToItemStackEmiRecipe<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends MekanismEmiHolderRecipe<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
     private static final int PROCESS_TIME = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED;
 
-    public ItemStackChemicalToItemStackEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder) {
+    public ItemStackChemicalToItemStackEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getItemInput());
         //TODO - Emi: ContextMap

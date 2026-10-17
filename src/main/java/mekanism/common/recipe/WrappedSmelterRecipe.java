@@ -11,12 +11,15 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe.CookingBookInfo;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -24,14 +27,14 @@ import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 
-public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
-    public static ItemStackToItemStackRecipe tryUnwrap(SmeltingRecipe original) {
+public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo> {
+
+    public static ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo> tryUnwrap(SmeltingRecipe original) {
         ItemStackIngredient input = IngredientCreatorAccess.item().from(original.input());
         if (original.getClass() == SmeltingRecipe.class) {
             //this is only valid on vanilla recipes as subclasses could override it or use other fields
             //method is normally protected
-            ItemStackTemplate vanillaOutput = original.result();
-            return new BasicSmeltingRecipe(input, vanillaOutput);
+            return new BasicSmeltingRecipe(original.commonInfo, original.bookInfo, input, original.result());
         }
         return new WrappedSmelterRecipe(original);
     }
@@ -40,9 +43,13 @@ public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
     private final ItemStackIngredient input;
 
     private WrappedSmelterRecipe(SmeltingRecipe wrapped) {
-        super(MekanismRecipeTypes.TYPE_SMELTING.value());
         this.wrapped = wrapped;
-        input = IngredientCreatorAccess.item().from(wrapped.input());
+        this.input = IngredientCreatorAccess.item().from(wrapped.input());
+        //In case the methods are overridden, we have to recreate the common info and book info here, instead of just passing the normally private fields
+        super(MekanismRecipeTypes.TYPE_SMELTING.value(), RecipeBuilder.createCraftingCommonInfo(wrapped.showNotification()), new CookingBookInfo(
+              wrapped.category(),
+              wrapped.group()
+        ));
     }
 
     @Override
@@ -90,7 +97,7 @@ public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
         return MekanismRecipeSerializersInternal.WRAPPED_SMELTER.value();
     }
 
-    static MapCodec<WrappedSmelterRecipe> CODEC = SmeltingRecipe.MAP_CODEC.xmap(WrappedSmelterRecipe::new, WrappedSmelterRecipe::getWrapped);
-    static StreamCodec<RegistryFriendlyByteBuf, WrappedSmelterRecipe> STREAM_CODEC = SmeltingRecipe.STREAM_CODEC.map(WrappedSmelterRecipe::new, WrappedSmelterRecipe::getWrapped);
+    private static MapCodec<WrappedSmelterRecipe> CODEC = SmeltingRecipe.MAP_CODEC.xmap(WrappedSmelterRecipe::new, WrappedSmelterRecipe::getWrapped);
+    private static StreamCodec<RegistryFriendlyByteBuf, WrappedSmelterRecipe> STREAM_CODEC = SmeltingRecipe.STREAM_CODEC.map(WrappedSmelterRecipe::new, WrappedSmelterRecipe::getWrapped);
     public static RecipeSerializer<WrappedSmelterRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 }

@@ -24,7 +24,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER)
-public abstract class MekanismRecipeManager<INPUT extends RecipeInput, RECIPE extends MekanismRecipe<INPUT>> implements IRecipeManager<RECIPE> {
+public abstract class MekanismRecipeManager<INPUT extends RecipeInput, RECIPE extends MekanismRecipe<INPUT, ?, ?>> implements IRecipeManager<RECIPE> {
 
     private final IMekanismRecipeTypeProvider<INPUT, RECIPE, ?> recipeType;
 

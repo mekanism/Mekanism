@@ -1,69 +1,64 @@
 package mekanism.common.recipe.builder;
 
-import java.util.Objects;
 import net.minecraft.core.Holder;
-import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe.Factory;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe.CookingBookInfo;
 import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.SmokingRecipe;
 
-public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCookingRecipeBuilder> {
+public class ExtendedCookingRecipeBuilder<RECIPE extends AbstractCookingRecipe> extends BaseRecipeBuilder<CookingBookCategory, CookingBookInfo, ExtendedCookingRecipeBuilder<RECIPE>> {
 
-    private final AbstractCookingRecipe.Factory<?> factory;
-    private final CookingBookCategory bookCategory;
+    private final AbstractCookingRecipe.Factory<RECIPE> factory;
     private final Ingredient ingredient;
     private final int cookingTime;
     private float experience;
 
     private ExtendedCookingRecipeBuilder(Holder<Item> result, int count, Ingredient ingredient, int cookingTime, CookingBookCategory bookCategory,
-          Factory<?> factory) {
-        super(result, count);
+          AbstractCookingRecipe.Factory<RECIPE> factory) {
         this.ingredient = ingredient;
         this.cookingTime = cookingTime;
-        this.bookCategory = bookCategory;
         this.factory = factory;
+        super(CookingBookInfo::new, bookCategory, result, count);
     }
 
-    public static ExtendedCookingRecipeBuilder blasting(CookingBookCategory bookCategory, Holder<Item> result, Ingredient ingredient, int cookingTime) {
+    public static ExtendedCookingRecipeBuilder<BlastingRecipe> blasting(CookingBookCategory bookCategory, Holder<Item> result, Ingredient ingredient, int cookingTime) {
         return blasting(bookCategory, result, 1, ingredient, cookingTime);
     }
 
-    public static ExtendedCookingRecipeBuilder blasting(CookingBookCategory bookCategory, Holder<Item> result, int count, Ingredient ingredient, int cookingTime) {
-        return new ExtendedCookingRecipeBuilder(result, count, ingredient, cookingTime, bookCategory, BlastingRecipe::new);
+    public static ExtendedCookingRecipeBuilder<BlastingRecipe> blasting(CookingBookCategory bookCategory, Holder<Item> result, int count, Ingredient ingredient, int cookingTime) {
+        return new ExtendedCookingRecipeBuilder<>(result, count, ingredient, cookingTime, bookCategory, BlastingRecipe::new);
     }
 
-    public static ExtendedCookingRecipeBuilder campfire(Holder<Item> result, Ingredient ingredient, int cookingTime) {
+    public static ExtendedCookingRecipeBuilder<CampfireCookingRecipe> campfire(Holder<Item> result, Ingredient ingredient, int cookingTime) {
         return campfire(result, 1, ingredient, cookingTime);
     }
 
-    public static ExtendedCookingRecipeBuilder campfire(Holder<Item> result, int count, Ingredient ingredient, int cookingTime) {
-        return new ExtendedCookingRecipeBuilder(result, count, ingredient, cookingTime, CookingBookCategory.FOOD, CampfireCookingRecipe::new);
+    public static ExtendedCookingRecipeBuilder<CampfireCookingRecipe> campfire(Holder<Item> result, int count, Ingredient ingredient, int cookingTime) {
+        return new ExtendedCookingRecipeBuilder<>(result, count, ingredient, cookingTime, CookingBookCategory.FOOD, CampfireCookingRecipe::new);
     }
 
-    public static ExtendedCookingRecipeBuilder smelting(CookingBookCategory bookCategory, Holder<Item> result, Ingredient ingredient, int cookingTime) {
+    public static ExtendedCookingRecipeBuilder<SmeltingRecipe> smelting(CookingBookCategory bookCategory, Holder<Item> result, Ingredient ingredient, int cookingTime) {
         return smelting(bookCategory, result, 1, ingredient, cookingTime);
     }
 
-    public static ExtendedCookingRecipeBuilder smelting(CookingBookCategory bookCategory, Holder<Item> result, int count, Ingredient ingredient, int cookingTime) {
-        return new ExtendedCookingRecipeBuilder(result, count, ingredient, cookingTime, bookCategory, SmeltingRecipe::new);
+    public static ExtendedCookingRecipeBuilder<SmeltingRecipe> smelting(CookingBookCategory bookCategory, Holder<Item> result, int count, Ingredient ingredient, int cookingTime) {
+        return new ExtendedCookingRecipeBuilder<>(result, count, ingredient, cookingTime, bookCategory, SmeltingRecipe::new);
     }
 
-    public static ExtendedCookingRecipeBuilder smoking(Holder<Item> result, Ingredient ingredient, int cookingTime) {
+    public static ExtendedCookingRecipeBuilder<SmokingRecipe> smoking(Holder<Item> result, Ingredient ingredient, int cookingTime) {
         return smoking(result, 1, ingredient, cookingTime);
     }
 
-    public static ExtendedCookingRecipeBuilder smoking(Holder<Item> result, int count, Ingredient ingredient, int cookingTime) {
-        return new ExtendedCookingRecipeBuilder(result, count, ingredient, cookingTime, CookingBookCategory.FOOD, SmokingRecipe::new);
+    public static ExtendedCookingRecipeBuilder<SmokingRecipe> smoking(Holder<Item> result, int count, Ingredient ingredient, int cookingTime) {
+        return new ExtendedCookingRecipeBuilder<>(result, count, ingredient, cookingTime, CookingBookCategory.FOOD, SmokingRecipe::new);
     }
 
-    public ExtendedCookingRecipeBuilder experience(float experience) {
+    public ExtendedCookingRecipeBuilder<RECIPE> experience(float experience) {
         if (experience < 0) {
             throw new IllegalArgumentException("Experience cannot be negative.");
         }
@@ -72,10 +67,10 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
     }
 
     @Override
-    protected Recipe<?> asRecipe() {
+    protected RECIPE asRecipe() {
         return factory.create(
-              RecipeBuilder.createCraftingCommonInfo(true),
-              new AbstractCookingRecipe.CookingBookInfo(this.bookCategory, Objects.requireNonNullElse(this.group, "")),
+              commonInfo(),
+              bookInfo(),
               this.ingredient,
               this.result,
               this.experience,

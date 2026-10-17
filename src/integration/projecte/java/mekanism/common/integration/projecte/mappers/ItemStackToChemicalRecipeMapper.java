@@ -11,7 +11,7 @@ import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.display.SlotDisplay.ItemStackContentsFactory;
 
 @RecipeTypeMapper
-public class ItemStackToChemicalRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToChemicalRecipe> {
+public class ItemStackToChemicalRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToChemicalRecipe<?, ?>> {
 
     public ItemStackToChemicalRecipeMapper() {
         super(MekanismConfigTranslations.PE_MAPPER_ITEM_TO_CHEMICAL, ItemStackToChemicalRecipe.class, MekanismRecipeType.CHEMICAL_CONVERSION,
@@ -19,8 +19,8 @@ public class ItemStackToChemicalRecipeMapper extends TypedMekanismRecipeMapper<I
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackToChemicalRecipe recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
-        if (OPTIMIZE_BASIC && recipe instanceof BasicItemStackToChemicalRecipe basicRecipe) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackToChemicalRecipe<?, ?> recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
+        if (OPTIMIZE_BASIC && recipe instanceof BasicItemStackToChemicalRecipe<?, ?> basicRecipe) {
             //This will be the case for the majority of our recipes
             return addConversion(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }

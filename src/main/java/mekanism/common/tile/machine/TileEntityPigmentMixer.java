@@ -11,6 +11,8 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.book.PigmentMixingBookCategory;
+import mekanism.api.recipes.book.PigmentMixingBookCategory.PigmentMixingBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OrderlessTwoInputCachedRecipe;
@@ -60,8 +62,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChemicalToChemicalRecipe> implements IBoundingBlock,
-      EitherSideChemicalRecipeLookupHandler<ChemicalChemicalToChemicalRecipe> {
+public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>> implements IBoundingBlock,
+      EitherSideChemicalRecipeLookupHandler<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -191,23 +193,24 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<BiChemicalRecipeInput, ChemicalChemicalToChemicalRecipe, EitherSideChemical<ChemicalChemicalToChemicalRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<BiChemicalRecipeInput, PigmentMixingBookCategory, PigmentMixingBookInfo, ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>,
+          EitherSideChemical<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>>> getRecipeType() {
         return MekanismRecipeType.PIGMENT_MIXING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<ChemicalChemicalToChemicalRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>> recipeViewerType() {
         return RecipeViewerRecipeType.PIGMENT_MIXING;
     }
 
     @Nullable
     @Override
-    public ChemicalChemicalToChemicalRecipe getRecipe(int cacheIndex) {
+    public ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo> getRecipe(int cacheIndex) {
         return findFirstRecipe(leftInputHandler, rightInputHandler);
     }
 
     @Override
-    public CachedRecipe<ChemicalChemicalToChemicalRecipe> createNewCachedRecipe(ChemicalChemicalToChemicalRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>> createNewCachedRecipe(ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo> recipe, int cacheIndex) {
         return new OrderlessTwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, leftInputHandler, rightInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

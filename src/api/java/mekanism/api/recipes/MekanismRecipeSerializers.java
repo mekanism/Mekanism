@@ -13,7 +13,7 @@ import mekanism.api.recipes.basic.BasicCompressingRecipe;
 import mekanism.api.recipes.basic.BasicCrushingRecipe;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicEnrichingRecipe;
-import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
+import mekanism.api.recipes.basic.BasicEvaporatingRecipe;
 import mekanism.api.recipes.basic.BasicInjectingRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToEnergyRecipe;
 import mekanism.api.recipes.basic.BasicMetallurgicInfuserRecipe;
@@ -76,7 +76,7 @@ public class MekanismRecipeSerializers {
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicCombinerRecipe>> COMBINING = DeferredHolder.create(Names.COMBINING);
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicElectrolysisRecipe>> SEPARATING = DeferredHolder.create(Names.SEPARATING);
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicWashingRecipe>> WASHING = DeferredHolder.create(Names.WASHING);
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicFluidToFluidRecipe>> EVAPORATING = DeferredHolder.create(Names.EVAPORATING);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicEvaporatingRecipe>> EVAPORATING = DeferredHolder.create(Names.EVAPORATING);
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicActivatingRecipe>> ACTIVATING = DeferredHolder.create(Names.ACTIVATING);
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicCentrifugingRecipe>> CENTRIFUGING = DeferredHolder.create(Names.CENTRIFUGING);
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicChemicalCrystallizerRecipe>> CRYSTALLIZING = DeferredHolder.create(Names.CRYSTALLIZING);

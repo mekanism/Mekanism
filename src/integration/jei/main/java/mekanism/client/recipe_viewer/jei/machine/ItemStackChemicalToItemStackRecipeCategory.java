@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.gui.element.bar.GuiEmptyBar;
@@ -17,16 +18,18 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.Recipe.BookInfo;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class ItemStackChemicalToItemStackRecipeCategory extends HolderRecipeCategory<ItemStackChemicalToItemStackRecipe> {
+public class ItemStackChemicalToItemStackRecipeCategory<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends BookInfo<BOOK_CATEGORY>>
+      extends HolderRecipeCategory<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
     private final GuiBar<?> inputChemical;
     private final GuiSlot input;
     private final GuiSlot extra;
     private final GuiSlot output;
 
-    public ItemStackChemicalToItemStackRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe> recipeType) {
+    public ItemStackChemicalToItemStackRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType) {
         super(helper, recipeType);
         input = addSlot(SlotType.INPUT, 64, 17);
         extra = addSlot(SlotType.EXTRA, 64, 53);
@@ -38,8 +41,8 @@ public class ItemStackChemicalToItemStackRecipeCategory extends HolderRecipeCate
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, IFocusGroup focusGroup) {
-        ItemStackChemicalToItemStackRecipe recipe = recipeHolder.value();
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeHolder, IFocusGroup focusGroup) {
+        ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().display());
         WithAmountSlotDisplay chemicalInput = recipe.getChemicalInput().display();
         if (recipe.perTickUsage()) {

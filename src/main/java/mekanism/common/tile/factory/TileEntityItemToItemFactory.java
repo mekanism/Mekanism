@@ -5,6 +5,7 @@ import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
@@ -22,10 +23,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class TileEntityItemToItemFactory<RECIPE extends MekanismRecipe<?>> extends TileEntityFactory<RECIPE> {
+public abstract class TileEntityItemToItemFactory<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+      RECIPE extends MekanismRecipe<?, BOOK_CATEGORY, BOOK_INFO>> extends TileEntityFactory<RECIPE> {
 
     protected final IInputHandler<Item, ItemStack>[] inputHandlers;
     protected final IOutputHandler<ItemStackTemplate>[] outputHandlers;

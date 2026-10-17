@@ -35,8 +35,8 @@ class ControlCircuitRecipeProvider extends BaseSubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM)),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.REDSTONE, 20),
-              MekanismItems.BASIC_CONTROL_CIRCUIT.asTemplate(),
-              false
+              false,
+              MekanismItems.BASIC_CONTROL_CIRCUIT.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "basic"));
         addCircuitUpgradeRecipe(consumer, MekanismItems.ADVANCED_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC, MekanismTags.Items.ALLOYS_INFUSED, basePath, "advanced");
         addCircuitUpgradeRecipe(consumer, MekanismItems.ELITE_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED, MekanismTags.Items.ALLOYS_REINFORCED, basePath, "elite");
@@ -61,8 +61,8 @@ class ControlCircuitRecipeProvider extends BaseSubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(this.items, circuitTag),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, infusionType, singleAlloyAmount * 6), /* 3x 2 alloys */
-              new ItemStackTemplate(output),
-              false
+              false,
+              new ItemStackTemplate(output)
         ).save(consumer, Mekanism.rl(basePath + "infused_" + name));
     }
 }

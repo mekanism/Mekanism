@@ -42,8 +42,8 @@ public record BoilerRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIng
           Identifier.CODEC.fieldOf(SerializationConstants.ID).forGetter(BoilerRecipeViewerRecipe::id),
           ChemicalStackIngredient.CODEC.optionalFieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(recipe -> Optional.ofNullable(recipe.superHeatedCoolant())),
           FluidStackIngredient.CODEC.optionalFieldOf(SerializationConstants.FLUID_INPUT, IngredientCreatorAccess.fluid().from(BuiltInRegistries.FLUID, FluidTags.WATER, WATER_AMOUNT)).forGetter(BoilerRecipeViewerRecipe::water),
-          ChemicalStackTemplate.CODEC.fieldOf(SerializationConstants.MAIN_OUTPUT).forGetter(BoilerRecipeViewerRecipe::steam),
-          ChemicalStackTemplate.CODEC.optionalFieldOf(SerializationConstants.SECONDARY_OUTPUT).forGetter(recipe -> Optional.ofNullable(recipe.cooledCoolant())),
+          ChemicalStackTemplate.MAP_CODEC.fieldOf(SerializationConstants.MAIN_OUTPUT).forGetter(BoilerRecipeViewerRecipe::steam),
+          ChemicalStackTemplate.MAP_CODEC.codec().optionalFieldOf(SerializationConstants.SECONDARY_OUTPUT).forGetter(recipe -> Optional.ofNullable(recipe.cooledCoolant())),
           Codec.DOUBLE.optionalFieldOf(SerializationConstants.TEMPERATURE, HeatUtils.BASE_BOIL_TEMP).forGetter(BoilerRecipeViewerRecipe::temperature)
     ).apply(instance, (id, superHeatedCoolant, water, steam, cooledCoolant, temperature) ->
           new BoilerRecipeViewerRecipe(id, superHeatedCoolant.orElse(null), water, steam, cooledCoolant.orElse(null), temperature)));

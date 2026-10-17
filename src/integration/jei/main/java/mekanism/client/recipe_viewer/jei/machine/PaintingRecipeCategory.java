@@ -3,6 +3,8 @@ package mekanism.client.recipe_viewer.jei.machine;
 import mekanism.api.IMekanismAccess;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.book.PaintingBookCategory;
+import mekanism.api.recipes.book.PaintingBookCategory.PaintingBookInfo;
 import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -26,7 +28,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class PaintingRecipeCategory extends HolderRecipeCategory<ItemStackChemicalToItemStackRecipe> {
+public class PaintingRecipeCategory extends HolderRecipeCategory<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> {
 
     private static final String CHEMICAL_INPUT = "chemicalInput";
 
@@ -35,7 +37,7 @@ public class PaintingRecipeCategory extends HolderRecipeCategory<ItemStackChemic
     private final GuiSlot inputSlot;
     private final GuiSlot output;
 
-    public PaintingRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe> recipeType) {
+    public PaintingRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> recipeType) {
         super(helper, recipeType);
         inputSlot = addSlot(SlotType.INPUT, 45, 35);
         addSlot(SlotType.POWER, 144, 35).with(SlotOverlay.POWER);
@@ -46,7 +48,8 @@ public class PaintingRecipeCategory extends HolderRecipeCategory<ItemStackChemic
     }
 
     @Override
-    public void draw(RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> recipeHolder, IRecipeSlotsView recipeSlotsView,
+          GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
         colorDetails.setIngredient(getDisplayedStack(recipeSlotsView, CHEMICAL_INPUT, IMekanismAccess.INSTANCE.jeiHelper().getChemicalIngredientType(), ChemicalStack.EMPTY));
         super.draw(recipeHolder, recipeSlotsView, guiGraphics, mouseX, mouseY);
@@ -54,8 +57,8 @@ public class PaintingRecipeCategory extends HolderRecipeCategory<ItemStackChemic
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, IFocusGroup focusGroup) {
-        ItemStackChemicalToItemStackRecipe recipe = recipeHolder.value();
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> recipeHolder, IFocusGroup focusGroup) {
+        ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo> recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().display());
         WithAmountSlotDisplay chemicalInput = recipe.getChemicalInput().display();
         if (recipe.perTickUsage()) {

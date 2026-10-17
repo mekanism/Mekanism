@@ -2,11 +2,13 @@ package mekanism.api.recipes;
 
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 
 /// Base class for defining item chemical to item recipes.
@@ -18,7 +20,16 @@ import net.minecraft.world.level.Level;
 /// Output: OUTPUT
 ///
 /// @since 10.7.0
-public abstract class ItemStackChemicalToObjectRecipe<OUTPUT> extends TwoInputMekRecipe<Item, ItemStack, ItemStackIngredient, Chemical, ChemicalStack, ChemicalStackIngredient, SingleItemChemicalRecipeInput, OUTPUT> {
+public abstract class ItemStackChemicalToObjectRecipe<OUTPUT, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends TwoInputMekRecipe<Item, ItemStack, ItemStackIngredient, Chemical, ChemicalStack, ChemicalStackIngredient, SingleItemChemicalRecipeInput, OUTPUT, BOOK_CATEGORY, BOOK_INFO> {
+
+    /// @param commonInfo Common recipe info.
+    /// @param bookInfo   Recipe book info.
+    ///
+    /// @since 10.8.0
+    protected ItemStackChemicalToObjectRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
+        super(commonInfo, bookInfo);
+    }
 
     /// Represents whether this recipe consumes the chemical each tick.
     ///

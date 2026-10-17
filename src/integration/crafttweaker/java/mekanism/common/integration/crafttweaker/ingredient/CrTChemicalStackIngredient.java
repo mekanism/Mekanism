@@ -126,7 +126,7 @@ public class CrTChemicalStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(ChemicalStackIngredient _this) {
-        return IngredientCreatorAccess.chemicalStack().codec().encodeStart(IDataOps.INSTANCE.withRegistryAccess(), _this).getOrThrow();
+        return ChemicalStackIngredient.CODEC.encodeStart(IDataOps.INSTANCE.withRegistryAccess(), _this).getOrThrow();
     }
 
     /// Checks if a given [ICrTChemicalStack] has a type match for this [ChemicalStackIngredient]. Type matches ignore stack size.

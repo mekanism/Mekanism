@@ -1,4 +1,4 @@
-// Registries for Reloadable (mekanism[0]): [mekanism]	2026-10-07T22:31:36.6720611	Registries for Reloadable (mekanism[0]): [mekanism]
+// Registries for Reloadable (mekanism[0]): [mekanism]	2026-10-16T16:23:56.1655908	Registries for Reloadable (mekanism[0]): [mekanism]
 cc0f85f030befc152798d57b040f40fe7b1e67be data/mekanism/advancement/advanced_control_circuit.json
 e00a71a74d7c77c23cd21bbb6af2460c9035af75 data/mekanism/advancement/advanced_qio_drive.json
 c6b503463ec0aa67902a2d9e498b907d2d1702aa data/mekanism/advancement/alarm.json
@@ -2441,9 +2441,9 @@ bf1f151a689cc4a92afabbc6d14ea703bce4178f data/mekanism/recipe/processing/lapis_l
 ecfae6e0fb1eb0073c77e50ffe827f1060a062d8 data/mekanism/recipe/processing/lategame/antimatter/from_pellet.json
 a173205ef3e16096934365199b65eb86c3ce686d data/mekanism/recipe/processing/lategame/antimatter_pellet/from_gas.json
 736ab583c5e890b1d00c2d124de716363a28d002 data/mekanism/recipe/processing/lategame/plutonium.json
-b9b464ecabaa71d2ef3777fb8ab7e4ad334ccba2 data/mekanism/recipe/processing/lategame/plutonium_pellet/from_reaction.json
+e8e366aedb5a01628c1418011f3c0c9b5e302541 data/mekanism/recipe/processing/lategame/plutonium_pellet/from_reaction.json
 7d9777fa988f8d82a01ad2587f66d4c8c6664379 data/mekanism/recipe/processing/lategame/polonium.json
-c026edacd3cdee049e406ce9152c8a8ebf3f4064 data/mekanism/recipe/processing/lategame/polonium_pellet/from_reaction.json
+64fb80848236b465e359306ca1e0ba7ae6070a4a data/mekanism/recipe/processing/lategame/polonium_pellet/from_reaction.json
 47eb2194a821f853607927c5a3cdae03f4a5d067 data/mekanism/recipe/processing/lead/clump/from_ore.json
 5cf78283484786ac3cd5a4fab6145b7adac9b401 data/mekanism/recipe/processing/lead/clump/from_raw_block.json
 83a4bd75695cd5be81451bdd7db949f5683ea040 data/mekanism/recipe/processing/lead/clump/from_raw_ore.json
@@ -2628,18 +2628,18 @@ bd69b36d34842154232173beac0d496f7d0cd814 data/mekanism/recipe/qio_redstone_adapt
 9abd24e40db8daa009641aa722dbfdf556795677 data/mekanism/recipe/radiation_shielding_unit.json
 01b267b60f2bd7ed356c59879b24eaed38d1b800 data/mekanism/recipe/radioactive_waste_barrel.json
 8bc8b89a824b924d2b51bcacda326a756903eff8 data/mekanism/recipe/rails.json
-9aeb79f3a3b3eca36979c469d74cf886bb99157e data/mekanism/recipe/reaction/coal_gasification/blocks_coals.json
-ed4b703dc81380e0a96c87b5e34b9512e4ebf094 data/mekanism/recipe/reaction/coal_gasification/coals.json
-6db4dbb9342c2225a492023314543acc5e1f6fd1 data/mekanism/recipe/reaction/coal_gasification/dusts_coals.json
-61d6a6081a77ce818d54cee358a437f26794475e data/mekanism/recipe/reaction/substrate/ethene_oxygen.json
-a320a8e06c6a3694a9a67d25c73289a830e8eec2 data/mekanism/recipe/reaction/substrate/water_ethene.json
-1e1f0deb242a03f0bd9a1a4f84231dc253a14cb2 data/mekanism/recipe/reaction/substrate/water_hydrogen.json
-443efd5f7efa1a345d8430c35cc84f03f1762c87 data/mekanism/recipe/reaction/wood_gasification/dusts_wood.json
-2afc75f67a0a44b7676db3e2e08ea53d7619d08c data/mekanism/recipe/reaction/wood_gasification/logs.json
-845bf3a7ff7c4d639c932dc5777e2518e2c6b509 data/mekanism/recipe/reaction/wood_gasification/planks.json
-7a55554ae9abf2e26f5a12f9646f1ffffa1fff5c data/mekanism/recipe/reaction/wood_gasification/rods_wooden.json
-008ea0492c2940701f04733f3dbde71c0190c6a7 data/mekanism/recipe/reaction/wood_gasification/wooden_slabs.json
-cce0af299bbffaac9807036fbdb33afd61f05a54 data/mekanism/recipe/reaction/wood_gasification/wooden_stairs.json
+c7909497d1b8986fe0e11de1cb1f9f2c5e09f287 data/mekanism/recipe/reaction/coal_gasification/blocks_coals.json
+2a290e61f20a9ffb4bee2bcae4fd9227011ca661 data/mekanism/recipe/reaction/coal_gasification/coals.json
+1896ab178fd5d8aaa3dbc47239cc3d9ce6b596bd data/mekanism/recipe/reaction/coal_gasification/dusts_coals.json
+eedb06e0b8217bba5a56ef54763f02bdf25b2a27 data/mekanism/recipe/reaction/substrate/ethene_oxygen.json
+9ff4f0402d5972bd8fdf06ad70f5ec1a556f42be data/mekanism/recipe/reaction/substrate/water_ethene.json
+7f45d86d1e467a1542f559e72169b085d6167a49 data/mekanism/recipe/reaction/substrate/water_hydrogen.json
+5d4180753b47d99ac5a677ec810e8c0dc9c8d1da data/mekanism/recipe/reaction/wood_gasification/dusts_wood.json
+c0ce42d4dc79e406bde361646d084c97ae102ebc data/mekanism/recipe/reaction/wood_gasification/logs.json
+7917f367a6e060a175abdb55f9589656045f92c7 data/mekanism/recipe/reaction/wood_gasification/planks.json
+52b47a5551846ebaf8fbe98a0e47a9dec5794ad9 data/mekanism/recipe/reaction/wood_gasification/rods_wooden.json
+6e3a4cffbc68c2fe390218d57f022e1ea104d0e4 data/mekanism/recipe/reaction/wood_gasification/wooden_slabs.json
+09b5f4d80b3e973ac1d4377da94647b7f550ce0e data/mekanism/recipe/reaction/wood_gasification/wooden_stairs.json
 bc55e3ec29420c028ce9438ac14223570f245670 data/mekanism/recipe/resistive_heater.json
 34e7587fca1f7c945775646ccede1a6cf147d8e4 data/mekanism/recipe/robit.json
 4d01c4059ef00a11ab6294650d7a3c5040011b9d data/mekanism/recipe/rotary/brine.json
@@ -2822,8 +2822,8 @@ eb941c0f42ab9eca16f65df0aaf2c2fc59ea24aa data/mekanism/recipe/sawing/trapdoor/po
 8ab41d721f93d2b925408535c82772dcf01c07bd data/mekanism/recipe/security_desk.json
 3780c12e6af0103af2bce5edb265a9120b2fd248 data/mekanism/recipe/seismic_reader.json
 7bb45d1386b80c58ccda28409c2eb9fcf1a6aa6c data/mekanism/recipe/seismic_vibrator.json
-418b98ac9aaaffc3e34b383c4f941937ea1ad9eb data/mekanism/recipe/separator/brine.json
-29496423bdce67232bd38e489f4ac4d7fe580a41 data/mekanism/recipe/separator/water.json
+189b2aa1c9e702493c96c3c04e412f9f3378c57f data/mekanism/recipe/separator/brine.json
+af6a8a072dfb680ffe406703b57f1a7cc6719dd9 data/mekanism/recipe/separator/water.json
 cceec6efbc9b80ed951cef58774e313aee4a111b data/mekanism/recipe/shearing_unit.json
 66a5c20f388514f17367ba41cd5bbecfbc673add data/mekanism/recipe/silk_touch_unit.json
 17a9650833be5274e5ae2eba29ef6d68ea89245d data/mekanism/recipe/solar_neutron_activator.json

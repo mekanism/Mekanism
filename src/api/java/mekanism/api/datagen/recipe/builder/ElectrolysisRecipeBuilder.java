@@ -3,30 +3,32 @@ package mekanism.api.datagen.recipe.builder;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
+import mekanism.api.recipes.book.ElectrolysisBookCategory;
+import mekanism.api.recipes.book.ElectrolysisBookCategory.ElectrolysisBookInfo;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 
-public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<ElectrolysisRecipeBuilder> {
+public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<ElectrolysisBookCategory, ElectrolysisBookInfo, ElectrolysisRecipeBuilder> {
 
     private final FluidStackIngredient input;
-    private final ChemicalStackTemplate leftChemicalOutput;
-    private final ChemicalStackTemplate rightChemicalOutput;
+    private final ElectrolysisRecipeOutput output;
     private int energyMultiplier = 1;
 
-    protected ElectrolysisRecipeBuilder(FluidStackIngredient input, ChemicalStackTemplate leftChemicalOutput, ChemicalStackTemplate rightChemicalOutput) {
+    protected ElectrolysisRecipeBuilder(FluidStackIngredient input, ElectrolysisRecipeOutput output) {
         this.input = input;
-        this.leftChemicalOutput = leftChemicalOutput;
-        this.rightChemicalOutput = rightChemicalOutput;
+        this.output = output;
+        super(ElectrolysisBookInfo::new, ElectrolysisBookCategory.MISC);
     }
 
     @Override
     public ResourceKey<Recipe<?>> defaultId() {
-        Identifier leftId = chemicalId(leftChemicalOutput);
-        Identifier rightId = chemicalId(rightChemicalOutput);
+        Identifier leftId = chemicalId(output.left());
+        Identifier rightId = chemicalId(output.right());
         Identifier combinedId = Identifier.fromNamespaceAndPath(leftId.getNamespace(), leftId.getPath() + "_" + rightId.getPath());
         return ResourceKey.create(Registries.RECIPE, combinedId);
     }
@@ -37,7 +39,7 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
     /// @param leftChemicalOutput  Left Output.
     /// @param rightChemicalOutput Right Output.
     public static ElectrolysisRecipeBuilder separating(FluidStackIngredient input, ChemicalStackTemplate leftChemicalOutput, ChemicalStackTemplate rightChemicalOutput) {
-        return new ElectrolysisRecipeBuilder(input, leftChemicalOutput, rightChemicalOutput);
+        return new ElectrolysisRecipeBuilder(input, new ElectrolysisRecipeOutput(leftChemicalOutput, rightChemicalOutput));
     }
 
     /// Sets the energy multiplier for this recipe.
@@ -53,6 +55,6 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
 
     @Override
     protected ElectrolysisRecipe asRecipe() {
-        return new BasicElectrolysisRecipe(input, energyMultiplier, leftChemicalOutput, rightChemicalOutput);
+        return new BasicElectrolysisRecipe(commonInfo(), bookInfo(), input, energyMultiplier, output);
     }
 }

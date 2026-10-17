@@ -19,9 +19,9 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ITEM_STACK)
-public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeManager<SingleRecipeInput, ItemStackToItemStackRecipe> {
+public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeManager<SingleRecipeInput, ItemStackToItemStackRecipe<?, ?>> {
 
-    protected ItemStackToItemStackRecipeManager(IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToItemStackRecipe, ?> recipeType) {
+    protected ItemStackToItemStackRecipeManager(IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToItemStackRecipe<?, ?>, ?> recipeType) {
         super(recipeType);
     }
 
@@ -46,14 +46,14 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
     ///
     /// @param input  [IIngredientWithAmount] representing the input of the recipe.
     /// @param output [IItemStack] representing the output of the recipe. Will be validated as not empty.
-    public final ItemStackToItemStackRecipe makeRecipe(IIngredientWithAmount input, IItemStack output) {
+    public final ItemStackToItemStackRecipe<?, ?> makeRecipe(IIngredientWithAmount input, IItemStack output) {
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract ItemStackToItemStackRecipe makeRecipe(IIngredientWithAmount input, ItemStackTemplate output);
+    protected abstract ItemStackToItemStackRecipe<?, ?> makeRecipe(IIngredientWithAmount input, ItemStackTemplate output);
 
     @Override
-    protected String describeOutputs(ItemStackToItemStackRecipe recipe) {
+    protected String describeOutputs(ItemStackToItemStackRecipe<?, ?> recipe) {
         //TODO - CrT: ContextMap
         return CrTUtils.describeOutputs(recipe.getOutputDefinition(ContextMap.EMPTY), template -> ItemStackUtil.getCommandString(template.create()));
     }
@@ -69,8 +69,8 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         }
 
         @Override
-        protected ItemStackToItemStackRecipe makeRecipe(IIngredientWithAmount input, ItemStackTemplate output) {
-            return new BasicCrushingRecipe(CrTUtils.fromCrT(input), output);
+        protected ItemStackToItemStackRecipe<?, ?> makeRecipe(IIngredientWithAmount input, ItemStackTemplate output) {
+            return new BasicCrushingRecipe(, , CrTUtils.fromCrT(input), output);
         }
     }
 
@@ -85,8 +85,8 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         }
 
         @Override
-        protected ItemStackToItemStackRecipe makeRecipe(IIngredientWithAmount input, ItemStackTemplate output) {
-            return new BasicEnrichingRecipe(CrTUtils.fromCrT(input), output);
+        protected ItemStackToItemStackRecipe<?, ?> makeRecipe(IIngredientWithAmount input, ItemStackTemplate output) {
+            return new BasicEnrichingRecipe(, , CrTUtils.fromCrT(input), output);
         }
     }
 
@@ -101,8 +101,8 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         }
 
         @Override
-        protected ItemStackToItemStackRecipe makeRecipe(IIngredientWithAmount input, ItemStackTemplate output) {
-            return new BasicSmeltingRecipe(CrTUtils.fromCrT(input), output);
+        protected ItemStackToItemStackRecipe<?, ?> makeRecipe(IIngredientWithAmount input, ItemStackTemplate output) {
+            return new BasicSmeltingRecipe(, , CrTUtils.fromCrT(input), output);
         }
     }
 }

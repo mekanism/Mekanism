@@ -29,7 +29,7 @@ public record SPSRecipeViewerRecipe(Identifier id, ChemicalStackIngredient input
     public static final Codec<SPSRecipeViewerRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           Identifier.CODEC.fieldOf(SerializationConstants.ID).forGetter(SPSRecipeViewerRecipe::id),
           ChemicalStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(SPSRecipeViewerRecipe::input),
-          ChemicalStackTemplate.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(SPSRecipeViewerRecipe::output)
+          ChemicalStackTemplate.MAP_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(SPSRecipeViewerRecipe::output)
     ).apply(instance, SPSRecipeViewerRecipe::new));
 
     public static List<SPSRecipeViewerRecipe> getSPSRecipes(HolderLookup.Provider lookupProvider) {

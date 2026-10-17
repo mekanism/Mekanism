@@ -4,6 +4,8 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
+import mekanism.api.recipes.book.PaintingBookCategory;
+import mekanism.api.recipes.book.PaintingBookCategory.PaintingBookInfo;
 import mekanism.api.recipes.display.PerTickCombiningRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -17,15 +19,17 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-public class BasicPaintingRecipe extends BasicItemStackChemicalToItemStackRecipe {
+public class BasicPaintingRecipe extends BasicItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo> {
 
     private static final Holder<Item> PAINTING_MACHINE = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "painting_machine"));
 
     /// @param itemInput     Item input.
     /// @param chemicalInput Chemical input.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     /// @param output        Output.
-    public BasicPaintingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage) {
-        super(itemInput, chemicalInput, output, perTickUsage, MekanismRecipeTypes.TYPE_PAINTING.value());
+    public BasicPaintingRecipe(CommonInfo commonInfo, PaintingBookInfo bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput,
+          boolean perTickUsage, ItemStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_PAINTING.value(), commonInfo, bookInfo, itemInput, chemicalInput, perTickUsage, output);
     }
 
     @Override

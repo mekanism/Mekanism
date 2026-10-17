@@ -4,10 +4,6 @@
     "amount": 400,
     "ingredient": "mekanism:oxygen"
   },
-  "chemical_output": {
-    "amount": 400,
-    "id": "mekanism:hydrogen"
-  },
   "duration": 600,
   "fluid_input": {
     "amount": 400,
@@ -23,7 +19,13 @@
       ]
     }
   },
-  "item_output": {
-    "id": "mekanism:dust_charcoal"
+  "output": {
+    "chemical": {
+      "amount": 400,
+      "id": "mekanism:hydrogen"
+    },
+    "item": {
+      "id": "mekanism:dust_charcoal"
+    }
   }
 }

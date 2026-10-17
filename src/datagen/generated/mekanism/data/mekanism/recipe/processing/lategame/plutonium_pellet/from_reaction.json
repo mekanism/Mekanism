@@ -4,10 +4,6 @@
     "amount": 1000,
     "ingredient": "mekanism:plutonium"
   },
-  "chemical_output": {
-    "amount": 1000,
-    "id": "mekanism:spent_nuclear_waste"
-  },
   "duration": 100,
   "fluid_input": {
     "amount": 1000,
@@ -17,7 +13,13 @@
     "count": 1,
     "ingredient": "#c:dusts/fluorite"
   },
-  "item_output": {
-    "id": "mekanism:pellet_plutonium"
+  "output": {
+    "chemical": {
+      "amount": 1000,
+      "id": "mekanism:spent_nuclear_waste"
+    },
+    "item": {
+      "id": "mekanism:pellet_plutonium"
+    }
   }
 }

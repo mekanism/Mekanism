@@ -43,8 +43,8 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
           Identifier.CODEC.fieldOf(SerializationConstants.ID).forGetter(FissionRecipeViewerRecipe::id),
           ChemicalStackIngredient.CODEC.optionalFieldOf(SerializationConstants.EXTRA_INPUT).forGetter(recipe -> Optional.ofNullable(recipe.inputCoolant())),
           ChemicalStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(FissionRecipeViewerRecipe::fuel),
-          ChemicalStackTemplate.CODEC.fieldOf(SerializationConstants.SECONDARY_OUTPUT).forGetter(FissionRecipeViewerRecipe::outputCoolant),
-          ChemicalStackTemplate.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(FissionRecipeViewerRecipe::waste)
+          ChemicalStackTemplate.MAP_CODEC.fieldOf(SerializationConstants.SECONDARY_OUTPUT).forGetter(FissionRecipeViewerRecipe::outputCoolant),
+          ChemicalStackTemplate.MAP_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(FissionRecipeViewerRecipe::waste)
     ).apply(instance, (id, inputCoolant, fuel, outputCoolant, waste) ->
           new FissionRecipeViewerRecipe(id, inputCoolant.orElse(null), fuel, outputCoolant, waste)));
 

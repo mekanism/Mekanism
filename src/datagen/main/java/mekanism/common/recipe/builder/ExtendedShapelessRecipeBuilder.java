@@ -6,18 +6,28 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingRecipe.CraftingBookInfo;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
+import org.jetbrains.annotations.Contract;
 
-public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedShapelessRecipeBuilder> {
+public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<CraftingBookCategory, CraftingBookInfo, ExtendedShapelessRecipeBuilder> {
 
     private final NonNullList<Ingredient> ingredients = NonNullList.create();
 
     private ExtendedShapelessRecipeBuilder(Holder<Item> result, int count) {
-        super(result, count);
+        super(CraftingBookInfo::new, CraftingBookCategory.MISC, result, count);
+    }
+
+    @Override
+    @Contract("_ -> this")
+    public ExtendedShapelessRecipeBuilder category(RecipeCategory category) {
+        return super.category(category).category(RecipeBuilder.determineCraftingBookCategory(category));
     }
 
     public static ExtendedShapelessRecipeBuilder shapelessRecipe(HolderGetter<Item> lookup, ResourceKey<Item> result) {
@@ -90,8 +100,8 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
     @Override
     protected ShapelessRecipe asRecipe() {
         return new ShapelessRecipe(
-              RecipeBuilder.createCraftingCommonInfo(true),
-              createCraftingBookInfo(this.category, this.group),
+              commonInfo(),
+              bookInfo(),
               this.result,
               this.ingredients
         );

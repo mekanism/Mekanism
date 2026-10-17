@@ -5,6 +5,8 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
+import mekanism.api.recipes.book.PigmentMixingBookCategory;
+import mekanism.api.recipes.book.PigmentMixingBookCategory.PigmentMixingBookInfo;
 import mekanism.api.recipes.display.MixingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.Holder;
@@ -16,7 +18,7 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-public class BasicPigmentMixingRecipe extends BasicChemicalChemicalToChemicalRecipe {
+public class BasicPigmentMixingRecipe extends BasicChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo> {
 
     private static final Holder<Item> PIGMENT_MIXER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment_mixer"));
 
@@ -25,8 +27,9 @@ public class BasicPigmentMixingRecipe extends BasicChemicalChemicalToChemicalRec
     /// @param output     Output.
     ///
     /// @apiNote The order of the inputs does not matter.
-    public BasicPigmentMixingRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStackTemplate output) {
-        super(leftInput, rightInput, output, MekanismRecipeTypes.TYPE_PIGMENT_MIXING.value());
+    public BasicPigmentMixingRecipe(CommonInfo commonInfo, PigmentMixingBookInfo bookInfo, ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput,
+          ChemicalStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_PIGMENT_MIXING.value(), commonInfo, bookInfo, leftInput, rightInput, output);
     }
 
     @Override

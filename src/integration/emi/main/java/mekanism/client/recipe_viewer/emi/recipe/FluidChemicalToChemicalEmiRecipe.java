@@ -2,6 +2,7 @@ package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -11,11 +12,13 @@ import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class FluidChemicalToChemicalEmiRecipe extends MekanismEmiHolderRecipe<FluidChemicalToChemicalRecipe> {
+public class FluidChemicalToChemicalEmiRecipe<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends MekanismEmiHolderRecipe<FluidChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
-    public FluidChemicalToChemicalEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<FluidChemicalToChemicalRecipe> recipeHolder) {
+    public FluidChemicalToChemicalEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<FluidChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getFluidInput());
         addInputDefinition(recipe.getChemicalInput());

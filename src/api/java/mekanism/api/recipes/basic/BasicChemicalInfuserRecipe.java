@@ -5,6 +5,8 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
+import mekanism.api.recipes.book.ChemicalInfusingBookCategory;
+import mekanism.api.recipes.book.ChemicalInfusingBookCategory.ChemicalInfusingBookInfo;
 import mekanism.api.recipes.display.MixingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.Holder;
@@ -16,7 +18,7 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-public class BasicChemicalInfuserRecipe extends BasicChemicalChemicalToChemicalRecipe {
+public class BasicChemicalInfuserRecipe extends BasicChemicalChemicalToChemicalRecipe<ChemicalInfusingBookCategory, ChemicalInfusingBookInfo> {
 
     private static final Holder<Item> CHEMICAL_INFUSER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_infuser"));
 
@@ -25,8 +27,9 @@ public class BasicChemicalInfuserRecipe extends BasicChemicalChemicalToChemicalR
     /// @param output     Output.
     ///
     /// @apiNote The order of the inputs does not matter.
-    public BasicChemicalInfuserRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStackTemplate output) {
-        super(leftInput, rightInput, output, MekanismRecipeTypes.TYPE_CHEMICAL_INFUSING.value());
+    public BasicChemicalInfuserRecipe(CommonInfo commonInfo, ChemicalInfusingBookInfo bookInfo, ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput,
+          ChemicalStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_CHEMICAL_INFUSING.value(), commonInfo, bookInfo, leftInput, rightInput, output);
     }
 
     @Override

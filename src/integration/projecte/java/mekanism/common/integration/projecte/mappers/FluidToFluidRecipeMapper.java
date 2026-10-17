@@ -11,15 +11,15 @@ import net.minecraft.util.context.ContextMap;
 import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 
 @RecipeTypeMapper
-public class FluidToFluidRecipeMapper extends TypedMekanismRecipeMapper<FluidToFluidRecipe> {
+public class FluidToFluidRecipeMapper extends TypedMekanismRecipeMapper<FluidToFluidRecipe<?, ?>> {
 
     public FluidToFluidRecipeMapper() {
         super(MekanismConfigTranslations.PE_MAPPER_EVAPORATING, FluidToFluidRecipe.class, MekanismRecipeType.EVAPORATING);
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, FluidToFluidRecipe recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
-        if (OPTIMIZE_BASIC && recipe instanceof BasicFluidToFluidRecipe basicRecipe) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, FluidToFluidRecipe<?, ?> recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
+        if (OPTIMIZE_BASIC && recipe instanceof BasicFluidToFluidRecipe<?, ?> basicRecipe) {
             //This will be the case for the majority of our recipes
             return addConversion(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }

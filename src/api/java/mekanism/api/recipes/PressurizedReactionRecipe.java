@@ -1,22 +1,32 @@
 package mekanism.api.recipes;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import mekanism.api.MekanismAPI;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
+import mekanism.api.recipes.book.ReactingBookCategory;
+import mekanism.api.recipes.book.ReactingBookCategory.ReactingBookInfo;
 import mekanism.api.recipes.display.ReactionRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import mekanism.api.recipes.vanilla_input.ReactionRecipeInput;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
@@ -39,9 +49,17 @@ import org.jspecify.annotations.Nullable;
 /// Chemical Output: ChemicalStack (can be empty if item output is not empty)
 ///
 /// @apiNote Pressurized Reaction Chambers can process this recipe type.
-public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionRecipeInput> implements TriPredicate<ItemStack, FluidStack, ChemicalStack> {
+public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionRecipeInput, ReactingBookCategory, ReactingBookInfo> implements TriPredicate<ItemStack, FluidStack, ChemicalStack> {
 
     private static final Holder<Item> PRESSURIZED_REACTION_CHAMBER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pressurized_reaction_chamber"));
+
+    /// @param commonInfo Common recipe info.
+    /// @param bookInfo   Recipe book info.
+    ///
+    /// @since 10.8.0
+    protected PressurizedReactionRecipe(Recipe.CommonInfo commonInfo, ReactingBookInfo bookInfo) {
+        super(commonInfo, bookInfo);
+    }
 
     /// Gets the item input ingredient.
     public abstract ItemStackIngredient getInputSolid();
@@ -123,33 +141,87 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     /// @apiNote Both item and chemical may be present or one may be empty.
     public record PressurizedReactionRecipeOutput(@Nullable ItemStackTemplate item, @Nullable ChemicalStackTemplate chemical) {
 
+        private static final Codec<Optional<PressurizedReactionRecipeOutput>> UNCHECKED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+              ItemStackTemplate.CODEC.optionalFieldOf(SerializationConstants.ITEM).forGetter(output -> output.map(PressurizedReactionRecipeOutput::item)),
+              ChemicalStackTemplate.MAP_CODEC.codec().optionalFieldOf(SerializationConstants.CHEMICAL).forGetter(output -> output.map(PressurizedReactionRecipeOutput::chemical))
+        ).apply(instance, (item, chemical) -> {
+            if (item.isEmpty() && chemical.isEmpty()) {
+                return Optional.empty();
+            }
+            return Optional.of(new PressurizedReactionRecipeOutput(item, chemical));
+        }));
+        public static final Codec<PressurizedReactionRecipeOutput> CODEC = UNCHECKED_CODEC.flatXmap(result ->
+                    result.map(DataResult::success).orElseGet(() -> DataResult.error(() -> "No output specified, must have at least an Item or Chemical output")),
+              output -> DataResult.success(Optional.of(output))
+        );
+        public static final StreamCodec<RegistryFriendlyByteBuf, PressurizedReactionRecipeOutput> STREAM_CODEC = new StreamCodec<>() {
+            @Override
+            public PressurizedReactionRecipeOutput decode(RegistryFriendlyByteBuf buffer) {
+                byte type = buffer.readByte();
+                ItemStackTemplate item = type == 0 || type == 1 ? ItemStackTemplate.STREAM_CODEC.decode(buffer) : null;
+                ChemicalStackTemplate chemical = type == 0 || type == 2 ? ChemicalStackTemplate.STREAM_CODEC.decode(buffer) : null;
+                return new PressurizedReactionRecipeOutput(item, chemical);
+            }
+
+            @Override
+            public void encode(RegistryFriendlyByteBuf buffer, PressurizedReactionRecipeOutput output) {
+                byte type;
+                if (output.item != null && output.chemical != null) {
+                    type = 0;
+                } else if (output.item != null) {
+                    type = 1;
+                } else {
+                    type = 2;
+                }
+                buffer.writeByte(type);
+                if (output.item != null) {
+                    ItemStackTemplate.STREAM_CODEC.encode(buffer, output.item);
+                }
+                if (output.chemical != null) {
+                    ChemicalStackTemplate.STREAM_CODEC.encode(buffer, output.chemical);
+                }
+            }
+        };
+
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+        private PressurizedReactionRecipeOutput(Optional<ItemStackTemplate> item, Optional<ChemicalStackTemplate> chemical) {
+            this(item.orElse(null), chemical.orElse(null));
+        }
+
         public PressurizedReactionRecipeOutput {
             if (item == null && chemical == null) {
                 throw new IllegalArgumentException("At least one output must be present.");
             }
         }
 
-        @Override
-        public boolean equals(@Nullable Object o) {
-            if (o == this) {
-                return true;
-            } else if (o == null || getClass() != o.getClass()) {
-                return false;
+        /// @since 10.8.0
+        public SlotDisplay asDisplay() {
+            if (item != null && chemical != null) {
+                return new SlotDisplay.Composite(List.of(new SlotDisplay.ItemStackSlotDisplay(item), new ChemicalStackSlotDisplay(chemical)));
+            } else if (item != null) {
+                return new SlotDisplay.ItemStackSlotDisplay(item);
+            } else if (chemical != null) {
+                return new ChemicalStackSlotDisplay(chemical);
             }
-            PressurizedReactionRecipeOutput other = (PressurizedReactionRecipeOutput) o;
-            return Objects.equals(item, other.item) && Objects.equals(chemical, other.chemical);
+            throw new IllegalStateException("At least one output should always be present");
         }
+    }
 
-        @Override
-        public int hashCode() {
-            int hash = 1;
-            if (chemical != null) {
-                hash = 31 * hash + chemical.hashCode();
-            }
-            if (item != null) {
-                hash = 31 * hash + item.hashCode();
-            }
-            return hash;
-        }
+    /// Helper interface for constructing [PressurizedReactionRecipes][PressurizedReactionRecipe]
+    ///
+    /// @since 10.8.0
+    @FunctionalInterface
+    public interface Factory<RECIPE extends PressurizedReactionRecipe> {
+
+        /// @param commonInfo     Common recipe info.
+        /// @param bookInfo       Recipe book info.
+        /// @param inputSolid     Item input.
+        /// @param inputFluid     Fluid input.
+        /// @param inputChemical  Chemical input.
+        /// @param energyRequired Amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
+        /// @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+        /// @param output         Output.
+        RECIPE create(CommonInfo commonInfo, ReactingBookInfo bookInfo, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid,
+              ChemicalStackIngredient inputChemical, int energyRequired, int duration, PressurizedReactionRecipeOutput output);
     }
 }

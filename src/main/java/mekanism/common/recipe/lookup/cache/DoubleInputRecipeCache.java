@@ -18,7 +18,7 @@ import org.jspecify.annotations.Nullable;
 /// Basic implementation for [IInputRecipeCache] for handling recipes with two inputs.
 public abstract class DoubleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, INGREDIENT_A extends InputIngredient<HOLDER_A, INPUT_A>,
       HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, INGREDIENT_B extends InputIngredient<HOLDER_B, INPUT_B>,
-      RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>, CACHE_A extends IInputCache<HOLDER_A, INPUT_A, INGREDIENT_A, RECIPE>,
+      RECIPE extends MekanismRecipe<?, ?, ?> & BiPredicate<INPUT_A, INPUT_B>, CACHE_A extends IInputCache<HOLDER_A, INPUT_A, INGREDIENT_A, RECIPE>,
       CACHE_B extends IInputCache<HOLDER_B, INPUT_B, INGREDIENT_B, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
 
     private final Set<RECIPE> complexIngredientA = new HashSet<>();
@@ -29,7 +29,7 @@ public abstract class DoubleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
     private final CACHE_A cacheA;
     private final CACHE_B cacheB;
 
-    protected DoubleInputRecipeCache(MekanismRecipeType<?, RECIPE, ?> recipeType, Function<RECIPE, INGREDIENT_A> inputAExtractor, CACHE_A cacheA,
+    protected DoubleInputRecipeCache(MekanismRecipeType<?, ?, ?, RECIPE, ?> recipeType, Function<RECIPE, INGREDIENT_A> inputAExtractor, CACHE_A cacheA,
           Function<RECIPE, INGREDIENT_B> inputBExtractor, CACHE_B cacheB) {
         super(recipeType);
         this.inputAExtractor = inputAExtractor;
@@ -162,7 +162,7 @@ public abstract class DoubleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
     /// @apiNote This is mainly meant as a helper for factories so makes the assumption that if inputB is empty it doesn't factor it into the check at all.
     @Nullable
     public <INPUT1 extends TypedInstance<HOLDER_A>, INPUT2 extends TypedInstance<HOLDER_B>, DATA> RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT1 inputA,
-          INPUT2 inputB, DATA data, CheckRecipeType<HOLDER_A, INPUT1, HOLDER_B, INPUT2, RECIPE, DATA> matchCriteria) {
+          INPUT2 inputB, DATA data, CheckRecipeType<HOLDER_A, INPUT1, HOLDER_B, INPUT2, ? super RECIPE, DATA> matchCriteria) {
         if (cacheA.isEmpty(inputA)) {
             //Don't allow empty primary inputs
             return null;
@@ -216,10 +216,11 @@ public abstract class DoubleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
     }
 
     /// Helper expansion class for [DoubleInputRecipeCache] to simplify the generics when both inputs are of the same type.
-    public abstract static class DoubleSameInputRecipeCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>, RECIPE extends MekanismRecipe<?> & BiPredicate<STACK, STACK>,
-          CACHE extends IInputCache<TYPE, STACK, INGREDIENT, RECIPE>> extends DoubleInputRecipeCache<TYPE, STACK, INGREDIENT, TYPE, STACK, INGREDIENT, RECIPE, CACHE, CACHE> {
+    public abstract static class DoubleSameInputRecipeCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>,
+          RECIPE extends MekanismRecipe<?, ?, ?> & BiPredicate<STACK, STACK>, CACHE extends IInputCache<TYPE, STACK, INGREDIENT, RECIPE>>
+          extends DoubleInputRecipeCache<TYPE, STACK, INGREDIENT, TYPE, STACK, INGREDIENT, RECIPE, CACHE, CACHE> {
 
-        protected DoubleSameInputRecipeCache(MekanismRecipeType<?, RECIPE, ?> recipeType, Function<RECIPE, INGREDIENT> inputAExtractor,
+        protected DoubleSameInputRecipeCache(MekanismRecipeType<?, ?, ?, RECIPE, ?> recipeType, Function<RECIPE, INGREDIENT> inputAExtractor,
               Function<RECIPE, INGREDIENT> inputBExtractor, Supplier<CACHE> cacheSupplier) {
             super(recipeType, inputAExtractor, cacheSupplier.get(), inputBExtractor, cacheSupplier.get());
         }
@@ -227,7 +228,7 @@ public abstract class DoubleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
 
     @FunctionalInterface
     public interface CheckRecipeType<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>,
-          RECIPE extends MekanismRecipe<?> & BiPredicate<? extends TypedInstance<HOLDER_A>, ? extends TypedInstance<HOLDER_B>>, DATA> {
+          RECIPE extends MekanismRecipe<?, ?, ?> & BiPredicate<? extends TypedInstance<HOLDER_A>, ? extends TypedInstance<HOLDER_B>>, DATA> {
 
         boolean testType(RECIPE recipe, INPUT_A inputA, INPUT_B inputB, DATA data);
     }

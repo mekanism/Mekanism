@@ -110,8 +110,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
             ItemStackChemicalToItemStackRecipeBuilder.painting(
                   IngredientCreatorAccess.item().from(recolorInput),
                   IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE),
-                  new ItemStackTemplate(balloon),
-                  false
+                  false,
+                  new ItemStackTemplate(balloon)
             ).save(output, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
         });
     }

@@ -18,8 +18,8 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
 /// Helper expansion of [IRecipeLookupHandler] for easily implementing contains and find recipe lookups for recipes that take a single input using the input cache.
-public interface ISingleRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TYPE>, RECIPE extends MekanismRecipe<?> & Predicate<INPUT>,
-      INPUT_CACHE extends SingleInputRecipeCache<TYPE, INPUT, ?, RECIPE, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
+public interface ISingleRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TYPE>, RECIPE extends MekanismRecipe<?, ?, ?> & Predicate<INPUT>,
+      INPUT_CACHE extends SingleInputRecipeCache<TYPE, INPUT, ?, ? extends RECIPE, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /// Checks if there is a matching recipe of type [#getRecipeType()] that has the given input.
     ///
@@ -51,14 +51,14 @@ public interface ISingleRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TY
     }
 
     /// Helper interface to make the generics that we have to pass to [ISingleRecipeLookupHandler] not as messy.
-    interface ItemRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & Predicate<ItemStack>> extends ISingleRecipeLookupHandler<Item, ItemStack, RECIPE, SingleItem<RECIPE>> {
+    interface ItemRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?> & Predicate<ItemStack>> extends ISingleRecipeLookupHandler<Item, ItemStack, RECIPE, SingleItem<RECIPE>> {
     }
 
     /// Helper interface to make the generics that we have to pass to [ISingleRecipeLookupHandler] not as messy.
-    interface FluidRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & Predicate<FluidStack>> extends ISingleRecipeLookupHandler<Fluid, FluidStack, RECIPE, SingleFluid<RECIPE>> {
+    interface FluidRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?> & Predicate<FluidStack>> extends ISingleRecipeLookupHandler<Fluid, FluidStack, RECIPE, SingleFluid<RECIPE>> {
     }
 
     /// Helper interface to make the generics that we have to pass to [ISingleRecipeLookupHandler] not as messy.
-    interface ChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & Predicate<ChemicalStack>> extends ISingleRecipeLookupHandler<Chemical, ChemicalStack, RECIPE, SingleChemical<RECIPE>> {
+    interface ChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?> & Predicate<ChemicalStack>> extends ISingleRecipeLookupHandler<Chemical, ChemicalStack, RECIPE, SingleChemical<RECIPE>> {
     }
 }

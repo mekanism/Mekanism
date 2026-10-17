@@ -8,6 +8,8 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.book.OxidizingBookCategory;
+import mekanism.api.recipes.book.OxidizingBookCategory.OxidizingBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
@@ -50,7 +52,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemStackToChemicalRecipe> implements ItemRecipeLookupHandler<ItemStackToChemicalRecipe> {
+public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo>>
+      implements ItemRecipeLookupHandler<ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -127,23 +130,24 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToChemicalRecipe, SingleItem<ItemStackToChemicalRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleRecipeInput, OxidizingBookCategory, OxidizingBookInfo, ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo>,
+          SingleItem<ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo>>> getRecipeType() {
         return MekanismRecipeType.OXIDIZING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<ItemStackToChemicalRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo>> recipeViewerType() {
         return RecipeViewerRecipeType.OXIDIZING;
     }
 
     @Nullable
     @Override
-    public ItemStackToChemicalRecipe getRecipe(int cacheIndex) {
+    public ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
     @Override
-    public CachedRecipe<ItemStackToChemicalRecipe> createNewCachedRecipe(ItemStackToChemicalRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo>> createNewCachedRecipe(ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo> recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

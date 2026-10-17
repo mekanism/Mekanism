@@ -1,8 +1,10 @@
 package mekanism.api.recipes;
 
 import mekanism.api.recipes.TwoInputMekRecipe.SimpleTwoInputRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import org.jetbrains.annotations.Contract;
 
@@ -10,7 +12,16 @@ import org.jetbrains.annotations.Contract;
 ///
 /// @since 10.8.0
 public abstract class OrderlessTwoInputRecipe<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>, INPUT extends InputIngredient<HOLDER_TYPE, STACK>,
-      VANILLA_INPUT extends RecipeInput, OUTPUT> extends SimpleTwoInputRecipe<HOLDER_TYPE, STACK, INPUT, VANILLA_INPUT, OUTPUT> {
+      VANILLA_INPUT extends RecipeInput, OUTPUT, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends SimpleTwoInputRecipe<HOLDER_TYPE, STACK, INPUT, VANILLA_INPUT, OUTPUT, BOOK_CATEGORY, BOOK_INFO> {
+
+    /// @param commonInfo Common recipe info.
+    /// @param bookInfo   Recipe book info.
+    ///
+    /// @since 10.8.0
+    protected OrderlessTwoInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
+        super(commonInfo, bookInfo);
+    }
 
     /// Gets a new output based on the given inputs, the order of these inputs which one is `input1` and which one is `input2` does not matter.
     ///

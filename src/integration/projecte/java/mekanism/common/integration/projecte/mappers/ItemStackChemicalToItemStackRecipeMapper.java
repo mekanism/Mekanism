@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.display.SlotDisplay.ItemStackContentsFactory;
 
 @RecipeTypeMapper
-public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecipeMapper<ItemStackChemicalToItemStackRecipe> {
+public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecipeMapper<ItemStackChemicalToItemStackRecipe<?, ?>> {
 
     public ItemStackChemicalToItemStackRecipeMapper() {
         super(MekanismConfigTranslations.PE_MAPPER_ITEM_CHEMICAL_TO_ITEM, ItemStackChemicalToItemStackRecipe.class, MekanismRecipeType.COMPRESSING,
@@ -26,7 +26,7 @@ public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecip
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackChemicalToItemStackRecipe recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackChemicalToItemStackRecipe<?, ?> recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
         int scale;
         if (recipe.perTickUsage()) {
             scale = recipe instanceof NucleosynthesizingRecipe ? TileEntityAntiprotonicNucleosynthesizer.BASE_TICKS_REQUIRED : TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED;
@@ -35,7 +35,7 @@ public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecip
         }
         ItemStackTemplate output = null;
         if (OPTIMIZE_BASIC) {
-            if (recipe instanceof BasicItemStackChemicalToItemStackRecipe basicRecipe) {
+            if (recipe instanceof BasicItemStackChemicalToItemStackRecipe<?, ?> basicRecipe) {
                 //This will be the case for the majority of our recipes
                 output = basicRecipe.getOutputRaw();
             } else if (recipe instanceof BasicNucleosynthesizingRecipe basicRecipe) {

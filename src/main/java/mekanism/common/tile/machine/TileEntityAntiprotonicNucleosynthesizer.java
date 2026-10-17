@@ -10,6 +10,8 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
+import mekanism.api.recipes.book.NucleosynthesizingBookCategory;
+import mekanism.api.recipes.book.NucleosynthesizingBookCategory.NucleosynthesizingBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
@@ -223,7 +225,8 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, NucleosynthesizingRecipe, ItemChemical<NucleosynthesizingRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, NucleosynthesizingBookCategory, NucleosynthesizingBookInfo, NucleosynthesizingRecipe,
+          ItemChemical<NucleosynthesizingRecipe>> getRecipeType() {
         return MekanismRecipeType.NUCLEOSYNTHESIZING;
     }
 

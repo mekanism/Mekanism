@@ -13,6 +13,8 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
+import mekanism.api.recipes.book.CentrifugingBookCategory;
+import mekanism.api.recipes.book.CentrifugingBookCategory.CentrifugingBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
@@ -60,7 +62,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<ChemicalToChemicalRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<ChemicalToChemicalRecipe> {
+public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>>
+      implements IBoundingBlock, ChemicalRecipeLookupHandler<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -157,23 +160,24 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, ChemicalToChemicalRecipe, SingleChemical<ChemicalToChemicalRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, CentrifugingBookCategory, CentrifugingBookInfo, ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>,
+          SingleChemical<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>>> getRecipeType() {
         return MekanismRecipeType.CENTRIFUGING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<ChemicalToChemicalRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>> recipeViewerType() {
         return RecipeViewerRecipeType.CENTRIFUGING;
     }
 
     @Nullable
     @Override
-    public ChemicalToChemicalRecipe getRecipe(int cacheIndex) {
+    public ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
     @Override
-    public CachedRecipe<ChemicalToChemicalRecipe> createNewCachedRecipe(ChemicalToChemicalRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>> createNewCachedRecipe(ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo> recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

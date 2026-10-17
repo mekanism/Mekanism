@@ -14,6 +14,8 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
+import mekanism.api.recipes.book.ElectrolysisBookCategory;
+import mekanism.api.recipes.book.ElectrolysisBookCategory.ElectrolysisBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
@@ -225,7 +227,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     private boolean isHydrogenElectrolysis(ElectrolysisRecipe recipe) {
         if (recipe instanceof BasicElectrolysisRecipe basicRecipe) {
-            return basicRecipe.getLeftChemicalOutput().is(ChemicalIds.HYDROGEN) || basicRecipe.getRightChemicalOutput().is(ChemicalIds.HYDROGEN);
+            return basicRecipe.getOutputRaw().has(ChemicalIds.HYDROGEN);
         }
         //do it the slow way
         ContextMap contextMap = level == null ? ContextMap.EMPTY : SlotDisplayContext.fromLevel(level);
@@ -287,7 +289,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<SingleFluidRecipeInput, ElectrolysisRecipe, SingleFluid<ElectrolysisRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleFluidRecipeInput, ElectrolysisBookCategory, ElectrolysisBookInfo, ElectrolysisRecipe, SingleFluid<ElectrolysisRecipe>> getRecipeType() {
         return MekanismRecipeType.SEPARATING;
     }
 

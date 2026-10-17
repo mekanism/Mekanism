@@ -3,7 +3,7 @@ package mekanism.common.recipe.lookup.monitor;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 
-public class FactoryRecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?>> extends RecipeCacheLookupMonitor<RECIPE> {
+public class FactoryRecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> extends RecipeCacheLookupMonitor<RECIPE> {
 
     private final Runnable setSortingNeeded;
 

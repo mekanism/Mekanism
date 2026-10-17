@@ -11,15 +11,15 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.util.context.ContextMap;
 
 @RecipeTypeMapper
-public class ChemicalToChemicalRecipeMapper extends TypedMekanismRecipeMapper<ChemicalToChemicalRecipe> {
+public class ChemicalToChemicalRecipeMapper extends TypedMekanismRecipeMapper<ChemicalToChemicalRecipe<?, ?>> {
 
     public ChemicalToChemicalRecipeMapper() {
         super(MekanismConfigTranslations.PE_MAPPER_CHEMICAL_TO_CHEMICAL, ChemicalToChemicalRecipe.class, MekanismRecipeType.ACTIVATING, MekanismRecipeType.CENTRIFUGING);
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ChemicalToChemicalRecipe recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
-        if (OPTIMIZE_BASIC && recipe instanceof BasicChemicalToChemicalRecipe basicRecipe) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ChemicalToChemicalRecipe<?, ?> recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
+        if (OPTIMIZE_BASIC && recipe instanceof BasicChemicalToChemicalRecipe<?, ?> basicRecipe) {
             //This will be the case for the majority of our recipes
             return addConversion(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }

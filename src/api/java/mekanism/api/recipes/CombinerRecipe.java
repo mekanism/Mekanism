@@ -3,6 +3,8 @@ package mekanism.api.recipes;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.TwoInputMekRecipe.SimpleTwoInputRecipe;
+import mekanism.api.recipes.book.CombiningBookCategory;
+import mekanism.api.recipes.book.CombiningBookCategory.CombiningBookInfo;
 import mekanism.api.recipes.display.CombiningRecipeDisplay;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
@@ -11,6 +13,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
@@ -25,9 +28,17 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 /// Output: ItemStack
 ///
 /// @apiNote Combiners and Combining Factories can process this recipe type.
-public abstract class CombinerRecipe extends SimpleTwoInputRecipe<Item, ItemStack, ItemStackIngredient, RecipeInput, ItemStackTemplate> {
+public abstract class CombinerRecipe extends SimpleTwoInputRecipe<Item, ItemStack, ItemStackIngredient, RecipeInput, ItemStackTemplate, CombiningBookCategory, CombiningBookInfo> {
 
     private static final Holder<Item> COMBINER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "combiner"));
+
+    /// @param commonInfo Common recipe info.
+    /// @param bookInfo   Recipe book info.
+    ///
+    /// @since 10.8.0
+    protected CombinerRecipe(Recipe.CommonInfo commonInfo, CombiningBookInfo bookInfo) {
+        super(commonInfo, bookInfo);
+    }
 
     /// Gets the main input ingredient.
     public abstract ItemStackIngredient getMainInput();
@@ -76,5 +87,19 @@ public abstract class CombinerRecipe extends SimpleTwoInputRecipe<Item, ItemStac
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(COMBINER)
         ));
+    }
+
+    /// Helper interface for constructing [CombinerRecipes][CombinerRecipe]
+    ///
+    /// @since 10.8.0
+    @FunctionalInterface
+    public interface Factory<RECIPE extends CombinerRecipe> {
+
+        /// @param commonInfo Common recipe info.
+        /// @param bookInfo   Recipe book info.
+        /// @param mainInput  Main input.
+        /// @param extraInput Secondary/extra input.
+        /// @param output     Output item.
+        RECIPE create(CommonInfo commonInfo, CombiningBookInfo bookInfo, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStackTemplate output);
     }
 }

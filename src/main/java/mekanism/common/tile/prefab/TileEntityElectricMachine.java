@@ -37,12 +37,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public abstract class TileEntityElectricMachine extends TileEntityProgressMachine<ItemStackToItemStackRecipe> implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
+public abstract class TileEntityElectricMachine<BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends TileEntityProgressMachine<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -56,7 +58,7 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
     protected final IOutputHandler<ItemStackTemplate> outputHandler;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
-    private MachineEnergyContainer<TileEntityElectricMachine> energyContainer;
+    private MachineEnergyContainer<TileEntityElectricMachine<BOOK_CATEGORY, BOOK_INFO>> energyContainer;
     @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
     InputInventorySlot inputSlot;
@@ -105,12 +107,12 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
 
     @Nullable
     @Override
-    public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
+    public ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(ItemStackToItemStackRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> createNewCachedRecipe(ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
@@ -126,7 +128,7 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
         return new MachineUpgradeData(provider, redstone, getControlType(), energyContainer, getOperatingTicks(), energySlot, inputSlot, outputSlot, getComponents(), problemPath());
     }
 
-    public MachineEnergyContainer<TileEntityElectricMachine> energyContainer() {
+    public MachineEnergyContainer<TileEntityElectricMachine<BOOK_CATEGORY, BOOK_INFO>> energyContainer() {
         return energyContainer;
     }
 

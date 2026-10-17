@@ -17,9 +17,9 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CHEMICAL_TO_CHEMICAL)
-public abstract class ChemicalToChemicalRecipeManager extends MekanismRecipeManager<SingleChemicalRecipeInput, ChemicalToChemicalRecipe> {
+public abstract class ChemicalToChemicalRecipeManager extends MekanismRecipeManager<SingleChemicalRecipeInput, ChemicalToChemicalRecipe<?, ?>> {
 
-    protected ChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, ChemicalToChemicalRecipe, ?> recipeType) {
+    protected ChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, ? extends ChemicalToChemicalRecipe<?, ?>, ?> recipeType) {
         super(recipeType);
     }
 
@@ -41,14 +41,14 @@ public abstract class ChemicalToChemicalRecipeManager extends MekanismRecipeMana
     ///
     /// @param input  [ChemicalStackIngredient] representing the input of the recipe.
     /// @param output [ICrTChemicalStack] representing the output of the recipe. Will be validated as not empty.
-    public final ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient input, ICrTChemicalStack output) {
+    public final ChemicalToChemicalRecipe<?, ?> makeRecipe(ChemicalStackIngredient input, ICrTChemicalStack output) {
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStackTemplate output);
+    protected abstract ChemicalToChemicalRecipe<?, ?> makeRecipe(ChemicalStackIngredient ingredient, ChemicalStackTemplate output);
 
     @Override
-    protected String describeOutputs(ChemicalToChemicalRecipe recipe) {
+    protected String describeOutputs(ChemicalToChemicalRecipe<?, ?> recipe) {
         return CrTUtils.describeOutputs(recipe.getOutputDefinition(ContextMap.EMPTY));//TODO - CrT: ContextMap
     }
 
@@ -63,8 +63,8 @@ public abstract class ChemicalToChemicalRecipeManager extends MekanismRecipeMana
         }
 
         @Override
-        protected ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStackTemplate output) {
-            return new BasicActivatingRecipe(ingredient, output);
+        protected ChemicalToChemicalRecipe<?, ?> makeRecipe(ChemicalStackIngredient ingredient, ChemicalStackTemplate output) {
+            return new BasicActivatingRecipe(, , ingredient, output);
         }
     }
 
@@ -79,8 +79,8 @@ public abstract class ChemicalToChemicalRecipeManager extends MekanismRecipeMana
         }
 
         @Override
-        protected ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStackTemplate output) {
-            return new BasicCentrifugingRecipe(ingredient, output);
+        protected ChemicalToChemicalRecipe<?, ?> makeRecipe(ChemicalStackIngredient ingredient, ChemicalStackTemplate output) {
+            return new BasicCentrifugingRecipe(, , ingredient, output);
         }
     }
 }

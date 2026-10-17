@@ -12,30 +12,30 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 @IRecipeHandler.For(ItemStackToItemStackRecipe.class)
-public class ItemStackToItemStackRecipeHandler extends MekanismRecipeHandler<ItemStackToItemStackRecipe> {
+public class ItemStackToItemStackRecipeHandler extends MekanismRecipeHandler<ItemStackToItemStackRecipe<?, ?>> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super ItemStackToItemStackRecipe> manager, RegistryAccess registryAccess,
-          RecipeHolder<ItemStackToItemStackRecipe> recipeHolder) {
-        ItemStackToItemStackRecipe recipe = recipeHolder.value();
+    public String dumpToCommandString(IRecipeManager<? super ItemStackToItemStackRecipe<?, ?>> manager, RegistryAccess registryAccess,
+          RecipeHolder<ItemStackToItemStackRecipe<?, ?>> recipeHolder) {
+        ItemStackToItemStackRecipe<?, ?> recipe = recipeHolder.value();
         return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override
-    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager<? super ItemStackToItemStackRecipe> manager, ItemStackToItemStackRecipe recipe, U o) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager<? super ItemStackToItemStackRecipe<?, ?>> manager, ItemStackToItemStackRecipe<?, ?> recipe, U o) {
         //Only support if the other is an itemstack to itemstack recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
-        return o instanceof ItemStackToItemStackRecipe other && ingredientConflicts(recipe.getInput(), other.getInput());
+        return o instanceof ItemStackToItemStackRecipe<?, ?> other && ingredientConflicts(recipe.getInput(), other.getInput());
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ItemStackToItemStackRecipe> manager, RegistryAccess registryAccess,
-          ItemStackToItemStackRecipe recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ItemStackToItemStackRecipe<?, ?>> manager, RegistryAccess registryAccess,
+          ItemStackToItemStackRecipe<?, ?> recipe) {
         return decompose(recipe.getInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override
-    public Optional<ItemStackToItemStackRecipe> recompose(IRecipeManager<? super ItemStackToItemStackRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
+    public Optional<ItemStackToItemStackRecipe<?, ?>> recompose(IRecipeManager<? super ItemStackToItemStackRecipe<?, ?>> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof ItemStackToItemStackRecipeManager manager) {
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),

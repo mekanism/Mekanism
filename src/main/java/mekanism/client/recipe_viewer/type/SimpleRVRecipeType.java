@@ -2,6 +2,7 @@ package mekanism.client.recipe_viewer.type;
 
 import java.util.List;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
@@ -11,22 +12,24 @@ import mekanism.common.registration.impl.RecipeTypeRegistryObject;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.ItemLike;
 
-public record SimpleRVRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache>(
+public record SimpleRVRecipeType<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+      RECIPE extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO>, INPUT_CACHE extends IInputRecipeCache>(
       Identifier id, Identifier icon, IHasTranslationKey name, Class<? extends RECIPE> recipeClass,
-      IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> vanillaProvider,
+      IMekanismRecipeTypeProvider<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> vanillaProvider,
       int xOffset, int yOffset, int width, int height, List<SlotDisplay> workstations
-) implements IRecipeViewerRecipeType<RECIPE>, IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> {
+) implements IRecipeViewerRecipeType<RECIPE>, IMekanismRecipeTypeProvider<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> {
 
-    public SimpleRVRecipeType(RecipeTypeRegistryObject<VANILLA_INPUT, RECIPE, INPUT_CACHE> type, Class<? extends RECIPE> recipeClass, IHasTranslationKey name,
+    public SimpleRVRecipeType(RecipeTypeRegistryObject<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> type, Class<? extends RECIPE> recipeClass, IHasTranslationKey name,
           Identifier icon, int xOffset, int yOffset, int width, int height, ItemLike... altWorkstations) {
         this(type.getId(), icon, name, recipeClass, type, xOffset, yOffset, width, height, IRecipeViewerRecipeType.asWorkStations(altWorkstations));
     }
 
-    public SimpleRVRecipeType(RecipeTypeRegistryObject<VANILLA_INPUT, RECIPE, INPUT_CACHE> type, Class<? extends RECIPE> recipeClass, IHasTranslationKey name,
+    public SimpleRVRecipeType(RecipeTypeRegistryObject<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> type, Class<? extends RECIPE> recipeClass, IHasTranslationKey name,
           Identifier icon, int xOffset, int yOffset, int width, int height, SlotDisplay... altWorkstations) {
         this(type.getId(), icon, name, recipeClass, type, xOffset, yOffset, width, height, List.of(altWorkstations));
     }
@@ -47,7 +50,7 @@ public record SimpleRVRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE exten
     }
 
     @Override
-    public MekanismRecipeType<VANILLA_INPUT, RECIPE, INPUT_CACHE> getRecipeType() {
+    public MekanismRecipeType<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> getRecipeType() {
         return vanillaProvider.getRecipeType();
     }
 }

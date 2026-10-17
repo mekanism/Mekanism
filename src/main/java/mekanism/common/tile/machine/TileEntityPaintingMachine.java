@@ -10,6 +10,8 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.book.PaintingBookCategory;
+import mekanism.api.recipes.book.PaintingBookCategory.PaintingBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
@@ -59,8 +61,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemStackChemicalToItemStackRecipe> implements ConstantUsageRecipeLookupHandler,
-      ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe> {
+public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> implements ConstantUsageRecipeLookupHandler,
+      ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -150,24 +152,25 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe, ItemChemical<ItemStackChemicalToItemStackRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, PaintingBookCategory, PaintingBookInfo, ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>,
+          ItemChemical<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>>> getRecipeType() {
         return MekanismRecipeType.PAINTING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> recipeViewerType() {
         return RecipeViewerRecipeType.PAINTING;
     }
 
     @Nullable
     @Override
-    public ItemStackChemicalToItemStackRecipe getRecipe(int cacheIndex) {
+    public ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo> getRecipe(int cacheIndex) {
         return findFirstRecipe(itemInputHandler, pigmentInputHandler);
     }
 
     @Override
-    public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
-        CachedRecipe<ItemStackChemicalToItemStackRecipe> cachedRecipe;
+    public CachedRecipe<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo> recipe, int cacheIndex) {
+        CachedRecipe<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, pigmentInputHandler,
                   chemicalUsageMultiplier, used -> usedSoFar = used, outputHandler);

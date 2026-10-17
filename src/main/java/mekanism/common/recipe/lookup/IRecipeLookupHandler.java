@@ -10,14 +10,14 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?>> extends IContentsListener {
+public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> extends IContentsListener {
 
     /// @return The world for this [IRecipeLookupHandler].
     @Nullable
     Level getLevel();
 
     /// @return The recipe type this [IRecipeLookupHandler] handles.
-    IMekanismRecipeTypeProvider<?, RECIPE, ?> getRecipeType();
+    IMekanismRecipeTypeProvider<?, ?, ?, RECIPE, ?> getRecipeType();
 
     @Nullable
     default IRecipeViewerRecipeType<RECIPE> recipeViewerType() {
@@ -68,10 +68,10 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?>> extends 
     /// Helper class that specifies the input cache's type for the recipe type. The reason it isn't defined in the main [IRecipeLookupHandler] is it isn't needed and
     /// would just make the class definitions a lot messier with very long generics that can be folded away into the helper interfaces we use anyway ofr actual lookup
     /// purposes.
-    interface IRecipeTypedLookupHandler<RECIPE extends MekanismRecipe<?>, INPUT_CACHE extends IInputRecipeCache> extends IRecipeLookupHandler<RECIPE> {
+    interface IRecipeTypedLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>, INPUT_CACHE extends IInputRecipeCache> extends IRecipeLookupHandler<RECIPE> {
 
         @Override
-        IMekanismRecipeTypeProvider<?, RECIPE, INPUT_CACHE> getRecipeType();
+        IMekanismRecipeTypeProvider<?, ?, ?, RECIPE, INPUT_CACHE> getRecipeType();
     }
 
     interface ConstantUsageRecipeLookupHandler {

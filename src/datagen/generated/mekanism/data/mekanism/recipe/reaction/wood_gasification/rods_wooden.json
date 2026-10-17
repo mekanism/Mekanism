@@ -4,10 +4,6 @@
     "amount": 10,
     "ingredient": "mekanism:oxygen"
   },
-  "chemical_output": {
-    "amount": 10,
-    "id": "mekanism:hydrogen"
-  },
   "duration": 15,
   "fluid_input": {
     "amount": 10,
@@ -16,5 +12,11 @@
   "item_input": {
     "count": 3,
     "ingredient": "#c:rods/wooden"
+  },
+  "output": {
+    "chemical": {
+      "amount": 10,
+      "id": "mekanism:hydrogen"
+    }
   }
 }

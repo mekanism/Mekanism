@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -17,9 +18,11 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class ChemicalChemicalToChemicalRecipeCategory extends HolderRecipeCategory<ChemicalChemicalToChemicalRecipe> {
+public class ChemicalChemicalToChemicalRecipeCategory<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends HolderRecipeCategory<ChemicalChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
     protected static final String LEFT_INPUT = "leftInput";
     protected static final String RIGHT_INPUT = "rightInput";
@@ -31,7 +34,7 @@ public class ChemicalChemicalToChemicalRecipeCategory extends HolderRecipeCatego
     protected final GuiProgress rightArrow;
     protected final GuiProgress leftArrow;
 
-    public ChemicalChemicalToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ChemicalChemicalToChemicalRecipe> recipeType) {
+    public ChemicalChemicalToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ChemicalChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType) {
         super(helper, recipeType);
         leftInputGauge = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT_1), this, 25, 13));
         outputGauge = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 79, 4));
@@ -46,8 +49,8 @@ public class ChemicalChemicalToChemicalRecipeCategory extends HolderRecipeCatego
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ChemicalChemicalToChemicalRecipe> recipeHolder, IFocusGroup focusGroup) {
-        ChemicalChemicalToChemicalRecipe recipe = recipeHolder.value();
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ChemicalChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeHolder, IFocusGroup focusGroup) {
+        ChemicalChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO> recipe = recipeHolder.value();
         builder.setShapeless();
         initChemical(builder, RecipeIngredientRole.INPUT, leftInputGauge, recipe.getLeftInput().display())
               .setSlotName(LEFT_INPUT);

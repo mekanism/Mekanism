@@ -14,7 +14,9 @@
     "count": 1,
     "ingredient": "mekanism:substrate"
   },
-  "item_output": {
-    "id": "mekanism:hdpe_pellet"
+  "output": {
+    "item": {
+      "id": "mekanism:hdpe_pellet"
+    }
   }
 }

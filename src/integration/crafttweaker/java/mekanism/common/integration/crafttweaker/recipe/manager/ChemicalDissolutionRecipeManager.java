@@ -44,7 +44,7 @@ public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<Sing
     /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     public final BasicChemicalDissolutionRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack output,
           boolean perTickUsage) {
-        return new BasicChemicalDissolutionRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, getAndValidateNotEmpty(output), perTickUsage);
+        return new BasicChemicalDissolutionRecipe(, , CrTUtils.fromCrT(itemInput), chemicalInput, getAndValidateNotEmpty(output), perTickUsage);
     }
 
     @Override

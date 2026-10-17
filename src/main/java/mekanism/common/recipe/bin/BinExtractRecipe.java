@@ -22,8 +22,11 @@ public class BinExtractRecipe extends BinRecipe {
     public static final BinExtractRecipe INSTANCE = new BinExtractRecipe();
 
     @Override
-    public boolean matches(CraftingInput inv, Level world) {
-        ItemResource binData = findBinData(inv);
+    public boolean matches(CraftingInput input, Level world) {
+        if (input.ingredientCount() != 1) {
+            return false;
+        }
+        ItemResource binData = findBinData(input);
         if (binData.isEmpty()) {
             //If we didn't find a singular bin our recipe can't possibly match
             return false;

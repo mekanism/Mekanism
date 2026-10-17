@@ -25,9 +25,7 @@ public class ElectrolysisRecipeMapper extends TypedMekanismRecipeMapper<Electrol
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ElectrolysisRecipe recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
         if (OPTIMIZE_BASIC && recipe instanceof BasicElectrolysisRecipe basicRecipe) {
             //This will be the case for the majority of our recipes
-            ChemicalStackTemplate leftOutput = basicRecipe.getLeftChemicalOutput();
-            ChemicalStackTemplate rightOutput = basicRecipe.getRightChemicalOutput();
-            return addConversions(mapper, new ElectrolysisRecipeOutput(leftOutput, rightOutput), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
+            return addConversions(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }
         return addConversions(mapper, contextMap, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forFluids, FluidStackContentsFactory.INSTANCE, ElectrolysisRecipeMapper::addConversions);
     }

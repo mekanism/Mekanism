@@ -185,8 +185,8 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(recolorInput),
               IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE / 4),
-              new ItemStackTemplate(result.value()),
-              false
+              false,
+              new ItemStackTemplate(result.value())
         ).save(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
     }
 
@@ -206,8 +206,8 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(recolorInput),
               IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE / 8),
-              new ItemStackTemplate(result.value()),
-              false
+              false,
+              new ItemStackTemplate(result.value())
         ).save(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
     }
 }

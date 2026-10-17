@@ -4,6 +4,8 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.function.Supplier;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.book.PigmentExtractingBookCategory;
+import mekanism.api.recipes.book.PigmentExtractingBookCategory.PigmentExtractingBookInfo;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.recipe_viewer.color.PigmentExtractorColorDetails;
@@ -12,11 +14,11 @@ import mekanism.common.tile.machine.TileEntityPigmentExtractor;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class PigmentExtractingEmiRecipe extends ItemStackToChemicalEmiRecipe<ItemStackToChemicalRecipe> {
+public class PigmentExtractingEmiRecipe extends ItemStackToChemicalEmiRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo, ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>> {
 
     private final Supplier<ChemicalStack> output;
 
-    public PigmentExtractingEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ItemStackToChemicalRecipe> recipeHolder) {
+    public PigmentExtractingEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>> recipeHolder) {
         super(category, recipeHolder, TileEntityPigmentExtractor.BASE_TICKS_REQUIRED);
         //TODO - Emi: ContextMap
         output = getSupplier(recipe.getOutputDefinition(ContextMap.EMPTY), ChemicalStack.EMPTY);

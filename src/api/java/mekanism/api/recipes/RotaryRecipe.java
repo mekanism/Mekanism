@@ -6,6 +6,8 @@ import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
+import mekanism.api.recipes.book.RotaryBookCategory;
+import mekanism.api.recipes.book.RotaryBookCategory.RotaryBookInfo;
 import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
@@ -15,6 +17,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
@@ -34,9 +37,17 @@ import org.jetbrains.annotations.Contract;
 ///
 /// @apiNote Rotary Condensentrators can process this recipe type. Converting from fluid to chemical when set to Decondensentrating and converting from chemical to fluid
 /// when set to Condensentrating.
-public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
+public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput, RotaryBookCategory, RotaryBookInfo> {
 
     private static final Holder<Item> ROTARY_CONDENSENTRATOR = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "rotary_condensentrator"));
+
+    /// @param commonInfo Common recipe info.
+    /// @param bookInfo   Recipe book info.
+    ///
+    /// @since 10.8.0
+    protected RotaryRecipe(Recipe.CommonInfo commonInfo, RotaryBookInfo bookInfo) {
+        super(commonInfo, bookInfo);
+    }
 
     /// @return `true` if this recipe knows how to convert a chemical to a fluid.
     public abstract boolean hasChemicalToFluid();
@@ -160,5 +171,47 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
                     ) : null
               ).filter(Objects::nonNull)
               .toList();
+    }
+
+    /// Helper interface for constructing [RotaryRecipes][RotaryRecipe]
+    ///
+    /// @since 10.8.0
+    @FunctionalInterface
+    public interface Factory<RECIPE extends RotaryRecipe> {
+
+        /// @param commonInfo     Common recipe info.
+        /// @param bookInfo       Recipe book info.
+        /// @param fluidInput     Fluid input.
+        /// @param chemicalInput  Chemical input.
+        /// @param chemicalOutput Chemical output.
+        /// @param fluidOutput    Fluid output.
+        RECIPE create(CommonInfo commonInfo, RotaryBookInfo bookInfo, FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput,
+              ChemicalStackTemplate chemicalOutput, FluidStackTemplate fluidOutput);
+    }
+
+    /// Helper interface for constructing [RotaryRecipes][RotaryRecipe]
+    ///
+    /// @since 10.8.0
+    @FunctionalInterface
+    public interface ChemicalToFluidFactory<RECIPE extends RotaryRecipe> {
+
+        /// @param commonInfo    Common recipe info.
+        /// @param bookInfo      Recipe book info.
+        /// @param chemicalInput Chemical input.
+        /// @param fluidOutput   Fluid output.
+        RECIPE create(CommonInfo commonInfo, RotaryBookInfo bookInfo, ChemicalStackIngredient chemicalInput, FluidStackTemplate fluidOutput);
+    }
+
+    /// Helper interface for constructing [RotaryRecipes][RotaryRecipe]
+    ///
+    /// @since 10.8.0
+    @FunctionalInterface
+    public interface FluidToChemicalFactory<RECIPE extends RotaryRecipe> {
+
+        /// @param commonInfo     Common recipe info.
+        /// @param bookInfo       Recipe book info.
+        /// @param fluidInput     Fluid input.
+        /// @param chemicalOutput Chemical output.
+        RECIPE create(CommonInfo commonInfo, RotaryBookInfo bookInfo, FluidStackIngredient fluidInput, ChemicalStackTemplate chemicalOutput);
     }
 }

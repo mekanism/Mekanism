@@ -18,9 +18,9 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL)
-public abstract class ItemStackToChemicalRecipeManager extends MekanismRecipeManager<SingleRecipeInput, ItemStackToChemicalRecipe> {
+public abstract class ItemStackToChemicalRecipeManager extends MekanismRecipeManager<SingleRecipeInput, ItemStackToChemicalRecipe<?, ?>> {
 
-    protected ItemStackToChemicalRecipeManager(IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToChemicalRecipe, ?> recipeType) {
+    protected ItemStackToChemicalRecipeManager(IMekanismRecipeTypeProvider<SingleRecipeInput, ? extends ItemStackToChemicalRecipe<?, ?>, ?> recipeType) {
         super(recipeType);
     }
 
@@ -45,14 +45,14 @@ public abstract class ItemStackToChemicalRecipeManager extends MekanismRecipeMan
     ///
     /// @param input  [IIngredientWithAmount] representing the input of the recipe.
     /// @param output Chemical stack representing the output of the recipe. Will be validated as not empty.
-    public final ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ICrTChemicalStack output) {
+    public final ItemStackToChemicalRecipe<?, ?> makeRecipe(IIngredientWithAmount input, ICrTChemicalStack output) {
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStackTemplate output);
+    protected abstract ItemStackToChemicalRecipe<?, ?> makeRecipe(IIngredientWithAmount input, ChemicalStackTemplate output);
 
     @Override
-    protected String describeOutputs(ItemStackToChemicalRecipe recipe) {
+    protected String describeOutputs(ItemStackToChemicalRecipe<?, ?> recipe) {
         //TODO - CrT: ContextMap
         return CrTUtils.describeOutputs(recipe.getOutputDefinition(ContextMap.EMPTY));
     }
@@ -68,8 +68,8 @@ public abstract class ItemStackToChemicalRecipeManager extends MekanismRecipeMan
         }
 
         @Override
-        protected ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStackTemplate output) {
-            return new BasicChemicalConversionRecipe(CrTUtils.fromCrT(input), output);
+        protected ItemStackToChemicalRecipe<?, ?> makeRecipe(IIngredientWithAmount input, ChemicalStackTemplate output) {
+            return new BasicChemicalConversionRecipe(, , CrTUtils.fromCrT(input), output);
         }
     }
 
@@ -84,8 +84,8 @@ public abstract class ItemStackToChemicalRecipeManager extends MekanismRecipeMan
         }
 
         @Override
-        protected ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStackTemplate output) {
-            return new BasicChemicalOxidizerRecipe(CrTUtils.fromCrT(input), output);
+        protected ItemStackToChemicalRecipe<?, ?> makeRecipe(IIngredientWithAmount input, ChemicalStackTemplate output) {
+            return new BasicChemicalOxidizerRecipe(, , CrTUtils.fromCrT(input), output);
         }
     }
 
@@ -100,8 +100,8 @@ public abstract class ItemStackToChemicalRecipeManager extends MekanismRecipeMan
         }
 
         @Override
-        protected ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStackTemplate output) {
-            return new BasicPigmentExtractingRecipe(CrTUtils.fromCrT(input), output);
+        protected ItemStackToChemicalRecipe<?, ?> makeRecipe(IIngredientWithAmount input, ChemicalStackTemplate output) {
+            return new BasicPigmentExtractingRecipe(, , CrTUtils.fromCrT(input), output);
         }
     }
 }

@@ -286,8 +286,8 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
                     IngredientCreatorAccess.item().from(input),
                     IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.BIO, 10),
-                    new ItemStackTemplate(output.asItem()),
-                    false
+                    false,
+                    new ItemStackTemplate(output.asItem())
               ).addCondition(modLoaded)
               .save(consumer, Mekanism.rl(path));
     }

@@ -10,17 +10,19 @@ import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
+import mekanism.common.recipe.impl.NutritionalLiquifierRecipe;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
-public class ItemStackToFluidOptionalItemEmiRecipe extends MekanismEmiRecipe<BasicItemStackToFluidOptionalItemRecipe> {
+public class ItemStackToFluidOptionalItemEmiRecipe extends MekanismEmiRecipe<NutritionalLiquifierRecipe> {
 
     private final int processTime;
 
-    public ItemStackToFluidOptionalItemEmiRecipe(MekanismEmiRecipeCategory category, Identifier id, BasicItemStackToFluidOptionalItemRecipe recipe, int processTime) {
+    public ItemStackToFluidOptionalItemEmiRecipe(MekanismEmiRecipeCategory category, Identifier id, NutritionalLiquifierRecipe recipe, int processTime) {
         super(category, id, recipe);
         this.processTime = processTime;
         addInputDefinition(recipe.getInput());

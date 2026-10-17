@@ -4,10 +4,6 @@
     "amount": 1000,
     "ingredient": "mekanism:oxygen"
   },
-  "chemical_output": {
-    "amount": 1000,
-    "id": "mekanism:hydrogen"
-  },
   "duration": 900,
   "fluid_input": {
     "amount": 1000,
@@ -23,8 +19,14 @@
       ]
     }
   },
-  "item_output": {
-    "count": 9,
-    "id": "mekanism:dust_sulfur"
+  "output": {
+    "chemical": {
+      "amount": 1000,
+      "id": "mekanism:hydrogen"
+    },
+    "item": {
+      "count": 9,
+      "id": "mekanism:dust_sulfur"
+    }
   }
 }

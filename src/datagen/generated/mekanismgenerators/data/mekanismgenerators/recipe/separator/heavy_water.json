@@ -5,12 +5,14 @@
     "amount": 2,
     "ingredient": "#c:heavy_water"
   },
-  "left_chemical_output": {
-    "amount": 2,
-    "id": "mekanismgenerators:deuterium"
-  },
-  "right_chemical_output": {
-    "amount": 1,
-    "id": "mekanism:oxygen"
+  "output": {
+    "left": {
+      "amount": 2,
+      "id": "mekanismgenerators:deuterium"
+    },
+    "right": {
+      "amount": 1,
+      "id": "mekanism:oxygen"
+    }
   }
 }

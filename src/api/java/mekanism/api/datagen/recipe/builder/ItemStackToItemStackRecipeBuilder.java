@@ -1,27 +1,37 @@
 package mekanism.api.datagen.recipe.builder;
 
+import java.util.function.BiFunction;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.basic.BasicCrushingRecipe;
 import mekanism.api.recipes.basic.BasicEnrichingRecipe;
 import mekanism.api.recipes.basic.BasicSmeltingRecipe;
+import mekanism.api.recipes.book.CrushingBookCategory;
+import mekanism.api.recipes.book.CrushingBookCategory.CrushingBookInfo;
+import mekanism.api.recipes.book.EnrichingBookCategory;
+import mekanism.api.recipes.book.EnrichingBookCategory.EnrichingBookInfo;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe.CookingBookInfo;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Recipe;
 
-public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<ItemStackToItemStackRecipeBuilder> {
+public class ItemStackToItemStackRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+      RECIPE extends ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>>
+      extends MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO, ItemStackToItemStackRecipeBuilder<BOOK_CATEGORY, BOOK_INFO, RECIPE>> {
 
-    private final ItemStackToItemStackRecipeBuilder.Factory factory;
+    private final ItemStackToItemStackRecipe.Factory<BOOK_CATEGORY, BOOK_INFO, RECIPE> factory;
     private final ItemStackIngredient input;
     private final ItemStackTemplate output;
 
-    protected ItemStackToItemStackRecipeBuilder(ItemStackIngredient input, ItemStackTemplate output, ItemStackToItemStackRecipeBuilder.Factory factory) {
+    protected ItemStackToItemStackRecipeBuilder(ItemStackIngredient input, ItemStackTemplate output, ItemStackToItemStackRecipe.Factory<BOOK_CATEGORY, BOOK_INFO, RECIPE> factory,
+          BiFunction<BOOK_CATEGORY, String, BOOK_INFO> bookInfoCreator, BOOK_CATEGORY defaultCategory) {
         this.input = input;
         this.output = output;
         this.factory = factory;
+        super(bookInfoCreator, defaultCategory);
     }
 
     @Override
@@ -33,41 +43,28 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
     ///
     /// @param input  Input.
     /// @param output Output.
-    public static ItemStackToItemStackRecipeBuilder crushing(ItemStackIngredient input, ItemStackTemplate output) {
-        return new ItemStackToItemStackRecipeBuilder(input, output, BasicCrushingRecipe::new);
+    public static ItemStackToItemStackRecipeBuilder<CrushingBookCategory, CrushingBookInfo, ?> crushing(ItemStackIngredient input, ItemStackTemplate output) {
+        return new ItemStackToItemStackRecipeBuilder<>(input, output, BasicCrushingRecipe::new, CrushingBookInfo::new, CrushingBookCategory.MISC);
     }
 
     /// Creates an Enriching recipe builder.
     ///
     /// @param input  Input.
     /// @param output Output.
-    public static ItemStackToItemStackRecipeBuilder enriching(ItemStackIngredient input, ItemStackTemplate output) {
-        return new ItemStackToItemStackRecipeBuilder(input, output, BasicEnrichingRecipe::new);
+    public static ItemStackToItemStackRecipeBuilder<EnrichingBookCategory, EnrichingBookInfo, ?> enriching(ItemStackIngredient input, ItemStackTemplate output) {
+        return new ItemStackToItemStackRecipeBuilder<>(input, output, BasicEnrichingRecipe::new, EnrichingBookInfo::new, EnrichingBookCategory.MISC);
     }
 
     /// Creates a Smelting recipe builder.
     ///
     /// @param input  Input.
     /// @param output Output.
-    public static ItemStackToItemStackRecipeBuilder smelting(ItemStackIngredient input, ItemStackTemplate output) {
-        return new ItemStackToItemStackRecipeBuilder(input, output, BasicSmeltingRecipe::new);
+    public static ItemStackToItemStackRecipeBuilder<CookingBookCategory, CookingBookInfo, ?> smelting(ItemStackIngredient input, ItemStackTemplate output) {
+        return new ItemStackToItemStackRecipeBuilder<>(input, output, BasicSmeltingRecipe::new, CookingBookInfo::new, CookingBookCategory.MISC);
     }
 
     @Override
-    protected ItemStackToItemStackRecipe asRecipe() {
-        return factory.create(input, output);
-    }
-
-    /// Builds this recipe using the output item's name as the recipe name.
-    ///
-    /// @param recipeOutput Finished Recipe Consumer.
-    public void build(RecipeOutput recipeOutput) {
-        save(recipeOutput, output.typeHolder());
-    }
-
-    @FunctionalInterface
-    public interface Factory {
-
-        ItemStackToItemStackRecipe create(ItemStackIngredient input, ItemStackTemplate output);
+    protected RECIPE asRecipe() {
+        return factory.create(commonInfo(), bookInfo(), input, output);
     }
 }

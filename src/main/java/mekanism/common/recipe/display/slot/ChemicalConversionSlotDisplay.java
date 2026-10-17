@@ -34,8 +34,8 @@ public record ChemicalConversionSlotDisplay(SlotDisplay chemicalSource) implemen
             List<SlotDisplay> displays = new ArrayList<>();
             //TODO - 26.3: Can we simplify this
             Set<Holder<Chemical>> supportedTypes = chemicalSource.resolve(context, CHEMICAL_TYPES).collect(Collectors.toSet());
-            for (RecipeHolder<? extends ItemStackToChemicalRecipe> recipeHolder : MekanismRecipeType.CHEMICAL_CONVERSION.getRecipes()) {
-                ItemStackToChemicalRecipe recipe = recipeHolder.value();
+            for (RecipeHolder<? extends ItemStackToChemicalRecipe<?, ?>> recipeHolder : MekanismRecipeType.CHEMICAL_CONVERSION.getRecipes()) {
+                ItemStackToChemicalRecipe<?, ?> recipe = recipeHolder.value();
                 for (ChemicalStackTemplate output : recipe.getOutputDefinition(context)) {
                     if (supportedTypes.contains(output.typeHolder())) {
                         displays.add(recipe.getInput().display());

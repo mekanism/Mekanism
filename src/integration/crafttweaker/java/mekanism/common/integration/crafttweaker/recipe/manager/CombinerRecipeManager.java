@@ -40,7 +40,7 @@ public class CombinerRecipeManager extends MekanismRecipeManager<RecipeInput, Co
     /// @param extraInput [IIngredientWithAmount] representing the secondary item input of the recipe.
     /// @param output     [IItemStack] representing the output of the recipe. Will be validated as not empty.
     public final BasicCombinerRecipe makeRecipe(IIngredientWithAmount mainInput, IIngredientWithAmount extraInput, IItemStack output) {
-        return new BasicCombinerRecipe(CrTUtils.fromCrT(mainInput), CrTUtils.fromCrT(extraInput), getAndValidateNotEmpty(output));
+        return new BasicCombinerRecipe(, , CrTUtils.fromCrT(mainInput), CrTUtils.fromCrT(extraInput), getAndValidateNotEmpty(output));
     }
 
     @Override

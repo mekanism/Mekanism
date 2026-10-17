@@ -4,6 +4,8 @@ import java.lang.ref.WeakReference;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.book.PigmentMixingBookCategory;
+import mekanism.api.recipes.book.PigmentMixingBookCategory.PigmentMixingBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
@@ -78,7 +80,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
     private abstract class PigmentColorDetails implements ColorDetails {
 
         @Nullable
-        private WeakReference<ChemicalChemicalToChemicalRecipe> cachedRecipe;
+        private WeakReference<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>> cachedRecipe;
 
         @Override
         public abstract int getColorFrom();
@@ -90,7 +92,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
                 if (!tile.leftInputTank.isEmpty() && !tile.rightInputTank.isEmpty()) {
                     ChemicalResource leftInput = tile.leftInputTank.resource();
                     ChemicalResource rightInput = tile.rightInputTank.resource();
-                    ChemicalChemicalToChemicalRecipe recipe;
+                    ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo> recipe;
                     if (cachedRecipe == null) {
                         recipe = getRecipeAndCache();
                     } else {
@@ -110,8 +112,8 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
         }
 
         @Nullable
-        private ChemicalChemicalToChemicalRecipe getRecipeAndCache() {
-            ChemicalChemicalToChemicalRecipe recipe = tile.getRecipe(0);
+        private ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo> getRecipeAndCache() {
+            ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo> recipe = tile.getRecipe(0);
             if (recipe == null) {
                 cachedRecipe = null;
             } else {
@@ -120,7 +122,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
             return recipe;
         }
 
-        private boolean isValid(ChemicalChemicalToChemicalRecipe recipe, ChemicalResource leftInput, ChemicalResource rightInput) {
+        private boolean isValid(ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo> recipe, ChemicalResource leftInput, ChemicalResource rightInput) {
             return (recipe.getLeftInput().testType(leftInput) && recipe.getRightInput().testType(rightInput)) ||
                    (recipe.getLeftInput().testType(rightInput) && recipe.getRightInput().testType(leftInput));
         }

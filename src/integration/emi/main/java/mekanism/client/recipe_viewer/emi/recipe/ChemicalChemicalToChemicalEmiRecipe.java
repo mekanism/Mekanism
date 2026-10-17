@@ -3,6 +3,7 @@ package mekanism.client.recipe_viewer.emi.recipe;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.widget.WidgetHolder;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -14,11 +15,13 @@ import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class ChemicalChemicalToChemicalEmiRecipe extends MekanismEmiHolderRecipe<ChemicalChemicalToChemicalRecipe> {
+public class ChemicalChemicalToChemicalEmiRecipe<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends MekanismEmiHolderRecipe<ChemicalChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
-    public ChemicalChemicalToChemicalEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ChemicalChemicalToChemicalRecipe> recipeHolder) {
+    public ChemicalChemicalToChemicalEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ChemicalChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getLeftInput());
         addInputDefinition(recipe.getRightInput());

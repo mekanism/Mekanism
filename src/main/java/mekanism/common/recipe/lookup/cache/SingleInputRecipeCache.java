@@ -17,14 +17,14 @@ import net.neoforged.neoforge.common.util.TriPredicate;
 import org.jspecify.annotations.Nullable;
 
 /// Basic implementation for [IInputRecipeCache] for handling recipes with a single input.
-public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>, RECIPE extends MekanismRecipe<?> & Predicate<STACK>,
+public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>, RECIPE extends MekanismRecipe<?, ?, ?> & Predicate<STACK>,
       CACHE extends IInputCache<TYPE, STACK, INGREDIENT, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
 
     private final Set<RECIPE> complexRecipes = new HashSet<>();
     private final Function<RECIPE, INGREDIENT> inputExtractor;
     private final CACHE cache;
 
-    protected SingleInputRecipeCache(MekanismRecipeType<?, RECIPE, ?> recipeType, Function<RECIPE, INGREDIENT> inputExtractor, CACHE cache) {
+    protected SingleInputRecipeCache(MekanismRecipeType<?, ?, ?, RECIPE, ?> recipeType, Function<RECIPE, INGREDIENT> inputExtractor, CACHE cache) {
         super(recipeType);
         this.inputExtractor = inputExtractor;
         this.cache = cache;
@@ -106,7 +106,7 @@ public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<T
     ///
     /// @return Recipe matching the given input, or `null` if no recipe matches.
     @Nullable
-    public <INPUT extends TypedInstance<TYPE>, DATA> RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT input, DATA data, TriPredicate<RECIPE, INPUT, DATA> matchCriteria) {
+    public <INPUT extends TypedInstance<TYPE>, DATA> RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT input, DATA data, TriPredicate<? super RECIPE, INPUT, DATA> matchCriteria) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
@@ -164,7 +164,7 @@ public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<T
     }
 
     @FunctionalInterface
-    public interface CheckRecipeType<TYPE, INPUT extends TypedInstance<TYPE>, RECIPE extends MekanismRecipe<?> & Predicate<? extends TypedInstance<TYPE>>, DATA_1, DATA_2> {
+    public interface CheckRecipeType<TYPE, INPUT extends TypedInstance<TYPE>, RECIPE extends MekanismRecipe<?, ?, ?> & Predicate<? extends TypedInstance<TYPE>>, DATA_1, DATA_2> {
 
         boolean testType(RECIPE recipe, INPUT input, DATA_1 data1, DATA_2 data2);
     }

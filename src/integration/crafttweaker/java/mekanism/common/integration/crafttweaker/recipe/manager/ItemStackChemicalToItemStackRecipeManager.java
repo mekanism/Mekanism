@@ -22,9 +22,9 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_CHEMICAL_TO_ITEM_STACK)
-public abstract class ItemStackChemicalToItemStackRecipeManager extends MekanismRecipeManager<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe> {
+public abstract class ItemStackChemicalToItemStackRecipeManager extends MekanismRecipeManager<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe<?, ?>> {
 
-    protected ItemStackChemicalToItemStackRecipeManager(IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe, ?> recipeType) {
+    protected ItemStackChemicalToItemStackRecipeManager(IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe<?, ?>, ?> recipeType) {
         super(recipeType);
     }
 
@@ -63,14 +63,14 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends Mekanism
     ///                      called from.
     /// @param output        [IItemStack] representing the output of the recipe. Will be validated as not empty.
     /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-    public final ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, IItemStack output, boolean perTickUsage) {
+    public final ItemStackChemicalToItemStackRecipe<?, ?> makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, IItemStack output, boolean perTickUsage) {
         return makeRecipe(itemInput, chemicalInput, getAndValidateNotEmpty(output), perTickUsage);
     }
 
-    protected abstract ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage);
+    protected abstract ItemStackChemicalToItemStackRecipe<?, ?> makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage);
 
     @Override
-    protected String describeOutputs(ItemStackChemicalToItemStackRecipe recipe) {
+    protected String describeOutputs(ItemStackChemicalToItemStackRecipe<?, ?> recipe) {
         //TODO - CrT: ContextMap
         return CrTUtils.describeOutputs(recipe.getOutputDefinition(ContextMap.EMPTY), template -> ItemStackUtil.getCommandString(template.create()));
     }
@@ -86,8 +86,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends Mekanism
         }
 
         @Override
-        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage) {
-            return new BasicCompressingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
+        protected ItemStackChemicalToItemStackRecipe<?, ?> makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage) {
+            return new BasicCompressingRecipe(, , CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
         }
     }
 
@@ -102,8 +102,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends Mekanism
         }
 
         @Override
-        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage) {
-            return new BasicInjectingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
+        protected ItemStackChemicalToItemStackRecipe<?, ?> makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage) {
+            return new BasicInjectingRecipe(, , CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
         }
     }
 
@@ -118,8 +118,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends Mekanism
         }
 
         @Override
-        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage) {
-            return new BasicPurifyingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
+        protected ItemStackChemicalToItemStackRecipe<?, ?> makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage) {
+            return new BasicPurifyingRecipe(, , CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
         }
     }
 
@@ -134,8 +134,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends Mekanism
         }
 
         @Override
-        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage) {
-            return new BasicMetallurgicInfuserRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
+        protected ItemStackChemicalToItemStackRecipe<?, ?> makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage) {
+            return new BasicMetallurgicInfuserRecipe(, , CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
         }
     }
 
@@ -150,8 +150,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends Mekanism
         }
 
         @Override
-        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage) {
-            return new BasicPaintingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
+        protected ItemStackChemicalToItemStackRecipe<?, ?> makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage) {
+            return new BasicPaintingRecipe(, , CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
         }
     }
 }

@@ -36,7 +36,7 @@ public class MekanismSlotDisplayTypes {
           )));
     public static final DeferredHolder<SlotDisplay.Type<?>, SlotDisplay.Type<ChemicalStackSlotDisplay>> CHEMICAL_STACK = SLOT_DISPLAY_TYPES.register("chemical_stack",
           () -> new SlotDisplay.Type<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
-                ChemicalStackTemplate.CODEC.fieldOf(SerializationConstants.CHEMICAL).forGetter(ChemicalStackSlotDisplay::stack)
+                ChemicalStackTemplate.MAP_CODEC.fieldOf(SerializationConstants.CHEMICAL).forGetter(ChemicalStackSlotDisplay::stack)
           ).apply(instance, ChemicalStackSlotDisplay::new)), StreamCodec.composite(
                 ChemicalStackTemplate.STREAM_CODEC, ChemicalStackSlotDisplay::stack,
                 ChemicalStackSlotDisplay::new

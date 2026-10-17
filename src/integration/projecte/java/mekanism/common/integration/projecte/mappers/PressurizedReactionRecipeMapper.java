@@ -33,13 +33,7 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
     @Override
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, PressurizedReactionRecipe recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
         if (OPTIMIZE_BASIC && recipe instanceof BasicPressurizedReactionRecipe basicRecipe) {
-            //This will be the case for the majority of our recipes
-            ItemStackTemplate outputItem = basicRecipe.getOutputItem();
-            ChemicalStackTemplate outputChemical = basicRecipe.getOutputChemical();
-            if (outputItem == null && outputChemical == null) {
-                return false;
-            }
-            return addConversions(mapper, new PressurizedReactionRecipeOutput(outputItem, outputChemical), fakeGroupHelper.forIngredients(
+            return addConversions(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredients(
                   contextMap, recipe.getInputSolid(),
                   recipe.getInputFluid(),
                   recipe.getInputChemical()

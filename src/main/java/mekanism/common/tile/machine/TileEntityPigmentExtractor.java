@@ -8,6 +8,8 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.book.PigmentExtractingBookCategory;
+import mekanism.api.recipes.book.PigmentExtractingBookCategory.PigmentExtractingBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
@@ -50,7 +52,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemStackToChemicalRecipe> implements ItemRecipeLookupHandler<ItemStackToChemicalRecipe> {
+public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>>
+      implements ItemRecipeLookupHandler<ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -132,23 +135,24 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToChemicalRecipe, SingleItem<ItemStackToChemicalRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleRecipeInput, PigmentExtractingBookCategory, PigmentExtractingBookInfo, ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>,
+          SingleItem<ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>>> getRecipeType() {
         return MekanismRecipeType.PIGMENT_EXTRACTING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<ItemStackToChemicalRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>> recipeViewerType() {
         return RecipeViewerRecipeType.PIGMENT_EXTRACTING;
     }
 
     @Nullable
     @Override
-    public ItemStackToChemicalRecipe getRecipe(int cacheIndex) {
+    public ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
     @Override
-    public CachedRecipe<ItemStackToChemicalRecipe> createNewCachedRecipe(ItemStackToChemicalRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>> createNewCachedRecipe(ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo> recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

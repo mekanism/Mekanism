@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -61,7 +62,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<SingleFluid
         if (energyMultiplier < 1) {
             throw new IllegalArgumentException("Energy multiplier must be at least one! Multiplier: " + energyMultiplier);
         }
-        return new BasicElectrolysisRecipe(CrTUtils.fromCrT(input), energyMultiplier, getAndValidateNotEmpty(leftChemicalOutput), getAndValidateNotEmpty(rightChemicalOutput));
+        return new BasicElectrolysisRecipe(, , CrTUtils.fromCrT(input), energyMultiplier, new ElectrolysisRecipeOutput(getAndValidateNotEmpty(leftChemicalOutput), getAndValidateNotEmpty(rightChemicalOutput)));
     }
 
     @Override

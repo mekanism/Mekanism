@@ -69,7 +69,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY, 0));
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getLastUsage));
         if (tile.hasSecondaryResourceBar()) {
-            if (tile instanceof TileEntityItemStackChemicalToItemStackFactory factory) {
+            if (tile instanceof TileEntityItemStackChemicalToItemStackFactory<?, ?> factory) {
                 addRenderableWidget(new GuiChemicalBar(this, GuiTankBar.getProvider(factory.getChemicalTank(), tile.getChemicalTanks()), 7, 76,
                       tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true))
                       .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT, 0));

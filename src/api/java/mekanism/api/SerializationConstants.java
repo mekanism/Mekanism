@@ -55,10 +55,10 @@ public final class SerializationConstants {
     public static final String SECONDARY_CHANCE = "secondary_chance";
     /// @since 10.7.0
     public static final String CHEMICAL_OUTPUT = "chemical_output";
-    /// @since 10.7.0
-    public static final String LEFT_CHEMICAL_OUTPUT = "left_chemical_output";
-    /// @since 10.7.0
-    public static final String RIGHT_CHEMICAL_OUTPUT = "right_chemical_output";
+    /// @since 10.8.0
+    public static final String LEFT = "left";
+    /// @since 10.8.0
+    public static final String RIGHT = "right";
     public static final String ITEM_OUTPUT = "item_output";
     public static final String FLUID_OUTPUT = "fluid_output";
 

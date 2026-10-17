@@ -40,7 +40,7 @@ public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<Sin
     /// @param output [IItemStack] representing the output of the recipe. Will be validated as not empty.
     public final BasicChemicalCrystallizerRecipe makeRecipe(ChemicalStackIngredient input, IItemStack output) {
         //TODO - CrT: Allow specifying a slot display?
-        return new BasicChemicalCrystallizerRecipe(input, SlotDisplay.Empty.INSTANCE, getAndValidateNotEmpty(output));
+        return new BasicChemicalCrystallizerRecipe(, , input, SlotDisplay.Empty.INSTANCE, getAndValidateNotEmpty(output));
     }
 
     @Override

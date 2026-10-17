@@ -50,9 +50,11 @@ public abstract class WrappedShapedRecipe extends ShapedRecipe {
     public boolean matches(CraftingInput input, Level world) {
         //Note: We do not override the matches method if it matches ignoring NBT,
         // to ensure that we return the proper value for if there is a match that gives a proper output
-        return super.matches(input, world) && !assemble(input).isEmpty();//TODO - 26.3: can this ever be empty?
+        //Note: We also have to check if the actual assembly is empty as if contents are not valid then that might return empty
+        return super.matches(input, world) && !assemble(input).isEmpty();
     }
 
+    @FunctionalInterface
     public interface Factory<CLAZZ extends WrappedShapedRecipe> {
 
         CLAZZ get(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo, ShapedRecipePattern pattern, ItemStackTemplate result);

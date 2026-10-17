@@ -18,7 +18,7 @@ import org.jspecify.annotations.Nullable;
 /// Base class to help implement handling of item chemical to object recipes. Unlike [TwoInputCachedRecipe] this variant has constant chemical usage.
 ///
 /// @since 10.7.0
-public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extends ItemStackChemicalToObjectRecipe<OUTPUT>> extends CachedRecipe<RECIPE> {
+public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extends ItemStackChemicalToObjectRecipe<OUTPUT, ?, ?>> extends CachedRecipe<RECIPE> {
 
     private final IOutputHandler<OUTPUT> outputHandler;
     private final IInputHandler<Item, ItemStack> itemInputHandler;
@@ -182,7 +182,7 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
     /// @param outputHandler            Output handler.
     ///
     /// @since 10.8.0
-    public static <OUTPUT, RECIPE extends ItemStackChemicalToObjectRecipe<OUTPUT>> ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE> create(RECIPE recipe,
+    public static <OUTPUT, RECIPE extends ItemStackChemicalToObjectRecipe<OUTPUT, ?, ?>> ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE> create(RECIPE recipe,
           BooleanSupplier recheckAllErrors, IInputHandler<Item, ItemStack> itemInputHandler, IInputHandler<Chemical, ChemicalStack> chemicalInputHandler,
           ChemicalUsageMultiplier chemicalUsage, IntConsumer chemicalUsedSoFarChanged, IOutputHandler<OUTPUT> outputHandler) {
         return new ItemStackConstantChemicalToObjectCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, chemicalUsage, chemicalUsedSoFarChanged,

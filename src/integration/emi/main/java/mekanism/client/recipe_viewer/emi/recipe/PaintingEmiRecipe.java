@@ -4,6 +4,8 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.function.Supplier;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.book.PaintingBookCategory;
+import mekanism.api.recipes.book.PaintingBookCategory.PaintingBookInfo;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -19,11 +21,11 @@ import mekanism.common.tile.machine.TileEntityPaintingMachine;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class PaintingEmiRecipe extends MekanismEmiHolderRecipe<ItemStackChemicalToItemStackRecipe> {
+public class PaintingEmiRecipe extends MekanismEmiHolderRecipe<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> {
 
     private final Supplier<ChemicalStack> chemicalInput;
 
-    public PaintingEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder) {
+    public PaintingEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getItemInput());
         addInputDefinition(recipe.getChemicalInput(), recipe.perTickUsage() ? TileEntityMetallurgicInfuser.BASE_TICKS_REQUIRED : 1);

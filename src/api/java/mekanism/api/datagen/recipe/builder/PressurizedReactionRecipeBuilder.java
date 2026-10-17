@@ -4,7 +4,10 @@ import java.util.Objects;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
+import mekanism.api.recipes.book.ReactingBookCategory;
+import mekanism.api.recipes.book.ReactingBookCategory.ReactingBookInfo;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -13,17 +16,14 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 import org.jspecify.annotations.Nullable;
 
-public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<PressurizedReactionRecipeBuilder> {
+public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<ReactingBookCategory, ReactingBookInfo, PressurizedReactionRecipeBuilder> {
 
     private final ItemStackIngredient inputSolid;
     private final FluidStackIngredient inputFluid;
     private final ChemicalStackIngredient inputChemical;
     private int energyRequired = 0;
     private final int duration;
-    @Nullable
-    private final ItemStackTemplate outputItem;
-    @Nullable
-    private final ChemicalStackTemplate outputChemical;
+    private final PressurizedReactionRecipeOutput output;
 
     protected PressurizedReactionRecipeBuilder(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
           @Nullable ItemStackTemplate outputItem, @Nullable ChemicalStackTemplate outputChemical) {
@@ -31,8 +31,8 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         this.inputFluid = inputFluid;
         this.inputChemical = inputChemical;
         this.duration = duration;
-        this.outputItem = outputItem;
-        this.outputChemical = outputChemical;
+        this.output = new PressurizedReactionRecipeOutput(outputItem, outputChemical);
+        super(ReactingBookInfo::new, ReactingBookCategory.MISC);
     }
 
     @Override
@@ -103,6 +103,6 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
 
     @Override
     protected PressurizedReactionRecipe asRecipe() {
-        return new BasicPressurizedReactionRecipe(inputSolid, inputFluid, inputChemical, energyRequired, duration, outputItem, outputChemical);
+        return new BasicPressurizedReactionRecipe(commonInfo(), bookInfo(), inputSolid, inputFluid, inputChemical, energyRequired, duration, output);
     }
 }

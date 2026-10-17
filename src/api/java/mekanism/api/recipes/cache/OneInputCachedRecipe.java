@@ -15,7 +15,7 @@ import org.jspecify.annotations.Nullable;
 
 /// Base class to help implement handling of recipes with one input.
 public class OneInputCachedRecipe<HOLDER, INPUT extends TypedInstance<HOLDER>, INGREDIENT extends InputIngredient<HOLDER, INPUT>, OUTPUT,
-      RECIPE extends SingleInputRecipe<HOLDER, INPUT, INGREDIENT, ?, OUTPUT>> extends CachedRecipe<RECIPE> {
+      RECIPE extends SingleInputRecipe<HOLDER, INPUT, INGREDIENT, ?, OUTPUT, ?, ?>> extends CachedRecipe<RECIPE> {
 
     private final IInputHandler<HOLDER, INPUT> inputHandler;
     private final IOutputHandler<OUTPUT> outputHandler;

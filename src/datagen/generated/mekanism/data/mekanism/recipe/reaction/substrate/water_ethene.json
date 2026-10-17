@@ -4,10 +4,6 @@
     "amount": 100,
     "ingredient": "mekanism:ethene"
   },
-  "chemical_output": {
-    "amount": 10,
-    "id": "mekanism:oxygen"
-  },
   "duration": 400,
   "energy_required": 2,
   "fluid_input": {
@@ -18,8 +14,14 @@
     "count": 1,
     "ingredient": "mekanism:substrate"
   },
-  "item_output": {
-    "count": 8,
-    "id": "mekanism:substrate"
+  "output": {
+    "chemical": {
+      "amount": 10,
+      "id": "mekanism:oxygen"
+    },
+    "item": {
+      "count": 8,
+      "id": "mekanism:substrate"
+    }
   }
 }

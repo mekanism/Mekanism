@@ -77,6 +77,7 @@ import mekanism.common.item.block.machine.ItemBlockQuantumEntangloporter;
 import mekanism.common.item.block.machine.ItemBlockResistiveHeater;
 import mekanism.common.item.block.machine.ItemBlockTeleporter;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.EitherSideChemical;
@@ -1121,7 +1122,7 @@ public class MekanismBlocks {
                 );
                 case COMPRESSING, INJECTING, PURIFYING -> holder
                       .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
-                            .addBasic(TileEntityAdvancedElectricMachine.MAX_GAS * processes, switch (factoryType) {
+                            .addBasic(TileEntityAdvancedElectricMachine.MAX_GAS * processes, (IMekanismRecipeTypeProvider<?, ?, ?, ?, ? extends ItemChemical<?>>) switch (factoryType) {
                                 case COMPRESSING -> MekanismRecipeType.COMPRESSING;
                                 case INJECTING -> MekanismRecipeType.INJECTING;
                                 case PURIFYING -> MekanismRecipeType.PURIFYING;

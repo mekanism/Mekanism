@@ -4,6 +4,8 @@ import java.lang.ref.WeakReference;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.book.PigmentExtractingBookCategory;
+import mekanism.api.recipes.book.PigmentExtractingBookCategory.PigmentExtractingBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
@@ -54,7 +56,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
     private class PigmentColorDetails implements ColorDetails {
 
         @Nullable
-        private WeakReference<ItemStackToChemicalRecipe> cachedRecipe;
+        private WeakReference<ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>> cachedRecipe;
 
         @Override
         public int getColorFrom() {
@@ -68,7 +70,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
                 IInventorySlot inputSlot = tile.getInputSlot();
                 if (!inputSlot.isEmpty()) {
                     ItemResource input = inputSlot.resource();
-                    ItemStackToChemicalRecipe recipe;
+                    ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo> recipe;
                     if (cachedRecipe == null) {
                         recipe = getRecipeAndCache();
                     } else {
@@ -88,8 +90,8 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
         }
 
         @Nullable
-        private ItemStackToChemicalRecipe getRecipeAndCache() {
-            ItemStackToChemicalRecipe recipe = tile.getRecipe(0);
+        private ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo> getRecipeAndCache() {
+            ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo> recipe = tile.getRecipe(0);
             if (recipe == null) {
                 cachedRecipe = null;
             } else {

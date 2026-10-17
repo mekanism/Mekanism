@@ -12,18 +12,18 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 @IRecipeHandler.For(FluidChemicalToChemicalRecipe.class)
-public class FluidSlurryToSlurryRecipeHandler extends MekanismRecipeHandler<FluidChemicalToChemicalRecipe> {
+public class FluidSlurryToSlurryRecipeHandler extends MekanismRecipeHandler<FluidChemicalToChemicalRecipe<?, ?>> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super FluidChemicalToChemicalRecipe> manager, RegistryAccess registryAccess,
-          RecipeHolder<FluidChemicalToChemicalRecipe> recipeHolder) {
-        FluidChemicalToChemicalRecipe recipe = recipeHolder.value();
+    public String dumpToCommandString(IRecipeManager<? super FluidChemicalToChemicalRecipe<?, ?>> manager, RegistryAccess registryAccess,
+          RecipeHolder<FluidChemicalToChemicalRecipe<?, ?>> recipeHolder) {
+        FluidChemicalToChemicalRecipe<?, ?> recipe = recipeHolder.value();
         return buildCommandString(manager, recipeHolder, recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override
-    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager<? super FluidChemicalToChemicalRecipe> manager, FluidChemicalToChemicalRecipe recipe, U o) {
-        if (o instanceof FluidChemicalToChemicalRecipe other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager<? super FluidChemicalToChemicalRecipe<?, ?>> manager, FluidChemicalToChemicalRecipe<?, ?> recipe, U o) {
+        if (o instanceof FluidChemicalToChemicalRecipe<?, ?> other) {
             return ingredientConflicts(recipe.getFluidInput(), other.getFluidInput()) &&
                    ingredientConflicts(recipe.getChemicalInput(), other.getChemicalInput());
         }
@@ -31,12 +31,12 @@ public class FluidSlurryToSlurryRecipeHandler extends MekanismRecipeHandler<Flui
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super FluidChemicalToChemicalRecipe> manager, RegistryAccess registryAccess, FluidChemicalToChemicalRecipe recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super FluidChemicalToChemicalRecipe<?, ?>> manager, RegistryAccess registryAccess, FluidChemicalToChemicalRecipe<?, ?> recipe) {
         return decompose(recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(contextMap(registryAccess)));
     }
 
     @Override
-    public Optional<FluidChemicalToChemicalRecipe> recompose(IRecipeManager<? super FluidChemicalToChemicalRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
+    public Optional<FluidChemicalToChemicalRecipe<?, ?>> recompose(IRecipeManager<? super FluidChemicalToChemicalRecipe<?, ?>> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof FluidChemicalToChemicalRecipeManager manager) {
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.FLUID.input()),

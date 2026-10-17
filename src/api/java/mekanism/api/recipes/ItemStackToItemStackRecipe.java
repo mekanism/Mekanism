@@ -2,8 +2,10 @@ package mekanism.api.recipes;
 
 import java.util.Objects;
 import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 
@@ -15,12 +17,18 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 /// - Crushing: Can be processed in Crushers and Crushing Factories.
 /// - Enriching: Can be processed in Enrichment Chambers and Enriching Factories.
 /// - Smelting: Can be processed in Energized Smelters, Smelting Factories, and Robits.
-public abstract class ItemStackToItemStackRecipe extends ItemInputRecipe<ItemStackTemplate> {
+public abstract class ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends ItemInputRecipe<ItemStackTemplate, BOOK_CATEGORY, BOOK_INFO> {
 
-    protected final RecipeType<ItemStackToItemStackRecipe> recipeType;
+    protected final RecipeType<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType;
 
-    public ItemStackToItemStackRecipe(RecipeType<ItemStackToItemStackRecipe> recipeType) {
+    /// @param commonInfo Common recipe info.
+    /// @param bookInfo   Recipe book info.
+    ///
+    /// @since 10.8.0
+    public ItemStackToItemStackRecipe(RecipeType<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
         this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
+        super(commonInfo, bookInfo);
     }
 
     @Override
@@ -32,7 +40,20 @@ public abstract class ItemStackToItemStackRecipe extends ItemInputRecipe<ItemSta
     }
 
     @Override
-    public final RecipeType<ItemStackToItemStackRecipe> getType() {
+    public final RecipeType<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> getType() {
         return this.recipeType;
+    }
+
+    /// Helper interface for constructing [ItemStackToItemStackRecipes][ItemStackToItemStackRecipe]
+    ///
+    /// @since 10.8.0
+    @FunctionalInterface
+    public interface Factory<BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>, RECIPE extends ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> {
+
+        /// @param commonInfo Common recipe info.
+        /// @param bookInfo   Recipe book info.
+        /// @param input      Input ingredient.
+        /// @param output     Output item.
+        RECIPE create(CommonInfo commonInfo, BOOK_INFO bookInfo, ItemStackIngredient input, ItemStackTemplate output);
     }
 }

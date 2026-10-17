@@ -214,8 +214,8 @@ public class MekanismJEI implements IModPlugin {
 
         registry.addRecipeCategories(new ChemicalCrystallizerRecipeCategory(guiHelper, RecipeViewerRecipeType.CRYSTALLIZING));
         registry.addRecipeCategories(new ChemicalDissolutionRecipeCategory(guiHelper, RecipeViewerRecipeType.DISSOLUTION));
-        registry.addRecipeCategories(new ChemicalChemicalToChemicalRecipeCategory(guiHelper, RecipeViewerRecipeType.CHEMICAL_INFUSING));
-        registry.addRecipeCategories(new FluidChemicalToChemicalRecipeCategory(guiHelper, RecipeViewerRecipeType.WASHING));
+        registry.addRecipeCategories(new ChemicalChemicalToChemicalRecipeCategory<>(guiHelper, RecipeViewerRecipeType.CHEMICAL_INFUSING));
+        registry.addRecipeCategories(new FluidChemicalToChemicalRecipeCategory<>(guiHelper, RecipeViewerRecipeType.WASHING));
         registry.addRecipeCategories(new ElectrolysisRecipeCategory(guiHelper, RecipeViewerRecipeType.SEPARATING));
         registry.addRecipeCategories(new MetallurgicInfuserRecipeCategory(guiHelper, RecipeViewerRecipeType.METALLURGIC_INFUSING));
         registry.addRecipeCategories(new PressurizedReactionRecipeCategory(guiHelper, RecipeViewerRecipeType.REACTION));
@@ -230,14 +230,14 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new ItemStackToChemicalRecipeCategory<>(guiHelper, RecipeViewerRecipeType.OXIDIZING, false));
         registry.addRecipeCategories(new ItemStackToFluidOptionalItemRecipeCategory(guiHelper, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, false));
 
-        registry.addRecipeCategories(new ChemicalToChemicalRecipeCategory(guiHelper, RecipeViewerRecipeType.ACTIVATING));
-        registry.addRecipeCategories(new ChemicalToChemicalRecipeCategory(guiHelper, RecipeViewerRecipeType.CENTRIFUGING));
+        registry.addRecipeCategories(new ChemicalToChemicalRecipeCategory<>(guiHelper, RecipeViewerRecipeType.ACTIVATING));
+        registry.addRecipeCategories(new ChemicalToChemicalRecipeCategory<>(guiHelper, RecipeViewerRecipeType.CENTRIFUGING));
 
         registry.addRecipeCategories(new CombinerRecipeCategory(guiHelper, RecipeViewerRecipeType.COMBINING));
 
-        registry.addRecipeCategories(new ItemStackChemicalToItemStackRecipeCategory(guiHelper, RecipeViewerRecipeType.PURIFYING));
-        registry.addRecipeCategories(new ItemStackChemicalToItemStackRecipeCategory(guiHelper, RecipeViewerRecipeType.COMPRESSING));
-        registry.addRecipeCategories(new ItemStackChemicalToItemStackRecipeCategory(guiHelper, RecipeViewerRecipeType.INJECTING));
+        registry.addRecipeCategories(new ItemStackChemicalToItemStackRecipeCategory<>(guiHelper, RecipeViewerRecipeType.PURIFYING));
+        registry.addRecipeCategories(new ItemStackChemicalToItemStackRecipeCategory<>(guiHelper, RecipeViewerRecipeType.COMPRESSING));
+        registry.addRecipeCategories(new ItemStackChemicalToItemStackRecipeCategory<>(guiHelper, RecipeViewerRecipeType.INJECTING));
 
         registry.addRecipeCategories(new NucleosynthesizingRecipeCategory(guiHelper, RecipeViewerRecipeType.NUCLEOSYNTHESIZING));
 
@@ -246,11 +246,11 @@ public class MekanismJEI implements IModPlugin {
 
         registry.addRecipeCategories(new SawmillRecipeCategory(guiHelper, RecipeViewerRecipeType.SAWING));
 
-        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, RecipeViewerRecipeType.ENRICHING));
-        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, RecipeViewerRecipeType.CRUSHING));
-        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, RecipeViewerRecipeType.SMELTING));
+        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory<>(guiHelper, RecipeViewerRecipeType.ENRICHING));
+        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory<>(guiHelper, RecipeViewerRecipeType.CRUSHING));
+        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory<>(guiHelper, RecipeViewerRecipeType.SMELTING));
 
-        registry.addRecipeCategories(new FluidToFluidRecipeCategory(guiHelper, RecipeViewerRecipeType.EVAPORATING));
+        registry.addRecipeCategories(new FluidToFluidRecipeCategory<>(guiHelper, RecipeViewerRecipeType.EVAPORATING));
 
         //Conversion recipes
         registry.addRecipeCategories(new ItemStackToEnergyRecipeCategory(guiHelper, RecipeViewerRecipeType.ENERGY_CONVERSION));

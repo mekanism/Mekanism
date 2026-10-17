@@ -3,6 +3,7 @@ package mekanism.client.recipe_viewer.jei.machine;
 import java.util.List;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiHorizontalRateBar;
@@ -21,14 +22,16 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class FluidToFluidRecipeCategory extends HolderRecipeCategory<FluidToFluidRecipe> {
+public class FluidToFluidRecipeCategory<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends HolderRecipeCategory<FluidToFluidRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
     private final GuiGauge<?> input;
     private final GuiGauge<?> output;
 
-    public FluidToFluidRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<FluidToFluidRecipe> recipeType) {
+    public FluidToFluidRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<FluidToFluidRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType) {
         super(helper, recipeType);
         //Note: All these elements except for the inputs are in slightly different x positions than in the normal GUI so that they fit properly in JEI
         addElement(new GuiInnerScreen(this, 48, 19, 86, 40, () -> List.of(
@@ -48,8 +51,8 @@ public class FluidToFluidRecipeCategory extends HolderRecipeCategory<FluidToFlui
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<FluidToFluidRecipe> recipeHolder, IFocusGroup focusGroup) {
-        FluidToFluidRecipe recipe = recipeHolder.value();
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<FluidToFluidRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeHolder, IFocusGroup focusGroup) {
+        FluidToFluidRecipe<BOOK_CATEGORY, BOOK_INFO> recipe = recipeHolder.value();
         initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().display());
         initFluid(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDisplay());
     }

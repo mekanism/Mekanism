@@ -56,7 +56,7 @@ import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
 
-public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>> implements IRecipeTypeMapper {
+public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?, ?, ?>> implements IRecipeTypeMapper {
 
     protected static final boolean OPTIMIZE_BASIC = true;
     private static final IntBinaryOperator MERGE = Integer::sum;

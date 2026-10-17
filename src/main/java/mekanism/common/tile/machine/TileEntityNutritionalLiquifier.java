@@ -7,7 +7,8 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
-import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
+import mekanism.api.recipes.book.LiquificationBookCategory;
+import mekanism.api.recipes.book.LiquificationBookCategory.LiquificationBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
@@ -52,6 +53,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.UseRemainder;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -61,7 +63,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<BasicItemStackToFluidOptionalItemRecipe> {
+public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<NutritionalLiquifierRecipe> {
 
     public static final RecipeError NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR = RecipeError.create();
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
@@ -73,6 +75,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     );
     public static final long MAX_FLUID = 10L * FluidType.BUCKET_VOLUME;
     public static final int BASE_TICKS_REQUIRED = 5 * SharedConstants.TICKS_PER_SECOND;
+    private static final Recipe.CommonInfo NO_DISPLAY = new Recipe.CommonInfo(false);
 
     @UnknownNullability//Initialized via getInitialFluidTanks
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
@@ -168,24 +171,24 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     }
 
     @Override
-    public MekanismRecipeType<SingleRecipeInput, BasicItemStackToFluidOptionalItemRecipe, IInputRecipeCache> getRecipeType() {
+    public MekanismRecipeType<SingleRecipeInput, LiquificationBookCategory, LiquificationBookInfo, NutritionalLiquifierRecipe, IInputRecipeCache> getRecipeType() {
         //TODO - V11: See comment in NutritionalLiquifierIRecipe. Note if either containsRecipe and findFirstRecipe get called this will throw
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public IRecipeViewerRecipeType<BasicItemStackToFluidOptionalItemRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<NutritionalLiquifierRecipe> recipeViewerType() {
         return RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION;
     }
 
     @Nullable
     @Override
-    public BasicItemStackToFluidOptionalItemRecipe getRecipe(int cacheIndex) {
+    public NutritionalLiquifierRecipe getRecipe(int cacheIndex) {
         return getRecipe(inputHandler.getInput());
     }
 
     @Nullable
-    public static BasicItemStackToFluidOptionalItemRecipe getRecipe(ItemStack stack) {
+    public static NutritionalLiquifierRecipe getRecipe(ItemStack stack) {
         if (stack.isEmpty()) {
             return null;
         }
@@ -196,6 +199,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
         }
         UseRemainder remainder = stack.get(DataComponents.USE_REMAINDER);
         return new NutritionalLiquifierRecipe(
+              NO_DISPLAY, new LiquificationBookInfo(LiquificationBookCategory.MISC, ""),
               IngredientCreatorAccess.item().from(stack, 1),
               MekanismFluids.NUTRITIONAL_PASTE.asTemplate(food.nutrition() * 50),
               remainder == null ? null : remainder.convertInto()
@@ -203,7 +207,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     }
 
     @Override
-    public CachedRecipe<BasicItemStackToFluidOptionalItemRecipe> createNewCachedRecipe(BasicItemStackToFluidOptionalItemRecipe recipe, int cacheIndex) {
+    public CachedRecipe<NutritionalLiquifierRecipe> createNewCachedRecipe(NutritionalLiquifierRecipe recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

@@ -17,9 +17,9 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CHEMICAL_CHEMICAL_TO_CHEMICAL)
-public abstract class ChemicalChemicalToChemicalRecipeManager extends MekanismRecipeManager<BiChemicalRecipeInput, ChemicalChemicalToChemicalRecipe> {
+public abstract class ChemicalChemicalToChemicalRecipeManager extends MekanismRecipeManager<BiChemicalRecipeInput, ChemicalChemicalToChemicalRecipe<?, ?>> {
 
-    protected ChemicalChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<BiChemicalRecipeInput, ChemicalChemicalToChemicalRecipe, ?> recipeType) {
+    protected ChemicalChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<BiChemicalRecipeInput, ? extends ChemicalChemicalToChemicalRecipe<?, ?>, ?> recipeType) {
         super(recipeType);
     }
 
@@ -45,14 +45,14 @@ public abstract class ChemicalChemicalToChemicalRecipeManager extends MekanismRe
     /// @param leftInput  Chemical stack ingredient representing the "left" chemical input of the recipe.
     /// @param rightInput Chemical stack ingredient representing the "right" chemical input of the recipe.
     /// @param output     Chemical stack representing the output of the recipe. Will be validated as not empty.
-    public final ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ICrTChemicalStack output) {
+    public final ChemicalChemicalToChemicalRecipe<?, ?> makeRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ICrTChemicalStack output) {
         return makeRecipe(leftInput, rightInput, getAndValidateNotEmpty(output));
     }
 
-    protected abstract ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStackTemplate output);
+    protected abstract ChemicalChemicalToChemicalRecipe<?, ?> makeRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStackTemplate output);
 
     @Override
-    protected String describeOutputs(ChemicalChemicalToChemicalRecipe recipe) {
+    protected String describeOutputs(ChemicalChemicalToChemicalRecipe<?, ?> recipe) {
         return CrTUtils.describeOutputs(recipe.getOutputDefinition(ContextMap.EMPTY));//TODO - CrT: ContextMap
     }
 
@@ -67,8 +67,8 @@ public abstract class ChemicalChemicalToChemicalRecipeManager extends MekanismRe
         }
 
         @Override
-        protected ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient left, ChemicalStackIngredient right, ChemicalStackTemplate output) {
-            return new BasicChemicalInfuserRecipe(left, right, output);
+        protected ChemicalChemicalToChemicalRecipe<?, ?> makeRecipe(ChemicalStackIngredient left, ChemicalStackIngredient right, ChemicalStackTemplate output) {
+            return new BasicChemicalInfuserRecipe(, , left, right, output);
         }
     }
 
@@ -83,8 +83,8 @@ public abstract class ChemicalChemicalToChemicalRecipeManager extends MekanismRe
         }
 
         @Override
-        protected ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient left, ChemicalStackIngredient right, ChemicalStackTemplate output) {
-            return new BasicPigmentMixingRecipe(left, right, output);
+        protected ChemicalChemicalToChemicalRecipe<?, ?> makeRecipe(ChemicalStackIngredient left, ChemicalStackIngredient right, ChemicalStackTemplate output) {
+            return new BasicPigmentMixingRecipe(, , left, right, output);
         }
     }
 }

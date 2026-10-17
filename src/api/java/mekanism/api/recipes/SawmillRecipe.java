@@ -5,8 +5,11 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
+import mekanism.api.recipes.book.SawingBookCategory;
+import mekanism.api.recipes.book.SawingBookCategory.SawingBookInfo;
 import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
 import mekanism.api.recipes.display.slot.ChanceSlotDisplay;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -14,6 +17,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
@@ -27,10 +31,18 @@ import org.jspecify.annotations.Nullable;
 /// Secondary Output: Chance based ItemStack (can be empty/zero chance if primary output is not empty)
 ///
 /// @apiNote Precision Sawmills and Sawing Factories can process this recipe type.
-public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
+public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput, SawingBookCategory, SawingBookInfo> {
 
-    protected static final RandomSource RANDOM = RandomSource.create();
     private static final Holder<Item> PRECISION_SAWMILL = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "precision_sawmill"));
+    protected static final RandomSource RANDOM = RandomSource.create();
+
+    /// @param commonInfo Common recipe info.
+    /// @param bookInfo   Recipe book info.
+    ///
+    /// @since 10.8.0
+    protected SawmillRecipe(Recipe.CommonInfo commonInfo, SawingBookInfo bookInfo) {
+        super(commonInfo, bookInfo);
+    }
 
     /// For JEI, gets the main output representations to display.
     ///
@@ -99,5 +111,23 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
         /// @implSpec It is expected that if this doesn't return null that the type is the same as the type returned in [#getMaxSecondaryOutput()]
         @Nullable
         ItemStackTemplate nextSecondaryOutput();
+    }
+
+    /// Helper interface for constructing [SawmillRecipes][SawmillRecipe]
+    ///
+    /// @since 10.8.0
+    @FunctionalInterface
+    public interface Factory<RECIPE extends SawmillRecipe> {
+
+        /// @param commonInfo      Common recipe info.
+        /// @param bookInfo        Recipe book info.
+        /// @param input           Input.
+        /// @param mainOutput      Main Output.
+        /// @param secondaryOutput Secondary Output (chance based).
+        /// @param secondaryChance Chance of the secondary output being produced. This must be at least zero and at most one.
+        ///
+        /// @apiNote At least one output must not be empty.
+        RECIPE create(CommonInfo commonInfo, SawingBookInfo bookInfo, ItemStackIngredient input, @Nullable ItemStackTemplate mainOutput,
+              @Nullable ItemStackTemplate secondaryOutput, double secondaryChance);
     }
 }

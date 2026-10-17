@@ -13,7 +13,7 @@ import net.minecraft.core.TypedInstance;
 import org.jspecify.annotations.Nullable;
 
 /// Base input cache that implements the backend handling and lookup of a single basic key based input.
-public abstract class BaseInputCache<KEY, INPUT extends TypedInstance<KEY>, INGREDIENT extends InputIngredient<KEY, INPUT>, RECIPE extends MekanismRecipe<?>>
+public abstract class BaseInputCache<KEY, INPUT extends TypedInstance<KEY>, INGREDIENT extends InputIngredient<KEY, INPUT>, RECIPE extends MekanismRecipe<?, ?, ?>>
       implements IInputCache<KEY, INPUT, INGREDIENT, RECIPE> {
 
     /// Map of keys representing inputs to a set of the recipes that contain said input. This allows for quick contains checking by checking if a key exists, as well as

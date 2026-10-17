@@ -14,14 +14,16 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.Recipe.BookInfo;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class ItemStackToItemStackRecipeCategory extends HolderRecipeCategory<ItemStackToItemStackRecipe> {
+public class ItemStackToItemStackRecipeCategory<BOOK_CATEGORY, BOOK_INFO extends BookInfo<BOOK_CATEGORY>>
+      extends HolderRecipeCategory<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
     private final GuiSlot input;
     private final GuiSlot output;
 
-    public ItemStackToItemStackRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackToItemStackRecipe> recipeType) {
+    public ItemStackToItemStackRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType) {
         super(helper, recipeType);
         addElement(GuiTexturedElement.upArrow(this, 68, 38));
         input = addSlot(SlotType.INPUT, 64, 17);
@@ -32,8 +34,8 @@ public class ItemStackToItemStackRecipeCategory extends HolderRecipeCategory<Ite
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackToItemStackRecipe> recipeHolder, IFocusGroup focusGroup) {
-        ItemStackToItemStackRecipe recipe = recipeHolder.value();
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeHolder, IFocusGroup focusGroup) {
+        ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().display());
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDisplay());
     }

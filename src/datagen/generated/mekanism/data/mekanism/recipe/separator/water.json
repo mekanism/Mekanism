@@ -4,12 +4,14 @@
     "amount": 2,
     "ingredient": "#minecraft:water"
   },
-  "left_chemical_output": {
-    "amount": 2,
-    "id": "mekanism:hydrogen"
-  },
-  "right_chemical_output": {
-    "amount": 1,
-    "id": "mekanism:oxygen"
+  "output": {
+    "left": {
+      "amount": 2,
+      "id": "mekanism:hydrogen"
+    },
+    "right": {
+      "amount": 1,
+      "id": "mekanism:oxygen"
+    }
   }
 }

@@ -4,6 +4,8 @@ package mekanism.common.tests.recipe;
 import java.util.Set;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToItemStackRecipe;
+import mekanism.api.recipes.book.CrushingBookCategory;
+import mekanism.api.recipes.book.CrushingBookCategory.CrushingBookInfo;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tests.helpers.RecipeTestHelper;
@@ -50,8 +52,8 @@ public class MissingBioFuelRecipeTest {
 
         test.onGameTest(RecipeTestHelper.class, helper -> helper.succeedIf(() -> {
             Set<ResourceKey<Item>> bioFuelRecipeInputs = helper.collectKnownMissing(BuiltInRegistries.ITEM, KNOWN_MISSING);
-            for (RecipeHolder<ItemStackToItemStackRecipe> crushingRecipe : helper.getRecipes(MekanismRecipeType.CRUSHING)) {
-                if (crushingRecipe.value() instanceof BasicItemStackToItemStackRecipe basicRecipe && basicRecipe.getOutputRaw().is(VALID_OUTPUT)) {
+            for (RecipeHolder<ItemStackToItemStackRecipe<CrushingBookCategory, CrushingBookInfo>> crushingRecipe : helper.getRecipes(MekanismRecipeType.CRUSHING)) {
+                if (crushingRecipe.value() instanceof BasicItemStackToItemStackRecipe<CrushingBookCategory, CrushingBookInfo> basicRecipe && basicRecipe.getOutputRaw().is(VALID_OUTPUT)) {
                     helper.collectInputs(bioFuelRecipeInputs, basicRecipe.getInput(), KNOWN_MISSING, "bio fuel");
                 }
             }

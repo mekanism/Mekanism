@@ -12,6 +12,7 @@ import mekanism.common.integration.crafttweaker.example.component.ICrTExampleCom
 import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
 public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TYPE>> {
@@ -37,23 +38,28 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
     }
 
     @SuppressWarnings("unchecked")
+    @Contract("-> this")
     private BUILDER_TYPE self() {
         return (BUILDER_TYPE) this;
     }
 
+    @Contract("_ -> this")
     public BUILDER_TYPE addComponent(Function<CrTImportsComponent, ICrTExampleComponent> component) {
         return addComponent(component.apply(importsComponent));
     }
 
+    @Contract("_ -> this")
     public BUILDER_TYPE addComponent(ICrTExampleComponent component) {
         contents.add(Objects.requireNonNull(component, "Example component cannot be null."));
         return self();
     }
 
+    @Contract("_ -> this")
     public BUILDER_TYPE comment(Function<CrTImportsComponent, String> comment) {
         return comment(comment.apply(importsComponent));
     }
 
+    @Contract("_ -> this")
     public BUILDER_TYPE comment(String... comments) {
         return addComponent(new CrTExampleComment(comments));
     }
@@ -68,6 +74,7 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
         return recipeComponentBuilder;
     }
 
+    @Contract("_, _, _ -> this")
     public BUILDER_TYPE removeRecipes(MekanismRecipeManager<?, ?> recipeManager, HolderLookup.Provider reloadableLookupProvider, Identifier... recipeNames) {
         return addComponent(new CrTExampleRemoveRecipesComponent(exampleProvider, recipeManager, reloadableLookupProvider, recipeNames));
     }
@@ -88,10 +95,12 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
         return snipComponentBuilder;
     }
 
+    @Contract("-> this")
     public BUILDER_TYPE blankLine() {
         return blankLines(1);
     }
 
+    @Contract("_ -> this")
     public BUILDER_TYPE blankLines(int lines) {
         if (lines <= 0) {
             throw new IllegalArgumentException("Positive number of blank lines required.");
@@ -103,6 +112,7 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
     }
 
     /// If specified goes where it is specified, if not goes at the top.
+    @Contract("-> this")
     public BUILDER_TYPE imports() {
         //TODO: Figure out the handling of this when in the snip component builder
         if (importsComponent.hasImports()) {

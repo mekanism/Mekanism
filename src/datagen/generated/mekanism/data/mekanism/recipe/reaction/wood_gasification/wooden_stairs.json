@@ -4,10 +4,6 @@
     "amount": 15,
     "ingredient": "mekanism:oxygen"
   },
-  "chemical_output": {
-    "amount": 15,
-    "id": "mekanism:hydrogen"
-  },
   "duration": 22,
   "fluid_input": {
     "amount": 15,
@@ -21,6 +17,12 @@
         "#minecraft:wooden_stairs",
         "minecraft:bamboo_mosaic_stairs"
       ]
+    }
+  },
+  "output": {
+    "chemical": {
+      "amount": 15,
+      "id": "mekanism:hydrogen"
     }
   }
 }

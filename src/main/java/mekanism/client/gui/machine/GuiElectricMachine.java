@@ -14,7 +14,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class GuiElectricMachine<TILE extends TileEntityElectricMachine, CONTAINER extends MekanismTileContainer<TILE>> extends GuiConfigurableTile<TILE, CONTAINER> {
+public class GuiElectricMachine<TILE extends TileEntityElectricMachine<?, ?>, CONTAINER extends MekanismTileContainer<TILE>> extends GuiConfigurableTile<TILE, CONTAINER> {
 
     public GuiElectricMachine(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title);

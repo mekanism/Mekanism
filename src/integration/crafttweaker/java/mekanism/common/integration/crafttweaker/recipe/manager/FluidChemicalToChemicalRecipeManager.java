@@ -17,9 +17,9 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_FLUID_CHEMICAL_TO_CHEMICAL)
-public abstract class FluidChemicalToChemicalRecipeManager extends MekanismRecipeManager<SingleFluidChemicalRecipeInput, FluidChemicalToChemicalRecipe> {
+public abstract class FluidChemicalToChemicalRecipeManager extends MekanismRecipeManager<SingleFluidChemicalRecipeInput, FluidChemicalToChemicalRecipe<?, ?>> {
 
-    protected FluidChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<SingleFluidChemicalRecipeInput, FluidChemicalToChemicalRecipe, ?> recipeType) {
+    protected FluidChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<SingleFluidChemicalRecipeInput, ? extends FluidChemicalToChemicalRecipe<?, ?>, ?> recipeType) {
         super(recipeType);
     }
 
@@ -41,14 +41,14 @@ public abstract class FluidChemicalToChemicalRecipeManager extends MekanismRecip
     /// @param fluidInput    [CTFluidIngredient] representing the fluid input of the recipe.
     /// @param chemicalInput [ChemicalStackIngredient] representing the slurry input of the recipe.
     /// @param output        [ICrTChemicalStack] representing the output of the recipe. Will be validated as not empty.
-    public final FluidChemicalToChemicalRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack output) {
+    public final FluidChemicalToChemicalRecipe<?, ?> makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack output) {
         return makeRecipe(fluidInput, chemicalInput, getAndValidateNotEmpty(output));
     }
 
-    protected abstract FluidChemicalToChemicalRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate output);
+    protected abstract FluidChemicalToChemicalRecipe<?, ?> makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate output);
 
     @Override
-    protected String describeOutputs(FluidChemicalToChemicalRecipe recipe) {
+    protected String describeOutputs(FluidChemicalToChemicalRecipe<?, ?> recipe) {
         return CrTUtils.describeOutputs(recipe.getOutputDefinition(ContextMap.EMPTY));//TODO - CrT: ContextMap
     }
 
@@ -63,8 +63,8 @@ public abstract class FluidChemicalToChemicalRecipeManager extends MekanismRecip
         }
 
         @Override
-        protected FluidChemicalToChemicalRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate output) {
-            return new BasicWashingRecipe(CrTUtils.fromCrT(fluidInput), chemicalInput, output);
+        protected FluidChemicalToChemicalRecipe<?, ?> makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate output) {
+            return new BasicWashingRecipe(, , CrTUtils.fromCrT(fluidInput), chemicalInput, output);
         }
     }
 }

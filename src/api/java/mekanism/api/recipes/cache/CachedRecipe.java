@@ -18,7 +18,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /// Base class to help implement handling of Mekanism recipes.
-public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
+public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?, ?, ?>> {
 
     /// Internal recipe object this cached recipe acts on.
     protected final RECIPE recipe;

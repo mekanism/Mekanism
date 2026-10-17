@@ -1,9 +1,12 @@
 package mekanism.api.recipes;
 
 import java.util.function.Predicate;
+import mekanism.api.recipes.book.EnergyConversionBookCategory;
+import mekanism.api.recipes.book.EnergyConversionBookCategory.EnergyConversionBookInfo;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -14,7 +17,15 @@ import org.jetbrains.annotations.Range;
 /// Output: int
 ///
 /// @apiNote Energy conversion recipes can be used in any slots in Mekanism machines that are able to convert items into energy.
-public abstract class ItemStackToEnergyRecipe extends MekanismRecipe<SingleRecipeInput> implements Predicate<ItemStack> {
+public abstract class ItemStackToEnergyRecipe extends MekanismRecipe<SingleRecipeInput, EnergyConversionBookCategory, EnergyConversionBookInfo> implements Predicate<ItemStack> {
+
+    /// @param commonInfo Common recipe info.
+    /// @param bookInfo   Recipe book info.
+    ///
+    /// @since 10.8.0
+    protected ItemStackToEnergyRecipe(Recipe.CommonInfo commonInfo, EnergyConversionBookInfo bookInfo) {
+        super(commonInfo, bookInfo);
+    }
 
     @Override
     public abstract boolean test(ItemStack itemStack);
@@ -58,5 +69,18 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe<SingleRecip
     @Override
     public final RecipeType<ItemStackToEnergyRecipe> getType() {
         return MekanismRecipeTypes.TYPE_ENERGY_CONVERSION.value();
+    }
+
+    /// Helper interface for constructing [ItemStackToEnergyRecipes][ItemStackToEnergyRecipe]
+    ///
+    /// @since 10.8.0
+    @FunctionalInterface
+    public interface Factory<RECIPE extends ItemStackToEnergyRecipe> {
+
+        /// @param commonInfo Common recipe info.
+        /// @param bookInfo   Recipe book info.
+        /// @param input      Input ingredient.
+        /// @param output     Output energy. Must be greater than zero.
+        RECIPE create(CommonInfo commonInfo, EnergyConversionBookInfo bookInfo, ItemStackIngredient input, int output);
     }
 }

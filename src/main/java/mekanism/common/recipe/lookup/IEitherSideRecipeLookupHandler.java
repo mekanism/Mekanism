@@ -15,7 +15,7 @@ import org.jspecify.annotations.Nullable;
 
 /// Helper expansion of [IRecipeLookupHandler] for easily implementing contains and find recipe lookups for recipes that takes two inputs of the same type that are valid
 /// in either slot/tank.
-public interface IEitherSideRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TYPE>, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT, INPUT>,
+public interface IEitherSideRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TYPE>, RECIPE extends MekanismRecipe<?, ?, ?> & BiPredicate<INPUT, INPUT>,
       INPUT_CACHE extends EitherSideInputRecipeCache<TYPE, INPUT, ?, RECIPE, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /// Checks if there is a matching recipe of type [#getRecipeType()] that has the given input.
@@ -62,7 +62,7 @@ public interface IEitherSideRecipeLookupHandler<TYPE, INPUT extends TypedInstanc
     }
 
     /// Helper interface to make the generics that we have to pass to [IEitherSideRecipeLookupHandler] not as messy.
-    interface EitherSideChemicalRecipeLookupHandler<RECIPE extends ChemicalChemicalToChemicalRecipe> extends
+    interface EitherSideChemicalRecipeLookupHandler<RECIPE extends ChemicalChemicalToChemicalRecipe<?, ?>> extends
           IEitherSideRecipeLookupHandler<Chemical, ChemicalStack, RECIPE, EitherSideChemical<RECIPE>> {
     }
 }

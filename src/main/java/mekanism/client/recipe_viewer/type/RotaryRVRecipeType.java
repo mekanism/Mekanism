@@ -2,6 +2,8 @@ package mekanism.client.recipe_viewer.type;
 
 import java.util.List;
 import mekanism.api.recipes.RotaryRecipe;
+import mekanism.api.recipes.book.RotaryBookCategory;
+import mekanism.api.recipes.book.RotaryBookCategory.RotaryBookInfo;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
@@ -16,7 +18,7 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
 public record RotaryRVRecipeType(Identifier id, IHasTranslationKey name, List<SlotDisplay> workstations) implements IRecipeViewerRecipeType<RotaryRecipe>,
-      IMekanismRecipeTypeProvider<RotaryRecipeInput, RotaryRecipe, RotaryInputRecipeCache> {
+      IMekanismRecipeTypeProvider<RotaryRecipeInput, RotaryBookCategory, RotaryBookInfo, RotaryRecipe, RotaryInputRecipeCache> {
 
     public RotaryRVRecipeType(Identifier id, IHasTranslationKey name) {
         this(id, name, IRecipeViewerRecipeType.asWorkStations(MekanismBlocks.ROTARY_CONDENSENTRATOR));
@@ -70,7 +72,7 @@ public record RotaryRVRecipeType(Identifier id, IHasTranslationKey name, List<Sl
     }
 
     @Override
-    public MekanismRecipeType<RotaryRecipeInput, RotaryRecipe, RotaryInputRecipeCache> getRecipeType() {
+    public MekanismRecipeType<RotaryRecipeInput, RotaryBookCategory, RotaryBookInfo, RotaryRecipe, RotaryInputRecipeCache> getRecipeType() {
         return MekanismRecipeType.ROTARY.getRecipeType();
     }
 }

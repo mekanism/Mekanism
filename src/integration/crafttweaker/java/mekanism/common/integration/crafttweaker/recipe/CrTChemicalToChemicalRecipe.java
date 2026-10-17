@@ -21,14 +21,14 @@ public class CrTChemicalToChemicalRecipe {
     /// Gets the input ingredient.
     @ZenCodeType.Method
     @ZenCodeType.Getter("input")
-    public static ChemicalStackIngredient getInput(ChemicalToChemicalRecipe _this) {
+    public static ChemicalStackIngredient getInput(ChemicalToChemicalRecipe<?, ?> _this) {
         return _this.getInput();
     }
 
     /// Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
-    public static List<ICrTChemicalStack> getOutputs(ChemicalToChemicalRecipe _this) {
+    public static List<ICrTChemicalStack> getOutputs(ChemicalToChemicalRecipe<?, ?> _this) {
         return CrTUtils.convertChemical(_this.getOutputDefinition(ContextMap.EMPTY));//TODO - CrT: ContextMap
     }
 }

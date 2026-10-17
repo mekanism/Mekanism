@@ -11,6 +11,8 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.book.MetallurgicInfusingBookCategory;
+import mekanism.api.recipes.book.MetallurgicInfusingBookCategory.MetallurgicInfusingBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
@@ -66,8 +68,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<ItemStackChemicalToItemStackRecipe> implements IHasDumpButton, ConstantUsageRecipeLookupHandler,
-      ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe> {
+public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>>
+      implements IHasDumpButton, ConstantUsageRecipeLookupHandler, ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -155,24 +157,27 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe, ItemChemical<ItemStackChemicalToItemStackRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo,
+          ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>,
+          ItemChemical<ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>>> getRecipeType() {
         return MekanismRecipeType.METALLURGIC_INFUSING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>> recipeViewerType() {
         return RecipeViewerRecipeType.METALLURGIC_INFUSING;
     }
 
     @Nullable
     @Override
-    public ItemStackChemicalToItemStackRecipe getRecipe(int cacheIndex) {
+    public ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo> getRecipe(int cacheIndex) {
         return findFirstRecipe(itemInputHandler, infusionInputHandler);
     }
 
     @Override
-    public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
-        CachedRecipe<ItemStackChemicalToItemStackRecipe> cachedRecipe;
+    public CachedRecipe<ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>> createNewCachedRecipe(
+          ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo> recipe, int cacheIndex) {
+        CachedRecipe<ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, infusionInputHandler,
                   chemicalUsageMultiplier, used -> usedSoFar = used, outputHandler);

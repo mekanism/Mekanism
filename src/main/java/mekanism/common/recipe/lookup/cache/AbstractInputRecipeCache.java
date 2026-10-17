@@ -13,12 +13,12 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 /// Basic helper implementation for [IInputRecipeCache] that keeps track of the recipe type and if this cache has been initialized yet or not.
-public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe<?>> implements IInputRecipeCache {
+public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe<?, ?, ?>> implements IInputRecipeCache {
 
-    protected final MekanismRecipeType<?, RECIPE, ?> recipeType;
+    protected final MekanismRecipeType<?, ?, ?, RECIPE, ?> recipeType;
     protected boolean initialized;
 
-    protected AbstractInputRecipeCache(MekanismRecipeType<?, RECIPE, ?> recipeType) {
+    protected AbstractInputRecipeCache(MekanismRecipeType<?, ?, ?, RECIPE, ?> recipeType) {
         this.recipeType = recipeType;
     }
 

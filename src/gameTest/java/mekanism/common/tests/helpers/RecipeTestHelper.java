@@ -1,11 +1,8 @@
 package mekanism.common.tests.helpers;
 
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
-import java.util.List;
 import java.util.Set;
-import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestInfo;
@@ -14,17 +11,12 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 
 public class RecipeTestHelper extends MissingElementTestHelper {
 
     public RecipeTestHelper(GameTestInfo info) {
         super(info);
-    }
-
-    public <RECIPE extends MekanismRecipe<?>> List<RecipeHolder<RECIPE>> getRecipes(IMekanismRecipeTypeProvider<?, RECIPE, ?> recipeType) {
-        return recipeType.getRecipes(getLevel());
     }
 
     public ContextMap recipeContext() {

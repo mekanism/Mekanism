@@ -3,11 +3,13 @@ package mekanism.api.datagen.recipe.builder;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToEnergyRecipe;
+import mekanism.api.recipes.book.EnergyConversionBookCategory;
+import mekanism.api.recipes.book.EnergyConversionBookCategory.EnergyConversionBookInfo;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 
-public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemStackToEnergyRecipeBuilder> {
+public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<EnergyConversionBookCategory, EnergyConversionBookInfo, ItemStackToEnergyRecipeBuilder> {
 
     private final ItemStackIngredient input;
     private final int output;
@@ -15,6 +17,7 @@ public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemSt
     protected ItemStackToEnergyRecipeBuilder(ItemStackIngredient input, int output) {
         this.input = input;
         this.output = output;
+        super(EnergyConversionBookInfo::new, EnergyConversionBookCategory.MISC);
     }
 
     @Override
@@ -35,6 +38,6 @@ public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemSt
 
     @Override
     protected ItemStackToEnergyRecipe asRecipe() {
-        return new BasicItemStackToEnergyRecipe(input, output);
+        return new BasicItemStackToEnergyRecipe(commonInfo(), bookInfo(), input, output);
     }
 }

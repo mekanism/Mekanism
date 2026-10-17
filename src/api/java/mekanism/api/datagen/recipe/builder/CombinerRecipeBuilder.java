@@ -3,14 +3,15 @@ package mekanism.api.datagen.recipe.builder;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.basic.BasicCombinerRecipe;
+import mekanism.api.recipes.book.CombiningBookCategory;
+import mekanism.api.recipes.book.CombiningBookCategory.CombiningBookInfo;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 
-public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeBuilder> {
+public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombiningBookCategory, CombiningBookInfo, CombinerRecipeBuilder> {
 
     private final ItemStackIngredient mainInput;
     private final ItemStackIngredient extraInput;
@@ -20,6 +21,7 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
         this.mainInput = mainInput;
         this.extraInput = extraInput;
         this.output = output;
+        super(CombiningBookInfo::new, CombiningBookCategory.MISC);
     }
 
     @Override
@@ -38,13 +40,6 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
 
     @Override
     protected CombinerRecipe asRecipe() {
-        return new BasicCombinerRecipe(mainInput, extraInput, output);
-    }
-
-    /// Builds this recipe using the output item's name as the recipe name.
-    ///
-    /// @param recipeOutput Finished Recipe Consumer.
-    public void build(RecipeOutput recipeOutput) {
-        save(recipeOutput, output.typeHolder());
+        return new BasicCombinerRecipe(commonInfo(), bookInfo(), mainInput, extraInput, output);
     }
 }

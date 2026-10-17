@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
@@ -15,9 +16,11 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class ItemStackToChemicalRecipeCategory<RECIPE extends ItemStackToChemicalRecipe> extends HolderRecipeCategory<RECIPE> {
+public class ItemStackToChemicalRecipeCategory<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+      RECIPE extends ItemStackToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> extends HolderRecipeCategory<RECIPE> {
 
     protected static final String CHEMICAL_OUTPUT = "chemicalOutput";
 

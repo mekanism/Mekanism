@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class MissingElementTestHelper extends MekGameTestHelper {
@@ -20,7 +22,8 @@ public class MissingElementTestHelper extends MekGameTestHelper {
         super(info);
     }
 
-    public <RECIPE extends MekanismRecipe<?>> List<RecipeHolder<RECIPE>> getRecipes(IMekanismRecipeTypeProvider<?, RECIPE, ?> recipeType) {
+    public <BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>, RECIPE extends MekanismRecipe<?, BOOK_CATEGORY, BOOK_INFO>>
+    List<RecipeHolder<RECIPE>> getRecipes(IMekanismRecipeTypeProvider<?, BOOK_CATEGORY, BOOK_INFO, RECIPE, ?> recipeType) {
         return recipeType.getRecipes(getLevel());
     }
 

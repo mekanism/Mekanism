@@ -18,7 +18,7 @@ import org.jspecify.annotations.Nullable;
 
 /// Helper expansion of [IRecipeLookupHandler] for easily implementing contains and find recipe lookups for recipes that takes three inputs.
 public interface ITripleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>,
-      HOLDER_C, INPUT_C extends TypedInstance<HOLDER_C>, RECIPE extends MekanismRecipe<?> & TriPredicate<INPUT_A, INPUT_B, INPUT_C>,
+      HOLDER_C, INPUT_C extends TypedInstance<HOLDER_C>, RECIPE extends MekanismRecipe<?, ?, ?> & TriPredicate<INPUT_A, INPUT_B, INPUT_C>,
       INPUT_CACHE extends TripleInputRecipeCache<HOLDER_A, INPUT_A, ?, HOLDER_B, INPUT_B, ?, HOLDER_C, INPUT_C, ?, RECIPE, ?, ?, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /// Checks if there is a matching recipe of type [#getRecipeType()] that has the given inputs.
@@ -124,7 +124,7 @@ public interface ITripleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
     }
 
     /// Helper interface to make the generics that we have to pass to [ITripleRecipeLookupHandler] not as messy.
-    interface ItemFluidChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & TriPredicate<ItemStack, FluidStack, ChemicalStack>> extends
+    interface ItemFluidChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?> & TriPredicate<ItemStack, FluidStack, ChemicalStack>> extends
           ITripleRecipeLookupHandler<Item, ItemStack, Fluid, FluidStack, Chemical, ChemicalStack, RECIPE, ItemFluidChemical<RECIPE>> {
     }
 }

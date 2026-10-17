@@ -91,7 +91,7 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SingleRecipeInpu
     /// @param input      [IIngredientWithAmount] representing the input of the recipe.
     /// @param mainOutput [IItemStack] representing the main output of the recipe. Will be validated as not empty.
     public final SawmillRecipe makeRecipe(IIngredientWithAmount input, IItemStack mainOutput) {
-        return new BasicSawmillRecipe(CrTUtils.fromCrT(input), getAndValidateNotEmpty(mainOutput), null, 0);
+        return new BasicSawmillRecipe(, , CrTUtils.fromCrT(input), getAndValidateNotEmpty(mainOutput), null, 0);
     }
 
     /// Creates a sawing recipe that converts an item into a chance based secondary item.
@@ -100,7 +100,7 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SingleRecipeInpu
     /// @param secondaryOutput [IItemStack] representing the secondary chance based output of the recipe. Will be validated as not empty.
     /// @param secondaryChance Chance of the secondary output being produced. Will be validated to be a number greater than zero and at most one.
     public final SawmillRecipe makeRecipe(IIngredientWithAmount input, IItemStack secondaryOutput, double secondaryChance) {
-        return new BasicSawmillRecipe(CrTUtils.fromCrT(input), null, getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
+        return new BasicSawmillRecipe(, , CrTUtils.fromCrT(input), null, getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
     }
 
     /// Creates a sawing recipe that converts an item into another item and a chance based secondary item.
@@ -110,7 +110,7 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SingleRecipeInpu
     /// @param secondaryOutput [IItemStack] representing the secondary chance based output of the recipe. Will be validated as not empty.
     /// @param secondaryChance Chance of the secondary output being produced. Will be validated to be a number greater than zero and at most one.
     public final SawmillRecipe makeRecipe(IIngredientWithAmount input, IItemStack mainOutput, IItemStack secondaryOutput, double secondaryChance) {
-        return new BasicSawmillRecipe(CrTUtils.fromCrT(input), getAndValidateNotEmpty(mainOutput), getAndValidateNotEmpty(secondaryOutput),
+        return new BasicSawmillRecipe(, , CrTUtils.fromCrT(input), getAndValidateNotEmpty(mainOutput), getAndValidateNotEmpty(secondaryOutput),
               getAndValidateSecondaryChance(secondaryChance));
     }
 

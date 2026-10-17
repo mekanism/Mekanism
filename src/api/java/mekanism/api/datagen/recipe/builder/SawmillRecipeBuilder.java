@@ -4,6 +4,8 @@ import java.util.Objects;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.basic.BasicSawmillRecipe;
+import mekanism.api.recipes.book.SawingBookCategory;
+import mekanism.api.recipes.book.SawingBookCategory.SawingBookInfo;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceKey;
@@ -11,7 +13,7 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 import org.jspecify.annotations.Nullable;
 
-public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBuilder> {
+public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawingBookCategory, SawingBookInfo, SawmillRecipeBuilder> {
 
     private final ItemStackIngredient input;
     @Nullable
@@ -25,6 +27,7 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
         this.mainOutput = mainOutput;
         this.secondaryOutput = secondaryOutput;
         this.secondaryChance = secondaryChance;
+        super(SawingBookInfo::new, SawingBookCategory.MISC);
     }
 
     @Override
@@ -74,6 +77,6 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
 
     @Override
     protected SawmillRecipe asRecipe() {
-        return new BasicSawmillRecipe(input, mainOutput, secondaryOutput, secondaryChance);
+        return new BasicSawmillRecipe(commonInfo(), bookInfo(), input, mainOutput, secondaryOutput, secondaryChance);
     }
 }

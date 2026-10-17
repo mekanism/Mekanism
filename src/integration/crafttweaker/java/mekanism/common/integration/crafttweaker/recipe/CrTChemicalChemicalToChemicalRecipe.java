@@ -21,21 +21,21 @@ public class CrTChemicalChemicalToChemicalRecipe {
     /// Gets the left input ingredient.
     @ZenCodeType.Method
     @ZenCodeType.Getter("leftInput")
-    public static ChemicalStackIngredient getLeftInput(ChemicalChemicalToChemicalRecipe _this) {
+    public static ChemicalStackIngredient getLeftInput(ChemicalChemicalToChemicalRecipe<?, ?> _this) {
         return _this.getLeftInput();
     }
 
     /// Gets the right input ingredient.
     @ZenCodeType.Method
     @ZenCodeType.Getter("rightInput")
-    public static ChemicalStackIngredient getRightInput(ChemicalChemicalToChemicalRecipe _this) {
+    public static ChemicalStackIngredient getRightInput(ChemicalChemicalToChemicalRecipe<?, ?> _this) {
         return _this.getRightInput();
     }
 
     /// Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
-    public static List<ICrTChemicalStack> getOutputs(ChemicalChemicalToChemicalRecipe _this) {
+    public static List<ICrTChemicalStack> getOutputs(ChemicalChemicalToChemicalRecipe<?, ?> _this) {
         return CrTUtils.convertChemical(_this.getOutputDefinition(ContextMap.EMPTY));//TODO - CrT: ContextMap
     }
 }

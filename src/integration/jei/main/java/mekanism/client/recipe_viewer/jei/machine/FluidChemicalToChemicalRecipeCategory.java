@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -15,15 +16,17 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class FluidChemicalToChemicalRecipeCategory extends HolderRecipeCategory<FluidChemicalToChemicalRecipe> {
+public class FluidChemicalToChemicalRecipeCategory<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends HolderRecipeCategory<FluidChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
     private final GuiGauge<?> fluidInput;
     private final GuiGauge<?> chemicalInput;
     private final GuiGauge<?> output;
 
-    public FluidChemicalToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<FluidChemicalToChemicalRecipe> recipeType) {
+    public FluidChemicalToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<FluidChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType) {
         super(helper, recipeType);
         fluidInput = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 7, 13));
         chemicalInput = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 28, 13));
@@ -34,8 +37,8 @@ public class FluidChemicalToChemicalRecipeCategory extends HolderRecipeCategory<
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<FluidChemicalToChemicalRecipe> recipeHolder, IFocusGroup focusGroup) {
-        FluidChemicalToChemicalRecipe recipe = recipeHolder.value();
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<FluidChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeHolder, IFocusGroup focusGroup) {
+        FluidChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO> recipe = recipeHolder.value();
         initFluid(builder, RecipeIngredientRole.INPUT, fluidInput, recipe.getFluidInput().display());
         initChemical(builder, RecipeIngredientRole.INPUT, chemicalInput, recipe.getChemicalInput().display());
         initChemical(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDisplay());

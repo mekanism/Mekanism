@@ -110,6 +110,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe.CookingBookInfo;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -128,7 +130,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
+public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLookupHandler<ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>> {
 
     private static final boolean DEFAULT_FOLLOW = false;
     private static final boolean DEFAULT_DROP_PICKUP = false;
@@ -175,7 +177,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     /// The players currently using this robit.
     private final Set<Player> playersUsing = new ObjectOpenHashSet<>();
 
-    private final RecipeCacheLookupMonitor<ItemStackToItemStackRecipe> recipeCacheLookupMonitor;
+    private final RecipeCacheLookupMonitor<ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>> recipeCacheLookupMonitor;
     private final BooleanSupplier recheckAllRecipeErrors;
     private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
 
@@ -606,18 +608,19 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleRecipeInput, CookingBookCategory, CookingBookInfo, ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>,
+          SingleItem<ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>>> getRecipeType() {
         return MekanismRecipeType.SMELTING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<ItemStackToItemStackRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>> recipeViewerType() {
         return RecipeViewerRecipeType.SMELTING;
     }
 
     @Nullable
     @Override
-    public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
+    public ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
@@ -636,7 +639,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(ItemStackToItemStackRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>> createNewCachedRecipe(ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo> recipe, int cacheIndex) {
         //TODO: Make a robit specific smelting energy usage config
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(errors -> {

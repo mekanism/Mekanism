@@ -12,20 +12,20 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 @IRecipeHandler.For(ItemStackChemicalToItemStackRecipe.class)
-public class ItemStackChemicalToItemStackRecipeHandler extends MekanismRecipeHandler<ItemStackChemicalToItemStackRecipe> {
+public class ItemStackChemicalToItemStackRecipeHandler extends MekanismRecipeHandler<ItemStackChemicalToItemStackRecipe<?, ?>> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super ItemStackChemicalToItemStackRecipe> manager, RegistryAccess registryAccess,
-          RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder) {
-        ItemStackChemicalToItemStackRecipe recipe = recipeHolder.value();
+    public String dumpToCommandString(IRecipeManager<? super ItemStackChemicalToItemStackRecipe<?, ?>> manager, RegistryAccess registryAccess,
+          RecipeHolder<ItemStackChemicalToItemStackRecipe<?, ?>> recipeHolder) {
+        ItemStackChemicalToItemStackRecipe<?, ?> recipe = recipeHolder.value();
         return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(contextMap(registryAccess)), recipe.perTickUsage());
     }
 
     @Override
-    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager<? super ItemStackChemicalToItemStackRecipe> manager, ItemStackChemicalToItemStackRecipe recipe, U o) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager<? super ItemStackChemicalToItemStackRecipe<?, ?>> manager, ItemStackChemicalToItemStackRecipe<?, ?> recipe, U o) {
         //Only support if the other is an itemstack chemical to itemstack recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
-        if (o instanceof ItemStackChemicalToItemStackRecipe other) {
+        if (o instanceof ItemStackChemicalToItemStackRecipe<?, ?> other) {
             //Check chemical ingredients first in case the type doesn't match
             return chemicalIngredientConflicts(recipe.getChemicalInput(), other.getChemicalInput()) &&
                    ingredientConflicts(recipe.getItemInput(), other.getItemInput());
@@ -34,13 +34,13 @@ public class ItemStackChemicalToItemStackRecipeHandler extends MekanismRecipeHan
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ItemStackChemicalToItemStackRecipe> manager, RegistryAccess registryAccess,
-          ItemStackChemicalToItemStackRecipe recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ItemStackChemicalToItemStackRecipe<?, ?>> manager, RegistryAccess registryAccess,
+          ItemStackChemicalToItemStackRecipe<?, ?> recipe) {
         return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(contextMap(registryAccess)), recipe.perTickUsage());
     }
 
     @Override
-    public Optional<ItemStackChemicalToItemStackRecipe> recompose(IRecipeManager<? super ItemStackChemicalToItemStackRecipe> m, RegistryAccess registryAccess,
+    public Optional<ItemStackChemicalToItemStackRecipe<?, ?>> recompose(IRecipeManager<? super ItemStackChemicalToItemStackRecipe<?, ?>> m, RegistryAccess registryAccess,
           IDecomposedRecipe recipe) {
         if (m instanceof ItemStackChemicalToItemStackRecipeManager manager) {
             return Optional.of(manager.makeRecipe(
