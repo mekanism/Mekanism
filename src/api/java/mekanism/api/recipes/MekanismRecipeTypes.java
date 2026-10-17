@@ -19,6 +19,8 @@ import mekanism.api.recipes.book.EvaporatingBookCategory;
 import mekanism.api.recipes.book.EvaporatingBookCategory.EvaporatingBookInfo;
 import mekanism.api.recipes.book.InjectingBookCategory;
 import mekanism.api.recipes.book.InjectingBookCategory.InjectingBookInfo;
+import mekanism.api.recipes.book.LiquificationBookCategory;
+import mekanism.api.recipes.book.LiquificationBookCategory.LiquificationBookInfo;
 import mekanism.api.recipes.book.MetallurgicInfusingBookCategory;
 import mekanism.api.recipes.book.MetallurgicInfusingBookCategory.MetallurgicInfusingBookInfo;
 import mekanism.api.recipes.book.OxidizingBookCategory;
@@ -68,6 +70,7 @@ public class MekanismRecipeTypes {
     public static final Identifier NAME_REACTION = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "reaction");
     public static final Identifier NAME_ROTARY = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "rotary");
     public static final Identifier NAME_SAWING = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "sawing");
+    public static final Identifier NAME_LIQUIFICATION = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "liquification");
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToItemStackRecipe<CrushingBookCategory, CrushingBookInfo>>> TYPE_CRUSHING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CRUSHING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToItemStackRecipe<EnrichingBookCategory, EnrichingBookInfo>>> TYPE_ENRICHING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_ENRICHING);
@@ -95,5 +98,6 @@ public class MekanismRecipeTypes {
     public static final DeferredHolder<RecipeType<?>, RecipeType<PressurizedReactionRecipe>> TYPE_REACTION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_REACTION);
     public static final DeferredHolder<RecipeType<?>, RecipeType<RotaryRecipe>> TYPE_ROTARY = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_ROTARY);
     public static final DeferredHolder<RecipeType<?>, RecipeType<SawmillRecipe>> TYPE_SAWING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_SAWING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>>> TYPE_LIQUIFICATION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_LIQUIFICATION);
 
 }

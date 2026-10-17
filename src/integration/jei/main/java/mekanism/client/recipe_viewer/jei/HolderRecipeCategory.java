@@ -24,7 +24,12 @@ public abstract class HolderRecipeCategory<RECIPE extends Recipe<?>> extends Bas
 
     @Override
     public List<Identifier> getSourceRecipeIds(RecipeHolder<RECIPE> recipe) {
-        return Collections.singletonList(recipe.id().identifier());
+        Identifier identifier = recipe.id().identifier();
+        return hasSyntheticRecipes() && identifier.getPath().startsWith("/") ? Collections.emptyList() : Collections.singletonList(identifier);
+    }
+
+    protected boolean hasSyntheticRecipes() {
+        return false;
     }
 
     @Override

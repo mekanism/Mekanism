@@ -1,26 +1,31 @@
 package mekanism.client.recipe_viewer;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
+import mekanism.api.recipes.book.LiquificationBookCategory;
+import mekanism.api.recipes.book.LiquificationBookCategory.LiquificationBookInfo;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.display.slot.ChemicalConversionSlotDisplay;
 import mekanism.common.recipe.display.slot.ChemicalTankSlotDisplay;
-import mekanism.common.recipe.impl.NutritionalLiquifierRecipe;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
@@ -84,19 +89,21 @@ public class RecipeViewerUtils {
         return display;
     }
 
-    public static Map<Identifier, NutritionalLiquifierRecipe> getLiquificationRecipes() {
-        Map<Identifier, NutritionalLiquifierRecipe> liquification = new HashMap<>();
+    public static List<RecipeHolder<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>>> getLiquificationRecipes() {
+        //Copy the explicit recipes into a new list
+        List<RecipeHolder<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>>> recipes = new ArrayList<>(MekanismRecipeType.LIQUIFICATION.getRecipes());
         //TODO: Do we want to loop creative tabs or something instead?
         // In theory recipe loaders should init the creative tabs before we are called so we wouldn't need to call
         // CreativeModeTab#buildContents, and in theory we only need to care about things in search so could use:
         // CreativeModeTabs.searchTab().getDisplayItems(). The bigger issue is how to come up with unique synthetic
         // names for the recipes as EMI requires they be unique. (Maybe index them?)
         for (Map.Entry<ResourceKey<Item>, Item> entry : BuiltInRegistries.ITEM.entrySet()) {
-            NutritionalLiquifierRecipe recipe = TileEntityNutritionalLiquifier.getRecipe(entry.getValue().getDefaultInstance());
+            ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo> recipe = TileEntityNutritionalLiquifier.createDynamicRecipe(entry.getValue().getDefaultInstance());
             if (recipe != null) {
-                liquification.put(RegistryUtils.synthetic(entry.getKey().identifier(), "liquification", Mekanism.MODID), recipe);
+                Identifier syntheticId = RegistryUtils.synthetic(entry.getKey().identifier(), "liquification", Mekanism.MODID);
+                recipes.add(new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, syntheticId), recipe));
             }
         }
-        return liquification;
+        return List.copyOf(recipes);
     }
 }

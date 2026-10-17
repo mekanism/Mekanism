@@ -17,6 +17,7 @@ import mekanism.api.recipes.basic.BasicEnrichingRecipe;
 import mekanism.api.recipes.basic.BasicEvaporatingRecipe;
 import mekanism.api.recipes.basic.BasicInjectingRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToEnergyRecipe;
+import mekanism.api.recipes.basic.BasicLiquificationRecipe;
 import mekanism.api.recipes.basic.BasicMetallurgicInfuserRecipe;
 import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
 import mekanism.api.recipes.basic.BasicPaintingRecipe;
@@ -37,7 +38,6 @@ import mekanism.api.recipes.book.CrushingBookCategory.CrushingBookInfo;
 import mekanism.api.recipes.book.EnrichingBookCategory.EnrichingBookInfo;
 import mekanism.api.recipes.book.EvaporatingBookCategory.EvaporatingBookInfo;
 import mekanism.api.recipes.book.InjectingBookCategory.InjectingBookInfo;
-import mekanism.api.recipes.book.LiquificationBookCategory;
 import mekanism.api.recipes.book.LiquificationBookCategory.LiquificationBookInfo;
 import mekanism.api.recipes.book.MetallurgicInfusingBookCategory.MetallurgicInfusingBookInfo;
 import mekanism.api.recipes.book.OxidizingBookCategory.OxidizingBookInfo;
@@ -52,7 +52,6 @@ import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.common.recipe.WrappedSmelterRecipe;
 import mekanism.common.recipe.bin.BinExtractRecipe;
 import mekanism.common.recipe.bin.BinInsertRecipe;
-import mekanism.common.recipe.impl.NutritionalLiquifierRecipe;
 import mekanism.common.recipe.serializer.MekanismRecipeSerializer;
 import mekanism.common.recipe.serializer.RotaryRecipeSerializer;
 import mekanism.common.recipe.upgrade.MekanismShapedRecipe;
@@ -120,6 +119,7 @@ public class MekanismRecipeSerializersInternal extends MekanismRecipeSerializers
 
         register(Names.SAWING, () -> MekanismRecipeSerializer.sawing(BasicSawmillRecipe::new));
 
+        register(Names.LIQUIFICATION, () -> MekanismRecipeSerializer.itemToFluidOptionalItem(BasicLiquificationRecipe::new, LiquificationBookInfo.MAP_CODEC, LiquificationBookInfo.STREAM_CODEC));
     }
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MekanismShapedRecipe>> MEK_DATA = RECIPE_SERIALIZERS.register("mek_data", () -> WrappedShapedRecipe.serializer(MekanismShapedRecipe::new));
@@ -127,9 +127,4 @@ public class MekanismRecipeSerializersInternal extends MekanismRecipeSerializers
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinInsertRecipe>> BIN_INSERT = RECIPE_SERIALIZERS.register("bin_insert", () -> MekanismRecipeSerializer.singleton(BinInsertRecipe.INSTANCE));
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinExtractRecipe>> BIN_EXTRACT = RECIPE_SERIALIZERS.register("bin_extract", () -> MekanismRecipeSerializer.singleton(BinExtractRecipe.INSTANCE));
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<WrappedSmelterRecipe>> WRAPPED_SMELTER = RECIPE_SERIALIZERS.register("wrapped_smelter", () -> WrappedSmelterRecipe.SERIALIZER);
-
-    //Currently this is just a synthetic recipe
-    @SuppressWarnings("RedundantTypeArguments")//Necessary to compile
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<NutritionalLiquifierRecipe>> LIQUIFIER = RECIPE_SERIALIZERS.register("liquifier",
-          () -> MekanismRecipeSerializer.<LiquificationBookCategory, LiquificationBookInfo, NutritionalLiquifierRecipe>itemToFluidOptionalItem(NutritionalLiquifierRecipe::new, LiquificationBookInfo.MAP_CODEC, LiquificationBookInfo.STREAM_CODEC));
 }

@@ -19,8 +19,8 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class ItemStackToChemicalRecipeCategory<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
-      RECIPE extends ItemStackToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> extends HolderRecipeCategory<RECIPE> {
+public class ItemStackToChemicalRecipeCategory<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends HolderRecipeCategory<ItemStackToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
     protected static final String CHEMICAL_OUTPUT = "chemicalOutput";
 
@@ -28,7 +28,7 @@ public class ItemStackToChemicalRecipeCategory<BOOK_CATEGORY extends MekanismBoo
     private final GuiGauge<?> output;
     private final GuiSlot input;
 
-    public ItemStackToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<RECIPE> recipeType, boolean isConversion) {
+    public ItemStackToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, boolean isConversion) {
         super(helper, recipeType);
         output = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 131, 13));
         input = addSlot(SlotType.INPUT, 26, 36);
@@ -36,8 +36,8 @@ public class ItemStackToChemicalRecipeCategory<BOOK_CATEGORY extends MekanismBoo
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<RECIPE> recipeHolder, IFocusGroup focusGroup) {
-        RECIPE recipe = recipeHolder.value();
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeHolder, IFocusGroup focusGroup) {
+        ItemStackToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO> recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().display());
         initChemical(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDisplay())
               .setSlotName(CHEMICAL_OUTPUT);

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -35,10 +34,6 @@ public record FakeRVRecipeType<RECIPE>(
         }
         workstations.addAll(IRecipeViewerRecipeType.asWorkStations(altWorkstations));
         this(id, null, icon, name, recipeClass, xOffset, yOffset, width, height, List.copyOf(workstations));
-    }
-
-    public FakeRVRecipeType(BlockRegistryObject<?, ?> item, Class<? extends RECIPE> recipeClass, int xOffset, int yOffset, int width, int height, ItemLike... altWorkstations) {
-        this(item.getId(), item, item, recipeClass, xOffset, yOffset, width, height, altWorkstations);
     }
 
     @Override

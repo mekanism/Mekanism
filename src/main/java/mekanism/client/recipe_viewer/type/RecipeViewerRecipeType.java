@@ -12,6 +12,7 @@ import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
+import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
@@ -34,6 +35,8 @@ import mekanism.api.recipes.book.EvaporatingBookCategory;
 import mekanism.api.recipes.book.EvaporatingBookCategory.EvaporatingBookInfo;
 import mekanism.api.recipes.book.InjectingBookCategory;
 import mekanism.api.recipes.book.InjectingBookCategory.InjectingBookInfo;
+import mekanism.api.recipes.book.LiquificationBookCategory;
+import mekanism.api.recipes.book.LiquificationBookCategory.LiquificationBookInfo;
 import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.book.MetallurgicInfusingBookCategory;
 import mekanism.api.recipes.book.MetallurgicInfusingBookCategory.MetallurgicInfusingBookInfo;
@@ -55,7 +58,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.NutritionalLiquifierRecipe;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
@@ -136,11 +138,10 @@ public class RecipeViewerRecipeType {//TODO - 26.3: Switch some of these display
     public static final RotaryRVRecipeType DECONDENSENTRATING = new RotaryRVRecipeType(Mekanism.rl("decondensentrating"), MekanismLang.DECONDENSENTRATING);
 
     public static final RVRecipeTypeWrapper<?, ?, ?, SawmillRecipe, ?> SAWING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SAWING, SawmillRecipe.class, -28, -16, 144, 54, MekanismBlocks.PRECISION_SAWMILL);
+    public static final RVRecipeTypeWrapper<?, ?, ?, ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>, ?> NUTRITIONAL_LIQUIFICATION = new RVRecipeTypeWrapper<>(MekanismRecipeType.LIQUIFICATION, itemToFluidOptionalItem(), -20, -12, 132, 62, MekanismBlocks.NUTRITIONAL_LIQUIFIER);
 
     public static final FakeRVRecipeType<BoilerRecipeViewerRecipe> BOILER = new FakeRVRecipeType<>(MekanismBlocks.BOILER_CASING.getId(), TransmissionType.HEAT.guiTexture(), MekanismLang.BOILER, BoilerRecipeViewerRecipe.class, -6, -13, 180, 60, MekanismBlocks.BOILER_CASING, MekanismBlocks.BOILER_VALVE, MekanismBlocks.PRESSURE_DISPERSER, MekanismBlocks.SUPERHEATING_ELEMENT);
     public static final FakeRVRecipeType<SPSRecipeViewerRecipe> SPS = new FakeRVRecipeType<>(MekanismBlocks.SPS_CASING.getId(), MekanismItems.ANTIMATTER_PELLET, MekanismLang.SPS, SPSRecipeViewerRecipe.class, -3, -12, 168, 74, false, MekanismBlocks.SPS_CASING, MekanismBlocks.SPS_PORT, MekanismBlocks.SUPERCHARGED_COIL);
-
-    public static final FakeRVRecipeType<NutritionalLiquifierRecipe> NUTRITIONAL_LIQUIFICATION = new FakeRVRecipeType<>(MekanismBlocks.NUTRITIONAL_LIQUIFIER, NutritionalLiquifierRecipe.class, -20, -12, 132, 62);
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static <BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>> Class<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> itemToItem() {
@@ -161,9 +162,15 @@ public class RecipeViewerRecipeType {//TODO - 26.3: Switch some of these display
     private static <BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>> Class<ChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> chemicalToChemical() {
         return (Class<ChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>>) (Class) ChemicalToChemicalRecipe.class;
     }
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static <BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>> Class<ChemicalChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> chemicalChemicalToChemical() {
         return (Class<ChemicalChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>>) (Class) ChemicalChemicalToChemicalRecipe.class;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static <BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>> Class<ItemStackToFluidOptionalItemRecipe<BOOK_CATEGORY, BOOK_INFO>> itemToFluidOptionalItem() {
+        return (Class<ItemStackToFluidOptionalItemRecipe<BOOK_CATEGORY, BOOK_INFO>>) (Class) ItemStackToFluidOptionalItemRecipe.class;
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

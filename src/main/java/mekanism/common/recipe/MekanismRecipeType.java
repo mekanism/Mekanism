@@ -17,6 +17,7 @@ import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
+import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.MekanismRecipeTypes;
@@ -52,6 +53,8 @@ import mekanism.api.recipes.book.EvaporatingBookCategory;
 import mekanism.api.recipes.book.EvaporatingBookCategory.EvaporatingBookInfo;
 import mekanism.api.recipes.book.InjectingBookCategory;
 import mekanism.api.recipes.book.InjectingBookCategory.InjectingBookInfo;
+import mekanism.api.recipes.book.LiquificationBookCategory;
+import mekanism.api.recipes.book.LiquificationBookCategory.LiquificationBookInfo;
 import mekanism.api.recipes.book.MetallurgicInfusingBookCategory;
 import mekanism.api.recipes.book.MetallurgicInfusingBookCategory.MetallurgicInfusingBookInfo;
 import mekanism.api.recipes.book.NucleosynthesizingBookCategory;
@@ -200,6 +203,9 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY
 
     public static final RecipeTypeRegistryObject<SingleRecipeInput, SawingBookCategory, SawingBookInfo, SawmillRecipe, SingleItem<SawmillRecipe>> SAWING =
           register(MekanismRecipeTypes.NAME_SAWING, recipeType -> new SingleItem<>(recipeType, SawmillRecipe::getInput));
+
+    public static final RecipeTypeRegistryObject<SingleRecipeInput, LiquificationBookCategory, LiquificationBookInfo, ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>, SingleItem<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>>> LIQUIFICATION =
+          register(MekanismRecipeTypes.NAME_LIQUIFICATION, recipeType -> new SingleItem<>(recipeType, ItemStackToFluidOptionalItemRecipe::getInput));
 
     private static <VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
           RECIPE extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO>, INPUT_CACHE extends IInputRecipeCache>

@@ -2,7 +2,6 @@ package mekanism.client.recipe_viewer.jei;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
@@ -10,7 +9,6 @@ import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class RecipeRegistryHelper {
@@ -39,8 +37,8 @@ public class RecipeRegistryHelper {
         registry.addRecipes(MekanismJEI.holderRecipeType(recipeType), type.getRecipes());
     }
 
-    public static <RECIPE> void register(IRecipeRegistration registry, IRecipeViewerRecipeType<RECIPE> recipeType, Map<Identifier, RECIPE> recipes) {
-        register(registry, recipeType, List.copyOf(recipes.values()));
+    public static <RECIPE extends MekanismRecipe<?, ?, ?>> void registerAsHolder(IRecipeRegistration registry, IRecipeViewerRecipeType<RECIPE> recipeType, List<RecipeHolder<RECIPE>> recipes) {
+        registry.addRecipes(MekanismJEI.holderRecipeType(recipeType), recipes);
     }
 
     public static <RECIPE> void register(IRecipeRegistration registry, IRecipeViewerRecipeType<RECIPE> recipeType, List<RECIPE> recipes) {

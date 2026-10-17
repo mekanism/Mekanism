@@ -296,7 +296,7 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.PIGMENT_MIXING, MekanismRecipeType.PIGMENT_MIXING);
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.PAINTING, MekanismRecipeType.PAINTING);
         RecipeRegistryHelper.registerCondensentrator(registry);
-        RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, RecipeViewerUtils.getLiquificationRecipes());
+        RecipeRegistryHelper.registerAsHolder(registry, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, RecipeViewerUtils.getLiquificationRecipes());
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.SPS, SPSRecipeViewerRecipe.getSPSRecipes(registries));
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.BOILER, BoilerRecipeViewerRecipe.getBoilerRecipes(registries));
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.ENERGY_CONVERSION, MekanismRecipeType.ENERGY_CONVERSION);

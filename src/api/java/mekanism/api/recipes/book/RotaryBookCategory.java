@@ -4,26 +4,32 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import java.util.function.IntFunction;
+import mekanism.api.recipes.MekanismRecipeTypes;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 
-//TODO - 26.3: Docs and maybe rename
+/// Recipe book categories for rotary condensentrator recipes.
+///
+/// @since 10.8.0
 public enum RotaryBookCategory implements MekanismBookCategory {
     MISC("misc");
 
-    private static final IntFunction<RotaryBookCategory> BY_ID = ByIdMap.continuous(RotaryBookCategory::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final Codec<RotaryBookCategory> CODEC = StringRepresentable.fromEnum(RotaryBookCategory::values);
+    public static final IntFunction<RotaryBookCategory> BY_ID = ByIdMap.continuous(RotaryBookCategory::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, RotaryBookCategory> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, RotaryBookCategory::ordinal);
+
+    private final Holder<RecipeBookCategory> categoryHolder;
     private final String name;
 
     RotaryBookCategory(String name) {
         this.name = name;
+        this.categoryHolder = MekanismBookCategory.createHolder(MekanismRecipeTypes.NAME_ROTARY, this.name);
     }
 
     @Override
@@ -33,8 +39,7 @@ public enum RotaryBookCategory implements MekanismBookCategory {
 
     @Override
     public RecipeBookCategory toRecipeBookCategory() {
-        //TODO - 26.3: Implement this
-        return RecipeBookCategories.CRAFTING_MISC;
+        return categoryHolder.value();
     }
 
     /// Recipe book info for rotary condensentrator recipes.

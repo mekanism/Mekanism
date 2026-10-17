@@ -27,10 +27,9 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
 
     @Override
     public ResourceKey<Recipe<?>> defaultId() {
-        Identifier leftId = chemicalId(output.left());
-        Identifier rightId = chemicalId(output.right());
-        Identifier combinedId = Identifier.fromNamespaceAndPath(leftId.getNamespace(), leftId.getPath() + "_" + rightId.getPath());
-        return ResourceKey.create(Registries.RECIPE, combinedId);
+        Identifier leftId = instanceId(output.left());
+        Identifier rightId = instanceId(output.right());
+        return ResourceKey.create(Registries.RECIPE, leftId.withSuffix("_" + rightId.getPath()));
     }
 
     /// Creates a Separating recipe builder.

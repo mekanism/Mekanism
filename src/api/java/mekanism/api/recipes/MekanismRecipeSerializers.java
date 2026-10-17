@@ -16,6 +16,7 @@ import mekanism.api.recipes.basic.BasicEnrichingRecipe;
 import mekanism.api.recipes.basic.BasicEvaporatingRecipe;
 import mekanism.api.recipes.basic.BasicInjectingRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToEnergyRecipe;
+import mekanism.api.recipes.basic.BasicLiquificationRecipe;
 import mekanism.api.recipes.basic.BasicMetallurgicInfuserRecipe;
 import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
 import mekanism.api.recipes.basic.BasicPaintingRecipe;
@@ -67,6 +68,7 @@ public class MekanismRecipeSerializers {
         public static final ResourceKey<RecipeSerializer<?>> REACTION = key("reaction");
         public static final ResourceKey<RecipeSerializer<?>> ROTARY = key("rotary");
         public static final ResourceKey<RecipeSerializer<?>> SAWING = key("sawing");
+        public static final ResourceKey<RecipeSerializer<?>> LIQUIFICATION = key("liquification");
     }
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicCrushingRecipe>> CRUSHING = DeferredHolder.create(Names.CRUSHING);
@@ -95,4 +97,5 @@ public class MekanismRecipeSerializers {
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicPressurizedReactionRecipe>> REACTION = DeferredHolder.create(Names.REACTION);
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicRotaryRecipe>> ROTARY = DeferredHolder.create(Names.ROTARY);
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicSawmillRecipe>> SAWING = DeferredHolder.create(Names.SAWING);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicLiquificationRecipe>> LIQUIFICATION = DeferredHolder.create(Names.LIQUIFICATION);
 }

@@ -4,26 +4,32 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import java.util.function.IntFunction;
+import mekanism.api.recipes.MekanismRecipeTypes;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 
-//TODO - 26.3: Docs
+/// Recipe book categories for pigment extracting recipes.
+///
+/// @since 10.8.0
 public enum PigmentExtractingBookCategory implements MekanismBookCategory {
     MISC("misc");
 
-    private static final IntFunction<PigmentExtractingBookCategory> BY_ID = ByIdMap.continuous(PigmentExtractingBookCategory::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final Codec<PigmentExtractingBookCategory> CODEC = StringRepresentable.fromEnum(PigmentExtractingBookCategory::values);
+    public static final IntFunction<PigmentExtractingBookCategory> BY_ID = ByIdMap.continuous(PigmentExtractingBookCategory::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, PigmentExtractingBookCategory> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, PigmentExtractingBookCategory::ordinal);
+
+    private final Holder<RecipeBookCategory> categoryHolder;
     private final String name;
 
     PigmentExtractingBookCategory(String name) {
         this.name = name;
+        this.categoryHolder = MekanismBookCategory.createHolder(MekanismRecipeTypes.NAME_PIGMENT_EXTRACTING, this.name);
     }
 
     @Override
@@ -33,8 +39,7 @@ public enum PigmentExtractingBookCategory implements MekanismBookCategory {
 
     @Override
     public RecipeBookCategory toRecipeBookCategory() {
-        //TODO - 26.3: Implement this
-        return RecipeBookCategories.CRAFTING_MISC;
+        return categoryHolder.value();
     }
 
     /// Recipe book info for pigment extracting recipes.

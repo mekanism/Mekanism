@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalInstance;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.triggers.Criterion;
@@ -166,14 +165,14 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
     }
 
     public static ResourceKey<Recipe<?>> getDefaultRecipeId(FluidInstance fluid) {
-        return ResourceKey.create(Registries.RECIPE, fluid.typeHolder().unwrapKey().orElseThrow().identifier());
+        return ResourceKey.create(Registries.RECIPE, instanceId(fluid));
     }
 
     public static ResourceKey<Recipe<?>> getDefaultRecipeId(ChemicalInstance chemical) {
-        return ResourceKey.create(Registries.RECIPE, chemicalId(chemical));
+        return ResourceKey.create(Registries.RECIPE, instanceId(chemical));
     }
 
-    public static Identifier chemicalId(TypedInstance<Chemical> chemical) {
-        return chemical.typeHolder().unwrapKey().orElseThrow().identifier();
+    public static Identifier instanceId(TypedInstance<?> instance) {
+        return instance.typeHolder().unwrapKey().orElseThrow().identifier();
     }
 }

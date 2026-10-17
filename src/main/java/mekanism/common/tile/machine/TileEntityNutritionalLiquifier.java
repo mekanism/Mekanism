@@ -6,7 +6,9 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
+import mekanism.api.recipes.basic.BasicLiquificationRecipe;
 import mekanism.api.recipes.book.LiquificationBookCategory;
 import mekanism.api.recipes.book.LiquificationBookCategory.LiquificationBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -37,9 +39,10 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.NutritionalLiquifierRecipe;
-import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
+import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
@@ -47,6 +50,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ValueUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.food.FoodProperties;
@@ -63,7 +68,8 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<NutritionalLiquifierRecipe> {
+public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>>
+      implements ItemRecipeLookupHandler<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>> {
 
     public static final RecipeError NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR = RecipeError.create();
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
@@ -134,7 +140,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Nu
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
-        builder.addContainer(inputSlot = InputInventorySlot.at(TileEntityNutritionalLiquifier::isValidInput, recipeCacheListener, 26, 36))
+        builder.addContainer(inputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheListener, 26, 36))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(listener, 110, 36))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR)));
@@ -146,8 +152,12 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Nu
     }
 
     public static boolean isValidInput(ItemResource itemType) {
-        FoodProperties food = itemType.get(DataComponents.FOOD);
-        //And only allow inserting foods that actually would provide paste
+        return isValidDynamic(itemType) || MekanismRecipeType.LIQUIFICATION.getInputCache().containsInput(null, itemType);
+    }
+
+    private static boolean isValidDynamic(DataComponentGetter componentGetter) {
+        FoodProperties food = componentGetter.get(DataComponents.FOOD);
+        //Only allow inserting foods that actually would provide paste
         return food != null && food.nutrition() > 0;
     }
 
@@ -171,24 +181,41 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Nu
     }
 
     @Override
-    public MekanismRecipeType<SingleRecipeInput, LiquificationBookCategory, LiquificationBookInfo, NutritionalLiquifierRecipe, IInputRecipeCache> getRecipeType() {
-        //TODO - V11: See comment in NutritionalLiquifierIRecipe. Note if either containsRecipe and findFirstRecipe get called this will throw
-        throw new UnsupportedOperationException();
+    public IMekanismRecipeTypeProvider<SingleRecipeInput, LiquificationBookCategory, LiquificationBookInfo,
+          ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>,
+          SingleItem<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>>> getRecipeType() {
+        return MekanismRecipeType.LIQUIFICATION;
     }
 
     @Override
-    public IRecipeViewerRecipeType<NutritionalLiquifierRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>> recipeViewerType() {
         return RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION;
     }
 
-    @Nullable
     @Override
-    public NutritionalLiquifierRecipe getRecipe(int cacheIndex) {
-        return getRecipe(inputHandler.getInput());
+    public boolean containsRecipe(TypedInstance<Item> input) {
+        //Make sure queries to containsRecipe support dynamic recipes. We check the dynamic ones first as if a lot of recipes are manually specified it should be cheaper
+        return input instanceof DataComponentGetter componentGetter && isValidDynamic(componentGetter) || ItemRecipeLookupHandler.super.containsRecipe(input);
     }
 
     @Nullable
-    public static NutritionalLiquifierRecipe getRecipe(ItemStack stack) {
+    @Override
+    public ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo> findFirstRecipe(ItemStack input) {
+        //Explicit recipes take precedent over dynamic ones
+        ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo> recipe = ItemRecipeLookupHandler.super.findFirstRecipe(input);
+        return recipe == null ? createDynamicRecipe(input) : recipe;
+    }
+
+    @Nullable
+    @Override
+    public ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo> getRecipe(int cacheIndex) {
+        return findFirstRecipe(inputHandler);
+    }
+
+    @Nullable
+    public static ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo> createDynamicRecipe(ItemStack stack) {
+        //TODO: try to move this to something akin to vanilla's CustomRecipe, we already have a lot of the logic in place to do so, but that would allow
+        // pack makers to remove the builtin recipes
         if (stack.isEmpty()) {
             return null;
         }
@@ -198,16 +225,19 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Nu
             return null;
         }
         UseRemainder remainder = stack.get(DataComponents.USE_REMAINDER);
-        return new NutritionalLiquifierRecipe(
-              NO_DISPLAY, new LiquificationBookInfo(LiquificationBookCategory.MISC, ""),
+        return new BasicLiquificationRecipe(
+              NO_DISPLAY, new LiquificationBookInfo(LiquificationBookCategory.MISC, "dynamic"),
               IngredientCreatorAccess.item().from(stack, 1),
-              MekanismFluids.NUTRITIONAL_PASTE.asTemplate(food.nutrition() * 50),
-              remainder == null ? null : remainder.convertInto()
+              new FluidOptionalItemOutput(
+                    MekanismFluids.NUTRITIONAL_PASTE.asTemplate(food.nutrition() * 50),
+                    remainder == null ? null : remainder.convertInto()
+              )
         );
     }
 
     @Override
-    public CachedRecipe<NutritionalLiquifierRecipe> createNewCachedRecipe(NutritionalLiquifierRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>> createNewCachedRecipe(
+          ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo> recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

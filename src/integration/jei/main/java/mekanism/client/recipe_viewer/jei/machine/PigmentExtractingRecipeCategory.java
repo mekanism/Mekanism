@@ -12,8 +12,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class PigmentExtractingRecipeCategory extends ItemStackToChemicalRecipeCategory<PigmentExtractingBookCategory, PigmentExtractingBookInfo,
-      ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>> {
+public class PigmentExtractingRecipeCategory extends ItemStackToChemicalRecipeCategory<PigmentExtractingBookCategory, PigmentExtractingBookInfo> {
 
     private final PigmentExtractorColorDetails currentDetails;
 

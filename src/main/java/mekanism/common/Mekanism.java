@@ -83,6 +83,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismPlacementModifiers;
+import mekanism.common.registries.MekanismRecipeBookCategories;
 import mekanism.common.registries.MekanismRecipeDisplays;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.registries.MekanismRobitSkins;
@@ -252,6 +253,7 @@ public class Mekanism {
         MekanismRecipeConditions.CONDITION_CODECS.register(modEventBus);
         MekanismItemPredicates.PREDICATES.register(modEventBus);
         MekanismDataMapTypes.REGISTER.register(modEventBus);
+        MekanismRecipeBookCategories.RECIPE_BOOK_CATEGORIES.register(modEventBus);
         MekanismSlotDisplayTypes.SLOT_DISPLAY_TYPES.register(modEventBus);
         MekanismTicketTypes.TICKET_TYPES.register(modEventBus);
     }
