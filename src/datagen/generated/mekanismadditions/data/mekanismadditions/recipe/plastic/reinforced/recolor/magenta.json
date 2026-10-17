@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
+  "group": "mekanismadditions:reinforced_plastic_recolor",
   "key": {
     "#": {
       "neoforge:ingredient_type": "neoforge:difference",

@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
+  "group": "mekanismadditions:plastic_recombination",
   "key": {
     "#": "mekanismadditions:light_blue_plastic_slab"
   },

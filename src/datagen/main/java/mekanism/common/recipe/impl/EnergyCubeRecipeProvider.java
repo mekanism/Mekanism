@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.chemical.Chemical;
+import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
@@ -14,6 +15,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -34,7 +36,8 @@ class EnergyCubeRecipeProvider extends BaseSubRecipeProvider {
     @Override
     public void addRecipes(RecipeOutput consumer) {
         String basePath = "energy_cube/";
-        addTieredEnergyCube(consumer, basePath, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.STEEL_CASING, Tags.Items.INGOTS_IRON, MekanismTags.Items.ALLOYS_BASIC);
+        addTieredEnergyCube(consumer, basePath, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.STEEL_CASING, Tags.Items.INGOTS_IRON, MekanismTags.Items.ALLOYS_BASIC,
+              hasCriterion(MekanismItems.ENERGY_TABLET));
         addTieredEnergyCube(consumer, basePath, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM), MekanismTags.Items.ALLOYS_INFUSED);
         addTieredEnergyCube(consumer, basePath, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, Tags.Items.INGOTS_GOLD, MekanismTags.Items.ALLOYS_REINFORCED);
         addTieredEnergyCube(consumer, basePath, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, Tags.Items.GEMS_DIAMOND, MekanismTags.Items.ALLOYS_ATOMIC);
@@ -42,6 +45,11 @@ class EnergyCubeRecipeProvider extends BaseSubRecipeProvider {
 
     private void addTieredEnergyCube(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> energyCube, BlockRegistryObject<?, ?> previousEnergyCube,
           TagKey<Item> ingotTag, TagKey<Item> alloyTag) {
+        addTieredEnergyCube(consumer, basePath, energyCube, previousEnergyCube, ingotTag, alloyTag, new RecipeCriterion("has_alloy", has(alloyTag)));
+    }
+
+    private void addTieredEnergyCube(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> energyCube, BlockRegistryObject<?, ?> previousEnergyCube,
+          TagKey<Item> ingotTag, TagKey<Item> alloyTag, RecipeCriterion recipeCriterion) {
         String tierName = Attribute.getBaseTierNN(energyCube).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(energyCube)
               .pattern(ENERGY_CUBE_PATTERN)
@@ -49,6 +57,9 @@ class EnergyCubeRecipeProvider extends BaseSubRecipeProvider {
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.INGOT, this.items, ingotTag)
               .key(Pattern.ALLOY, this.items, alloyTag)
+              .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
+              .group(Mekanism.rl("energy_cube"))
+              .unlockedBy(recipeCriterion)
               .save(consumer, Mekanism.rl(basePath + tierName));
     }
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "I": "#c:ingots/refined_obsidian",
     "P": "minecraft:diamond_horse_armor"

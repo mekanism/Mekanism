@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "mekanism:infusing",
   "key": {
     "#": "#c:player_workstations/furnaces",
     "I": "#c:ingots/iron",

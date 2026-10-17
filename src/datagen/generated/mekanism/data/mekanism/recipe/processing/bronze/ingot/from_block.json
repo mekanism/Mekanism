@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "group": "mekanism:ingot_bronze",
   "ingredients": [
     "mekanism:block_bronze"
   ],

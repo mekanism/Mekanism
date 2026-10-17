@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "mekanism:circuit_upgrade",
   "key": {
     "A": "#mekanism:alloys/atomic",
     "C": "#c:circuits/elite"

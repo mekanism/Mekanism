@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "#": "mekanism:laser_amplifier",
     "A": "#c:alloys/advanced",

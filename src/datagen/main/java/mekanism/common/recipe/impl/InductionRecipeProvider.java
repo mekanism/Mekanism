@@ -13,6 +13,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -46,6 +47,8 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
               ).key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .unlockedBy(hasCriterion(MekanismItems.ENERGY_TABLET))
               .save(consumer, Mekanism.rl(basePath + "casing"));
         //Port
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.INDUCTION_PORT, 2)
@@ -55,6 +58,9 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CONSTANT, MekanismBlocks.INDUCTION_CASING)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ELITE)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ELITE))
               .save(consumer, Mekanism.rl(basePath + "port"));
     }
 
@@ -68,6 +74,10 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
               ).key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.LITHIUM, this.items, MekanismTags.Items.DUSTS_LITHIUM)
               .key(Pattern.CONSTANT, MekanismBlocks.BASIC_ENERGY_CUBE)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .group(Mekanism.rl("induction_cell"))
+              .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
+              .unlockedBy("has_energy_cube", has(MekanismBlocks.BASIC_ENERGY_CUBE))
               .save(consumer, Mekanism.rl(basePath + "basic"));
         addTieredInductionCellRecipe(consumer, basePath, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.BASIC_INDUCTION_CELL, MekanismBlocks.ADVANCED_ENERGY_CUBE);
         addTieredInductionCellRecipe(consumer, basePath, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.ELITE_ENERGY_CUBE);
@@ -82,6 +92,10 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
               .key(Pattern.PREVIOUS, previousCell)
               .key(Pattern.CONSTANT, energyCube)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .group(Mekanism.rl("induction_cell"))
+              .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
+              .unlockedBy("has_energy_cube", has(energyCube))
               .save(consumer, Mekanism.rl(basePath + tierName));
     }
 
@@ -95,6 +109,10 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
               ).key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.LITHIUM, this.items, MekanismTags.Items.DUSTS_LITHIUM)
               .key(Pattern.CONSTANT, MekanismBlocks.BASIC_ENERGY_CUBE)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .group(Mekanism.rl("induction_provider"))
+              .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
+              .unlockedBy("has_energy_cube", has(MekanismBlocks.BASIC_ENERGY_CUBE))
               .save(consumer, Mekanism.rl(basePath + "basic"));
         addTieredInductionProviderRecipe(consumer, basePath, MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, MekanismBlocks.BASIC_INDUCTION_PROVIDER, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ADVANCED);
         addTieredInductionProviderRecipe(consumer, basePath, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ELITE);
@@ -109,6 +127,10 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
               .key(Pattern.PREVIOUS, previousProvider)
               .key(Pattern.CONSTANT, energyCube)
               .key(Pattern.CIRCUIT, this.items, circuitTag)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .group(Mekanism.rl("induction_provider"))
+              .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
+              .unlockedBy("has_energy_cube", has(energyCube))
               .save(consumer, Mekanism.rl(basePath + tierName));
     }
 }

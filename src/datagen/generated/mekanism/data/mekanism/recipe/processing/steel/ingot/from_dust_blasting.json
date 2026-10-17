@@ -2,6 +2,7 @@
   "type": "minecraft:blasting",
   "cookingtime": 100,
   "experience": 0.4,
+  "group": "mekanism:ingot_steel",
   "ingredient": "mekanism:dust_steel",
   "result": {
     "id": "mekanism:ingot_steel"

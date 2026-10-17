@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
+  "group": "mekanismadditions:plastic_fence_gates",
   "key": {
     "#": "mekanismadditions:white_plastic",
     "R": "#c:rods/plastic"

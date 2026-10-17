@@ -1,5 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "mekanism:tier_installer",
   "key": {
     "A": "#mekanism:alloys/reinforced",
     "C": "#c:circuits/elite",

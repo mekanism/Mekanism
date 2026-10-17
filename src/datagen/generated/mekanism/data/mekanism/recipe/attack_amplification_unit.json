@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "#": "minecraft:iron_sword",
     "A": "#c:alloys/advanced",

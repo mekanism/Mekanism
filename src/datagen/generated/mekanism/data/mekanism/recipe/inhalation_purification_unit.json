@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "#": "mekanism:hazmat_mask",
     "A": "#c:alloys/elite",

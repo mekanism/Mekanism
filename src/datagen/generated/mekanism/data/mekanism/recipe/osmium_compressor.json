@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "mekanism:compressing",
   "key": {
     "A": "#mekanism:alloys/infused",
-    "B": "minecraft:bucket",
+    "B": "#c:buckets/empty",
     "C": "#c:circuits/advanced",
     "X": "mekanism:steel_casing"
   },

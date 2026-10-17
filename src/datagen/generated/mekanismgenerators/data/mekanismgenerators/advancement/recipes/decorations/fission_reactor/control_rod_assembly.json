@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lead_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:ingots/lead"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismgenerators:fission_reactor/control_rod_assembly"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_lead_ingot"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismgenerators:fission_reactor/control_rod_assembly"
+    ]
+  }
+}

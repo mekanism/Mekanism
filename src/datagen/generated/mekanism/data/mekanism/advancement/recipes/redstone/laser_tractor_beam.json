@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_laser": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:laser"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:laser_tractor_beam"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_laser"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:laser_tractor_beam"
+    ]
+  }
+}

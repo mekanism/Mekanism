@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
   "key": {
     "#": "mekanism:thermal_evaporation_block",
-    "B": "minecraft:bucket",
+    "B": "#c:buckets/empty",
     "C": "#c:circuits/advanced",
     "G": "#c:glass_panes"
   },

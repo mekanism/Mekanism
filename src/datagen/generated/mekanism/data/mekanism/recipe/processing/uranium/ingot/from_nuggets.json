@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "mekanism:ingot_uranium",
   "key": {
     "#": "#c:nuggets/uranium",
     "P": "mekanism:nugget_uranium"

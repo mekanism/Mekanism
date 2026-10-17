@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
+  "group": "mekanismadditions:transparent_plastic_recombination",
   "key": {
     "#": "mekanismadditions:magenta_plastic_transparent_slab"
   },

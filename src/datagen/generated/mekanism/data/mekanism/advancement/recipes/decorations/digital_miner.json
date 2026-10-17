@@ -1,0 +1,65 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_any_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:ores"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_any_raw_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:raw_materials"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_atomic_disassembler": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:atomic_disassembler"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_teleportation_core": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:teleportation_core"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:digital_miner"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_teleportation_core",
+      "has_atomic_disassembler",
+      "has_any_raw_ore",
+      "has_any_ore"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:digital_miner"
+    ]
+  }
+}

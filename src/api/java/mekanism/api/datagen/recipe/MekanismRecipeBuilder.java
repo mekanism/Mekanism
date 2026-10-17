@@ -41,7 +41,6 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
     private String group;
 
     protected MekanismRecipeBuilder(BiFunction<BOOK_CATEGORY, String, BOOK_INFO> bookInfoCreator, BOOK_CATEGORY defaultCategory) {
-        //TODO: We may also want to validate inputs, currently we are not validating our input ingredients as being valid, and are just validating the other parameters
         this.bookInfoCreator = bookInfoCreator;
         this.category = defaultCategory;
     }
@@ -87,6 +86,11 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
     public BUILDER advancementCategory(String category) {
         this.advancementCategory = category;
         return self();
+    }
+
+    @Contract("_ -> this")
+    public BUILDER group(@Nullable Identifier group) {
+        return group(group == null ? null : group.toShortString());
     }
 
     @Override
@@ -135,7 +139,7 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
     /// @param recipeOutput Finished Recipe Consumer.
     /// @param id           Name of the recipe being built.
     public void save(RecipeOutput recipeOutput, Identifier id) {
-        save(recipeOutput, id.toString());
+        save(recipeOutput, id.toShortString());
     }
 
     /// Builds this recipe.
@@ -150,8 +154,16 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
             RecipeUnlockAdvancementBuilder advancementBuilder = new RecipeUnlockAdvancementBuilder();
             this.criteria.forEach(advancementBuilder::unlockedBy);
             advancementHolder = advancementBuilder.build(recipeOutput, id, advancementCategory);
+        } else if (requireUnlockCriteria()) {
+            throw new IllegalStateException("Cannot save recipe with no unlock criteria set");
         }
         recipeOutput.accept(id, asRecipe(), advancementHolder, conditions.toArray(new ICondition[0]));
+    }
+
+    /// {@return if this recipe builder requires unlock criteria to be set}
+    /// @since 10.8.0
+    protected boolean requireUnlockCriteria() {
+        return false;
     }
 
     /// Builds this recipe basing the name on the output item.

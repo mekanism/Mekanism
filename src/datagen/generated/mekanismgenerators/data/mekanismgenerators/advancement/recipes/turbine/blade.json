@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismgenerators:turbine/blade"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_turbine_rotor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismgenerators:turbine_rotor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_turbine_rotor"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismgenerators:turbine/blade"
+    ]
+  }
+}

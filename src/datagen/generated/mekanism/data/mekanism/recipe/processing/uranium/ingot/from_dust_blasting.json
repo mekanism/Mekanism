@@ -2,6 +2,7 @@
   "type": "minecraft:blasting",
   "cookingtime": 100,
   "experience": 0.3,
+  "group": "mekanism:ingot_uranium",
   "ingredient": "mekanism:dust_uranium",
   "result": {
     "id": "mekanism:ingot_uranium"

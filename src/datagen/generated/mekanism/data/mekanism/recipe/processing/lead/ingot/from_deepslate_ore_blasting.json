@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:blasting",
+  "cookingtime": 100,
+  "experience": 0.6,
+  "group": "mekanism:ingot_lead",
+  "ingredient": "mekanism:deepslate_lead_ore",
+  "result": {
+    "id": "mekanism:ingot_lead"
+  }
+}

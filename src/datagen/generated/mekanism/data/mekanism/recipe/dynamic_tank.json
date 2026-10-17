@@ -1,7 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
   "key": {
-    "B": "minecraft:bucket",
+    "B": "#c:buckets/empty",
     "S": "#c:ingots/steel"
   },
   "pattern": [

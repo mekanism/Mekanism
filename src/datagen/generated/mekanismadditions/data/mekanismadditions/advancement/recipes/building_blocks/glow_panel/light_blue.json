@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_glowstone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:dusts/glowstone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:hdpe_pellet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_plastic_sheet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:hdpe_sheet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismadditions:glow_panel/light_blue"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_plastic",
+      "has_plastic_sheet",
+      "has_glowstone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:glow_panel/light_blue"
+    ]
+  }
+}

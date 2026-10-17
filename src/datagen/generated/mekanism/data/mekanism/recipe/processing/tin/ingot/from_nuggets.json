@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "mekanism:ingot_tin",
   "key": {
     "#": "#c:nuggets/tin",
     "P": "mekanism:nugget_tin"

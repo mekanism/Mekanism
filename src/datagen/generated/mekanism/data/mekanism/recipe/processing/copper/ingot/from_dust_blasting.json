@@ -2,6 +2,7 @@
   "type": "minecraft:blasting",
   "cookingtime": 100,
   "experience": 0.35,
+  "group": "copper_ingot",
   "ingredient": "mekanism:dust_copper",
   "result": {
     "id": "minecraft:copper_ingot"

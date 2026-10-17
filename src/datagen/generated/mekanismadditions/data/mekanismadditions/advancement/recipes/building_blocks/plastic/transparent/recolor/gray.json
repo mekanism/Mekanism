@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_needed_dye": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:dyes/gray"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismadditions:plastic/transparent/recolor/gray"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_needed_dye"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/transparent/recolor/gray"
+    ]
+  }
+}

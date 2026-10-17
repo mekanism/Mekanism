@@ -2,6 +2,7 @@
   "type": "minecraft:smelting",
   "cookingtime": 200,
   "experience": 0.5,
+  "group": "gold_ingot",
   "ingredient": "mekanism:dust_gold",
   "result": {
     "id": "minecraft:gold_ingot"

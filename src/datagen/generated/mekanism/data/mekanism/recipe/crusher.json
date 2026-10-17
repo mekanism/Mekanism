@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "mekanism:crushing",
   "key": {
     "B": "#c:buckets/lava",
     "C": "#c:circuits/basic",

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "redstone",
   "key": {
     "#": "minecraft:sticky_piston",
     "A": "#c:ender_pearls",

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
   "key": {
     "#": "#c:ingots/refined_glowstone",
     "P": "mekanism:ingot_refined_glowstone"

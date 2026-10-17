@@ -1,5 +1,7 @@
 {
   "type": "mekanism:mek_data",
+  "category": "building",
+  "group": "mekanism:induction_cell",
   "key": {
     "#": "mekanism:ultimate_energy_cube",
     "E": "mekanism:energy_tablet",

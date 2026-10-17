@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
+  "group": "mekanismadditions:reinforced_plastic",
   "key": {
     "#": "mekanismadditions:dark_red_plastic",
     "O": "#c:dusts/osmium"

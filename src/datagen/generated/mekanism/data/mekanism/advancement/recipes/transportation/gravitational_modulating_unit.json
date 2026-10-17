@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_module_base": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:module_base"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:gravitational_modulating_unit"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_module_base"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:gravitational_modulating_unit"
+    ]
+  }
+}

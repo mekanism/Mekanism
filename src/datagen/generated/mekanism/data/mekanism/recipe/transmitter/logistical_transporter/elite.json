@@ -1,5 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "mekanism:logistical_transporter",
   "key": {
     "A": "#mekanism:alloys/reinforced",
     "P": "mekanism:advanced_logistical_transporter"

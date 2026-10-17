@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "group": "mekanismadditions:balloon",
   "ingredients": [
     "#c:leathers",
     "#c:strings",

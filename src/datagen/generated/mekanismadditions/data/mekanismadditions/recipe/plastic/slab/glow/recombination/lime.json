@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
+  "group": "mekanismadditions:glow_plastic_recombination",
   "key": {
     "#": "mekanismadditions:lime_plastic_glow_slab"
   },

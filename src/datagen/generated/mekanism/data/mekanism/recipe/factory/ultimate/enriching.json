@@ -1,5 +1,6 @@
 {
   "type": "mekanism:mek_data",
+  "group": "mekanism:enriching",
   "key": {
     "A": "#mekanism:alloys/atomic",
     "C": "#c:circuits/ultimate",

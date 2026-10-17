@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_atomic_disassembler": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:atomic_disassembler"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:meka_tool"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_atomic_disassembler"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:meka_tool"
+    ]
+  }
+}

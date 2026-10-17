@@ -1,5 +1,6 @@
 {
   "type": "mekanism:mek_data",
+  "group": "mekanism:fluid_tank",
   "key": {
     "A": "#mekanism:alloys/atomic",
     "I": "#c:ingots/iron",

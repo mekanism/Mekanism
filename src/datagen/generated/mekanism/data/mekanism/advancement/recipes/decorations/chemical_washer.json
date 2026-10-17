@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_chemical_injection_chamber": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:chemical_injection_chamber"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_circuit": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:circuits/ultimate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:chemical_washer"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_circuit",
+      "has_chemical_injection_chamber"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:chemical_washer"
+    ]
+  }
+}

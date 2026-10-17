@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_polonium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:pellets/polonium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:mekasuit_pants"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_polonium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:mekasuit_pants"
+    ]
+  }
+}

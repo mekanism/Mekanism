@@ -1,5 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "mekanism:mechanical_pipe",
   "key": {
     "A": "#mekanism:alloys/atomic",
     "P": "mekanism:elite_mechanical_pipe"

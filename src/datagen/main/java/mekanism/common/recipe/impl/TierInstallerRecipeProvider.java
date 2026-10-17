@@ -11,6 +11,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -41,6 +42,9 @@ class TierInstallerRecipeProvider extends BaseSubRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, circuitTag)
               .key(Pattern.INGOT, this.items, ingotTag)
               .key(Pattern.ALLOY, this.items, alloyTag)
+              .category(RecipeCategory.TOOLS)
+              .group(Mekanism.rl("tier_installer"))
+              .unlockedBy("has_circuit", has(circuitTag))
               .save(consumer, Mekanism.rl(basePath + tierInstaller.value().getToTier().getLowerName()));
     }
 }

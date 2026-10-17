@@ -1,5 +1,6 @@
 {
   "type": "mekanism:mek_data",
+  "group": "mekanism:chemical_tank",
   "key": {
     "A": "#mekanism:alloys/reinforced",
     "O": "#c:ingots/osmium",

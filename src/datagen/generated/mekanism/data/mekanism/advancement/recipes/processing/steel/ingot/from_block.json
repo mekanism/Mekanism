@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_block_steel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:block_steel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:processing/steel/ingot/from_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_block_steel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/steel/ingot/from_block"
+    ]
+  }
+}

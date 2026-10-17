@@ -14,6 +14,7 @@ import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.ItemIds;
 import net.minecraft.tags.TagKey;
@@ -43,6 +44,7 @@ class StorageRecipeProvider extends BaseSubRecipeProvider {
     private void addNuggetRecipe(RecipeOutput consumer, Holder<Item> nugget, Holder<Item> ingot, String basePath, String name) {
         ExtendedShapelessRecipeBuilder.shapelessRecipe(nugget, 9)
               .addIngredient(ingot)
+              .unlockedBy(hasCriterion(nugget))
               .save(consumer, Mekanism.rl(basePath + name));
     }
 
@@ -59,6 +61,8 @@ class StorageRecipeProvider extends BaseSubRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHARCOAL_BLOCK)
               .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
               .key(Pattern.CONSTANT, this.items, ItemIds.CHARCOAL)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .unlockedBy(hasCriterion(ItemIds.CHARCOAL))
               .save(consumer, Mekanism.rl(basePath + BlockResourceInfo.CHARCOAL.getRegistrySuffix()));
         //Salt
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SALT_BLOCK)
@@ -66,6 +70,8 @@ class StorageRecipeProvider extends BaseSubRecipeProvider {
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT),
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT))
               ).key(Pattern.CONSTANT, this.items, MekanismTags.Items.DUSTS_SALT)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
               .save(consumer, Mekanism.rl(basePath + "salt"));
     }
 
@@ -79,6 +85,8 @@ class StorageRecipeProvider extends BaseSubRecipeProvider {
               .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
               .key(Pattern.PREVIOUS, ingot)
               .key(Pattern.CONSTANT, this.items, ingotTag)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .unlockedBy(hasCriterion(ingot))
               .save(consumer, Mekanism.rl(basePath + suffix));
     }
 }

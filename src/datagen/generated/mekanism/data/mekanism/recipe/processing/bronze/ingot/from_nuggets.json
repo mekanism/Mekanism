@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "mekanism:ingot_bronze",
   "key": {
     "#": "#c:nuggets/bronze",
     "P": "mekanism:nugget_bronze"

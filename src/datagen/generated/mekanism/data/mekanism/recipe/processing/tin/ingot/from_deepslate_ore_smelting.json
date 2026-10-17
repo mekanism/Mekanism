@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 0.6,
+  "group": "mekanism:ingot_tin",
+  "ingredient": "mekanism:deepslate_tin_ore",
+  "result": {
+    "id": "mekanism:ingot_tin"
+  }
+}

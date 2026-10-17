@@ -16,6 +16,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import org.jetbrains.annotations.Contract;
 
+//TODO - 26.3: Rename methods in this and shaped recipe builder to match mojmap names for them in their builders
 public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<CraftingBookCategory, CraftingBookInfo, ExtendedShapelessRecipeBuilder> {
 
     private final NonNullList<Ingredient> ingredients = NonNullList.create();

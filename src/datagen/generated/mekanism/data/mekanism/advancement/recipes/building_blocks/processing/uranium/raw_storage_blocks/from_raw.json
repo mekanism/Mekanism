@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_raw_uranium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:raw_uranium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:processing/uranium/raw_storage_blocks/from_raw"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_raw_uranium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/uranium/raw_storage_blocks/from_raw"
+    ]
+  }
+}

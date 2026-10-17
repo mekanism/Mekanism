@@ -1,0 +1,175 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_bronze_axe": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_axe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_bronze_boots": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_boots"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_bronze_chestplate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_chestplate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_bronze_helmet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_helmet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_bronze_hoe": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_hoe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_bronze_horse_armor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_horse_armor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_bronze_leggings": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_leggings"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_bronze_nautilus_armor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_nautilus_armor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_bronze_paxel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_paxel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_bronze_pickaxe": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_pickaxe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_bronze_shield": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_shield"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_bronze_shovel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_shovel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_bronze_spear": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_spear"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_bronze_sword": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:bronze_sword"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismtools:bronze/nugget_from__blasting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_bronze_helmet",
+      "has_bronze_chestplate",
+      "has_bronze_leggings",
+      "has_bronze_boots",
+      "has_bronze_horse_armor",
+      "has_bronze_nautilus_armor",
+      "has_bronze_axe",
+      "has_bronze_hoe",
+      "has_bronze_paxel",
+      "has_bronze_pickaxe",
+      "has_bronze_shield",
+      "has_bronze_shovel",
+      "has_bronze_sword",
+      "has_bronze_spear"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismtools:bronze/nugget_from__blasting"
+    ]
+  }
+}

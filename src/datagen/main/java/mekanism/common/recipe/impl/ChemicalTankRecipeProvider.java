@@ -14,6 +14,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -33,14 +34,18 @@ class ChemicalTankRecipeProvider extends BaseSubRecipeProvider {
     @Override
     public void addRecipes(RecipeOutput consumer) {
         String basePath = "chemical_tank/";
+        TagKey<Item> osmiumIngot = MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM);
         //Note: For the basic chemical tank, we have to handle the empty slot differently than batching it against our chemical tank pattern
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BASIC_CHEMICAL_TANK)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY),
                     TripleLine.of(Pattern.OSMIUM, Pattern.EMPTY, Pattern.OSMIUM),
                     TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY))
-              ).key(Pattern.OSMIUM, this.items, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              ).key(Pattern.OSMIUM, this.items, osmiumIngot)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
+              .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
+              .group(Mekanism.rl("chemical_tank"))
+              .unlockedBy("has_osmium_ingot", has(osmiumIngot))
               .save(consumer, Mekanism.rl(basePath + "basic"));
         addTieredChemicalTank(consumer, basePath, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismBlocks.BASIC_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_INFUSED);
         addTieredChemicalTank(consumer, basePath, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_REINFORCED);
@@ -54,6 +59,9 @@ class ChemicalTankRecipeProvider extends BaseSubRecipeProvider {
               .key(Pattern.PREVIOUS, previousTank)
               .key(Pattern.OSMIUM, this.items, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .key(Pattern.ALLOY, this.items, alloyTag)
+              .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
+              .group(Mekanism.rl("chemical_tank"))
+              .unlockedBy("has_alloy", has(alloyTag))
               .save(consumer, Mekanism.rl(basePath + tierName));
     }
 }

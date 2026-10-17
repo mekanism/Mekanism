@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_alloy": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#mekanism:alloys/infused"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_circuit": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:circuits/basic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismgenerators:generator/bio"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_alloy",
+      "has_circuit"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismgenerators:generator/bio"
+    ]
+  }
+}

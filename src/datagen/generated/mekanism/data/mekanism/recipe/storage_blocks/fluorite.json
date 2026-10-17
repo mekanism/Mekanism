@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
   "key": {
     "#": "#c:gems/fluorite",
     "P": "mekanism:fluorite_gem"

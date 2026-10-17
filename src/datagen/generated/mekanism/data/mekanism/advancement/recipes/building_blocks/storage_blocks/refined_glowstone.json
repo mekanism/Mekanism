@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_refined_glowstone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:ingot_refined_glowstone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:storage_blocks/refined_glowstone"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_refined_glowstone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:storage_blocks/refined_glowstone"
+    ]
+  }
+}

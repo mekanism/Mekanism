@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
   "key": {
     "#": "mekanism:boiler_casing",
     "C": "#c:circuits/advanced"

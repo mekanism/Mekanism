@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:aqua_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismadditions:plastic/stairs/glow/aqua"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_plastic"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/stairs/glow/aqua"
+    ]
+  }
+}

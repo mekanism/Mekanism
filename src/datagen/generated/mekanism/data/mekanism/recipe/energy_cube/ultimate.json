@@ -1,5 +1,6 @@
 {
   "type": "mekanism:mek_data",
+  "group": "mekanism:energy_cube",
   "key": {
     "A": "#mekanism:alloys/atomic",
     "E": "mekanism:energy_tablet",

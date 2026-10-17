@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "mekanism:combining",
   "key": {
     "A": "#mekanism:alloys/reinforced",
     "C": "#c:circuits/elite",

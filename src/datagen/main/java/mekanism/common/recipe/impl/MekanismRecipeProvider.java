@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalIds;
+import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
@@ -12,9 +13,11 @@ import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ClearConfigurationRecipe;
 import mekanism.common.recipe.ISubRecipeProvider;
+import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
@@ -33,6 +36,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.triggers.TameAnimalTrigger;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
@@ -44,12 +48,12 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.Tags;
 
 public class MekanismRecipeProvider extends BaseRecipeProvider {
 
-    static final char DIAMOND_CHAR = 'D';
     static final char GLASS_CHAR = 'G';
     static final char PERSONAL_STORAGE_CHAR = 'P';
     static final char MIXING_CHAR = 'M';
@@ -57,7 +61,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     static final char SORTER_CHAR = 'S';
     static final char TELEPORTATION_CORE_CHAR = 'T';
 
-    //TODO: Do we want to use same pattern for fluid tank and chemical tank at some point
     static final RecipePattern TIER_PATTERN = RecipePattern.createPattern(
           TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
           TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
@@ -161,6 +164,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CONSTANT, this.items, MekanismTags.Items.ALLOYS_ATOMIC)
               .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_alloy", has(MekanismTags.Items.ALLOYS_ATOMIC))
               .save(output);
         //Boiler casing
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BOILER_CASING, 4)
@@ -170,6 +174,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
               ).key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .unlockedBy("has_steel_ingot", has(MekanismTags.Items.INGOTS_STEEL))
               .save(output);
         //Boiler valve
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BOILER_VALVE, 2)
@@ -179,6 +185,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CONSTANT, MekanismBlocks.BOILER_CASING)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ADVANCED)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .unlockedBy("has_casing", has(MekanismBlocks.BOILER_CASING))
               .save(output);
         //Canteen
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.CANTEEN)
@@ -189,6 +197,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, tinIngot(this.items))
               .key(Pattern.CONSTANT, this.items, ItemIds.BOWL)
               .category(RecipeCategory.FOOD)
+              .unlockedBy("has_tin_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.TIN)))
+              .unlockedBy(hasCriterion(ItemIds.BOWL))
               .save(output);
         //Cardboard box
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CARDBOARD_BOX)
@@ -198,18 +208,24 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, Pattern.RESIN, Pattern.CONSTANT))
               ).key(Pattern.CONSTANT, this.items, MekanismTags.Items.DUSTS_WOOD)
               .key(Pattern.RESIN, this.items, Tags.Items.CLUMPS_RESIN)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_sawdust", has(MekanismTags.Items.DUSTS_WOOD))
               .save(output);
         //Bio Fuel
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.BIO_FUEL, 9)
               .addIngredient(MekanismBlocks.BIO_FUEL_BLOCK)
+              .unlockedBy(hasCriterion(MekanismBlocks.BIO_FUEL_BLOCK))
               .save(output);
         //Sulfur as dye
         ExtendedShapelessRecipeBuilder.shapelessRecipe(this.items, ItemIds.DYE.yellow())
               .addIngredient(MekanismItems.SULFUR_DUST)
+              .group("yellow_dye")//Vanilla group for things that make yellow dye
+              .unlockedBy(hasCriterion(MekanismItems.SULFUR_DUST))
               .save(output, Mekanism.rl("sulfur_dye"));
         //Charcoal
         ExtendedShapelessRecipeBuilder.shapelessRecipe(this.items, ItemIds.CHARCOAL, 9)
               .addIngredient(MekanismBlocks.CHARCOAL_BLOCK)
+              .unlockedBy(hasCriterion(ItemIds.CHARCOAL))
               .save(output, Mekanism.rl("charcoal"));
         //Chargepad
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHARGEPAD)
@@ -219,6 +235,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.CONSTANT, this.items, BlockItemIds.POLISHED_BLACKSTONE_PRESSURE_PLATE)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy(hasCriterion(MekanismItems.ENERGY_TABLET))
               .save(output);
         //Chemical crystallizer
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_CRYSTALLIZER)
@@ -230,6 +248,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.INGOT, this.items, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ULTIMATE))
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy(hasCriterion(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER))
               .save(output);
         //Chemical dissolution chamber
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER)
@@ -241,6 +263,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.INGOT, this.items, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ULTIMATE))
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy(hasCriterion(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER))
               .save(output);
         //Chemical infuser
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_INFUSER)
@@ -252,6 +278,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
               .save(output);
         //Chemical injection chamber
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER)
@@ -263,6 +291,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ELITE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_REINFORCED)
               .key(Pattern.CONSTANT, MekanismBlocks.PURIFICATION_CHAMBER)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .group(Mekanism.rl(FactoryType.INJECTING.getSerializedName()))
+              .unlockedBy(hasCriterion(MekanismBlocks.PURIFICATION_CHAMBER))
               .save(output);
         //Chemical oxidizer
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_OXIDIZER)
@@ -275,6 +306,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CONSTANT, MekanismBlocks.DYNAMIC_TANK)
               .key(PERSONAL_STORAGE_CHAR, this.items, MekanismTags.BlockItems.PERSONAL_STORAGE)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
               .save(output);
         //Chemical washer
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_WASHER)
@@ -287,6 +320,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.BUCKET, MekanismBlocks.BASIC_FLUID_TANK)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ULTIMATE))
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy(hasCriterion(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER))
               .save(output);
         //Combiner
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.COMBINER)
@@ -298,6 +335,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ELITE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_REINFORCED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .group(Mekanism.rl(FactoryType.COMBINING.getSerializedName()))
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ELITE))
               .save(output);
         //Configuration card
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.CONFIGURATION_CARD)
@@ -307,6 +347,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.ALLOY, Pattern.EMPTY))
               ).key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_alloy", has(MekanismTags.Items.ALLOYS_INFUSED))
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
               .save(output);
         //Configurator
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.CONFIGURATOR)
@@ -317,11 +360,15 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
               .key(Pattern.ALLOY, osmiumIngot(this.items))
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_osmium_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM)))
+              .unlockedBy("has_steel_ingot", has(MekanismTags.Items.INGOTS_STEEL))
               .save(output);
         //Crafting formula
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.CRAFTING_FORMULA)
               .addIngredient(this.items, ItemIds.PAPER)
               .addIngredient(this.items, MekanismTags.Items.CIRCUITS_BASIC)
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
               .save(output);
         //Crusher
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CRUSHER)
@@ -333,6 +380,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.BUCKET, this.items, Tags.Items.BUCKETS_LAVA)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .group(Mekanism.rl(FactoryType.CRUSHING.getSerializedName()))
+              .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
               .save(output);
         //Dictionary
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.DICTIONARY)
@@ -341,6 +391,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     Pattern.CONSTANT)
               ).key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.CONSTANT, this.items, ItemIds.BOOK)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
               .save(output);
         //Digital miner
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.DIGITAL_MINER)
@@ -354,6 +406,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(SORTER_CHAR, MekanismBlocks.LOGISTICAL_SORTER)
               .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
               .key(ROBIT_CHAR, MekanismItems.ROBIT)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy(hasCriterion(MekanismItems.TELEPORTATION_CORE))
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy(hasCriterion(MekanismItems.ATOMIC_DISASSEMBLER))
+              .unlockedBy("has_any_raw_ore", has(Tags.Items.RAW_MATERIALS))
+              .unlockedBy("has_any_ore", has(Tags.Items.ORES))
               .save(output);
         //Dosimeter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.DOSIMETER)
@@ -364,11 +422,16 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, leadIngot(this.items))
               .key(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
               .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_lead_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD)))
               .save(output);
         //Dye Base
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.DYE_BASE, 3)
               .addIngredient(this.items, MekanismTags.Items.DUSTS_WOOD, 2)
               .addIngredient(this.items, ItemIds.CLAY_BALL)
+              .unlockedBy("has_clay", has(ItemIds.CLAY_BALL))
+              .unlockedBy("has_sawdust", has(MekanismTags.Items.DUSTS_WOOD))
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy("has_any_dye", has(Tags.Items.DYES))
               .save(output);
         //Dynamic tank
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.DYNAMIC_TANK, 4)
@@ -377,7 +440,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, Pattern.BUCKET, Pattern.STEEL),
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
               ).key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.BUCKET, this.items, ItemIds.BUCKET)
+              .key(Pattern.BUCKET, this.items, Tags.Items.BUCKETS_EMPTY)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .unlockedBy("has_bucket", has(Tags.Items.BUCKETS_EMPTY))
               .save(output);
         //Dynamic valve
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.DYNAMIC_VALVE, 2)
@@ -387,6 +452,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CONSTANT, MekanismBlocks.DYNAMIC_TANK)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .unlockedBy("has_casing", has(MekanismBlocks.DYNAMIC_TANK))
               .save(output);
         //Electric bow
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ELECTRIC_BOW)
@@ -398,6 +465,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .category(RecipeCategory.COMBAT)
+              .unlockedBy(hasCriterion(MekanismItems.ENERGY_TABLET))
               .save(output);
         //Electric pump
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ELECTRIC_PUMP)
@@ -405,10 +473,13 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.BUCKET, Pattern.EMPTY),
                     TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
                     TripleLine.of(Pattern.OSMIUM, Pattern.OSMIUM, Pattern.OSMIUM))
-              ).key(Pattern.BUCKET, this.items, ItemIds.BUCKET)
+              ).key(Pattern.BUCKET, this.items, Tags.Items.BUCKETS_EMPTY)
               .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy("in_water", insideOf(Blocks.WATER))
+              .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
               .save(output);
         //Electrolytic core
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.ELECTROLYTIC_CORE)
@@ -420,6 +491,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CONSTANT, this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD))
               .key(Pattern.INGOT, this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.IRON))
+              .unlockedBy("has_alloy", has(MekanismTags.Items.ALLOYS_INFUSED))
               .save(output);
         //Electrolytic separator
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ELECTROLYTIC_SEPARATOR)
@@ -431,6 +503,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CONSTANT, MekanismItems.ELECTROLYTIC_CORE)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy(hasCriterion(MekanismItems.ELECTROLYTIC_CORE))
+              .unlockedBy("in_water", insideOf(Blocks.WATER))
               .save(output);
         //Energized smelter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ENERGIZED_SMELTER)
@@ -442,6 +517,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .group(Mekanism.rl(FactoryType.SMELTING.getSerializedName()))
+              .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
               .save(output);
         //Energy tablet
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.ENERGY_TABLET)
@@ -452,6 +530,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
               .key(Pattern.INGOT, this.items, Tags.Items.INGOTS_GOLD)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
+              .unlockedBy("has_alloy", has(MekanismTags.Items.ALLOYS_INFUSED))
               .save(output);
         //Enrichment chamber
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ENRICHMENT_CHAMBER)
@@ -463,6 +542,11 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .group(Mekanism.rl(FactoryType.ENRICHING.getSerializedName()))
+              .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
+              .unlockedBy("has_any_raw_ore", has(Tags.Items.RAW_MATERIALS))
+              .unlockedBy("has_any_ore", has(Tags.Items.ORES))
               .save(output);
         //Flamethrower
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.FLAMETHROWER)
@@ -475,7 +559,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, MekanismTags.Items.INGOTS_BRONZE)
               .key(Pattern.INGOT, tinIngot(this.items))
               .key(Pattern.STEEL, this.items, Tags.Items.TOOLS_IGNITER)
-              .category(RecipeCategory.TOOLS)
+              .category(RecipeCategory.COMBAT)
+              .unlockedBy("has_tank", has(MekanismBlocks.BASIC_CHEMICAL_TANK))
               .save(output);
         //Fluidic plenisher
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.FLUIDIC_PLENISHER)
@@ -486,6 +571,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.PREVIOUS, MekanismBlocks.ELECTRIC_PUMP)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.INGOT, tinIngot(this.items))
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              //Unlock at the same time as the electric puump without requiring crafting one
+              .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
               .save(output);
         //Formulaic assemblicator
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.FORMULAIC_ASSEMBLICATOR)
@@ -498,6 +586,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.REDSTONE)//Mirror vanilla crafter
+              .unlockedBy(hasCriterion(BlockItemIds.CRAFTER))
               .save(output);
         //Free runners
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.FREE_RUNNERS)
@@ -509,6 +599,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(MekanismItems.ENERGY_TABLET))
               .save(output);
         //Armored Free Runners
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ARMORED_FREE_RUNNERS)
@@ -521,6 +612,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, MekanismTags.Items.DUSTS_DIAMOND)
               .key(Pattern.STEEL, this.items, MekanismTags.BlockItems.STORAGE_BLOCKS_STEEL)
               .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy("has_free_runners", has(MekanismItems.FREE_RUNNERS))
               .save(output);
         //Fuelwood heater
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.FUELWOOD_HEATER)
@@ -532,6 +624,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.CONSTANT, this.items, Tags.Items.PLAYER_WORKSTATIONS_FURNACES)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
               .save(output);
         //Scuba mask
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.SCUBA_MASK)
@@ -543,6 +637,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
               .save(output);
         //Gauge dropper
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.GAUGE_DROPPER)
@@ -553,6 +648,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(GLASS_CHAR, this.items, Tags.Items.GLASS_PANES)
               .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_osmium_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM)))
               .save(output);
         //Geiger Counter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.GEIGER_COUNTER)
@@ -563,6 +659,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, leadIngot(this.items))
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_lead_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD)))
               .save(output);
         //Hazmat Mask
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_MASK)
@@ -571,7 +668,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT))
               ).key(Pattern.INGOT, leadIngot(this.items))
               .key(Pattern.DYE, this.items, Tags.Items.DYES_ORANGE)
-              .category(RecipeCategory.TOOLS)
+              .category(RecipeCategory.COMBAT)
+              .unlockedBy("has_lead_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD)))
               .save(output);
         //Hazmat Gown
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_GOWN)
@@ -581,7 +679,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
               ).key(Pattern.INGOT, leadIngot(this.items))
               .key(Pattern.DYE, this.items, Tags.Items.DYES_ORANGE)
-              .category(RecipeCategory.TOOLS)
+              .category(RecipeCategory.COMBAT)
+              .unlockedBy("has_lead_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD)))
               .save(output);
         //Hazmat Pants
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_PANTS)
@@ -591,7 +690,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT))
               ).key(Pattern.INGOT, leadIngot(this.items))
               .key(Pattern.DYE, this.items, Tags.Items.DYES_ORANGE)
-              .category(RecipeCategory.TOOLS)
+              .category(RecipeCategory.COMBAT)
+              .unlockedBy("has_lead_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD)))
               .save(output);
         //Hazmat Boots
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_BOOTS)
@@ -600,7 +700,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT))
               ).key(Pattern.INGOT, leadIngot(this.items))
               .key(Pattern.DYE, this.items, Tags.Items.DYES_BLACK)
-              .category(RecipeCategory.TOOLS)
+              .category(RecipeCategory.COMBAT)
+              .unlockedBy("has_lead_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD)))
               .save(output);
         //HDPE rod
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_ROD)
@@ -608,6 +709,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT),
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT))
               ).key(Pattern.CONSTANT, MekanismItems.HDPE_PELLET)
+              .unlockedBy("has_plastic", has(MekanismItems.HDPE_PELLET))
               .save(output);
         //HDPE stick
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_STICK)
@@ -615,6 +717,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     Pattern.CONSTANT,
                     Pattern.CONSTANT)
               ).key(Pattern.CONSTANT, MekanismItems.HDPE_ROD)
+              .unlockedBy("has_plastic", has(MekanismItems.HDPE_PELLET))
               .save(output);
         //Industrial Alarm
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.INDUSTRIAL_ALARM)
@@ -626,6 +729,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.CONSTANT, this.items, BlockItemIds.REDSTONE_LAMP)
               .category(RecipeCategory.REDSTONE)
+              .unlockedBy("has_lead_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD)))
+              .unlockedBy("has_redstone", has(Tags.Items.DUSTS_REDSTONE))
               .save(output);
         //Isotopic Centrifuge
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ISOTOPIC_CENTRIFUGE)
@@ -636,6 +741,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, leadIngot(this.items))
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy("has_lead_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD)))
               .save(output);
         //Jetpack
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.JETPACK)
@@ -648,6 +755,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.INGOT, tinIngot(this.items))
               .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy("has_tank", has(MekanismBlocks.BASIC_CHEMICAL_TANK))
               .save(output);
         //Jetpack armored
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ARMORED_JETPACK)
@@ -660,6 +768,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.STEEL, this.items, MekanismTags.BlockItems.STORAGE_BLOCKS_STEEL)
               .key(Pattern.CONSTANT, this.items, MekanismTags.Items.DUSTS_DIAMOND)
               .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy("has_jetpack", has(MekanismItems.JETPACK))
               .save(output);
         //HDPE Elytra
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_REINFORCED_ELYTRA)
@@ -670,6 +779,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ATOMIC)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
               .key(Pattern.PREVIOUS, this.items, ItemIds.ELYTRA)
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(ItemIds.ELYTRA))
               .save(output);
         //Laser
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER)
@@ -681,6 +792,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_REINFORCED)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy("has_alloy", has(MekanismTags.Items.ALLOYS_REINFORCED))
               .save(output);
         //Laser amplifier
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER_AMPLIFIER)
@@ -691,6 +804,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.CONSTANT, this.items, Tags.Items.GEMS_DIAMOND)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_ENERGY_CUBE)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy(hasCriterion(MekanismBlocks.LASER))
               .save(output);
         //Laser tractor beam
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER_TRACTOR_BEAM)
@@ -699,6 +815,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     Pattern.CONSTANT)
               ).key(PERSONAL_STORAGE_CHAR, this.items, MekanismTags.BlockItems.PERSONAL_STORAGE)
               .key(Pattern.CONSTANT, MekanismBlocks.LASER_AMPLIFIER)
+              .category(RecipeCategory.REDSTONE)
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy(hasCriterion(MekanismBlocks.LASER))
               .save(output);
         //Logistical sorter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LOGISTICAL_SORTER)
@@ -709,6 +828,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.CONSTANT, this.items, BlockItemIds.PISTON)
+              .category(RecipeCategory.REDSTONE)//Make it be in the same general area as hoppers
+              .unlockedBy("has_any_transporter", has(MekanismTags.BlockItems.ITEM_TRANSMITTERS.item()))
               .save(output);
         //Metallurgic infuser
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.METALLURGIC_INFUSER)
@@ -720,6 +841,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .key(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
               .key(Pattern.CONSTANT, this.items, Tags.Items.PLAYER_WORKSTATIONS_FURNACES)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .group(Mekanism.rl(FactoryType.INFUSING.getSerializedName()))
+              .unlockedBy("has_osmium_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM)))
               .save(output);
         //Network reader
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.NETWORK_READER)
@@ -731,6 +855,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.ENERGY_TABLET))
+              .unlockedBy("has_any_transmitter", has(MekanismTags.BlockItems.TRANSMITTERS.item()))
               .save(output);
         //Oredictionificator
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.OREDICTIONIFICATOR)
@@ -743,6 +870,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.PREVIOUS, MekanismItems.DICTIONARY)
               .key(Pattern.CONSTANT, this.items, Tags.Items.CHESTS_WOODEN)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy(hasCriterion(MekanismItems.DICTIONARY))
+              .unlockedBy("has_any_raw_ore", has(Tags.Items.RAW_MATERIALS))
+              .unlockedBy("has_any_ore", has(Tags.Items.ORES))
               .save(output);
         //Osmium compressor
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.OSMIUM_COMPRESSOR)
@@ -750,17 +881,24 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
                     TripleLine.of(Pattern.BUCKET, Pattern.STEEL_CASING, Pattern.BUCKET),
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
-              ).key(Pattern.BUCKET, this.items, ItemIds.BUCKET)
+              ).key(Pattern.BUCKET, this.items, Tags.Items.BUCKETS_EMPTY)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ADVANCED)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .group(Mekanism.rl(FactoryType.COMPRESSING.getSerializedName()))
+              .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
               .save(output);
         //Paper
         ExtendedShapedRecipeBuilder.shapedRecipe(this.items, ItemIds.PAPER, 6)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT))
               ).key(Pattern.CONSTANT, this.items, MekanismTags.Items.DUSTS_WOOD)
+              .unlockedBy("has_sawdust", has(MekanismTags.Items.DUSTS_WOOD))
               .save(output, Mekanism.rl("paper"));
+
+        //Twice the number of slots need items in them than for vanilla chests as that means the backpack style feature is more useful then
+        RecipeCriterion personalStorageLotsOfItems = RecipeProviderUtil.lotsOfItems(20);
         //Personal barrel
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PERSONAL_BARREL)
               .pattern(RecipePattern.createPattern(
@@ -772,6 +910,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
               .category(RecipeCategory.DECORATIONS)
+              .unlockedBy(personalStorageLotsOfItems)
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
               .save(output);
         //Personal chest
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PERSONAL_CHEST)
@@ -784,6 +924,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
               .category(RecipeCategory.DECORATIONS)
+              .unlockedBy(personalStorageLotsOfItems)
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
               .save(output);
         //Portable teleporter
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.PORTABLE_TELEPORTER)
@@ -794,6 +936,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(MekanismItems.TELEPORTATION_CORE))
               .save(output);
         //Precision sawmill
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PRECISION_SAWMILL)
@@ -805,6 +949,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .group(Mekanism.rl(FactoryType.SAWING.getSerializedName()))
+              .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
               .save(output);
         //Pressure disperser
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PRESSURE_DISPERSER)
@@ -815,6 +962,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.CONSTANT, this.items, Tags.Items.BARS)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy("has_casing", has(MekanismBlocks.BOILER_CASING))
               .save(output);
         //Pressurized reaction chamber
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER)
@@ -828,6 +978,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CONSTANT, MekanismBlocks.DYNAMIC_TANK)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy(hasCriterion(MekanismBlocks.ENRICHMENT_CHAMBER))
               .save(output);
         //Purification chamber
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PURIFICATION_CHAMBER)
@@ -839,6 +991,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ADVANCED)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .group(Mekanism.rl(FactoryType.PURIFYING.getSerializedName()))
+              .unlockedBy(hasCriterion(MekanismBlocks.ENRICHMENT_CHAMBER))
               .save(output);
         //Quantum entangloporter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QUANTUM_ENTANGLOPORTER)
@@ -850,6 +1005,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ATOMIC)
               .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ULTIMATE))
+              .unlockedBy(hasCriterion(MekanismItems.TELEPORTATION_CORE))
               .save(output);
         //Rail
         ExtendedShapedRecipeBuilder.shapedRecipe(this.items, BlockItemIds.RAIL.item(), 24)
@@ -859,6 +1017,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.OSMIUM, Pattern.EMPTY, Pattern.OSMIUM))
               ).key(Pattern.CONSTANT, this.items, Tags.Items.RODS_WOODEN)
               .key(Pattern.OSMIUM, osmiumIngot(this.items))
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy("has_minecart", has(ItemIds.MINECART))//Same unlock condition as vanilla rails
               .save(output, Mekanism.rl("rails"));
         //Resistive heater
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RESISTIVE_HEATER)
@@ -870,6 +1030,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.INGOT, tinIngot(this.items))
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy(hasCriterion(MekanismItems.ENERGY_TABLET))
               .save(output);
         //Robit
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ROBIT)
@@ -882,6 +1044,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.INGOT, this.items, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ATOMIC)
               .key(PERSONAL_STORAGE_CHAR, this.items, MekanismTags.BlockItems.PERSONAL_STORAGE)
+              .unlockedBy("has_alloy", has(MekanismTags.Items.ALLOYS_ATOMIC))
+              //Also teach the player about robits if they tame a pet
+              .unlockedBy("tamed_animal", TameAnimalTrigger.TriggerInstance.tamedAnimal())
               .save(output);
         //Rotary condensentrator
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ROTARY_CONDENSENTRATOR)
@@ -894,6 +1059,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.CONSTANT, MekanismBlocks.BASIC_FLUID_TANK)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy("has_chemical_tank", has(MekanismBlocks.BASIC_CHEMICAL_TANK))
+              .unlockedBy("has_fluid_tank", has(MekanismBlocks.BASIC_FLUID_TANK))
               .save(output);
         //Scuba tank
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.SCUBA_TANK)
@@ -906,6 +1074,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
               .save(output);
         //Security desk
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SECURITY_DESK)
@@ -918,6 +1087,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.CONSTANT, MekanismItems.NETWORK_READER)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              //Note: We just require a steel casing instead of any higher tier circuits as we want to let people know about it once they might have any machines
+              .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
               .save(output);
         //Seismic reader
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.SEISMIC_READER)
@@ -928,6 +1100,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.CONSTANT, this.items, Tags.Items.GEMS_LAPIS)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .category(RecipeCategory.TOOLS)
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy(hasCriterion(MekanismBlocks.SEISMIC_VIBRATOR))
               .save(output);
         //Seismic vibrator
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SEISMIC_VIBRATOR)
@@ -939,6 +1114,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.INGOT, tinIngot(this.items))
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
               .save(output);
         //Solar neutron activator
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR)
@@ -951,6 +1128,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_REINFORCED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ELITE))
               .save(output);
         //Steel casing
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.STEEL_CASING)
@@ -961,6 +1140,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
               .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .unlockedBy("has_steel_ingot", has(MekanismTags.Items.INGOTS_STEEL))
               .save(output);
         //Structural glass
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.STRUCTURAL_GLASS, 4)
@@ -970,6 +1151,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
               ).key(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
+              .category(RecipeCategory.DECORATIONS)
+              .unlockedBy("has_glass", has(Tags.Items.GLASS_BLOCKS_CHEAP))
               .save(output);
         //Superheating element
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SUPERHEATING_ELEMENT)
@@ -980,17 +1163,22 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, this.items, BlockItemIds.COPPER_CHAIN.weathering().unaffected())
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy("has_casing", has(MekanismBlocks.BOILER_CASING))
               .save(output);
         //Teleportation core
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.TELEPORTATION_CORE)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.CONSTANT),
-                    TripleLine.of(Pattern.INGOT, DIAMOND_CHAR, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.DIAMOND, Pattern.INGOT),
                     TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.CONSTANT))
               ).key(Pattern.CONSTANT, this.items, Tags.Items.ENDER_PEARLS)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ATOMIC)
               .key(Pattern.INGOT, this.items, Tags.Items.INGOTS_GOLD)
-              .key(DIAMOND_CHAR, this.items, Tags.Items.GEMS_DIAMOND)
+              .key(Pattern.DIAMOND, this.items, Tags.Items.GEMS_DIAMOND)
+              .unlockedBy("has_ender_pearls", has(Tags.Items.ENDER_PEARLS))
+              .unlockedBy("has_alloy", has(MekanismTags.Items.ALLOYS_ATOMIC))
               .save(output);
         //Teleporter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.TELEPORTER)
@@ -1001,6 +1189,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(MekanismItems.TELEPORTATION_CORE))
               .save(output);
         //Teleporter frame
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.TELEPORTER_FRAME, 9)
@@ -1010,6 +1200,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
               ).key(Pattern.GLOWSTONE, this.items, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE)
               .key(Pattern.INGOT, this.items, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
+              .category(RecipeCategory.TRANSPORTATION)
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy(hasCriterion(MekanismItems.TELEPORTATION_CORE))
               .save(output);
         //Base QIO Drive
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.BASE_QIO_DRIVE)
@@ -1020,6 +1213,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, leadIngot(this.items))
               .key(Pattern.CIRCUIT, MekanismItems.ULTIMATE_CONTROL_CIRCUIT)
               .key(Pattern.CONSTANT, this.items, Tags.Items.ENDER_PEARLS)
+              .group(Mekanism.rl("qio_drive"))
+              //Lots of slots occupied and at least ten are full
+              .unlockedBy(RecipeProviderUtil.lotsOfItems(20, 10))
+              .unlockedBy("has_circuit", has(MekanismItems.ULTIMATE_CONTROL_CIRCUIT))
               .save(output);
         //Hyper-Dense QIO Drive
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.HYPER_DENSE_QIO_DRIVE)
@@ -1030,6 +1227,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, this.items, MekanismTags.Items.PELLETS_PLUTONIUM)
               .key(Pattern.CONSTANT, MekanismItems.TELEPORTATION_CORE)
               .key(Pattern.PREVIOUS, MekanismItems.BASE_QIO_DRIVE)
+              .group(Mekanism.rl("qio_drive"))
+              .unlockedBy("has_plutonium", has(MekanismTags.Items.PELLETS_PLUTONIUM))
               .save(output);
         //Time-Dilating QIO Drive
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.TIME_DILATING_QIO_DRIVE)
@@ -1040,6 +1239,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, this.items, MekanismTags.Items.PELLETS_PLUTONIUM)
               .key(Pattern.CONSTANT, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.PREVIOUS, MekanismItems.HYPER_DENSE_QIO_DRIVE)
+              .group(Mekanism.rl("qio_drive"))
+              .unlockedBy("has_polonium", has(MekanismTags.Items.PELLETS_POLONIUM))
               .save(output);
         //Supermassive QIO Drive
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.SUPERMASSIVE_QIO_DRIVE)
@@ -1050,6 +1251,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.CONSTANT, this.items, MekanismTags.Items.PELLETS_ANTIMATTER)
               .key(Pattern.PREVIOUS, MekanismItems.TIME_DILATING_QIO_DRIVE)
+              .group(Mekanism.rl("qio_drive"))
+              .unlockedBy("has_antimatter", has(MekanismTags.Items.PELLETS_ANTIMATTER))
               .save(output);
         //QIO Drive Array
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_DRIVE_ARRAY)
@@ -1062,6 +1265,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.GLASS, this.items, Tags.Items.GLASS_PANES)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .category(RecipeCategory.DECORATIONS)
+              .unlockedBy(hasCriterion(MekanismItems.TELEPORTATION_CORE))
               .save(output);
         //QIO Redstone Adapter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_REDSTONE_ADAPTER)
@@ -1074,6 +1279,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.WOOD, this.items, BlockItemIds.REDSTONE_TORCH)
               .key(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
               .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .category(RecipeCategory.REDSTONE)
+              .unlockedBy(hasCriterion(MekanismItems.TELEPORTATION_CORE))
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ULTIMATE))
+              .unlockedBy("has_redstone_torch", has(BlockItemIds.REDSTONE_TORCH))
               .save(output);
         //QIO Exporter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_EXPORTER)
@@ -1086,6 +1295,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, BlockItemIds.PISTON)
               .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
               .key(Pattern.INGOT, leadIngot(this.items))
+              .category(RecipeCategory.REDSTONE)
+              .unlockedBy(hasCriterion(MekanismItems.TELEPORTATION_CORE))
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ULTIMATE))
               .save(output);
         //QIO Importer
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_IMPORTER)
@@ -1098,6 +1310,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, BlockItemIds.STICKY_PISTON)
               .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
               .key(Pattern.INGOT, leadIngot(this.items))
+              .category(RecipeCategory.REDSTONE)
+              .unlockedBy(hasCriterion(MekanismItems.TELEPORTATION_CORE))
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ULTIMATE))
               .save(output);
         //QIO Dashboard
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_DASHBOARD)
@@ -1109,6 +1324,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, this.items, Tags.Items.ENDER_PEARLS)
               .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
               .key(Pattern.INGOT, leadIngot(this.items))
+              .category(RecipeCategory.DECORATIONS)
+              .unlockedBy(hasCriterion(MekanismItems.TELEPORTATION_CORE))
+              .unlockedBy("has_lead_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD)))
               .save(output);
         //Portable QIO Dashboard
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.PORTABLE_QIO_DASHBOARD)
@@ -1119,6 +1337,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.ALLOY, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.CONSTANT, MekanismBlocks.QIO_DASHBOARD)
               .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_dashboard", has(MekanismBlocks.QIO_DASHBOARD))
               .save(output);
         //Meka-Tool
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKA_TOOL)
@@ -1133,6 +1353,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .category(RecipeCategory.COMBAT)
+              .unlockedBy(hasCriterion(MekanismItems.ATOMIC_DISASSEMBLER))
               .save(output);
         //MekaSuit Helmet
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_HELMET)
@@ -1146,6 +1367,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .category(RecipeCategory.COMBAT)
+              .unlockedBy("has_polonium", has(MekanismTags.Items.PELLETS_POLONIUM))
               .save(output);
         //MekaSuit Bodyarmor
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_BODYARMOR)
@@ -1159,6 +1381,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .category(RecipeCategory.COMBAT)
+              .unlockedBy("has_polonium", has(MekanismTags.Items.PELLETS_POLONIUM))
               .save(output);
         //MekaSuit Pants
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_PANTS)
@@ -1172,6 +1395,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .category(RecipeCategory.COMBAT)
+              .unlockedBy("has_polonium", has(MekanismTags.Items.PELLETS_POLONIUM))
               .save(output);
         //MekaSuit Boots
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_BOOTS)
@@ -1185,6 +1409,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .category(RecipeCategory.COMBAT)
+              .unlockedBy("has_polonium", has(MekanismTags.Items.PELLETS_POLONIUM))
               .save(output);
         //SPS Casing
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SPS_CASING)
@@ -1195,6 +1420,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.CONSTANT, this.items, MekanismTags.Items.PELLETS_PLUTONIUM)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .unlockedBy("has_plutonium", has(MekanismTags.Items.PELLETS_PLUTONIUM))
+              .unlockedBy("has_polonium", has(MekanismTags.Items.PELLETS_POLONIUM))
               .save(output);
         //SPS Port
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SPS_PORT)
@@ -1204,6 +1432,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.CONSTANT, MekanismBlocks.SPS_CASING)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .unlockedBy("has_casing", has(MekanismBlocks.SPS_CASING))
               .save(output);
         //Supercharged Coil
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SUPERCHARGED_COIL)
@@ -1215,6 +1445,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, MekanismBlocks.LASER)
               .key(Pattern.INGOT, this.items, Tags.Items.INGOTS_COPPER)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy("has_casing", has(MekanismBlocks.SPS_CASING))
               .save(output);
         //Nutritional Liquifier
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.NUTRITIONAL_LIQUIFIER)
@@ -1226,6 +1459,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
               .key(Pattern.CONSTANT, this.items, ItemIds.BOWL)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
+              .unlockedBy(hasCriterion(ItemIds.BOWL))
               .save(output);
         //Pigment Extractor
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PIGMENT_EXTRACTOR)
@@ -1237,6 +1473,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
               .key(Pattern.CONSTANT, this.items, ItemIds.FLINT)
+              .category(RecipeCategory.DECORATIONS)
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy("has_any_dye", has(Tags.Items.DYES))
               .save(output);
         //Pigment Mixer
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PIGMENT_MIXER)
@@ -1248,6 +1487,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_REINFORCED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.CONSTANT, MekanismItems.HDPE_ROD)
+              .category(RecipeCategory.DECORATIONS)
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy("has_any_dye", has(Tags.Items.DYES))
               .save(output);
         //Painting Machine
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PAINTING_MACHINE)
@@ -1259,6 +1501,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.CONSTANT, MekanismItems.DYE_BASE)
+              .category(RecipeCategory.DECORATIONS)
+              //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
+              .unlockedBy("has_any_dye", has(Tags.Items.DYES))
               .save(output);
         //Modification Station
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.MODIFICATION_STATION)
@@ -1271,6 +1516,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy("has_polonium", has(MekanismTags.Items.PELLETS_POLONIUM))
               .save(output);
         //Antiprotonic Nucleosynthesizer
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER)
@@ -1282,6 +1529,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.PELLETS_ANTIMATTER)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.CONSTANT, MekanismItems.ATOMIC_ALLOY)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy("has_antimatter", has(MekanismTags.Items.PELLETS_ANTIMATTER))
               .save(output);
         //Radioactive Waste Barrel
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RADIOACTIVE_WASTE_BARREL)
@@ -1291,17 +1540,22 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
               ).key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.INGOT, leadIngot(this.items))
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy("has_lead_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD)))
               .save(output);
         //Dimensional Stabilizer
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.DIMENSIONAL_STABILIZER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT),
-                    TripleLine.of(Pattern.ALLOY, DIAMOND_CHAR, Pattern.ALLOY),
+                    TripleLine.of(Pattern.ALLOY, Pattern.DIAMOND, Pattern.ALLOY),
                     TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT))
               ).key(Pattern.INGOT, this.items, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ATOMIC)
-              .key(DIAMOND_CHAR, this.items, Tags.Items.STORAGE_BLOCKS_DIAMOND)
+              .key(Pattern.DIAMOND, this.items, Tags.Items.STORAGE_BLOCKS_DIAMOND)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .unlockedBy("has_alloy", has(MekanismTags.Items.ALLOYS_ATOMIC))
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ULTIMATE))
               .save(output);
     }
 
@@ -1315,6 +1569,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, tinIngot(this.items))
               .key(Pattern.NUGGET, this.items, MekanismTags.Items.NUGGETS_BRONZE)
               .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
+              .unlockedBy("has_plastic", has(MekanismItems.HDPE_PELLET))
+              .unlockedBy("has_plastic_sheet", has(MekanismItems.HDPE_SHEET))
               .save(output);
         //Jetpack Module
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.JETPACK_UNIT))
@@ -1323,6 +1579,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Ingredient.of(MekanismItems.JETPACK, MekanismItems.ARMORED_JETPACK))
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.JETPACK_UNIT.getId());
         //Electrolytic Breathing Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.ELECTROLYTIC_BREATHING_UNIT))
@@ -1331,6 +1589,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.ELECTROLYTIC_CORE)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.ELECTROLYTIC_BREATHING_UNIT.getId());
         //Dosimeter Module
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.DOSIMETER_UNIT))
@@ -1339,6 +1599,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.DOSIMETER)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.DOSIMETER_UNIT.getId());
         //Geiger Module
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.GEIGER_UNIT))
@@ -1347,6 +1609,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.GEIGER_COUNTER)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.GEIGER_UNIT.getId());
         //Energy Module
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.ENERGY_UNIT))
@@ -1355,6 +1619,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.ENERGY_UNIT.getId());
         //Laser Dissipation Module
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.LASER_DISSIPATION_UNIT))
@@ -1363,6 +1628,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismBlocks.LASER_AMPLIFIER)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .category(RecipeCategory.COMBAT)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.LASER_DISSIPATION_UNIT.getId());
         //Radiation Shielding Module
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.RADIATION_SHIELDING_UNIT))
@@ -1371,6 +1638,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.LEAD))
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.RADIATION_SHIELDING_UNIT.getId());
         //Color Modulation Module
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.COLOR_MODULATION_UNIT))
@@ -1383,6 +1652,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismBlocks.LASER)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .category(RecipeCategory.DECORATIONS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.COLOR_MODULATION_UNIT.getId());
         //Charge Distribution Module
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.CHARGE_DISTRIBUTION_UNIT))
@@ -1391,6 +1662,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismBlocks.BASIC_INDUCTION_PROVIDER)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.CHARGE_DISTRIBUTION_UNIT.getId());
         //Teleportation Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.TELEPORTATION_UNIT))
@@ -1399,6 +1672,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.TELEPORTATION_CORE)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_ANTIMATTER)
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.TELEPORTATION_UNIT.getId());
         //Nutritional Injection Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.NUTRITIONAL_INJECTION_UNIT))
@@ -1407,6 +1682,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.CANTEEN)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.FOOD)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.NUTRITIONAL_INJECTION_UNIT.getId());
         //Silk Touch Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.SILK_TOUCH_UNIT))
@@ -1419,6 +1696,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_GLOWSTONE)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.DIAMOND, this.items, ItemIds.DIAMOND_PICKAXE)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.SILK_TOUCH_UNIT.getId());
         //Fortune Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.FORTUNE_UNIT))
@@ -1431,6 +1710,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_GLOWSTONE)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.DIAMOND, this.items, Tags.Items.STORAGE_BLOCKS_DIAMOND)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.FORTUNE_UNIT.getId());
         //Blasting Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.BLASTING_UNIT))
@@ -1443,6 +1724,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, BlockItemIds.TNT)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.BLASTING_UNIT.getId());
         //Excavation Escalation Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.EXCAVATION_ESCALATION_UNIT))
@@ -1451,6 +1734,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, ItemIds.IRON_PICKAXE)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.EXCAVATION_ESCALATION_UNIT.getId());
         //Attack Amplification Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.ATTACK_AMPLIFICATION_UNIT))
@@ -1459,6 +1744,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, ItemIds.IRON_SWORD)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .category(RecipeCategory.COMBAT)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.ATTACK_AMPLIFICATION_UNIT.getId());
         //Farming Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.FARMING_UNIT))
@@ -1467,6 +1754,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, ItemIds.IRON_HOE)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.FARMING_UNIT.getId());
         //Shearing Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.SHEARING_UNIT))
@@ -1475,6 +1764,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, Tags.Items.TOOLS_SHEAR)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.SHEARING_UNIT.getId());
         //Vein Mining Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.VEIN_MINING_UNIT))
@@ -1488,6 +1779,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key('x', this.items, ItemIds.DIAMOND_AXE)
               .key('s', this.items, ItemIds.DIAMOND_SHOVEL)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.VEIN_MINING_UNIT.getId());
         //Vision Enhancement Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.VISION_ENHANCEMENT_UNIT))
@@ -1496,6 +1789,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, Tags.Items.GEMS_EMERALD)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.VISION_ENHANCEMENT_UNIT.getId());
         //Inhalation Purification Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.INHALATION_PURIFICATION_UNIT))
@@ -1508,6 +1803,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, MekanismItems.HAZMAT_MASK)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .key('o', MekanismItems.SCUBA_MASK)
+              .category(RecipeCategory.COMBAT)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.INHALATION_PURIFICATION_UNIT.getId());
         //Magnetic Attraction Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.MAGNETIC_ATTRACTION_UNIT))
@@ -1520,6 +1817,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, Tags.Items.BARS_IRON)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ELITE)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.MAGNETIC_ATTRACTION_UNIT.getId());
         //Frost Walker Module
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.FROST_WALKER_UNIT))
@@ -1531,6 +1830,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismFluids.HYDROGEN.getBucket())
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.FROST_WALKER_UNIT.getId());
         //Soul Speed Module
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.SOUL_SURFER_UNIT))
@@ -1543,6 +1844,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.BLOCK, this.items, ItemTags.SOUL_FIRE_BASE_BLOCKS)
               .key(Pattern.CONSTANT, Ingredient.of(MekanismItems.FREE_RUNNERS, MekanismItems.ARMORED_FREE_RUNNERS))
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.SOUL_SURFER_UNIT.getId());
         //Locomotive Boosting Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT))
@@ -1555,6 +1858,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, ItemIds.DIAMOND_LEGGINGS)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.LOCOMOTIVE_BOOSTING_UNIT.getId());
         //Hydraulic Propulsion Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.HYDRAULIC_PROPULSION_UNIT))
@@ -1567,6 +1872,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, Ingredient.of(MekanismItems.FREE_RUNNERS, MekanismItems.ARMORED_FREE_RUNNERS))
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.HYDRAULIC_PROPULSION_UNIT.getId());
         //Gyroscopic Stabilization Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.GYROSCOPIC_STABILIZATION_UNIT))
@@ -1578,6 +1885,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, Tags.Items.OBSIDIANS_NORMAL)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.GYROSCOPIC_STABILIZATION_UNIT.getId());
         //Hydrostatic Repulsion Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.HYDROSTATIC_REPULSOR_UNIT))
@@ -1586,6 +1895,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, this.items, BlockItemIds.LIGHTNING_ROD.weathering().unaffected())
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.HYDROSTATIC_REPULSOR_UNIT.getId());
         //Motorized Servo Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.MOTORIZED_SERVO_UNIT))
@@ -1598,6 +1909,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ELITE)
               .key(Pattern.CONSTANT, this.items, BlockItemIds.BLUE_ICE)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.MOTORIZED_SERVO_UNIT.getId());
         //Gravitational Modulating Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.GRAVITATIONAL_MODULATING_UNIT))
@@ -1610,6 +1923,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, this.items, Tags.Items.NETHER_STARS)
               .key(Pattern.ENERGY, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_ANTIMATTER)
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.GRAVITATIONAL_MODULATING_UNIT.getId());
         //Elytra Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(IModuleHelper.INSTANCE.asTemplate(MekanismModules.ELYTRA_UNIT))
@@ -1622,6 +1937,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, MekanismItems.HDPE_REINFORCED_ELYTRA)
               .key(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.NUGGET, this.items, MekanismTags.Items.PELLETS_ANTIMATTER)
+              .category(RecipeCategory.TRANSPORTATION)
+              .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.ELYTRA_UNIT.getId());
     }
 

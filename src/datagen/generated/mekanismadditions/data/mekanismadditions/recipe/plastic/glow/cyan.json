@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "category": "building",
+  "group": "mekanismadditions:glow_plastic",
   "ingredients": [
     "mekanismadditions:cyan_plastic",
     "mekanismadditions:cyan_plastic",

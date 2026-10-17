@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "group": "yellow_dye",
   "ingredients": [
     "mekanism:dust_sulfur"
   ],

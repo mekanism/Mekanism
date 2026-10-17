@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "redstone",
   "key": {
     "#": "minecraft:piston",
     "C": "#c:circuits/basic",

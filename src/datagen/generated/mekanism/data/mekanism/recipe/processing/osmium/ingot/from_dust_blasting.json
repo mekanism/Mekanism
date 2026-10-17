@@ -2,6 +2,7 @@
   "type": "minecraft:blasting",
   "cookingtime": 100,
   "experience": 0.3,
+  "group": "mekanism:ingot_osmium",
   "ingredient": "mekanism:dust_osmium",
   "result": {
     "id": "mekanism:ingot_osmium"

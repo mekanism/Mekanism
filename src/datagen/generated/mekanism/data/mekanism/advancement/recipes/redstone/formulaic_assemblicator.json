@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_crafter": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:crafter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:formulaic_assemblicator"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_crafter"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:formulaic_assemblicator"
+    ]
+  }
+}

@@ -45,20 +45,20 @@ public enum FactoryType implements IHasEnumNameTranslationKey, StringRepresentab
     public static final IntFunction<FactoryType> BY_ID = ByIdMap.continuous(FactoryType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
     public static final StreamCodec<ByteBuf, FactoryType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FactoryType::ordinal);
 
-    private final String registryNameComponent;
+    private final String name;
     private final ILangEntry langEntry;
     private final Supplier<FactoryMachine<?>> baseMachine;
     private final Supplier<BlockRegistryObject<?, ?>> baseBlock;
 
-    FactoryType(String registryNameComponent, ILangEntry langEntry, Supplier<FactoryMachine<?>> baseMachine, Supplier<BlockRegistryObject<?, ?>> baseBlock) {
-        this.registryNameComponent = registryNameComponent;
+    FactoryType(String name, ILangEntry langEntry, Supplier<FactoryMachine<?>> baseMachine, Supplier<BlockRegistryObject<?, ?>> baseBlock) {
+        this.name = name;
         this.langEntry = langEntry;
         this.baseMachine = baseMachine;
         this.baseBlock = baseBlock;
     }
 
     public String getRegistryNameComponentCapitalized() {
-        return registryNameComponent.substring(0, 1).toUpperCase(Locale.ROOT) + registryNameComponent.substring(1);
+        return name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1);
     }
 
     public FactoryMachine<?> getBaseMachine() {
@@ -76,7 +76,7 @@ public enum FactoryType implements IHasEnumNameTranslationKey, StringRepresentab
 
     @Override
     public String getSerializedName() {
-        return registryNameComponent;
+        return name;
     }
 
     @Override

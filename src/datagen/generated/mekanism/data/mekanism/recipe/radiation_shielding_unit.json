@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "#": "#c:storage_blocks/lead",
     "A": "#c:alloys/advanced",

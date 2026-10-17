@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "mekanism:qio_drive",
   "key": {
     "#": "#c:ender_pearls",
     "C": "mekanism:ultimate_control_circuit",

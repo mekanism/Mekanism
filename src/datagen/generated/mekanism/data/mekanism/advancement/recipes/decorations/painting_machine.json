@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_any_dye": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:dyes"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:painting_machine"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_any_dye"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:painting_machine"
+    ]
+  }
+}

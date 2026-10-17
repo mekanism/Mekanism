@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:blasting",
+  "cookingtime": 100,
+  "experience": 0.6,
+  "group": "mekanism:ingot_uranium",
+  "ingredient": "mekanism:deepslate_uranium_ore",
+  "result": {
+    "id": "mekanism:ingot_uranium"
+  }
+}

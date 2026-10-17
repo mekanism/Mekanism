@@ -1,5 +1,6 @@
 {
   "type": "mekanism:mek_data",
+  "group": "mekanism:compressing",
   "key": {
     "A": "#mekanism:alloys/basic",
     "C": "#c:circuits/basic",

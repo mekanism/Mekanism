@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_circuit": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:circuits/ultimate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_teleportation_core": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:teleportation_core"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:qio_exporter"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_teleportation_core",
+      "has_circuit"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:qio_exporter"
+    ]
+  }
+}

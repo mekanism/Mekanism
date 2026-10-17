@@ -313,7 +313,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY
                 if (smeltingRecipe.input().isEmpty()) {
                     continue;
                 }
-                ItemStackToItemStackRecipe<?, ?> possiblyUnwrapped = WrappedSmelterRecipe.tryUnwrap(smeltingRecipe);
+                ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo> possiblyUnwrapped = WrappedSmelterRecipe.tryUnwrap(smeltingRecipe);
                 ResourceKey<Recipe<?>> generateId = RegistryUtils.syntheticKey(recipeHolder.id(), "mekanism_generated");
                 recipes.add(new RecipeHolder<>(generateId, castRecipe(possiblyUnwrapped)));
 

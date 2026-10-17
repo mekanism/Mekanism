@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_plutonium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:pellets/plutonium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:qio_drive_hyper_dense"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_plutonium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:qio_drive_hyper_dense"
+    ]
+  }
+}

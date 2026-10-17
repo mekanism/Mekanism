@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
   "key": {
     "G": "#c:glass_blocks/cheap",
     "O": "#c:ingots/osmium",

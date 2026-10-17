@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
+  "group": "mekanismadditions:glow_plastic_slabs",
   "key": {
     "#": "mekanismadditions:white_plastic_glow"
   },

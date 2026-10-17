@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
+  "group": "mekanismadditions:glow_panels",
   "key": {
     "D": "#c:dyes/red",
     "G": "#c:dusts/glowstone",

@@ -2,6 +2,7 @@
   "type": "minecraft:smelting",
   "cookingtime": 200,
   "experience": 0.6,
+  "group": "mekanism:ingot_tin",
   "ingredient": "mekanism:raw_tin",
   "result": {
     "id": "mekanism:ingot_tin"

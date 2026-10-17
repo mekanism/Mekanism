@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "group": "mekanismadditions:balloon_recolor",
   "ingredients": [
     {
       "neoforge:ingredient_type": "neoforge:difference",

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_alloy": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#mekanism:alloys/atomic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:transmitter/pressurized_tube/ultimate"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_alloy"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:transmitter/pressurized_tube/ultimate"
+    ]
+  }
+}

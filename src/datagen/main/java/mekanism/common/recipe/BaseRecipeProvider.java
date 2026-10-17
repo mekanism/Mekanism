@@ -6,10 +6,15 @@ import java.util.List;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStackTemplate;
+import mekanism.api.datagen.recipe.RecipeCriterion;
+import mekanism.common.registration.impl.BlockRegistryObject;
+import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.InventoryChangeTrigger.TriggerInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
@@ -23,6 +28,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
@@ -80,6 +86,38 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
 
     public static HolderSet<Item> tinIngot(HolderGetter<Item> lookup) {
         return lookup.getOrThrow(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.TIN));
+    }
+
+    protected RecipeCriterion hasCriterion(Holder<? extends ItemLike> item) {
+        return new RecipeCriterion(getHasName(item.value()), has(item));
+    }
+
+    protected RecipeCriterion hasCriterion(BlockItemId item) {
+        return hasCriterion(item.item());
+    }
+
+    protected RecipeCriterion hasCriterion(ResourceKey<Item> item) {
+        return hasCriterion(items.getOrThrow(item));
+    }
+
+    protected Criterion<TriggerInstance> has(ItemRegistryObject<?> item) {
+        return has(item.value());
+    }
+
+    protected Criterion<TriggerInstance> has(BlockRegistryObject<?, ?> item) {
+        return has(item.getItemHolder());
+    }
+
+    protected Criterion<TriggerInstance> has(Holder<? extends ItemLike> item) {
+        return has(item.value());
+    }
+
+    protected Criterion<TriggerInstance> has(BlockItemId item) {
+        return has(item.item());
+    }
+
+    protected Criterion<TriggerInstance> has(ResourceKey<Item> item) {
+        return has(items.getOrThrow(item));
     }
 
     public ItemStackTemplate template(ResourceKey<Item> item) {

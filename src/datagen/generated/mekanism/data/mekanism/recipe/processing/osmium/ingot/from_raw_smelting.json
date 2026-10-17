@@ -2,6 +2,7 @@
   "type": "minecraft:smelting",
   "cookingtime": 200,
   "experience": 0.6,
+  "group": "mekanism:ingot_osmium",
   "ingredient": "mekanism:raw_osmium",
   "result": {
     "id": "mekanism:ingot_osmium"

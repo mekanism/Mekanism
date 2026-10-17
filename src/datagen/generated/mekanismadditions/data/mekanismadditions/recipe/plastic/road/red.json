@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
+  "group": "mekanismadditions:plastic_road",
   "key": {
     "#": "mekanismadditions:red_slick_plastic",
     "S": "#c:sands"

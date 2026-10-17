@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_tank": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:basic_chemical_tank"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:jetpack"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tank"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:jetpack"
+    ]
+  }
+}

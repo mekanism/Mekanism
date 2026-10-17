@@ -1,5 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "mekanism:pressurized_tube",
   "key": {
     "A": "#mekanism:alloys/reinforced",
     "P": "mekanism:advanced_pressurized_tube"

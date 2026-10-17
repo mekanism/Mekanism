@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
+  "group": "mekanismadditions:transparent_plastic_stairs",
   "key": {
     "#": "mekanismadditions:aqua_plastic_transparent"
   },

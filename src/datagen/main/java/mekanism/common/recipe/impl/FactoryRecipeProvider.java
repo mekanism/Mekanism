@@ -15,6 +15,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -39,14 +40,14 @@ class FactoryRecipeProvider extends BaseSubRecipeProvider {
             BlockRegistryObject<BlockFactory<?>, ?> basicFactory = MekanismBlocks.getFactory(FactoryTier.BASIC, type);
             BlockRegistryObject<BlockFactory<?>, ?> advancedFactory = MekanismBlocks.getFactory(FactoryTier.ADVANCED, type);
             BlockRegistryObject<BlockFactory<?>, ?> eliteFactory = MekanismBlocks.getFactory(FactoryTier.ELITE, type);
-            addFactoryRecipe(consumer, basicPath, basicFactory, type.getBaseBlock(), Tags.Items.INGOTS_IRON, MekanismTags.Items.ALLOYS_BASIC, MekanismTags.Items.CIRCUITS_BASIC);
-            addFactoryRecipe(consumer, advancedPath, advancedFactory, basicFactory, osmiumIngot, MekanismTags.Items.ALLOYS_INFUSED, MekanismTags.Items.CIRCUITS_ADVANCED);
-            addFactoryRecipe(consumer, elitePath, eliteFactory, advancedFactory, Tags.Items.INGOTS_GOLD, MekanismTags.Items.ALLOYS_REINFORCED, MekanismTags.Items.CIRCUITS_ELITE);
-            addFactoryRecipe(consumer, ultimatePath, MekanismBlocks.getFactory(FactoryTier.ULTIMATE, type), eliteFactory, Tags.Items.GEMS_DIAMOND, MekanismTags.Items.ALLOYS_ATOMIC, MekanismTags.Items.CIRCUITS_ULTIMATE);
+            addFactoryRecipe(consumer, basicPath, type, basicFactory, type.getBaseBlock(), Tags.Items.INGOTS_IRON, MekanismTags.Items.ALLOYS_BASIC, MekanismTags.Items.CIRCUITS_BASIC);
+            addFactoryRecipe(consumer, advancedPath, type, advancedFactory, basicFactory, osmiumIngot, MekanismTags.Items.ALLOYS_INFUSED, MekanismTags.Items.CIRCUITS_ADVANCED);
+            addFactoryRecipe(consumer, elitePath, type, eliteFactory, advancedFactory, Tags.Items.INGOTS_GOLD, MekanismTags.Items.ALLOYS_REINFORCED, MekanismTags.Items.CIRCUITS_ELITE);
+            addFactoryRecipe(consumer, ultimatePath, type, MekanismBlocks.getFactory(FactoryTier.ULTIMATE, type), eliteFactory, Tags.Items.GEMS_DIAMOND, MekanismTags.Items.ALLOYS_ATOMIC, MekanismTags.Items.CIRCUITS_ULTIMATE);
         }
     }
 
-    private void addFactoryRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> factory, BlockRegistryObject<?, ?> toUpgrade, TagKey<Item> ingotTag,
+    private void addFactoryRecipe(RecipeOutput consumer, String basePath, FactoryType type, BlockRegistryObject<?, ?> factory, BlockRegistryObject<?, ?> toUpgrade, TagKey<Item> ingotTag,
           TagKey<Item> alloyTag, TagKey<Item> circuitTag) {
         MekDataShapedRecipeBuilder.shapedRecipe(factory)
               .pattern(MekanismRecipeProvider.TIER_PATTERN)
@@ -54,6 +55,9 @@ class FactoryRecipeProvider extends BaseSubRecipeProvider {
               .key(Pattern.CIRCUIT, this.items, circuitTag)
               .key(Pattern.INGOT, this.items, ingotTag)
               .key(Pattern.ALLOY, this.items, alloyTag)
+              .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
+              .group(Mekanism.rl(type.getSerializedName()))
+              .unlockedBy("has_circuit", has(circuitTag))
               .save(consumer, Mekanism.rl(basePath + Attribute.getOrThrow(factory, AttributeFactoryType.class).getFactoryType().getSerializedName()));
     }
 }

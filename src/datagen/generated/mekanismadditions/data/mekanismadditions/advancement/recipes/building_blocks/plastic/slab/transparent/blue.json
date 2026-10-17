@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:blue_plastic_transparent"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismadditions:plastic/slab/transparent/blue"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_plastic"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/slab/transparent/blue"
+    ]
+  }
+}

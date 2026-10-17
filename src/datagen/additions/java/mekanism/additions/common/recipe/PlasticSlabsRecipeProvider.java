@@ -32,15 +32,15 @@ class PlasticSlabsRecipeProvider extends BaseSubRecipeProvider {
     @Override
     public void addRecipes(RecipeOutput consumer) {
         String basePath = "plastic/slab/";
-        registerPlasticSlabs(consumer, AdditionsBlocks.PLASTIC_SLABS, AdditionsBlocks.PLASTIC_BLOCKS, AdditionsTags.Items.SLABS_PLASTIC_NORMAL, false, basePath);
+        registerPlasticSlabs(consumer, AdditionsBlocks.PLASTIC_SLABS, AdditionsBlocks.PLASTIC_BLOCKS, AdditionsTags.Items.SLABS_PLASTIC_NORMAL, false, basePath, "");
         registerPlasticSlabs(consumer, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS, AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS,
-              AdditionsTags.Items.SLABS_PLASTIC_TRANSPARENT, true, basePath + "transparent/");
+              AdditionsTags.Items.SLABS_PLASTIC_TRANSPARENT, true, basePath + "transparent/", "transparent_");
         registerPlasticSlabs(consumer, AdditionsBlocks.PLASTIC_GLOW_SLABS, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, AdditionsTags.Items.SLABS_PLASTIC_GLOW, false,
-              basePath + "glow/");
+              basePath + "glow/", "glow_");
     }
 
     private void registerPlasticSlabs(RecipeOutput consumer, EnumColorCollection<? extends BlockRegistryObject<?, ?>> blocks,
-          EnumColorCollection<? extends BlockRegistryObject<?, ?>> plasticMap, TagKey<Item> blockType, boolean transparent, String basePath) {
+          EnumColorCollection<? extends BlockRegistryObject<?, ?>> plasticMap, TagKey<Item> blockType, boolean transparent, String basePath, String groupName) {
         HolderSet<Item> typeTag = this.items.getOrThrow(blockType);
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, blocks, (color, block) -> {
             Holder<Item> slab = block.getItemHolder();
@@ -49,16 +49,20 @@ class PlasticSlabsRecipeProvider extends BaseSubRecipeProvider {
                   .pattern(PLASTIC_SLAB)
                   .key(Pattern.CONSTANT, plastic)
                   .category(RecipeCategory.BUILDING_BLOCKS)
+                  .group(MekanismAdditions.rl(groupName + "plastic_slabs"))
+                  .unlockedBy("has_plastic", has(plastic))
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             if (transparent) {
-                PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, this.items, this.chemicals, slab, typeTag, color, basePath);
+                PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, this.items, this.chemicals, slab, typeTag, color, basePath, groupName + "plastic_slabs_recolor");
             } else {
-                PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, slab, typeTag, color, basePath);
+                PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, slab, typeTag, color, basePath, groupName + "plastic_slabs_recolor");
             }
             ExtendedShapedRecipeBuilder.shapedRecipe(plastic, 1)
                   .pattern(PLASTIC_RECOMBINATION)
                   .key(Pattern.CONSTANT, slab)
                   .category(RecipeCategory.BUILDING_BLOCKS)
+                  .group(MekanismAdditions.rl(groupName + "plastic_recombination"))
+                  .unlockedBy("has_plastic_slab", has(slab))
                   .save(consumer, MekanismAdditions.rl(basePath + "recombination/" + color.getRegistryPrefix()));
         });
     }

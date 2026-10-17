@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_lead": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:ingot_lead"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:processing/lead/storage_blocks/from_ingots"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_lead"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/lead/storage_blocks/from_ingots"
+    ]
+  }
+}

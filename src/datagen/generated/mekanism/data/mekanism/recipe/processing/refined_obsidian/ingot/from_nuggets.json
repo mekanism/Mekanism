@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "mekanism:ingot_refined_obsidian",
   "key": {
     "#": "#c:nuggets/refined_obsidian",
     "P": "mekanism:nugget_refined_obsidian"

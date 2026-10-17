@@ -1,5 +1,7 @@
 package mekanism.common.recipe;
 
+import java.util.Collections;
+import java.util.Optional;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
@@ -10,6 +12,9 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.builder.ExtendedCookingRecipeBuilder;
 import mekanism.common.registries.MekanismItems;
+import net.minecraft.advancements.predicates.MinMaxBounds;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
+import net.minecraft.advancements.triggers.InventoryChangeTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -39,21 +44,41 @@ public class RecipeProviderUtil {
     }
 
     public static void addSmeltingBlastingRecipes(RecipeOutput consumer, Ingredient smeltingInput, Holder<Item> output, float experience, int smeltingTime,
-          Identifier blastingLocation, Identifier smeltingLocation, RecipeCriterion... criteria) {
+          @Nullable Identifier group, Identifier baseLocation, RecipeCriterion... criteria) {
         CookingBookCategory bookCategory = CookingBookCategory.MISC;
         ExtendedCookingRecipeBuilder<BlastingRecipe> blastingRecipe = ExtendedCookingRecipeBuilder.blasting(bookCategory, output, smeltingInput, smeltingTime / 2)
               .experience(experience)
-              .category(RecipeCategory.MISC);
+              .category(RecipeCategory.MISC)
+              .group(group);
         ExtendedCookingRecipeBuilder<SmeltingRecipe> smeltingRecipe = ExtendedCookingRecipeBuilder.smelting(bookCategory, output, smeltingInput, smeltingTime)
               .experience(experience)
-              .category(RecipeCategory.MISC);
+              .category(RecipeCategory.MISC)
+              .group(group);
         //If there are any criteria add them
         for (RecipeCriterion criterion : criteria) {
             blastingRecipe.unlockedBy(criterion);
             smeltingRecipe.unlockedBy(criterion);
         }
-        blastingRecipe.save(consumer, blastingLocation);
-        smeltingRecipe.save(consumer, smeltingLocation);
+        blastingRecipe.save(consumer, baseLocation.withSuffix("_blasting"));
+        smeltingRecipe.save(consumer, baseLocation.withSuffix("_smelting"));
+    }
+
+    /// Copied from the recipe unlock condition for vanilla chests, with values of `10` for `occupied`
+    ///
+    /// @see #lotsOfItems(int, int)
+    public static RecipeCriterion lotsOfItems(int occupied) {
+        return lotsOfItems(occupied, 0);
+    }
+
+    /// Copied from the recipe unlock condition for vanilla chests, with values of `10` for `occupied`, and `0` for `fullSlots`
+    public static RecipeCriterion lotsOfItems(int occupied, int fullSlots) {
+        MinMaxBounds.Ints occupiedSlotsBounds = occupied == 0 ? MinMaxBounds.Ints.ANY : MinMaxBounds.Ints.atLeast(occupied);
+        MinMaxBounds.Ints fullSlotsBounds = fullSlots == 0 ? MinMaxBounds.Ints.ANY : MinMaxBounds.Ints.atLeast(fullSlots);
+        return new RecipeCriterion("has_lots_of_items", CriteriaTriggers.INVENTORY_CHANGED.createCriterion(new InventoryChangeTrigger.TriggerInstance(
+              Optional.empty(),
+              new InventoryChangeTrigger.TriggerInstance.Slots(occupiedSlotsBounds, fullSlotsBounds, MinMaxBounds.Ints.ANY),
+              Collections.emptyList()
+        )));
     }
 
     public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> items, String basePath, BlockItemId planks,

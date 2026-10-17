@@ -25,6 +25,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.references.BlockItemIds;
+import net.minecraft.references.ItemIds;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -62,6 +63,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.OSMIUM, osmiumIngot(this.items))
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
               .save(output);
         ExtendedShapedRecipeBuilder.shapedRecipe(AdditionsBlocks.OBSIDIAN_TNT)
               .pattern(RecipePattern.createPattern(
@@ -71,6 +73,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               ).key(OBSIDIAN_CHAR, this.items, Tags.Items.OBSIDIANS_NORMAL)
               .key(TNT_CHAR, this.items, BlockItemIds.TNT)
               .category(RecipeCategory.REDSTONE)
+              .unlockedBy("has_gunpowder", has(ItemIds.GUNPOWDER))
+              .unlockedBy("has_tnt", has(BlockItemIds.TNT))
               .save(output);
         registerBalloons();
         registerGlowPanels();
@@ -100,11 +104,15 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                       .addIngredient(this.items, Tags.Items.STRINGS)
                       .addIngredient(this.items, dye.getTag())
                       .category(RecipeCategory.DECORATIONS)
+                      .group(MekanismAdditions.rl("balloon"))
+                      .unlockedBy("has_leather", has(Tags.Items.LEATHERS))
                       .save(output, MekanismAdditions.rl(basePath + colorString));
                 ExtendedShapelessRecipeBuilder.shapelessRecipe(balloon)
                       .addIngredient(recolorInput)
                       .addIngredient(this.items, dye.getTag())
                       .category(RecipeCategory.DECORATIONS)
+                      .group(MekanismAdditions.rl("balloon_recolor"))
+                      .unlockedBy("has_needed_dye", has(dye.getTag()))
                       .save(output, MekanismAdditions.rl(basePath + "recolor/" + colorString));
             }
             ItemStackChemicalToItemStackRecipeBuilder.painting(
@@ -130,9 +138,13 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                       .key(Pattern.GLOWSTONE, this.items, Tags.Items.DUSTS_GLOWSTONE)
                       .key(Pattern.DYE, this.items, dye.getTag())
                       .category(RecipeCategory.BUILDING_BLOCKS)
+                      .group(MekanismAdditions.rl("glow_panels"))
+                      .unlockedBy("has_plastic", has(MekanismItems.HDPE_PELLET))
+                      .unlockedBy("has_plastic_sheet", has(MekanismItems.HDPE_SHEET))
+                      .unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
                       .save(output, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             }
-            PlasticBlockRecipeProvider.registerRecolor(output, this.items, this.chemicals, glowPanel, glowPanelTag, color, basePath);
+            PlasticBlockRecipeProvider.registerRecolor(output, this.items, this.chemicals, glowPanel, glowPanelTag, color, basePath, "glow_panels_recolor");
         });
     }
 }

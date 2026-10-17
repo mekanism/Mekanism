@@ -5,6 +5,7 @@ import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.CleanDirtySlurryId;
+import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalDissolutionRecipeBuilder;
@@ -22,6 +23,7 @@ import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
@@ -32,10 +34,12 @@ import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.BlockItemId;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
@@ -181,41 +185,42 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
 
         // Miscellaneous
         if (!resource.isVanilla()) {
-            // from block
-            ExtendedShapelessRecipeBuilder.shapelessRecipe(ingot, 9)
-                  .addIngredient(block)
-                  .save(consumer, Mekanism.rl(basePath + "ingot/from_block"));
+            //From packing unpacking
+            fromPackingUnpacking(consumer, basePath + "ingot/", block, nugget, nuggetTag, ingot);
             // to block
             ExtendedShapedRecipeBuilder.shapedRecipe(block)
                   .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
                   .key(Pattern.PREVIOUS, ingot)
                   .key(Pattern.CONSTANT, this.items, ingotTag)
+                  .category(RecipeCategory.BUILDING_BLOCKS)
+                  .unlockedBy(hasCriterion(ingot))
                   .save(consumer, Mekanism.rl(basePath + "storage_blocks/from_ingots"));
-            // from nuggets
-            ExtendedShapedRecipeBuilder.shapedRecipe(ingot)
-                  .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
-                  .key(Pattern.PREVIOUS, nugget)
-                  .key(Pattern.CONSTANT, this.items, nuggetTag)
-                  .save(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
             // to nuggets
             ExtendedShapelessRecipeBuilder.shapelessRecipe(nugget, 9)
                   .addIngredient(ingot)
+                  .unlockedBy(hasCriterion(ingot))
                   .save(consumer, Mekanism.rl(basePath + "nugget/from_ingot"));
+            Identifier ingotGroup = ingot.key().identifier();
             // from ore
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.ingredient(ore, deepslateOre), ingot, dustExperience * 2, 200,
-                  Mekanism.rl(basePath + "ingot/from_ore_blasting"), Mekanism.rl(basePath + "ingot/from_ore_smelting"));
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.ingredient(ore), ingot, dustExperience * 2, 200,
+                  ingotGroup, Mekanism.rl(basePath + "ingot/from_ore"), hasCriterion(ore));
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.ingredient(deepslateOre), ingot, dustExperience * 2, 200,
+                  ingotGroup, Mekanism.rl(basePath + "ingot/from_deepslate_ore"), hasCriterion(deepslateOre));
             // from raw
             RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.ingredient(raw), ingot, dustExperience * 2, 200,
-                  Mekanism.rl(basePath + "ingot/from_raw_blasting"), Mekanism.rl(basePath + "ingot/from_raw_smelting"));
+                  ingotGroup, Mekanism.rl(basePath + "ingot/from_raw"), hasCriterion(raw));
             // raw from raw block
             ExtendedShapelessRecipeBuilder.shapelessRecipe(raw, 9)
                   .addIngredient(rawBlock)
+                  .unlockedBy(hasCriterion(rawBlock))
                   .save(consumer, Mekanism.rl(basePath + "raw/from_raw_block"));
             // raw to raw block
             ExtendedShapedRecipeBuilder.shapedRecipe(rawBlock)
                   .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
                   .key(Pattern.PREVIOUS, raw)
                   .key(Pattern.CONSTANT, this.items, rawTag)
+                  .category(RecipeCategory.BUILDING_BLOCKS)
+                  .unlockedBy(hasCriterion(raw))
                   .save(consumer, Mekanism.rl(basePath + "raw_storage_blocks/from_raw"));
         }
 
@@ -239,8 +244,9 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
 
         // Intermediate Steps
         // Ingot from Dust
+        // Note: We make sure to group it with vanilla's ingot smelting recipes
         RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.ingredient(dust), ingot, dustExperience, 200,
-              Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
+              ingot.key().identifier(), Mekanism.rl(basePath + "ingot/from_dust"), new RecipeCriterion("has_dust", has(dust)));
         // Dust from Dirty Dust
         ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(this.items, dirtyDustTag), new ItemStackTemplate(dust))
               .save(consumer, Mekanism.rl(basePath + "dust/from_dirty_dust"));
@@ -455,7 +461,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "scrap_to_dust"));
         //Netherite Dust to Netherite Ingot
         RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(MekanismItems.NETHERITE_DUST), items.getOrThrow(ItemIds.NETHERITE_INGOT), 1, 200,
-              Mekanism.rl(basePath + "ingot_from_dust_blasting"), Mekanism.rl(basePath + "ingot_from_dust_smelting"));
+              null, Mekanism.rl(basePath + "ingot_from_dust"), new RecipeCriterion("has_dust", has(MekanismItems.NETHERITE_DUST)));
         //Netherite Ingot to Netherite Dust
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.INGOTS_NETHERITE),
@@ -485,13 +491,12 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
               MekanismItems.BRONZE_DUST.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
         //Ingot
-        //from block
-        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.BRONZE_INGOT, 9)
-              .addIngredient(MekanismBlocks.BRONZE_BLOCK)
-              .save(consumer, Mekanism.rl(basePath + "ingot/from_block"));
+        //From packing unpacking
+        fromPackingUnpacking(consumer, basePath + "ingot/", MekanismBlocks.BRONZE_BLOCK, MekanismItems.BRONZE_NUGGET, MekanismTags.Items.NUGGETS_BRONZE,
+              MekanismItems.BRONZE_INGOT);
         //from dust
         RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(MekanismItems.BRONZE_DUST), MekanismItems.BRONZE_INGOT, 0.35F, 200,
-              Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
+              MekanismItems.BRONZE_INGOT.getId(), Mekanism.rl(basePath + "ingot/from_dust"), new RecipeCriterion("has_dust", has(MekanismItems.BRONZE_DUST)));
         //from infusing
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.INGOTS_COPPER, 3),
@@ -499,12 +504,27 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
               false,
               MekanismItems.BRONZE_INGOT.asTemplate(4)
         ).save(consumer, Mekanism.rl(basePath + "ingot/from_infusing"));
+    }
+
+    private void fromPackingUnpacking(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> block, Holder<Item> nugget, TagKey<Item> nuggetTag, Holder<Item> result) {
+        fromPackingUnpacking(consumer, basePath, block.getItemHolder(), nugget, nuggetTag, result);
+    }
+
+    private void fromPackingUnpacking(RecipeOutput consumer, String basePath, Holder<Item> block, Holder<Item> nugget, TagKey<Item> nuggetTag, Holder<Item> result) {
+        //from block
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(result, 9)
+              .addIngredient(block)
+              .group(result.key().identifier())
+              .unlockedBy(hasCriterion(block))
+              .save(consumer, Mekanism.rl(basePath + "from_block"));
         //from nuggets
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.BRONZE_INGOT)
+        ExtendedShapedRecipeBuilder.shapedRecipe(result)
               .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
-              .key(Pattern.PREVIOUS, MekanismItems.BRONZE_NUGGET)
-              .key(Pattern.CONSTANT, this.items, MekanismTags.Items.NUGGETS_BRONZE)
-              .save(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
+              .key(Pattern.PREVIOUS, nugget)
+              .key(Pattern.CONSTANT, this.items, nuggetTag)
+              .group(result.key().identifier())
+              .unlockedBy(hasCriterion(nugget))
+              .save(consumer, Mekanism.rl(basePath + "from_nuggets"));
     }
 
     private void addRedstoneProcessingRecipes(RecipeOutput consumer, String basePath) {
@@ -530,10 +550,9 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
 
     private void addRefinedGlowstoneProcessingRecipes(RecipeOutput consumer, String basePath) {
         //Ingot
-        //from block
-        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.REFINED_GLOWSTONE_INGOT, 9)
-              .addIngredient(MekanismBlocks.REFINED_GLOWSTONE_BLOCK)
-              .save(consumer, Mekanism.rl(basePath + "ingot/from_block"));
+        //From packing unpacking
+        fromPackingUnpacking(consumer, basePath + "ingot/", MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismItems.REFINED_GLOWSTONE_NUGGET,
+              MekanismTags.Items.NUGGETS_REFINED_GLOWSTONE, MekanismItems.REFINED_GLOWSTONE_INGOT);
         //from dust
         ItemStackChemicalToItemStackRecipeBuilder.compressing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DUSTS_GLOWSTONE),
@@ -541,12 +560,6 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
               true,
               MekanismItems.REFINED_GLOWSTONE_INGOT.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "ingot/from_dust"));
-        //from nuggets
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.REFINED_GLOWSTONE_INGOT)
-              .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
-              .key(Pattern.PREVIOUS, MekanismItems.REFINED_GLOWSTONE_NUGGET)
-              .key(Pattern.CONSTANT, this.items, MekanismTags.Items.NUGGETS_REFINED_GLOWSTONE)
-              .save(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
         //Ingot -> dust
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE),
@@ -569,10 +582,9 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
               MekanismItems.REFINED_OBSIDIAN_DUST.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "dust/from_obsidian_dust"));
         //Ingot
-        //from block
-        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.REFINED_OBSIDIAN_INGOT, 9)
-              .addIngredient(MekanismBlocks.REFINED_OBSIDIAN_BLOCK)
-              .save(consumer, Mekanism.rl(basePath + "ingot/from_block"));
+        //From packing unpacking
+        fromPackingUnpacking(consumer, basePath + "ingot/", MekanismBlocks.REFINED_OBSIDIAN_BLOCK, MekanismItems.REFINED_OBSIDIAN_NUGGET,
+              MekanismTags.Items.NUGGETS_REFINED_OBSIDIAN, MekanismItems.REFINED_OBSIDIAN_INGOT);
         //from dust
         ItemStackChemicalToItemStackRecipeBuilder.compressing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_REFINED_OBSIDIAN),
@@ -580,29 +592,16 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
               true,
               MekanismItems.REFINED_OBSIDIAN_INGOT.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "ingot/from_dust"));
-        //from nuggets
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.REFINED_OBSIDIAN_INGOT)
-              .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
-              .key(Pattern.PREVIOUS, MekanismItems.REFINED_OBSIDIAN_NUGGET)
-              .key(Pattern.CONSTANT, this.items, MekanismTags.Items.NUGGETS_REFINED_OBSIDIAN)
-              .save(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
     }
 
     private void addSteelProcessingRecipes(RecipeOutput consumer, String basePath) {
         //Ingot
-        //from block
-        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.STEEL_INGOT, 9)
-              .addIngredient(MekanismBlocks.STEEL_BLOCK)
-              .save(consumer, Mekanism.rl(basePath + "ingot/from_block"));
+        //From packing unpacking
+        fromPackingUnpacking(consumer, basePath + "ingot/", MekanismBlocks.STEEL_BLOCK, MekanismItems.STEEL_NUGGET, MekanismTags.Items.NUGGETS_STEEL,
+              MekanismItems.STEEL_INGOT);
         //from dust
         RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(MekanismItems.STEEL_DUST), MekanismItems.STEEL_INGOT, 0.4F, 200,
-              Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
-        //from nuggets
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.STEEL_INGOT)
-              .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
-              .key(Pattern.PREVIOUS, MekanismItems.STEEL_NUGGET)
-              .key(Pattern.CONSTANT, this.items, MekanismTags.Items.NUGGETS_STEEL)
-              .save(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
+              MekanismItems.STEEL_INGOT.key().identifier(), Mekanism.rl(basePath + "ingot/from_dust"), new RecipeCriterion("has_dust", has(MekanismItems.STEEL_DUST)));
         //Enriched iron -> dust
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().fromHolder(MekanismItems.ENRICHED_IRON),
@@ -625,6 +624,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         //Gem from block
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.FLUORITE_GEM, 9)
               .addIngredient(MekanismBlocks.FLUORITE_BLOCK)
+              .unlockedBy(hasCriterion(MekanismItems.FLUORITE_GEM))
               .save(consumer, Mekanism.rl(basePath + "from_block"));
     }
 

@@ -3,6 +3,7 @@ package mekanism.common.recipe.impl;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.bin.BinExtractRecipe;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -16,6 +17,7 @@ import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.resources.ResourceKey;
@@ -50,6 +52,11 @@ class BinRecipeProvider extends BaseSubRecipeProvider {
               ).key(Pattern.COBBLESTONE, this.items, MekanismTags.Items.STONE_CRAFTING_MATERIALS)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
+              .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
+              .group(Mekanism.rl("bin"))
+              //Require having multiple full stacks of items in addition to having items in the inventory
+              .unlockedBy(RecipeProviderUtil.lotsOfItems(10, 5))
+              .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
               .save(consumer, Mekanism.rl(basePath + "basic"));
         addTieredBin(consumer, basePath, MekanismBlocks.ADVANCED_BIN, MekanismBlocks.BASIC_BIN, MekanismTags.Items.CIRCUITS_ADVANCED, MekanismTags.Items.ALLOYS_INFUSED);
         addTieredBin(consumer, basePath, MekanismBlocks.ELITE_BIN, MekanismBlocks.ADVANCED_BIN, MekanismTags.Items.CIRCUITS_ELITE, MekanismTags.Items.ALLOYS_REINFORCED);
@@ -65,6 +72,9 @@ class BinRecipeProvider extends BaseSubRecipeProvider {
               .key(Pattern.COBBLESTONE, this.items, MekanismTags.Items.STONE_CRAFTING_MATERIALS)
               .key(Pattern.CIRCUIT, this.items, circuitTag)
               .key(Pattern.ALLOY, this.items, alloyTag)
+              .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
+              .group(Mekanism.rl("bin"))
+              .unlockedBy("has_circuit", has(circuitTag))
               .save(consumer, Mekanism.rl(basePath + tierName));
     }
 }

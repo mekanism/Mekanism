@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_casing": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:induction_casing"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_energy_cube": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:advanced_energy_cube"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:induction/cell/advanced"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_casing",
+      "has_energy_cube"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:induction/cell/advanced"
+    ]
+  }
+}

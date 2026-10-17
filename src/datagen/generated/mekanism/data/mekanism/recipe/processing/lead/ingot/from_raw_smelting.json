@@ -2,6 +2,7 @@
   "type": "minecraft:smelting",
   "cookingtime": 200,
   "experience": 0.6,
+  "group": "mekanism:ingot_lead",
   "ingredient": "mekanism:raw_lead",
   "result": {
     "id": "mekanism:ingot_lead"

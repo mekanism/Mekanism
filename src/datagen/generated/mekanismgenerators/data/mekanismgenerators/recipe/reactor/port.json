@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
   "key": {
     "C": "#c:circuits/ultimate",
     "F": "mekanismgenerators:fusion_reactor_frame"

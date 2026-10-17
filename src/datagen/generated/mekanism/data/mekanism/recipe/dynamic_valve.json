@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
   "key": {
     "#": "mekanism:dynamic_tank",
     "C": "#c:circuits/basic"

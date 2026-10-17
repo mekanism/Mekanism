@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
+  "group": "mekanismadditions:slick_plastic",
   "key": {
     "#": "mekanismadditions:light_blue_plastic",
     "S": "#c:slime_balls"

@@ -1,5 +1,6 @@
 {
   "type": "mekanism:mek_data",
+  "group": "mekanism:combining",
   "key": {
     "A": "#mekanism:alloys/basic",
     "C": "#c:circuits/basic",

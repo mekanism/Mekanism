@@ -2,6 +2,7 @@ package mekanism.additions.common.recipe;
 
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
+import mekanism.additions.common.block.plastic.BlockPlastic;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.text.EnumColorCollection;
@@ -10,12 +11,14 @@ import mekanism.common.recipe.impl.BaseSubRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 
@@ -43,13 +46,16 @@ class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
         HolderSet<Item> fencesTag = this.items.getOrThrow(AdditionsTags.Items.FENCES_PLASTIC_NORMAL);
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_FENCES, (color, fence) -> {
             Holder<Item> result = fence.getItemHolder();
+            BlockRegistryObject<BlockPlastic, BlockItem> plastic = AdditionsBlocks.PLASTIC_BLOCKS.pick(color);
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
                   .pattern(PLASTIC_FENCE)
                   .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
-                  .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.pick(color))
+                  .key(Pattern.CONSTANT, plastic)
                   .category(RecipeCategory.DECORATIONS)
+                  .group(MekanismAdditions.rl("plastic_fences"))
+                  .unlockedBy("has_plastic", has(plastic))
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-            PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, result, fencesTag, color, basePath);
+            PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, result, fencesTag, color, basePath, "plastic_fences_recolor");
         });
     }
 
@@ -57,13 +63,16 @@ class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
         HolderSet<Item> gatesTag = this.items.getOrThrow(AdditionsTags.Items.FENCE_GATES_PLASTIC_NORMAL);
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_FENCE_GATES, (color, fenceGate) -> {
             Holder<Item> result = fenceGate.getItemHolder();
+            BlockRegistryObject<BlockPlastic, BlockItem> plastic = AdditionsBlocks.PLASTIC_BLOCKS.pick(color);
             ExtendedShapedRecipeBuilder.shapedRecipe(result)
                   .pattern(PLASTIC_FENCE_GATE)
                   .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
-                  .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.pick(color))
+                  .key(Pattern.CONSTANT, plastic)
                   .category(RecipeCategory.REDSTONE)
+                  .group(MekanismAdditions.rl("plastic_fence_gates"))
+                  .unlockedBy("has_plastic", has(plastic))
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-            PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, result, gatesTag, color, basePath);
+            PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, result, gatesTag, color, basePath, "plastic_fence_gates_recolor");
         });
     }
 }

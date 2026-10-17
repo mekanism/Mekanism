@@ -13,6 +13,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
@@ -49,6 +50,8 @@ class UpgradeRecipeProvider extends BaseSubRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY)))
               .key(Pattern.CONSTANT, this.items, ItemTags.WOOL)
               .key(Pattern.INGOT, this.items, MekanismTags.Items.MUFFLING_CENTER)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_wool", has(ItemTags.WOOL))
               .save(consumer, Mekanism.rl(basePath + getSaveName(UpgradeIds.MUFFLING)));
         addUpgradeRecipe(consumer, UpgradeIds.SPEED, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.OSMIUM), basePath);
         ExtendedShapedRecipeBuilder.shapedRecipe(IUpgradeHelper.INSTANCE.asTemplate(upgrades, UpgradeIds.STONE_GENERATOR))
@@ -60,6 +63,9 @@ class UpgradeRecipeProvider extends BaseSubRecipeProvider {
               .key(Pattern.CONSTANT, this.items, Tags.Items.BUCKETS_WATER)
               .key(Pattern.BUCKET, this.items, Tags.Items.BUCKETS_LAVA)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_water_bucket", has(Tags.Items.BUCKETS_WATER))
+              .unlockedBy("has_lava_bucket", has(Tags.Items.BUCKETS_LAVA))
               .save(consumer, Mekanism.rl(basePath + getSaveName(UpgradeIds.STONE_GENERATOR)));
     }
 
@@ -69,6 +75,8 @@ class UpgradeRecipeProvider extends BaseSubRecipeProvider {
               .key(MekanismRecipeProvider.GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
               .key(Pattern.CONSTANT, this.items, dustTag)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_alloy", has(MekanismTags.Items.ALLOYS_INFUSED))
               .save(consumer, Mekanism.rl(basePath + getSaveName(upgrade)));
     }
 

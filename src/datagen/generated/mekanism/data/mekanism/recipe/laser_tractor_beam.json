@@ -1,5 +1,6 @@
 {
   "type": "mekanism:mek_data",
+  "category": "redstone",
   "key": {
     "#": "mekanism:laser_amplifier",
     "P": "#mekanism:personal_storage"

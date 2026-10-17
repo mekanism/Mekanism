@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sawdust": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:dusts/wood"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:cardboard_box"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_sawdust"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:cardboard_box"
+    ]
+  }
+}

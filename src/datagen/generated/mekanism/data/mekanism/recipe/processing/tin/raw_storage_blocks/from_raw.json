@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
   "key": {
     "#": "#c:raw_materials/tin",
     "P": "mekanism:raw_tin"

@@ -1,5 +1,6 @@
 {
   "type": "mekanism:mek_data",
+  "group": "mekanism:bin",
   "key": {
     "A": "#mekanism:alloys/atomic",
     "C": "#c:circuits/ultimate",

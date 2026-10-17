@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_paxel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:gold_paxel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismtools:gold_nugget_from__blasting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_paxel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismtools:gold_nugget_from__blasting"
+    ]
+  }
+}

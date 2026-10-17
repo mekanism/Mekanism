@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:processing/tin/ingot/from_ore_blasting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tin_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:tin_ore"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tin_ore"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/tin/ingot/from_ore_blasting"
+    ]
+  }
+}

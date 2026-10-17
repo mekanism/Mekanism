@@ -1,5 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "mekanism:thermodynamic_conductor",
   "key": {
     "A": "#mekanism:alloys/reinforced",
     "P": "mekanism:advanced_thermodynamic_conductor"

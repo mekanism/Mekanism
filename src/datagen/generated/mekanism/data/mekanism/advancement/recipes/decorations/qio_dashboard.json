@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lead_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:ingots/lead"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_teleportation_core": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:teleportation_core"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:qio_dashboard"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_teleportation_core",
+      "has_lead_ingot"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:qio_dashboard"
+    ]
+  }
+}

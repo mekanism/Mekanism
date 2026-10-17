@@ -1,5 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "mekanism:universal_cable",
   "key": {
     "#": "#c:dusts/redstone",
     "S": "#c:ingots/steel"

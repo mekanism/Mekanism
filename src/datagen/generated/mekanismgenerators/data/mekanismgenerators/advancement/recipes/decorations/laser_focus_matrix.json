@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_reactor_glass": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismgenerators:reactor_glass"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismgenerators:laser_focus_matrix"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_reactor_glass"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismgenerators:laser_focus_matrix"
+    ]
+  }
+}

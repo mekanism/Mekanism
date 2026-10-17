@@ -54,6 +54,8 @@ class ControlCircuitRecipeProvider extends BaseSubRecipeProvider {
               .pattern(circuitPattern)
               .key(Pattern.CIRCUIT, this.items, circuitTag)
               .key(Pattern.ALLOY, this.items, alloyTag)
+              .group(Mekanism.rl("circuit_upgrade"))
+              .unlockedBy("has_alloy", has(alloyTag))
               .save(consumer, Mekanism.rl(basePath + name));
     }
 

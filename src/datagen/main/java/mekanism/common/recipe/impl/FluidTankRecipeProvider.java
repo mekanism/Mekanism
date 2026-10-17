@@ -12,6 +12,7 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -40,6 +41,9 @@ class FluidTankRecipeProvider extends BaseSubRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY))
               ).key(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
+              .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
+              .group(Mekanism.rl("fluid_tank"))
+              .unlockedBy("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
               .save(consumer, Mekanism.rl(basePath + "basic"));
         addTieredFluidTank(consumer, basePath, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.BASIC_FLUID_TANK, MekanismTags.Items.ALLOYS_INFUSED);
         addTieredFluidTank(consumer, basePath, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismTags.Items.ALLOYS_REINFORCED);
@@ -53,6 +57,9 @@ class FluidTankRecipeProvider extends BaseSubRecipeProvider {
               .key(Pattern.PREVIOUS, previousTank)
               .key(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
               .key(Pattern.ALLOY, this.items, alloyTag)
+              .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
+              .group(Mekanism.rl("fluid_tank"))
+              .unlockedBy("has_alloy", has(alloyTag))
               .save(consumer, Mekanism.rl(basePath + tierName));
     }
 }

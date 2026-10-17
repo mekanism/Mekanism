@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "mekanismadditions:plastic_fences",
   "key": {
     "#": "mekanismadditions:orange_plastic",
     "R": "#c:rods/plastic"

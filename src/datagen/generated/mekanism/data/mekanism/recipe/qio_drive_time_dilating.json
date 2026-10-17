@@ -1,5 +1,6 @@
 {
   "type": "mekanism:mek_data",
+  "group": "mekanism:qio_drive",
   "key": {
     "#": "#c:pellets/polonium",
     "I": "#c:pellets/plutonium",

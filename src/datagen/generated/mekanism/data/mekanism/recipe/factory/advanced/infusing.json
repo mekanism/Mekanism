@@ -1,5 +1,6 @@
 {
   "type": "mekanism:mek_data",
+  "group": "mekanism:infusing",
   "key": {
     "A": "#mekanism:alloys/infused",
     "C": "#c:circuits/advanced",

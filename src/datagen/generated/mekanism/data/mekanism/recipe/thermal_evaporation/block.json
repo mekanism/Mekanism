@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
   "key": {
     "I": "#c:ingots/copper",
     "S": "#c:ingots/steel"

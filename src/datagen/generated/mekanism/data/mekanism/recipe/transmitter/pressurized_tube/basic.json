@@ -1,5 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "mekanism:pressurized_tube",
   "key": {
     "#": "#c:glass_blocks/cheap",
     "S": "#c:ingots/steel"

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "group": "mekanism:ingot_refined_obsidian",
   "ingredients": [
     "mekanism:block_refined_obsidian"
   ],

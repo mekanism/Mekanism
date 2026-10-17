@@ -1,5 +1,6 @@
 {
   "type": "mekanism:mek_data",
+  "category": "equipment",
   "key": {
     "A": "#mekanism:alloys/infused",
     "E": "mekanism:energy_tablet",

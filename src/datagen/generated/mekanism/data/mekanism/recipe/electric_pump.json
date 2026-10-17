@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "A": "#mekanism:alloys/infused",
-    "B": "minecraft:bucket",
+    "B": "#c:buckets/empty",
     "O": "#c:ingots/osmium",
     "X": "mekanism:steel_casing"
   },

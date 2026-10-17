@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_any_transporter": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#mekanism:transmitters/items"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:logistical_sorter"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_any_transporter"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:logistical_sorter"
+    ]
+  }
+}

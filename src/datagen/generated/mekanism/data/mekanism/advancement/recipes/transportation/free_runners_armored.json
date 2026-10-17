@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_free_runners": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:free_runners"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:free_runners_armored"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_free_runners"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:free_runners_armored"
+    ]
+  }
+}

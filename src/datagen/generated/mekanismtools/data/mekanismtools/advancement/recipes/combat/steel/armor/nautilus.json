@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_nautilus_armor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:iron_nautilus_armor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismtools:steel/armor/nautilus"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_nautilus_armor"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismtools:steel/armor/nautilus"
+    ]
+  }
+}

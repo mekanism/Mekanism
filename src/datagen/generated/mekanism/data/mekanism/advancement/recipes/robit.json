@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_alloy": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#mekanism:alloys/atomic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:robit"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "tamed_animal": {
+      "trigger": "minecraft:tame_animal"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_alloy",
+      "tamed_animal"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:robit"
+    ]
+  }
+}

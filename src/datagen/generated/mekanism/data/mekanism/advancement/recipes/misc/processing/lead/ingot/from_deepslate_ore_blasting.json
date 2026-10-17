@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_deepslate_lead_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:deepslate_lead_ore"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:processing/lead/ingot/from_deepslate_ore_blasting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_deepslate_lead_ore"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/lead/ingot/from_deepslate_ore_blasting"
+    ]
+  }
+}
