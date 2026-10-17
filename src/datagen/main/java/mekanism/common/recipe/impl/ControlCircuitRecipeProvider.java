@@ -50,10 +50,10 @@ class ControlCircuitRecipeProvider extends BaseSubRecipeProvider {
 
     private void addCircuitUpgradeRecipe(RecipeOutput consumer, Holder<Item> output, TagKey<Item> circuitTag, TagKey<Item> alloyTag, String basePath,
           String name) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(output)
+        ExtendedShapedRecipeBuilder.shaped(output)
               .pattern(circuitPattern)
-              .key(Pattern.CIRCUIT, this.items, circuitTag)
-              .key(Pattern.ALLOY, this.items, alloyTag)
+              .define(Pattern.CIRCUIT, this.items, circuitTag)
+              .define(Pattern.ALLOY, this.items, alloyTag)
               .group(Mekanism.rl("circuit_upgrade"))
               .unlockedBy("has_alloy", has(alloyTag))
               .save(consumer, Mekanism.rl(basePath + name));

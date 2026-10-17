@@ -42,8 +42,8 @@ class StorageRecipeProvider extends BaseSubRecipeProvider {
     }
 
     private void addNuggetRecipe(RecipeOutput consumer, Holder<Item> nugget, Holder<Item> ingot, String basePath, String name) {
-        ExtendedShapelessRecipeBuilder.shapelessRecipe(nugget, 9)
-              .addIngredient(ingot)
+        ExtendedShapelessRecipeBuilder.shapeless(nugget, 9)
+              .requires(ingot)
               .unlockedBy(hasCriterion(nugget))
               .save(consumer, Mekanism.rl(basePath + name));
     }
@@ -58,18 +58,18 @@ class StorageRecipeProvider extends BaseSubRecipeProvider {
         //Bio Fuel
         addStorageBlockRecipe(consumer, MekanismBlocks.BIO_FUEL_BLOCK, MekanismItems.BIO_FUEL, MekanismTags.Items.FUELS_BIO, basePath, "bio_fuel");
         //Charcoal
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHARCOAL_BLOCK)
+        ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.CHARCOAL_BLOCK)
               .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
-              .key(Pattern.CONSTANT, this.items, ItemIds.CHARCOAL)
+              .define(Pattern.CONSTANT, this.items, ItemIds.CHARCOAL)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy(hasCriterion(ItemIds.CHARCOAL))
               .save(consumer, Mekanism.rl(basePath + BlockResourceInfo.CHARCOAL.getRegistrySuffix()));
         //Salt
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SALT_BLOCK)
+        ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.SALT_BLOCK)
               .pattern(RecipePattern.createPattern(
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT),
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT))
-              ).key(Pattern.CONSTANT, this.items, MekanismTags.Items.DUSTS_SALT)
+              ).define(Pattern.CONSTANT, this.items, MekanismTags.Items.DUSTS_SALT)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
               .save(consumer, Mekanism.rl(basePath + "salt"));
@@ -81,10 +81,10 @@ class StorageRecipeProvider extends BaseSubRecipeProvider {
 
     private void addStorageBlockRecipe(RecipeOutput consumer, BlockRegistryObject<?, ?> block, Holder<Item> ingot, TagKey<Item> ingotTag,
           String basePath, String suffix) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(block)
+        ExtendedShapedRecipeBuilder.shaped(block)
               .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
-              .key(Pattern.PREVIOUS, ingot)
-              .key(Pattern.CONSTANT, this.items, ingotTag)
+              .define(Pattern.PREVIOUS, ingot)
+              .define(Pattern.CONSTANT, this.items, ingotTag)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy(hasCriterion(ingot))
               .save(consumer, Mekanism.rl(basePath + suffix));

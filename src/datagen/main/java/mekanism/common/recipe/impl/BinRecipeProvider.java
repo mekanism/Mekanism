@@ -44,14 +44,14 @@ class BinRecipeProvider extends BaseSubRecipeProvider {
         //Recipes for making bins
         String basePath = "bin/";
         //Note: For the basic bin, we have to handle the empty slot differently than batching it against our bin pattern
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BASIC_BIN)
+        ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.BASIC_BIN)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.COBBLESTONE, Pattern.CIRCUIT, Pattern.COBBLESTONE),
                     TripleLine.of(Pattern.ALLOY, Pattern.EMPTY, Pattern.ALLOY),
                     TripleLine.of(Pattern.COBBLESTONE, Pattern.COBBLESTONE, Pattern.COBBLESTONE))
-              ).key(Pattern.COBBLESTONE, this.items, MekanismTags.Items.STONE_CRAFTING_MATERIALS)
-              .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
-              .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
+              ).define(Pattern.COBBLESTONE, this.items, MekanismTags.Items.STONE_CRAFTING_MATERIALS)
+              .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
+              .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
               .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
               .group(Mekanism.rl("bin"))
               //Require having multiple full stacks of items in addition to having items in the inventory
@@ -66,12 +66,12 @@ class BinRecipeProvider extends BaseSubRecipeProvider {
     private void addTieredBin(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> bin, BlockRegistryObject<?, ?> previousBin, TagKey<Item> circuitTag,
           TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTierNN(bin).getLowerName();
-        MekDataShapedRecipeBuilder.shapedRecipe(bin)
+        MekDataShapedRecipeBuilder.shaped(bin)
               .pattern(BIN_PATTERN)
-              .key(Pattern.PREVIOUS, previousBin)
-              .key(Pattern.COBBLESTONE, this.items, MekanismTags.Items.STONE_CRAFTING_MATERIALS)
-              .key(Pattern.CIRCUIT, this.items, circuitTag)
-              .key(Pattern.ALLOY, this.items, alloyTag)
+              .define(Pattern.PREVIOUS, previousBin)
+              .define(Pattern.COBBLESTONE, this.items, MekanismTags.Items.STONE_CRAFTING_MATERIALS)
+              .define(Pattern.CIRCUIT, this.items, circuitTag)
+              .define(Pattern.ALLOY, this.items, alloyTag)
               .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
               .group(Mekanism.rl("bin"))
               .unlockedBy("has_circuit", has(circuitTag))

@@ -47,9 +47,9 @@ class PlasticStairsRecipeProvider extends BaseSubRecipeProvider {
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, blocks, (color, block) -> {
             Holder<Item> result = block.getItemHolder();
             Holder<Item> plastic = plasticMap.pick(color).getItemHolder();
-            ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
+            ExtendedShapedRecipeBuilder.shaped(result, 4)
                   .pattern(PLASTIC_STAIRS)
-                  .key(Pattern.CONSTANT, plastic)
+                  .define(Pattern.CONSTANT, plastic)
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .group(MekanismAdditions.rl(groupName + "plastic_stairs"))
                   .unlockedBy("has_plastic", has(plastic))

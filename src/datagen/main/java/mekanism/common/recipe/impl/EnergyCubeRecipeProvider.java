@@ -51,12 +51,12 @@ class EnergyCubeRecipeProvider extends BaseSubRecipeProvider {
     private void addTieredEnergyCube(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> energyCube, BlockRegistryObject<?, ?> previousEnergyCube,
           TagKey<Item> ingotTag, TagKey<Item> alloyTag, RecipeCriterion recipeCriterion) {
         String tierName = Attribute.getBaseTierNN(energyCube).getLowerName();
-        MekDataShapedRecipeBuilder.shapedRecipe(energyCube)
+        MekDataShapedRecipeBuilder.shaped(energyCube)
               .pattern(ENERGY_CUBE_PATTERN)
-              .key(Pattern.PREVIOUS, previousEnergyCube)
-              .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
-              .key(Pattern.INGOT, this.items, ingotTag)
-              .key(Pattern.ALLOY, this.items, alloyTag)
+              .define(Pattern.PREVIOUS, previousEnergyCube)
+              .define(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .define(Pattern.INGOT, this.items, ingotTag)
+              .define(Pattern.ALLOY, this.items, alloyTag)
               .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
               .group(Mekanism.rl("energy_cube"))
               .unlockedBy(recipeCriterion)

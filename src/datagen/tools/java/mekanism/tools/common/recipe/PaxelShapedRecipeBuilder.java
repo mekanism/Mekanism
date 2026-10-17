@@ -16,11 +16,11 @@ public class PaxelShapedRecipeBuilder extends ExtendedShapedRecipeBuilder {
         category(RecipeCategory.TOOLS);
     }
 
-    public static PaxelShapedRecipeBuilder shapedRecipe(Holder<Item> result) {
-        return shapedRecipe(result, 1);
+    public static PaxelShapedRecipeBuilder shaped(Holder<Item> result) {
+        return shaped(result, 1);
     }
 
-    public static PaxelShapedRecipeBuilder shapedRecipe(Holder<Item> result, int count) {
+    public static PaxelShapedRecipeBuilder shaped(Holder<Item> result, int count) {
         return new PaxelShapedRecipeBuilder(result, count);
     }
 

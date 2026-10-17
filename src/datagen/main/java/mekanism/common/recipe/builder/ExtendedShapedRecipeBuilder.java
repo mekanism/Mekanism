@@ -1,9 +1,9 @@
 package mekanism.common.recipe.builder;
 
-import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
-import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Holder;
@@ -28,8 +28,8 @@ import org.jetbrains.annotations.Contract;
 
 public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<CraftingBookCategory, CraftingBookInfo, ExtendedShapedRecipeBuilder> {
 
-    private final Char2ObjectMap<Ingredient> key = new Char2ObjectArrayMap<>(9);
-    private final List<String> pattern = new ArrayList<>();
+    private final List<String> rows = new ArrayList<>();
+    private final Map<Character, Ingredient> key = new LinkedHashMap<>();
 
     protected ExtendedShapedRecipeBuilder(Holder<Item> result, int count) {
         super(CraftingBookInfo::new, CraftingBookCategory.MISC, result, count);
@@ -45,77 +45,77 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<CraftingBookC
         return super.category(category).category(RecipeBuilder.determineCraftingBookCategory(category));
     }
 
-    public static ExtendedShapedRecipeBuilder shapedRecipe(BlockRegistryObject<?, ?> result) {
-        return shapedRecipe(result, 1);
+    public static ExtendedShapedRecipeBuilder shaped(BlockRegistryObject<?, ?> result) {
+        return shaped(result, 1);
     }
 
-    public static ExtendedShapedRecipeBuilder shapedRecipe(BlockRegistryObject<?, ?> result, int count) {
-        return shapedRecipe(result.getItemHolder(), count);
+    public static ExtendedShapedRecipeBuilder shaped(BlockRegistryObject<?, ?> result, int count) {
+        return shaped(result.getItemHolder(), count);
     }
 
-    public static ExtendedShapedRecipeBuilder shapedRecipe(HolderGetter<Item> lookup, ResourceKey<Item> result) {
-        return shapedRecipe(lookup, result, 1);
+    public static ExtendedShapedRecipeBuilder shaped(HolderGetter<Item> lookup, ResourceKey<Item> result) {
+        return shaped(lookup, result, 1);
     }
 
-    public static ExtendedShapedRecipeBuilder shapedRecipe(HolderGetter<Item> lookup, ResourceKey<Item> result, int count) {
-        return shapedRecipe(lookup.getOrThrow(result), count);
+    public static ExtendedShapedRecipeBuilder shaped(HolderGetter<Item> lookup, ResourceKey<Item> result, int count) {
+        return shaped(lookup.getOrThrow(result), count);
     }
 
-    public static ExtendedShapedRecipeBuilder shapedRecipe(Holder<Item> result) {
-        return shapedRecipe(result, 1);
+    public static ExtendedShapedRecipeBuilder shaped(Holder<Item> result) {
+        return shaped(result, 1);
     }
 
-    public static ExtendedShapedRecipeBuilder shapedRecipe(Holder<Item> result, int count) {
+    public static ExtendedShapedRecipeBuilder shaped(Holder<Item> result, int count) {
         return new ExtendedShapedRecipeBuilder(result, count);
     }
 
-    public static ExtendedShapedRecipeBuilder shapedRecipe(ItemStackTemplate result) {
+    public static ExtendedShapedRecipeBuilder shaped(ItemStackTemplate result) {
         return new ExtendedShapedRecipeBuilder(result);
     }
 
     public ExtendedShapedRecipeBuilder pattern(RecipePattern pattern) {
-        if (!this.pattern.isEmpty()) {
+        if (!this.rows.isEmpty()) {
             throw new IllegalArgumentException("Recipe pattern has already been set!");
         }
-        this.pattern.add(pattern.row1);
+        this.rows.add(pattern.row1);
         if (pattern.row2 != null) {
-            this.pattern.add(pattern.row2);
+            this.rows.add(pattern.row2);
             if (pattern.row3 != null) {
-                this.pattern.add(pattern.row3);
+                this.rows.add(pattern.row3);
             }
         }
         return this;
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> lookup, BlockItemId id) {
-        return key(symbol, lookup, id.item());
+    public ExtendedShapedRecipeBuilder define(Character symbol, HolderGetter<Item> lookup, BlockItemId id) {
+        return define(symbol, lookup, id.item());
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> lookup, ResourceKey<Item> id) {
-        return key(symbol, ingredient(lookup, id));
+    public ExtendedShapedRecipeBuilder define(Character symbol, HolderGetter<Item> lookup, ResourceKey<Item> id) {
+        return define(symbol, ingredient(lookup, id));
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> lookup, BlockItemTagId id) {
-        return key(symbol, lookup, id.item());
+    public ExtendedShapedRecipeBuilder define(Character symbol, HolderGetter<Item> lookup, BlockItemTagId id) {
+        return define(symbol, lookup, id.item());
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> lookup, TagKey<Item> tag) {
-        return key(symbol, lookup.getOrThrow(tag));
+    public ExtendedShapedRecipeBuilder define(Character symbol, HolderGetter<Item> lookup, TagKey<Item> tag) {
+        return define(symbol, lookup.getOrThrow(tag));
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, HolderSet<Item> tag) {
-        return key(symbol, Ingredient.of(tag));
+    public ExtendedShapedRecipeBuilder define(Character symbol, HolderSet<Item> tag) {
+        return define(symbol, Ingredient.of(tag));
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, BlockRegistryObject<?, ?> block) {
-        return key(symbol, block.getItemHolder());
+    public ExtendedShapedRecipeBuilder define(Character symbol, BlockRegistryObject<?, ?> block) {
+        return define(symbol, block.getItemHolder());
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, Holder<Item> item) {
-        return key(symbol, ingredient(item));
+    public ExtendedShapedRecipeBuilder define(Character symbol, Holder<Item> item) {
+        return define(symbol, ingredient(item));
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, Ingredient ingredient) {
+    public ExtendedShapedRecipeBuilder define(Character symbol, Ingredient ingredient) {
         if (key.containsKey(symbol)) {
             throw new IllegalArgumentException("Symbol '" + symbol + "' is already defined!");
         } else if (symbol == ' ') {
@@ -130,7 +130,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<CraftingBookC
         return wrapRecipe(
               commonInfo(),
               bookInfo(),
-              ShapedRecipePattern.of(this.key, this.pattern),
+              ShapedRecipePattern.of(this.key, this.rows),
               this.result
         );
     }

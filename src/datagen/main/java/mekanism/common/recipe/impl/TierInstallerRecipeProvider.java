@@ -36,12 +36,12 @@ class TierInstallerRecipeProvider extends BaseSubRecipeProvider {
 
     private void addTierInstallerRecipe(RecipeOutput consumer, String basePath, ItemRegistryObject<ItemTierInstaller> tierInstaller, TagKey<Item> ingotTag,
           TagKey<Item> alloyTag, TagKey<Item> circuitTag) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(tierInstaller)
+        ExtendedShapedRecipeBuilder.shaped(tierInstaller)
               .pattern(MekanismRecipeProvider.TIER_PATTERN)
-              .key(Pattern.PREVIOUS, this.items, ItemTags.PLANKS)
-              .key(Pattern.CIRCUIT, this.items, circuitTag)
-              .key(Pattern.INGOT, this.items, ingotTag)
-              .key(Pattern.ALLOY, this.items, alloyTag)
+              .define(Pattern.PREVIOUS, this.items, ItemTags.PLANKS)
+              .define(Pattern.CIRCUIT, this.items, circuitTag)
+              .define(Pattern.INGOT, this.items, ingotTag)
+              .define(Pattern.ALLOY, this.items, alloyTag)
               .category(RecipeCategory.TOOLS)
               .group(Mekanism.rl("tier_installer"))
               .unlockedBy("has_circuit", has(circuitTag))

@@ -34,13 +34,13 @@ class FluidTankRecipeProvider extends BaseSubRecipeProvider {
     public void addRecipes(RecipeOutput consumer) {
         String basePath = "fluid_tank/";
         //Note: For the basic fluid tank, we have to handle the empty slot differently than batching it against our fluid tank pattern
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BASIC_FLUID_TANK)
+        ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.BASIC_FLUID_TANK)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY),
                     TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT),
                     TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY))
-              ).key(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
-              .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
+              ).define(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
+              .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
               .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
               .group(Mekanism.rl("fluid_tank"))
               .unlockedBy("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
@@ -52,11 +52,11 @@ class FluidTankRecipeProvider extends BaseSubRecipeProvider {
 
     private void addTieredFluidTank(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> tank, BlockRegistryObject<?, ?> previousTank, TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTierNN(tank).getLowerName();
-        MekDataShapedRecipeBuilder.shapedRecipe(tank)
+        MekDataShapedRecipeBuilder.shaped(tank)
               .pattern(FLUID_TANK_PATTERN)
-              .key(Pattern.PREVIOUS, previousTank)
-              .key(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
-              .key(Pattern.ALLOY, this.items, alloyTag)
+              .define(Pattern.PREVIOUS, previousTank)
+              .define(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
+              .define(Pattern.ALLOY, this.items, alloyTag)
               .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
               .group(Mekanism.rl("fluid_tank"))
               .unlockedBy("has_alloy", has(alloyTag))

@@ -188,16 +188,16 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
             //From packing unpacking
             fromPackingUnpacking(consumer, basePath + "ingot/", block, nugget, nuggetTag, ingot);
             // to block
-            ExtendedShapedRecipeBuilder.shapedRecipe(block)
+            ExtendedShapedRecipeBuilder.shaped(block)
                   .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
-                  .key(Pattern.PREVIOUS, ingot)
-                  .key(Pattern.CONSTANT, this.items, ingotTag)
+                  .define(Pattern.PREVIOUS, ingot)
+                  .define(Pattern.CONSTANT, this.items, ingotTag)
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .unlockedBy(hasCriterion(ingot))
                   .save(consumer, Mekanism.rl(basePath + "storage_blocks/from_ingots"));
             // to nuggets
-            ExtendedShapelessRecipeBuilder.shapelessRecipe(nugget, 9)
-                  .addIngredient(ingot)
+            ExtendedShapelessRecipeBuilder.shapeless(nugget, 9)
+                  .requires(ingot)
                   .unlockedBy(hasCriterion(ingot))
                   .save(consumer, Mekanism.rl(basePath + "nugget/from_ingot"));
             Identifier ingotGroup = ingot.key().identifier();
@@ -210,15 +210,15 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
             RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.ingredient(raw), ingot, dustExperience * 2, 200,
                   ingotGroup, Mekanism.rl(basePath + "ingot/from_raw"), hasCriterion(raw));
             // raw from raw block
-            ExtendedShapelessRecipeBuilder.shapelessRecipe(raw, 9)
-                  .addIngredient(rawBlock)
+            ExtendedShapelessRecipeBuilder.shapeless(raw, 9)
+                  .requires(rawBlock)
                   .unlockedBy(hasCriterion(rawBlock))
                   .save(consumer, Mekanism.rl(basePath + "raw/from_raw_block"));
             // raw to raw block
-            ExtendedShapedRecipeBuilder.shapedRecipe(rawBlock)
+            ExtendedShapedRecipeBuilder.shaped(rawBlock)
                   .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
-                  .key(Pattern.PREVIOUS, raw)
-                  .key(Pattern.CONSTANT, this.items, rawTag)
+                  .define(Pattern.PREVIOUS, raw)
+                  .define(Pattern.CONSTANT, this.items, rawTag)
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .unlockedBy(hasCriterion(raw))
                   .save(consumer, Mekanism.rl(basePath + "raw_storage_blocks/from_raw"));
@@ -512,16 +512,16 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
 
     private void fromPackingUnpacking(RecipeOutput consumer, String basePath, Holder<Item> block, Holder<Item> nugget, TagKey<Item> nuggetTag, Holder<Item> result) {
         //from block
-        ExtendedShapelessRecipeBuilder.shapelessRecipe(result, 9)
-              .addIngredient(block)
+        ExtendedShapelessRecipeBuilder.shapeless(result, 9)
+              .requires(block)
               .group(result.key().identifier())
               .unlockedBy(hasCriterion(block))
               .save(consumer, Mekanism.rl(basePath + "from_block"));
         //from nuggets
-        ExtendedShapedRecipeBuilder.shapedRecipe(result)
+        ExtendedShapedRecipeBuilder.shaped(result)
               .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
-              .key(Pattern.PREVIOUS, nugget)
-              .key(Pattern.CONSTANT, this.items, nuggetTag)
+              .define(Pattern.PREVIOUS, nugget)
+              .define(Pattern.CONSTANT, this.items, nuggetTag)
               .group(result.key().identifier())
               .unlockedBy(hasCriterion(nugget))
               .save(consumer, Mekanism.rl(basePath + "from_nuggets"));
@@ -622,8 +622,8 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
               MekanismItems.FLUORITE_DUST, MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, 6, 14,
               Tags.Items.COBBLESTONES_NORMAL);
         //Gem from block
-        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.FLUORITE_GEM, 9)
-              .addIngredient(MekanismBlocks.FLUORITE_BLOCK)
+        ExtendedShapelessRecipeBuilder.shapeless(MekanismItems.FLUORITE_GEM, 9)
+              .requires(MekanismBlocks.FLUORITE_BLOCK)
               .unlockedBy(hasCriterion(MekanismItems.FLUORITE_GEM))
               .save(consumer, Mekanism.rl(basePath + "from_block"));
     }

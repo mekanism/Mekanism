@@ -49,12 +49,12 @@ class FactoryRecipeProvider extends BaseSubRecipeProvider {
 
     private void addFactoryRecipe(RecipeOutput consumer, String basePath, FactoryType type, BlockRegistryObject<?, ?> factory, BlockRegistryObject<?, ?> toUpgrade, TagKey<Item> ingotTag,
           TagKey<Item> alloyTag, TagKey<Item> circuitTag) {
-        MekDataShapedRecipeBuilder.shapedRecipe(factory)
+        MekDataShapedRecipeBuilder.shaped(factory)
               .pattern(MekanismRecipeProvider.TIER_PATTERN)
-              .key(Pattern.PREVIOUS, toUpgrade)
-              .key(Pattern.CIRCUIT, this.items, circuitTag)
-              .key(Pattern.INGOT, this.items, ingotTag)
-              .key(Pattern.ALLOY, this.items, alloyTag)
+              .define(Pattern.PREVIOUS, toUpgrade)
+              .define(Pattern.CIRCUIT, this.items, circuitTag)
+              .define(Pattern.INGOT, this.items, ingotTag)
+              .define(Pattern.ALLOY, this.items, alloyTag)
               .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
               .group(Mekanism.rl(type.getSerializedName()))
               .unlockedBy("has_circuit", has(circuitTag))

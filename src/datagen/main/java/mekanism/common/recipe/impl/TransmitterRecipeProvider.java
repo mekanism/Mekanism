@@ -39,22 +39,22 @@ class TransmitterRecipeProvider extends BaseSubRecipeProvider {
         addThermodynamicConductorRecipes(consumer, basePath + "thermodynamic_conductor/", "thermodynamic_conductor");
         addUniversalCableRecipes(consumer, basePath + "universal_cable/", "universal_cable");
         //Diversion
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.DIVERSION_TRANSPORTER, 2)
+        ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.DIVERSION_TRANSPORTER, 2)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.REDSTONE, Pattern.REDSTONE, Pattern.REDSTONE),
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL),
                     TripleLine.of(Pattern.REDSTONE, Pattern.REDSTONE, Pattern.REDSTONE))
-              ).key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
-              .key(Pattern.CONSTANT, this.items, Tags.Items.BARS)
+              ).define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
+              .define(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
+              .define(Pattern.CONSTANT, this.items, Tags.Items.BARS)
               .category(RecipeCategory.REDSTONE)
               .unlockedBy("has_steel_ingot", has(MekanismTags.Items.INGOTS_STEEL))
               .save(consumer, Mekanism.rl(basePath + "diversion_transporter"));
         //Restrictive
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RESTRICTIVE_TRANSPORTER, 2)
+        ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.RESTRICTIVE_TRANSPORTER, 2)
               .pattern(BASIC_TRANSMITTER_PATTERN)
-              .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.CONSTANT, this.items, Tags.Items.BARS)
+              .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
+              .define(Pattern.CONSTANT, this.items, Tags.Items.BARS)
               .category(RecipeCategory.REDSTONE)//Use the redstone category so it shows up with hoppers
               .unlockedBy("has_steel_ingot", has(MekanismTags.Items.INGOTS_STEEL))
               .save(consumer, Mekanism.rl(basePath + "restrictive_transporter"));
@@ -96,10 +96,10 @@ class TransmitterRecipeProvider extends BaseSubRecipeProvider {
     }
 
     private void addBasicTransmitterRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> transmitter, TagKey<Item> itemTag, String group) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
+        ExtendedShapedRecipeBuilder.shaped(transmitter, 8)
               .pattern(BASIC_TRANSMITTER_PATTERN)
-              .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.CONSTANT, this.items, itemTag)
+              .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
+              .define(Pattern.CONSTANT, this.items, itemTag)
               .category(RecipeCategory.REDSTONE)//Use the redstone category so it shows up with hoppers
               .group(Mekanism.rl(group))
               .unlockedBy("has_steel_ingot", has(MekanismTags.Items.INGOTS_STEEL))
@@ -108,10 +108,10 @@ class TransmitterRecipeProvider extends BaseSubRecipeProvider {
 
     private void addTransmitterUpgradeRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> transmitter, BlockRegistryObject<?, ?> previousTransmitter,
           TagKey<Item> alloyTag, String group) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
+        ExtendedShapedRecipeBuilder.shaped(transmitter, 8)
               .pattern(TRANSMITTER_UPGRADE_PATTERN)
-              .key(Pattern.PREVIOUS, previousTransmitter)
-              .key(Pattern.ALLOY, this.items, alloyTag)
+              .define(Pattern.PREVIOUS, previousTransmitter)
+              .define(Pattern.ALLOY, this.items, alloyTag)
               .category(RecipeCategory.REDSTONE)//Use the redstone category so it shows up with hoppers
               .group(Mekanism.rl(group))
               .unlockedBy("has_alloy", has(alloyTag))

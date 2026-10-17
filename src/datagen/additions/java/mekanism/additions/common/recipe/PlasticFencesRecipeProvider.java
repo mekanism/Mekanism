@@ -47,10 +47,10 @@ class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_FENCES, (color, fence) -> {
             Holder<Item> result = fence.getItemHolder();
             BlockRegistryObject<BlockPlastic, BlockItem> plastic = AdditionsBlocks.PLASTIC_BLOCKS.pick(color);
-            ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
+            ExtendedShapedRecipeBuilder.shaped(result, 3)
                   .pattern(PLASTIC_FENCE)
-                  .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
-                  .key(Pattern.CONSTANT, plastic)
+                  .define(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
+                  .define(Pattern.CONSTANT, plastic)
                   .category(RecipeCategory.DECORATIONS)
                   .group(MekanismAdditions.rl("plastic_fences"))
                   .unlockedBy("has_plastic", has(plastic))
@@ -64,10 +64,10 @@ class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_FENCE_GATES, (color, fenceGate) -> {
             Holder<Item> result = fenceGate.getItemHolder();
             BlockRegistryObject<BlockPlastic, BlockItem> plastic = AdditionsBlocks.PLASTIC_BLOCKS.pick(color);
-            ExtendedShapedRecipeBuilder.shapedRecipe(result)
+            ExtendedShapedRecipeBuilder.shaped(result)
                   .pattern(PLASTIC_FENCE_GATE)
-                  .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
-                  .key(Pattern.CONSTANT, plastic)
+                  .define(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
+                  .define(Pattern.CONSTANT, plastic)
                   .category(RecipeCategory.REDSTONE)
                   .group(MekanismAdditions.rl("plastic_fence_gates"))
                   .unlockedBy("has_plastic", has(plastic))

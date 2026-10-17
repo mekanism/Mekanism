@@ -36,13 +36,13 @@ class ChemicalTankRecipeProvider extends BaseSubRecipeProvider {
         String basePath = "chemical_tank/";
         TagKey<Item> osmiumIngot = MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM);
         //Note: For the basic chemical tank, we have to handle the empty slot differently than batching it against our chemical tank pattern
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BASIC_CHEMICAL_TANK)
+        ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.BASIC_CHEMICAL_TANK)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY),
                     TripleLine.of(Pattern.OSMIUM, Pattern.EMPTY, Pattern.OSMIUM),
                     TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY))
-              ).key(Pattern.OSMIUM, this.items, osmiumIngot)
-              .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
+              ).define(Pattern.OSMIUM, this.items, osmiumIngot)
+              .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
               .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
               .group(Mekanism.rl("chemical_tank"))
               .unlockedBy("has_osmium_ingot", has(osmiumIngot))
@@ -54,11 +54,11 @@ class ChemicalTankRecipeProvider extends BaseSubRecipeProvider {
 
     private void addTieredChemicalTank(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> tank, BlockRegistryObject<?, ?> previousTank, TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTierNN(tank).getLowerName();
-        MekDataShapedRecipeBuilder.shapedRecipe(tank)
+        MekDataShapedRecipeBuilder.shaped(tank)
               .pattern(CHEMICAL_TANK_PATTERN)
-              .key(Pattern.PREVIOUS, previousTank)
-              .key(Pattern.OSMIUM, this.items, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM))
-              .key(Pattern.ALLOY, this.items, alloyTag)
+              .define(Pattern.PREVIOUS, previousTank)
+              .define(Pattern.OSMIUM, this.items, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              .define(Pattern.ALLOY, this.items, alloyTag)
               .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
               .group(Mekanism.rl("chemical_tank"))
               .unlockedBy("has_alloy", has(alloyTag))

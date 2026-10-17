@@ -40,24 +40,24 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
         addInductionCellRecipes(consumer, basePath + "cell/");
         addInductionProviderRecipes(consumer, basePath + "provider/");
         //Casing
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.INDUCTION_CASING, 4)
+        ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.INDUCTION_CASING, 4)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(Pattern.STEEL, Pattern.ENERGY, Pattern.STEEL),
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
-              ).key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              ).define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
+              .define(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy(hasCriterion(MekanismItems.ENERGY_TABLET))
               .save(consumer, Mekanism.rl(basePath + "casing"));
         //Port
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.INDUCTION_PORT, 2)
+        ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.INDUCTION_PORT, 2)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
                     TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT),
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
-              ).key(Pattern.CONSTANT, MekanismBlocks.INDUCTION_CASING)
-              .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ELITE)
+              ).define(Pattern.CONSTANT, MekanismBlocks.INDUCTION_CASING)
+              .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ELITE)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
               .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ELITE))
@@ -66,14 +66,14 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
 
     private void addInductionCellRecipes(RecipeOutput consumer, String basePath) {
         //Basic needs to be handled slightly differently
-        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BASIC_INDUCTION_CELL)
+        MekDataShapedRecipeBuilder.shaped(MekanismBlocks.BASIC_INDUCTION_CELL)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.LITHIUM, Pattern.ENERGY, Pattern.LITHIUM),
                     TripleLine.of(Pattern.ENERGY, Pattern.CONSTANT, Pattern.ENERGY),
                     TripleLine.of(Pattern.LITHIUM, Pattern.ENERGY, Pattern.LITHIUM))
-              ).key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
-              .key(Pattern.LITHIUM, this.items, MekanismTags.Items.DUSTS_LITHIUM)
-              .key(Pattern.CONSTANT, MekanismBlocks.BASIC_ENERGY_CUBE)
+              ).define(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .define(Pattern.LITHIUM, this.items, MekanismTags.Items.DUSTS_LITHIUM)
+              .define(Pattern.CONSTANT, MekanismBlocks.BASIC_ENERGY_CUBE)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .group(Mekanism.rl("induction_cell"))
               .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
@@ -87,11 +87,11 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
     private void addTieredInductionCellRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> cell, BlockRegistryObject<?, ?> previousCell,
           BlockRegistryObject<?, ?> energyCube) {
         String tierName = Attribute.getBaseTierNN(cell).getLowerName();
-        MekDataShapedRecipeBuilder.shapedRecipe(cell)
+        MekDataShapedRecipeBuilder.shaped(cell)
               .pattern(INDUCTION_CELL_PATTERN)
-              .key(Pattern.PREVIOUS, previousCell)
-              .key(Pattern.CONSTANT, energyCube)
-              .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .define(Pattern.PREVIOUS, previousCell)
+              .define(Pattern.CONSTANT, energyCube)
+              .define(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .group(Mekanism.rl("induction_cell"))
               .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
@@ -101,14 +101,14 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
 
     private void addInductionProviderRecipes(RecipeOutput consumer, String basePath) {
         //Basic needs to be handled slightly differently
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BASIC_INDUCTION_PROVIDER)
+        ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.BASIC_INDUCTION_PROVIDER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.LITHIUM, Pattern.CIRCUIT, Pattern.LITHIUM),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.LITHIUM, Pattern.CIRCUIT, Pattern.LITHIUM))
-              ).key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
-              .key(Pattern.LITHIUM, this.items, MekanismTags.Items.DUSTS_LITHIUM)
-              .key(Pattern.CONSTANT, MekanismBlocks.BASIC_ENERGY_CUBE)
+              ).define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
+              .define(Pattern.LITHIUM, this.items, MekanismTags.Items.DUSTS_LITHIUM)
+              .define(Pattern.CONSTANT, MekanismBlocks.BASIC_ENERGY_CUBE)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .group(Mekanism.rl("induction_provider"))
               .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
@@ -122,11 +122,11 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
     private void addTieredInductionProviderRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> provider, BlockRegistryObject<?, ?> previousProvider,
           BlockRegistryObject<?, ?> energyCube, TagKey<Item> circuitTag) {
         String tierName = Attribute.getBaseTierNN(provider).getLowerName();
-        ExtendedShapedRecipeBuilder.shapedRecipe(provider)
+        ExtendedShapedRecipeBuilder.shaped(provider)
               .pattern(INDUCTION_PROVIDER_PATTERN)
-              .key(Pattern.PREVIOUS, previousProvider)
-              .key(Pattern.CONSTANT, energyCube)
-              .key(Pattern.CIRCUIT, this.items, circuitTag)
+              .define(Pattern.PREVIOUS, previousProvider)
+              .define(Pattern.CONSTANT, energyCube)
+              .define(Pattern.CIRCUIT, this.items, circuitTag)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .group(Mekanism.rl("induction_provider"))
               .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))

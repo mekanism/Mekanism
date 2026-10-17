@@ -55,23 +55,23 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
 
     @Override
     protected void addRecipes() {
-        ExtendedShapedRecipeBuilder.shapedRecipe(AdditionsItems.WALKIE_TALKIE)
+        ExtendedShapedRecipeBuilder.shaped(AdditionsItems.WALKIE_TALKIE)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.EMPTY, Pattern.OSMIUM),
                     TripleLine.of(Pattern.STEEL, Pattern.CIRCUIT, Pattern.STEEL),
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
-              ).key(Pattern.OSMIUM, osmiumIngot(this.items))
-              .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
-              .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
+              ).define(Pattern.OSMIUM, osmiumIngot(this.items))
+              .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
+              .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
               .save(output);
-        ExtendedShapedRecipeBuilder.shapedRecipe(AdditionsBlocks.OBSIDIAN_TNT)
+        ExtendedShapedRecipeBuilder.shaped(AdditionsBlocks.OBSIDIAN_TNT)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR),
                     TripleLine.of(TNT_CHAR, TNT_CHAR, TNT_CHAR),
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR))
-              ).key(OBSIDIAN_CHAR, this.items, Tags.Items.OBSIDIANS_NORMAL)
-              .key(TNT_CHAR, this.items, BlockItemIds.TNT)
+              ).define(OBSIDIAN_CHAR, this.items, Tags.Items.OBSIDIANS_NORMAL)
+              .define(TNT_CHAR, this.items, BlockItemIds.TNT)
               .category(RecipeCategory.REDSTONE)
               .unlockedBy("has_gunpowder", has(ItemIds.GUNPOWDER))
               .unlockedBy("has_tnt", has(BlockItemIds.TNT))
@@ -99,17 +99,17 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
             Ingredient recolorInput = difference(allBalloons, balloon);
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
-                ExtendedShapelessRecipeBuilder.shapelessRecipe(balloon, 2)
-                      .addIngredient(this.items, Tags.Items.LEATHERS)
-                      .addIngredient(this.items, Tags.Items.STRINGS)
-                      .addIngredient(this.items, dye.getTag())
+                ExtendedShapelessRecipeBuilder.shapeless(balloon, 2)
+                      .requires(this.items, Tags.Items.LEATHERS)
+                      .requires(this.items, Tags.Items.STRINGS)
+                      .requires(this.items, dye.getTag())
                       .category(RecipeCategory.DECORATIONS)
                       .group(MekanismAdditions.rl("balloon"))
                       .unlockedBy("has_leather", has(Tags.Items.LEATHERS))
                       .save(output, MekanismAdditions.rl(basePath + colorString));
-                ExtendedShapelessRecipeBuilder.shapelessRecipe(balloon)
-                      .addIngredient(recolorInput)
-                      .addIngredient(this.items, dye.getTag())
+                ExtendedShapelessRecipeBuilder.shapeless(balloon)
+                      .requires(recolorInput)
+                      .requires(this.items, dye.getTag())
                       .category(RecipeCategory.DECORATIONS)
                       .group(MekanismAdditions.rl("balloon_recolor"))
                       .unlockedBy("has_needed_dye", has(dye.getTag()))
@@ -131,12 +131,12 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
             Holder<Item> glowPanel = block.getItemHolder();
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
-                ExtendedShapedRecipeBuilder.shapedRecipe(glowPanel, 2)
+                ExtendedShapedRecipeBuilder.shaped(glowPanel, 2)
                       .pattern(GLOW_PANEL)
-                      .key(PLASTIC_SHEET_CHAR, MekanismItems.HDPE_SHEET)
-                      .key(GLASS_PANES_CHAR, this.items, Tags.Items.GLASS_PANES)
-                      .key(Pattern.GLOWSTONE, this.items, Tags.Items.DUSTS_GLOWSTONE)
-                      .key(Pattern.DYE, this.items, dye.getTag())
+                      .define(PLASTIC_SHEET_CHAR, MekanismItems.HDPE_SHEET)
+                      .define(GLASS_PANES_CHAR, this.items, Tags.Items.GLASS_PANES)
+                      .define(Pattern.GLOWSTONE, this.items, Tags.Items.DUSTS_GLOWSTONE)
+                      .define(Pattern.DYE, this.items, dye.getTag())
                       .category(RecipeCategory.BUILDING_BLOCKS)
                       .group(MekanismAdditions.rl("glow_panels"))
                       .unlockedBy("has_plastic", has(MekanismItems.HDPE_PELLET))

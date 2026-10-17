@@ -130,27 +130,27 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         armor(LEGGINGS, armor.leggings(), ingot).save(output, MekanismTools.rl(baseArmorPath + "leggings"));
         armor(BOOTS, armor.boots(), ingot).save(output, MekanismTools.rl(baseArmorPath + "boots"));
 
-        ExtendedShapedRecipeBuilder.shapedRecipe(armor.horse())
+        ExtendedShapedRecipeBuilder.shaped(armor.horse())
               .pattern(HORSE_ARMOR)
-              .key(Pattern.PREVIOUS, this.items, baseHorseArmor)
-              .key(Pattern.INGOT, this.items, ingot)
+              .define(Pattern.PREVIOUS, this.items, baseHorseArmor)
+              .define(Pattern.INGOT, this.items, ingot)
               .category(RecipeCategory.COMBAT)
               .unlockedBy("has_horse_armor", has(baseHorseArmor))
               .save(output, MekanismTools.rl(baseArmorPath + "horse"));
-        ExtendedShapedRecipeBuilder.shapedRecipe(armor.nautilus())
+        ExtendedShapedRecipeBuilder.shaped(armor.nautilus())
               .pattern(NAUTILUS_ARMOR)
-              .key(Pattern.PREVIOUS, this.items, baseNautilusArmor)
-              .key(Pattern.INGOT, this.items, ingot)
-              .key(Pattern.NUGGET, this.items, nuggetTag == null ? ingot : nuggetTag)
+              .define(Pattern.PREVIOUS, this.items, baseNautilusArmor)
+              .define(Pattern.INGOT, this.items, ingot)
+              .define(Pattern.NUGGET, this.items, nuggetTag == null ? ingot : nuggetTag)
               .category(RecipeCategory.COMBAT)
               .unlockedBy("has_nautilus_armor", has(baseNautilusArmor))
               .save(output, MekanismTools.rl(baseArmorPath + "nautilus"));
 
         ItemRegistryObject<ShieldItem> shield = material.tools.shield();
-        ExtendedShapedRecipeBuilder.shapedRecipe(shield)
+        ExtendedShapedRecipeBuilder.shaped(shield)
               .pattern(SHIELD)
-              .key(Pattern.PREVIOUS, this.items, ItemIds.SHIELD)
-              .key(Pattern.INGOT, this.items, ingot)
+              .define(Pattern.PREVIOUS, this.items, ItemIds.SHIELD)
+              .define(Pattern.INGOT, this.items, ingot)
               .category(RecipeCategory.COMBAT)
               .unlockedBy(hasCriterion(ItemIds.SHIELD))
               .unlockedBy("has_ingot", has(ingot))
@@ -168,12 +168,12 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         tool(SHOVEL, tools.shovel(), ingot, RecipeCategory.TOOLS).category(RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "shovel"));
         tool(HOE, tools.hoe(), ingot, RecipeCategory.TOOLS).category(RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "hoe"));
         //TODO - 1.20.5: Do we care this no longer accepts tools from other mods?
-        PaxelShapedRecipeBuilder.shapedRecipe(tools.paxel())
+        PaxelShapedRecipeBuilder.shaped(tools.paxel())
               .pattern(PAXEL)
-              .key(AXE_CHAR, tools.axe())
-              .key(PICKAXE_CHAR, tools.pickaxe())
-              .key(SHOVEL_CHAR, tools.shovel())
-              .key(ROD_CHAR, this.items, Tags.Items.RODS_WOODEN)
+              .define(AXE_CHAR, tools.axe())
+              .define(PICKAXE_CHAR, tools.pickaxe())
+              .define(SHOVEL_CHAR, tools.shovel())
+              .define(ROD_CHAR, this.items, Tags.Items.RODS_WOODEN)
               .category(RecipeCategory.TOOLS)
               .unlockedBy("has_ingot", has(ingot))
               .save(output, MekanismTools.rl(baseToolsPath + "paxel"));
@@ -209,12 +209,12 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
 
     private void registerVanillaPaxel(Holder<Item> paxel, ResourceKey<Item> axe, ResourceKey<Item> pickaxe, ResourceKey<Item> shovel, RecipeCriterion criterion,
           @Nullable ResourceKey<Item> nugget) {
-        PaxelShapedRecipeBuilder.shapedRecipe(paxel)
+        PaxelShapedRecipeBuilder.shaped(paxel)
               .pattern(PAXEL)
-              .key(AXE_CHAR, this.items, axe)
-              .key(PICKAXE_CHAR, this.items, pickaxe)
-              .key(SHOVEL_CHAR, this.items, shovel)
-              .key(ROD_CHAR, this.items, Tags.Items.RODS_WOODEN)
+              .define(AXE_CHAR, this.items, axe)
+              .define(PICKAXE_CHAR, this.items, pickaxe)
+              .define(SHOVEL_CHAR, this.items, shovel)
+              .define(ROD_CHAR, this.items, Tags.Items.RODS_WOODEN)
               .category(RecipeCategory.TOOLS)
               .unlockedBy(criterion)
               .save(output);
@@ -227,18 +227,18 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
     }
 
     private ExtendedShapedRecipeBuilder armor(RecipePattern pattern, Holder<Item> armor, TagKey<Item> ingot) {
-        return ExtendedShapedRecipeBuilder.shapedRecipe(armor)
+        return ExtendedShapedRecipeBuilder.shaped(armor)
               .pattern(pattern)
-              .key(Pattern.INGOT, this.items, ingot)
+              .define(Pattern.INGOT, this.items, ingot)
               .category(RecipeCategory.COMBAT)
               .unlockedBy("has_ingot", has(ingot));
     }
 
     private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, Holder<Item> tool, TagKey<Item> ingot, RecipeCategory category) {
-        return ExtendedShapedRecipeBuilder.shapedRecipe(tool)
+        return ExtendedShapedRecipeBuilder.shaped(tool)
               .pattern(pattern)
-              .key(Pattern.INGOT, this.items, ingot)
-              .key(ROD_CHAR, this.items, Tags.Items.RODS_WOODEN)
+              .define(Pattern.INGOT, this.items, ingot)
+              .define(ROD_CHAR, this.items, Tags.Items.RODS_WOODEN)
               .category(category)
               .unlockedBy("has_ingot", has(ingot));
     }

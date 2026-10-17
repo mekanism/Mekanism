@@ -83,10 +83,10 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
             Holder<Item> result = block.getItemHolder();
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
-                ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
+                ExtendedShapedRecipeBuilder.shaped(result, 4)
                       .pattern(PLASTIC)
-                      .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
-                      .key(Pattern.DYE, this.items, dye.getTag())
+                      .define(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
+                      .define(Pattern.DYE, this.items, dye.getTag())
                       .category(RecipeCategory.BUILDING_BLOCKS)
                       .group(MekanismAdditions.rl("plastic"))
                       .unlockedBy("has_plastic", has(MekanismItems.HDPE_PELLET))
@@ -103,10 +103,10 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
             Holder<Item> result = block.getItemHolder();
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
-                ExtendedShapedRecipeBuilder.shapedRecipe(result, 8)
+                ExtendedShapedRecipeBuilder.shaped(result, 8)
                       .pattern(PLASTIC_TRANSPARENT)
-                      .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
-                      .key(Pattern.DYE, this.items, dye.getTag())
+                      .define(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
+                      .define(Pattern.DYE, this.items, dye.getTag())
                       .category(RecipeCategory.BUILDING_BLOCKS)
                       .group(MekanismAdditions.rl("transparent_plastic"))
                       .unlockedBy("has_plastic", has(MekanismItems.HDPE_PELLET))
@@ -121,9 +121,9 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
         HolderSet<Item> glowTag = this.items.getOrThrow(AdditionsTags.BlockItems.PLASTIC_BLOCKS_GLOW.item());
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, (color, block) -> {
             Holder<Item> result = block.getItemHolder();
-            ExtendedShapelessRecipeBuilder.shapelessRecipe(result, 3)
-                  .addIngredient(AdditionsBlocks.PLASTIC_BLOCKS.pick(color), 3)
-                  .addIngredient(this.items, Tags.Items.DUSTS_GLOWSTONE)
+            ExtendedShapelessRecipeBuilder.shapeless(result, 3)
+                  .requires(AdditionsBlocks.PLASTIC_BLOCKS.pick(color), 3)
+                  .requires(this.items, Tags.Items.DUSTS_GLOWSTONE)
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .group(MekanismAdditions.rl("glow_plastic"))
                   .unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
@@ -137,10 +137,10 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS, (color, block) -> {
             Holder<Item> result = block.getItemHolder();
             BlockRegistryObject<BlockPlastic, BlockItem> plastic = AdditionsBlocks.PLASTIC_BLOCKS.pick(color);
-            ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
+            ExtendedShapedRecipeBuilder.shaped(result, 4)
                   .pattern(REINFORCED_PLASTIC)
-                  .key(Pattern.OSMIUM, this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.OSMIUM))
-                  .key(Pattern.CONSTANT, plastic)
+                  .define(Pattern.OSMIUM, this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.OSMIUM))
+                  .define(Pattern.CONSTANT, plastic)
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .group(MekanismAdditions.rl("reinforced_plastic"))
                   .unlockedBy("has_plastic", has(plastic))
@@ -154,10 +154,10 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_ROADS, (color, block) -> {
             Holder<Item> result = block.getItemHolder();
             Holder<Item> slickPlastic = AdditionsBlocks.SLICK_PLASTIC_BLOCKS.pick(color).getItemHolder();
-            ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
+            ExtendedShapedRecipeBuilder.shaped(result, 3)
                   .pattern(PLASTIC_ROAD)
-                  .key(AdditionsRecipeProvider.SAND_CHAR, this.items, Tags.Items.SANDS)
-                  .key(Pattern.CONSTANT, slickPlastic)
+                  .define(AdditionsRecipeProvider.SAND_CHAR, this.items, Tags.Items.SANDS)
+                  .define(Pattern.CONSTANT, slickPlastic)
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .group(MekanismAdditions.rl("plastic_road"))
                   .unlockedBy("has_plastic", has(slickPlastic))
@@ -171,10 +171,10 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.SLICK_PLASTIC_BLOCKS, (color, block) -> {
             Holder<Item> result = block.getItemHolder();
             Holder<Item> plastic = AdditionsBlocks.PLASTIC_BLOCKS.pick(color).getItemHolder();
-            ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
+            ExtendedShapedRecipeBuilder.shaped(result, 4)
                   .pattern(SLICK_PLASTIC)
-                  .key(Pattern.CONSTANT, plastic)
-                  .key(AdditionsRecipeProvider.SLIME_CHAR, this.items, Tags.Items.SLIME_BALLS)
+                  .define(Pattern.CONSTANT, plastic)
+                  .define(AdditionsRecipeProvider.SLIME_CHAR, this.items, Tags.Items.SLIME_BALLS)
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .group(MekanismAdditions.rl("slick_plastic"))
                   .unlockedBy("has_plastic", has(plastic))
@@ -195,10 +195,10 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
         String colorString = color.getRegistryPrefix();
         DyeColor dye = color.getDyeColor();
         if (dye != null) {
-            ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
+            ExtendedShapedRecipeBuilder.shaped(result, 4)
                   .pattern(PLASTIC)
-                  .key(Pattern.CONSTANT, recolorInput)
-                  .key(Pattern.DYE, items, dye.getTag())
+                  .define(Pattern.CONSTANT, recolorInput)
+                  .define(Pattern.DYE, items, dye.getTag())
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .group(MekanismAdditions.rl(groupName))
                   .unlockedBy("has_needed_dye", RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(items, dye.getTag())))
@@ -218,10 +218,10 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
         String colorString = color.getRegistryPrefix();
         DyeColor dye = color.getDyeColor();
         if (dye != null) {
-            ExtendedShapedRecipeBuilder.shapedRecipe(result, 8)
+            ExtendedShapedRecipeBuilder.shaped(result, 8)
                   .pattern(PLASTIC_TRANSPARENT)
-                  .key(Pattern.CONSTANT, recolorInput)
-                  .key(Pattern.DYE, items, dye.getTag())
+                  .define(Pattern.CONSTANT, recolorInput)
+                  .define(Pattern.DYE, items, dye.getTag())
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .group(MekanismAdditions.rl(groupName))
                   .unlockedBy("has_needed_dye", RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(items, dye.getTag())))

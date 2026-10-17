@@ -45,9 +45,9 @@ class PlasticSlabsRecipeProvider extends BaseSubRecipeProvider {
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, blocks, (color, block) -> {
             Holder<Item> slab = block.getItemHolder();
             Holder<Item> plastic = plasticMap.pick(color).getItemHolder();
-            ExtendedShapedRecipeBuilder.shapedRecipe(slab, 6)
+            ExtendedShapedRecipeBuilder.shaped(slab, 6)
                   .pattern(PLASTIC_SLAB)
-                  .key(Pattern.CONSTANT, plastic)
+                  .define(Pattern.CONSTANT, plastic)
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .group(MekanismAdditions.rl(groupName + "plastic_slabs"))
                   .unlockedBy("has_plastic", has(plastic))
@@ -57,9 +57,9 @@ class PlasticSlabsRecipeProvider extends BaseSubRecipeProvider {
             } else {
                 PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, slab, typeTag, color, basePath, groupName + "plastic_slabs_recolor");
             }
-            ExtendedShapedRecipeBuilder.shapedRecipe(plastic, 1)
+            ExtendedShapedRecipeBuilder.shaped(plastic, 1)
                   .pattern(PLASTIC_RECOMBINATION)
-                  .key(Pattern.CONSTANT, slab)
+                  .define(Pattern.CONSTANT, slab)
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .group(MekanismAdditions.rl(groupName + "plastic_recombination"))
                   .unlockedBy("has_plastic_slab", has(slab))

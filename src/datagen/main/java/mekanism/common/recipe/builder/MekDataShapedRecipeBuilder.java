@@ -15,19 +15,19 @@ public class MekDataShapedRecipeBuilder extends ExtendedShapedRecipeBuilder {
         super(result, count);
     }
 
-    public static MekDataShapedRecipeBuilder shapedRecipe(BlockRegistryObject<?, ?> result) {
-        return shapedRecipe(result, 1);
+    public static MekDataShapedRecipeBuilder shaped(BlockRegistryObject<?, ?> result) {
+        return shaped(result, 1);
     }
 
-    public static MekDataShapedRecipeBuilder shapedRecipe(BlockRegistryObject<?, ?> result, int count) {
-        return shapedRecipe(result.getItemHolder(), count);
+    public static MekDataShapedRecipeBuilder shaped(BlockRegistryObject<?, ?> result, int count) {
+        return shaped(result.getItemHolder(), count);
     }
 
-    public static MekDataShapedRecipeBuilder shapedRecipe(Holder<Item> result) {
-        return shapedRecipe(result, 1);
+    public static MekDataShapedRecipeBuilder shaped(Holder<Item> result) {
+        return shaped(result, 1);
     }
 
-    public static MekDataShapedRecipeBuilder shapedRecipe(Holder<Item> result, int count) {
+    public static MekDataShapedRecipeBuilder shaped(Holder<Item> result, int count) {
         return new MekDataShapedRecipeBuilder(result, count);
     }
 
