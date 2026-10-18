@@ -6,7 +6,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -34,21 +33,6 @@ public class InputHelper {
     /// @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
     public static IInputHandler<Chemical, ChemicalStack> getInputHandler(IChemicalTank tank, RecipeError notEnoughError) {
         return new ChemicalInputHandler(tank, notEnoughError);
-    }
-
-    /// Wrap a chemical tank for constant usage into an [IInputHandler].
-    ///
-    /// @param tank Tank to wrap.
-    public static IInputHandler<Chemical, ChemicalStack> getConstantInputHandler(IChemicalTank tank) {
-        //TODO - 26.3: Should this use the normal get input handler for if the recipe isn't per tick chemical usage? Or how do we do handling for that
-        return new ChemicalInputHandler(tank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT) {
-            @Override
-            protected void resetProgress(OperationTracker tracker) {
-                //Don't reset progress just because we have no output if we have constant usage
-                // instead just pause the recipe
-                tracker.updateOperations(0);
-            }
-        };
     }
 
     /// Wrap a fluid tank into an [IInputHandler].

@@ -68,7 +68,7 @@ public abstract class InputResourceHandler<HOLDER_TYPE, RESOURCE extends Registe
     }
 
     @Override
-    public void calculateOperationsCanSupport(OperationTracker tracker, STACK recipeInput, int usageMultiplier) {
+    public void calculateOperationsCanSupport(OperationTracker tracker, STACK recipeInput, boolean isConstantUsage, int usageMultiplier) {
         //Only calculate if we need to use anything
         if (usageMultiplier > 0) {
             //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
@@ -89,12 +89,12 @@ public abstract class InputResourceHandler<HOLDER_TYPE, RESOURCE extends Registe
                 }
             }
             // Not enough input to match the recipe, reset the progress
-            resetProgress(tracker);
+            if (isConstantUsage) {
+                //Don't reset progress just because we have no output if we have constant usage instead just pause the recipe
+                tracker.updateOperations(0);
+            } else {
+                tracker.resetProgress(notEnoughError);
+            }
         }
-    }
-
-    /// Helper method to make it easier to override and create input handlers that just pause instead of fully resetting their progress.
-    protected void resetProgress(OperationTracker tracker) {
-        tracker.resetProgress(notEnoughError);
     }
 }

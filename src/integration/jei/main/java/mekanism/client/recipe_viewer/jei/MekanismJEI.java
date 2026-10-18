@@ -228,7 +228,7 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, false));
 
         registry.addRecipeCategories(new ItemStackToChemicalRecipeCategory<>(guiHelper, RecipeViewerRecipeType.OXIDIZING, false));
-        registry.addRecipeCategories(new ItemStackToFluidOptionalItemRecipeCategory(guiHelper, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, false));
+        registry.addRecipeCategories(new ItemStackToFluidOptionalItemRecipeCategory<>(guiHelper, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, false));
 
         registry.addRecipeCategories(new ChemicalToChemicalRecipeCategory<>(guiHelper, RecipeViewerRecipeType.ACTIVATING));
         registry.addRecipeCategories(new ChemicalToChemicalRecipeCategory<>(guiHelper, RecipeViewerRecipeType.CENTRIFUGING));

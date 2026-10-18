@@ -1,6 +1,5 @@
 package mekanism.api.recipes;
 
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
@@ -56,10 +55,7 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput, Sawing
 
     @Override
     @Deprecated
-    public List<ChanceOutput> getOutputDefinition(ContextMap contextMap) {
-        //TODO - 26.3: Re-evaluate should we throw instead?
-        return Collections.emptyList();
-    }
+    public abstract List<ChanceOutput> getOutputDefinition(ContextMap contextMap);
 
     /// {@inheritDoc} It is assumed that a [composite display][SlotDisplay.Composite] that has:
     /// - the first element as a [chance display][ChanceSlotDisplay] is a grouping of multiple [chance displays][ChanceSlotDisplay].

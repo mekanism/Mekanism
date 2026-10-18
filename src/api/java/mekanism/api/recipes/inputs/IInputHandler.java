@@ -55,7 +55,7 @@ public interface IInputHandler<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_T
     /// @param tracker     Tracker of current errors and max operations.
     /// @param recipeInput Recipe input gotten from [#getRecipeInput(InputIngredient)].
     default void calculateOperationsCanSupport(OperationTracker tracker, STACK recipeInput) {
-        calculateOperationsCanSupport(tracker, recipeInput, 1);
+        calculateOperationsCanSupport(tracker, recipeInput, false);
     }
 
     /// Calculates how many operations the input can sustain and updates the given operation tracker. It can be assumed that when this method is called
@@ -63,6 +63,19 @@ public interface IInputHandler<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_T
     ///
     /// @param tracker         Tracker of current errors and max operations.
     /// @param recipeInput     Recipe input gotten from [#getRecipeInput(InputIngredient)].
+    /// @param isConstantUsage Is the recipe attempting to consume this input every tick it is processing.
+    ///
+    /// @since 10.8.0
+    default void calculateOperationsCanSupport(OperationTracker tracker, STACK recipeInput, boolean isConstantUsage) {
+        calculateOperationsCanSupport(tracker, recipeInput, isConstantUsage, 1);
+    }
+
+    /// Calculates how many operations the input can sustain and updates the given operation tracker. It can be assumed that when this method is called
+    /// [OperationTracker#shouldContinueChecking()] is `true`.
+    ///
+    /// @param tracker         Tracker of current errors and max operations.
+    /// @param recipeInput     Recipe input gotten from [#getRecipeInput(InputIngredient)].
+    /// @param isConstantUsage Is the recipe attempting to consume this input every tick it is processing.
     /// @param usageMultiplier Usage multiplier to multiply the recipeInput's amount by per operation.
-    void calculateOperationsCanSupport(OperationTracker tracker, STACK recipeInput, int usageMultiplier);
+    void calculateOperationsCanSupport(OperationTracker tracker, STACK recipeInput, boolean isConstantUsage, int usageMultiplier);
 }

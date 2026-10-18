@@ -121,7 +121,7 @@ public abstract class TileEntityAdvancedElectricMachine<BOOK_CATEGORY extends Me
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
-        chemicalInputHandler = InputHelper.getConstantInputHandler(chemicalTank);
+        chemicalInputHandler = InputHelper.getInputHandler(chemicalTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
         baseTotalUsage = baseTicksRequired;
         if (useStatisticalMechanics()) {

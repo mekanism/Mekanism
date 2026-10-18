@@ -101,7 +101,7 @@ public class TileEntityItemStackChemicalToItemStackFactory<BOOK_CATEGORY extends
 
     public TileEntityItemStackChemicalToItemStackFactory(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
-        chemicalInputHandler = InputHelper.getConstantInputHandler(chemicalTank);
+        chemicalInputHandler = InputHelper.getInputHandler(chemicalTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
         if (allowExtractingChemical()) {
             configComponent.setupIOConfig(TransmissionType.CHEMICAL, chemicalTank).setCanEject(false);
         } else {

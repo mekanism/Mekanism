@@ -123,7 +123,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
               .setCanTankEject(tank -> tank != injectTank);
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
-        gasInputHandler = InputHelper.getConstantInputHandler(injectTank);
+        gasInputHandler = InputHelper.getInputHandler(injectTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
         baseTotalUsage = baseTicksRequired;
         if (useStatisticalMechanics()) {

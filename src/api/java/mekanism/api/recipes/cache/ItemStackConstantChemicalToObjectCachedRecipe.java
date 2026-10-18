@@ -93,8 +93,9 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
                 //Calculate the current max based on the item input
                 itemInputHandler.calculateOperationsCanSupport(tracker, recipeItem);
                 if (!recipeChemical.isEmpty() && tracker.shouldContinueChecking()) {
-                    //Calculate the current max based on the chemical input, and the given usage amount
-                    chemicalInputHandler.calculateOperationsCanSupport(tracker, recipeChemical, chemicalUsageMultiplier);
+                    //Calculate the current max based on the chemical input, and the given usage amount. Also mark that the chemical is a per tick usage
+                    // so that we properly pause instead of force reset if we don't have enough of the chemical
+                    chemicalInputHandler.calculateOperationsCanSupport(tracker, recipeChemical, true, chemicalUsageMultiplier);
                     if (tracker.shouldContinueChecking()) {
                         output = recipe.getOutput(recipeItem, recipeChemical);
                         //Calculate the max based on the space in the output

@@ -83,6 +83,12 @@ public class BasicSawmillRecipe extends SawmillRecipe {
     }
 
     @Override
+    @Deprecated
+    public List<ChanceOutput> getOutputDefinition(ContextMap contextMap) {
+        return Collections.singletonList(new BasicChanceOutput(secondaryChance));
+    }
+
+    @Override
     public SlotDisplay getOutputDisplay() {
         SlotDisplay secondaryDisplay;
         if (secondaryOutput == null || secondaryChance <= 0) {
