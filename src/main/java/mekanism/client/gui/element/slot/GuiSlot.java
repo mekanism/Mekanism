@@ -201,7 +201,7 @@ public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, ISu
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         boolean hovered = checkWindows(mouseX, mouseY, isHovered());
         if (renderHover && hovered) {
             int xPos = relativeX + 1;

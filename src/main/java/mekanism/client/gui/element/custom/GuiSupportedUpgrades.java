@@ -97,8 +97,8 @@ public class GuiSupportedUpgrades extends GuiElement {
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         //Note: We don't have to specify where the upgrades start, because the upgrades get moved out of the way. This is only a scrolling string
         // in case the translation needs more space than the entire width of the first row
         drawScrollingString(guiGraphics, SUPPORTED, 0, 3, TextAlignment.LEFT, titleTextColor(), 2, false);

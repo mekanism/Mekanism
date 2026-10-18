@@ -101,8 +101,8 @@ public class GuiInnerScreen extends GuiTexturedElement {
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         List<Component> list = getRenderStrings();
         if (!list.isEmpty()) {
             int lineHeight = font().lineHeight;

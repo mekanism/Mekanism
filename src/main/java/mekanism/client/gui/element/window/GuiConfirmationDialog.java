@@ -36,8 +36,8 @@ public class GuiConfirmationDialog extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         wrappedTextRenderer.render(guiGraphics, relativeX + PADDING, relativeY + 6, width - 2 * PADDING, TextAlignment.CENTER, titleTextColor());
     }
 

@@ -54,8 +54,8 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         QIOFrequency freq = frequencySupplier.get();
         if (freq != null) {
             drawScaledScrollingString(guiGraphics, MekanismLang.FREQUENCY.translate(freq.getName()), 0, 5, TextAlignment.LEFT, screenTextColor(), 5, false, 0.8F);

@@ -42,7 +42,7 @@ public class MekanismEmiWidget extends Widget {
         // and as our categories don't support windows we don't need to worry about that
         int zOffset = 200;
         pose.popMatrix();
-        element.onRenderForeground(guiGraphics, mouseX, mouseY);
+        element.onRenderForeground(guiGraphics, mouseX, mouseY, delta);
         pose.popMatrix();
         pose.popMatrix();
     }

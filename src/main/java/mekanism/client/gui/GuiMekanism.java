@@ -181,7 +181,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             // we need to do this based on what the max is after having rendered the previous
             // window as while the windows don't necessarily overlap, if they do we want to
             // ensure that there is no clipping
-            overlay.onRenderForeground(graphics, mouseX, mouseY);
+            overlay.onRenderForeground(graphics, mouseX, mouseY, a);
             if (iter.hasNext()) {
                 // if this isn't the focused window, render a 'blur' effect over it
                 overlay.renderBlur(graphics);
@@ -396,16 +396,17 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override//TODO - 26.3: review `pose` used for zindex stuff
     protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        float partialTicks = MekanismRenderer.getPartialTick();
         for (GuiEventListener c : children()) {
             if (c instanceof GuiElement element) {
-                element.onDrawBackground(guiGraphics, mouseX, mouseY, MekanismRenderer.getPartialTick());
+                element.onDrawBackground(guiGraphics, mouseX, mouseY, partialTicks);
             }
         }
         drawForegroundText(guiGraphics, mouseX, mouseY);
         // first render general foregrounds
         for (GuiEventListener widget : children()) {
             if (widget instanceof GuiElement element) {
-                element.onRenderForeground(guiGraphics, mouseX, mouseY);
+                element.onRenderForeground(guiGraphics, mouseX, mouseY, partialTicks);
             }
         }
     }

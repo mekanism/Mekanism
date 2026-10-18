@@ -56,8 +56,8 @@ public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, Tile
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         renderSorterForeground(guiGraphics);
     }
 

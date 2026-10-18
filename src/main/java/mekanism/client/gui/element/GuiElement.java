@@ -60,7 +60,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     /// helpers.
     private final List<GuiElement> positionOnlyChildren = new ArrayList<>();
 
-    private IGuiWrapper guiObj;
+    private IGuiWrapper gui;
     @Nullable
     protected Supplier<SoundEvent> clickSound;
     //Default to the value from SimpleSoundInstance.forUI
@@ -81,7 +81,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         super(gui.getLeftPos() + x, gui.getTopPos() + y, width, height, text);
         this.relativeX = x;
         this.relativeY = y;
-        this.guiObj = gui;
+        this.gui = gui;
     }
 
     @Override
@@ -134,7 +134,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     private void transferToNewGuiInternal(IGuiWrapper gui) {
-        guiObj = gui;
+        this.gui = gui;
         for (GuiElement guiElement : children) {
             guiElement.transferToNewGuiInternal(gui);
         }
@@ -158,23 +158,23 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     public final IGuiWrapper gui() {
-        return guiObj;
+        return gui;
     }
 
     public final int getGuiLeft() {
-        return guiObj.getLeftPos();
+        return gui.getLeftPos();
     }
 
     public final int getGuiTop() {
-        return guiObj.getTopPos();
+        return gui.getTopPos();
     }
 
     public final int getGuiWidth() {
-        return guiObj.getImageWidth();
+        return gui.getImageWidth();
     }
 
     public final int getGuiHeight() {
-        return guiObj.getImageHeight();
+        return gui.getImageHeight();
     }
 
     @Override
@@ -264,27 +264,27 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
     }
 
-    public final void onRenderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    public final void onRenderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
             // render background overlay and children above everything else
             renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
             // render children just above background overlay
             for (GuiElement guiElement : children) {
-                guiElement.renderShifted(guiGraphics, mouseX, mouseY, 0);
+                guiElement.renderShifted(guiGraphics, mouseX, mouseY, partialTicks);
             }
             for (GuiElement guiElement : children) {
-                guiElement.onDrawBackground(guiGraphics, mouseX, mouseY, 0);
+                guiElement.onDrawBackground(guiGraphics, mouseX, mouseY, partialTicks);
             }
-            renderForeground(guiGraphics, mouseX, mouseY);
+            renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
             // translate forward to render child foreground
             for (GuiElement child : children) {
                 // Note: Does not apply to compounding with grandchildren as we want those to compound
-                child.onRenderForeground(guiGraphics, mouseX, mouseY);
+                child.onRenderForeground(guiGraphics, mouseX, mouseY, partialTicks);
             }
         }
     }
 
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         drawButtonText(guiGraphics, mouseX, mouseY);
     }
 
@@ -459,7 +459,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     @Override
     public Font font() {
-        return guiObj.font();
+        return gui.font();
     }
 
     @Override
@@ -522,7 +522,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     protected final boolean checkWindows(double mouseX, double mouseY, boolean isHovering) {
         if (isHovering) {
             //If the mouse is over this element, check if there is a window that would intercept the mouse
-            GuiWindow window = guiObj.getWindowHovering(mouseX, mouseY);
+            GuiWindow window = gui.getWindowHovering(mouseX, mouseY);
             if (window != null && !window.childrenContainsElement(e -> e == this)) {
                 //If there is and this element is not part of that window,
                 // then mark that our mouse is not over the element
@@ -635,7 +635,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     @Override
     public long getTimeOpened() {
-        return guiObj.getTimeOpened();
+        return gui.getTimeOpened();
     }
 
     @Override

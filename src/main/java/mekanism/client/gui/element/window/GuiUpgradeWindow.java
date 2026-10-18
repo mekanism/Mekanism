@@ -82,8 +82,8 @@ public class GuiUpgradeWindow extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         drawTitleText(guiGraphics, MekanismLang.UPGRADES.translate(), 5);
         Holder<Upgrade> selectedType = scrollList.getSelection();
         if (selectedType != null) {

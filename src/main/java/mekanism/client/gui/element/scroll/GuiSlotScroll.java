@@ -69,8 +69,8 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         int xAxis = mouseX - getGuiLeft(), yAxis = mouseY - getGuiTop();
         int slotX = (xAxis - relativeX) / SLOT_SIZE, slotY = (yAxis - relativeY) / SLOT_SIZE;
         if (slotX >= 0 && slotY >= 0 && slotX < xSlots && slotY < ySlots) {

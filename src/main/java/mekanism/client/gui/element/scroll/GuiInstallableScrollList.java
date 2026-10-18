@@ -69,8 +69,8 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         int currentSelection = getCurrentSelection();
         List<TYPE> currentInstalled = getCurrentInstalled();
         int max = Math.min(getFocusedElements(), currentInstalled.size());

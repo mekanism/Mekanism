@@ -66,12 +66,12 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         TYPE mode = modeSupplier.get();
         if (mode != null) {
             guiGraphics.item(mode.getRenderStack(), relativeX + 3, relativeY + 3);
             drawScrollingString(guiGraphics, TextComponentUtil.build(EnumColor.WHITE, mode), 20, 2, TextAlignment.LEFT, titleTextColor(), width - 20, 2, false);
-            super.renderForeground(guiGraphics, mouseX, mouseY);
+            super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         }
     }
 

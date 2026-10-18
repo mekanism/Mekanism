@@ -48,11 +48,11 @@ public class GuiGasMode extends MekanismImageButton {
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Draw the text next to the button
         int start = textSide == TextAlignment.RIGHT ? -69 : getWidth();
         drawScrollingString(guiGraphics, gasModeSupplier.get().getTextComponent(), start, 1, textSide, titleTextColor(), 69, 2, false);
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

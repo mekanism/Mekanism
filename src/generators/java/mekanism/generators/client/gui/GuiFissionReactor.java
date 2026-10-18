@@ -76,8 +76,8 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
               (element, _, _) -> PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE,
                     ((GuiFissionReactor) element.gui()).tile, 1)), () -> EnumColor.DARK_GREEN) {
             @Override
-            public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-                super.renderForeground(guiGraphics, mouseX, mouseY);
+            public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+                super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
                 if (!active && tile.getMultiblock().isForceDisabled()) {
                     active = true;
                     //Temporarily set active to true, so we can easily check if the mouse is over the button

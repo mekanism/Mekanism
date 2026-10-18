@@ -219,8 +219,8 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     protected abstract ILangEntry getNoFilterSaveError();
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         drawTitleText(guiGraphics, (isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(filterName), 6);
     }
 

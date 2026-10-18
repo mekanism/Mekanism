@@ -73,8 +73,8 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         drawTitleText(guiGraphics, MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
         drawScrollingString(guiGraphics, MekanismLang.INPUT.translate(), 18, 105, TextAlignment.CENTER, subheadingTextColor(), 68, 0, false);
         drawScrollingString(guiGraphics, MekanismLang.OUTPUT.translate(), 86, 68, TextAlignment.CENTER, subheadingTextColor(), width - 86, 4, false);

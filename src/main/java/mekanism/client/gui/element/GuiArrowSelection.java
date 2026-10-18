@@ -26,8 +26,8 @@ public class GuiArrowSelection extends GuiTexturedElement {
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         Component component = targetText.get();
         if (component != null) {
             drawScrollingString(guiGraphics, component, getWidth(), 6, TextAlignment.LEFT, screenTextColor(), 15, 1, false);

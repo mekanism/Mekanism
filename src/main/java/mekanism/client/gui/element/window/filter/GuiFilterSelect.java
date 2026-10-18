@@ -57,8 +57,8 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism & ITileFil
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         drawTitleText(guiGraphics, MekanismLang.CREATE_FILTER_TITLE.translate(), 6);
     }
 

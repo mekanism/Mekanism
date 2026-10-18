@@ -60,8 +60,8 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         renderSorterForeground(guiGraphics);
         drawScrollingString(guiGraphics, OnOff.of(filter.fuzzyMode).getTextComponent(), 159, 71, TextAlignment.LEFT, titleTextColor(), width - 159, 2, false);
     }

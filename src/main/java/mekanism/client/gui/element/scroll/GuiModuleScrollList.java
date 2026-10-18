@@ -115,9 +115,9 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         recheckItem();
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

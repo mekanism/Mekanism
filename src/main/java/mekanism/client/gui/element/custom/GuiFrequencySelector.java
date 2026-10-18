@@ -209,8 +209,8 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         FREQ frequency = frequencySelector.getFrequency();
         Component frequencyName;
         Component ownerComponent;

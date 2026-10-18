@@ -40,8 +40,8 @@ public class GuiEntityPreview extends GuiElement {
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         LivingEntityRenderState preview = this.preview.get();
         //Apply our rotation to the render state (copied from InventoryScreen#renderEntityInInventory)
         preview.bodyRot = Mth.wrapDegrees(180.0F + rotation * 20.0F);

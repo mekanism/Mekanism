@@ -196,8 +196,8 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mx, int my) {
-        super.renderForeground(guiGraphics, mx, my);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mx, int my, float partialTicks) {
+        super.renderForeground(guiGraphics, mx, my, partialTicks);
         scissorScreen(guiGraphics, mx, my, (g, module, shift) -> {
             int startY = ELEMENT_SPACER + 1;
             if (module != null) {

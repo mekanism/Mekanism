@@ -172,8 +172,8 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
         drawTitleText(guiGraphics, MekanismLang.CONFIG_TYPE.translate(currentType), 5);
         drawScrollingString(guiGraphics, MekanismLang.SLOTS.translate(), 0, 120, TextAlignment.CENTER, subheadingTextColor(), 4, false);
     }
