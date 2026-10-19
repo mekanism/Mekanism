@@ -17,11 +17,13 @@ public interface IVirtualSlot {
 
     void updatePosition(@Nullable IGUIWindow window, IntSupplier xPositionSupplier, IntSupplier yPositionSupplier);
 
-    void updateRenderInfo(ItemStack stackToRender, boolean shouldDrawOverlay, @Nullable String tooltipOverride);
+    void updateRenderInfo(ItemStack stackToRender, boolean isHovering, boolean quickCraftStack, @Nullable String tooltipOverride);
 
     ItemStack getStackToRender();
 
-    boolean shouldDrawOverlay();
+    boolean quickCraftStack();
+
+    boolean isHovering();
 
     @Nullable
     String getTooltipOverride();

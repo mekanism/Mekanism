@@ -6,7 +6,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -58,29 +57,20 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         return mouseOver;
     }
 
-    //TODO - 26.3: If we AT x and y for slots to not be final, and actually update them I think we can skip this override unless we need this to be delayed
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
     protected final void extractSlotHighlightBack(GuiGraphicsExtractor graphics) {
-        if (this.hoveredSlot instanceof IVirtualSlot virtualSlot) {
-            if (this.hoveredSlot.isHighlightable()) {
-                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, virtualSlot.getActualX() - 4, virtualSlot.getActualY() - 4, 24, 24);
-            }
-        } else {
+        if (!(this.hoveredSlot instanceof IVirtualSlot)) {
+            //Don't render highlighting through these methods, and instead let the extractSlot method handle it
             super.extractSlotHighlightBack(graphics);
         }
     }
 
-    //TODO - 26.3: If we AT x and y for slots to not be final, and actually update them I think we can skip this override unless we need this to be delayed
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
     protected final void extractSlotHighlightFront(GuiGraphicsExtractor graphics) {
-        if (this.hoveredSlot instanceof IVirtualSlot virtualSlot) {
-            if (this.hoveredSlot.isHighlightable()) {
-                //TODO - 26.3: Do we need to delay this?
-                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, virtualSlot.getActualX() - 4, virtualSlot.getActualY() - 4, 24, 24);
-            }
-        } else {
+        if (!(this.hoveredSlot instanceof IVirtualSlot)) {
+            //Don't render highlighting through these methods, and instead let the extractSlot method handle it
             super.extractSlotHighlightBack(graphics);
         }
     }
@@ -120,7 +110,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         }
         //Note: We don't include vanilla's no item icon rendering here as virtual slots can just have that set directly, and it simplifies our copy
         //If the slot is a virtual slot, have the GuiSlot that corresponds to it handle the rendering
-        virtualSlot.updateRenderInfo(itemStack, quickCraftStack, itemCount);
+        virtualSlot.updateRenderInfo(itemStack, slot == this.hoveredSlot, quickCraftStack, itemCount);
     }
 
     @Override
@@ -128,7 +118,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         //Note: Technically we don't need to override this as we override the one caller in extractSlot to not call it for virtual slots,
         // but having it here in case we end up calling it from somewhere else doesn't hurt
         if (slot instanceof IVirtualSlot virtualSlot) {
-            virtualSlot.updateRenderInfo(itemStack, false, itemCount);
+            virtualSlot.updateRenderInfo(itemStack, slot == this.hoveredSlot, false, itemCount);
         } else {
             //If we are not a virtual slot, the super method is good enough
             super.renderSlotContents(graphics, itemStack, slot, itemCount);

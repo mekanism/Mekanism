@@ -9,8 +9,10 @@ import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
@@ -48,15 +50,23 @@ public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHe
     @Override
     protected void drawContents(GuiGraphicsExtractor guiGraphics) {
         if (virtualSlot != null) {
+            if (virtualSlot.isHovering()) {
+                //Copy of AbstractContainerScreen#extractSlotHighlightBack
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, AbstractContainerScreen.SLOT_HIGHLIGHT_BACK_SPRITE, virtualSlot.getActualX() - 4, virtualSlot.getActualY() - 4, 24, 24);
+            }
             ItemStack stack = virtualSlot.getStackToRender();
             if (!stack.isEmpty()) {
                 int xPos = relativeX + 1;
                 int yPos = relativeY + 1;
-                if (virtualSlot.shouldDrawOverlay()) {
+                if (virtualSlot.quickCraftStack()) {
                     guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
                 }
                 guiGraphics.item(stack, xPos, yPos);
                 guiGraphics.itemDecorations(font(), stack, xPos, yPos, virtualSlot.getTooltipOverride());
+            }
+            if (virtualSlot.isHovering()) {
+                //Copy of AbstractContainerScreen#extractSlotHighlightFront
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, AbstractContainerScreen.SLOT_HIGHLIGHT_FRONT_SPRITE, virtualSlot.getActualX() - 4, virtualSlot.getActualY() - 4, 24, 24);
             }
         }
     }

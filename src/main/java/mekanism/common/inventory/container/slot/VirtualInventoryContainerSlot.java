@@ -16,7 +16,8 @@ public class VirtualInventoryContainerSlot extends InventoryContainerSlot implem
     private ItemStack stackToRender = ItemStack.EMPTY;
     @Nullable
     private String tooltipOverride;
-    private boolean shouldDrawOverlay;
+    private boolean isHovering;
+    private boolean quickCraftStack;
     @Nullable
     private IGUIWindow window;
 
@@ -49,9 +50,10 @@ public class VirtualInventoryContainerSlot extends InventoryContainerSlot implem
     }
 
     @Override
-    public void updateRenderInfo(ItemStack stackToRender, boolean shouldDrawOverlay, @Nullable String tooltipOverride) {
+    public void updateRenderInfo(ItemStack stackToRender, boolean isHovering, boolean quickCraftStack, @Nullable String tooltipOverride) {
         this.stackToRender = stackToRender;
-        this.shouldDrawOverlay = shouldDrawOverlay;
+        this.isHovering = isHovering;
+        this.quickCraftStack = quickCraftStack;
         this.tooltipOverride = tooltipOverride;
     }
 
@@ -61,8 +63,13 @@ public class VirtualInventoryContainerSlot extends InventoryContainerSlot implem
     }
 
     @Override
-    public boolean shouldDrawOverlay() {
-        return shouldDrawOverlay;
+    public boolean quickCraftStack() {
+        return quickCraftStack;
+    }
+
+    @Override
+    public boolean isHovering() {
+        return isHovering;
     }
 
     @Nullable
