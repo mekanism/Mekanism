@@ -636,8 +636,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     private boolean isVirtualSlotAvailable(IVirtualSlot virtualSlot) {
-        //If there is a window linked to the slot, and it no longer exists then skip checking if the slot is available
-        return !(virtualSlot.getLinkedWindow() instanceof GuiWindow linkedWindow) || windows.contains(linkedWindow);
+        // A virtual slot is only considered as available if it is linked to the window, and the window hasn't been closed
+        return virtualSlot.getLinkedWindow() instanceof GuiWindow linkedWindow && windows.contains(linkedWindow);
     }
 
     @Override

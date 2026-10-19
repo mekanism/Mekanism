@@ -33,7 +33,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
     protected Slot getHoveredSlot(double mouseX, double mouseY) {
         for (Slot slot : menu.slots) {
-            //Like super.getSelectedSlot except uses our isMouseOverSlot so
+            //Like super.getHoveredSlot except uses our isMouseOverSlot so
             // that our redirection of isHovering doesn't break this
             if (slot.isActive() && isMouseOverSlot(slot, mouseX, mouseY)) {
                 return slot;
