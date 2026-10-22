@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER extends MekanismTileContainer<TILE>> extends GuiMekanism<CONTAINER> {
 
@@ -34,11 +35,15 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     protected GuiMekanismTile(CONTAINER container, Inventory inv, Component title, int imageWidth, int imageHeight) {
         tile = container.getTileEntity();
         super(container, inv, title, imageWidth, imageHeight);
+        this.recipeBookComponent = createRecipeBookComponent();
+    }
+
+    @Nullable
+    protected MekanismRecipeBookComponent<?> createRecipeBookComponent() {
         if (tile instanceof IRecipeLookupHandler<?> recipeLookupHandler) {
-            this.recipeBookComponent = new MekanismRecipeBookComponent<>(menu, recipeLookupHandler, this::font);
-        } else {
-            this.recipeBookComponent = null;
+            return new MekanismRecipeBookComponent<>(menu, recipeLookupHandler, this::font);
         }
+        return null;
     }
 
     public TILE getTileEntity() {

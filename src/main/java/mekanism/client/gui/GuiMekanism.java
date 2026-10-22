@@ -736,6 +736,13 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
     }
 
+    protected <T extends IGhostRecipeComponent> T addRecipeBookComponentNoRender(T component, boolean result) {
+        if (recipeBookComponent != null) {
+            recipeBookComponent.addComponent(component, result);
+        }
+        return component;
+    }
+
     protected <T extends GuiElement & IGhostRecipeComponent> T addRecipeBookComponent(T component, boolean result) {
         if (recipeBookComponent != null) {
             recipeBookComponent.addComponent(component, result);
