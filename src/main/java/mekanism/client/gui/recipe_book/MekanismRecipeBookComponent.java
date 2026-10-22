@@ -43,7 +43,7 @@ import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.item.crafting.display.RecipeDisplayId;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.client.RecipeBookManager;
-import net.neoforged.neoforge.client.RecipeBookManager.RecipeOverlayButtonCreator;
+import net.neoforged.neoforge.client.recipebook.RecipeOverlayButtonCreator;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
