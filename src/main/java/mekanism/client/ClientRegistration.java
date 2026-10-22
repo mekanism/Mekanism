@@ -1,9 +1,12 @@
 package mekanism.client;
 
 import com.google.common.reflect.TypeToken;
+import mekanism.api.MekanismRegistries;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.gear.IClientModuleHelper;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.recipes.book.MekanismBookCategory;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalTank;
@@ -190,6 +193,8 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.RecipeBookManager.RecipeDisplayResultIdExtractor;
+import net.neoforged.neoforge.client.RecipeBookManager.RecipeDisplayResultTooltipExtractor;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
@@ -502,6 +507,9 @@ public class ClientRegistration {
         for (MekanismRecipeBookTypes type : MekanismRecipeBookCategories.RECIPE_BOOK_CATEGORIES.getTypes()) {
             event.register(type, type.categories().stream().map(MekanismBookCategory::toRecipeBookCategory).toArray(RecipeBookCategory[]::new));
         }
+        //Allow indexing chemical results in the recipe book
+        event.registerResultIndexer(RecipeDisplayResultTooltipExtractor.forStack(ChemicalStackContentsFactory.INSTANCE, ChemicalStack::getTooltipLines),
+                RecipeDisplayResultIdExtractor.forRegisteredType(ChemicalStackContentsFactory.INSTANCE, MekanismRegistries.Keys.CHEMICAL));
     }
 
     @SubscribeEvent

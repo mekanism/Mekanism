@@ -20,10 +20,8 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 import net.minecraft.client.gui.screens.recipebook.SlotSelectTime;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -37,9 +35,13 @@ import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 
 public class MekanismRecipeButton extends RecipeButton {
 
+    //Keep a reference to the slot select time to skip having to AT the reference
+    private final SlotSelectTime slotSelectTime;
+
     private List<ResolvedEntry> selectedEntries = Collections.emptyList();
 
     public MekanismRecipeButton(SlotSelectTime slotSelectTime) {
+        this.slotSelectTime = slotSelectTime;
         super(slotSelectTime);
     }
 
@@ -104,33 +106,7 @@ public class MekanismRecipeButton extends RecipeButton {
     }
 
     @Override
-    public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-        Identifier sprite;
-        if (this.collection.hasCraftable()) {
-            if (hasMultipleRecipes()) {
-                sprite = SLOT_MANY_CRAFTABLE_SPRITE;
-            } else {
-                sprite = SLOT_CRAFTABLE_SPRITE;
-            }
-        } else if (hasMultipleRecipes()) {
-            sprite = SLOT_MANY_UNCRAFTABLE_SPRITE;
-        } else {
-            sprite = SLOT_UNCRAFTABLE_SPRITE;
-        }
-
-        boolean shouldAnimate = this.animationTime > 0.0F;
-        if (shouldAnimate) {
-            float squeeze = 1.0F + 0.1F * (float) Math.sin(this.animationTime / ANIMATION_TIME * (float) Math.PI);
-            graphics.pose().pushMatrix();
-            graphics.pose().translate(getX() + 8, getY() + 12);
-            graphics.pose().scale(squeeze, squeeze);
-            graphics.pose().translate(-(getX() + 8), -(getY() + 12));
-            this.animationTime -= a;
-        }
-
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), this.width, this.height);
-
-        boolean displayMultiple = hasMultipleRecipes() && this.allRecipesHaveSameResultDisplay;
+    protected void extractDisplayRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, boolean displayMultiple) {
         switch (getGeneralDisplayStack()) {
             case ItemStack currentItemStack -> {
                 int offset = 4;
@@ -147,10 +123,6 @@ public class MekanismRecipeButton extends RecipeButton {
                   MekanismRenderer.color(currentChemicalStack));
             default -> {
             }
-        }
-
-        if (shouldAnimate) {
-            graphics.pose().popMatrix();
         }
     }
 
@@ -178,16 +150,7 @@ public class MekanismRecipeButton extends RecipeButton {
     }
 
     @Override
-    public void updateWidgetNarration(NarrationElementOutput output) {
-        output.add(NarratedElementType.TITLE, Component.translatable("narration.recipe", TextComponentUtil.build(getGeneralDisplayStack())));
-        if (hasMultipleRecipes()) {
-            output.add(NarratedElementType.USAGE, Component.translatable("narration.button.usage.hovered"), Component.translatable("narration.recipe.usage.more"));
-        } else {
-            output.add(NarratedElementType.USAGE, Component.translatable("narration.button.usage.hovered"));
-        }
-    }
-
-    private boolean hasMultipleRecipes() {
+    protected boolean hasMultipleRecipes() {
         return this.selectedEntries.size() > 1;
     }
 
@@ -215,7 +178,6 @@ public class MekanismRecipeButton extends RecipeButton {
         return texts;
     }
 
-    //TODO - 26.3: Deduplicate this and the fluid stack one?
     public List<Component> getTooltipText(ChemicalStack stack) {
         Minecraft minecraft = Minecraft.getInstance();
         List<Component> texts = new ArrayList<>(stack.getTooltipLines(
@@ -227,6 +189,17 @@ public class MekanismRecipeButton extends RecipeButton {
             texts.add(MORE_RECIPES_TOOLTIP);
         }
         return texts;
+    }
+
+    @Override
+    public void updateWidgetNarration(NarrationElementOutput output) {
+        //Provide the proper name for the recipe narration
+        output.add(NarratedElementType.TITLE, Component.translatable("narration.recipe", TextComponentUtil.build(getGeneralDisplayStack())));
+        if (hasMultipleRecipes()) {
+            output.add(NarratedElementType.USAGE, Component.translatable("narration.button.usage.hovered"), Component.translatable("narration.recipe.usage.more"));
+        } else {
+            output.add(NarratedElementType.USAGE, Component.translatable("narration.button.usage.hovered"));
+        }
     }
 
     private record ResolvedEntry(RecipeDisplayId id, List<Object> display) {
