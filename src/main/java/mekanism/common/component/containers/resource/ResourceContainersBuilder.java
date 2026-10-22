@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.component.containers.ContainsRecipe;
@@ -44,7 +45,7 @@ public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTA
     protected abstract CONTAINER createBasicContainer(ItemAccess attachedAccess, int tankIndex, BiPredicate<RESOURCE, AutomationType> canExtract,
           BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, IntSupplier rate, LongSupplier capacity);
 
-    public final <VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+    public final <VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
           RECIPE extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO>, INPUT_CACHE extends IInputRecipeCache> BUILDER addBasic(long capacity,
           IMekanismRecipeTypeProvider<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, RESOURCE> containsRecipe) {
         return addBasic(capacity, resource -> containsRecipe.check(recipeType.getInputCache(), null, resource));

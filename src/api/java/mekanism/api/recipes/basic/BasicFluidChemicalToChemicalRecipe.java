@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStackTemplate;
@@ -19,6 +20,7 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
@@ -30,10 +32,14 @@ import org.jspecify.annotations.Nullable;
 public abstract class BasicFluidChemicalToChemicalRecipe<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
       extends FluidChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO> {
 
+    private static final PlacementInfo IS_PLACEABLE = PlacementInfo.createFromOptionals(List.of(Optional.empty(), Optional.empty()));
+
     private final RecipeType<FluidChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType;
     protected final FluidStackIngredient fluidInput;
     protected final ChemicalStackIngredient chemicalInput;
     protected final ChemicalStackTemplate output;
+    @Nullable
+    private PlacementInfo placementInfo;
 
     /// @param commonInfo    Common recipe info.
     /// @param bookInfo      Recipe book info.
@@ -62,6 +68,14 @@ public abstract class BasicFluidChemicalToChemicalRecipe<BOOK_CATEGORY extends M
     @Override
     public ChemicalStackIngredient getChemicalInput() {
         return chemicalInput;
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        if (this.placementInfo == null) {
+            this.placementInfo = getInputA().hasNoMatchingInstances() || getInputB().hasNoMatchingInstances() ? PlacementInfo.NOT_PLACEABLE : IS_PLACEABLE;
+        }
+        return this.placementInfo;
     }
 
     @Override

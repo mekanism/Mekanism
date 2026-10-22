@@ -6,7 +6,7 @@ import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
 import mekanism.api.recipes.book.SawingBookCategory;
 import mekanism.api.recipes.book.SawingBookCategory.SawingBookInfo;
-import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
+import mekanism.api.recipes.display.recipe.SawingRecipeDisplay;
 import mekanism.api.recipes.display.slot.ChanceSlotDisplay;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
@@ -73,7 +73,7 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput, Sawing
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new SimpleMachineRecipeDisplay(
+        return List.of(new SawingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(PRECISION_SAWMILL)

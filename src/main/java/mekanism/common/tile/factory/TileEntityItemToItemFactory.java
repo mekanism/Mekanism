@@ -32,11 +32,13 @@ public abstract class TileEntityItemToItemFactory<BOOK_CATEGORY extends Mekanism
 
     protected final IInputHandler<Item, ItemStack>[] inputHandlers;
     protected final IOutputHandler<ItemStackTemplate>[] outputHandlers;
+    protected final RecipeContainers[] recipeContainers;
 
     protected TileEntityItemToItemFactory(Holder<Block> blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes) {
         FactoryTier tier = Attribute.getTierNN(blockProvider, FactoryTier.class);
         inputHandlers = new IInputHandler[tier.processes];
         outputHandlers = new IOutputHandler[tier.processes];
+        recipeContainers = new RecipeContainers[tier.processes];
         super(blockProvider, pos, state, errorTypes, globalErrorTypes);
     }
 
@@ -59,7 +61,14 @@ public abstract class TileEntityItemToItemFactory<BOOK_CATEGORY extends Mekanism
             builder.addContainer(outputSlot).tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE, index)));
             inputHandlers[i] = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
             outputHandlers[i] = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+            //TODO: Do we want to try and deduplicate some of the information between ProcessInfo and RecipeContainers?
+            recipeContainers[i] = new RecipeContainers(inputSlot, outputSlot);
             processInfoSlots[i] = new ProcessInfo(i, inputSlot, outputSlot, null);
         }
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers[cacheIndex];
     }
 }

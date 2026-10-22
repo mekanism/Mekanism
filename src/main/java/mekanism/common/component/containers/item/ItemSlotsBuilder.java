@@ -9,6 +9,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.capabilities.Capabilities;
@@ -234,7 +235,7 @@ public class ItemSlotsBuilder {
         return addSlot((attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), isItemValid));
     }
 
-    public <VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY, BOOK_INFO extends BookInfo<BOOK_CATEGORY>,
+    public <VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends BookInfo<BOOK_CATEGORY>,
           RECIPE extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO>, INPUT_CACHE extends IInputRecipeCache> ItemSlotsBuilder addInput(
           IMekanismRecipeTypeProvider<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, ItemResource> containsRecipe) {
         return addInput(itemType -> containsRecipe.check(recipeType.getInputCache(), null, itemType));

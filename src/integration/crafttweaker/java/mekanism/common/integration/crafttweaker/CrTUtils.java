@@ -13,6 +13,7 @@ import com.blamejared.crafttweaker.natives.ingredient.ExpandCTFluidIngredientNeo
 import com.blamejared.crafttweaker.natives.ingredient.ExpandIIngredientWithAmountNeoForge;
 import com.blamejared.crafttweaker.natives.ingredient.ExpandSizedFluidIngredient;
 import com.blamejared.crafttweaker.natives.ingredient.ExpandSizedIngredient;
+import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -135,12 +136,12 @@ public class CrTUtils {
     }
 
     /// Helper method for describing the outputs of a recipe that may have multiple outputs.
-    public static String describeOutputs(int[] outputs) {
-        int size = outputs.length;
+    public static String describeOutputs(IntList outputs) {
+        int size = outputs.size();
         if (size == 0) {
             return "";
         } else if (size == 1) {
-            return Long.toString(outputs[0]);
+            return Integer.toString(outputs.getInt(0));
         }
         //Note: This isn't the best way to describe multiple outputs, but it is probably as close as we can get
         StringBuilder description = new StringBuilder();
@@ -148,7 +149,7 @@ public class CrTUtils {
             if (i > 0) {
                 description.append(", or ");
             }
-            description.append(outputs[i]);
+            description.append(outputs.getInt(i));
         }
         return description.toString();
     }

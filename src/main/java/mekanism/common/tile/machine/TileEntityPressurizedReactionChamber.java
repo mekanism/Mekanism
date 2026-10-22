@@ -58,6 +58,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -104,6 +105,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     private final IInputHandler<Item, ItemStack> itemInputHandler;
     private final IInputHandler<Fluid, FluidStack> fluidInputHandler;
     private final IInputHandler<Chemical, ChemicalStack> gasInputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private PRCEnergyContainer energyContainer;
@@ -131,6 +133,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         fluidInputHandler = InputHelper.getInputHandler(inputFluidTank, NOT_ENOUGH_FLUID_INPUT_ERROR);
         gasInputHandler = InputHelper.getInputHandler(inputGasTank, NOT_ENOUGH_CHEMICAL_INPUT_ERROR);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR, outputGasTank, NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR);
+        recipeContainers = new RecipeContainers(List.of(inputSlot, inputFluidTank, inputGasTank), List.of(outputSlot, outputGasTank));
     }
 
     @Override
@@ -237,6 +240,16 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<PressurizedReactionRecipe> recipe, int cacheIndex) {
+        return recipe.value().matches(new ReactionRecipeInput(itemInputHandler.getInput(), fluidInputHandler.getInput(), gasInputHandler.getInput()), level);
     }
 
     public PRCEnergyContainer energyContainer() {

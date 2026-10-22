@@ -70,8 +70,8 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getLastUsage));
         if (tile.hasSecondaryResourceBar()) {
             if (tile instanceof TileEntityItemStackChemicalToItemStackFactory<?, ?> factory) {
-                addRenderableWidget(new GuiChemicalBar(this, GuiTankBar.getProvider(factory.getChemicalTank(), tile.getChemicalTanks()), 7, 76,
-                      tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true))
+                addRecipeBookComponent(new GuiChemicalBar(this, GuiTankBar.getProvider(factory.getChemicalTank(), tile.getChemicalTanks()), 7, 76,
+                      tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true), false)
                       .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT, 0));
                 dumpButton = addRenderableWidget(new GuiDumpButton(this, (TileEntityFactory<?> & IHasDumpButton) tile, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
             }

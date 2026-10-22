@@ -41,6 +41,7 @@ public class SpecialColors {
     public static final ColorRegistryObject GRAPH_HOVERED_VALUE = GUI_OBJECTS.register(0xFFADDCFF);
     public static final ColorRegistryObject GRAPH_INTEGRAL = GUI_OBJECTS.register(0xFF24AF5A);
     public static final ColorRegistryObject GRAPH_HOVERED_COLUMN = GUI_OBJECTS.register(0xFF6DB8FB);
+    public static final ColorRegistryObject TAB_RECIPE_BOOK = GUI_OBJECTS.register();
 
     public static final ColorRegistryObject TEXT_TITLE = GUI_TEXT.register(CommonColors.DARK_GRAY);
     public static final ColorRegistryObject TEXT_HEADING = GUI_TEXT.register(0xFF202020);

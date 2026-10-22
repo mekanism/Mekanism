@@ -6,7 +6,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.book.ChemicalConversionBookCategory;
 import mekanism.api.recipes.book.ChemicalConversionBookCategory.ChemicalConversionBookInfo;
-import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
+import mekanism.api.recipes.display.recipe.ChemicalConversionRecipeDisplay;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
@@ -25,7 +25,7 @@ public class BasicChemicalConversionRecipe extends BasicItemStackToChemicalRecip
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new SimpleMachineRecipeDisplay(
+        return List.of(new ChemicalConversionRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
               //TODO: What do we want to display as the work stations here

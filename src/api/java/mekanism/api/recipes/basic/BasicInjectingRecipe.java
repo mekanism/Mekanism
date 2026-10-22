@@ -6,7 +6,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.book.InjectingBookCategory;
 import mekanism.api.recipes.book.InjectingBookCategory.InjectingBookInfo;
-import mekanism.api.recipes.display.PerTickCombiningRecipeDisplay;
+import mekanism.api.recipes.display.recipe.InjectingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
@@ -35,7 +35,7 @@ public class BasicInjectingRecipe extends BasicItemStackChemicalToItemStackRecip
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(PerTickCombiningRecipeDisplay.create(
+        return List.of(new InjectingRecipeDisplay(
               getItemInput().display(),
               getChemicalInput().display(),
               perTickUsage(),

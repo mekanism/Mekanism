@@ -22,6 +22,8 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.book.SmeltingBookCategory;
+import mekanism.api.recipes.book.SmeltingBookCategory.SmeltingBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
@@ -110,8 +112,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe.CookingBookInfo;
-import net.minecraft.world.item.crafting.CookingBookCategory;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -130,7 +131,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLookupHandler<ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>> {
+public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLookupHandler<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>> {
 
     private static final boolean DEFAULT_FOLLOW = false;
     private static final boolean DEFAULT_DROP_PICKUP = false;
@@ -177,12 +178,13 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     /// The players currently using this robit.
     private final Set<Player> playersUsing = new ObjectOpenHashSet<>();
 
-    private final RecipeCacheLookupMonitor<ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>> recipeCacheLookupMonitor;
+    private final RecipeCacheLookupMonitor<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>> recipeCacheLookupMonitor;
     private final BooleanSupplier recheckAllRecipeErrors;
     private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
 
     private final IInputHandler<Item, ItemStack> inputHandler;
     private final IOutputHandler<ItemStackTemplate> outputHandler;
+    private final RecipeContainers recipeContainers;
 
     private final List<IInventorySlot> inventorySlots;
     private final List<IInventorySlot> mainContainerSlots;
@@ -233,6 +235,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
 
         inputHandler = InputHelper.getInputHandler(smeltingInputSlot, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(smeltingOutputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(smeltingInputSlot, smeltingOutputSlot);
     }
 
     @Override
@@ -608,19 +611,19 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<SingleRecipeInput, CookingBookCategory, CookingBookInfo, ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>,
-          SingleItem<ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleRecipeInput, SmeltingBookCategory, SmeltingBookInfo, ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>,
+          SingleItem<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>>> getRecipeType() {
         return MekanismRecipeType.SMELTING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>> recipeViewerType() {
+    public IRecipeViewerRecipeType<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>> recipeViewerType() {
         return RecipeViewerRecipeType.SMELTING;
     }
 
     @Nullable
     @Override
-    public ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo> getRecipe(int cacheIndex) {
+    public ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
@@ -639,7 +642,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>> createNewCachedRecipe(ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo> recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>> createNewCachedRecipe(ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo> recipe, int cacheIndex) {
         //TODO: Make a robit specific smelting energy usage config
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(errors -> {
@@ -651,6 +654,16 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::onContentsChanged)
               .setOperatingTicksChanged(operatingTicks -> progress = operatingTicks);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleRecipeInput(inputHandler.getInput()), level);
     }
 
     public BooleanSupplier getWarningCheck(RecipeError error) {

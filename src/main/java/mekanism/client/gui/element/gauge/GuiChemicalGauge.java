@@ -7,16 +7,20 @@ import java.util.function.Supplier;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.gui.screens.recipebook.SlotSelectTime;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
 public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTank> {
@@ -26,6 +30,9 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTa
         gauge.dummy = true;
         return gauge;
     }
+
+    @Nullable
+    private GhostSlot<ChemicalStack> ghostRecipeData;
 
     private GuiChemicalGauge(@Nullable ITankInfoHandler<IChemicalTank> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
         super(type, gui, x, y, sizeX, sizeY, handler, TankType.CHEMICAL_TANK, ChemicalResource.EMPTY);
@@ -39,6 +46,11 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTa
         this(getInfoHandler(tankSupplier, tanksSupplier), type, gui, x, y, sizeX, sizeY);
     }
 
+    @Override
+    protected ChemicalResource getTypeOrDummy() {
+        return ghostRecipeData == null ? super.getTypeOrDummy() : ChemicalResource.of(ghostRecipeData.getCurrent());
+    }
+
     @Nullable
     @Override
     public TextureAtlasSprite getIcon() {
@@ -48,8 +60,15 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTa
 
     @Override
     protected List<Component> getContentsTooltips(ChemicalResource resource, long amount, TooltipContext context, @Nullable Player player, TooltipFlag tooltipFlag) {
+        ChemicalStack stack;
+        if (ghostRecipeData != null) {
+            stack = ghostRecipeData.getCurrent();
+            resource = ChemicalResource.of(stack);
+            amount = stack.amount();
+        } else {
+            stack = resource.toStack(Ints.saturatedCast(amount));
+        }
         List<Component> tooltip = super.getContentsTooltips(resource, amount, context, player, tooltipFlag);
-        ChemicalStack stack = resource.toStack(Ints.saturatedCast(amount));
         if (!stack.isEmpty()) {
             MekanismUtils.appendAllButFirst(tooltip, stack.getTooltipLines(context, player, tooltipFlag));
         }
@@ -70,5 +89,25 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTa
     @Override
     public TransmissionType getTransmission() {
         return TransmissionType.CHEMICAL;
+    }
+
+    @Override
+    protected boolean isRenderingGhost() {
+        return ghostRecipeData != null;
+    }
+
+    @Override
+    public void setGhostData(SlotDisplay contents, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
+        List<ChemicalStack> entries = contents.resolve(context, ChemicalStackContentsFactory.INSTANCE).toList();
+        if (entries.isEmpty()) {
+            ghostRecipeData = null;
+        } else {
+            ghostRecipeData = new GhostSlot<>(entries, isResultSlot, slotSelectTime);
+        }
+    }
+
+    @Override
+    public void clearGhostData() {
+        ghostRecipeData = null;
     }
 }

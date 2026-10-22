@@ -45,7 +45,8 @@ public class MekanismRecipeSerializer {
         return new RecipeSerializer<>(MapCodec.unit(instance), StreamCodec.unit(instance));
     }
 
-    public static <BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>, RECIPE extends BasicItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> RecipeSerializer<RECIPE> itemToItem(
+    public static <BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+          RECIPE extends BasicItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> RecipeSerializer<RECIPE> itemToItem(
           ItemStackToItemStackRecipe.Factory<BOOK_CATEGORY, BOOK_INFO, RECIPE> factory, MapCodec<BOOK_INFO> bookMapCodec,
           StreamCodec<RegistryFriendlyByteBuf, BOOK_INFO> bookStreamCodec
     ) {

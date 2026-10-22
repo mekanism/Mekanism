@@ -60,6 +60,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -97,6 +98,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     private final IOutputHandler<ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Item, ItemStack> itemInputHandler;
     private final IInputHandler<Chemical, ChemicalStack> gasInputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityChemicalDissolutionChamber> energyContainer;
@@ -125,6 +127,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         itemInputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
         gasInputHandler = InputHelper.getInputHandler(injectTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(List.of(inputSlot, injectTank), outputTank);
         baseTotalUsage = baseTicksRequired;
         if (useStatisticalMechanics()) {
             //Note: Statistical mechanics works best by just using the mean gas usage we want to target
@@ -210,6 +213,16 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ChemicalDissolutionRecipe> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleItemChemicalRecipeInput(itemInputHandler.getInput(), gasInputHandler.getInput()), level);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 157, 23))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getActive));
-        inputGauge = addRenderableWidget(new GuiChemicalGauge(() -> tile.inputTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 7, 4))
+        inputGauge = addRecipeBookComponent(new GuiChemicalGauge(() -> tile.inputTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 7, 4), false)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_INPUT));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 53, 61).recipeViewerCategory(tile))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));

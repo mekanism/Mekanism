@@ -64,9 +64,9 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         }, 58, 62))
               //Note: We just apply this warning to the bar as we don't have an arrow or anything here
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
-        inputGauge = addRenderableWidget(new GuiFluidGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getFluidTanks(), GaugeType.STANDARD, this, 6, 13))
+        inputGauge = addRecipeBookComponent(new GuiFluidGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getFluidTanks(), GaugeType.STANDARD, this, 6, 13), false)
               .warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT));
-        addRenderableWidget(new GuiFluidGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getFluidTanks(), GaugeType.STANDARD, this, OUTPUT_GAUGE_X, 13))
+        addRecipeBookComponent(new GuiFluidGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getFluidTanks(), GaugeType.STANDARD, this, OUTPUT_GAUGE_X, 13), true)
               .warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE));
         addRenderableWidget(new GuiHeatTab(this, () -> {
             Component environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);

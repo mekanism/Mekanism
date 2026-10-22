@@ -6,7 +6,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.book.CrushingBookCategory;
 import mekanism.api.recipes.book.CrushingBookCategory.CrushingBookInfo;
-import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
+import mekanism.api.recipes.display.recipe.CrushingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -33,7 +33,7 @@ public class BasicCrushingRecipe extends BasicItemStackToItemStackRecipe<Crushin
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new SimpleMachineRecipeDisplay(
+        return List.of(new CrushingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(CRUSHER)

@@ -10,15 +10,16 @@ import mekanism.api.recipes.book.CrushingBookCategory;
 import mekanism.api.recipes.book.CrushingBookCategory.CrushingBookInfo;
 import mekanism.api.recipes.book.EnrichingBookCategory;
 import mekanism.api.recipes.book.EnrichingBookCategory.EnrichingBookInfo;
+import mekanism.api.recipes.book.MekanismBookCategory;
+import mekanism.api.recipes.book.SmeltingBookCategory;
+import mekanism.api.recipes.book.SmeltingBookCategory.SmeltingBookInfo;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe.CookingBookInfo;
-import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Recipe;
 
-public class ItemStackToItemStackRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+public class ItemStackToItemStackRecipeBuilder<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
       RECIPE extends ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>>
       extends MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO, ItemStackToItemStackRecipeBuilder<BOOK_CATEGORY, BOOK_INFO, RECIPE>> {
 
@@ -59,8 +60,8 @@ public class ItemStackToItemStackRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends 
     ///
     /// @param input  Input.
     /// @param output Output.
-    public static ItemStackToItemStackRecipeBuilder<CookingBookCategory, CookingBookInfo, ?> smelting(ItemStackIngredient input, ItemStackTemplate output) {
-        return new ItemStackToItemStackRecipeBuilder<>(input, output, BasicSmeltingRecipe::new, CookingBookInfo::new, CookingBookCategory.MISC);
+    public static ItemStackToItemStackRecipeBuilder<SmeltingBookCategory, SmeltingBookInfo, ?> smelting(ItemStackIngredient input, ItemStackTemplate output) {
+        return new ItemStackToItemStackRecipeBuilder<>(input, output, BasicSmeltingRecipe::new, SmeltingBookInfo::new, SmeltingBookCategory.MISC);
     }
 
     @Override

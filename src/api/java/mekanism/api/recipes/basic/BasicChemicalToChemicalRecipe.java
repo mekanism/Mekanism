@@ -34,8 +34,8 @@ public abstract class BasicChemicalToChemicalRecipe<BOOK_CATEGORY extends Mekani
     /// @param bookInfo   Recipe book info.
     /// @param input      Input.
     /// @param output     Output.
-    protected BasicChemicalToChemicalRecipe(RecipeType<ChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, CommonInfo commonInfo, BOOK_INFO bookInfo, ChemicalStackIngredient input,
-          ChemicalStackTemplate output) {
+    protected BasicChemicalToChemicalRecipe(RecipeType<ChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, CommonInfo commonInfo, BOOK_INFO bookInfo,
+          ChemicalStackIngredient input, ChemicalStackTemplate output) {
         this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");

@@ -17,7 +17,12 @@ public abstract class GuiWindowCreatorTab<DATA_SOURCE extends @Nullable Object, 
 
     public GuiWindowCreatorTab(Identifier overlay, IGuiWrapper gui, DATA_SOURCE dataSource, int x, int y, int height, int innerSize, boolean left,
           Supplier<ELEMENT> elementSupplier) {
-        super(overlay, gui, dataSource, x, y, height, innerSize, left);
+        this(overlay, gui, dataSource, x, y, height, innerSize, innerSize, left, elementSupplier);
+    }
+
+    public GuiWindowCreatorTab(Identifier overlay, IGuiWrapper gui, DATA_SOURCE dataSource, int x, int y, int height, int innerWidth, int innerHeight, boolean left,
+          Supplier<ELEMENT> elementSupplier) {
+        super(overlay, gui, dataSource, x, y, height, innerWidth, innerHeight, left);
         this.elementSupplier = elementSupplier;
     }
 
@@ -67,9 +72,13 @@ public abstract class GuiWindowCreatorTab<DATA_SOURCE extends @Nullable Object, 
     public void openPinnedWindows() {
         super.openPinnedWindows();
         for (SelectedWindowData windowData : getValidWindows()) {
-            if (windowData.wasPinned()) {
+            if (wasPinned(windowData)) {
                 openWindow(windowData);
             }
         }
+    }
+
+    protected boolean wasPinned(SelectedWindowData windowData) {
+        return windowData.wasPinned();
     }
 }

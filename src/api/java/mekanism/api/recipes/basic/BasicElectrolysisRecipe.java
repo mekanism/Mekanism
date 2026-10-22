@@ -1,5 +1,6 @@
 package mekanism.api.recipes.basic;
 
+import com.google.common.base.Preconditions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collections;
@@ -38,9 +39,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     public BasicElectrolysisRecipe(CommonInfo commonInfo, ElectrolysisBookInfo bookInfo, FluidStackIngredient input, int energyMultiplier, ElectrolysisRecipeOutput output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.energyMultiplier = energyMultiplier;
-        if (energyMultiplier < 1) {
-            throw new IllegalArgumentException("Energy multiplier must be at least one.");
-        }
+        Preconditions.checkArgument(energyMultiplier >= 1, "Energy multiplier must be at least one.");
         this.output = Objects.requireNonNull(output, "Output cannot be null");
         super(commonInfo, bookInfo);
     }

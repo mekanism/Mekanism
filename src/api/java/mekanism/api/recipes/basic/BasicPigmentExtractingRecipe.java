@@ -7,7 +7,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.book.PigmentExtractingBookCategory;
 import mekanism.api.recipes.book.PigmentExtractingBookCategory.PigmentExtractingBookInfo;
-import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
+import mekanism.api.recipes.display.recipe.PigmentExtractingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -30,7 +30,7 @@ public class BasicPigmentExtractingRecipe extends BasicItemStackToChemicalRecipe
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new SimpleMachineRecipeDisplay(
+        return List.of(new PigmentExtractingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(PIGMENT_EXTRACTOR)

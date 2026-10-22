@@ -54,10 +54,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
         this.inputChemical = Objects.requireNonNull(inputChemical, "Chemical input cannot be null.");
         Preconditions.checkArgument(energyRequired >= 0, "Energy required must not be negative");
         this.energyRequired = energyRequired;
-
-        if (duration <= 0) {
-            throw new IllegalArgumentException("Duration must be positive.");
-        }
+        Preconditions.checkArgument(duration > 0, "Duration must be positive.");
         this.duration = duration;
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
         super(commonInfo, bookInfo);

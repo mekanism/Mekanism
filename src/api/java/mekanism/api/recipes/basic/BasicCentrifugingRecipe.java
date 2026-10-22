@@ -7,7 +7,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.book.CentrifugingBookCategory;
 import mekanism.api.recipes.book.CentrifugingBookCategory.CentrifugingBookInfo;
-import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
+import mekanism.api.recipes.display.recipe.CentrifugingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -34,7 +34,7 @@ public class BasicCentrifugingRecipe extends BasicChemicalToChemicalRecipe<Centr
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new SimpleMachineRecipeDisplay(
+        return List.of(new CentrifugingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(ISOTOPIC_CENTRIFUGE)

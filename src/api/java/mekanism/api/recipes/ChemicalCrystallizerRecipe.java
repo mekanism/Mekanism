@@ -5,7 +5,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.SingleInputRecipe.ChemicalInputRecipe;
 import mekanism.api.recipes.book.CrystallizingBookCategory;
 import mekanism.api.recipes.book.CrystallizingBookCategory.CrystallizingBookInfo;
-import mekanism.api.recipes.display.CrystallizerRecipeDisplay;
+import mekanism.api.recipes.display.recipe.CrystallizerRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
 import net.minecraft.core.Holder;
@@ -39,7 +39,7 @@ public abstract class ChemicalCrystallizerRecipe extends ChemicalInputRecipe<Ite
 
     @Override
     public ItemStack assemble(SingleChemicalRecipeInput input) {
-        if (!isIncomplete() && test(input.chemical())) {
+        if (test(input.chemical())) {
             return getOutput(input.chemical()).create();
         }
         return ItemStack.EMPTY;

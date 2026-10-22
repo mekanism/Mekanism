@@ -1,16 +1,30 @@
 package mekanism.common.recipe.lookup;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.IContentsListener;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
+import mekanism.common.registration.impl.RecipeBookCategoryDeferredRegister;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.recipebook.ServerPlaceRecipe.CraftingMenuAccess;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.StackedItemContents;
+import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.inventory.StackedContentsCompatible;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jspecify.annotations.Nullable;
 
-public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> extends IContentsListener {
+//TODO - 26.3: Try to add support for some of the things in RecipeCraftingHolder
+public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> extends IContentsListener, StackedContentsCompatible {
 
     /// @return The world for this [IRecipeLookupHandler].
     @Nullable
@@ -65,6 +79,68 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> ex
     default void clearRecipeErrors(int cacheIndex) {
     }
 
+    @Override
+    default void fillStackedContents(StackedItemContents contents) {
+        RecipeContainers recipeContainers = getRecipeContainers(0);
+        for (IResourceContainer<?> input : recipeContainers.inputs()) {
+            if (input instanceof IInventorySlot slot) {
+                contents.accountStack(slot.asItemStack());
+            }
+        }
+        for (IResourceContainer<?> input : recipeContainers.outputs()) {
+            if (input instanceof IInventorySlot slot) {
+                contents.accountStack(slot.asItemStack());
+            }
+        }
+    }
+
+    @Nullable
+    default CraftingMenuAccess<RECIPE> asCraftingMenuAccess(ServerLevel level, boolean includeNonItems, int cacheIndex) {
+        RecipeContainers recipeContainers = getRecipeContainers(cacheIndex);
+        return new CraftingMenuAccess<>() {
+            @Override
+            public void fillCraftSlotsStackedContents(StackedItemContents stackedContents) {
+                fillStackedContents(stackedContents);
+            }
+
+            @Override
+            public void clearCraftingContent() {
+                for (IResourceContainer<?> inputContainer : recipeContainers.inputs()) {
+                    clearContainerIfValid(inputContainer, includeNonItems);
+                }
+                for (IResourceContainer<?> outputContainer : recipeContainers.outputs()) {
+                    clearContainerIfValid(outputContainer, includeNonItems);
+                }
+            }
+
+            private <RESOURCE extends Resource> void clearContainerIfValid(IResourceContainer<RESOURCE> container, boolean includeNonItems) {
+                if (includeNonItems || container instanceof IInventorySlot) {
+                    container.setContents(container.stackHelper().empty(), null);
+                }
+            }
+
+            @Override
+            public boolean recipeMatches(RecipeHolder<RECIPE> recipe) {
+                return IRecipeLookupHandler.this.recipeMatches(level, recipe, cacheIndex);
+            }
+        };
+    }
+
+    /// {@return the resource containers that pertain to recipe processing}
+    RecipeContainers getRecipeContainers(int cacheIndex);
+
+    boolean recipeMatches(ServerLevel level, RecipeHolder<RECIPE> recipe, int cacheIndex);
+
+    /// {@return the corresponding recipe book type}
+    default RecipeBookType getRecipeBookType() {
+        return getRecipeType().getRecipeType().getRecipeBookType();
+    }
+
+    /// {@return the corresponding recipe book categories}
+    default RecipeBookCategoryDeferredRegister.MekanismRecipeBookTypes getBookCategories() {
+        return getRecipeType().getRecipeType().getBookCategories();
+    }
+
     /// Helper class that specifies the input cache's type for the recipe type. The reason it isn't defined in the main [IRecipeLookupHandler] is it isn't needed and
     /// would just make the class definitions a lot messier with very long generics that can be folded away into the helper interfaces we use anyway ofr actual lookup
     /// purposes.
@@ -83,6 +159,40 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> ex
         /// @return Constant amount of secondary input that had been used before saving.
         default int getSavedUsedSoFar(int cacheIndex) {
             return 0;
+        }
+    }
+
+    record RecipeContainers(List<? extends IResourceContainer<?>> inputs, List<? extends IResourceContainer<?>> outputs) {
+
+        public RecipeContainers(List<? extends IResourceContainer<?>> inputs, IResourceContainer<?> output) {
+            this(inputs, List.of(output));
+        }
+
+        public RecipeContainers(IResourceContainer<?> input, List<? extends IResourceContainer<?>> outputs) {
+            this(List.of(input), outputs);
+        }
+
+        public RecipeContainers(IResourceContainer<?> input, IResourceContainer<?> output) {
+            this(List.of(input), output);
+        }
+
+        public RecipeContainers {
+            for (IResourceContainer<?> input : inputs) {
+                if (input instanceof BasicInventorySlot slot) {
+                    slot.setRecipeCraftingSlot(true);
+                }
+            }
+            for (IResourceContainer<?> output : outputs) {
+                if (output instanceof BasicInventorySlot slot) {
+                    slot.setRecipeCraftingSlot(true);
+                }
+            }
+        }
+
+        public RecipeContainers withExtraInput(IResourceContainer<?> input) {
+            List<IResourceContainer<?>> newInputs = new ArrayList<>(inputs);
+            newInputs.add(input);
+            return new RecipeContainers(List.copyOf(newInputs), outputs);
         }
     }
 }

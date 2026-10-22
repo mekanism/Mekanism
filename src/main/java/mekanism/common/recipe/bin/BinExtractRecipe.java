@@ -44,13 +44,12 @@ public class BinExtractRecipe extends BinRecipe {
         }
         //Display that our output will be the bottom stack
         ComponentBackedBinInventorySlot slot = convertToSlot(ItemAccessUtils.sideEffectFreeAccess(binData));
-        LargeResourceStack<ItemResource> stack = slot.asStack();
+        ItemStack stack = slot.asItemStack();
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        ItemResource stored = stack.resource();
-        int toExtract = Math.min(Ints.saturatedCast(stack.amount()), stored.getMaxStackSize());
-        return stored.toStack(toExtract);
+        int toExtract = Math.min(stack.count(), stack.getMaxStackSize());
+        return stack.copyWithCount(toExtract);
     }
 
     private ItemResource findBinData(CraftingInput inv) {

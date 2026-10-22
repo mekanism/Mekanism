@@ -101,4 +101,10 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
     public VirtualInventoryContainerSlot getUpgradeOutputSlot() {
         return upgradeOutputSlot;
     }
+
+    @Nullable
+    @Override
+    protected TILE getRecipeHandler() {
+        return tile;
+    }
 }

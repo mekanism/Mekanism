@@ -7,7 +7,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.book.PigmentMixingBookCategory;
 import mekanism.api.recipes.book.PigmentMixingBookCategory.PigmentMixingBookInfo;
-import mekanism.api.recipes.display.MixingRecipeDisplay;
+import mekanism.api.recipes.display.recipe.PigmentMixingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -34,7 +34,7 @@ public class BasicPigmentMixingRecipe extends BasicChemicalChemicalToChemicalRec
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new MixingRecipeDisplay(
+        return List.of(new PigmentMixingRecipeDisplay(
               getLeftInput().display(),
               getRightInput().display(),
               getOutputDisplay(),

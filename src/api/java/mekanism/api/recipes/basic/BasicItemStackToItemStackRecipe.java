@@ -8,6 +8,7 @@ import java.util.Objects;
 import mekanism.api.SerializationConstants;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -21,7 +22,8 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
-public abstract class BasicItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>> extends ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> {
+public abstract class BasicItemStackToItemStackRecipe<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      extends ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> {
 
     protected final ItemStackIngredient input;
     protected final ItemStackTemplate output;
@@ -30,8 +32,8 @@ public abstract class BasicItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO e
     /// @param bookInfo   Recipe book info.
     /// @param input      Input.
     /// @param output     Output.
-    public BasicItemStackToItemStackRecipe(RecipeType<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, CommonInfo commonInfo, BOOK_INFO bookInfo, ItemStackIngredient input,
-          ItemStackTemplate output) {
+    public BasicItemStackToItemStackRecipe(RecipeType<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, CommonInfo commonInfo, BOOK_INFO bookInfo,
+          ItemStackIngredient input, ItemStackTemplate output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
         super(recipeType, commonInfo, bookInfo);
@@ -86,7 +88,7 @@ public abstract class BasicItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO e
     /// @param bookCodec Map codec for serializing recipe book data
     ///
     /// @since 10.8.0
-    public static <BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+    public static <BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
           RECIPE extends BasicItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> MapCodec<RECIPE> simpleMapCodec(
           ItemStackToItemStackRecipe.Factory<BOOK_CATEGORY, BOOK_INFO, RECIPE> factory, MapCodec<BOOK_INFO> bookCodec
     ) {
@@ -104,7 +106,7 @@ public abstract class BasicItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO e
     /// @param bookCodec Stream codec for serializing recipe book data
     ///
     /// @since 10.8.0
-    public static <BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+    public static <BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
           RECIPE extends BasicItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> StreamCodec<RegistryFriendlyByteBuf, RECIPE> simpleStreamCodec(
           ItemStackToItemStackRecipe.Factory<BOOK_CATEGORY, BOOK_INFO, RECIPE> factory, StreamCodec<RegistryFriendlyByteBuf, BOOK_INFO> bookCodec
     ) {

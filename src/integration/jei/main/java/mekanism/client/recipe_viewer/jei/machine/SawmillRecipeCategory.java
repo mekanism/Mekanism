@@ -1,8 +1,8 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import java.util.List;
 import mekanism.api.recipes.SawmillRecipe;
-import mekanism.api.recipes.display.slot.ChanceSlotDisplay;
+import mekanism.api.recipes.display.recipe.SawingRecipeDisplay;
+import mekanism.api.recipes.display.recipe.SawingRecipeDisplay.DecomposedDisplay;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -20,7 +20,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 public class SawmillRecipeCategory extends HolderRecipeCategory<SawmillRecipe> {
 
@@ -54,24 +53,8 @@ public class SawmillRecipeCategory extends HolderRecipeCategory<SawmillRecipe> {
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<SawmillRecipe> recipeHolder, IFocusGroup focusGroup) {
         SawmillRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().display());
-        SlotDisplay mainOutputDisplay = SlotDisplay.Empty.INSTANCE;
-        SlotDisplay secondaryOutputDisplay = SlotDisplay.Empty.INSTANCE;
-        SlotDisplay outputDisplay = recipe.getOutputDisplay();
-        if (outputDisplay instanceof ChanceSlotDisplay chanceDisplay) {
-            secondaryOutputDisplay = chanceDisplay;
-        } else if (outputDisplay instanceof SlotDisplay.Composite(List<SlotDisplay> contents) && !contents.isEmpty()) {
-            if (contents.getFirst() instanceof ChanceSlotDisplay) {
-                //Assume it is a list of chance displays
-                secondaryOutputDisplay = outputDisplay;
-            } else if (contents.size() == 2) {
-                mainOutputDisplay = contents.getFirst();
-                secondaryOutputDisplay = contents.getLast();
-            }
-        }
-        if (mainOutputDisplay == SlotDisplay.Empty.INSTANCE && secondaryOutputDisplay == SlotDisplay.Empty.INSTANCE) {
-            mainOutputDisplay = outputDisplay;
-        }
-        initItem(builder, RecipeIngredientRole.OUTPUT, output.getX() + 4, output.getY() + 4, mainOutputDisplay);
-        initItem(builder, RecipeIngredientRole.OUTPUT, output.getX() + 20, output.getY() + 4, secondaryOutputDisplay);
+        DecomposedDisplay decomposed = SawingRecipeDisplay.decomposeDisplay(recipe.getOutputDisplay());
+        initItem(builder, RecipeIngredientRole.OUTPUT, output.getX() + 4, output.getY() + 4, decomposed.mainOutput());
+        initItem(builder, RecipeIngredientRole.OUTPUT, output.getX() + 20, output.getY() + 4, decomposed.secondaryOutput());
     }
 }

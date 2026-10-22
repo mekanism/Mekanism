@@ -5,6 +5,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
@@ -38,12 +39,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public abstract class TileEntityElectricMachine<BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+public abstract class TileEntityElectricMachine<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
       extends TileEntityProgressMachine<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
@@ -56,6 +59,7 @@ public abstract class TileEntityElectricMachine<BOOK_CATEGORY, BOOK_INFO extends
 
     protected final IInputHandler<Item, ItemStack> inputHandler;
     protected final IOutputHandler<ItemStackTemplate> outputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityElectricMachine<BOOK_CATEGORY, BOOK_INFO>> energyContainer;
@@ -78,6 +82,7 @@ public abstract class TileEntityElectricMachine<BOOK_CATEGORY, BOOK_INFO extends
 
         inputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(inputSlot, outputSlot);
     }
 
     @Override
@@ -121,6 +126,16 @@ public abstract class TileEntityElectricMachine<BOOK_CATEGORY, BOOK_INFO extends
               .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleRecipeInput(inputHandler.getInput()), level);
     }
 
     @Override

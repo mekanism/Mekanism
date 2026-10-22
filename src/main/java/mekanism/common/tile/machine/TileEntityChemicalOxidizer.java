@@ -46,6 +46,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -71,6 +72,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
 
     private final IOutputHandler<ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Item, ItemStack> inputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityChemicalOxidizer> energyContainer;
@@ -94,6 +96,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
 
         inputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(gasTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(inputSlot, gasTank);
     }
 
     @Override
@@ -156,6 +159,16 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
               .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo>> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleRecipeInput(inputHandler.getInput()), level);
     }
 
     public MachineEnergyContainer<TileEntityChemicalOxidizer> energyContainer() {

@@ -75,6 +75,7 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -130,6 +131,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     private final IOutputHandler<ElectrolysisRecipeOutput> outputHandler;
     private final IInputHandler<Fluid, FluidStack> inputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private ElectroSeparatorEnergyContainer energyContainer;
@@ -179,6 +181,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
         inputHandler = InputHelper.getInputHandler(fluidTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(leftTank, NOT_ENOUGH_SPACE_LEFT_OUTPUT_ERROR, rightTank, NOT_ENOUGH_SPACE_RIGHT_OUTPUT_ERROR);
+        recipeContainers = new RecipeContainers(fluidTank, List.of(leftTank, rightTank));
     }
 
     @Override
@@ -314,6 +317,16 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setBaselineMaxOperations(() -> baselineMaxOperations)
               .setOnFinish(this::markForSave);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ElectrolysisRecipe> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleFluidRecipeInput(inputHandler.getInput()), level);
     }
 
     @Override

@@ -6,7 +6,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.book.MetallurgicInfusingBookCategory;
 import mekanism.api.recipes.book.MetallurgicInfusingBookCategory.MetallurgicInfusingBookInfo;
-import mekanism.api.recipes.display.PerTickCombiningRecipeDisplay;
+import mekanism.api.recipes.display.recipe.MetallurgicInfusingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
@@ -33,7 +33,7 @@ public class BasicMetallurgicInfuserRecipe extends BasicItemStackChemicalToItemS
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(PerTickCombiningRecipeDisplay.create(
+        return List.of(new MetallurgicInfusingRecipeDisplay(
               getItemInput().display(),
               getChemicalInput().display(),
               perTickUsage(),

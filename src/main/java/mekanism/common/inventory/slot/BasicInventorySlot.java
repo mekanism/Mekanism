@@ -20,8 +20,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 //TODO: Should we make some sort of "ITickableSlot" or something that lets us tick a bunch of slots at once instead of having to manually call the relevant methods
 ///Semi similar to Neo's new [net.neoforged.neoforge.transfer.item.ItemStackResourceHandler]
@@ -66,6 +67,7 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
     private ContainerSlotType slotType = ContainerSlotType.NORMAL;
     @Nullable
     private SlotOverlay slotOverlay;
+    private boolean isRecipeCraftingSlot;
     @Nullable
     private Consumer<ISupportsWarning<?>> warningAdder;
 
@@ -87,6 +89,10 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
         return x;
     }
 
+    public int getGuiY() {
+        return y;
+    }
+
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long capacityAsLong(ItemResource resource) {
@@ -101,20 +107,36 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
         return new InventoryContainerSlot(this, x, y, slotType, slotOverlay, warningAdder);
     }
 
-    public void setSlotType(ContainerSlotType slotType) {
+    @Contract("_ -> this")
+    public BasicInventorySlot setSlotType(ContainerSlotType slotType) {
         //TODO - 1.18: Re-evaluate this method as for the most part we now seem to be handling this in GuiMekanism
         // and figuring it out based on the data type; which at the very least means we can probably remove some
         // calls to this. Though there are also some cases where we want to override it where it doesn't now as
         // the fallback sets it to normal basically regardless (see evaporation multiblock and input slots)
         this.slotType = slotType;
+        return this;
     }
 
-    public void tracksWarnings(@Nullable Consumer<ISupportsWarning<?>> warningAdder) {
+    @Contract("_ -> this")
+    public BasicInventorySlot tracksWarnings(@Nullable Consumer<ISupportsWarning<?>> warningAdder) {
         this.warningAdder = warningAdder;
+        return this;
     }
 
-    public void setSlotOverlay(@Nullable SlotOverlay slotOverlay) {
+    @Contract("_ -> this")
+    public BasicInventorySlot setSlotOverlay(@Nullable SlotOverlay slotOverlay) {
         this.slotOverlay = slotOverlay;
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public BasicInventorySlot setRecipeCraftingSlot(boolean isRecipeCraftingSlot) {
+        this.isRecipeCraftingSlot = isRecipeCraftingSlot;
+        return this;
+    }
+
+    public boolean isRecipeCraftingSlot() {
+        return isRecipeCraftingSlot;
     }
 
     @Nullable

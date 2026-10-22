@@ -86,16 +86,27 @@ public abstract class GuiGauge<T extends @Nullable Object> extends GuiElement im
         }
     }
 
+    protected boolean isRenderingGhost() {
+        return false;
+    }
+
     public void renderContents(GuiGraphicsExtractor guiGraphics) {
         boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
         if (warning) {
             //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency we may as well show the background)
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, WARNING_BACKGROUND_TEXTURE, relativeX + 1, relativeY + 1, width - 2, height - 2);
         }
+        boolean isRenderingGhost = isRenderingGhost();
         int scale = getScaledLevel();
         TextureAtlasSprite icon = getIcon();
         if (scale > 0 && icon != null) {
+            if (isRenderingGhost) {
+                GuiUtils.fill(guiGraphics, relativeX + 1, relativeY + 1, width - 2, height - 2, 0x30FF0000);
+            }
             GuiUtils.drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, width - 2, scale, icon, TilingDirection.UP_RIGHT, getRenderColor());
+            if (isRenderingGhost) {
+                GuiUtils.fill(guiGraphics, relativeX + 1, relativeY + 1, width - 2, height - 2, 0x30FFFFFF);
+            }
             if (warning && (scale / (double) (height - 2)) > 0.98) {
                 //If we have a warning and the gauge is entirely filled (or almost completely filled, > 95%), draw a warning vertically next to it
                 int halfWidth = (width - 2) / 2;

@@ -54,6 +54,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -86,6 +87,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     private final IOutputHandler<ItemStackTemplate> outputHandler;
     private final IInputHandler<Item, ItemStack> itemInputHandler;
     private final IInputHandler<Chemical, ChemicalStack> pigmentInputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityPaintingMachine> energyContainer;
@@ -113,6 +115,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
         itemInputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
         pigmentInputHandler = InputHelper.getInputHandler(pigmentTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(List.of(inputSlot, pigmentTank), outputSlot);
     }
 
     @Override
@@ -186,6 +189,16 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleItemChemicalRecipeInput(itemInputHandler.getInput(), pigmentInputHandler.getInput()), level);
     }
 
     public MachineEnergyContainer<TileEntityPaintingMachine> energyContainer() {

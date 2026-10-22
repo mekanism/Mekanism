@@ -12,7 +12,8 @@ import org.jspecify.annotations.Nullable;
 
 public abstract class GuiInsetElement<DATA_SOURCE extends @Nullable Object> extends GuiSideHolder implements ISupportsWarning<GuiInsetElement<DATA_SOURCE>> {
 
-    protected final int border;
+    protected final int borderHorizontal;
+    protected final int borderVertical;
     protected final int innerWidth;
     protected final int innerHeight;
     protected final DATA_SOURCE dataSource;
@@ -22,13 +23,18 @@ public abstract class GuiInsetElement<DATA_SOURCE extends @Nullable Object> exte
     protected BooleanSupplier warningSupplier;
 
     public GuiInsetElement(Identifier overlay, IGuiWrapper gui, DATA_SOURCE dataSource, int x, int y, int height, int innerSize, boolean left) {
+        this(overlay, gui, dataSource, x, y, height, innerSize, innerSize, left);
+    }
+
+    public GuiInsetElement(Identifier overlay, IGuiWrapper gui, DATA_SOURCE dataSource, int x, int y, int height, int innerWidth, int innerHeight, boolean left) {
         super(gui, x, y, height, left, false);
         this.overlay = overlay;
         this.dataSource = dataSource;
-        this.innerWidth = innerSize;
-        this.innerHeight = innerSize;
+        this.innerWidth = innerWidth;
+        this.innerHeight = innerHeight;
         //TODO: decide what to do if this doesn't divide nicely
-        this.border = (width - innerWidth) / 2;
+        this.borderHorizontal = (this.width - this.innerWidth) / 2;
+        this.borderVertical = (this.height - this.innerHeight) / 2;
         this.clickSound = BUTTON_CLICK_SOUND;
         active = true;
     }
@@ -42,17 +48,17 @@ public abstract class GuiInsetElement<DATA_SOURCE extends @Nullable Object> exte
     @Override
     public boolean isMouseOver(double xAxis, double yAxis) {
         //TODO: override isHovered
-        return this.active && this.visible && xAxis >= getX() + border && xAxis < getRight() - border && yAxis >= getY() + border && yAxis < getBottom() - border;
+        return this.active && this.visible && xAxis >= getX() + borderHorizontal && xAxis < getRight() - borderHorizontal && yAxis >= getY() + borderVertical && yAxis < getBottom() - borderVertical;
     }
 
     @Override
     protected int getButtonX() {
-        return super.getButtonX() + border + (left ? 1 : -1);
+        return super.getButtonX() + borderHorizontal + (left ? 1 : -1);
     }
 
     @Override
     protected int getButtonY() {
-        return super.getButtonY() + border;
+        return super.getButtonY() + borderVertical;
     }
 
     @Override
@@ -67,6 +73,10 @@ public abstract class GuiInsetElement<DATA_SOURCE extends @Nullable Object> exte
 
     protected Identifier getOverlay() {
         return overlay;
+    }
+
+    protected boolean renderOverlay() {
+        return true;
     }
 
     @Override
@@ -89,6 +99,8 @@ public abstract class GuiInsetElement<DATA_SOURCE extends @Nullable Object> exte
             //Validate the background didn't get set to none by a child
             drawButton(guiGraphics, mouseX, mouseY);
         }
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getOverlay(), getButtonX(), getButtonY(), innerWidth, innerHeight);
+        if (renderOverlay()) {
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getOverlay(), getButtonX(), getButtonY(), innerWidth, innerHeight);
+        }
     }
 }

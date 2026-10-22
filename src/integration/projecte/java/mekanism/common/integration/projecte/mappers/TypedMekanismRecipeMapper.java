@@ -109,7 +109,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?,
             return false;
         }
         RECIPE typedRecipe = recipeClass.cast(recipe);
-        if (typedRecipe.isIncomplete()) {
+        if (typedRecipe.placementInfo().isImpossibleToPlace()) {
             return false;
         }
         //TODO - ProjectE: Pass a ContextMap to handleRecipe?

@@ -512,7 +512,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "Maps Mekanism activating and centrifuging recipes.", true),
     PE_MAPPER_COMBINER("projecte.mapper.combiner", Mekanism.MOD_NAME + " Combiner", "Maps Mekanism combiner recipes.", true),
     PE_MAPPER_ELECTROLYSIS("projecte.mapper.electrolysis", Mekanism.MOD_NAME + " Electrolysis", "Maps Mekanism electrolytic separator recipes.", true),
-    PE_MAPPER_WASHING("projecte.mapper.todo", Mekanism.MOD_NAME + " Washing", "Maps Mekanism washing recipes.", true),
+    PE_MAPPER_WASHING("projecte.mapper.washing", Mekanism.MOD_NAME + " Washing", "Maps Mekanism washing recipes.", true),
     PE_MAPPER_EVAPORATING("projecte.mapper.evaporating", Mekanism.MOD_NAME + " Evaporating", "Maps Mekanism evaporating recipes.", true),
     PE_MAPPER_ITEM_CHEMICAL_TO_ITEM("projecte.mapper.item_chemical_to_item", Mekanism.MOD_NAME + " IC2I",
           "Maps Mekanism Machine recipes that go from item, chemical to item. (Compressing, Purifying, Injecting, Metallurgic Infusing, Painting, Nucleosynthesizing)", true),

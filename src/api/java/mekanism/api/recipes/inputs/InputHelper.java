@@ -71,7 +71,7 @@ public class InputHelper {
 
         @Override
         public ItemStack getInput() {
-            return container.resource().toStack(container.amountAsInt());
+            return container.asItemStack();
         }
     }
 

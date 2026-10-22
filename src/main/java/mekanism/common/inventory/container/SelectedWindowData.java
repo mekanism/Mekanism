@@ -84,11 +84,13 @@ public record SelectedWindowData(WindowType type, byte extraData) {
     public record WindowPosition(int x, int y, boolean pinned) {
     }
 
+    //TODO - 26.3: Make this not be an enum so that addons can make use of it if they decide to take their chances on things breaking and use our internals
     public enum WindowType {
         COLOR("color", false),
         CONFIRMATION("confirmation", false),
         CRAFTING("crafting", true, IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS),
         MEKA_SUIT_HELMET("mekasuit_helmet", false),
+        RECIPE_BOOK("recipe_book", false),//Note: We manually enable pinning so that vanilla's data handles keeping track of if it was open
         RENAME("rename", false),
         SKIN_SELECT("skin_select", false),
         SIDE_CONFIG("side_config", true),

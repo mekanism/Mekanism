@@ -3,6 +3,7 @@ package mekanism.client.recipe_viewer.type;
 import java.util.List;
 import java.util.stream.Stream;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -16,7 +17,7 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.ItemLike;
 import org.jspecify.annotations.Nullable;
 
-public record RVRecipeTypeWrapper<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+public record RVRecipeTypeWrapper<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
       RECIPE extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO>, INPUT_CACHE extends IInputRecipeCache>(
       Identifier id, ItemLike item, Class<? extends RECIPE> recipeClass, IMekanismRecipeTypeProvider<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> vanillaProvider,
       int xOffset, int yOffset, int width, int height, List<SlotDisplay> workstations

@@ -58,6 +58,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.material.Fluid;
@@ -113,6 +114,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
 
     private final IOutputHandler<FluidStackTemplate> outputHandler;
     private final IInputHandler<Fluid, FluidStack> inputHandler;
+    private final RecipeContainers recipeContainers;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItemInput", docPlaceholder = "input side's input slot")
     final FluidInventorySlot inputInputSlot;
@@ -133,6 +135,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         fluidTanks.add(outputTank = VariableCapacityFluidTank.output(this, MekanismConfig.general.evaporationOutputTankCapacity, ConstantPredicates.alwaysTrue(), this));
         inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(inputTank, outputTank);
         inventorySlots.add(inputInputSlot = FluidInventorySlot.fill(inputTank, this, 28, 20));
         inventorySlots.add(outputInputSlot = OutputInventorySlot.at(this, 28, 51));
         inventorySlots.add(inputOutputSlot = FluidInventorySlot.drain(outputTank, this, 152, 20));
@@ -309,6 +312,16 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
               })
               .setRequiredTicks(() -> tempMultiplier > 0 && tempMultiplier < 1 ? Mth.ceil(1 / tempMultiplier) : 1)
               .setBaselineMaxOperations(() -> tempMultiplier > 0 && tempMultiplier < 1 ? 1 : (int) tempMultiplier);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo>> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleFluidRecipeInput(inputHandler.getInput()), level);
     }
 
     public boolean hasWarning(RecipeError error) {

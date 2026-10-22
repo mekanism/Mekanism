@@ -2,6 +2,7 @@ package mekanism.common.registration.impl;
 
 import java.util.function.Function;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.registration.MekanismDeferredRegister;
@@ -18,7 +19,7 @@ public class RecipeTypeDeferredRegister extends MekanismDeferredRegister<RecipeT
     }
 
     @SuppressWarnings("unchecked")
-    public <VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+    public <VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
           RECIPE extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO>, INPUT_CACHE extends IInputRecipeCache>
     RecipeTypeRegistryObject<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE> registerMek(String name,
           Function<Identifier, ? extends MekanismRecipeType<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE>> func) {

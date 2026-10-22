@@ -79,4 +79,10 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
         }
         return IBlockSecurityUtils.INSTANCE.canAccess(player, level, tile.getBlockPos(), tile);
     }
+
+    @Nullable
+    @Override
+    protected TileEntityQIODashboard getRecipeHandler() {
+        return tile;
+    }
 }

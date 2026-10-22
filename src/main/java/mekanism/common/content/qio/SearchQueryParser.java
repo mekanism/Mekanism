@@ -216,7 +216,7 @@ public class SearchQueryParser {
         TOOLTIP('$') {
             @Override
             public boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack) {
-                for (Component tooltipLine : stack.getTooltipLines(Item.TooltipContext.of(level), player, Default.NORMAL)) {
+                for (Component tooltipLine : stack.getTooltipLines(Item.TooltipContext.of(level, player), player, Default.NORMAL)) {
                     String tooltip = tooltipLine.getString().toLowerCase(Locale.ROOT);
                     if (tooltip.contains(key)) {
                         return true;

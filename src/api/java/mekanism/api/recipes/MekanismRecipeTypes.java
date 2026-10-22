@@ -33,12 +33,12 @@ import mekanism.api.recipes.book.PigmentMixingBookCategory;
 import mekanism.api.recipes.book.PigmentMixingBookCategory.PigmentMixingBookInfo;
 import mekanism.api.recipes.book.PurifyingBookCategory;
 import mekanism.api.recipes.book.PurifyingBookCategory.PurifyingBookInfo;
+import mekanism.api.recipes.book.SmeltingBookCategory;
+import mekanism.api.recipes.book.SmeltingBookCategory.SmeltingBookInfo;
 import mekanism.api.recipes.book.WashingBookCategory;
 import mekanism.api.recipes.book.WashingBookCategory.WashingBookInfo;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe.CookingBookInfo;
-import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -65,8 +65,8 @@ public class MekanismRecipeTypes {
     public static final Identifier NAME_OXIDIZING = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "oxidizing");
     public static final Identifier NAME_PIGMENT_EXTRACTING = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment_extracting");
     public static final Identifier NAME_PIGMENT_MIXING = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment_mixing");
-    public static final Identifier NAME_METALLURGIC_INFUSING = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "metallurgic_infusing");
     public static final Identifier NAME_PAINTING = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "painting");
+    public static final Identifier NAME_METALLURGIC_INFUSING = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "metallurgic_infusing");
     public static final Identifier NAME_REACTION = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "reaction");
     public static final Identifier NAME_ROTARY = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "rotary");
     public static final Identifier NAME_SAWING = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "sawing");
@@ -74,7 +74,7 @@ public class MekanismRecipeTypes {
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToItemStackRecipe<CrushingBookCategory, CrushingBookInfo>>> TYPE_CRUSHING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CRUSHING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToItemStackRecipe<EnrichingBookCategory, EnrichingBookInfo>>> TYPE_ENRICHING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_ENRICHING);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>>> TYPE_SMELTING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_SMELTING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>>> TYPE_SMELTING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_SMELTING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalChemicalToChemicalRecipe<ChemicalInfusingBookCategory, ChemicalInfusingBookInfo>>> TYPE_CHEMICAL_INFUSING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CHEMICAL_INFUSING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<CombinerRecipe>> TYPE_COMBINING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_COMBINING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ElectrolysisRecipe>> TYPE_SEPARATING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_SEPARATING);

@@ -61,11 +61,6 @@ public abstract class TwoInputMekRecipe<HOLDER_A, STACK_A extends TypedInstance<
     public abstract SlotDisplay getOutputDisplay();
 
     @Override
-    public boolean isIncomplete() {
-        return getInputA().hasNoMatchingInstances() || getInputB().hasNoMatchingInstances();
-    }
-
-    @Override
     public void logMissingTags() {
         getInputA().logMissingTags();
         getInputB().logMissingTags();

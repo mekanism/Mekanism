@@ -1,6 +1,7 @@
 package mekanism.api.recipes;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -15,6 +16,7 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -23,13 +25,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.Nullable;
 
 /// Base class to make implementing single input recipes easier
 ///
 /// @since 10.8.0
 public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>, INPUT extends InputIngredient<HOLDER_TYPE, STACK>,
-      VANILLA_INPUT extends RecipeInput, OUTPUT, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+      VANILLA_INPUT extends RecipeInput, OUTPUT, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
       extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO> implements Predicate<STACK> {
+
+    private static final PlacementInfo IS_PLACEABLE = PlacementInfo.createFromOptionals(List.of(Optional.empty()));
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
@@ -78,17 +83,15 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
     public abstract SlotDisplay getOutputDisplay();
 
     @Override
-    public boolean isIncomplete() {
-        return getInput().hasNoMatchingInstances();
-    }
-
-    @Override
     public void logMissingTags() {
         getInput().logMissingTags();
     }
 
     public abstract static class ChemicalInputRecipe<OUTPUT, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
           extends SingleInputRecipe<Chemical, ChemicalStack, ChemicalStackIngredient, SingleChemicalRecipeInput, OUTPUT, BOOK_CATEGORY, BOOK_INFO> {
+
+        @Nullable
+        private PlacementInfo placementInfo;
 
         /// @param commonInfo Common recipe info.
         /// @param bookInfo   Recipe book info.
@@ -99,14 +102,24 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
         }
 
         @Override
+        public PlacementInfo placementInfo() {
+            if (this.placementInfo == null) {
+                this.placementInfo = getInput().hasNoMatchingInstances() ? PlacementInfo.NOT_PLACEABLE : IS_PLACEABLE;
+            }
+            return this.placementInfo;
+        }
+
+        @Override
         public boolean matches(SingleChemicalRecipeInput input, Level level) {
-            //Don't match incomplete recipes or ones that don't match
-            return !isIncomplete() && test(input.chemical());
+            return test(input.chemical());
         }
     }
 
     public abstract static class FluidInputRecipe<OUTPUT, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
           extends SingleInputRecipe<Fluid, FluidStack, FluidStackIngredient, SingleFluidRecipeInput, OUTPUT, BOOK_CATEGORY, BOOK_INFO> {
+
+        @Nullable
+        private PlacementInfo placementInfo;
 
         /// @param commonInfo Common recipe info.
         /// @param bookInfo   Recipe book info.
@@ -117,14 +130,24 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
         }
 
         @Override
+        public PlacementInfo placementInfo() {
+            if (this.placementInfo == null) {
+                this.placementInfo = getInput().hasNoMatchingInstances() ? PlacementInfo.NOT_PLACEABLE : IS_PLACEABLE;
+            }
+            return this.placementInfo;
+        }
+
+        @Override
         public boolean matches(SingleFluidRecipeInput input, Level level) {
-            //Don't match incomplete recipes or ones that don't match
-            return !isIncomplete() && test(input.fluid());
+            return test(input.fluid());
         }
     }
 
-    public abstract static class ItemInputRecipe<OUTPUT, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+    public abstract static class ItemInputRecipe<OUTPUT, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
           extends SingleInputRecipe<Item, ItemStack, ItemStackIngredient, SingleRecipeInput, OUTPUT, BOOK_CATEGORY, BOOK_INFO> {
+
+        @Nullable
+        private PlacementInfo placementInfo;
 
         /// @param commonInfo Common recipe info.
         /// @param bookInfo   Recipe book info.
@@ -135,9 +158,16 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
         }
 
         @Override
+        public PlacementInfo placementInfo() {
+            if (this.placementInfo == null) {
+                this.placementInfo = PlacementInfo.create(getInput().ingredient().ingredient());
+            }
+            return this.placementInfo;
+        }
+
+        @Override
         public boolean matches(SingleRecipeInput input, Level level) {
-            //Don't match incomplete recipes or ones that don't match
-            return !isIncomplete() && test(input.item());
+            return test(input.item());
         }
     }
 }

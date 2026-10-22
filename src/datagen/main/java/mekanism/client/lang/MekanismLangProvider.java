@@ -1041,6 +1041,34 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY, "%1$s / %2$s mB");
         add(MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER, "%1$s mB of Heavy Water can be extracted from a water source block via an electric pump with a filter upgrade installed.");
         add(MekanismLang.RECIPE_VIEWER_INFO_MODULE_INSTALLATION, "Using a Modification Station, modules can be installed on the various MekaSuit pieces and on the Meka-Tool.");
+        //Recipe Book
+        add(MekanismLang.RECIPE_BOOK, "Recipe Book");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_CRUSHING, "Showing Crushable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_ENRICHING, "Showing Enrichable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_CHEMICAL_INFUSING, "Showing Chemical Infusible");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_COMBINING, "Showing Combinable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_SEPARATING, "Showing Separable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_WASHING, "Showing Washable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_EVAPORATING, "Showing Evaporable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_ACTIVATING, "Showing Activatable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_CENTRIFUGING, "Showing Centrifugable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_CRYSTALLIZING, "Showing Crystallizable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_DISSOLUTION, "Showing Dissolvable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_COMPRESSING, "Showing Compressible");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_PURIFYING, "Showing Purifiable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_INJECTING, "Showing Injectable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_NUCLEOSYNTHESIZING, "Showing Nucleosynthesizable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_ENERGY_CONVERSION, "Showing Energy Convertable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_CHEMICAL_CONVERSION, "Showing Chemical Convertable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_OXIDIZING, "Showing Oxidizable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_PIGMENT_EXTRACTING, "Showing Pigment Extractable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_PIGMENT_MIXING, "Showing Pigment Mixable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_METALLURGIC_INFUSING, "Showing Metallurgic Infusible");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_PAINTING, "Showing Paintable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_REACTION, "Showing Reactable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_ROTARY, "Showing Condensentratable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_SAWING, "Showing Sawable");
+        add(MekanismLang.RECIPE_BOOK_TOGGLE_LIQUIFICATION, "Showing Liquifiable");
         //Key
         add(MekanismLang.KEY_CATEGORY_MAIN, "Mekanism");
         add(MekanismLang.KEY_HAND_MODE, "Item Mode Switch");

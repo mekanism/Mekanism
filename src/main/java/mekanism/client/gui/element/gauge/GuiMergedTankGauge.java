@@ -4,17 +4,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.recipe_book.IGhostRecipeComponent;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.lib.multiblock.IMultiblockContents;
 import mekanism.common.lib.transmitter.TransmissionType;
+import net.minecraft.client.gui.screens.recipebook.SlotSelectTime;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
-public class GuiMergedTankGauge extends GuiGauge<@Nullable Void> implements IRecipeViewerIngredientHelper {
+public class GuiMergedTankGauge extends GuiGauge<@Nullable Void> implements IRecipeViewerIngredientHelper, IGhostRecipeComponent {
 
     private final Supplier<MergedTank> mergedTankSupplier;
     private final Supplier<IMultiblockContents> handlerSupplier;
@@ -122,12 +126,34 @@ public class GuiMergedTankGauge extends GuiGauge<@Nullable Void> implements IRec
     }
 
     @Nullable
-    private GuiTankGauge<?, ?> getCurrentGaugeNoFallback() {
+    public GuiTankGauge<?, ?> getCurrentGaugeNoFallback() {
+        if (fluidGauge.isRenderingGhost()) {
+            return fluidGauge;
+        } else if (chemicalGauge.isRenderingGhost()) {
+            return chemicalGauge;
+        }
         MergedTank mergedTank = mergedTankSupplier.get();
         return switch (mergedTank.getCurrentType()) {
             case FLUID -> fluidGauge;
             case CHEMICAL -> chemicalGauge;
             default -> null;
         };
+    }
+
+    @Override
+    protected boolean isRenderingGhost() {
+        return fluidGauge.isRenderingGhost() || chemicalGauge.isRenderingGhost();
+    }
+
+    @Override
+    public void setGhostData(SlotDisplay contents, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
+        fluidGauge.setGhostData(contents, context, slotSelectTime, isResultSlot);
+        chemicalGauge.setGhostData(contents, context, slotSelectTime, isResultSlot);
+    }
+
+    @Override
+    public void clearGhostData() {
+        fluidGauge.clearGhostData();
+        chemicalGauge.clearGhostData();
     }
 }

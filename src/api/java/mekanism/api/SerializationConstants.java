@@ -59,7 +59,6 @@ public final class SerializationConstants {
     public static final String LEFT = "left";
     /// @since 10.8.0
     public static final String RIGHT = "right";
-    public static final String ITEM_OUTPUT = "item_output";
     public static final String FLUID_OUTPUT = "fluid_output";
 
     //Advancement Triggers

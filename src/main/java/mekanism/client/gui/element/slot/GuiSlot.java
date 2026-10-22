@@ -11,6 +11,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.recipe_book.IGhostRecipeComponent;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget;
 import mekanism.client.render.MekanismRenderer;
@@ -28,19 +29,28 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.recipebook.SlotSelectTime;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.Nullable;
 
-public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, ISupportsWarning<GuiSlot> {
+public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, IGhostRecipeComponent, ISupportsWarning<GuiSlot> {
 
     private static final int INVALID_SLOT_COLOR = MekanismRenderer.getColorARGB(EnumColor.DARK_RED, 0.8F);
     public static final int DEFAULT_HOVER_COLOR = 0x80FFFFFF;
     private static final Identifier WARNING = Mekanism.rl("slot/warning");
+
+    @Nullable
+    private GhostSlot<ItemStack> ghostRecipeData;
     @Nullable
     private final SlotType slotType;
     @Nullable
@@ -61,6 +71,9 @@ public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, ISu
     private IClickable onClick;
     private boolean renderHover;
     private boolean renderAboveSlots;
+    ///Hacky int to get around and draw the recipe book overlay properly for the precision sawmill. Do not touch.
+    @Internal
+    public int bigOutputIndex;
 
     private List<Component> lastInfo = Collections.emptyList();
     @Nullable
@@ -75,11 +88,11 @@ public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, ISu
         active = false;
     }
 
-    public GuiSlot(SlotType type, IGuiWrapper gui, int x, int y) {
+    public GuiSlot(@Nullable SlotType type, IGuiWrapper gui, int x, int y) {
         this(type, gui, x, y, SlotType.SLOT_SIZE, SlotType.SLOT_SIZE);
     }
 
-    public GuiSlot(SlotType type, IGuiWrapper gui, int x, int y, int width, int height) {
+    public GuiSlot(@Nullable SlotType type, IGuiWrapper gui, int x, int y, int width, int height) {
         super(gui, x, y, width, height);
         this.slotType = type;
         active = false;
@@ -184,6 +197,10 @@ public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, ISu
     }
 
     protected void drawContents(GuiGraphicsExtractor guiGraphics) {
+        if (tryDrawGhost(guiGraphics)) {
+            //Skip normal rendering
+            return;
+        }
         if (validityCheck != null) {
             ItemStack invalid = validityCheck.get();
             if (!invalid.isEmpty()) {
@@ -198,6 +215,41 @@ public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, ISu
                 guiGraphics.item(stored, relativeX + 1, relativeY + 1);
             }
         }
+    }
+
+    protected boolean tryDrawGhost(GuiGraphicsExtractor graphics) {
+        if (ghostRecipeData == null) {
+            return false;
+        }
+        ItemStack currentGhost = ghostRecipeData.getCurrent();
+        int xPos = relativeX + 1;
+        int yPos = relativeY + 1;
+        if (ghostRecipeData.isResultSlot() && slotType == null) {
+            if (bigOutputIndex == 1) {
+                //Hacky way to draw the precision sawmill output correctly
+                graphics.fill(xPos - 4, yPos - 4, xPos + 36, yPos + 20, 0x30FF0000);
+            }
+        } else {
+            graphics.fill(xPos, yPos, xPos + 16, yPos + 16, 0x30FF0000);
+        }
+        graphics.fakeItem(currentGhost, xPos, yPos);
+        if (ghostRecipeData.isResultSlot() && slotType == null) {
+            if (bigOutputIndex == 1) {
+                //Hacky way to draw the precision sawmill output correctly
+                graphics.fill(xPos - 4, yPos - 4, xPos + 36, yPos + 20, 0x30FFFFFF);
+            }
+        } else {
+            graphics.fill(xPos, yPos, xPos + 16, yPos + 16, 0x30FFFFFF);
+        }
+        if (ghostRecipeData.isResultSlot()) {
+            graphics.itemDecorations(minecraft.font, currentGhost, xPos, yPos);
+        } else {
+            //If it isn't a result slot we still need to display the item count
+            graphics.pose().pushMatrix();
+            graphics.itemCount(minecraft.font, currentGhost, xPos, yPos, null);
+            graphics.pose().popMatrix();
+        }
+        return true;
     }
 
     @Override
@@ -216,6 +268,16 @@ public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, ISu
         if (hovered) {
             renderToolTip(guiGraphics, mouseX, mouseY);
         }
+    }
+
+    @Override
+    public void renderToolTip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        if (ghostRecipeData != null) {
+            ItemStack currentGhost = ghostRecipeData.getCurrent();
+            graphics.setComponentTooltipForNextFrame(minecraft.font, Screen.getTooltipFromItem(minecraft, currentGhost), mouseX, mouseY, currentGhost,
+                  currentGhost.get(DataComponents.TOOLTIP_STYLE));
+        }
+        super.renderToolTip(graphics, mouseX, mouseY);
     }
 
     @Override
@@ -269,5 +331,20 @@ public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, ISu
     @Override
     public int borderSize() {
         return 1;
+    }
+
+    @Override
+    public void setGhostData(SlotDisplay contents, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
+        List<ItemStack> entries = contents.resolveForStacks(context);
+        if (entries.isEmpty()) {
+            ghostRecipeData = null;
+        } else {
+            ghostRecipeData = new GhostSlot<>(entries, isResultSlot, slotSelectTime);
+        }
+    }
+
+    @Override
+    public void clearGhostData() {
+        ghostRecipeData = null;
     }
 }

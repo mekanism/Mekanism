@@ -33,11 +33,11 @@ public class GuiChemicalInfuser extends GuiConfigurableTile<TileEntityChemicalIn
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY))
               .warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE));
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getEnergyUsed));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.leftTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 25, 13))
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.leftTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 25, 13), false)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_LEFT_INPUT));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.centerTank, tile::getChemicalTanks, GaugeType.STANDARD, this, CENTER_GAUGE_X, 4))
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.centerTank, tile::getChemicalTanks, GaugeType.STANDARD, this, CENTER_GAUGE_X, 4), true)
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.rightTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 133, 13))
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.rightTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 133, 13), false)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_RIGHT_INPUT));
         addRenderableWidget(new GuiProgress(tile::getActive, ProgressType.SMALL_RIGHT, this, 47, 39).recipeViewerCategory(tile))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));

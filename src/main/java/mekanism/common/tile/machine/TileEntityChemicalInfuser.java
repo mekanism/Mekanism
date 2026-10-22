@@ -55,6 +55,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
@@ -92,6 +93,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalC
     private final IOutputHandler<ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Chemical, ChemicalStack> leftInputHandler;
     private final IInputHandler<Chemical, ChemicalStack> rightInputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityChemicalInfuser> energyContainer;
@@ -136,6 +138,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalC
         leftInputHandler = InputHelper.getInputHandler(leftTank, RecipeError.NOT_ENOUGH_LEFT_INPUT);
         rightInputHandler = InputHelper.getInputHandler(rightTank, RecipeError.NOT_ENOUGH_RIGHT_INPUT);
         outputHandler = OutputHelper.getOutputHandler(centerTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(List.of(leftTank, rightTank), centerTank);
     }
 
     @Override
@@ -213,6 +216,16 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalC
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setBaselineMaxOperations(() -> baselineMaxOperations)
               .setOnFinish(this::markForSave);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ChemicalChemicalToChemicalRecipe<ChemicalInfusingBookCategory, ChemicalInfusingBookInfo>> recipe, int cacheIndex) {
+        return recipe.value().matches(new BiChemicalRecipeInput(leftInputHandler.getInput(), rightInputHandler.getInput()), level);
     }
 
     @Override

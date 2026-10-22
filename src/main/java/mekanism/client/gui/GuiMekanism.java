@@ -13,6 +13,8 @@ import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.client.gui.element.window.GuiWindow;
+import mekanism.client.gui.recipe_book.IGhostRecipeComponent;
+import mekanism.client.gui.recipe_book.MekanismRecipeBookComponent;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -35,6 +37,7 @@ import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -44,12 +47,14 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 
-public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper {
+public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper, RecipeUpdateListener {
     
     public static final Identifier BASE_BACKGROUND_SLICE = Mekanism.rl("base");
     public static final Identifier SHADOW = Mekanism.rl("shadow");
@@ -62,6 +67,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     @Nullable
     private IWarningTracker warningTracker;
     private long lastMSInitialized;
+    @Nullable
+    protected MekanismRecipeBookComponent<?> recipeBookComponent;
 
     private boolean hasClicked = false;
 
@@ -105,6 +112,9 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             //If we haven't been initialized yet, we can initialize it here
             lastMSInitialized = Util.getMillis();
         }
+        if (this.recipeBookComponent != null) {
+            this.recipeBookComponent.init(this.minecraft);
+        }
         addGuiElements();
         if (warningTracker != null) {
             //If we have a warning tracker add it as a button, we do so via a method in case any of the sub GUIs need to reposition where it ends up
@@ -133,6 +143,28 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     protected void addGuiElements() {
         if (dynamicSlots) {
             addSlots();
+        }
+    }
+
+    @Override
+    public void recipesUpdated() {
+        if (this.recipeBookComponent != null) {
+            this.recipeBookComponent.recipesUpdated();
+        }
+    }
+
+    @Override
+    public void fillGhostRecipe(RecipeDisplay display) {
+        if (this.recipeBookComponent != null) {
+            this.recipeBookComponent.fillGhostRecipe(display);
+        }
+    }
+
+    @Override
+    protected void slotClicked(Slot slot, int slotId, int buttonNum, ContainerInput containerInput) {
+        super.slotClicked(slot, slotId, buttonNum, containerInput);
+        if (this.recipeBookComponent != null) {
+            this.recipeBookComponent.slotClicked(slot);
         }
     }
 
@@ -332,6 +364,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override
     protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top) {
+        //TODO - 26.3: If clicking over a gui tab I think this probably returns true when it likely should return false
         return getWindowHovering(mouseX, mouseY) == null && super.hasClickedOutside(mouseX, mouseY, left, top);
     }
 
@@ -647,7 +680,13 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                overNoButtons((GuiWindow) null, mouseX, mouseY);
     }
 
+    protected boolean skipOutputSlotRender() {
+        return false;
+    }
+
     protected void addSlots() {
+        boolean skipOutputSlotRender = skipOutputSlotRender();
+        int bigSlotIndex = 0;
         int size = menu.slots.size();
         for (int i = 0; i < size; i++) {
             Slot slot = menu.getSlot(i);
@@ -657,9 +696,15 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                 //Shift the slots by one as the elements include the border of the slot
                 SlotType type;
                 if (dataType != null) {
-                    type = SlotType.get(dataType);
-                } else if (slotType == ContainerSlotType.INPUT || slotType == ContainerSlotType.OUTPUT || slotType == ContainerSlotType.EXTRA) {
+                    if (skipOutputSlotRender && dataType.canOutput()) {
+                        type = null;
+                    } else {
+                        type = SlotType.get(dataType);
+                    }
+                } else if (slotType == ContainerSlotType.INPUT || slotType == ContainerSlotType.EXTRA) {
                     type = SlotType.NORMAL;
+                } else if (slotType == ContainerSlotType.OUTPUT) {
+                    type = skipOutputSlotRender ? null : SlotType.NORMAL;
                 } else if (slotType == ContainerSlotType.POWER) {
                     type = SlotType.POWER;
                 } else if (slotType == ContainerSlotType.NORMAL || slotType == ContainerSlotType.VALIDITY) {
@@ -668,6 +713,9 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                     continue;
                 }
                 GuiSlot guiSlot = new GuiSlot(type, this, slot.x - 1, slot.y - 1);
+                if (skipOutputSlotRender) {
+                    guiSlot.bigOutputIndex = bigSlotIndex++;
+                }
                 containerSlot.addWarnings(guiSlot);
                 SlotOverlay slotOverlay = containerSlot.getSlotOverlay();
                 if (slotOverlay != null) {
@@ -677,11 +725,22 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                     int index = i;
                     guiSlot.validity(() -> checkValidity(index));
                 }
-                addRenderableWidget(guiSlot);
+                if (containerSlot.isRecipeCraftingSlot()) {
+                    addRecipeBookComponent(guiSlot, slotType == ContainerSlotType.OUTPUT);
+                } else {
+                    addRenderableWidget(guiSlot);
+                }
             } else {
                 addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, slot.x - 1, slot.y - 1));
             }
         }
+    }
+
+    protected <T extends GuiElement & IGhostRecipeComponent> T addRecipeBookComponent(T component, boolean result) {
+        if (recipeBookComponent != null) {
+            recipeBookComponent.addComponent(component, result);
+        }
+        return addRenderableWidget(component);
     }
 
     @Nullable

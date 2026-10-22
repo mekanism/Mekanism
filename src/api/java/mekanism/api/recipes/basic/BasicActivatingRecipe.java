@@ -7,7 +7,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.book.ActivatingBookCategory;
 import mekanism.api.recipes.book.ActivatingBookCategory.ActivatingBookInfo;
-import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
+import mekanism.api.recipes.display.recipe.ActivatingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -33,7 +33,7 @@ public class BasicActivatingRecipe extends BasicChemicalToChemicalRecipe<Activat
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new SimpleMachineRecipeDisplay(
+        return List.of(new ActivatingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(SOLAR_NEUTRON_ACTIVATOR)

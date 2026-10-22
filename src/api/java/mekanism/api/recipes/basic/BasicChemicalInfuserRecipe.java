@@ -7,7 +7,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.book.ChemicalInfusingBookCategory;
 import mekanism.api.recipes.book.ChemicalInfusingBookCategory.ChemicalInfusingBookInfo;
-import mekanism.api.recipes.display.MixingRecipeDisplay;
+import mekanism.api.recipes.display.recipe.ChemicalInfusingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -34,7 +34,7 @@ public class BasicChemicalInfuserRecipe extends BasicChemicalChemicalToChemicalR
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new MixingRecipeDisplay(
+        return List.of(new ChemicalInfusingRecipeDisplay(
               getLeftInput().display(),
               getRightInput().display(),
               getOutputDisplay(),

@@ -1,7 +1,6 @@
 package mekanism.common.inventory.slot;
 
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.resource.LargeResourceStack;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -10,8 +9,7 @@ public record VanillaSlotAccess(IInventorySlot slot, boolean readOnly) implement
 
     @Override
     public ItemStack get() {
-        LargeResourceStack<ItemResource> stack = slot.asStack();
-        return stack.resource().toStack(stack.amountAsInt());
+        return slot.asItemStack();
     }
 
     @Override

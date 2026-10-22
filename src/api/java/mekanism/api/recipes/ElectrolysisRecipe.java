@@ -12,7 +12,7 @@ import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.SingleInputRecipe.FluidInputRecipe;
 import mekanism.api.recipes.book.ElectrolysisBookCategory;
 import mekanism.api.recipes.book.ElectrolysisBookCategory.ElectrolysisBookInfo;
-import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
+import mekanism.api.recipes.display.recipe.ElectrolysisRecipeDisplay;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import net.minecraft.core.Holder;
@@ -61,10 +61,11 @@ public abstract class ElectrolysisRecipe extends FluidInputRecipe<ElectrolysisRe
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new SimpleMachineRecipeDisplay(
+        return List.of(new ElectrolysisRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(ELECTROLYTIC_SEPARATOR)
+              new SlotDisplay.ItemSlotDisplay(ELECTROLYTIC_SEPARATOR),
+              getEnergyMultiplier()
         ));
     }
 

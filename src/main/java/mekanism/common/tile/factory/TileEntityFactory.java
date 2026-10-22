@@ -41,6 +41,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -68,6 +69,7 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueInput;
@@ -258,6 +260,18 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
         //If none of the recipes are actively processing don't bother with any subtraction
         lastUsage = isActive ? prev - energyContainer.getAmountAsLong() : 0;
         return sendUpdatePacket;
+    }
+
+    @Override
+    public void fillStackedContents(StackedItemContents contents) {
+        //Note: getInventorySlots will return an empty list if we don't have an inventory
+        for (IInventorySlot slot : getInventorySlots()) {
+            //TODO - 26.3: Should we be adding this regardless?
+            if (slot instanceof BasicInventorySlot basicSlot && basicSlot.isRecipeCraftingSlot()) {
+                //Similar to AbstractFurnaceBlockEntity we use accountStack instead of accountSimpleStack
+                contents.accountStack(basicSlot.asItemStack());
+            }
+        }
     }
 
     /// Checks if the cached recipe (or recipe for current factory if the cache is out of date) can produce a specific output.

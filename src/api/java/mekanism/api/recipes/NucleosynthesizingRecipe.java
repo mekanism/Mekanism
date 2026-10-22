@@ -4,7 +4,7 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.book.NucleosynthesizingBookCategory;
 import mekanism.api.recipes.book.NucleosynthesizingBookCategory.NucleosynthesizingBookInfo;
-import mekanism.api.recipes.display.NucleosynthesizingRecipeDisplay;
+import mekanism.api.recipes.display.recipe.NucleosynthesizingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
@@ -53,9 +53,9 @@ public abstract class NucleosynthesizingRecipe extends ItemStackChemicalToItemSt
               getItemInput().display(),
               getChemicalInput().display(),
               perTickUsage(),
-              getDuration(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(ANTIPROTONIC_NUCLEOSYNTHESIZER)
+              new SlotDisplay.ItemSlotDisplay(ANTIPROTONIC_NUCLEOSYNTHESIZER),
+              getDuration()
         ));
     }
 

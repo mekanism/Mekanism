@@ -1,13 +1,17 @@
 package mekanism.api.recipes;
 
+import java.util.List;
+import java.util.Optional;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.BiChemicalRecipeInput;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
 
 /// Base class for defining chemical+chemical to chemical recipes.
 ///
@@ -21,6 +25,10 @@ import net.minecraft.world.level.Level;
 public abstract class ChemicalChemicalToChemicalRecipe<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
       extends OrderlessTwoInputRecipe<Chemical, ChemicalStack, ChemicalStackIngredient, BiChemicalRecipeInput, ChemicalStackTemplate, BOOK_CATEGORY, BOOK_INFO> {
 
+    private static final PlacementInfo IS_PLACEABLE = PlacementInfo.createFromOptionals(List.of(Optional.empty(), Optional.empty()));
+    @Nullable
+    private PlacementInfo placementInfo;
+
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
     ///
@@ -31,8 +39,15 @@ public abstract class ChemicalChemicalToChemicalRecipe<BOOK_CATEGORY extends Mek
 
     @Override
     public boolean matches(BiChemicalRecipeInput input, Level level) {
-        //Don't match incomplete recipes or ones that don't match
-        return !isIncomplete() && test(input.left(), input.right());
+        return test(input.left(), input.right());
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        if (this.placementInfo == null) {
+            this.placementInfo = getInputA().hasNoMatchingInstances() || getInputB().hasNoMatchingInstances() ? PlacementInfo.NOT_PLACEABLE : IS_PLACEABLE;
+        }
+        return this.placementInfo;
     }
 
     /// Helper interface for constructing [ChemicalChemicalToChemicalRecipes][ChemicalChemicalToChemicalRecipe]

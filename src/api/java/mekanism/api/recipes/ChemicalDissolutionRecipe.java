@@ -5,7 +5,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.book.DissolutionBookCategory;
 import mekanism.api.recipes.book.DissolutionBookCategory.DissolutionBookInfo;
-import mekanism.api.recipes.display.CombiningRecipeDisplay;
+import mekanism.api.recipes.display.recipe.DissolutionRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
@@ -37,7 +37,7 @@ public abstract class ChemicalDissolutionRecipe extends ItemStackChemicalToObjec
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new CombiningRecipeDisplay(
+        return List.of(new DissolutionRecipeDisplay(
               getItemInput().display(),
               getChemicalInput().display(),
               getOutputDisplay(),

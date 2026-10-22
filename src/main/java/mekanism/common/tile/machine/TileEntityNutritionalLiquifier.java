@@ -59,6 +59,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.UseRemainder;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -90,6 +91,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     private final IOutputHandler<FluidOptionalItemOutput> outputHandler;
     private final IInputHandler<Item, ItemStack> inputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityNutritionalLiquifier> energyContainer;
@@ -122,6 +124,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
         inputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(fluidTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE, outputSlot, NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR);
+        recipeContainers = new RecipeContainers(inputSlot, List.of(fluidTank, outputSlot));
     }
 
     @Override
@@ -247,6 +250,16 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleRecipeInput(inputHandler.getInput()), level);
     }
 
     public MachineEnergyContainer<TileEntityNutritionalLiquifier> energyContainer() {

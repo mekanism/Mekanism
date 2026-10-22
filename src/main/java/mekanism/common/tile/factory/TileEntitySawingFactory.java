@@ -40,9 +40,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -76,11 +78,13 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
 
     protected final IInputHandler<Item, ItemStack>[] inputHandlers;
     protected final IOutputHandler<ChanceOutput>[] outputHandlers;
+    protected final RecipeContainers[] recipeContainers;
 
     public TileEntitySawingFactory(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         FactoryTier tier = Attribute.getTierNN(blockProvider, FactoryTier.class);
         inputHandlers = new IInputHandler[tier.processes];
         outputHandlers = new IOutputHandler[tier.processes];
+        recipeContainers = new RecipeContainers[tier.processes];
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
     }
 
@@ -107,6 +111,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
             inputHandlers[i] = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
             outputHandlers[i] = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE, secondaryOutputSlot,
                   TileEntityPrecisionSawmill.NOT_ENOUGH_SPACE_SECONDARY_OUTPUT_ERROR);
+            recipeContainers[i] = new RecipeContainers(inputSlot, List.of(outputSlot, secondaryOutputSlot));
             processInfoSlots[i] = new ProcessInfo(i, inputSlot, outputSlot, secondaryOutputSlot);
         }
     }
@@ -166,6 +171,16 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers[cacheIndex];
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<SawmillRecipe> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleRecipeInput(inputHandlers[cacheIndex].getInput()), level);
     }
 
     @Override

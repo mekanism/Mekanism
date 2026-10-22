@@ -1,0 +1,166 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_CRUSHING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_ENRICHING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_SMELTING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_CHEMICAL_INFUSING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_COMBINING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_SEPARATING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_WASHING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_EVAPORATING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_ACTIVATING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_CENTRIFUGING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_CRYSTALLIZING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_DISSOLUTION",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_COMPRESSING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_PURIFYING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_INJECTING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_NUCLEOSYNTHESIZING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_ENERGY_CONVERSION",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_CHEMICAL_CONVERSION",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_OXIDIZING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_PIGMENT_EXTRACTING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_PIGMENT_MIXING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_METALLURGIC_INFUSING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_PAINTING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_REACTION",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_ROTARY",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_SAWING",
+      "constructor": "()V",
+      "parameters": []
+    },
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "MEKANISM_LIQUIFICATION",
+      "constructor": "()V",
+      "parameters": []
+    }
+  ]
+}

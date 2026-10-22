@@ -46,6 +46,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -66,6 +67,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
 
     private final IOutputHandler<ChanceOutput> outputHandler;
     private final IInputHandler<Item, ItemStack> inputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityPrecisionSawmill> energyContainer;
@@ -91,6 +93,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
 
         inputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE, secondaryOutputSlot, NOT_ENOUGH_SPACE_SECONDARY_OUTPUT_ERROR);
+        recipeContainers = new RecipeContainers(inputSlot, List.of(outputSlot, secondaryOutputSlot));
     }
 
     @Override
@@ -104,6 +107,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
         builder.addContainer(inputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheListener, 56, 17))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
+        //Note: We don't add the warning checks directly to the output slots as they are rendered as a singular slot
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35));
         builder.addContainer(secondaryOutputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 132, 35));
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 56, 53));
@@ -145,6 +149,16 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<SawmillRecipe> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleRecipeInput(inputHandler.getInput()), level);
     }
 
     @Override

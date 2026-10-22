@@ -57,6 +57,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
@@ -96,6 +97,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     private final IOutputHandler<ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Chemical, ChemicalStack> leftInputHandler;
     private final IInputHandler<Chemical, ChemicalStack> rightInputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityPigmentMixer> energyContainer;
@@ -141,6 +143,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
         leftInputHandler = InputHelper.getInputHandler(leftInputTank, RecipeError.NOT_ENOUGH_LEFT_INPUT);
         rightInputHandler = InputHelper.getInputHandler(rightInputTank, RecipeError.NOT_ENOUGH_RIGHT_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(List.of(leftInputTank, rightInputTank), outputTank);
     }
 
     @Override
@@ -218,6 +221,16 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setBaselineMaxOperations(() -> baselineMaxOperations)
               .setOnFinish(this::markForSave);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>> recipe, int cacheIndex) {
+        return recipe.value().matches(new BiChemicalRecipeInput(leftInputHandler.getInput(), rightInputHandler.getInput()), level);
     }
 
     @Override

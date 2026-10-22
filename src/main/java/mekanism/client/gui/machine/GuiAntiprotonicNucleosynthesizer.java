@@ -76,7 +76,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
               .padding(2)
               .recipeViewerCategory(tile);
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getEnergyUsed));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.gasTank, tile::getChemicalTanks, GaugeType.SMALL_MED, this, 5, 18))
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.gasTank, tile::getChemicalTanks, GaugeType.SMALL_MED, this, 5, 18), false)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT));
         addRenderableWidget(new GuiEnergyGauge(tile.energyContainer(), GaugeType.SMALL_MED, this, 172, 18))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));

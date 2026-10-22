@@ -301,7 +301,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         //If there is a tooltip, update it for the next render pass
         // We also call it regardless of whether the backing tooltip is null so that we properly mark wasDisplayed as false
         //Note: We only call this method if we are hovering the proper spot
-        //TODO - 26.3: Is this the correct mouse x and mouse y to be passing? Do we still need to be calling updateTooltip above?
+        //TODO - 26.3: For things like tooltips of fluids and chemicals do we want to try to have ClientHooks.gatherTooltipComponents go off,
+        // similar to what GuiSlot's override of this method does for ghost slots?
         tooltip.refreshTooltipForNextRenderPass(guiGraphics, mouseX, mouseY, true, isFocused(), getTooltipRectangle(mouseX, mouseY));
         //We do this before child renders so that if one has a tooltip then they can override the target tooltip
         for (GuiElement child : children) {

@@ -6,6 +6,7 @@ import mekanism.api.MekanismRegistries;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.display.slot.ChanceSlotDisplay;
+import mekanism.api.recipes.display.slot.EnergySlotDisplay;
 import mekanism.api.recipes.display.slot.WithAmountSlotDisplay;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalSlotDisplay;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
@@ -47,6 +48,14 @@ public class MekanismSlotDisplayTypes {
           ).apply(instance, ChemicalTagSlotDisplay::new)), StreamCodec.composite(
                 TagKey.streamCodec(MekanismRegistries.Keys.CHEMICAL), ChemicalTagSlotDisplay::tag,
                 ChemicalTagSlotDisplay::new
+          )));
+
+    public static final DeferredHolder<SlotDisplay.Type<?>, SlotDisplay.Type<EnergySlotDisplay>> ENERGY = SLOT_DISPLAY_TYPES.register("energy",
+          () -> new SlotDisplay.Type<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
+                ExtraCodecs.NON_NEGATIVE_INT.fieldOf(SerializationConstants.ENERGY).forGetter(EnergySlotDisplay::energy)
+          ).apply(instance, EnergySlotDisplay::new)), StreamCodec.composite(
+                ByteBufCodecs.VAR_INT, EnergySlotDisplay::energy,
+                EnergySlotDisplay::new
           )));
 
 

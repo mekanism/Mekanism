@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
@@ -13,7 +14,7 @@ import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-public interface IMekanismRecipeTypeProvider<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+public interface IMekanismRecipeTypeProvider<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
       RECIPE extends MekanismRecipe<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO>, INPUT_CACHE extends IInputRecipeCache> {
 
     /// Gets the registry name of the element represented by this provider.

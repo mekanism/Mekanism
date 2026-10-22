@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -17,7 +18,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.Recipe.BookInfo;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class ItemStackToItemStackRecipeCategory<BOOK_CATEGORY, BOOK_INFO extends BookInfo<BOOK_CATEGORY>>
+public class ItemStackToItemStackRecipeCategory<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends BookInfo<BOOK_CATEGORY>>
       extends HolderRecipeCategory<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
     private final GuiSlot input;

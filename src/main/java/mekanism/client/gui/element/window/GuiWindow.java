@@ -71,7 +71,7 @@ public class GuiWindow extends GuiElement implements IGUIWindow {
         msOpened = Util.getMillis();
         if (!isFocusOverlay()) {
             addCloseButton();
-            if (this.windowData.type().canPin()) {
+            if (canPin()) {
                 addChild(new GuiPinButton(gui(), relativeX + 16, relativeY + 6, this));
             }
         }
@@ -226,10 +226,14 @@ public class GuiWindow extends GuiElement implements IGUIWindow {
 
     /// @apiNote Only used if not a [#isFocusOverlay()]
     protected int getTitlePadStart() {
-        if (windowData.type().canPin()) {
+        if (canPin()) {
             return 14 + GuiPinButton.WIDTH;
         }
         return 12;
+    }
+
+    protected boolean canPin() {
+        return windowData.type().canPin();
     }
 
     /// @apiNote Only used if not a [#isFocusOverlay()]

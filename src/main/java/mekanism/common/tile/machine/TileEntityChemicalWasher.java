@@ -59,6 +59,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -99,6 +100,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     private final IOutputHandler<ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Fluid, FluidStack> fluidInputHandler;
     private final IInputHandler<Chemical, ChemicalStack> slurryInputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityChemicalWasher> energyContainer;
@@ -128,6 +130,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
         slurryInputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         fluidInputHandler = InputHelper.getInputHandler(fluidTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(List.of(inputTank, fluidTank), outputTank);
     }
 
     @Override
@@ -206,6 +209,16 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setBaselineMaxOperations(() -> baselineMaxOperations)
               .setOnFinish(this::markForSave);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleFluidChemicalRecipeInput(fluidInputHandler.getInput(), slurryInputHandler.getInput()), level);
     }
 
     @Override

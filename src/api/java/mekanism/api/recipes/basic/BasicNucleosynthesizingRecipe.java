@@ -1,5 +1,6 @@
 package mekanism.api.recipes.basic;
 
+import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -50,9 +51,7 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         this.perTickUsage = perTickUsage;
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
-        if (duration <= 0) {
-            throw new IllegalArgumentException("Duration must be a number greater than zero.");
-        }
+        Preconditions.checkArgument(duration > 0, "Duration must be a number greater than zero.");
         this.duration = duration;
         super(commonInfo, bookInfo);
     }

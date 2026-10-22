@@ -50,6 +50,8 @@ import mekanism.api.recipes.book.PigmentMixingBookCategory;
 import mekanism.api.recipes.book.PigmentMixingBookCategory.PigmentMixingBookInfo;
 import mekanism.api.recipes.book.PurifyingBookCategory;
 import mekanism.api.recipes.book.PurifyingBookCategory.PurifyingBookInfo;
+import mekanism.api.recipes.book.SmeltingBookCategory;
+import mekanism.api.recipes.book.SmeltingBookCategory.SmeltingBookInfo;
 import mekanism.api.recipes.book.WashingBookCategory;
 import mekanism.api.recipes.book.WashingBookCategory.WashingBookInfo;
 import mekanism.client.recipe_viewer.recipe.BoilerRecipeViewerRecipe;
@@ -62,8 +64,6 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe.CookingBookInfo;
-import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -84,7 +84,7 @@ public class RecipeViewerRecipeType {//TODO - 26.3: Switch some of these display
 
     public static final RVRecipeTypeWrapper<SingleRecipeInput, CrushingBookCategory, CrushingBookInfo, ItemStackToItemStackRecipe<CrushingBookCategory, CrushingBookInfo>, SingleItem<ItemStackToItemStackRecipe<CrushingBookCategory, CrushingBookInfo>>> CRUSHING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CRUSHING, itemToItem(), -28, -16, 144, 54, MekanismBlocks.CRUSHER);
     public static final RVRecipeTypeWrapper<SingleRecipeInput, EnrichingBookCategory, EnrichingBookInfo, ItemStackToItemStackRecipe<EnrichingBookCategory, EnrichingBookInfo>, SingleItem<ItemStackToItemStackRecipe<EnrichingBookCategory, EnrichingBookInfo>>> ENRICHING = new RVRecipeTypeWrapper<>(MekanismRecipeType.ENRICHING, itemToItem(), -28, -16, 144, 54, MekanismBlocks.ENRICHMENT_CHAMBER);
-    public static final RVRecipeTypeWrapper<SingleRecipeInput, CookingBookCategory, CookingBookInfo, ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>, SingleItem<ItemStackToItemStackRecipe<CookingBookCategory, CookingBookInfo>>> SMELTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SMELTING, itemToItem(), -28, -16, 144, 54, MekanismBlocks.ENERGIZED_SMELTER, MekanismItems.ROBIT);
+    public static final RVRecipeTypeWrapper<SingleRecipeInput, SmeltingBookCategory, SmeltingBookInfo, ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>, SingleItem<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>>> SMELTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SMELTING, itemToItem(), -28, -16, 144, 54, MekanismBlocks.ENERGIZED_SMELTER, MekanismItems.ROBIT);
 
     public static final RVRecipeTypeWrapper<?, ?, ?, ChemicalChemicalToChemicalRecipe<ChemicalInfusingBookCategory, ChemicalInfusingBookInfo>, ?> CHEMICAL_INFUSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CHEMICAL_INFUSING, chemicalChemicalToChemical(), -3, -3, 170, 80, MekanismBlocks.CHEMICAL_INFUSER);
 
@@ -144,7 +144,7 @@ public class RecipeViewerRecipeType {//TODO - 26.3: Switch some of these display
     public static final FakeRVRecipeType<SPSRecipeViewerRecipe> SPS = new FakeRVRecipeType<>(MekanismBlocks.SPS_CASING.getId(), MekanismItems.ANTIMATTER_PELLET, MekanismLang.SPS, SPSRecipeViewerRecipe.class, -3, -12, 168, 74, false, MekanismBlocks.SPS_CASING, MekanismBlocks.SPS_PORT, MekanismBlocks.SUPERCHARGED_COIL);
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private static <BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>> Class<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> itemToItem() {
+    private static <BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>> Class<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> itemToItem() {
         return (Class<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>>) (Class) ItemStackToItemStackRecipe.class;
     }
 

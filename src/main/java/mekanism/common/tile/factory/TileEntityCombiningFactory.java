@@ -12,6 +12,7 @@ import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.vanilla_input.BiItemRecipeInput;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
@@ -31,9 +32,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -66,6 +68,10 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     public TileEntityCombiningFactory(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
         extraInputHandler = InputHelper.getInputHandler(extraSlot, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
+        for (int i = 0; i < recipeContainers.length; i++) {
+            //Add the extra slot to the input recipe containers
+            recipeContainers[i] = recipeContainers[i].withExtraInput(extraSlot);
+        }
     }
 
     @Override
@@ -112,7 +118,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<RecipeInput, CombiningBookCategory, CombiningBookInfo, CombinerRecipe, DoubleItem<CombinerRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<BiItemRecipeInput, CombiningBookCategory, CombiningBookInfo, CombinerRecipe, DoubleItem<CombinerRecipe>> getRecipeType() {
         return MekanismRecipeType.COMBINING;
     }
 
@@ -138,6 +144,11 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<CombinerRecipe> recipe, int cacheIndex) {
+        return recipe.value().matches(new BiItemRecipeInput(inputHandlers[cacheIndex].getInput(), extraInputHandler.getInput()), level);
     }
 
     @Override

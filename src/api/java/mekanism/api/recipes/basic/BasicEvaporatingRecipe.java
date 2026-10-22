@@ -6,7 +6,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.book.EvaporatingBookCategory;
 import mekanism.api.recipes.book.EvaporatingBookCategory.EvaporatingBookInfo;
-import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
+import mekanism.api.recipes.display.recipe.EvaporatingRecipeDisplay;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -39,7 +39,7 @@ public class BasicEvaporatingRecipe extends BasicFluidToFluidRecipe<EvaporatingB
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new SimpleMachineRecipeDisplay(
+        return List.of(new EvaporatingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(THERMAL_EVAPORATION_CONTROLLER)

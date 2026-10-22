@@ -56,8 +56,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -102,6 +104,10 @@ public class TileEntityItemStackChemicalToItemStackFactory<BOOK_CATEGORY extends
     public TileEntityItemStackChemicalToItemStackFactory(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
         chemicalInputHandler = InputHelper.getInputHandler(chemicalTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
+        for (int i = 0; i < recipeContainers.length; i++) {
+            //Add the chemical tank to the input recipe containers
+            recipeContainers[i] = recipeContainers[i].withExtraInput(chemicalTank);
+        }
         if (allowExtractingChemical()) {
             configComponent.setupIOConfig(TransmissionType.CHEMICAL, chemicalTank).setCanEject(false);
         } else {
@@ -237,6 +243,11 @@ public class TileEntityItemStackChemicalToItemStackFactory<BOOK_CATEGORY extends
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleItemChemicalRecipeInput(inputHandlers[cacheIndex].getInput(), chemicalInputHandler.getInput()), level);
     }
 
     @Override

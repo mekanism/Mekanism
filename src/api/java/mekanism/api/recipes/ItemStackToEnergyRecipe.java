@@ -1,15 +1,15 @@
 package mekanism.api.recipes;
 
-import java.util.function.Predicate;
+import it.unimi.dsi.fastutil.ints.IntList;
+import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
 import mekanism.api.recipes.book.EnergyConversionBookCategory;
 import mekanism.api.recipes.book.EnergyConversionBookCategory.EnergyConversionBookInfo;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Range;
 
 /// Input: ItemStack
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Range;
 /// Output: int
 ///
 /// @apiNote Energy conversion recipes can be used in any slots in Mekanism machines that are able to convert items into energy.
-public abstract class ItemStackToEnergyRecipe extends MekanismRecipe<SingleRecipeInput, EnergyConversionBookCategory, EnergyConversionBookInfo> implements Predicate<ItemStack> {
+public abstract class ItemStackToEnergyRecipe extends ItemInputRecipe<Integer, EnergyConversionBookCategory, EnergyConversionBookInfo> {
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
@@ -26,18 +26,6 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe<SingleRecip
     protected ItemStackToEnergyRecipe(Recipe.CommonInfo commonInfo, EnergyConversionBookInfo bookInfo) {
         super(commonInfo, bookInfo);
     }
-
-    @Override
-    public abstract boolean test(ItemStack itemStack);
-
-    @Override
-    public boolean matches(SingleRecipeInput input, Level level) {
-        //Don't match incomplete recipes or ones that don't match
-        return !isIncomplete() && test(input.item());
-    }
-
-    /// Gets the input ingredient.
-    public abstract ItemStackIngredient getInput();
 
     /// Gets the output based on the given input.
     ///
@@ -48,23 +36,12 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe<SingleRecip
     /// @apiNote While Mekanism does not currently make use of the input, it is important to support it and pass the proper value in case any addons define input based
     /// outputs where things like NBT may be different.
     /// @implNote The passed in input should **NOT** be modified.
+    @Override
     @Range(from = 1, to = Integer.MAX_VALUE)
-    public abstract int getOutput(ItemStack input);
-
-    /// For JEI, gets the output representations to display.
-    ///
-    /// @return Representation of the output, **MUST NOT** be modified.
-    public abstract int[] getOutputDefinition(ContextMap contextMap);
+    public abstract Integer getOutput(TypedInstance<Item> input);
 
     @Override
-    public boolean isIncomplete() {
-        return getInput().hasNoMatchingInstances();
-    }
-
-    @Override
-    public void logMissingTags() {
-        getInput().logMissingTags();
-    }
+    public abstract IntList getOutputDefinition(ContextMap contextMap);
 
     @Override
     public final RecipeType<ItemStackToEnergyRecipe> getType() {

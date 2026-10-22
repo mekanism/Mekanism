@@ -3,11 +3,15 @@ package mekanism.client.gui;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
+import mekanism.client.gui.element.tab.window.GuiRecipeBookWindowTab;
 import mekanism.client.gui.element.tab.window.GuiUpgradeWindowTab;
+import mekanism.client.gui.recipe_book.MekanismRecipeBookComponent;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
+import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
+import mekanism.common.tile.machine.TileEntityPrecisionSawmill;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.Level;
@@ -19,6 +23,9 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     /// May be null if init hasn't been called yet. Will be null if the tile doesn't support upgrades.
     @UnknownNullability
     private GuiUpgradeWindowTab upgradeWindowTab;
+    /// May be null if init hasn't been called yet. Will be null if the tile doesn't support the recipe book.
+    @UnknownNullability
+    private GuiRecipeBookWindowTab recipeBookWindowTab;
 
     protected GuiMekanismTile(CONTAINER container, Inventory inv, Component title) {
         this(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT);
@@ -27,6 +34,11 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     protected GuiMekanismTile(CONTAINER container, Inventory inv, Component title, int imageWidth, int imageHeight) {
         tile = container.getTileEntity();
         super(container, inv, title, imageWidth, imageHeight);
+        if (tile instanceof IRecipeLookupHandler<?> recipeLookupHandler) {
+            this.recipeBookComponent = new MekanismRecipeBookComponent<>(menu, recipeLookupHandler, this::font);
+        } else {
+            this.recipeBookComponent = null;
+        }
     }
 
     public TILE getTileEntity() {
@@ -43,6 +55,9 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
         if (tile.supportsUpgrades()) {
             upgradeWindowTab = addRenderableWidget(new GuiUpgradeWindowTab(this, tile, () -> upgradeWindowTab));
         }
+        if (recipeBookComponent != null) {
+            recipeBookWindowTab = addRenderableWidget(new GuiRecipeBookWindowTab(this, recipeBookComponent, tile instanceof TileEntityPrecisionSawmill, () -> recipeBookWindowTab));
+        }
         if (tile.supportsRedstone()) {
             //TODO - 26.3: The warning for redstone can overlap with elements in the following guis:
             // - Chemical tank: Armor
@@ -51,11 +66,10 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
             // Warning:
             // super(DISABLED, gui, tile, gui.getXSize(), x : 137, y : 26, innerSize : 18, left : false);
 
-
             addRenderableWidget(new GuiRedstoneControlTab(this, tile)
-                .warning(WarningType.REDSTONE_SIGNAL_ABSENT, () -> tile.getControlType() == RedstoneControl.HIGH && !tile.isRedstoneActivated())
-                .warning(WarningType.REDSTONE_SIGNAL_PRESENT, () -> tile.getControlType() == RedstoneControl.LOW && !tile.isRedstoneActivated())
-                .warning(WarningType.REDSTONE_PULSE_REQUIRED, () -> tile.getControlType() == RedstoneControl.PULSE && !tile.isRedstoneActivated()));
+                  .warning(WarningType.REDSTONE_SIGNAL_ABSENT, () -> tile.getControlType() == RedstoneControl.HIGH && !tile.isRedstoneActivated())
+                  .warning(WarningType.REDSTONE_SIGNAL_PRESENT, () -> tile.getControlType() == RedstoneControl.LOW && !tile.isRedstoneActivated())
+                  .warning(WarningType.REDSTONE_PULSE_REQUIRED, () -> tile.getControlType() == RedstoneControl.PULSE && !tile.isRedstoneActivated()));
         }
         //Note: We check if the capability is present rather than calling hasSecurity so that we don't add the tab to the security desk
         if (tile.getLevel() != null && IBlockSecurityUtils.INSTANCE.securityCapability(tile.getLevel(), tile.getBlockPos(), tile) != null) {

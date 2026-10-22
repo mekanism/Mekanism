@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import mekanism.api.AutomationType;
+import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.slot.ArmorSlot;
@@ -42,19 +45,29 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.container.PacketUpdateContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_server.PacketWindowSelect;
+import mekanism.common.recipe.lookup.IRecipeLookupHandler;
+import mekanism.common.recipe.lookup.IRecipeLookupHandler.RecipeContainers;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.recipebook.ServerPlaceRecipe;
+import net.minecraft.recipebook.ServerPlaceRecipe.CraftingMenuAccess;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.RecipeBookMenu;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -63,7 +76,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-public abstract class MekanismContainer extends AbstractContainerMenu implements ISecurityContainer {
+public abstract class MekanismContainer extends RecipeBookMenu implements ISecurityContainer {
 
     public static final int BASE_Y_OFFSET = 84;
     public static final int TRANSPORTER_CONFIG_WINDOW = 0;
@@ -72,6 +85,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     public static final int SKIN_SELECT_WINDOW = 3;
 
     protected final Inventory inv;
+    private final Map<IInventorySlot, InventoryContainerSlot> containerSlotByRecipeSlot = new HashMap<>();
     protected final List<InventoryContainerSlot> inventoryContainerSlots = new ArrayList<>();
     protected final List<ArmorSlot> armorSlots = new ArrayList<>();
     protected final List<MainInventorySlot> mainInventorySlots = new ArrayList<>();
@@ -117,6 +131,9 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
         if (slot instanceof InventoryContainerSlot inventorySlot) {
             inventoryContainerSlots.add(inventorySlot);
+            if (inventorySlot.isRecipeCraftingSlot()) {
+                containerSlotByRecipeSlot.put(inventorySlot.getInventorySlot(), inventorySlot);
+            }
         } else if (slot instanceof ArmorSlot armorSlot) {
             armorSlots.add(armorSlot);
         } else if (slot instanceof MainInventorySlot inventorySlot) {
@@ -233,6 +250,11 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
 
     public List<InventoryContainerSlot> getInventoryContainerSlots() {
         return Collections.unmodifiableList(inventoryContainerSlots);
+    }
+
+    @Nullable
+    public InventoryContainerSlot getContainerSlotByRecipeContainer(IResourceContainer<?> recipeContainer) {
+        return recipeContainer instanceof IInventorySlot recipeSlot ? containerSlotByRecipeSlot.get(recipeSlot) : null;
     }
 
     public TransactionalSlot getPlayerSlot(int slot) {
@@ -398,6 +420,65 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     /// @apiNote Only call on server
     private void clearSelectedWindow(UUID player) {
         selectedWindows.remove(player);
+    }
+
+    /// {@return the object that might handle recipes for this container type} This is not a guarantee that the object supports recipes.
+    @Nullable
+    protected Object getRecipeHandler() {
+        return null;
+    }
+
+    @Override
+    public final PostPlaceAction handlePlacement(boolean useMaxItems, boolean allowDroppingItemsToClear, RecipeHolder<?> recipe, ServerLevel level, Inventory inventory) {
+        if (getRecipeHandler() instanceof IRecipeLookupHandler<?> recipeLookup) {
+            return handlePlacement(recipeLookup, useMaxItems, allowDroppingItemsToClear, recipe, level, inventory);
+        }
+        return PostPlaceAction.NOTHING;
+    }
+
+    private <INPUT extends RecipeInput, RECIPE extends MekanismRecipe<INPUT, ?, ?>> PostPlaceAction handlePlacement(IRecipeLookupHandler<?> recipeLookup, boolean useMaxItems,
+          boolean allowDroppingItemsToClear, RecipeHolder<?> recipe, ServerLevel level, Inventory inventory) {
+        RecipeHolder<RECIPE> typedRecipe = (RecipeHolder<RECIPE>) recipe;
+        //TODO - 26.3: Figure out how to get the cache index?
+        int cacheIndex = 0;
+        CraftingMenuAccess<RECIPE> craftingMenuAccess = ((IRecipeLookupHandler<RECIPE>) recipeLookup).asCraftingMenuAccess(level, false, cacheIndex);
+        if (craftingMenuAccess != null) {
+            RecipeContainers recipeContainers = recipeLookup.getRecipeContainers(cacheIndex);
+            List<Slot> inputGridSlots = new ArrayList<>();
+            List<Slot> slotsToClear = new ArrayList<>();
+            for (IResourceContainer<?> input : recipeContainers.inputs()) {
+                InventoryContainerSlot slot = getContainerSlotByRecipeContainer(input);
+                if (slot != null) {
+                    inputGridSlots.add(slot);
+                    slotsToClear.add(slot);
+                }
+            }
+            for (IResourceContainer<?> output : recipeContainers.outputs()) {
+                InventoryContainerSlot slot = getContainerSlotByRecipeContainer(output);
+                if (slot != null) {
+                    slotsToClear.add(slot);
+                }
+            }
+            return ServerPlaceRecipe.placeRecipe(craftingMenuAccess, inputGridSlots.size(), 1, inputGridSlots, slotsToClear, inventory, typedRecipe, useMaxItems,
+                  allowDroppingItemsToClear);
+        }
+        return PostPlaceAction.NOTHING;
+    }
+
+    @Override
+    public final void fillCraftSlotsStackedContents(StackedItemContents stackedContents) {
+        if (getRecipeHandler() instanceof StackedContentsCompatible stackedContentsCompatible) {
+            stackedContentsCompatible.fillStackedContents(stackedContents);
+        }
+    }
+
+    @Override
+    public final RecipeBookType getRecipeBookType() {
+        //TODO - 26.3: Do we want to try and extend this to supporting the formulaic assemblicator, robit crafting, and qio crafting windows?
+        if (getRecipeHandler() instanceof IRecipeLookupHandler<?> recipeLookup) {
+            return recipeLookup.getRecipeBookType();
+        }
+        return RecipeBookType.CRAFTING;
     }
 
     //Start container sync management

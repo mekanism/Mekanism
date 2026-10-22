@@ -7,7 +7,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.book.WashingBookCategory;
 import mekanism.api.recipes.book.WashingBookCategory.WashingBookInfo;
-import mekanism.api.recipes.display.CombiningRecipeDisplay;
+import mekanism.api.recipes.display.recipe.WashingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.Holder;
@@ -35,7 +35,7 @@ public class BasicWashingRecipe extends BasicFluidChemicalToChemicalRecipe<Washi
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new CombiningRecipeDisplay(
+        return List.of(new WashingRecipeDisplay(
               getChemicalInput().display(),
               getFluidInput().display(),
               getOutputDisplay(),

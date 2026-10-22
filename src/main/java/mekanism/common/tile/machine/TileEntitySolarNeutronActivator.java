@@ -49,6 +49,7 @@ import mekanism.common.util.LightLevelUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -83,6 +84,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
 
     private final IOutputHandler<ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Chemical, ChemicalStack> inputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
@@ -101,6 +103,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
               .setCanTankEject(tank -> tank != inputTank);
         inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(inputTank, outputTank);
     }
 
     @Override
@@ -206,6 +209,16 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
               //Edge case handling, this should almost always end up being 1
               .setRequiredTicks(() -> productionRate > 0 && productionRate < 1 ? Mth.ceil(1 / productionRate) : 1)
               .setBaselineMaxOperations(() -> productionRate > 0 && productionRate < 1 ? 1 : (int) productionRate);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleChemicalRecipeInput(inputHandler.getInput()), level);
     }
 
     @Override

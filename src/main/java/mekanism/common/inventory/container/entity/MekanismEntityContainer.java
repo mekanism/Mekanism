@@ -6,6 +6,7 @@ import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import org.jspecify.annotations.Nullable;
 
 public abstract class MekanismEntityContainer<ENTITY extends Entity> extends MekanismContainer implements IEntityContainer<ENTITY> {
 
@@ -30,5 +31,11 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
     @Override
     public boolean canPlayerAccess(Player player) {
         return IEntitySecurityUtils.INSTANCE.canAccess(player, entity);
+    }
+
+    @Nullable
+    @Override
+    protected ENTITY getRecipeHandler() {
+        return entity;
     }
 }

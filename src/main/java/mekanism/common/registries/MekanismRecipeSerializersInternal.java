@@ -45,6 +45,7 @@ import mekanism.api.recipes.book.PaintingBookCategory.PaintingBookInfo;
 import mekanism.api.recipes.book.PigmentExtractingBookCategory.PigmentExtractingBookInfo;
 import mekanism.api.recipes.book.PigmentMixingBookCategory.PigmentMixingBookInfo;
 import mekanism.api.recipes.book.PurifyingBookCategory.PurifyingBookInfo;
+import mekanism.api.recipes.book.SmeltingBookCategory.SmeltingBookInfo;
 import mekanism.api.recipes.book.WashingBookCategory.WashingBookInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ClearConfigurationRecipe;
@@ -57,7 +58,6 @@ import mekanism.common.recipe.serializer.RotaryRecipeSerializer;
 import mekanism.common.recipe.upgrade.MekanismShapedRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe.CookingBookInfo;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -75,7 +75,7 @@ public class MekanismRecipeSerializersInternal extends MekanismRecipeSerializers
     static {
         register(Names.CRUSHING, () -> MekanismRecipeSerializer.itemToItem(BasicCrushingRecipe::new, CrushingBookInfo.MAP_CODEC, CrushingBookInfo.STREAM_CODEC));
         register(Names.ENRICHING, () -> MekanismRecipeSerializer.itemToItem(BasicEnrichingRecipe::new, EnrichingBookInfo.MAP_CODEC, EnrichingBookInfo.STREAM_CODEC));
-        register(Names.SMELTING, () -> MekanismRecipeSerializer.itemToItem(BasicSmeltingRecipe::new, CookingBookInfo.MAP_CODEC, CookingBookInfo.STREAM_CODEC));
+        register(Names.SMELTING, () -> MekanismRecipeSerializer.itemToItem(BasicSmeltingRecipe::new, SmeltingBookInfo.MAP_CODEC, SmeltingBookInfo.STREAM_CODEC));
 
         register(Names.CHEMICAL_INFUSING, () -> MekanismRecipeSerializer.chemicalChemicalToChemical(BasicChemicalInfuserRecipe::new, ChemicalInfusingBookInfo.MAP_CODEC, ChemicalInfusingBookInfo.STREAM_CODEC));
 

@@ -47,6 +47,10 @@ public class InventoryContainerSlot extends StackCopySlot implements ITransactio
         }
     }
 
+    public boolean isRecipeCraftingSlot() {
+        return slot.isRecipeCraftingSlot();
+    }
+
     @Override
     public int insert(ItemResource resource, int amount, TransactionContext transaction) {
         return resource.isEmpty() ? 0 : slot.insert(resource, amount, transaction, AutomationType.MANUAL);

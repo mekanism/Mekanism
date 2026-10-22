@@ -36,7 +36,7 @@ public abstract class ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY extends M
 
     @Override
     public ItemStack assemble(SingleItemChemicalRecipeInput input) {
-        if (!isIncomplete() && test(input.item(), input.chemical())) {
+        if (test(input.item(), input.chemical())) {
             return getOutput(input.item(), input.chemical()).create();
         }
         return ItemStack.EMPTY;

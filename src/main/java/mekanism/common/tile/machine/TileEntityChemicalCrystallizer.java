@@ -47,6 +47,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
@@ -70,6 +71,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
 
     private final IOutputHandler<ItemStackTemplate> outputHandler;
     private final IInputHandler<Chemical, ChemicalStack> inputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityChemicalCrystallizer> energyContainer;
@@ -92,6 +94,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
         inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(inputTank, outputSlot);
     }
 
     @Override
@@ -110,11 +113,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
-        builder.addContainer(inputSlot = ChemicalInventorySlot.fill(inputTank, listener, 8, 65));
+        builder.addContainer(inputSlot = ChemicalInventorySlot.fill(inputTank, listener, 8, 65))
+              .setSlotOverlay(SlotOverlay.PLUS);
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 129, 57))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 5));
-        inputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
     }
 
@@ -157,6 +160,16 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ChemicalCrystallizerRecipe> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleChemicalRecipeInput(inputHandler.getInput()), level);
     }
 
     public MachineEnergyContainer<TileEntityChemicalCrystallizer> energyContainer() {

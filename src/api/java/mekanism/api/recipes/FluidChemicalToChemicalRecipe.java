@@ -37,8 +37,7 @@ public abstract class FluidChemicalToChemicalRecipe<BOOK_CATEGORY extends Mekani
 
     @Override
     public boolean matches(SingleFluidChemicalRecipeInput input, Level level) {
-        //Don't match incomplete recipes or ones that don't match
-        return !isIncomplete() && test(input.fluid(), input.chemical());
+        return test(input.fluid(), input.chemical());
     }
 
     /// Gets the input fluid ingredient.

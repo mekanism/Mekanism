@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.recipe_book.IGhostRecipeComponent;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.MekanismLang;
 import mekanism.common.item.ItemGaugeDropper;
@@ -27,10 +28,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.neoforged.neoforge.client.ClientTooltipFlag;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jspecify.annotations.Nullable;
 
-public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> extends GuiGauge<RESOURCE> implements IRecipeViewerIngredientHelper {
+public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> extends GuiGauge<RESOURCE>
+      implements IRecipeViewerIngredientHelper, IGhostRecipeComponent {
 
     @Nullable
     private final ITankInfoHandler<CONTAINER> infoHandler;
@@ -120,18 +123,23 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
         if (dummy) {
             return height - 2;
         }
-        CONTAINER container = getContainer();
-        if (container == null || container.isEmpty()) {
-            return 0;
+        double scale;
+        if (isRenderingGhost()) {
+            scale = 0.5;
+        } else {
+            CONTAINER container = getContainer();
+            if (container == null || container.isEmpty()) {
+                return 0;
+            }
+            long capacity = container.capacityAsLong(container.resource());
+            long stored = container.amountAsLong();
+            if (capacity == 0) {
+                return 0;
+            } else if (stored == Long.MAX_VALUE) {
+                return height - 2;
+            }
+            scale = stored / (double) capacity;
         }
-        long capacity = container.capacityAsLong(container.resource());
-        long stored = container.amountAsLong();
-        if (capacity == 0) {
-            return 0;
-        } else if (stored == Long.MAX_VALUE) {
-            return height - 2;
-        }
-        double scale = stored / (double) capacity;
         return Math.max(1, Ints.saturatedCast(Math.round(scale * (height - 2))));
     }
 
@@ -147,7 +155,8 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
             type = container.resource();
             amount = container.amountAsLong();
         }
-        return getContentsTooltips(type, amount, TooltipContext.of(minecraft.level), minecraft.player, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+        TooltipFlag tooltipFlag = ClientTooltipFlag.of(minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+        return getContentsTooltips(type, amount, TooltipContext.of(minecraft.level), minecraft.player, tooltipFlag);
     }
 
     protected List<Component> getContentsTooltips(RESOURCE type, long amount, TooltipContext context, @Nullable Player player, TooltipFlag tooltipFlag) {

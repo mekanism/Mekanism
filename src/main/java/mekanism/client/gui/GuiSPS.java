@@ -30,8 +30,8 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 7, 17));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 151, 17));
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 7, 17), false);
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 151, 17), true);
         addRenderableWidget(new GuiInnerScreen(this, 27, 17, 122, 60, () -> {
             List<Component> list = new ArrayList<>();
             SPSMultiblockData multiblock = tile.getMultiblock();

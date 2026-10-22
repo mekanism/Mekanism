@@ -14,6 +14,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.recipes.vanilla_input.BiItemRecipeInput;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -46,7 +47,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.UnknownNullability;
@@ -66,6 +67,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     private final IOutputHandler<ItemStackTemplate> outputHandler;
     private final IInputHandler<Item, ItemStack> inputHandler;
     private final IInputHandler<Item, ItemStack> extraInputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityCombiner> energyContainer;
@@ -92,6 +94,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
         inputHandler = InputHelper.getInputHandler(mainInputSlot, RecipeError.NOT_ENOUGH_INPUT);
         extraInputHandler = InputHelper.getInputHandler(extraInputSlot, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(List.of(mainInputSlot, extraInputSlot), outputSlot);
     }
 
     @Override
@@ -125,7 +128,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     }
 
     @Override
-    public IMekanismRecipeTypeProvider<RecipeInput, CombiningBookCategory, CombiningBookInfo, CombinerRecipe, DoubleItem<CombinerRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<BiItemRecipeInput, CombiningBookCategory, CombiningBookInfo, CombinerRecipe, DoubleItem<CombinerRecipe>> getRecipeType() {
         return MekanismRecipeType.COMBINING;
     }
 
@@ -151,6 +154,16 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<CombinerRecipe> recipe, int cacheIndex) {
+        return recipe.value().matches(new BiItemRecipeInput(inputHandler.getInput(), extraInputHandler.getInput()), level);
     }
 
     @Override

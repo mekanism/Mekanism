@@ -8,16 +8,24 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.recipebook.SlotSelectTime;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
 public class GuiFluidBar extends GuiTankBar<FluidResource, IFluidTank> {
+
+    @Nullable
+    private GhostSlot<FluidStack> ghostRecipeData;
 
     public GuiFluidBar(IGuiWrapper gui, ResourceTankInfoProvider<FluidResource, IFluidTank> infoProvider, int x, int y, int width, int height, boolean horizontal) {
         super(gui, infoProvider, x, y, width, height, horizontal);
@@ -39,9 +47,16 @@ public class GuiFluidBar extends GuiTankBar<FluidResource, IFluidTank> {
     }
 
     @Override
-    protected List<Component> getContentsTooltips(FluidResource type, long amount, TooltipContext context, @Nullable Player player, TooltipFlag tooltipFlag) {
-        List<Component> tooltip = super.getContentsTooltips(type, amount, context, player, tooltipFlag);
-        FluidStack stack = type.toStack(Ints.saturatedCast(amount));
+    protected List<Component> getContentsTooltips(FluidResource resource, long amount, TooltipContext context, @Nullable Player player, TooltipFlag tooltipFlag) {
+        FluidStack stack;
+        if (ghostRecipeData != null) {
+            stack = ghostRecipeData.getCurrent();
+            resource = FluidResource.of(stack);
+            amount = stack.amount();
+        } else {
+            stack = resource.toStack(Ints.saturatedCast(amount));
+        }
+        List<Component> tooltip = super.getContentsTooltips(resource, amount, context, player, tooltipFlag);
         if (!stack.isEmpty()) {
             MekanismUtils.appendAllButFirst(tooltip, stack.getTooltipLines(context, player, tooltipFlag));
         }
@@ -49,7 +64,37 @@ public class GuiFluidBar extends GuiTankBar<FluidResource, IFluidTank> {
     }
 
     @Override
+    protected void renderBarContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+        if (ghostRecipeData == null) {
+            super.renderBarContents(guiGraphics, mouseX, mouseY, partialTicks, handlerLevel);
+        } else {
+            FluidStack current = ghostRecipeData.getCurrent();
+            renderBarGhostContents(guiGraphics, MekanismRenderer.getFluidTexture(current, FluidTextureType.STILL), MekanismRenderer.getColorARGB(current));
+        }
+    }
+
+    @Override
     protected Object toIngredientStack(FluidResource resource, long amount) {
         return resource.toStack(Ints.saturatedCast(amount));
+    }
+
+    @Override
+    protected boolean isRenderingGhost() {
+        return ghostRecipeData != null;
+    }
+
+    @Override
+    public void setGhostData(SlotDisplay contents, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
+        List<FluidStack> entries = contents.resolve(context, FluidStackContentsFactory.INSTANCE).toList();
+        if (entries.isEmpty()) {
+            ghostRecipeData = null;
+        } else {
+            ghostRecipeData = new GhostSlot<>(entries, isResultSlot, slotSelectTime);
+        }
+    }
+
+    @Override
+    public void clearGhostData() {
+        ghostRecipeData = null;
     }
 }

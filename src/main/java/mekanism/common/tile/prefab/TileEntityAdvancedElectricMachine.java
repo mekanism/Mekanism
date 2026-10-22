@@ -21,6 +21,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -57,6 +58,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -92,6 +94,7 @@ public abstract class TileEntityAdvancedElectricMachine<BOOK_CATEGORY extends Me
     protected final IOutputHandler<ItemStackTemplate> outputHandler;
     protected final IInputHandler<Item, ItemStack> itemInputHandler;
     protected final IInputHandler<Chemical, ChemicalStack> chemicalInputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityAdvancedElectricMachine<BOOK_CATEGORY, BOOK_INFO>> energyContainer;
@@ -123,6 +126,7 @@ public abstract class TileEntityAdvancedElectricMachine<BOOK_CATEGORY extends Me
         itemInputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
         chemicalInputHandler = InputHelper.getInputHandler(chemicalTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(List.of(inputSlot, chemicalTank), outputSlot);
         baseTotalUsage = baseTicksRequired;
         if (useStatisticalMechanics()) {
             //Note: Statistical mechanics works best by just using the mean gas usage we want to target
@@ -200,6 +204,16 @@ public abstract class TileEntityAdvancedElectricMachine<BOOK_CATEGORY extends Me
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleItemChemicalRecipeInput(itemInputHandler.getInput(), chemicalInputHandler.getInput()), level);
     }
 
     @Override

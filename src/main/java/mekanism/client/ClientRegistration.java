@@ -3,6 +3,7 @@ package mekanism.client;
 import com.google.common.reflect.TypeToken;
 import mekanism.api.gear.IClientModuleHelper;
 import mekanism.api.gear.IModuleHelper;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalTank;
@@ -141,6 +142,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaTank;
+import mekanism.common.registration.impl.RecipeBookCategoryDeferredRegister.MekanismRecipeBookTypes;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
@@ -149,6 +151,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismParticleTypes;
+import mekanism.common.registries.MekanismRecipeBookCategories;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.PrimaryResource;
@@ -181,6 +184,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -201,6 +205,7 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleGroupsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterRecipeBookSearchCategoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
@@ -490,6 +495,13 @@ public class ClientRegistration {
 
         ClientRegistrationUtil.registerScreen(event, MekanismContainerTypes.BOILER_STATS, GuiBoilerStats::new);
         ClientRegistrationUtil.registerScreen(event, MekanismContainerTypes.MATRIX_STATS, GuiMatrixStats::new);
+    }
+
+    @SubscribeEvent
+    public static void registerRecipeBookTabs(RegisterRecipeBookSearchCategoriesEvent event) {
+        for (MekanismRecipeBookTypes type : MekanismRecipeBookCategories.RECIPE_BOOK_CATEGORIES.getTypes()) {
+            event.register(type, type.categories().stream().map(MekanismBookCategory::toRecipeBookCategory).toArray(RecipeBookCategory[]::new));
+        }
     }
 
     @SubscribeEvent

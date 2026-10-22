@@ -49,15 +49,15 @@ public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHe
 
     @Override
     protected void drawContents(GuiGraphicsExtractor guiGraphics) {
-        if (virtualSlot != null) {
+        if (!tryDrawGhost(guiGraphics) && virtualSlot != null) {
+            int xPos = relativeX + 1;
+            int yPos = relativeY + 1;
             if (virtualSlot.isHovering()) {
                 //Copy of AbstractContainerScreen#extractSlotHighlightBack
-                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, AbstractContainerScreen.SLOT_HIGHLIGHT_BACK_SPRITE, virtualSlot.getActualX() - 4, virtualSlot.getActualY() - 4, 24, 24);
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, AbstractContainerScreen.SLOT_HIGHLIGHT_BACK_SPRITE, xPos - 4, yPos - 4, 24, 24);
             }
             ItemStack stack = virtualSlot.getStackToRender();
             if (!stack.isEmpty()) {
-                int xPos = relativeX + 1;
-                int yPos = relativeY + 1;
                 if (virtualSlot.quickCraftStack()) {
                     guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
                 }
@@ -66,7 +66,7 @@ public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHe
             }
             if (virtualSlot.isHovering()) {
                 //Copy of AbstractContainerScreen#extractSlotHighlightFront
-                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, AbstractContainerScreen.SLOT_HIGHLIGHT_FRONT_SPRITE, virtualSlot.getActualX() - 4, virtualSlot.getActualY() - 4, 24, 24);
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, AbstractContainerScreen.SLOT_HIGHLIGHT_FRONT_SPRITE, xPos - 4, yPos - 4, 24, 24);
             }
         }
     }

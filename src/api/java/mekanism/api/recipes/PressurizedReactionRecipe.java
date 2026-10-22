@@ -11,7 +11,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.book.ReactingBookCategory;
 import mekanism.api.recipes.book.ReactingBookCategory.ReactingBookInfo;
-import mekanism.api.recipes.display.ReactionRecipeDisplay;
+import mekanism.api.recipes.display.recipe.ReactionRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -26,6 +26,7 @@ import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
@@ -53,6 +54,9 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
 
     private static final Holder<Item> PRESSURIZED_REACTION_CHAMBER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pressurized_reaction_chamber"));
 
+    @Nullable
+    private PlacementInfo placementInfo;
+
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
     ///
@@ -70,6 +74,22 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     /// Gets the chemical input ingredient.
     public abstract ChemicalStackIngredient getInputChemical();
 
+    @Override
+    public PlacementInfo placementInfo() {
+        if (this.placementInfo == null) {
+            if (getInputFluid().hasNoMatchingInstances() || getInputChemical().hasNoMatchingInstances()) {//No fluid or chemical
+                this.placementInfo = PlacementInfo.NOT_PLACEABLE;
+            } else {
+                this.placementInfo = PlacementInfo.createFromOptionals(List.of(
+                      Optional.of(getInputSolid().ingredient().ingredient()),
+                      Optional.empty(),//Fluid
+                      Optional.empty()//Chemical
+                ));
+            }
+        }
+        return this.placementInfo;
+    }
+
     /// Gets the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
     @Range(from = 0, to = Integer.MAX_VALUE)
     public abstract int getEnergyRequired();
@@ -82,8 +102,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
 
     @Override
     public boolean matches(ReactionRecipeInput input, Level level) {
-        //Don't match incomplete recipes or ones that don't match
-        return !isIncomplete() && test(input.item(), input.fluid(), input.chemical());
+        return test(input.item(), input.fluid(), input.chemical());
     }
 
     /// For JEI, gets the output representations to display.
@@ -111,11 +130,6 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     public abstract PressurizedReactionRecipeOutput getOutput(ItemStack solid, FluidStack liquid, ChemicalStack chemical);
 
     @Override
-    public boolean isIncomplete() {
-        return getInputSolid().hasNoMatchingInstances() || getInputFluid().hasNoMatchingInstances() || getInputChemical().hasNoMatchingInstances();
-    }
-
-    @Override
     public void logMissingTags() {
         getInputSolid().logMissingTags();
         getInputFluid().logMissingTags();
@@ -134,7 +148,9 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
               getInputFluid().display(),
               getInputChemical().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(PRESSURIZED_REACTION_CHAMBER)
+              new SlotDisplay.ItemSlotDisplay(PRESSURIZED_REACTION_CHAMBER),
+              getDuration(),
+              getEnergyRequired()
         ));
     }
 

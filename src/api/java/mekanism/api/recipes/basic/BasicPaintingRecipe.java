@@ -6,7 +6,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.book.PaintingBookCategory;
 import mekanism.api.recipes.book.PaintingBookCategory.PaintingBookInfo;
-import mekanism.api.recipes.display.PerTickCombiningRecipeDisplay;
+import mekanism.api.recipes.display.recipe.PaintingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
@@ -34,7 +34,7 @@ public class BasicPaintingRecipe extends BasicItemStackChemicalToItemStackRecipe
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(PerTickCombiningRecipeDisplay.create(
+        return List.of(new PaintingRecipeDisplay(
               getItemInput().display(),
               getChemicalInput().display(),
               perTickUsage(),

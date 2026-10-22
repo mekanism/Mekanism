@@ -57,6 +57,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
@@ -88,6 +89,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
 
     private final IOutputHandler<ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Chemical, ChemicalStack> inputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityIsotopicCentrifuge> energyContainer;
@@ -113,6 +115,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
 
         inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(inputTank, outputTank);
     }
 
     @Override
@@ -185,6 +188,16 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
               .setOnFinish(this::markForSave)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setBaselineMaxOperations(() -> baselineMaxOperations);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleChemicalRecipeInput(inputHandler.getInput()), level);
     }
 
     @Override

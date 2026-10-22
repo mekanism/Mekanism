@@ -60,6 +60,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -92,6 +93,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     private final IOutputHandler<ItemStackTemplate> outputHandler;
     private final IInputHandler<Chemical, ChemicalStack> infusionInputHandler;
     private final IInputHandler<Item, ItemStack> itemInputHandler;
+    private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityMetallurgicInfuser> energyContainer;
@@ -119,6 +121,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
         infusionInputHandler = InputHelper.getInputHandler(infusionTank, RecipeError.NOT_ENOUGH_INPUT);
         itemInputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        recipeContainers = new RecipeContainers(List.of(inputSlot, infusionTank), outputSlot);
     }
 
     @Override
@@ -193,6 +196,16 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return recipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleItemChemicalRecipeInput(itemInputHandler.getInput(), infusionInputHandler.getInput()), level);
     }
 
     @Override

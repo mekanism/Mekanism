@@ -2,6 +2,7 @@ package mekanism.api.recipes;
 
 import java.util.Objects;
 import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -17,7 +18,7 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 /// - Crushing: Can be processed in Crushers and Crushing Factories.
 /// - Enriching: Can be processed in Enrichment Chambers and Enriching Factories.
 /// - Smelting: Can be processed in Energized Smelters, Smelting Factories, and Robits.
-public abstract class ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
+public abstract class ItemStackToItemStackRecipe<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>>
       extends ItemInputRecipe<ItemStackTemplate, BOOK_CATEGORY, BOOK_INFO> {
 
     protected final RecipeType<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType;
@@ -33,7 +34,7 @@ public abstract class ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO extend
 
     @Override
     public ItemStack assemble(SingleRecipeInput input) {
-        if (!isIncomplete() && test(input.item())) {
+        if (test(input.item())) {
             return getOutput(input.item()).create();
         }
         return ItemStack.EMPTY;
@@ -48,7 +49,8 @@ public abstract class ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO extend
     ///
     /// @since 10.8.0
     @FunctionalInterface
-    public interface Factory<BOOK_CATEGORY, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>, RECIPE extends ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> {
+    public interface Factory<BOOK_CATEGORY extends MekanismBookCategory, BOOK_INFO extends Recipe.BookInfo<BOOK_CATEGORY>,
+          RECIPE extends ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> {
 
         /// @param commonInfo Common recipe info.
         /// @param bookInfo   Recipe book info.

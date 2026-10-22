@@ -2,13 +2,15 @@ package mekanism.api.recipes;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.book.RotaryBookCategory;
 import mekanism.api.recipes.book.RotaryBookCategory.RotaryBookInfo;
-import mekanism.api.recipes.display.SimpleMachineRecipeDisplay;
+import mekanism.api.recipes.display.recipe.CondensentratingRecipeDisplay;
+import mekanism.api.recipes.display.recipe.DecondensentratingRecipeDisplay;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
@@ -17,6 +19,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
@@ -26,6 +29,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.Nullable;
 
 /// Input: FluidStack
 ///
@@ -40,6 +44,11 @@ import org.jetbrains.annotations.Contract;
 public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput, RotaryBookCategory, RotaryBookInfo> {
 
     private static final Holder<Item> ROTARY_CONDENSENTRATOR = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "rotary_condensentrator"));
+    private static final PlacementInfo IS_PLACEABLE_BOTH = PlacementInfo.createFromOptionals(List.of(Optional.empty(), Optional.empty()));
+    private static final PlacementInfo IS_PLACEABLE_SINGLE_DIRECTION = PlacementInfo.createFromOptionals(List.of(Optional.empty()));
+
+    @Nullable
+    private PlacementInfo placementInfo;
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
@@ -71,8 +80,7 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput, Rot
 
     @Override
     public boolean matches(RotaryRecipeInput input, Level level) {
-        //Don't match incomplete recipes or ones that don't match
-        return !isIncomplete() && input.input().map(this::test, this::test);
+        return input.input().map(this::test, this::test);
     }
 
     /// Gets the fluid input ingredient.
@@ -136,8 +144,19 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput, Rot
     public abstract FluidStackTemplate getFluidOutput(ChemicalStack input);
 
     @Override
-    public boolean isIncomplete() {
-        return (hasFluidToChemical() && getFluidInput().hasNoMatchingInstances()) || (hasChemicalToFluid() && getChemicalInput().hasNoMatchingInstances());
+    public PlacementInfo placementInfo() {
+        if (this.placementInfo == null) {
+            if (hasFluidToChemical() && getFluidInput().hasNoMatchingInstances()) {
+                this.placementInfo = PlacementInfo.NOT_PLACEABLE;
+            } else if (hasChemicalToFluid() && getChemicalInput().hasNoMatchingInstances()) {
+                this.placementInfo = PlacementInfo.NOT_PLACEABLE;
+            } else if (hasChemicalToFluid() && hasFluidToChemical()) {
+                this.placementInfo = IS_PLACEABLE_BOTH;
+            } else {
+                this.placementInfo = IS_PLACEABLE_SINGLE_DIRECTION;
+            }
+        }
+        return this.placementInfo;
     }
 
     @Override
@@ -157,14 +176,13 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput, Rot
 
     @Override
     public List<RecipeDisplay> display() {
-        //TODO - 26.3: Do we need to have a custom display that we then pass a boolean parameter to for which direction it is going?
         return Stream.<RecipeDisplay>of(
-                    hasChemicalToFluid() ? new SimpleMachineRecipeDisplay(
+                    hasChemicalToFluid() ? new CondensentratingRecipeDisplay(
                           getChemicalInput().display(),
                           getFluidOutputDisplay(),
                           new SlotDisplay.ItemSlotDisplay(ROTARY_CONDENSENTRATOR)
                     ) : null,
-                    hasFluidToChemical() ? new SimpleMachineRecipeDisplay(
+                    hasFluidToChemical() ? new DecondensentratingRecipeDisplay(
                           getFluidInput().display(),
                           getChemicalOutputDisplay(),
                           new SlotDisplay.ItemSlotDisplay(ROTARY_CONDENSENTRATOR)

@@ -50,6 +50,10 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         return handler;
     }
 
+    protected boolean isRenderingGhost() {
+        return false;
+    }
+
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
@@ -61,7 +65,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         }
         double handlerLevel = handler.getLevel();
         //If there are any contents render them
-        if (handlerLevel > 0) {
+        if (handlerLevel > 0 || isRenderingGhost()) {
             renderBarContents(guiGraphics, mouseX, mouseY, partialTicks, handlerLevel);
             if (warning && handlerLevel >= 0.98) {
                 //Greater than 98% filled, render secondary piece anyway just to make it more visible

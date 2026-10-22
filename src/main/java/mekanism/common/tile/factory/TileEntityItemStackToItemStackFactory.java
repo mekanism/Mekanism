@@ -17,7 +17,9 @@ import mekanism.common.upgrade.MachineUpgradeData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -105,6 +107,11 @@ public class TileEntityItemStackToItemStackFactory<BOOK_CATEGORY extends Mekanis
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipe, int cacheIndex) {
+        return recipe.value().matches(new SingleRecipeInput(inputHandlers[cacheIndex].getInput()), level);
     }
 
     @Override

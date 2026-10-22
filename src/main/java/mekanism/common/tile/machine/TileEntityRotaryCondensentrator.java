@@ -1,5 +1,6 @@
 package mekanism.common.tile.machine;
 
+import com.mojang.datafixers.util.Either;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -63,6 +64,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
@@ -109,6 +111,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     private final IOutputHandler<FluidStackTemplate> fluidOutputHandler;
     private final IInputHandler<Fluid, FluidStack> fluidInputHandler;
     private final IInputHandler<Chemical, ChemicalStack> gasInputHandler;
+    private final RecipeContainers fluidToChemicalRecipeContainers;
+    private final RecipeContainers chemicalToFluidRecipeContainers;
 
     private int clientEnergyUsed = 0;
     private int baselineMaxOperations = 1;
@@ -152,6 +156,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         fluidInputHandler = InputHelper.getInputHandler(fluidTank, NOT_ENOUGH_FLUID_INPUT_ERROR);
         gasOutputHandler = OutputHelper.getOutputHandler(gasTank, NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR);
         fluidOutputHandler = OutputHelper.getOutputHandler(fluidTank, NOT_ENOUGH_SPACE_FLUID_OUTPUT_ERROR);
+        fluidToChemicalRecipeContainers = new RecipeContainers(fluidTank, gasTank);
+        chemicalToFluidRecipeContainers = new RecipeContainers(gasTank, fluidTank);
     }
 
     @Override
@@ -296,6 +302,17 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setBaselineMaxOperations(() -> baselineMaxOperations)
               .setOnFinish(this::markForSave);
+    }
+
+    @Override
+    public RecipeContainers getRecipeContainers(int cacheIndex) {
+        return mode ? fluidToChemicalRecipeContainers : chemicalToFluidRecipeContainers;
+    }
+
+    @Override
+    public boolean recipeMatches(ServerLevel level, RecipeHolder<RotaryRecipe> recipe, int cacheIndex) {
+        RotaryRecipeInput recipeInput = new RotaryRecipeInput(mode ? Either.left(fluidInputHandler.getInput()) : Either.right(gasInputHandler.getInput()));
+        return recipe.value().matches(recipeInput, level);
     }
 
     @Override

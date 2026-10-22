@@ -785,6 +785,7 @@ public class QIOCraftingWindow implements IContentsListener {
             }
         }
 
+        //TODO - 26.3: Do we want to use Inventory#isUsableForCrafting to filter out potential items (at least for what equivalent items we prioritize?)
         private boolean testEquivalentItem(Level world, QIOFrequency frequency, IInventorySlot slot, int index, Ingredient usedIngredient,
               ItemResource replacementType, TransactionContext transaction) {
             if (!frequency.isStoring(replacementType) || !usedIngredient.test(replacementType.toStack())) {

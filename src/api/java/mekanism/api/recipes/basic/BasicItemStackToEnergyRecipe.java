@@ -2,7 +2,7 @@ package mekanism.api.recipes.basic;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Collections;
+import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.SerializationConstants;
@@ -10,16 +10,20 @@ import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.book.EnergyConversionBookCategory.EnergyConversionBookInfo;
+import mekanism.api.recipes.display.recipe.EnergyConversionRecipeDisplay;
+import mekanism.api.recipes.display.slot.EnergySlotDisplay;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jspecify.annotations.Nullable;
 
 public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
@@ -41,23 +45,23 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
     }
 
     @Override
-    public boolean test(ItemStack itemStack) {
-        return input.test(itemStack);
-    }
-
-    @Override
     public ItemStackIngredient getInput() {
         return input;
     }
 
     @Override
-    public int getOutput(ItemStack input) {
+    public Integer getOutput(TypedInstance<Item> input) {
         return output;
     }
 
     @Override
-    public int[] getOutputDefinition(ContextMap contextMap) {
-        return new int[]{output};
+    public IntList getOutputDefinition(ContextMap contextMap) {
+        return IntList.of(output);
+    }
+
+    @Override
+    public SlotDisplay getOutputDisplay() {
+        return new EnergySlotDisplay(output);
     }
 
     @Override
@@ -85,7 +89,12 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
 
     @Override
     public List<RecipeDisplay> display() {
-        return Collections.emptyList();
+        return List.of(new EnergyConversionRecipeDisplay(
+              getInput().display(),
+              getOutputDisplay(),
+              //TODO: What do we want to display as the work stations here
+              SlotDisplay.Empty.INSTANCE
+        ));
     }
 
     /// Helper to create a [MapCodec] for a simple [BasicItemStackToEnergyRecipe].

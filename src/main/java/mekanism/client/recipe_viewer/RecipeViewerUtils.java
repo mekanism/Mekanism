@@ -70,14 +70,6 @@ public class RecipeViewerUtils {
         return (int) (Util.getMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.size());
     }
 
-    public static long getCurrent(int[] elements) {
-        return elements[getIndex(elements)];
-    }
-
-    private static int getIndex(int[] elements) {
-        return (int) (Util.getMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.length);
-    }
-
     public static SlotDisplay getStacksFor(ChemicalStackIngredient ingredient, boolean displayConversions) {
         SlotDisplay ingredientDisplay = ingredient.display();
         //Always include the chemical tank of the type to portray that we accept items
