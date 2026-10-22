@@ -72,6 +72,11 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
             public boolean isActive() {
                 return !tile.getMode();
             }
+
+            @Override
+            public boolean skipBackgroundIfInactive() {
+                return true;
+            }
         }, ProgressType.LARGE_RIGHT, this, 64, 39).recipeViewerCategories(RecipeViewerRecipeType.CONDENSENTRATING))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
         addRenderableWidget(new GuiProgress(new IBooleanProgressInfoHandler() {
@@ -83,6 +88,11 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
             @Override
             public boolean isActive() {
                 return tile.getMode();
+            }
+
+            @Override
+            public boolean skipBackgroundIfInactive() {
+                return true;
             }
         }, ProgressType.LARGE_LEFT, this, 64, 39).recipeViewerCategories(RecipeViewerRecipeType.DECONDENSENTRATING))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));

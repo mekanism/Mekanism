@@ -8,6 +8,10 @@ public interface IProgressInfoHandler {
         return true;
     }
 
+    default boolean skipBackgroundIfInactive() {
+        return false;
+    }
+
     interface IBooleanProgressInfoHandler extends IProgressInfoHandler {
 
         boolean fillProgressBar();

@@ -49,8 +49,11 @@ public class GuiProgress extends GuiTexturedElement implements ISupportsWarning<
 
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        if (handler.isActive()) {
+        boolean isActive = handler.isActive();
+        if (isActive || !handler.skipBackgroundIfInactive()) {
+            super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
+        }
+        if (isActive) {
             boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
             Identifier texture = type.texture(warning);
             float progress = warning ? 1 : getProgress();
