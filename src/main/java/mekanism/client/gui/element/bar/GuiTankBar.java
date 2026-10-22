@@ -82,9 +82,11 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
 
     protected abstract TextureAtlasSprite getIcon(RESOURCE resource);
 
-    protected void renderBarGhostContents(GuiGraphicsExtractor guiGraphics, TextureAtlasSprite icon, int tint) {
+    protected void renderBarGhostContents(GuiGraphicsExtractor guiGraphics, TextureAtlasSprite icon, int tint, int amount, int maxMb) {
         GuiUtils.fill(guiGraphics, relativeX + 1, relativeY + 1, width - 2, height - 2, 0x30FF0000);
-        renderBarContentsDirect(guiGraphics, icon, tint, 0.5);
+        double scale = maxMb == 0 ? 0 : amount / (double) maxMb;
+        //Calculate a scaled level between 0.25 and 0.75 of the bar being filled
+        renderBarContentsDirect(guiGraphics, icon, tint, 0.25 + scale / 2);
         GuiUtils.fill(guiGraphics, relativeX + 1, relativeY + 1, width - 2, height - 2, 0x30FFFFFF);
     }
 

@@ -334,12 +334,12 @@ public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, IGh
     }
 
     @Override
-    public void setGhostData(SlotDisplay contents, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
+    public void setGhostData(SlotDisplay contents, Iterable<SlotDisplay> recipeContext, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
         List<ItemStack> entries = contents.resolveForStacks(context);
         if (entries.isEmpty()) {
             ghostRecipeData = null;
         } else {
-            ghostRecipeData = new GhostSlot<>(entries, isResultSlot, slotSelectTime);
+            ghostRecipeData = new GhostSlot<>(entries, isResultSlot, slotSelectTime, 0);
         }
     }
 

@@ -146,9 +146,9 @@ public class GuiMergedTankGauge extends GuiGauge<@Nullable Void> implements IRec
     }
 
     @Override
-    public void setGhostData(SlotDisplay contents, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
-        fluidGauge.setGhostData(contents, context, slotSelectTime, isResultSlot);
-        chemicalGauge.setGhostData(contents, context, slotSelectTime, isResultSlot);
+    public void setGhostData(SlotDisplay contents, Iterable<SlotDisplay> recipeContext, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
+        fluidGauge.setGhostData(contents, recipeContext, context, slotSelectTime, isResultSlot);
+        chemicalGauge.setGhostData(contents, recipeContext, context, slotSelectTime, isResultSlot);
     }
 
     @Override

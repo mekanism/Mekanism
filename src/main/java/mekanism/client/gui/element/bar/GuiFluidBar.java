@@ -69,7 +69,8 @@ public class GuiFluidBar extends GuiTankBar<FluidResource, IFluidTank> {
             super.renderBarContents(guiGraphics, mouseX, mouseY, partialTicks, handlerLevel);
         } else {
             FluidStack current = ghostRecipeData.getCurrent();
-            renderBarGhostContents(guiGraphics, MekanismRenderer.getFluidTexture(current, FluidTextureType.STILL), MekanismRenderer.getColorARGB(current));
+            renderBarGhostContents(guiGraphics, MekanismRenderer.getFluidTexture(current, FluidTextureType.STILL), MekanismRenderer.getColorARGB(current),
+                  ghostRecipeData.getCurrent().amount(), ghostRecipeData.extraData());
         }
     }
 
@@ -84,12 +85,12 @@ public class GuiFluidBar extends GuiTankBar<FluidResource, IFluidTank> {
     }
 
     @Override
-    public void setGhostData(SlotDisplay contents, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
+    public void setGhostData(SlotDisplay contents, Iterable<SlotDisplay> recipeContext, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
         List<FluidStack> entries = contents.resolve(context, FluidStackContentsFactory.INSTANCE).toList();
         if (entries.isEmpty()) {
             ghostRecipeData = null;
         } else {
-            ghostRecipeData = new GhostSlot<>(entries, isResultSlot, slotSelectTime);
+            ghostRecipeData = GhostSlot.createWithMaxTank(entries, recipeContext, context, slotSelectTime, isResultSlot);
         }
     }
 

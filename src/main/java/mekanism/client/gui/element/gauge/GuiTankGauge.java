@@ -123,23 +123,21 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
         if (dummy) {
             return height - 2;
         }
-        double scale;
-        if (isRenderingGhost()) {
-            scale = 0.5;
-        } else {
-            CONTAINER container = getContainer();
-            if (container == null || container.isEmpty()) {
-                return 0;
-            }
-            long capacity = container.capacityAsLong(container.resource());
-            long stored = container.amountAsLong();
-            if (capacity == 0) {
-                return 0;
-            } else if (stored == Long.MAX_VALUE) {
-                return height - 2;
-            }
-            scale = stored / (double) capacity;
+        CONTAINER container = getContainer();
+        if (container == null || container.isEmpty()) {
+            return 0;
         }
+        long capacity = container.capacityAsLong(container.resource());
+        long stored = container.amountAsLong();
+        if (capacity == 0) {
+            return 0;
+        } else if (stored == Long.MAX_VALUE) {
+            return height - 2;
+        }
+        return getScaledLevel(stored / (double) capacity);
+    }
+
+    protected int getScaledLevel(double scale) {
         return Math.max(1, Ints.saturatedCast(Math.round(scale * (height - 2))));
     }
 

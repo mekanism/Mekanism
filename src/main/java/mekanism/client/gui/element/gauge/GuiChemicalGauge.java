@@ -59,6 +59,17 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTa
     }
 
     @Override
+    public int getScaledLevel() {
+        if (ghostRecipeData == null) {
+            return super.getScaledLevel();
+        }
+        int maxMb = ghostRecipeData.extraData();
+        double scale = maxMb == 0 ? 0 : ghostRecipeData.getCurrent().amount() / (double) maxMb;
+        //Calculate a scaled level between 0.25 and 0.75 of the bar being filled
+        return getScaledLevel(0.25 + scale / 2);
+    }
+
+    @Override
     protected List<Component> getContentsTooltips(ChemicalResource resource, long amount, TooltipContext context, @Nullable Player player, TooltipFlag tooltipFlag) {
         ChemicalStack stack;
         if (ghostRecipeData != null) {
@@ -97,12 +108,12 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTa
     }
 
     @Override
-    public void setGhostData(SlotDisplay contents, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
+    public void setGhostData(SlotDisplay contents, Iterable<SlotDisplay> recipeContext, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
         List<ChemicalStack> entries = contents.resolve(context, ChemicalStackContentsFactory.INSTANCE).toList();
         if (entries.isEmpty()) {
             ghostRecipeData = null;
         } else {
-            ghostRecipeData = new GhostSlot<>(entries, isResultSlot, slotSelectTime);
+            ghostRecipeData = GhostSlot.createWithMaxTank(entries, recipeContext, context, slotSelectTime, isResultSlot);
         }
     }
 

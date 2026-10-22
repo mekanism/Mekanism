@@ -1,5 +1,6 @@
 package mekanism.client.gui.recipe_book;
 
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -124,11 +125,12 @@ public class MekanismRecipeBookComponent<MENU extends MekanismContainer> extends
             return;
         }
         SlotSelectTime slotSelectTime = this.recipeBookPage.overlay.slotSelectTime;
+        Iterable<SlotDisplay> recipeContext = Iterables.concat(inputIngredients, outputDisplays);
         //TODO - 26.3: Figure out how to handle this for factories/the cache index
         int inputCount = ghostInputs.size();
         if (inputCount == inputIngredients.size()) {
             for (int i = 0; i < inputCount; i++) {
-                ghostInputs.get(i).setGhostData(inputIngredients.get(i), context, slotSelectTime, false);
+                ghostInputs.get(i).setGhostData(inputIngredients.get(i), recipeContext, context, slotSelectTime, false);
             }
         }
         int outputCount = ghostOutputs.size();
@@ -140,7 +142,7 @@ public class MekanismRecipeBookComponent<MENU extends MekanismContainer> extends
                 //Note: We allow the resolveForStacks to handle figuring out what elements are valid for items vs a different type of container
                 output = recipe.result();
             }
-            ghostOutputs.get(i).setGhostData(output, context, slotSelectTime, true);
+            ghostOutputs.get(i).setGhostData(output, recipeContext, context, slotSelectTime, true);
         }
     }
 

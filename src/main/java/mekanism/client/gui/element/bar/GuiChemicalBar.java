@@ -68,7 +68,8 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalResource, IChemicalTank> 
             super.renderBarContents(guiGraphics, mouseX, mouseY, partialTicks, handlerLevel);
         } else {
             ChemicalStack current = ghostRecipeData.getCurrent();
-            renderBarGhostContents(guiGraphics, MekanismRenderer.getChemicalTexture(current), MekanismRenderer.color(current));
+            renderBarGhostContents(guiGraphics, MekanismRenderer.getChemicalTexture(current), MekanismRenderer.color(current),
+                  ghostRecipeData.getCurrent().amount(), ghostRecipeData.extraData());
         }
     }
 
@@ -83,12 +84,12 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalResource, IChemicalTank> 
     }
 
     @Override
-    public void setGhostData(SlotDisplay contents, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
+    public void setGhostData(SlotDisplay contents, Iterable<SlotDisplay> recipeContext, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
         List<ChemicalStack> entries = contents.resolve(context, ChemicalStackContentsFactory.INSTANCE).toList();
         if (entries.isEmpty()) {
             ghostRecipeData = null;
         } else {
-            ghostRecipeData = new GhostSlot<>(entries, isResultSlot, slotSelectTime);
+            ghostRecipeData = GhostSlot.createWithMaxTank(entries, recipeContext, context, slotSelectTime, isResultSlot);
         }
     }
 
