@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import mekanism.api.recipes.display.recipe.MekanismRecipeDisplay;
@@ -33,8 +34,10 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.ExtendedRecipeBookCategory;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.FurnaceRecipeDisplay;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.client.RecipeBookManager;
 
@@ -92,7 +95,35 @@ public class MekanismRecipeBookComponent<MENU extends MekanismContainer> extends
 
     @Override
     protected void selectMatchingRecipes(RecipeCollection collection, StackedItemContents stackedContents) {
-        collection.selectRecipes(stackedContents, bookCategories.displayMatches());
+        selectMatchingRecipes(collection, stackedContents, bookCategories.displayMatches());
+    }
+
+    protected final void selectMatchingRecipes(RecipeCollection collection, StackedItemContents stackedContents, Predicate<RecipeDisplay> selector) {
+        //Instead of calling RecipeCollection#selectRecipes, perform the logic manually so that we can properly have
+        // craftable vs not apply when there are only fluids/chemicals required
+        for (RecipeDisplayEntry entry : collection.getRecipes()) {
+            boolean isSelected = selector.test(entry.display());
+            if (isSelected) {
+                collection.selected.add(entry.id());
+            } else {
+                collection.selected.remove(entry.id());
+            }
+            if (isSelected && canCraft(entry, stackedContents)) {
+                collection.craftable.add(entry.id());
+            } else {
+                collection.craftable.remove(entry.id());
+            }
+        }
+    }
+
+    private boolean canCraft(RecipeDisplayEntry entry, StackedItemContents stackedContents) {
+        if (entry.craftingRequirements().isPresent()) {
+            List<Ingredient> craftingRequirements = entry.craftingRequirements().get();
+            //If we have no ingredients that means we are all chemicals or fluids, so mark it as not being craftable
+            // as we don't support transferring chemicals or fluids currently
+            return !craftingRequirements.isEmpty() && stackedContents.canCraft(craftingRequirements, null);
+        }
+        return false;
     }
 
     @Override

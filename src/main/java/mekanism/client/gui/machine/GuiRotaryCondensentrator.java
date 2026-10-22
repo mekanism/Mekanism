@@ -132,9 +132,9 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
             protected void selectMatchingRecipes(RecipeCollection collection, StackedItemContents stackedContents) {
                 //Only match the recipes that match for the given mode
                 if (tile.getMode()) {
-                    collection.selectRecipes(stackedContents, display -> display instanceof DecondensentratingRecipeDisplay);
+                    selectMatchingRecipes(collection, stackedContents, display -> display instanceof DecondensentratingRecipeDisplay);
                 } else {
-                    collection.selectRecipes(stackedContents, display -> display instanceof CondensentratingRecipeDisplay);
+                    selectMatchingRecipes(collection, stackedContents, display -> display instanceof CondensentratingRecipeDisplay);
                 }
             }
         };
