@@ -459,6 +459,10 @@ public abstract class MekanismContainer extends RecipeBookMenu implements ISecur
                     slotsToClear.add(slot);
                 }
             }
+            if (inputGridSlots.isEmpty() && slotsToClear.isEmpty()) {
+                //No slots are present, assume it is chemical and fluid only and just let it try to place the ghost recipe
+                return PostPlaceAction.PLACE_GHOST_RECIPE;
+            }
             return ServerPlaceRecipe.placeRecipe(craftingMenuAccess, inputGridSlots.size(), 1, inputGridSlots, slotsToClear, inventory, typedRecipe, useMaxItems,
                   allowDroppingItemsToClear);
         }

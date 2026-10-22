@@ -38,8 +38,10 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.FurnaceRecipeDisplay;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
+import net.minecraft.world.item.crafting.display.RecipeDisplayId;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.client.RecipeBookManager;
+import org.jspecify.annotations.Nullable;
 
 //TODO - 26.4: Double check nothing changed that might have broken this, the overlay, or the ghost slots
 public class MekanismRecipeBookComponent<MENU extends MekanismContainer> extends RecipeBookComponent<MENU> {
@@ -131,14 +133,18 @@ public class MekanismRecipeBookComponent<MENU extends MekanismContainer> extends
         return bookCategories.filterName();
     }
 
-    @Override
-    public void fillGhostRecipe(RecipeDisplay recipe) {
+    private void clearGhostValues() {
         for (IGhostRecipeComponent ghostInput : ghostInputs) {
             ghostInput.clearGhostData();
         }
         for (IGhostRecipeComponent ghostOutput : ghostOutputs) {
             ghostOutput.clearGhostData();
         }
+    }
+
+    @Override
+    public void fillGhostRecipe(RecipeDisplay recipe) {
+        clearGhostValues();
         super.fillGhostRecipe(recipe);
     }
 
@@ -175,6 +181,23 @@ public class MekanismRecipeBookComponent<MENU extends MekanismContainer> extends
             }
             ghostOutputs.get(i).setGhostData(output, recipeContext, context, slotSelectTime, true);
         }
+    }
+
+    @Override
+    public void slotClicked(@Nullable Slot slot) {
+        if (slot != null && this.isCraftingSlot(slot)) {
+            clearGhostValues();
+            super.slotClicked(slot);
+        }
+    }
+
+    @Override
+    protected boolean tryPlaceRecipe(RecipeCollection recipeCollection, RecipeDisplayId recipe, boolean useMaxItems) {
+        if (super.tryPlaceRecipe(recipeCollection, recipe, useMaxItems)) {
+            clearGhostValues();
+            return true;
+        }
+        return false;
     }
 
     public void init(Minecraft minecraft) {
