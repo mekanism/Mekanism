@@ -10,7 +10,6 @@ import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
@@ -72,7 +71,10 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
 
     public void setMaxEnergy(long maxEnergy) {
         this.currentMaxEnergy = maxEnergy;
-        ContainerType.ENERGY.clampContents(this, null);
+        //Can't use ContainerType.ENERGY.clampContents, as getCapacityAsLong is never lower than the stored amount
+        if (getAmountAsLong() > maxEnergy) {
+            setEnergy(maxEnergy, null);
+        }
     }
 
     public int getEnergyPerTick() {
@@ -88,6 +90,11 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     }
 
     public void updateMaxEnergy(HolderGetter<Upgrade> upgrades) {
+        setMaxEnergy(calculateMaxEnergy(upgrades));
+    }
+
+    /// Calculates the max energy from the base values, never from the current capacity, so repeated calls cannot compound.
+    protected long calculateMaxEnergy(HolderGetter<Upgrade> upgrades) {
         Reference<Upgrade> speedUpgrade = upgrades.get(UpgradeIds.SPEED).orElse(null);
         Reference<Upgrade> energyUpgrade = upgrades.get(UpgradeIds.ENERGY).orElse(null);
         if (speedUpgrade != null && tile.supportsUpgrade(speedUpgrade)) {
@@ -99,10 +106,11 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
             if (tile instanceof TileEntityFactory<?> factory) {
                 bufferMultipler *= factory.tier.processes;
             }
-            setMaxEnergy(getEnergyPerTick() * bufferMultipler);
+            return getEnergyPerTick() * bufferMultipler;
         } else if (energyUpgrade != null && tile.supportsUpgrade(energyUpgrade)) {
-            setMaxEnergy(UpgradeUtils.getMaxEnergy(tile, getBaseMaxEnergy(), energyUpgrade));
+            return UpgradeUtils.getMaxEnergy(tile, getBaseMaxEnergy(), energyUpgrade);
         }
+        return getBaseMaxEnergy();
     }
 
     public void updateEnergyPerTick(HolderGetter<Upgrade> upgrades) {
