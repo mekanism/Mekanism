@@ -229,6 +229,16 @@ public class MekanismRecipeBookComponent<MENU extends MekanismContainer> extends
         return false;
     }
 
+    public boolean isMouseOverTab(double mouseX, double mouseY) {
+        for (RecipeBookTabButton tabButton : this.tabButtons) {
+            //Note: is mouse over checks that it is visible
+            if (tabButton.isMouseOver(mouseX, mouseY)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void init(Minecraft minecraft) {
         init(0, 0, minecraft, false);
         this.ghostInputs.clear();

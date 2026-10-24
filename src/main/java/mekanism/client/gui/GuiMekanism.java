@@ -362,10 +362,18 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         return handleNavigationWithWindows(navigation, ContainerEventHandler::handleArrowNavigation);
     }
 
+    @Nullable
+    protected GuiElement findElementOver(double mouseX, double mouseY) {
+        GuiElement window = getWindowHovering(mouseX, mouseY);
+        if (window == null) {
+            return (GuiElement) GuiUtils.findChild(children(), mouseX, mouseY, (child, x, y) -> child instanceof GuiElement && child.isMouseOver(x, y));
+        }
+        return window;
+    }
+
     @Override
     protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top) {
-        //TODO - 26.3: If clicking over a gui tab I think this probably returns true when it likely should return false
-        return getWindowHovering(mouseX, mouseY) == null && super.hasClickedOutside(mouseX, mouseY, left, top);
+        return super.hasClickedOutside(mouseX, mouseY, left, top) && findElementOver(mouseX, mouseY) == null;
     }
 
     @Override
@@ -447,10 +455,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     @Override
     protected void extractTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.extractTooltip(guiGraphics, mouseX, mouseY);
-        GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
-        if (tooltipElement == null) {
-            tooltipElement = (GuiElement) GuiUtils.findChild(children(), mouseX, mouseY, (child, x, y) -> child instanceof GuiElement && child.isMouseOver(x, y));
-        }
+        GuiElement tooltipElement = findElementOver(mouseX, mouseY);
         if (tooltipElement != null) {
             tooltipElement.renderToolTip(guiGraphics, mouseX, mouseY);
         }

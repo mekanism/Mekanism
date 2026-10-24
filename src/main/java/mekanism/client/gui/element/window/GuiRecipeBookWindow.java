@@ -125,12 +125,10 @@ public class GuiRecipeBookWindow extends GuiWindow {
         return this.recipeBook.mouseDragged(event, dx, dy) || super.mouseDragged(event, dx, dy);
     }
 
-    //TODO - 26.3: Re-evaluate this
-    /*@Override
-    protected boolean hasClickedOutside(double mx, double my, int xo, int yo) {
-        boolean clickedOutside = mx < xo || my < yo || mx >= xo + this.imageWidth || my >= yo + this.imageHeight;
-        return this.recipeBook.hasClickedOutside(mx, my, this.leftPos, this.topPos, this.imageWidth, this.imageHeight) && clickedOutside;
-    }*/
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return super.isMouseOver(mouseX, mouseY) || this.recipeBook.isMouseOverTab(mouseX, mouseY);
+    }
 
     @Override
     public void tick() {
