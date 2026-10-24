@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_netherrack": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:netherracks"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:metallurgic_infusing/netherrack_to_crimson_nylium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_netherrack"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:metallurgic_infusing/netherrack_to_crimson_nylium"
+    ]
+  }
+}

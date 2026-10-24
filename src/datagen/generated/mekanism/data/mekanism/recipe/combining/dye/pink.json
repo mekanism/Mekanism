@@ -1,9 +1,11 @@
 {
   "type": "mekanism:combining",
+  "category": "decorative",
   "extra_input": {
     "count": 1,
     "ingredient": "#c:dyes/white"
   },
+  "group": "pink_dye",
   "main_input": {
     "count": 1,
     "ingredient": "#c:dyes/red"

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fluorite": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:gems/fluorite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:processing/uranium/hydrofluoric_acid"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fluorite"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/uranium/hydrofluoric_acid"
+    ]
+  }
+}

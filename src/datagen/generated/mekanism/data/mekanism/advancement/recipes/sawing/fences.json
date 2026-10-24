@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fence": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:fences/wooden"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/fences"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fence"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/fences"
+    ]
+  }
+}

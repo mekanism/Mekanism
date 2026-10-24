@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/door/warped"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_warped_door": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:warped_door"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_warped_door"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/door/warped"
+    ]
+  }
+}

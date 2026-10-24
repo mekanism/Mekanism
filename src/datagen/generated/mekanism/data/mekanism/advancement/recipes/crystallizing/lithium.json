@@ -1,0 +1,28 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crystallizing/lithium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "in_lithium": {
+      "conditions": {
+        "blocks": "mekanism:lithium"
+      },
+      "trigger": "minecraft:enter_block"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "in_lithium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crystallizing/lithium"
+    ]
+  }
+}

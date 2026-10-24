@@ -4,6 +4,7 @@
     "amount": 64,
     "ingredient": "mekanism:black"
   },
+  "group": "mekanismadditions:glow_plastic_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

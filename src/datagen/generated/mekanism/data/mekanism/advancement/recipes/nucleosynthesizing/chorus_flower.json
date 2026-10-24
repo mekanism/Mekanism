@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_flower": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:flowers/small"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:nucleosynthesizing/chorus_flower"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_flower"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:nucleosynthesizing/chorus_flower"
+    ]
+  }
+}

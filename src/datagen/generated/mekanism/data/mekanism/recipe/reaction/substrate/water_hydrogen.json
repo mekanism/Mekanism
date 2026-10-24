@@ -9,6 +9,7 @@
     "amount": 10,
     "ingredient": "#minecraft:water"
   },
+  "group": "mekanism:substrate",
   "item_input": {
     "count": 2,
     "ingredient": "#c:fuels/bio"

@@ -6,6 +6,7 @@
     }
   ],
   "type": "mekanism:crushing",
+  "category": "processing",
   "input": {
     "count": 1,
     "ingredient": "#c:gems/certus_quartz"

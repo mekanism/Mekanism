@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_bio_fuel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:fuels/block/bio"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:oxidizing/bio/from_bio_fuel_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_bio_fuel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:oxidizing/bio/from_bio_fuel_block"
+    ]
+  }
+}

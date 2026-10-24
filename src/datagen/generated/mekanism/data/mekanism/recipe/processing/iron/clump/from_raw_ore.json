@@ -4,6 +4,7 @@
     "amount": 1,
     "ingredient": "mekanism:oxygen"
   },
+  "group": "mekanism:clump_iron",
   "item_input": {
     "count": 1,
     "ingredient": "#c:raw_materials/iron"

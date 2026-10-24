@@ -6,6 +6,7 @@
     }
   ],
   "type": "mekanism:crushing",
+  "category": "building",
   "input": {
     "count": 1,
     "ingredient": "ae2:quartz_stairs"

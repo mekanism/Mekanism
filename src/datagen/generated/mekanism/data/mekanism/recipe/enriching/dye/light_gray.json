@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "decorative",
+  "group": "light_gray_dye",
   "input": {
     "count": 1,
     "ingredient": [

@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "building",
+  "group": "mekanism:polished_diorite_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:diorite"

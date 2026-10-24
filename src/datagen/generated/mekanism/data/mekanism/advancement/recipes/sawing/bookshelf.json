@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_bookshelf": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:bookshelves"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/bookshelf"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_bookshelf"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/bookshelf"
+    ]
+  }
+}

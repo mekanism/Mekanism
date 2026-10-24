@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "building",
+  "group": "mekanism:sulfur_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:polished_sulfur_wall"

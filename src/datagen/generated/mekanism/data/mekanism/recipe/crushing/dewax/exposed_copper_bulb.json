@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "building",
+  "group": "exposed",
   "input": {
     "count": 1,
     "ingredient": "minecraft:waxed_exposed_copper_bulb"

@@ -8,8 +8,10 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 
 class EvaporatingRecipeProvider extends BaseSubRecipeProvider {
@@ -25,11 +27,14 @@ class EvaporatingRecipeProvider extends BaseSubRecipeProvider {
         FluidToFluidRecipeBuilder.evaporating(
               IngredientCreatorAccess.fluid().from(fluids, FluidTags.WATER, 10),
               MekanismFluids.BRINE.asTemplate(1)
-        ).save(consumer, Mekanism.rl(basePath + "brine"));
+        ).unlockedBy("in_water", RecipeProvider.insideOf(Blocks.WATER))
+              .save(consumer, Mekanism.rl(basePath + "brine"));
         //Lithium
         FluidToFluidRecipeBuilder.evaporating(
               IngredientCreatorAccess.fluid().from(fluids, MekanismTags.Fluids.BRINE, 10),
               MekanismFluids.LITHIUM.asTemplate(1)
-        ).save(consumer, Mekanism.rl(basePath + "lithium"));
+        ).unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
+              .unlockedBy("in_brine", RecipeProvider.insideOf(MekanismFluids.BRINE.getBlock()))
+              .save(consumer, Mekanism.rl(basePath + "lithium"));
     }
 }

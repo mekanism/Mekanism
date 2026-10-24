@@ -70,7 +70,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR),
                     TripleLine.of(TNT_CHAR, TNT_CHAR, TNT_CHAR),
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR))
-              ).define(OBSIDIAN_CHAR, this.items, Tags.Items.OBSIDIANS_NORMAL)
+              ).define(OBSIDIAN_CHAR, this.items, Tags.BlockItems.OBSIDIANS_NORMAL)
               .define(TNT_CHAR, this.items, BlockItemIds.TNT)
               .category(RecipeCategory.REDSTONE)
               .unlockedBy("has_gunpowder", has(ItemIds.GUNPOWDER))
@@ -120,13 +120,15 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                   IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE),
                   false,
                   new ItemStackTemplate(balloon)
-            ).save(output, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
+            ).group(MekanismAdditions.rl("balloon_painting"))
+                  .unlockedBy("has_needed_dye", has(dye == null ? AdditionsTags.Items.BALLOONS : dye.getTag()))
+                  .save(output, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
         });
     }
 
     private void registerGlowPanels() {
         final String basePath = "glow_panel/";
-        HolderSet<Item> glowPanelTag = this.items.getOrThrow(AdditionsTags.BlockItems.GLOW_PANELS.item());
+        HolderSet.Named<Item> glowPanelTag = this.items.getOrThrow(AdditionsTags.BlockItems.GLOW_PANELS.item());
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.GLOW_PANELS, (color, block) -> {
             Holder<Item> glowPanel = block.getItemHolder();
             DyeColor dye = color.getDyeColor();
@@ -134,7 +136,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                 ExtendedShapedRecipeBuilder.shaped(glowPanel, 2)
                       .pattern(GLOW_PANEL)
                       .define(PLASTIC_SHEET_CHAR, MekanismItems.HDPE_SHEET)
-                      .define(GLASS_PANES_CHAR, this.items, Tags.Items.GLASS_PANES)
+                      .define(GLASS_PANES_CHAR, this.items, Tags.BlockItems.GLASS_PANES)
                       .define(Pattern.GLOWSTONE, this.items, Tags.Items.DUSTS_GLOWSTONE)
                       .define(Pattern.DYE, this.items, dye.getTag())
                       .category(RecipeCategory.BUILDING_BLOCKS)

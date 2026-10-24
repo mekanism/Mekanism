@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_acacia_shelf": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:acacia_shelf"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/shelf/acacia"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_acacia_shelf"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/shelf/acacia"
+    ]
+  }
+}

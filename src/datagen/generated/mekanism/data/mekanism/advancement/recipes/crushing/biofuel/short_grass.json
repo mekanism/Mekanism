@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_short_dry_grass": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:short_dry_grass"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_short_grass": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:short_grass"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/biofuel/short_grass"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_short_dry_grass",
+      "has_short_grass"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/biofuel/short_grass"
+    ]
+  }
+}

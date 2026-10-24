@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_stone_stairs": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:stone_stairs"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/stone/stairs_to_cobblestone_stairs"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_stone_stairs"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/stone/stairs_to_cobblestone_stairs"
+    ]
+  }
+}

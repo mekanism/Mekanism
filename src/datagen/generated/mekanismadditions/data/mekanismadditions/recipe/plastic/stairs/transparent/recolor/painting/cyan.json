@@ -4,6 +4,7 @@
     "amount": 32,
     "ingredient": "mekanism:cyan"
   },
+  "group": "mekanismadditions:transparent_plastic_stairs_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

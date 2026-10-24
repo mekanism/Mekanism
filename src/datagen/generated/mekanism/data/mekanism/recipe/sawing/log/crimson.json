@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:log",
   "input": {
     "count": 1,
     "ingredient": "#minecraft:crimson_stems"

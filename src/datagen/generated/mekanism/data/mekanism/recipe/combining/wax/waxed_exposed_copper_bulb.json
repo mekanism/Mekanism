@@ -1,9 +1,11 @@
 {
   "type": "mekanism:combining",
+  "category": "building",
   "extra_input": {
     "count": 1,
     "ingredient": "minecraft:honeycomb"
   },
+  "group": "wax_exposed",
   "main_input": {
     "count": 1,
     "ingredient": "minecraft:exposed_copper_bulb"

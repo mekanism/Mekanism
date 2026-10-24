@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cushion": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#minecraft:cushions"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/string/from_cushions"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_cushion"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/string/from_cushions"
+    ]
+  }
+}

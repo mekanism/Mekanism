@@ -4,6 +4,7 @@
     "amount": 40,
     "ingredient": "#mekanism:bio"
   },
+  "group": "mekanism:slime",
   "item_input": {
     "count": 1,
     "ingredient": "minecraft:clay"

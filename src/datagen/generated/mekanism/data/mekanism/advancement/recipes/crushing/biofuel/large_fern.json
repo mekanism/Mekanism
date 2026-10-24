@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_large_fern": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:large_fern"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/biofuel/large_fern"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_large_fern"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/biofuel/large_fern"
+    ]
+  }
+}

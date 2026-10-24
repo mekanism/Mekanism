@@ -22,6 +22,8 @@ import org.jspecify.annotations.Nullable;
 ///
 /// @since 10.8.0
 public enum CombiningBookCategory implements MekanismBookCategory {
+    BUILDING("building", "combiner", null),
+    DECORATIVE("decorative", "combiner", null),
     MISC("misc", "combiner", null);
 
     public static final Codec<CombiningBookCategory> CODEC = StringRepresentable.fromEnum(CombiningBookCategory::values);

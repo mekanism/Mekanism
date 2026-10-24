@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_skull": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:skeleton_skull"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:nucleosynthesizing/wither_skeleton_skull"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_skull"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:nucleosynthesizing/wither_skeleton_skull"
+    ]
+  }
+}

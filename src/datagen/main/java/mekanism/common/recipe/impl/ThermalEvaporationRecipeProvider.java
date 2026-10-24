@@ -45,7 +45,7 @@ class ThermalEvaporationRecipeProvider extends BaseSubRecipeProvider {
               ).define(Pattern.CONSTANT, MekanismBlocks.THERMAL_EVAPORATION_BLOCK)
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ADVANCED)
               .define(Pattern.BUCKET, this.items, Tags.Items.BUCKETS_EMPTY)
-              .define(MekanismRecipeProvider.GLASS_CHAR, this.items, Tags.Items.GLASS_PANES)
+              .define(MekanismRecipeProvider.GLASS_CHAR, this.items, Tags.BlockItems.GLASS_PANES)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_casing", has(MekanismBlocks.THERMAL_EVAPORATION_BLOCK))
               .save(consumer, Mekanism.rl(basePath + "controller"));

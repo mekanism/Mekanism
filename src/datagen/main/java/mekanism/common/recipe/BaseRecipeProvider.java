@@ -23,6 +23,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -110,6 +111,10 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
 
     protected Criterion<TriggerInstance> has(Holder<? extends ItemLike> item) {
         return has(item.value());
+    }
+
+    protected Criterion<TriggerInstance> has(BlockItemTagId tag) {
+        return has(tag.item());
     }
 
     protected Criterion<TriggerInstance> has(BlockItemId item) {

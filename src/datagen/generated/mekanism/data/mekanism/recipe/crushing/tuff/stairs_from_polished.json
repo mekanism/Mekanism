@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "building",
+  "group": "mekanism:tuff_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:polished_tuff_stairs"

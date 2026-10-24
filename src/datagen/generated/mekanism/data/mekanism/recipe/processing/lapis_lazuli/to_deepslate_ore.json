@@ -1,9 +1,11 @@
 {
   "type": "mekanism:combining",
+  "category": "building",
   "extra_input": {
     "count": 1,
     "ingredient": "#c:cobblestones/deepslate"
   },
+  "group": "lapis_ore",
   "main_input": {
     "count": 27,
     "ingredient": "#c:dusts/lapis"

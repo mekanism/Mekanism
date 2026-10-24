@@ -1,5 +1,6 @@
 {
   "type": "mekanism:oxidizing",
+  "group": "mekanism:fungi",
   "input": {
     "count": 1,
     "ingredient": {
@@ -15,8 +16,8 @@
           "type": "neoforge:or",
           "values": [
             [
-              "minecraft:warped_fungus",
-              "minecraft:crimson_fungus"
+              "minecraft:crimson_fungus",
+              "minecraft:warped_fungus"
             ]
           ]
         }

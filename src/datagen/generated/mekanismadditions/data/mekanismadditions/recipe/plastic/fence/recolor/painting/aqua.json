@@ -4,6 +4,7 @@
     "amount": 64,
     "ingredient": "mekanism:aqua"
   },
+  "group": "mekanismadditions:plastic_fences_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

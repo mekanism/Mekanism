@@ -1,9 +1,11 @@
 {
   "type": "mekanism:combining",
+  "category": "building",
   "extra_input": {
     "count": 1,
     "ingredient": "minecraft:honeycomb"
   },
+  "group": "wax_unaffected",
   "main_input": {
     "count": 1,
     "ingredient": "minecraft:cut_copper_stairs"

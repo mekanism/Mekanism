@@ -1,5 +1,6 @@
 {
   "type": "mekanism:oxidizing",
+  "group": "mekanism:carbon",
   "input": {
     "count": 1,
     "ingredient": "#c:storage_blocks/coal"

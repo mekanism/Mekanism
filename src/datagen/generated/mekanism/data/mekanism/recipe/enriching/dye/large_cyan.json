@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "decorative",
+  "group": "cyan_dye",
   "input": {
     "count": 1,
     "ingredient": "minecraft:pitcher_plant"

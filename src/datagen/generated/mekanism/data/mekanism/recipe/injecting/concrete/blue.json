@@ -1,9 +1,11 @@
 {
   "type": "mekanism:injecting",
+  "category": "building",
   "chemical_input": {
     "amount": 1,
     "ingredient": "#mekanism:water_vapor"
   },
+  "group": "mekanism:concrete",
   "item_input": {
     "count": 1,
     "ingredient": "minecraft:blue_concrete_powder"

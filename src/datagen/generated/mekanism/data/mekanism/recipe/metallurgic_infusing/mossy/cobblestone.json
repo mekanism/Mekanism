@@ -1,9 +1,11 @@
 {
   "type": "mekanism:metallurgic_infusing",
+  "category": "building",
   "chemical_input": {
     "amount": 10,
     "ingredient": "#mekanism:bio"
   },
+  "group": "mekanism:mossy_cobble_addition",
   "item_input": {
     "count": 1,
     "ingredient": "#c:cobblestones/normal"

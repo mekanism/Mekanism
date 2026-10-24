@@ -4,6 +4,7 @@
     "amount": 64,
     "ingredient": "mekanism:lime"
   },
+  "group": "mekanismadditions:plastic_road_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

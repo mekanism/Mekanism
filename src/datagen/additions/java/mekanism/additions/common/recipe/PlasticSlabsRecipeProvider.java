@@ -41,7 +41,7 @@ class PlasticSlabsRecipeProvider extends BaseSubRecipeProvider {
 
     private void registerPlasticSlabs(RecipeOutput consumer, EnumColorCollection<? extends BlockRegistryObject<?, ?>> blocks,
           EnumColorCollection<? extends BlockRegistryObject<?, ?>> plasticMap, TagKey<Item> blockType, boolean transparent, String basePath, String groupName) {
-        HolderSet<Item> typeTag = this.items.getOrThrow(blockType);
+        HolderSet.Named<Item> typeTag = this.items.getOrThrow(blockType);
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, blocks, (color, block) -> {
             Holder<Item> slab = block.getItemHolder();
             Holder<Item> plastic = plasticMap.pick(color).getItemHolder();

@@ -1,9 +1,11 @@
 {
   "type": "mekanism:combining",
+  "category": "building",
   "extra_input": {
     "count": 1,
     "ingredient": "minecraft:honeycomb"
   },
+  "group": "wax_weathered",
   "main_input": {
     "count": 1,
     "ingredient": "minecraft:weathered_copper_golem_statue"

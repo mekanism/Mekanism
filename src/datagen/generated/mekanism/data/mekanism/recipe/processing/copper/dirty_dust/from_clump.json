@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "processing",
+  "group": "mekanism:dirty_dust_copper",
   "input": {
     "count": 1,
     "ingredient": "#mekanism:clumps/copper"

@@ -1,9 +1,11 @@
 {
   "type": "mekanism:dissolution",
+  "category": "efficiency",
   "chemical_input": {
     "amount": 1,
     "ingredient": "mekanism:sulfuric_acid"
   },
+  "group": "mekanism:dirty_uranium",
   "item_input": {
     "count": 3,
     "ingredient": "#c:raw_materials/uranium"

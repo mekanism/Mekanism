@@ -4,6 +4,7 @@
     "amount": 32,
     "ingredient": "mekanism:cyan"
   },
+  "group": "mekanism:glass_pane_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

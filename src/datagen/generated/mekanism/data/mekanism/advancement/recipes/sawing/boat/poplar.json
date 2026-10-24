@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_poplar_boat": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:poplar_boat"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/boat/poplar"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_poplar_boat"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/boat/poplar"
+    ]
+  }
+}

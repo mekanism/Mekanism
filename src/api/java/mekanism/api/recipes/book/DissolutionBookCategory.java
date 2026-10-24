@@ -22,6 +22,7 @@ import org.jspecify.annotations.Nullable;
 ///
 /// @since 10.8.0
 public enum DissolutionBookCategory implements MekanismBookCategory {
+    EFFICIENCY("efficiency", "chemical_dissolution_chamber", null),
     MISC("misc", "chemical_dissolution_chamber", null);
 
     public static final Codec<DissolutionBookCategory> CODEC = StringRepresentable.fromEnum(DissolutionBookCategory::values);

@@ -5,6 +5,8 @@ import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
+import mekanism.api.recipes.book.PigmentExtractingBookCategory;
+import mekanism.api.recipes.book.PigmentExtractingBookCategory.PigmentExtractingBookInfo;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.EnumColorCollection;
@@ -12,7 +14,9 @@ import mekanism.common.recipe.impl.BaseSubRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
@@ -57,9 +61,18 @@ class PigmentExtractingPlasticRecipeProvider extends BaseSubRecipeProvider {
 
     private void addExtractionRecipe(RecipeOutput consumer, EnumColor color, EnumColorCollection<? extends ItemLike> input, ResourceKey<Chemical> pigment,
           int rate, String basePath) {
-        ItemStackToChemicalRecipeBuilder.pigmentExtracting(
+        ItemStackToChemicalRecipeBuilder<PigmentExtractingBookCategory, PigmentExtractingBookInfo, ?> builder = ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(input.pick(color)),
               chemicalTemplate(pigment, rate)
-        ).save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+        );
+        DyeColor dyeColor = color.getDyeColor();
+        if (dyeColor == null) {
+            builder.group(color.getRegistryPrefix())
+                  .unlockedBy(input.asList().stream().map(item -> hasCriterion(item.asItem())));
+        } else {
+            builder.group(ItemIds.DYE.pick(dyeColor))
+                  .unlockedBy("has_dye", has(dyeColor.getTag()));
+        }
+        builder.save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
     }
 }

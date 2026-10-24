@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cracked_stone_bricks": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:cracked_stone_bricks"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:enriching/conversion/stone/cracked_bricks_to_bricks"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_cracked_stone_bricks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:enriching/conversion/stone/cracked_bricks_to_bricks"
+    ]
+  }
+}

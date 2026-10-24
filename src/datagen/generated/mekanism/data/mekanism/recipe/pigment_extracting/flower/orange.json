@@ -1,5 +1,6 @@
 {
   "type": "mekanism:pigment_extracting",
+  "group": "orange_dye",
   "input": {
     "count": 1,
     "ingredient": [

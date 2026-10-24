@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_composter": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:composter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/composter"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_composter"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/composter"
+    ]
+  }
+}

@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "building",
+  "group": "mekanism:cracked_stone_brick_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:stone_bricks"

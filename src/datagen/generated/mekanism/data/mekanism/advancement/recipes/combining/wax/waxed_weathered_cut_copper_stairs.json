@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:combining/wax/waxed_weathered_cut_copper_stairs"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wax": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:honeycomb"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_wax"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:combining/wax/waxed_weathered_cut_copper_stairs"
+    ]
+  }
+}

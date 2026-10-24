@@ -1,0 +1,98 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_crops/beetroot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:crops/beetroot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_crops/cactus": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:crops/cactus"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_crops/carrot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:crops/carrot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_crops/cocoa_bean": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:crops/cocoa_bean"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_crops/nether_wart": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:crops/nether_wart"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_crops/potato": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:crops/potato"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_crops/wheat": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:crops/wheat"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/biofuel/crops_tags"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_crops/carrot",
+      "has_crops/cactus",
+      "has_crops/potato",
+      "has_crops/wheat",
+      "has_crops/beetroot",
+      "has_crops/nether_wart",
+      "has_crops/cocoa_bean"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/biofuel/crops_tags"
+    ]
+  }
+}

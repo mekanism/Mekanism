@@ -4,6 +4,7 @@
     "amount": 32,
     "ingredient": "mekanism:green"
   },
+  "group": "mekanism:terracotta_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

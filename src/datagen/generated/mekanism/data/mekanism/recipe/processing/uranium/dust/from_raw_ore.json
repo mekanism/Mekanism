@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "efficiency",
+  "group": "mekanism:dust_uranium",
   "input": {
     "count": 3,
     "ingredient": "#c:raw_materials/uranium"

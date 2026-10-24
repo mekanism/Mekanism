@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "efficiency",
+  "group": "mekanism:dust_copper",
   "input": {
     "count": 1,
     "ingredient": "#c:ores/copper"

@@ -4,6 +4,7 @@
     "amount": 64,
     "ingredient": "mekanism:white"
   },
+  "group": "mekanism:glazed_terracotta_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

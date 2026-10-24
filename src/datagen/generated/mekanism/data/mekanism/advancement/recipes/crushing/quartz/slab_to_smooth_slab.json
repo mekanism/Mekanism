@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_quartz_slab": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:quartz_slab"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/quartz/slab_to_smooth_slab"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_quartz_slab"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/quartz/slab_to_smooth_slab"
+    ]
+  }
+}

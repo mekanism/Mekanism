@@ -4,6 +4,7 @@
     "amount": 32,
     "ingredient": "mekanism:green"
   },
+  "group": "mekanism:concrete_stairs_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_chiseled_polished_blackstone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:chiseled_polished_blackstone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/blackstone/chiseled_bricks_to_bricks"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_chiseled_polished_blackstone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/blackstone/chiseled_bricks_to_bricks"
+    ]
+  }
+}

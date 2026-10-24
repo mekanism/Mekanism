@@ -1,5 +1,6 @@
 {
   "type": "mekanism:pigment_extracting",
+  "group": "dark_red",
   "input": {
     "count": 1,
     "ingredient": "mekanismadditions:dark_red_plastic_glow_stairs"

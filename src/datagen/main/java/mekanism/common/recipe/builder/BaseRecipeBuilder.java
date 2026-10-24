@@ -41,11 +41,6 @@ public abstract class BaseRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Recipe.
         return RecipeBuilder.getDefaultRecipeId(result);
     }
 
-    @Override
-    protected boolean requireUnlockCriteria() {
-        return true;
-    }
-
     protected static Ingredient ingredient(HolderGetter<Item> lookup, ResourceKey<Item> id) {
         return ingredient(lookup.getOrThrow(id));
     }

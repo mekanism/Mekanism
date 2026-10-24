@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:shelf",
   "input": {
     "count": 1,
     "ingredient": "minecraft:warped_shelf"

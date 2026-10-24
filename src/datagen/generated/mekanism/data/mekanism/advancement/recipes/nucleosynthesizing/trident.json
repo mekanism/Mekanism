@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sword": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:diamond_sword"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:nucleosynthesizing/trident"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_sword"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:nucleosynthesizing/trident"
+    ]
+  }
+}

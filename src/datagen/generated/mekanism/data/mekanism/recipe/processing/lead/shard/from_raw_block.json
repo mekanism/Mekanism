@@ -1,9 +1,11 @@
 {
   "type": "mekanism:injecting",
+  "category": "efficiency",
   "chemical_input": {
     "amount": 2,
     "ingredient": "mekanism:hydrogen_chloride"
   },
+  "group": "mekanism:shard_lead",
   "item_input": {
     "count": 1,
     "ingredient": "#c:storage_blocks/raw_lead"

@@ -1,0 +1,28 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismgenerators:chemical_infusing/fusion_fuel"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "in_heavy_water": {
+      "conditions": {
+        "blocks": "mekanism:heavy_water"
+      },
+      "trigger": "minecraft:enter_block"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "in_heavy_water"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismgenerators:chemical_infusing/fusion_fuel"
+    ]
+  }
+}

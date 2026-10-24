@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_chiseled_deepslate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:chiseled_deepslate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/deepslate/from_chiseled"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_chiseled_deepslate"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/deepslate/from_chiseled"
+    ]
+  }
+}

@@ -22,6 +22,9 @@ import org.jspecify.annotations.Nullable;
 ///
 /// @since 10.8.0
 public enum CrushingBookCategory implements MekanismBookCategory {
+    BUILDING("building", "crusher", null),
+    //TODO - 26.3: Is this the name we want for it?
+    PROCESSING("processing", "crusher", null),
     MISC("misc", "dust_iron", null);
 
     public static final Codec<CrushingBookCategory> CODEC = StringRepresentable.fromEnum(CrushingBookCategory::values);

@@ -13,6 +13,7 @@ import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.advancements.BaseAdvancementProvider;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ClearConfigurationRecipe;
@@ -117,7 +118,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         return List.of(
               new BinRecipeProvider(this.items, this.fluids, this.chemicals),
               new ChemicalInfuserRecipeProvider(this.items, this.fluids, this.chemicals),
-              new ChemicalInjectorRecipeProvider(this.items, this.fluids, this.chemicals),
+              new ChemicalInjectorRecipeProvider(this.items, this.fluids, this.chemicals, this.output.lookup(Registries.BIOME)),
               new ChemicalTankRecipeProvider(this.items, this.fluids, this.chemicals),
               new CombinerRecipeProvider(this.items, this.fluids, this.chemicals),
               new ControlCircuitRecipeProvider(this.items, this.fluids, this.chemicals),
@@ -411,7 +412,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               //Mirror how vanilla does certain things by requiring a related item rather than one actually necessary to craft it
               .unlockedBy(hasCriterion(MekanismItems.ATOMIC_DISASSEMBLER))
               .unlockedBy("has_any_raw_ore", has(Tags.Items.RAW_MATERIALS))
-              .unlockedBy("has_any_ore", has(Tags.Items.ORES))
+              .unlockedBy("has_any_ore", has(Tags.BlockItems.ORES))
               .save(output);
         //Dosimeter
         ExtendedShapedRecipeBuilder.shaped(MekanismItems.DOSIMETER)
@@ -513,7 +514,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
                     TripleLine.of(GLASS_CHAR, Pattern.STEEL_CASING, GLASS_CHAR),
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
-              ).define(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
+              ).define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
               .define(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
@@ -546,7 +547,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .group(Mekanism.rl(FactoryType.ENRICHING.getSerializedName()))
               .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
               .unlockedBy("has_any_raw_ore", has(Tags.Items.RAW_MATERIALS))
-              .unlockedBy("has_any_ore", has(Tags.Items.ORES))
+              .unlockedBy("has_any_ore", has(Tags.BlockItems.ORES))
               .save(output);
         //Flamethrower
         MekDataShapedRecipeBuilder.shaped(MekanismItems.FLAMETHROWER)
@@ -581,7 +582,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, Pattern.PREVIOUS, Pattern.STEEL),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL))
-              ).define(Pattern.CONSTANT, this.items, Tags.Items.CHESTS_WOODEN)
+              ).define(Pattern.CONSTANT, this.items, Tags.BlockItems.CHESTS_WOODEN)
               .define(Pattern.PREVIOUS, this.items, BlockItemIds.CRAFTER)
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
@@ -623,7 +624,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .define(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
-              .define(Pattern.CONSTANT, this.items, Tags.Items.PLAYER_WORKSTATIONS_FURNACES)
+              .define(Pattern.CONSTANT, this.items, Tags.BlockItems.PLAYER_WORKSTATIONS_FURNACES)
               .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
               .unlockedBy(hasCriterion(MekanismBlocks.STEEL_CASING))
               .save(output);
@@ -633,7 +634,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(GLASS_CHAR, Pattern.CIRCUIT, GLASS_CHAR),
                     TripleLine.of(Pattern.STEEL, Pattern.EMPTY, Pattern.STEEL))
-              ).define(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
+              ).define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .category(RecipeCategory.TOOLS)
@@ -645,7 +646,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.OSMIUM, Pattern.EMPTY),
                     TripleLine.of(GLASS_CHAR, Pattern.EMPTY, GLASS_CHAR),
                     TripleLine.of(GLASS_CHAR, GLASS_CHAR, GLASS_CHAR))
-              ).define(GLASS_CHAR, this.items, Tags.Items.GLASS_PANES)
+              ).define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_PANES)
               .define(Pattern.OSMIUM, osmiumIngot(this.items))
               .category(RecipeCategory.TOOLS)
               .unlockedBy("has_osmium_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM)))
@@ -840,7 +841,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).define(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
               .define(Pattern.OSMIUM, osmiumIngot(this.items))
               .define(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
-              .define(Pattern.CONSTANT, this.items, Tags.Items.PLAYER_WORKSTATIONS_FURNACES)
+              .define(Pattern.CONSTANT, this.items, Tags.BlockItems.PLAYER_WORKSTATIONS_FURNACES)
               .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
               .group(Mekanism.rl(FactoryType.INFUSING.getSerializedName()))
               .unlockedBy("has_osmium_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM)))
@@ -851,7 +852,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, GLASS_CHAR, Pattern.EMPTY),
                     TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY),
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
-              ).define(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
+              ).define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
               .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .define(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
@@ -865,15 +866,15 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.PREVIOUS, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL))
-              ).define(GLASS_CHAR, this.items, Tags.Items.GLASS_PANES)
+              ).define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_PANES)
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .define(Pattern.PREVIOUS, MekanismItems.DICTIONARY)
-              .define(Pattern.CONSTANT, this.items, Tags.Items.CHESTS_WOODEN)
+              .define(Pattern.CONSTANT, this.items, Tags.BlockItems.CHESTS_WOODEN)
               .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
               .unlockedBy(hasCriterion(MekanismItems.DICTIONARY))
               .unlockedBy("has_any_raw_ore", has(Tags.Items.RAW_MATERIALS))
-              .unlockedBy("has_any_ore", has(Tags.Items.ORES))
+              .unlockedBy("has_any_ore", has(Tags.BlockItems.ORES))
               .save(output);
         //Osmium compressor
         ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.OSMIUM_COMPRESSOR)
@@ -905,10 +906,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
                     TripleLine.of(Pattern.PREVIOUS, Pattern.CIRCUIT, Pattern.PREVIOUS),
                     TripleLine.of(Pattern.STEEL, Pattern.STEEL, Pattern.STEEL))
-              ).define(Pattern.PREVIOUS, this.items, Tags.Items.BARRELS_WOODEN)
+              ).define(Pattern.PREVIOUS, this.items, Tags.BlockItems.BARRELS_WOODEN)
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
-              .define(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
+              .define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
               .category(RecipeCategory.DECORATIONS)
               .unlockedBy(personalStorageLotsOfItems)
               .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
@@ -919,10 +920,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
                     TripleLine.of(Pattern.PREVIOUS, Pattern.CIRCUIT, Pattern.PREVIOUS),
                     TripleLine.of(Pattern.STEEL, Pattern.STEEL, Pattern.STEEL))
-              ).define(Pattern.PREVIOUS, this.items, Tags.Items.CHESTS_WOODEN)
+              ).define(Pattern.PREVIOUS, this.items, Tags.BlockItems.CHESTS_WOODEN)
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
-              .define(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
+              .define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
               .category(RecipeCategory.DECORATIONS)
               .unlockedBy(personalStorageLotsOfItems)
               .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
@@ -959,7 +960,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL),
                     TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.CONSTANT),
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL))
-              ).define(Pattern.CONSTANT, this.items, Tags.Items.BARS)
+              ).define(Pattern.CONSTANT, this.items, Tags.BlockItems.BARS)
               .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .category(RecipeCategory.BUILDING_BLOCKS)
@@ -1054,7 +1055,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(GLASS_CHAR, Pattern.CIRCUIT, GLASS_CHAR),
                     TripleLine.of(Pattern.TANK, Pattern.ENERGY, Pattern.CONSTANT),
                     TripleLine.of(GLASS_CHAR, Pattern.CIRCUIT, GLASS_CHAR))
-              ).define(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
+              ).define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .define(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .define(Pattern.CONSTANT, MekanismBlocks.BASIC_FLUID_TANK)
@@ -1082,7 +1083,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL))
-              ).define(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
+              ).define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ELITE)
               .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .define(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
@@ -1137,7 +1138,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
                     TripleLine.of(GLASS_CHAR, Pattern.OSMIUM, GLASS_CHAR),
                     TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL))
-              ).define(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
+              ).define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
               .define(Pattern.OSMIUM, osmiumIngot(this.items))
               .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .category(RecipeCategory.BUILDING_BLOCKS)
@@ -1149,10 +1150,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
-              ).define(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
+              ).define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
               .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .category(RecipeCategory.DECORATIONS)
-              .unlockedBy("has_glass", has(Tags.Items.GLASS_BLOCKS_CHEAP))
+              .unlockedBy("has_glass", has(Tags.BlockItems.GLASS_BLOCKS_CHEAP))
               .save(output);
         //Superheating element
         ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.SUPERHEATING_ELEMENT)
@@ -1262,7 +1263,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(TELEPORTATION_CORE_CHAR, Pattern.INGOT, TELEPORTATION_CORE_CHAR))
               ).define(Pattern.CONSTANT, this.items, MekanismTags.BlockItems.PERSONAL_STORAGE)
               .define(Pattern.INGOT, this.items, Tags.Items.ENDER_PEARLS)
-              .define(Pattern.GLASS, this.items, Tags.Items.GLASS_PANES)
+              .define(Pattern.GLASS, this.items, Tags.BlockItems.GLASS_PANES)
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .define(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
               .category(RecipeCategory.DECORATIONS)
@@ -1320,7 +1321,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
                     TripleLine.of(Pattern.ALLOY, Pattern.GLASS, Pattern.ALLOY),
                     TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
-              ).define(Pattern.GLASS, this.items, Tags.Items.GLASS_PANES)
+              ).define(Pattern.GLASS, this.items, Tags.BlockItems.GLASS_PANES)
               .define(Pattern.ALLOY, this.items, Tags.Items.ENDER_PEARLS)
               .define(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
               .define(Pattern.INGOT, leadIngot(this.items))
@@ -1512,7 +1513,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.PLASTIC, Pattern.ALLOY, Pattern.PLASTIC))
               ).define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
-              .define(Pattern.WOOD, this.items, Tags.Items.CHESTS_WOODEN)
+              .define(Pattern.WOOD, this.items, Tags.BlockItems.CHESTS_WOODEN)
               .define(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .define(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .define(Pattern.ALLOY, this.items, MekanismTags.Items.PELLETS_POLONIUM)
@@ -1552,7 +1553,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).define(Pattern.INGOT, this.items, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ATOMIC)
-              .define(Pattern.DIAMOND, this.items, Tags.Items.STORAGE_BLOCKS_DIAMOND)
+              .define(Pattern.DIAMOND, this.items, Tags.BlockItems.STORAGE_BLOCKS_DIAMOND)
               .category(RecipeCategory.DECORATIONS)//Mirror vanilla work stations
               .unlockedBy("has_alloy", has(MekanismTags.Items.ALLOYS_ATOMIC))
               .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ULTIMATE))
@@ -1709,7 +1710,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .define(Pattern.CONSTANT, this.items, MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_GLOWSTONE)
               .define(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
-              .define(Pattern.DIAMOND, this.items, Tags.Items.STORAGE_BLOCKS_DIAMOND)
+              .define(Pattern.DIAMOND, this.items, Tags.BlockItems.STORAGE_BLOCKS_DIAMOND)
               .category(RecipeCategory.TOOLS)
               .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
               .save(output, MekanismModules.FORTUNE_UNIT.getId());
@@ -1814,7 +1815,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.HDPE_CHAR, Pattern.HDPE_CHAR, Pattern.HDPE_CHAR))
               ).define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ELITE)
               .define(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
-              .define(Pattern.CONSTANT, this.items, Tags.Items.BARS_IRON)
+              .define(Pattern.CONSTANT, this.items, Tags.BlockItems.BARS_IRON)
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ELITE)
               .define(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .category(RecipeCategory.TOOLS)
@@ -1883,7 +1884,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.HDPE_CHAR, Pattern.CONSTANT, Pattern.HDPE_CHAR))
               ).define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_ELITE)
               .define(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
-              .define(Pattern.CONSTANT, this.items, Tags.Items.OBSIDIANS_NORMAL)
+              .define(Pattern.CONSTANT, this.items, Tags.BlockItems.OBSIDIANS_NORMAL)
               .define(Pattern.HDPE_CHAR, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .category(RecipeCategory.TOOLS)
               .unlockedBy(hasCriterion(MekanismItems.MODULE_BASE))
@@ -1947,44 +1948,54 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
         //plutonium
         ChemicalToChemicalRecipeBuilder.centrifuging(
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.NUCLEAR_WASTE, 10),
-              chemicalTemplate(ChemicalIds.PLUTONIUM, 1)
-        ).save(output, Mekanism.rl(basePath + "plutonium"));
+                    IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.NUCLEAR_WASTE, 10),
+                    chemicalTemplate(ChemicalIds.PLUTONIUM, 1)
+              ).unlockedBy("has_waste_barrel", has(MekanismBlocks.RADIOACTIVE_WASTE_BARREL))
+              .save(output, Mekanism.rl(basePath + "plutonium"));
         //polonium
         ChemicalToChemicalRecipeBuilder.activating(
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.NUCLEAR_WASTE, 10),
-              chemicalTemplate(ChemicalIds.POLONIUM, 1)
-        ).save(output, Mekanism.rl(basePath + "polonium"));
+                    IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.NUCLEAR_WASTE, 10),
+                    chemicalTemplate(ChemicalIds.POLONIUM, 1)
+              ).unlockedBy("has_waste_barrel", has(MekanismBlocks.RADIOACTIVE_WASTE_BARREL))
+              .save(output, Mekanism.rl(basePath + "polonium"));
 
         //plutonium pellet
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_FLUORITE),
-              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 1_000),
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.PLUTONIUM, 1_000),
-              100,
-              MekanismItems.PLUTONIUM_PELLET.asTemplate(),
-              chemicalTemplate(ChemicalIds.SPENT_NUCLEAR_WASTE, 1_000)
-        ).save(output, Mekanism.rl(basePath + "plutonium_pellet/from_reaction"));
+                    IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_FLUORITE),
+                    IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 1_000),
+                    IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.PLUTONIUM, 1_000),
+                    100,
+                    MekanismItems.PLUTONIUM_PELLET.asTemplate(),
+                    chemicalTemplate(ChemicalIds.SPENT_NUCLEAR_WASTE, 1_000)
+              ).unlockedBy("has_fluorite", has(MekanismTags.Items.DUSTS_FLUORITE))
+              .save(output, Mekanism.rl(basePath + "plutonium_pellet/from_reaction"));
         //polonium pellet
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_FLUORITE),
-              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 1_000),
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.POLONIUM, 1_000),
-              100,
-              MekanismItems.POLONIUM_PELLET.asTemplate(),
-              chemicalTemplate(ChemicalIds.SPENT_NUCLEAR_WASTE, 1_000)
-        ).save(output, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
+                    IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_FLUORITE),
+                    IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 1_000),
+                    IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.POLONIUM, 1_000),
+                    100,
+                    MekanismItems.POLONIUM_PELLET.asTemplate(),
+                    chemicalTemplate(ChemicalIds.SPENT_NUCLEAR_WASTE, 1_000)
+              ).unlockedBy("has_fluorite", has(MekanismTags.Items.DUSTS_FLUORITE))
+              .save(output, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
 
         //antimatter pellet
         ChemicalCrystallizerRecipeBuilder.crystallizing(
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 1_000),
-              MekanismItems.ANTIMATTER_PELLET.asTemplate()
-        ).save(output, Mekanism.rl(basePath + "antimatter_pellet/from_gas"));
+                    IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 1_000),
+                    MekanismItems.ANTIMATTER_PELLET.asTemplate()
+              ).unlockedBy("has_pellets", BaseAdvancementProvider.hasItems(items,
+                    //Note: Requires both pellets
+                    MekanismTags.Items.PELLETS_PLUTONIUM,
+                    MekanismTags.Items.PELLETS_POLONIUM
+              )).save(output, Mekanism.rl(basePath + "antimatter_pellet/from_gas"));
 
         //back to antimatter
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PELLETS_ANTIMATTER),
               chemicalTemplate(ChemicalIds.ANTIMATTER, 1_000)
-        ).save(output, Mekanism.rl(basePath + "antimatter/from_pellet"));
+        ).group(ChemicalIds.ANTIMATTER)
+              .unlockedBy("has_antimatter", has(MekanismTags.Items.PELLETS_ANTIMATTER))
+              .save(output, Mekanism.rl(basePath + "antimatter/from_pellet"));
     }
 }

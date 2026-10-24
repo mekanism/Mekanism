@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_storage_blocks/dried_kelp": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:storage_blocks/dried_kelp"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/biofuel/dried_kelp_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_storage_blocks/dried_kelp"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/biofuel/dried_kelp_block"
+    ]
+  }
+}

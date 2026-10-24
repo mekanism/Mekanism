@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:injecting/oxidizing/weathered_lightning_rod"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_weathering": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:exposed_lightning_rod"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_weathering"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:injecting/oxidizing/weathered_lightning_rod"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_foods/berry": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:foods/berry"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/biofuel/berries"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_foods/berry"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/biofuel/berries"
+    ]
+  }
+}

@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:hanging_sign",
   "input": {
     "count": 1,
     "ingredient": "minecraft:mangrove_hanging_sign"

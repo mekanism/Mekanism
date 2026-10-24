@@ -24,16 +24,19 @@ class OxidizingRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SALT),
               chemicalTemplate(ChemicalIds.BRINE, 15)
-        ).save(consumer, Mekanism.rl(basePath + "brine"));
+        ).unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
+              .save(consumer, Mekanism.rl(basePath + "brine"));
         //Lithium
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_LITHIUM),
               chemicalTemplate(ChemicalIds.LITHIUM, 100)
-        ).save(consumer, Mekanism.rl(basePath + "lithium"));
+        ).unlockedBy("has_lithium", has(MekanismTags.Items.DUSTS_LITHIUM))
+              .save(consumer, Mekanism.rl(basePath + "lithium"));
         //Sulfur dioxide
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SULFUR),
               chemicalTemplate(ChemicalIds.SULFUR_DIOXIDE, 100)
-        ).save(consumer, Mekanism.rl(basePath + "sulfur_dioxide"));
+        ).unlockedBy("has_sulfur_dust", has(MekanismTags.Items.DUSTS_SULFUR))
+              .save(consumer, Mekanism.rl(basePath + "sulfur_dioxide"));
     }
 }

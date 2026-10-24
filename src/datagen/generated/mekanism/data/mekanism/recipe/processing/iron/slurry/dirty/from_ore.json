@@ -1,9 +1,11 @@
 {
   "type": "mekanism:dissolution",
+  "category": "efficiency",
   "chemical_input": {
     "amount": 1,
     "ingredient": "mekanism:sulfuric_acid"
   },
+  "group": "mekanism:dirty_iron",
   "item_input": {
     "count": 1,
     "ingredient": "#c:ores/iron"

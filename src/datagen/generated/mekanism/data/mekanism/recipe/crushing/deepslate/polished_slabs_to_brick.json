@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "building",
+  "group": "mekanism:deepslate_brick_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:polished_deepslate_slab"

@@ -4,6 +4,7 @@
     "amount": 256,
     "ingredient": "mekanism:lime"
   },
+  "group": "mekanism:wool_slab_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

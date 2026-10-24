@@ -6,6 +6,7 @@
     }
   ],
   "type": "mekanism:crushing",
+  "category": "processing",
   "input": {
     "count": 1,
     "ingredient": "ae2:sky_stone_block"

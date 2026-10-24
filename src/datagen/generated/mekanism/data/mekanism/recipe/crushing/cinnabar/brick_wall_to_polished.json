@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "building",
+  "group": "mekanism:polished_cinnabar_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:cinnabar_brick_wall"

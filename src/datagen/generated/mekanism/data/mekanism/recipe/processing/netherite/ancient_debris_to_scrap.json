@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "efficiency",
+  "group": "netherite_scrap",
   "input": {
     "count": 1,
     "ingredient": "#c:ores/netherite_scrap"

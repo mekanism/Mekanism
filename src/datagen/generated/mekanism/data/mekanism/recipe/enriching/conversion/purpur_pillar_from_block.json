@@ -1,5 +1,6 @@
 {
   "type": "mekanism:enriching",
+  "category": "building",
   "input": {
     "count": 1,
     "ingredient": "minecraft:purpur_block"

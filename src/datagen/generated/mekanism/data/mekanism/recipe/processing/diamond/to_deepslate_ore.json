@@ -1,9 +1,11 @@
 {
   "type": "mekanism:combining",
+  "category": "building",
   "extra_input": {
     "count": 1,
     "ingredient": "#c:cobblestones/deepslate"
   },
+  "group": "diamond_ore",
   "main_input": {
     "count": 5,
     "ingredient": "#c:dusts/diamond"

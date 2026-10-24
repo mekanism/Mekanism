@@ -43,7 +43,7 @@ class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
     }
 
     private void registerPlasticFences(RecipeOutput consumer, String basePath) {
-        HolderSet<Item> fencesTag = this.items.getOrThrow(AdditionsTags.Items.FENCES_PLASTIC_NORMAL);
+        HolderSet.Named<Item> fencesTag = this.items.getOrThrow(AdditionsTags.Items.FENCES_PLASTIC_NORMAL);
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_FENCES, (color, fence) -> {
             Holder<Item> result = fence.getItemHolder();
             BlockRegistryObject<BlockPlastic, BlockItem> plastic = AdditionsBlocks.PLASTIC_BLOCKS.pick(color);
@@ -60,7 +60,7 @@ class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
     }
 
     private void registerPlasticFenceGates(RecipeOutput consumer, String basePath) {
-        HolderSet<Item> gatesTag = this.items.getOrThrow(AdditionsTags.Items.FENCE_GATES_PLASTIC_NORMAL);
+        HolderSet.Named<Item> gatesTag = this.items.getOrThrow(AdditionsTags.Items.FENCE_GATES_PLASTIC_NORMAL);
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_FENCE_GATES, (color, fenceGate) -> {
             Holder<Item> result = fenceGate.getItemHolder();
             BlockRegistryObject<BlockPlastic, BlockItem> plastic = AdditionsBlocks.PLASTIC_BLOCKS.pick(color);

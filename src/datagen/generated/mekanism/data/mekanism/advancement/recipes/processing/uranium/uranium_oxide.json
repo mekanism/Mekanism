@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:processing/uranium/uranium_oxide"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_yellow_cake_uranium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:yellow_cake_uranium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_yellow_cake_uranium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/uranium/uranium_oxide"
+    ]
+  }
+}

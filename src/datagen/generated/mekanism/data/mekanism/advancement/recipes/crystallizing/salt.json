@@ -1,0 +1,39 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_raw_meat": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:foods/raw_meat"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crystallizing/salt"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "in_brine": {
+      "conditions": {
+        "blocks": "mekanism:brine"
+      },
+      "trigger": "minecraft:enter_block"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "in_brine",
+      "has_raw_meat"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crystallizing/salt"
+    ]
+  }
+}

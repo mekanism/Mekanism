@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "efficiency",
+  "group": "mekanism:dust_lead",
   "input": {
     "count": 1,
     "ingredient": "#c:storage_blocks/raw_lead"

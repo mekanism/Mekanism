@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "building",
+  "group": "weathered",
   "input": {
     "count": 1,
     "ingredient": "minecraft:waxed_weathered_copper_door"

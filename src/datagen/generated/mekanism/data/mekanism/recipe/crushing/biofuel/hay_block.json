@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "processing",
+  "group": "mekanism:block_bio_fuel",
   "input": {
     "count": 1,
     "ingredient": "#c:storage_blocks/wheat"

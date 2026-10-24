@@ -4,6 +4,7 @@
     "amount": 64,
     "ingredient": "mekanism:orange"
   },
+  "group": "mekanismadditions:glow_plastic_slabs_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

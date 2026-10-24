@@ -1,9 +1,11 @@
 {
   "type": "mekanism:combining",
+  "category": "building",
   "extra_input": {
     "count": 1,
     "ingredient": "minecraft:basalt"
   },
+  "group": "ancient_debris",
   "main_input": {
     "count": 2,
     "ingredient": "#c:dusts/netherite"

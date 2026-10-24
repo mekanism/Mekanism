@@ -1,5 +1,6 @@
 {
   "type": "mekanism:chemical_conversion",
+  "group": "mekanism:diamond",
   "input": {
     "count": 1,
     "ingredient": "#c:dusts/diamond"

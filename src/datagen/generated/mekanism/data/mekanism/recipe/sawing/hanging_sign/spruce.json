@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:hanging_sign",
   "input": {
     "count": 1,
     "ingredient": "minecraft:spruce_hanging_sign"

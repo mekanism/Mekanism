@@ -4,6 +4,7 @@
     "amount": 64,
     "ingredient": "mekanism:yellow"
   },
+  "group": "mekanismadditions:glow_plastic_stairs_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

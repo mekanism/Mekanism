@@ -1,5 +1,6 @@
 {
   "type": "mekanism:crushing",
+  "category": "processing",
   "input": {
     "count": 1,
     "ingredient": "minecraft:dried_ghast"

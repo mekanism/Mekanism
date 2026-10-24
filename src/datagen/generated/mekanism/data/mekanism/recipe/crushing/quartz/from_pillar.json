@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "building",
+  "group": "mekanism:quartz_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:quartz_pillar"

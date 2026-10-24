@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_raw_material": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:raw_materials/lead"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:processing/lead/ore/deepslate_from_raw"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_raw_material"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/lead/ore/deepslate_from_raw"
+    ]
+  }
+}

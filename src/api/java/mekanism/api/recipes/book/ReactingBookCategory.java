@@ -22,6 +22,7 @@ import org.jspecify.annotations.Nullable;
 ///
 /// @since 10.8.0
 public enum ReactingBookCategory implements MekanismBookCategory {
+    GASIFICATION("gasification", "dust_charcoal", null),
     MISC("misc", "substrate", null);
 
     public static final Codec<ReactingBookCategory> CODEC = StringRepresentable.fromEnum(ReactingBookCategory::values);

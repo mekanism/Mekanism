@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_peony": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:peony"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:pigment_extracting/flower/large_pink"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_peony"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:pigment_extracting/flower/large_pink"
+    ]
+  }
+}

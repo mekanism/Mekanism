@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/biofuel/warped_roots"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_warped_roots": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:warped_roots"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_warped_roots"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/biofuel/warped_roots"
+    ]
+  }
+}

@@ -18,6 +18,7 @@ import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -33,7 +34,9 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
@@ -73,6 +76,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     chemicalTemplate(ChemicalIds.DEUTERIUM, 2),
                     chemicalTemplate(ChemicalIds.OXYGEN, 1)
               ).energyMultiplier(2)
+              .unlockedBy("in_water", insideOf(Blocks.WATER))
               .save(output, MekanismGenerators.rl(basePath + "heavy_water"));
     }
 
@@ -89,7 +93,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, chemicalInput, 1),
               chemicalTemplate(chemicalOutput, 1),
               new FluidStackTemplate(fluidOutput, 1)
-        ).save(output, MekanismGenerators.rl(basePath + chemicalOutput.identifier().getPath()));
+        ).unlockedBy("has_condensentrator", has(MekanismBlocks.ROTARY_CONDENSENTRATOR))
+              .save(output, MekanismGenerators.rl(basePath + chemicalOutput.identifier().getPath()));
     }
 
     private void addChemicalInfuserRecipes() {
@@ -99,7 +104,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.DEUTERIUM, 1),
               IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.TRITIUM, 1),
               chemicalTemplate(ChemicalIds.FUSION_FUEL, 2)
-        ).save(output, MekanismGenerators.rl(basePath + "fusion_fuel"));
+        ).unlockedBy("in_heavy_water", insideOf(MekanismFluids.HEAVY_WATER.getBlock()))
+              .save(output, MekanismGenerators.rl(basePath + "fusion_fuel"));
     }
 
     private void addSolarNeutronActivatorRecipes() {
@@ -107,7 +113,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         ChemicalToChemicalRecipeBuilder.activating(
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.LITHIUM, 1),
               chemicalTemplate(ChemicalIds.TRITIUM, 1)
-        ).save(output, MekanismGenerators.rl(basePath + "tritium"));
+        ).unlockedBy("has_lithium_dust", has(MekanismTags.Items.DUSTS_LITHIUM))
+              .save(output, MekanismGenerators.rl(basePath + "tritium"));
     }
 
     private void addGeneratorRecipes() {
@@ -117,7 +124,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(GLASS_CHAR, GLASS_CHAR, GLASS_CHAR),
                     TripleLine.of(Pattern.REDSTONE, Pattern.ALLOY, Pattern.REDSTONE),
                     TripleLine.of(Pattern.OSMIUM, Pattern.OSMIUM, Pattern.OSMIUM))
-              ).define(GLASS_CHAR, this.items, Tags.Items.GLASS_PANES)
+              ).define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_PANES)
               .define(Pattern.OSMIUM, osmiumIngot(this.items))
               .define(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
               .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
@@ -188,7 +195,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
               .define(Pattern.OSMIUM, osmiumIngot(this.items))
               .define(COPPER_CHAR, this.items, Tags.Items.INGOTS_COPPER)
-              .define(FURNACE_CHAR, this.items, Tags.Items.PLAYER_WORKSTATIONS_FURNACES)
+              .define(FURNACE_CHAR, this.items, Tags.BlockItems.PLAYER_WORKSTATIONS_FURNACES)
               .category(RecipeCategory.DECORATIONS)
               .unlockedBy("has_osmium_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM)))
               .save(output, MekanismGenerators.rl("generator/heat"));
@@ -290,13 +297,15 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     }
 
     private void addFusionReactorRecipes() {
+        TagKey<Item> goldDust = MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD);
         //Hohlraum
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD), 4),
+              IngredientCreatorAccess.item().from(this.items, goldDust, 4),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.CARBON, 10),
               false,
               GeneratorsItems.HOHLRAUM.asTemplate()
-        ).save(output);
+        ).unlockedBy("has_gold_dust", has(goldDust))
+              .save(output);
         //Laser Focus Matrix
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.LASER_FOCUS_MATRIX, 2)
               .pattern(RecipePattern.createPattern(
@@ -304,7 +313,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(GLASS_CHAR, Pattern.REDSTONE, GLASS_CHAR),
                     TripleLine.of(Pattern.EMPTY, GLASS_CHAR, Pattern.EMPTY))
               ).define(GLASS_CHAR, GeneratorsBlocks.REACTOR_GLASS)
-              .define(Pattern.REDSTONE, this.items, Tags.Items.STORAGE_BLOCKS_REDSTONE)
+              .define(Pattern.REDSTONE, this.items, Tags.BlockItems.STORAGE_BLOCKS_REDSTONE)
               .category(RecipeCategory.DECORATIONS)
               .unlockedBy("has_reactor_glass", has(GeneratorsBlocks.REACTOR_GLASS))
               .save(output);
@@ -326,11 +335,11 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL),
                     TripleLine.of(Pattern.INGOT, GLASS_CHAR, Pattern.INGOT),
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
-              ).define(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
+              ).define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
               .define(Pattern.INGOT, leadIngot(this.items))
               .define(Pattern.STEEL, MekanismItems.ENRICHED_IRON)
               .category(RecipeCategory.DECORATIONS)
-              .unlockedBy("has_glass", has(Tags.Items.GLASS_BLOCKS_CHEAP))
+              .unlockedBy("has_glass", has(Tags.BlockItems.GLASS_BLOCKS_CHEAP))
               .save(output, MekanismGenerators.rl("reactor/glass"));
         //Port
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.FUSION_REACTOR_PORT, 2)
@@ -362,7 +371,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(FRAME_CHAR, Pattern.TANK, FRAME_CHAR),
                     TripleLine.of(FRAME_CHAR, FRAME_CHAR, FRAME_CHAR))
               ).define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ULTIMATE)
-              .define(GLASS_CHAR, this.items, Tags.Items.GLASS_PANES)
+              .define(GLASS_CHAR, this.items, Tags.BlockItems.GLASS_PANES)
               .define(FRAME_CHAR, GeneratorsBlocks.FUSION_REACTOR_FRAME)
               .define(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .category(RecipeCategory.BUILDING_BLOCKS)
@@ -459,7 +468,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, BARS_CHAR, Pattern.CONSTANT),
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).define(Pattern.CONSTANT, GeneratorsBlocks.TURBINE_CASING)
-              .define(BARS_CHAR, this.items, Tags.Items.BARS)
+              .define(BARS_CHAR, this.items, Tags.BlockItems.BARS)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_casing", has(GeneratorsBlocks.TURBINE_CASING))
               .save(output, MekanismGenerators.rl("turbine/vent"));

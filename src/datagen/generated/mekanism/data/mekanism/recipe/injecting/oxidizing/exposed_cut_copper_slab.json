@@ -1,9 +1,11 @@
 {
   "type": "mekanism:injecting",
+  "category": "building",
   "chemical_input": {
     "amount": 1,
     "ingredient": "mekanism:oxygen"
   },
+  "group": "unaffected_to_exposed",
   "item_input": {
     "count": 1,
     "ingredient": "minecraft:cut_copper_slab"

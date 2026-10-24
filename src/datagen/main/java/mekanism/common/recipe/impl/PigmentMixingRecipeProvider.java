@@ -2,14 +2,21 @@ package mekanism.common.recipe.impl;
 
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
+import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
+import mekanism.api.recipes.book.PigmentMixingBookCategory;
+import mekanism.api.recipes.book.PigmentMixingBookCategory.PigmentMixingBookInfo;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.ItemIds;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.Tags;
+import org.jspecify.annotations.Nullable;
 
 class PigmentMixingRecipeProvider extends BaseSubRecipeProvider {
 
@@ -69,12 +76,24 @@ class PigmentMixingRecipeProvider extends BaseSubRecipeProvider {
         addMix(consumer, EnumColor.GRAY, 1, EnumColor.BRIGHT_PINK, 4, EnumColor.PINK, basePath);*/
     }
 
-    private void addMix(RecipeOutput consumer, EnumColor leftInput, int leftInputAmount, EnumColor rightInput, int rightInputAmount,
-          EnumColor output, String basePath) {
-        ChemicalChemicalToChemicalRecipeBuilder.pigmentMixing(
+    private void addMix(RecipeOutput consumer, EnumColor leftInput, int leftInputAmount, EnumColor rightInput, int rightInputAmount, EnumColor output, String basePath) {
+        ChemicalChemicalToChemicalRecipeBuilder<PigmentMixingBookCategory, PigmentMixingBookInfo, ?> builder = ChemicalChemicalToChemicalRecipeBuilder.pigmentMixing(
               IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(leftInput), leftInputAmount),
               IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(rightInput), rightInputAmount),
               chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.pick(output), leftInputAmount + rightInputAmount)
-        ).save(consumer, Mekanism.rl(basePath + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix()));
+        );
+        DyeColor outputDye = output.getDyeColor();
+        if (outputDye != null) {
+            builder.group(ItemIds.DYE.pick(outputDye));
+        }
+        unlockedByDye(builder, leftInput.getDyeColor());
+        unlockedByDye(builder, rightInput.getDyeColor());
+        builder.save(consumer, Mekanism.rl(basePath + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix()));
+    }
+
+    private void unlockedByDye(MekanismRecipeBuilder<?, ?, ?> builder, @Nullable DyeColor color) {
+        if (color != null) {
+            builder.unlockedBy("has_" + color.getName() + "_dye", has(Tags.Items.DYE_COLORS.pick(color)));
+        }
     }
 }

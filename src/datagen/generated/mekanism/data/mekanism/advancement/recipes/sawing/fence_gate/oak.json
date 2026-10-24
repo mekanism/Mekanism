@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_oak_fence_gate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:oak_fence_gate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/fence_gate/oak"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_oak_fence_gate"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/fence_gate/oak"
+    ]
+  }
+}

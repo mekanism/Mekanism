@@ -32,6 +32,11 @@ public interface MekanismBookCategory extends StringRepresentable {
         return Optional.empty();
     }
 
+    @Nullable
+    default String getAdvancementFolder() {
+        return null;
+    }
+
     /// Creates a holder pointing to a vanilla recipe book category
     @Internal
     static DeferredHolder<RecipeBookCategory, RecipeBookCategory> createHolder(Identifier recipeType, String category) {

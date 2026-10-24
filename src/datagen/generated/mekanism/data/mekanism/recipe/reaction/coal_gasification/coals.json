@@ -1,5 +1,6 @@
 {
   "type": "mekanism:reaction",
+  "category": "gasification",
   "chemical_input": {
     "amount": 100,
     "ingredient": "mekanism:oxygen"
@@ -9,6 +10,7 @@
     "amount": 100,
     "ingredient": "#minecraft:water"
   },
+  "group": "mekanism:dust_sulfur",
   "item_input": {
     "count": 1,
     "ingredient": "#minecraft:coals"

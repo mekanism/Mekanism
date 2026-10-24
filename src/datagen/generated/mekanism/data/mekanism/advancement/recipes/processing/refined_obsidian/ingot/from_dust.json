@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_refined_obsidian_dust": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:dusts/obsidian"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:processing/refined_obsidian/ingot/from_dust"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_refined_obsidian_dust"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/refined_obsidian/ingot/from_dust"
+    ]
+  }
+}

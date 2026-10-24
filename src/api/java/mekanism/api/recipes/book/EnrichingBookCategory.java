@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import net.minecraft.core.Holder;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -22,6 +23,9 @@ import org.jspecify.annotations.Nullable;
 ///
 /// @since 10.8.0
 public enum EnrichingBookCategory implements MekanismBookCategory {
+    BUILDING("building", "enrichment_chamber", null),
+    EFFICIENCY("efficiency", "enrichment_chamber", null),
+    DECORATIVE("decorative", "enrichment_chamber", null),
     MISC("misc", "enrichment_chamber", null);
 
     public static final Codec<EnrichingBookCategory> CODEC = StringRepresentable.fromEnum(EnrichingBookCategory::values);
@@ -43,6 +47,16 @@ public enum EnrichingBookCategory implements MekanismBookCategory {
         this.primaryIcon = primaryIcon;
         this.secondaryIcon = secondaryIcon;
         this.categoryHolder = MekanismBookCategory.createHolder(MekanismRecipeTypes.NAME_ENRICHING, this.name);
+    }
+
+    @Nullable
+    @Override
+    public String getAdvancementFolder() {
+        return switch (this) {
+            case BUILDING -> RecipeCategory.BUILDING_BLOCKS.getFolderName();
+            case MISC -> null;
+            default -> name;
+        };
     }
 
     @Override

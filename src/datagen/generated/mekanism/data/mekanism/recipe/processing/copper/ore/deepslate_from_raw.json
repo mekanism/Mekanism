@@ -1,9 +1,11 @@
 {
   "type": "mekanism:combining",
+  "category": "building",
   "extra_input": {
     "count": 1,
     "ingredient": "#c:cobblestones/deepslate"
   },
+  "group": "copper_ore",
   "main_input": {
     "count": 20,
     "ingredient": "#c:raw_materials/copper"

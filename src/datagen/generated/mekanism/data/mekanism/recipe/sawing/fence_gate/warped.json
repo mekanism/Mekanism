@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:fence_gate",
   "input": {
     "count": 1,
     "ingredient": "minecraft:warped_fence_gate"

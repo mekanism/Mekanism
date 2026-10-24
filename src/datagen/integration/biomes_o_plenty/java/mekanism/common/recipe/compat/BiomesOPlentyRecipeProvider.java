@@ -1,9 +1,13 @@
 package mekanism.common.recipe.compat;
 
 import biomesoplenty.api.item.BOPItems;
+import java.util.Arrays;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
+import mekanism.api.recipes.book.CrushingBookCategory;
+import mekanism.api.recipes.book.EnrichingBookCategory;
+import mekanism.api.recipes.book.PigmentExtractingBookCategory;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
@@ -94,7 +98,9 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         RecipeProviderUtil.save(consumer, ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(sandstones),
               new ItemStackTemplate(sand, 2)
-        ), path, modLoaded);
+        ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(Arrays.stream(sandstones).map(this::hasCriterion)),
+              path, modLoaded);
     }
 
     private void addDyeRecipes(RecipeOutput consumer, String basePath) {
@@ -134,14 +140,19 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
                     new ItemStackTemplate(this.items.getOrThrow(output), 2)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.DECORATIVE)
+              .group(output)
+              .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         int flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     inputIngredient,
                     chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.pick(color), flowerRate)
-              ).addCondition(modLoaded)
+              ).group(output)
+              .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "pigment_extracting/" + color.getRegistryPrefix()));
     }
 
@@ -150,14 +161,18 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
                     new ItemStackTemplate(this.items.getOrThrow(output), 4)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.DECORATIVE)
+              .group(output)
+              .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "dye/large_" + color.getRegistryPrefix()));
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         int largeFlowerRate = 6 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     inputIngredient,
                     chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.pick(color), largeFlowerRate)
-              ).addCondition(modLoaded)
+              ).group(output)
+              .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
               .save(consumer, Mekanism.rl(basePath + "pigment_extracting/large_" + color.getRegistryPrefix()));
     }
 }

@@ -1,9 +1,11 @@
 {
   "type": "mekanism:combining",
+  "category": "building",
   "extra_input": {
     "count": 1,
     "ingredient": "#c:cobblestones/normal"
   },
+  "group": "emerald_ore",
   "main_input": {
     "count": 5,
     "ingredient": "#c:dusts/emerald"

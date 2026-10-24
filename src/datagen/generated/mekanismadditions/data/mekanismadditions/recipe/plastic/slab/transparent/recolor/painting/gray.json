@@ -4,6 +4,7 @@
     "amount": 32,
     "ingredient": "mekanism:gray"
   },
+  "group": "mekanismadditions:transparent_plastic_slabs_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

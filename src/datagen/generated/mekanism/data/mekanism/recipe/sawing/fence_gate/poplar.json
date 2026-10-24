@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:fence_gate",
   "input": {
     "count": 1,
     "ingredient": "minecraft:poplar_fence_gate"

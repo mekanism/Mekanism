@@ -1,5 +1,6 @@
 {
   "type": "mekanism:pigment_extracting",
+  "group": "lime_dye",
   "input": {
     "count": 1,
     "ingredient": "mekanismadditions:lime_plastic_glow_stairs"

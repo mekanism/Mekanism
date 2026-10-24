@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "building",
+  "group": "mekanism:tuff_brick_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:polished_tuff_stairs"

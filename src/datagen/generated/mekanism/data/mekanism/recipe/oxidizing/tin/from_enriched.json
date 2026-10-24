@@ -1,5 +1,6 @@
 {
   "type": "mekanism:oxidizing",
+  "group": "mekanism:tin",
   "input": {
     "count": 1,
     "ingredient": "#mekanism:enriched/tin"

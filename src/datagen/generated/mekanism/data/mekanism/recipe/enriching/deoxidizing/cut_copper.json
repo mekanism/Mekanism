@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "building",
+  "group": "exposed_to_unaffected",
   "input": {
     "count": 1,
     "ingredient": "minecraft:exposed_cut_copper"

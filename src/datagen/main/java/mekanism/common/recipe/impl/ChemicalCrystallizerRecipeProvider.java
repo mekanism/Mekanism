@@ -5,11 +5,14 @@ import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.Tags;
 
 class ChemicalCrystallizerRecipeProvider extends BaseSubRecipeProvider {
 
@@ -24,11 +27,14 @@ class ChemicalCrystallizerRecipeProvider extends BaseSubRecipeProvider {
         ChemicalCrystallizerRecipeBuilder.crystallizing(
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.BRINE, 15),
               MekanismItems.SALT.asTemplate()
-        ).save(consumer, Mekanism.rl(basePath + "salt"));
+        ).unlockedBy("in_brine", RecipeProvider.insideOf(MekanismFluids.BRINE.getBlock()))
+              .unlockedBy("has_raw_meat", has(Tags.Items.FOODS_RAW_MEAT))
+              .save(consumer, Mekanism.rl(basePath + "salt"));
         //Lithium
         ChemicalCrystallizerRecipeBuilder.crystallizing(
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.LITHIUM, 100),
               MekanismItems.LITHIUM_DUST.asTemplate()
-        ).save(consumer, Mekanism.rl(basePath + "lithium"));
+        ).unlockedBy("in_lithium", RecipeProvider.insideOf(MekanismFluids.LITHIUM.getBlock()))
+              .save(consumer, Mekanism.rl(basePath + "lithium"));
     }
 }

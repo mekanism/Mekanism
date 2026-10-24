@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "building",
+  "group": "mekanism:mossy_cobble_removal",
   "input": {
     "count": 1,
     "ingredient": "#c:cobblestones/mossy"

@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "building",
+  "group": "weathered_to_exposed",
   "input": {
     "count": 1,
     "ingredient": "minecraft:weathered_copper_golem_statue"

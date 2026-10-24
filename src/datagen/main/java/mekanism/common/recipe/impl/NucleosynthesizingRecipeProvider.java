@@ -13,6 +13,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
@@ -32,14 +33,16 @@ class NucleosynthesizingRecipeProvider extends BaseSubRecipeProvider {
               false,
               template(BlockItemIds.WITHER_SKELETON_SKULL),
               1_250
-        ).save(consumer, Mekanism.rl(basePath + "wither_skeleton_skull"));
+        ).unlockedBy("has_skull", has(BlockItemIds.SKELETON_SKULL))
+              .save(consumer, Mekanism.rl(basePath + "wither_skeleton_skull"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.NETHER_STARS),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 5),
               false,
               template(ItemIds.HEART_OF_THE_SEA),
               1_250
-        ).save(consumer, Mekanism.rl(basePath + "heart_of_the_sea"));
+        ).unlockedBy("has_star", has(Tags.Items.NETHER_STARS))
+              .save(consumer, Mekanism.rl(basePath + "heart_of_the_sea"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, ItemIds.COAL),
@@ -47,21 +50,24 @@ class NucleosynthesizingRecipeProvider extends BaseSubRecipeProvider {
               false,
               template(ItemIds.DIAMOND),
               1_000
-        ).save(consumer, Mekanism.rl(basePath + "diamond"));
+        ).unlockedBy(hasCriterion(ItemIds.COAL))
+              .save(consumer, Mekanism.rl(basePath + "diamond"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.GEMS_DIAMOND),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 4),
               false,
               template(ItemIds.EMERALD),
               1_000
-        ).save(consumer, Mekanism.rl(basePath + "emerald"));
+        ).unlockedBy("has_diamond", has(Tags.Items.GEMS_DIAMOND))
+              .save(consumer, Mekanism.rl(basePath + "emerald"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, ItemTags.EGGS),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 4),
               false,
               template(BlockItemIds.DRAGON_EGG),
               1_000
-        ).save(consumer, Mekanism.rl(basePath + "dragon_egg"));
+        ).unlockedBy("has_egg", has(ItemTags.EGGS))
+              .save(consumer, Mekanism.rl(basePath + "dragon_egg"));
         //Note: This is intentionally a diamond sword and not a netherite sword, as the diamond sword
         // is a lot closer in color scheme to a trident, so it makes a bit more sense
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
@@ -70,7 +76,8 @@ class NucleosynthesizingRecipeProvider extends BaseSubRecipeProvider {
               false,
               template(ItemIds.TRIDENT),
               1_000
-        ).save(consumer, Mekanism.rl(basePath + "trident"));
+        ).unlockedBy("has_sword", has(ItemIds.DIAMOND_SWORD))
+              .save(consumer, Mekanism.rl(basePath + "trident"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.BEACON),
@@ -78,35 +85,40 @@ class NucleosynthesizingRecipeProvider extends BaseSubRecipeProvider {
               false,
               template(ItemIds.END_CRYSTAL),
               750
-        ).save(consumer, Mekanism.rl(basePath + "end_crystal"));
+        ).unlockedBy(hasCriterion(BlockItemIds.BEACON))
+              .save(consumer, Mekanism.rl(basePath + "end_crystal"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, ItemTags.BEDS),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 3),
               false,
               template(BlockItemIds.RESPAWN_ANCHOR),
               750
-        ).save(consumer, Mekanism.rl(basePath + "respawn_anchor"));
+        ).unlockedBy("has_bed", has(ItemTags.BEDS))
+              .save(consumer, Mekanism.rl(basePath + "respawn_anchor"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.FLOWER_POT),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 3),
               false,
               template(ItemIds.NAUTILUS_SHELL),
               750
-        ).save(consumer, Mekanism.rl(basePath + "nautilus_shell"));
+        ).unlockedBy(hasCriterion(BlockItemIds.FLOWER_POT))
+              .save(consumer, Mekanism.rl(basePath + "nautilus_shell"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, ItemIds.GOLDEN_APPLE),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 3),
               false,
               template(ItemIds.ENCHANTED_GOLDEN_APPLE),
               750
-        ).save(consumer, Mekanism.rl(basePath + "enchanted_golden_apple"));
+        ).unlockedBy("has_apple", has(ItemIds.GOLDEN_APPLE))
+              .save(consumer, Mekanism.rl(basePath + "enchanted_golden_apple"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.LEATHERS),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 3),
               false,
               template(ItemIds.PHANTOM_MEMBRANE),
               750
-        ).save(consumer, Mekanism.rl(basePath + "phantom_membrane"));
+        ).unlockedBy("has_leather", has(Tags.Items.LEATHERS))
+              .save(consumer, Mekanism.rl(basePath + "phantom_membrane"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.WOOL.red()),
@@ -114,84 +126,97 @@ class NucleosynthesizingRecipeProvider extends BaseSubRecipeProvider {
               false,
               template(BlockItemIds.REDSTONE_BLOCK),
               500
-        ).save(consumer, Mekanism.rl(basePath + "redstone_block"));
+        ).unlockedBy("has_wool", has(ItemTags.WOOL))
+              .save(consumer, Mekanism.rl(basePath + "redstone_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.WOOL.yellow()),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 2),
               false,
               template(BlockItemIds.GLOWSTONE),
               500
-        ).save(consumer, Mekanism.rl(basePath + "glowstone_block"));
+        ).unlockedBy("has_wool", has(ItemTags.WOOL))
+              .save(consumer, Mekanism.rl(basePath + "glowstone_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.WOOL.blue()),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 2),
               false,
               template(BlockItemIds.LAPIS_BLOCK),
               500
-        ).save(consumer, Mekanism.rl(basePath + "lapis_block"));
+        ).unlockedBy("has_wool", has(ItemTags.WOOL))
+              .save(consumer, Mekanism.rl(basePath + "lapis_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.WOOL.lightGray()),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 2),
               false,
               template(BlockItemIds.QUARTZ_BLOCK),
               500
-        ).save(consumer, Mekanism.rl(basePath + "quartz_block"));
+        ).unlockedBy("has_wool", has(ItemTags.WOOL))
+              .save(consumer, Mekanism.rl(basePath + "quartz_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.WOOL_SLAB.lightGray()),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 1),
               false,
               template(BlockItemIds.QUARTZ_SLAB),
               250
-        ).save(consumer, Mekanism.rl(basePath + "quartz_slab"));
+        ).unlockedBy("has_wool", has(ItemTags.WOOL_SLABS))
+              .save(consumer, Mekanism.rl(basePath + "quartz_slab"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.WOOL_STAIRS.lightGray()),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 2),
               false,
               template(BlockItemIds.QUARTZ_STAIRS),
               500
-        ).save(consumer, Mekanism.rl(basePath + "quartz_stairs"));
+        ).unlockedBy("has_wool", has(ItemTags.WOOL_STAIRS))
+              .save(consumer, Mekanism.rl(basePath + "quartz_stairs"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.FLOWERS_SMALL),
+              IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.FLOWERS_SMALL),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 2),
               false,
               template(BlockItemIds.CHORUS_FLOWER),
               500
-        ).save(consumer, Mekanism.rl(basePath + "chorus_flower"));
+        ).unlockedBy("has_flower", has(Tags.BlockItems.FLOWERS_SMALL))
+              .save(consumer, Mekanism.rl(basePath + "chorus_flower"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.CHESTS_WOODEN),
+              IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.CHESTS_WOODEN),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 2),
               false,
               template(BlockItemIds.ENDER_CHEST),
               500
-        ).save(consumer, Mekanism.rl(basePath + "ender_chest"));
+        ).unlockedBy("has_chest", has(Tags.BlockItems.CHESTS_WOODEN))
+              .save(consumer, Mekanism.rl(basePath + "ender_chest"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.GEMS_AMETHYST),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 2),
               false,
               template(ItemIds.ECHO_SHARD),
               500
-        ).save(consumer, Mekanism.rl(basePath + "echo_shard"));
+        ).unlockedBy("has_amethyst", has(Tags.Items.GEMS_AMETHYST))
+              .save(consumer, Mekanism.rl(basePath + "echo_shard"));
 
+        TagKey<Item> tinIngot = MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.TIN);
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.TIN)),
+              IngredientCreatorAccess.item().from(this.items, tinIngot),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 1),
               false,
               template(ItemIds.IRON_INGOT),
               200
-        ).save(consumer, Mekanism.rl(basePath + "iron"));
+        ).unlockedBy("has_tin_ingot", has(tinIngot))
+              .save(consumer, Mekanism.rl(basePath + "iron"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.OBSIDIANS_NORMAL),
+              IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.OBSIDIANS_NORMAL),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 1),
               false,
               template(BlockItemIds.CRYING_OBSIDIAN),
               200
-        ).save(consumer, Mekanism.rl(basePath + "crying_obsidian"));
+        ).unlockedBy("has_obsidian", has(Tags.BlockItems.OBSIDIANS_NORMAL))
+              .save(consumer, Mekanism.rl(basePath + "crying_obsidian"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(this.items, ItemIds.BOW),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.ANTIMATTER, 1),
               false,
               template(ItemIds.CROSSBOW),
               200
-        ).save(consumer, Mekanism.rl(basePath + "crossbow"));
+        ).unlockedBy(hasCriterion(ItemIds.BOW))
+              .save(consumer, Mekanism.rl(basePath + "crossbow"));
     }
 }

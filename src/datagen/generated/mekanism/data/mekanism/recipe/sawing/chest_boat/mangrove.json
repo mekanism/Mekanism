@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:chest_boat",
   "input": {
     "count": 1,
     "ingredient": "minecraft:mangrove_chest_boat"

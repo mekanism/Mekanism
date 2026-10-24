@@ -1,0 +1,219 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_aqua_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:aqua_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_black_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:black_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_blue_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:blue_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_brown_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:brown_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_cyan_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:cyan_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_dark_red_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:dark_red_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_gray_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:gray_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_green_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:green_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_light_blue_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:light_blue_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_light_gray_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:light_gray_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_lime_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:lime_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_magenta_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:magenta_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_orange_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:orange_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_pink_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:pink_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_purple_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:purple_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_red_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:red_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismadditions:pigment_extracting/plastic/glow/aqua"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_white_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:white_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_yellow_plastic_glow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:yellow_plastic_glow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_white_plastic_glow",
+      "has_orange_plastic_glow",
+      "has_magenta_plastic_glow",
+      "has_light_blue_plastic_glow",
+      "has_yellow_plastic_glow",
+      "has_lime_plastic_glow",
+      "has_pink_plastic_glow",
+      "has_gray_plastic_glow",
+      "has_light_gray_plastic_glow",
+      "has_cyan_plastic_glow",
+      "has_purple_plastic_glow",
+      "has_blue_plastic_glow",
+      "has_brown_plastic_glow",
+      "has_green_plastic_glow",
+      "has_red_plastic_glow",
+      "has_black_plastic_glow",
+      "has_dark_red_plastic_glow",
+      "has_aqua_plastic_glow"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:pigment_extracting/plastic/glow/aqua"
+    ]
+  }
+}

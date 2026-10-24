@@ -1,5 +1,6 @@
 {
   "type": "mekanism:crystallizing",
+  "category": "efficiency",
   "input": {
     "amount": 200,
     "ingredient": "mekanism:clean_gold"

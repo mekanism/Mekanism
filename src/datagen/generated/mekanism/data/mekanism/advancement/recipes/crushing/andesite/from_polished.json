@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_polished_andesite": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:polished_andesite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/andesite/from_polished"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_polished_andesite"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/andesite/from_polished"
+    ]
+  }
+}

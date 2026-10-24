@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "processing",
+  "group": "mekanism:dust_steel",
   "input": {
     "count": 1,
     "ingredient": "#c:ingots/steel"

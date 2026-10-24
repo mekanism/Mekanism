@@ -4,6 +4,7 @@
     "amount": 10,
     "ingredient": "#mekanism:tin"
   },
+  "group": "mekanism:ingot_bronze",
   "item_input": {
     "count": 3,
     "ingredient": "#c:ingots/copper"

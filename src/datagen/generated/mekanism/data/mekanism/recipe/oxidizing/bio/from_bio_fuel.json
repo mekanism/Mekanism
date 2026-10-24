@@ -1,5 +1,6 @@
 {
   "type": "mekanism:oxidizing",
+  "group": "mekanism:bio",
   "input": {
     "count": 1,
     "ingredient": "#c:fuels/bio"

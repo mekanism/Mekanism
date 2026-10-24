@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_crimson_fungus": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:crimson_fungus"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_mushrooms": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:mushrooms"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:oxidizing/fungi/from_mushrooms"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_warped_fungus": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:warped_fungus"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mushrooms",
+      "has_crimson_fungus",
+      "has_warped_fungus"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:oxidizing/fungi/from_mushrooms"
+    ]
+  }
+}

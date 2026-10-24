@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:bed",
   "input": {
     "count": 1,
     "ingredient": "minecraft:cyan_bed"

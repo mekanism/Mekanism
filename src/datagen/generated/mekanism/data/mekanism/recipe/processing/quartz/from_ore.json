@@ -1,5 +1,6 @@
 {
   "type": "mekanism:enriching",
+  "category": "efficiency",
   "input": {
     "count": 1,
     "ingredient": "#c:ores/quartz"

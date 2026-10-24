@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_jungle_trapdoor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:jungle_trapdoor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/trapdoor/jungle"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_jungle_trapdoor"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/trapdoor/jungle"
+    ]
+  }
+}

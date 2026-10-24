@@ -1,5 +1,6 @@
 {
   "type": "mekanism:pigment_extracting",
+  "group": "brown_dye",
   "input": {
     "count": 1,
     "ingredient": "mekanismadditions:brown_plastic_glow_stairs"

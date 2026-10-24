@@ -59,7 +59,7 @@ class UpgradeRecipeProvider extends BaseSubRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, MekanismRecipeProvider.GLASS_CHAR, Pattern.EMPTY),
                     TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.BUCKET),
                     TripleLine.of(Pattern.EMPTY, MekanismRecipeProvider.GLASS_CHAR, Pattern.EMPTY))
-              ).define(MekanismRecipeProvider.GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
+              ).define(MekanismRecipeProvider.GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
               .define(Pattern.CONSTANT, this.items, Tags.Items.BUCKETS_WATER)
               .define(Pattern.BUCKET, this.items, Tags.Items.BUCKETS_LAVA)
               .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
@@ -72,7 +72,7 @@ class UpgradeRecipeProvider extends BaseSubRecipeProvider {
     private void addUpgradeRecipe(RecipeOutput consumer, ResourceKey<Upgrade> upgrade, TagKey<Item> dustTag, String basePath) {
         ExtendedShapedRecipeBuilder.shaped(IUpgradeHelper.INSTANCE.asTemplate(upgrades, upgrade))
               .pattern(UPGRADE_PATTERN)
-              .define(MekanismRecipeProvider.GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
+              .define(MekanismRecipeProvider.GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
               .define(Pattern.CONSTANT, this.items, dustTag)
               .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .category(RecipeCategory.TOOLS)

@@ -4,6 +4,7 @@
     "amount": 256,
     "ingredient": "mekanism:orange"
   },
+  "group": "mekanism:cushion_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

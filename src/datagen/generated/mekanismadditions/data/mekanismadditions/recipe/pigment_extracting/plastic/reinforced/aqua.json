@@ -1,5 +1,6 @@
 {
   "type": "mekanism:pigment_extracting",
+  "group": "aqua",
   "input": {
     "count": 1,
     "ingredient": "mekanismadditions:aqua_reinforced_plastic"

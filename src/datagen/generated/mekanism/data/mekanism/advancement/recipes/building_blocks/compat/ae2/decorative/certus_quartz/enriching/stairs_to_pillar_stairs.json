@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ae2"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_quartz_stairs": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ae2:quartz_stairs"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/ae2/decorative/certus_quartz/enriching/stairs_to_pillar_stairs"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_quartz_stairs"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/ae2/decorative/certus_quartz/enriching/stairs_to_pillar_stairs"
+    ]
+  }
+}

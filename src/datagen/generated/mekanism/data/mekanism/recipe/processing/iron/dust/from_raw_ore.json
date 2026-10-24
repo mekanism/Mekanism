@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "efficiency",
+  "group": "mekanism:dust_iron",
   "input": {
     "count": 3,
     "ingredient": "#c:raw_materials/iron"

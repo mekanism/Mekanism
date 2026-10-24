@@ -1,9 +1,11 @@
 {
   "type": "mekanism:dissolution",
+  "category": "efficiency",
   "chemical_input": {
     "amount": 2,
     "ingredient": "mekanism:sulfuric_acid"
   },
+  "group": "mekanism:dirty_gold",
   "item_input": {
     "count": 1,
     "ingredient": "#c:storage_blocks/raw_gold"

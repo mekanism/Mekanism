@@ -4,6 +4,7 @@
     "amount": 64,
     "ingredient": "mekanism:brown"
   },
+  "group": "mekanismadditions:glow_panels_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

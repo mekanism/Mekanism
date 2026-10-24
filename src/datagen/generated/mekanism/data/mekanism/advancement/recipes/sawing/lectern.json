@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lectern": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:lectern"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/lectern"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_lectern"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/lectern"
+    ]
+  }
+}

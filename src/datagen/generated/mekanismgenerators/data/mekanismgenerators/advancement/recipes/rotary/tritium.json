@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_condensentrator": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:rotary_condensentrator"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismgenerators:rotary/tritium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_condensentrator"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismgenerators:rotary/tritium"
+    ]
+  }
+}

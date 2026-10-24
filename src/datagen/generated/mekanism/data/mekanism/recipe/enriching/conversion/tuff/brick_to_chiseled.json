@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "building",
+  "group": "mekanism:chiseled_tuff_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:tuff_bricks"

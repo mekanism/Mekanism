@@ -3,10 +3,13 @@ package mekanism.api.datagen.recipe;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 import mekanism.api.chemical.ChemicalInstance;
+import mekanism.api.recipes.book.MekanismBookCategory;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.core.Holder;
@@ -33,6 +36,7 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
     protected final List<ICondition> conditions = new ArrayList<>();
     protected final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
     private final BiFunction<BOOK_CATEGORY, String, BOOK_INFO> bookInfoCreator;
+    private boolean requireUnlockCriteria = true;
     private boolean showNotification = true;
     private BOOK_CATEGORY category;
     @Nullable
@@ -51,6 +55,17 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
         return (BUILDER) this;
     }
 
+    /// Adds multiple criterion to this recipe.
+    ///
+    /// @param criteria Criteria to add.
+    ///
+    /// @since 10.8.0
+    @Contract("_ -> this")
+    public BUILDER unlockedBy(Stream<RecipeCriterion> criteria) {
+        criteria.forEach(this::unlockedBy);
+        return self();
+    }
+
     /// Adds a criterion to this recipe.
     ///
     /// @param criterion Criterion to add.
@@ -66,6 +81,9 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
     @Override
     @Contract("_, _ -> this")
     public BUILDER unlockedBy(String name, Criterion<?> criterion) {
+        if (!name.equals(name.toLowerCase(Locale.ROOT))) {
+            throw new IllegalArgumentException("Criterion name should not have capitals: " + name);
+        }
         criteria.put(name, criterion);
         return self();
     }
@@ -76,6 +94,9 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
     @Contract("_ -> this")
     public BUILDER category(BOOK_CATEGORY category) {
         this.category = category;
+        if (category instanceof MekanismBookCategory mekanismCategory) {
+            advancementCategory(mekanismCategory.getAdvancementFolder());
+        }
         return self();
     }
 
@@ -83,11 +104,25 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
     ///
     /// @param category Unlock folder category to set
     @Contract("_ -> this")
-    public BUILDER advancementCategory(String category) {
+    public BUILDER advancementCategory(@Nullable String category) {
+        if (this.advancementCategory != null && category != null) {
+            throw new IllegalArgumentException("Advancement Category is already not null, the advancementCategory call is likely a copy-paste error");
+        }
         this.advancementCategory = category;
         return self();
     }
 
+    /// Helper to create a group based on the short string of the identifier.
+    ///
+    /// @since 10.8.0
+    @Contract("_ -> this")
+    public BUILDER group(ResourceKey<?> group) {
+        return group(group.identifier());
+    }
+
+    /// Helper to create a group based on the short string of the identifier.
+    ///
+    /// @since 10.8.0
     @Contract("_ -> this")
     public BUILDER group(@Nullable Identifier group) {
         return group(group == null ? null : group.toShortString());
@@ -96,6 +131,11 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
     @Override
     @Contract("_ -> this")
     public BUILDER group(@Nullable String group) {
+        if (this.group != null && group != null) {
+            throw new IllegalArgumentException("Group is already not null, the group call is likely a copy-paste error");
+        } else if (group != null && group.isBlank()) {
+            throw new IllegalArgumentException("Group cannot be specified as whitespace.");
+        }
         this.group = group;
         return self();
     }
@@ -117,6 +157,15 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
     @Contract("_ -> this")
     public BUILDER showNotification(boolean showNotification) {
         this.showNotification = showNotification;
+        return self();
+    }
+
+    /// Marks this recipe as not requiring unlock criteria to be added for the recipe to be constructed.
+    ///
+    /// @since 10.8.0
+    @Contract("-> this")
+    public BUILDER ignoreUnlockCriteria() {
+        requireUnlockCriteria = false;
         return self();
     }
 
@@ -154,16 +203,10 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
             RecipeUnlockAdvancementBuilder advancementBuilder = new RecipeUnlockAdvancementBuilder();
             this.criteria.forEach(advancementBuilder::unlockedBy);
             advancementHolder = advancementBuilder.build(recipeOutput, id, advancementCategory);
-        } else if (requireUnlockCriteria()) {
+        } else if (requireUnlockCriteria) {
             throw new IllegalStateException("Cannot save recipe with no unlock criteria set");
         }
         recipeOutput.accept(id, asRecipe(), advancementHolder, conditions.toArray(new ICondition[0]));
-    }
-
-    /// {@return if this recipe builder requires unlock criteria to be set}
-    /// @since 10.8.0
-    protected boolean requireUnlockCriteria() {
-        return false;
     }
 
     /// Builds this recipe basing the name on the output item.

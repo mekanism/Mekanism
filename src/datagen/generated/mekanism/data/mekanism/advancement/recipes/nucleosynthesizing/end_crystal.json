@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_beacon": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:beacon"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:nucleosynthesizing/end_crystal"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_beacon"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:nucleosynthesizing/end_crystal"
+    ]
+  }
+}

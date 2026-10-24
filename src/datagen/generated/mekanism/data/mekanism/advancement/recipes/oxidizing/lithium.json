@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lithium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:dusts/lithium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:oxidizing/lithium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_lithium"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:oxidizing/lithium"
+    ]
+  }
+}

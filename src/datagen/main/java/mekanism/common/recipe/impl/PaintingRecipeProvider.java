@@ -40,25 +40,25 @@ class PaintingRecipeProvider extends BaseSubRecipeProvider {
         //Some base input tags are effectively duplicates of vanilla, but are done to make sure we don't change
         // things that make no sense to be colored, such as some sort of fancy carpets, or a unique type of glass that
         // is tagged as glass, but shouldn't be able to be converted directly into stained-glass
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_BEDS, oneAtATime, BlockItemIds.BED, basePath + "bed/");
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_WOOL, oneAtATime, BlockItemIds.WOOL, basePath + "wool/");
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_WOOL_SLABS, oneAtATime, BlockItemIds.WOOL_SLAB, basePath + "wool/slabs/");
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_WOOL_STAIRS, oneAtATime, BlockItemIds.WOOL_STAIRS, basePath + "wool/stairs/");
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_GLASS, eightAtATime, BlockItemIds.STAINED_GLASS, basePath + "glass/");
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_TERRACOTTA, eightAtATime, BlockItemIds.DYED_TERRACOTTA, basePath + "terracotta/");
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_GLAZED_TERRACOTTA, fourAtATime, BlockItemIds.GLAZED_TERRACOTTA, basePath + "terracotta/glazed/");
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_GLASS_PANES, eightAtATime, BlockItemIds.STAINED_GLASS_PANE, basePath + "glass_pane/");
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CARPETS, eightAtATime, BlockItemIds.CARPET, basePath + "carpet/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_BEDS, oneAtATime, BlockItemIds.BED, "bed_painting", basePath + "bed/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_WOOL, oneAtATime, BlockItemIds.WOOL, "wool_painting", basePath + "wool/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_WOOL_SLABS, oneAtATime, BlockItemIds.WOOL_SLAB, "wool_slab_painting", basePath + "wool/slabs/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_WOOL_STAIRS, oneAtATime, BlockItemIds.WOOL_STAIRS, "wool_stairs_painting", basePath + "wool/stairs/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_GLASS, eightAtATime, BlockItemIds.STAINED_GLASS, "glass_painting", basePath + "glass/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_TERRACOTTA, eightAtATime, BlockItemIds.DYED_TERRACOTTA, "terracotta_painting", basePath + "terracotta/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_GLAZED_TERRACOTTA, fourAtATime, BlockItemIds.GLAZED_TERRACOTTA, "glazed_terracotta_painting", basePath + "terracotta/glazed/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_GLASS_PANES, eightAtATime, BlockItemIds.STAINED_GLASS_PANE, "glass_pane_painting", basePath + "glass_pane/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CARPETS, eightAtATime, BlockItemIds.CARPET, "carpet_painting", basePath + "carpet/");
         //TODO: Eventually we may want to consider taking patterns into account
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_BANNERS, oneAtATime, BlockItemIds.BANNER, basePath + "banner/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_BANNERS, oneAtATime, BlockItemIds.BANNER, "banner_painting", basePath + "banner/");
         //TODO: Shulker boxes and dyed bundles? Would require us to add support for copying data
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CONCRETE, eightAtATime, BlockItemIds.CONCRETE, basePath + "concrete/");
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CONCRETE_SLABS, eightAtATime, BlockItemIds.CONCRETE_SLAB, basePath + "concrete/slabs/");
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CONCRETE_STAIRS, eightAtATime, BlockItemIds.CONCRETE_STAIRS, basePath + "concrete/stairs/");
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CONCRETE_POWDER, eightAtATime, BlockItemIds.CONCRETE_POWDER, basePath + "concrete_powder/");
-        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CANDLE, oneAtATime, BlockItemIds.DYED_CANDLE, basePath + "candle/");
-        addItemRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_HARNESSES, oneAtATime, ItemIds.HARNESS, basePath + "harness/");
-        addItemRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CUSHIONS, oneAtATime, ItemIds.CUSHION, basePath + "cushion/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CONCRETE, eightAtATime, BlockItemIds.CONCRETE, "concrete_painting", basePath + "concrete/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CONCRETE_SLABS, eightAtATime, BlockItemIds.CONCRETE_SLAB, "concrete_slab_painting", basePath + "concrete/slabs/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CONCRETE_STAIRS, eightAtATime, BlockItemIds.CONCRETE_STAIRS, "concrete_stairs_painting", basePath + "concrete/stairs/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CONCRETE_POWDER, eightAtATime, BlockItemIds.CONCRETE_POWDER, "concrete_powder_painting", basePath + "concrete_powder/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CANDLE, oneAtATime, BlockItemIds.DYED_CANDLE, "candle_painting", basePath + "candle/");
+        addItemRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_HARNESSES, oneAtATime, ItemIds.HARNESS, "harness_painting", basePath + "harness/");
+        addItemRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CUSHIONS, oneAtATime, ItemIds.CUSHION, "cushion_painting", basePath + "cushion/");
     }
 
     private void addDyeRecipes(RecipeOutput consumer, String basePath) {
@@ -66,21 +66,24 @@ class PaintingRecipeProvider extends BaseSubRecipeProvider {
         for (EnumColor color : EnumColor.VALUES) {
             DyeColor dyeColor = color.getDyeColor();
             if (dyeColor != null) {
+                ResourceKey<Item> dye = ItemIds.DYE.pick(dyeColor);
                 ItemStackChemicalToItemStackRecipeBuilder.painting(
                       IngredientCreatorAccess.item().fromHolder(MekanismItems.DYE_BASE),
                       IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE),
                       false,
-                      new ItemStackTemplate(items.getOrThrow(ItemIds.DYE.pick(dyeColor)))
-                ).save(consumer, Mekanism.rl(basePath + dyeColor));
+                      new ItemStackTemplate(items.getOrThrow(dye))
+                ).group(dye)
+                      .unlockedBy("has_needed_dye", has(dyeColor.getTag()))
+                      .save(consumer, Mekanism.rl(basePath + dyeColor));
             }
         }
     }
 
-    private void addRecoloringRecipes(RecipeOutput consumer, TagKey<Item> input, int rate, ColorCollection<BlockItemId> outputs, String basePath) {
-        addItemRecoloringRecipes(consumer, input, rate, outputs.map(BlockItemId::item), basePath);
+    private void addRecoloringRecipes(RecipeOutput consumer, TagKey<Item> input, int rate, ColorCollection<BlockItemId> outputs, String group, String basePath) {
+        addItemRecoloringRecipes(consumer, input, rate, outputs.map(BlockItemId::item), group, basePath);
     }
 
-    private void addItemRecoloringRecipes(RecipeOutput consumer, TagKey<Item> input, int rate, ColorCollection<ResourceKey<Item>> outputs, String basePath) {
+    private void addItemRecoloringRecipes(RecipeOutput consumer, TagKey<Item> input, int rate, ColorCollection<ResourceKey<Item>> outputs, String group, String basePath) {
         HolderSet<Item> inputTag = this.items.getOrThrow(input);
         for (EnumColor color : EnumColor.VALUES) {
             DyeColor dyeColor = color.getDyeColor();
@@ -91,7 +94,9 @@ class PaintingRecipeProvider extends BaseSubRecipeProvider {
                       IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), rate),
                       false,
                       new ItemStackTemplate(result)
-                ).save(consumer, Mekanism.rl(basePath + dyeColor));
+                ).group(Mekanism.rl(group))
+                      .unlockedBy("has_needed_dye", has(dyeColor.getTag()))
+                      .save(consumer, Mekanism.rl(basePath + dyeColor));
             }
         }
     }

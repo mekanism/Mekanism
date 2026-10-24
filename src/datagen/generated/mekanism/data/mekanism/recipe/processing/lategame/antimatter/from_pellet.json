@@ -1,5 +1,6 @@
 {
   "type": "mekanism:oxidizing",
+  "group": "mekanism:antimatter",
   "input": {
     "count": 1,
     "ingredient": "#c:pellets/antimatter"

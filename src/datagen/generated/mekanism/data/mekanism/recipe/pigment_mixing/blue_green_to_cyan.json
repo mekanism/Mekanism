@@ -1,5 +1,6 @@
 {
   "type": "mekanism:pigment_mixing",
+  "group": "cyan_dye",
   "left_input": {
     "amount": 1,
     "ingredient": "mekanism:blue"

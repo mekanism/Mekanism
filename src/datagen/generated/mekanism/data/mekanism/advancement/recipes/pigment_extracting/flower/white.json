@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_bone_meal": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:bone_meal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_lily_of_the_valley": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:lily_of_the_valley"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:pigment_extracting/flower/white"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_bone_meal",
+      "has_lily_of_the_valley"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:pigment_extracting/flower/white"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_gravel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:gravels"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:enriching/conversion/gravel_to_flint"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_gravel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:enriching/conversion/gravel_to_flint"
+    ]
+  }
+}

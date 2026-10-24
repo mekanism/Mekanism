@@ -1,9 +1,11 @@
 {
   "type": "mekanism:metallurgic_infusing",
+  "category": "building",
   "chemical_input": {
     "amount": 10,
     "ingredient": "#mekanism:bio"
   },
+  "group": "mekanism:mossy_stone_brick_addition",
   "item_input": {
     "count": 1,
     "ingredient": "minecraft:stone_brick_stairs"

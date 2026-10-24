@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_chiseled_cinnabar": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:chiseled_cinnabar"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/cinnabar/chiseled_to_brick"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_chiseled_cinnabar"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/cinnabar/chiseled_to_brick"
+    ]
+  }
+}

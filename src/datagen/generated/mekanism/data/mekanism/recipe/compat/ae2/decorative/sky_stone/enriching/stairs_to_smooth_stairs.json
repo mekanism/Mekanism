@@ -6,6 +6,7 @@
     }
   ],
   "type": "mekanism:enriching",
+  "category": "building",
   "input": {
     "count": 1,
     "ingredient": "ae2:sky_stone_stairs"

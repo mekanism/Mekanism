@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "processing",
+  "group": "mekanism:bone_meal",
   "input": {
     "count": 1,
     "ingredient": "#c:storage_blocks/bone_meal"

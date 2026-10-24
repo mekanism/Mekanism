@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:door",
   "input": {
     "count": 1,
     "ingredient": "minecraft:cherry_door"

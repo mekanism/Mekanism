@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "decorative",
+  "group": "green_dye",
   "input": {
     "count": 1,
     "ingredient": "#c:crops/cactus"

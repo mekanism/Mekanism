@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_polished_granite_stairs": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:polished_granite_stairs"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/granite/stairs_from_polished_stairs"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_polished_granite_stairs"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/granite/stairs_from_polished_stairs"
+    ]
+  }
+}

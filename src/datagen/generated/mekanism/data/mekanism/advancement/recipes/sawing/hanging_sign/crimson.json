@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_crimson_hanging_sign": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:crimson_hanging_sign"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/hanging_sign/crimson"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_crimson_hanging_sign"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/hanging_sign/crimson"
+    ]
+  }
+}

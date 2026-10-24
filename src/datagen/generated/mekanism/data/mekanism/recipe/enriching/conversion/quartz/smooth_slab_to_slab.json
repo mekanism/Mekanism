@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "building",
+  "group": "mekanism:quartz_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:smooth_quartz_slab"

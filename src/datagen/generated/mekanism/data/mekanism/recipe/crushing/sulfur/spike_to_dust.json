@@ -1,5 +1,6 @@
 {
   "type": "mekanism:crushing",
+  "group": "mekanism:dust_sulfur",
   "input": {
     "count": 1,
     "ingredient": "minecraft:sulfur_spike"

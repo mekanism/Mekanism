@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_creaking_heart": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:creaking_heart"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/creaking_heart"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_creaking_heart"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/creaking_heart"
+    ]
+  }
+}

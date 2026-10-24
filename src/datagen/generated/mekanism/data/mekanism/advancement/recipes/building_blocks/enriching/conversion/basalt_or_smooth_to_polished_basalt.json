@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_basalt": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:basalt"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_smooth_basalt": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:smooth_basalt"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:enriching/conversion/basalt_or_smooth_to_polished_basalt"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_basalt",
+      "has_smooth_basalt"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:enriching/conversion/basalt_or_smooth_to_polished_basalt"
+    ]
+  }
+}

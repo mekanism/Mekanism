@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:pressure_plate",
   "input": {
     "count": 1,
     "ingredient": "minecraft:pale_oak_pressure_plate"

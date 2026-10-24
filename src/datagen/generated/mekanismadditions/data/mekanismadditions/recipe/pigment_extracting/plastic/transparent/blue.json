@@ -1,5 +1,6 @@
 {
   "type": "mekanism:pigment_extracting",
+  "group": "blue_dye",
   "input": {
     "count": 1,
     "ingredient": "mekanismadditions:blue_plastic_transparent"

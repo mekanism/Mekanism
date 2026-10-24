@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_acacia_trapdoor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:acacia_trapdoor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/trapdoor/acacia"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_acacia_trapdoor"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/trapdoor/acacia"
+    ]
+  }
+}

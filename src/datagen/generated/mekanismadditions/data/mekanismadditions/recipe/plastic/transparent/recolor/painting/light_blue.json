@@ -4,6 +4,7 @@
     "amount": 32,
     "ingredient": "mekanism:light_blue"
   },
+  "group": "mekanismadditions:transparent_plastic_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

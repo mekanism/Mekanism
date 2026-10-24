@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_chiseled_tuff": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:chiseled_tuff"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/tuff/tuff_brick_conversion"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_chiseled_tuff"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/tuff/tuff_brick_conversion"
+    ]
+  }
+}

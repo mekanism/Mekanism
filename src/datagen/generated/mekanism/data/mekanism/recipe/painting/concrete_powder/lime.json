@@ -4,6 +4,7 @@
     "amount": 32,
     "ingredient": "mekanism:lime"
   },
+  "group": "mekanism:concrete_powder_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

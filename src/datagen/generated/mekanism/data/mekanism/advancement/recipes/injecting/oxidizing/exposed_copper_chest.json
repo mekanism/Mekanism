@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:injecting/oxidizing/exposed_copper_chest"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_weathering": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:copper_chest"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_weathering"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:injecting/oxidizing/exposed_copper_chest"
+    ]
+  }
+}

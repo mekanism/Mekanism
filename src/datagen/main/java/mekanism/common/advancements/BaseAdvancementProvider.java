@@ -49,7 +49,7 @@ public abstract class BaseAdvancementProvider extends AdvancementSubProvider {
     }
 
     @SafeVarargs
-    protected static Criterion<InventoryChangeTrigger.TriggerInstance> hasItems(HolderGetter<Item> lookup, TagKey<Item>... tags) {
+    public static Criterion<InventoryChangeTrigger.TriggerInstance> hasItems(HolderGetter<Item> lookup, TagKey<Item>... tags) {
         List<ItemPredicate> list = new ArrayList<>();
         for (TagKey<Item> tag : tags) {
             list.add(ItemPredicate.Builder.item().of(lookup, tag).build());

@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "building",
+  "group": "mekanism:cobble_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:stone_slab"

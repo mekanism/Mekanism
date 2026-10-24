@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:pigment_mixing/aqua_yellow_to_lime"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_yellow_dye": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:dyes/yellow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_yellow_dye"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:pigment_mixing/aqua_yellow_to_lime"
+    ]
+  }
+}

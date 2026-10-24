@@ -13,6 +13,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -67,6 +68,14 @@ public interface ISubRecipeProvider {
         return new RecipeCriterion(RecipeProvider.getHasName(item.value()), has(item));
     }
 
+    default RecipeCriterion hasCriterion(Item item) {
+        return new RecipeCriterion(RecipeProvider.getHasName(item), has(item));
+    }
+
+    default Criterion<TriggerInstance> has(Item item) {
+        return RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(items(), item));
+    }
+
     default Criterion<TriggerInstance> has(BlockItemId item) {
         return has(item.item());
     }
@@ -76,7 +85,11 @@ public interface ISubRecipeProvider {
     }
 
     default Criterion<TriggerInstance> has(Holder<? extends ItemLike> item) {
-        return RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(items(), item.value()));
+        return has(item.value().asItem());
+    }
+
+    default Criterion<InventoryChangeTrigger.TriggerInstance> has(BlockItemTagId tag) {
+        return has(tag.item());
     }
 
     /// Copied from [net.minecraft.data.recipes.RecipeProvider]

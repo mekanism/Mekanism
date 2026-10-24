@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_concrete_powder": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:light_blue_concrete_powder"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:injecting/concrete/light_blue"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_concrete_powder"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:injecting/concrete/light_blue"
+    ]
+  }
+}

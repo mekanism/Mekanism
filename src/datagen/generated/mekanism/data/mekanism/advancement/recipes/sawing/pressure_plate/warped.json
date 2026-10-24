@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/pressure_plate/warped"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_warped_pressure_plate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:warped_pressure_plate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_warped_pressure_plate"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/pressure_plate/warped"
+    ]
+  }
+}

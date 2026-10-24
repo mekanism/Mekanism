@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_substrate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:substrate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:reaction/substrate/water_ethene"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_substrate"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:reaction/substrate/water_ethene"
+    ]
+  }
+}

@@ -22,13 +22,14 @@ class EnergyConversionRecipeProvider extends BaseSubRecipeProvider {
         String basePath = "energy_conversion/";
         int redstoneEnergy = 10_000;
         addEnergyConversionRecipe(consumer, basePath, "redstone", Tags.Items.DUSTS_REDSTONE, redstoneEnergy);
-        addEnergyConversionRecipe(consumer, basePath, "redstone_block", Tags.Items.STORAGE_BLOCKS_REDSTONE, 9 * redstoneEnergy);
+        addEnergyConversionRecipe(consumer, basePath, "redstone_block", Tags.BlockItems.STORAGE_BLOCKS_REDSTONE.item(), 9 * redstoneEnergy);
     }
 
     private void addEnergyConversionRecipe(RecipeOutput consumer, String basePath, String name, TagKey<Item> inputTag, int output) {
         ItemStackToEnergyRecipeBuilder.energyConversion(
               IngredientCreatorAccess.item().from(this.items, inputTag),
               output
-        ).save(consumer, Mekanism.rl(basePath + name));
+        ).unlockedBy("has_" + name, has(inputTag))
+              .save(consumer, Mekanism.rl(basePath + name));
     }
 }

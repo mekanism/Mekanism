@@ -22,6 +22,7 @@ import org.jspecify.annotations.Nullable;
 ///
 /// @since 10.8.0
 public enum CrystallizingBookCategory implements MekanismBookCategory {
+    EFFICIENCY("efficiency", "chemical_crystallizer", null),
     MISC("misc", "chemical_crystallizer", null);
 
     public static final Codec<CrystallizingBookCategory> CODEC = StringRepresentable.fromEnum(CrystallizingBookCategory::values);

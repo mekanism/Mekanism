@@ -4,6 +4,7 @@
     "amount": 32,
     "ingredient": "mekanism:red"
   },
+  "group": "mekanism:glass_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

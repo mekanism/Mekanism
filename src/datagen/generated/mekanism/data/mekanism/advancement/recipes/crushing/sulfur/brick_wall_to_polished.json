@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sulfur_brick_wall": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:sulfur_brick_wall"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/sulfur/brick_wall_to_polished"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_sulfur_brick_wall"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/sulfur/brick_wall_to_polished"
+    ]
+  }
+}

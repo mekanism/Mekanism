@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_blueu_dye": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:dyes/blue"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:combining/dye/light_blue"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_white_dye": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:dyes/white"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_blueu_dye",
+      "has_white_dye"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:combining/dye/light_blue"
+    ]
+  }
+}

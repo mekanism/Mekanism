@@ -1,5 +1,6 @@
 {
   "type": "mekanism:pigment_extracting",
+  "group": "light_gray_dye",
   "input": {
     "count": 1,
     "ingredient": "#c:dyes/light_gray"

@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "building",
+  "group": "mekanism:cracked_blackstone_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:polished_blackstone_bricks"

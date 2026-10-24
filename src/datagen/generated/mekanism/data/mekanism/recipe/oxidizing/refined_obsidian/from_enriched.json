@@ -1,5 +1,6 @@
 {
   "type": "mekanism:oxidizing",
+  "group": "mekanism:refined_obsidian",
   "input": {
     "count": 1,
     "ingredient": "#mekanism:enriched/obsidian"

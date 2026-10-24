@@ -1,9 +1,11 @@
 {
   "type": "mekanism:injecting",
+  "category": "efficiency",
   "chemical_input": {
     "amount": 1,
     "ingredient": "mekanism:hydrogen_chloride"
   },
+  "group": "mekanism:shard_gold",
   "item_input": {
     "count": 3,
     "ingredient": "#c:raw_materials/gold"

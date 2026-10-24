@@ -1,5 +1,6 @@
 {
   "type": "mekanism:metallurgic_infusing",
+  "category": "building",
   "chemical_input": {
     "amount": 10,
     "ingredient": "#mekanism:bio"

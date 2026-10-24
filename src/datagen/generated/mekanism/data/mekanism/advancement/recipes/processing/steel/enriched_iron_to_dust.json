@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_enriched_iron": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:enriched_iron"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:processing/steel/enriched_iron_to_dust"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_enriched_iron"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/steel/enriched_iron_to_dust"
+    ]
+  }
+}

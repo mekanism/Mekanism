@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_jungle_hanging_sign": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:jungle_hanging_sign"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/hanging_sign/jungle"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_jungle_hanging_sign"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/hanging_sign/jungle"
+    ]
+  }
+}

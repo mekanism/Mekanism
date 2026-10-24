@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "decorative",
+  "group": "pink_dye",
   "input": {
     "count": 1,
     "ingredient": "minecraft:peony"

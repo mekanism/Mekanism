@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.MekanismRegistries;
 import mekanism.common.recipe.impl.BaseSubRecipeProvider;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.worldgen.BootstrapContextAccess;
@@ -14,6 +15,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.conditions.AndCondition;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
@@ -21,6 +23,7 @@ import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 //TODO: Decide if we should have compat recipes go into their own data packs
 public abstract class CompatRecipeProvider extends BaseSubRecipeProvider {
 
+    protected final HolderGetter<Block> blocks;
     protected final String modid;
     protected final ICondition modLoaded;
     protected final ICondition allModsLoaded;
@@ -29,6 +32,7 @@ public abstract class CompatRecipeProvider extends BaseSubRecipeProvider {
         super(contextAccess.lookup(Registries.ITEM), contextAccess.lookup(Registries.FLUID), contextAccess.lookup(MekanismRegistries.Keys.CHEMICAL));
         this.modid = modid;
         this.modLoaded = new ModLoadedCondition(modid);
+        this.blocks = contextAccess.lookup(Registries.BLOCK);
         if (secondaryMods.length == 0) {
             allModsLoaded = modLoaded;
         } else {
@@ -63,6 +67,10 @@ public abstract class CompatRecipeProvider extends BaseSubRecipeProvider {
 
     protected Holder<Item> foreignItem(Identifier id) {
         return items.getOrThrow(ResourceKey.create(Registries.ITEM, id));
+    }
+
+    protected Holder<Block> foreignBlock(Identifier id) {
+        return blocks.getOrThrow(ResourceKey.create(Registries.BLOCK, id));
     }
 
     protected ItemStackTemplate foreignItemStack(Identifier id, int count) {

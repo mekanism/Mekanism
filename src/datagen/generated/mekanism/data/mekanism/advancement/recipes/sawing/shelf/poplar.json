@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_poplar_shelf": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:poplar_shelf"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/shelf/poplar"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_poplar_shelf"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/shelf/poplar"
+    ]
+  }
+}

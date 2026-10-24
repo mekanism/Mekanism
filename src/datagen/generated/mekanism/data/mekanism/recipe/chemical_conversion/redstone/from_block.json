@@ -1,5 +1,6 @@
 {
   "type": "mekanism:chemical_conversion",
+  "group": "mekanism:redstone",
   "input": {
     "count": 1,
     "ingredient": "#c:storage_blocks/redstone"

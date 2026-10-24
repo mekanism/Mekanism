@@ -1,5 +1,6 @@
 {
   "type": "mekanism:pigment_extracting",
+  "group": "magenta_dye",
   "input": {
     "count": 1,
     "ingredient": "mekanismadditions:magenta_plastic_slab"

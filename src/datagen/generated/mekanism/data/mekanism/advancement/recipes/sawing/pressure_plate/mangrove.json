@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_mangrove_pressure_plate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:mangrove_pressure_plate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/pressure_plate/mangrove"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mangrove_pressure_plate"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/pressure_plate/mangrove"
+    ]
+  }
+}

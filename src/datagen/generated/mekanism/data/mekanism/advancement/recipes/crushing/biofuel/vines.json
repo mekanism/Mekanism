@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/biofuel/vines"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_twisting_vines": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:twisting_vines"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_vine": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:vine"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_weeping_vines": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:weeping_vines"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_vine",
+      "has_twisting_vines",
+      "has_weeping_vines"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/biofuel/vines"
+    ]
+  }
+}

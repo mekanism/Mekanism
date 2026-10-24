@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "building",
+  "group": "mekanism:mossy_stone_brick_removal",
   "input": {
     "count": 1,
     "ingredient": "minecraft:mossy_stone_bricks"

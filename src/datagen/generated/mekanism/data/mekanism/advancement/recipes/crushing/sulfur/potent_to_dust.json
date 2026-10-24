@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_potent_sulfur": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:potent_sulfur"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/sulfur/potent_to_dust"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_potent_sulfur"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/sulfur/potent_to_dust"
+    ]
+  }
+}

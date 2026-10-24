@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:boat",
   "input": {
     "count": 1,
     "ingredient": "minecraft:spruce_boat"

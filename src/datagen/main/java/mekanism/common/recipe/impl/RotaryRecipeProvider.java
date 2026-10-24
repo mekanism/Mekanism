@@ -6,6 +6,7 @@ import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
@@ -54,6 +55,7 @@ class RotaryRecipeProvider extends BaseSubRecipeProvider {
               IngredientCreatorAccess.chemicalStack().fromHolder(chemicalHolder, 1),
               new ChemicalStackTemplate(chemicalHolder, 1),
               new FluidStackTemplate(fluidOutput, 1)
-        ).save(consumer, Mekanism.rl(basePath + chemical.identifier().getPath()));
+        ).unlockedBy("has_condensentrator", has(MekanismBlocks.ROTARY_CONDENSENTRATOR))
+              .save(consumer, Mekanism.rl(basePath + chemical.identifier().getPath()));
     }
 }

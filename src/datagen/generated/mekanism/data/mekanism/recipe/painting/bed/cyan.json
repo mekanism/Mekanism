@@ -4,6 +4,7 @@
     "amount": 256,
     "ingredient": "mekanism:cyan"
   },
+  "group": "mekanism:bed_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

@@ -1,0 +1,219 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_aqua_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:aqua_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_black_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:black_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_blue_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:blue_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_brown_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:brown_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_cyan_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:cyan_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_dark_red_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:dark_red_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_gray_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:gray_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_green_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:green_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_light_blue_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:light_blue_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_light_gray_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:light_gray_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_lime_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:lime_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_magenta_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:magenta_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_orange_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:orange_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_pink_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:pink_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_purple_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:purple_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_red_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:red_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismadditions:pigment_extracting/plastic/reinforced/dark_red"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_white_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:white_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_yellow_reinforced_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismadditions:yellow_reinforced_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_white_reinforced_plastic",
+      "has_orange_reinforced_plastic",
+      "has_magenta_reinforced_plastic",
+      "has_light_blue_reinforced_plastic",
+      "has_yellow_reinforced_plastic",
+      "has_lime_reinforced_plastic",
+      "has_pink_reinforced_plastic",
+      "has_gray_reinforced_plastic",
+      "has_light_gray_reinforced_plastic",
+      "has_cyan_reinforced_plastic",
+      "has_purple_reinforced_plastic",
+      "has_blue_reinforced_plastic",
+      "has_brown_reinforced_plastic",
+      "has_green_reinforced_plastic",
+      "has_red_reinforced_plastic",
+      "has_black_reinforced_plastic",
+      "has_dark_red_reinforced_plastic",
+      "has_aqua_reinforced_plastic"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:pigment_extracting/plastic/reinforced/dark_red"
+    ]
+  }
+}

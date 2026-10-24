@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:injecting/coral/bubble_coral_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "in_warm_ocean": {
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "biomes": "#minecraft:has_structure/ocean_ruin_warm"
+            }
+          }
+        }
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "in_warm_ocean"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:injecting/coral/bubble_coral_block"
+    ]
+  }
+}

@@ -1,8 +1,9 @@
 {
   "type": "mekanism:crushing",
+  "category": "building",
   "input": {
     "count": 1,
-    "ingredient": "#c:bricks/resin"
+    "ingredient": "minecraft:resin_bricks"
   },
   "output": {
     "id": "minecraft:resin_block"

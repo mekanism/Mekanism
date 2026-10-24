@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:crushing/tuff/brick_stairs_to_polished"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tuff_brick_stairs": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:tuff_brick_stairs"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tuff_brick_stairs"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/tuff/brick_stairs_to_polished"
+    ]
+  }
+}

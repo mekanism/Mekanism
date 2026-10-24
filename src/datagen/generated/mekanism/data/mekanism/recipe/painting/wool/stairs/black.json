@@ -4,6 +4,7 @@
     "amount": 256,
     "ingredient": "mekanism:black"
   },
+  "group": "mekanism:wool_stairs_painting",
   "item_input": {
     "count": 1,
     "ingredient": {

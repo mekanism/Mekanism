@@ -10,6 +10,7 @@
     "amount": 200,
     "ingredient": "#minecraft:water"
   },
+  "group": "mekanism:substrate",
   "item_input": {
     "count": 1,
     "ingredient": "mekanism:substrate"

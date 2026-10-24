@@ -22,6 +22,7 @@ import org.jspecify.annotations.Nullable;
 ///
 /// @since 10.8.0
 public enum MetallurgicInfusingBookCategory implements MekanismBookCategory {
+    BUILDING("building", "metallurgic_infuser", null),
     MISC("misc", "metallurgic_infuser", null);
 
     public static final Codec<MetallurgicInfusingBookCategory> CODEC = StringRepresentable.fromEnum(MetallurgicInfusingBookCategory::values);

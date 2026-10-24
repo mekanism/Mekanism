@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "efficiency",
+  "group": "coal",
   "input": {
     "count": 1,
     "ingredient": "#c:ores/coal"

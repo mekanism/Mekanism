@@ -1,5 +1,6 @@
 {
   "type": "mekanism:oxidizing",
+  "group": "mekanism:redstone",
   "input": {
     "count": 1,
     "ingredient": "#mekanism:enriched/redstone"

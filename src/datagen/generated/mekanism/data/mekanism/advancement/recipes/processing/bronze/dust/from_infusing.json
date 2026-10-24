@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_copper_dust": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:dusts/copper"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:processing/bronze/dust/from_infusing"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_copper_dust"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/bronze/dust/from_infusing"
+    ]
+  }
+}

@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "building",
+  "group": "mekanism:chiseled_deepslate_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:cracked_deepslate_tiles"

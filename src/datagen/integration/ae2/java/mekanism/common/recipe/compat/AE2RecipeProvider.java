@@ -3,12 +3,16 @@ package mekanism.common.recipe.compat;
 import appeng.api.ids.AEBlockIds;
 import appeng.api.ids.AEItemIds;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
+import mekanism.api.recipes.book.CrushingBookCategory;
+import mekanism.api.recipes.book.EnrichingBookCategory;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.worldgen.BootstrapContextAccess;
 import net.minecraft.references.ItemIds;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
 
 public class AE2RecipeProvider extends CompatRecipeProvider {
@@ -20,52 +24,65 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
     @Override
     protected void registerRecipes(RecipeOutput consumer, String basePath) {
         //Certus Crystal -> Certus Dust
+        TagKey<Item> certusQuartz = ItemTags.create(Tags.Items.GEMS.location().withSuffix("/certus_quartz"));
         ItemStackToItemStackRecipeBuilder.crushing(
-                    IngredientCreatorAccess.item().from(this.items, ItemTags.create(Tags.Items.GEMS.location().withSuffix("/certus_quartz"))),
+                    IngredientCreatorAccess.item().from(this.items, certusQuartz),
                     foreignItemStack(AEItemIds.CERTUS_QUARTZ_DUST)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.PROCESSING)
+              .unlockedBy("has_certus_quartz", has(certusQuartz))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "certus_crystal_to_dust"));
 
         //Fluix Crystal -> Fluix Dust
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEItemIds.FLUIX_CRYSTAL),
                     foreignItemStack(AEItemIds.FLUIX_DUST)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.PROCESSING)
+              .unlockedBy(hasCriterion(foreignItem(AEItemIds.FLUIX_CRYSTAL)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "fluix_crystal_to_dust"));
 
         //Sky Stone -> Sky Stone Dust
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BLOCK),
                     foreignItemStack(AEItemIds.SKY_DUST)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.PROCESSING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BLOCK)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "sky_stone_to_dust"));
 
         //Sky Stone Dust -> Sky Stone
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEItemIds.SKY_DUST),
                     foreignItemStack(AEBlockIds.SKY_STONE_BLOCK)
-              ).addCondition(modLoaded)
+              ).unlockedBy(hasCriterion(foreignItem(AEItemIds.SKY_DUST)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "sky_stone_dust_to_sky_stone"));
 
         //Ender Pearl -> Ender Dust
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(items, ItemIds.ENDER_PEARL),
                     foreignItemStack(AEItemIds.ENDER_DUST)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.PROCESSING)
+              .unlockedBy(hasCriterion(ItemIds.ENDER_PEARL))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "ender_pearl_to_dust"));
 
         //Sand -> Silicon
         ItemStackToItemStackRecipeBuilder.crushing(
-                    IngredientCreatorAccess.item().from(this.items, Tags.Items.SANDS),
+                    IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.SANDS),
                     foreignItemStack(AEItemIds.SILICON)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.PROCESSING)
+              .unlockedBy("has_sand", has(Tags.BlockItems.SANDS))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "sand_to_silicon"));
 
         //Certus Dust to Silicon
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEItemIds.CERTUS_QUARTZ_DUST),
                     foreignItemStack(AEItemIds.SILICON, 2)
-              ).addCondition(modLoaded)
+              ).unlockedBy(hasCriterion(foreignItem(AEItemIds.CERTUS_QUARTZ_DUST)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "certus_quartz_dust_to_silicon"));
 
         addDecorativeRecipes(consumer, basePath + "decorative/");
@@ -86,82 +103,108 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_CHEST),
                     foreignItemStack(AEBlockIds.SKY_STONE_CHEST)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_CHEST)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "smooth_chest_to_chest"));
 
         //Smooth Sky Stone -> Sky Stone
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_BLOCK),
                     foreignItemStack(AEBlockIds.SKY_STONE_BLOCK)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_BLOCK)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "smooth_to_stone"));
         //Smooth Sky Stone Slab -> Sky Stone Slab
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_SLAB),
                     foreignItemStack(AEBlockIds.SKY_STONE_SLAB)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_SLAB)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "smooth_slab_to_slab"));
         //Smooth Sky Stone Stairs -> Sky Stone Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_STAIRS),
                     foreignItemStack(AEBlockIds.SKY_STONE_STAIRS)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_STAIRS)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "smooth_stairs_to_stairs"));
         //Smooth Sky Stone Wall -> Sky Stone Wall
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_WALL),
                     foreignItemStack(AEBlockIds.SKY_STONE_WALL)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_WALL)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "smooth_wall_to_wall"));
 
         //Sky Stone Brick -> Smooth Sky Stone
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK),
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_BLOCK)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "brick_to_smooth"));
         //Sky Stone Brick Slab -> Smooth Sky Stone Slab
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK_SLAB),
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_SLAB)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK_SLAB)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "brick_slab_to_smooth_slab"));
         //Sky Stone Brick Stairs -> Smooth Sky Stone Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK_STAIRS),
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_STAIRS)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK_STAIRS)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "brick_stairs_to_smooth_stairs"));
         //Sky Stone Brick Wall -> Smooth Sky Stone Wall
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK_WALL),
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_WALL)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK_WALL)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "brick_wall_to_smooth_wall"));
 
         //Sky Stone Small Brick -> Sky Stone Brick
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_SMALL_BRICK),
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_SMALL_BRICK)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "small_brick_to_brick"));
         //Sky Stone Small Brick Slab -> Sky Stone Brick Slab
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB),
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK_SLAB)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "small_brick_slab_to_brick_slab"));
         //Sky Stone Small Brick Stairs -> Sky Stone Brick Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS),
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK_STAIRS)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "small_brick_stairs_to_brick_stairs"));
         //Sky Stone Small Brick Wall -> Sky Stone Brick Wall
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_SMALL_BRICK_WALL),
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK_WALL)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_SMALL_BRICK_WALL)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "small_brick_wall_to_brick_wall"));
     }
 
@@ -170,76 +213,100 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_CHEST),
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_CHEST)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_CHEST)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "chest_to_smooth_chest"));
 
         //Sky Stone Slab -> Smooth Sky Stone Slab
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_SLAB),
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_SLAB)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_SLAB)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "slab_to_smooth_slab"));
         //Sky Stone Stairs -> Smooth Sky Stone Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_STAIRS),
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_STAIRS)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_STAIRS)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "stairs_to_smooth_stairs"));
         //Sky Stone Wall -> Smooth Sky Stone Wall
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_WALL),
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_WALL)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_WALL)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "wall_to_smooth_wall"));
 
         //Smooth Sky Stone -> Sky Stone Brick
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_BLOCK),
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_BLOCK)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "smooth_to_brick"));
         //Smooth Sky Stone Slab -> Sky Stone Brick Slab
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_SLAB),
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK_SLAB)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_SLAB)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "smooth_slab_to_brick_slab"));
         //Smooth Sky Stone Stairs -> Sky Stone Brick Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_STAIRS),
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK_STAIRS)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_STAIRS)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "smooth_stairs_to_brick_stairs"));
         //Smooth Sky Stone Wall -> Sky Stone Brick Wall
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_WALL),
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK_WALL)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_WALL)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "smooth_wall_to_brick_wall"));
 
         //Sky Stone Brick -> Sky Stone Small Brick
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK),
                     foreignItemStack(AEBlockIds.SKY_STONE_SMALL_BRICK)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "brick_to_small_brick"));
         //Sky Stone Brick Slab -> Sky Stone Small Brick Slab
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK_SLAB),
                     foreignItemStack(AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK_SLAB)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "brick_slab_to_small_brick_slab"));
         //Sky Stone Brick Stairs -> Sky Stone Small Brick Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK_STAIRS),
                     foreignItemStack(AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK_STAIRS)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "brick_stairs_to_small_brick_stairs"));
         //Sky Stone Brick Wall -> Sky Stone Small Brick Wall
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK_WALL),
                     foreignItemStack(AEBlockIds.SKY_STONE_SMALL_BRICK_WALL)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK_WALL)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "brick_wall_to_small_brick_wall"));
     }
 
@@ -253,75 +320,99 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_BLOCK),
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_BLOCK)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_BLOCK)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "block_to_chiseled_block"));
         //Certus Quartz Slab -> Chiseled Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_SLAB),
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_SLAB)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_SLAB)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "slab_to_chiseled_slab"));
         //Certus Quartz Stairs -> Chiseled Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_STAIRS),
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_STAIRS)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_STAIRS)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "stairs_to_chiseled_stairs"));
         //Certus Quartz Wall -> Chiseled Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_WALL),
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_WALL)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_WALL)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "wall_to_chiseled_wall"));
 
         //Chiseled Certus Quartz Block -> Certus Quartz Pillar Block
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_BLOCK),
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_BLOCK)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "chiseled_block_to_pillar"));
         //Chiseled Certus Quartz Slab -> Certus Quartz Pillar Slab
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_SLAB),
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR_SLAB)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_SLAB)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "chiseled_slab_to_pillar_slab"));
         //Chiseled Certus Quartz Stairs -> Certus Quartz Pillar Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_STAIRS),
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR_STAIRS)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_STAIRS)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "chiseled_stairs_to_pillar_stairs"));
         //Chiseled Certus Quartz Wall -> Certus Quartz Pillar Wall
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_WALL),
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR_WALL)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_WALL)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "chiseled_wall_to_pillar_wall"));
 
         //Certus Quartz Pillar Block -> Certus Quartz Block
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_PILLAR),
                     foreignItemStack(AEBlockIds.QUARTZ_BLOCK)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "pillar_to_block"));
         //Certus Quartz Pillar Slab -> Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_PILLAR_SLAB),
                     foreignItemStack(AEBlockIds.QUARTZ_SLAB)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR_SLAB)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "pillar_slab_to_slab"));
         //Certus Quartz Pillar Stairs -> Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_PILLAR_STAIRS),
                     foreignItemStack(AEBlockIds.QUARTZ_STAIRS)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR_STAIRS)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "pillar_stairs_to_stairs"));
         //Certus Quartz Pillar Wall -> Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_PILLAR_WALL),
                     foreignItemStack(AEBlockIds.QUARTZ_WALL)
-              ).addCondition(modLoaded)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR_WALL)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "pillar_wall_to_wall"));
     }
 
@@ -330,75 +421,99 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_BLOCK),
                     foreignItemStack(AEBlockIds.QUARTZ_BLOCK)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_BLOCK)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "chiseled_block_to_block"));
         //Chiseled Certus Quartz Slab -> Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_SLAB),
                     foreignItemStack(AEBlockIds.QUARTZ_SLAB)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_SLAB)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "chiseled_slab_to_slab"));
         //Chiseled Certus Quartz Stairs -> Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_STAIRS),
                     foreignItemStack(AEBlockIds.QUARTZ_STAIRS)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_STAIRS)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "chiseled_stairs_to_stairs"));
         //Chiseled Certus Quartz Wall -> Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_WALL),
                     foreignItemStack(AEBlockIds.QUARTZ_WALL)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_WALL)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "chiseled_wall_to_wall"));
 
         //Certus Quartz Pillar Block -> Chiseled Certus Quartz Block
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_PILLAR),
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_BLOCK)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "pillar_to_chiseled_block"));
         //Certus Quartz Pillar Slab -> Chiseled Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_PILLAR_SLAB),
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_SLAB)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR_SLAB)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "pillar_slab_to_chiseled_slab"));
         //Certus Quartz Pillar Stairs -> Chiseled Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_PILLAR_STAIRS),
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_STAIRS)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR_STAIRS)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "pillar_stairs_to_chiseled_stairs"));
         //Certus Quartz Pillar Wall -> Chiseled Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_PILLAR_WALL),
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_WALL)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR_WALL)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "pillar_wall_to_chiseled_wall"));
 
         //Certus Quartz Block -> Certus Quartz Pillar Block
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_BLOCK),
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_BLOCK)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "block_to_pillar"));
         //Certus Quartz Slab -> Certus Quartz Pillar Slab
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_SLAB),
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR_SLAB)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_SLAB)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "slab_to_pillar_slab"));
         //Certus Quartz Stairs -> Certus Quartz Pillar Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_STAIRS),
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR_STAIRS)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_STAIRS)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "stairs_to_pillar_stairs"));
         //Certus Quartz Wall -> Certus Quartz Pillar Wall
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_WALL),
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR_WALL)
-              ).addCondition(modLoaded)
+              ).category(EnrichingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_WALL)))
+              .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "wall_to_pillar_wall"));
     }
 }

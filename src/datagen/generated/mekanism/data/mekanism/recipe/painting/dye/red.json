@@ -4,6 +4,7 @@
     "amount": 256,
     "ingredient": "mekanism:red"
   },
+  "group": "red_dye",
   "item_input": {
     "count": 1,
     "ingredient": "mekanism:dye_base"

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_pale_oak_boat": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:pale_oak_boat"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/boat/pale_oak"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_pale_oak_boat"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/boat/pale_oak"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cobblestone_stairs": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:cobblestone_stairs"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:metallurgic_infusing/mossy/cobblestone_stairs"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_cobblestone_stairs"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:metallurgic_infusing/mossy/cobblestone_stairs"
+    ]
+  }
+}

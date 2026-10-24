@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:hanging_sign",
   "input": {
     "count": 1,
     "ingredient": "minecraft:acacia_hanging_sign"

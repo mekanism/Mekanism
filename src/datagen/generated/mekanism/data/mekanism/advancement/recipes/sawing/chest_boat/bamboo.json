@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_bamboo_chest_raft": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:bamboo_chest_raft"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:sawing/chest_boat/bamboo"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_bamboo_chest_raft"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:sawing/chest_boat/bamboo"
+    ]
+  }
+}

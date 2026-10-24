@@ -4,6 +4,7 @@
     "amount": 40,
     "ingredient": "#mekanism:gold"
   },
+  "group": "mekanism:dust_netherite",
   "item_input": {
     "count": 4,
     "ingredient": "minecraft:netherite_scrap"

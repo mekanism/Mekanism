@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "category": "building",
+  "group": "mekanism:deepslate_tile_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:cracked_deepslate_tiles"

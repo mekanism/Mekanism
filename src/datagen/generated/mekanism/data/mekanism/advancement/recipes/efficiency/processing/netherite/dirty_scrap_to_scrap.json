@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dirty_scrap": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:dirty_netherite_scrap"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:processing/netherite/dirty_scrap_to_scrap"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_dirty_scrap"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/netherite/dirty_scrap_to_scrap"
+    ]
+  }
+}

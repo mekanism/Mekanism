@@ -161,12 +161,12 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               new ItemStackTemplate(shield)
         )).save(output, name + "/shield_decoration");
         String baseToolsPath = name + "/tools/";
-        tool(SWORD, tools.sword(), ingot, RecipeCategory.COMBAT).category(RecipeCategory.COMBAT).save(output, MekanismTools.rl(baseToolsPath + "sword"));
-        tool(SPEAR, tools.spear(), ingot, RecipeCategory.COMBAT).category(RecipeCategory.COMBAT).save(output, MekanismTools.rl(baseToolsPath + "spear"));
-        tool(PICKAXE, tools.pickaxe(), ingot, RecipeCategory.TOOLS).category(RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "pickaxe"));
-        tool(AXE, tools.axe(), ingot, RecipeCategory.TOOLS).category(RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "axe"));
-        tool(SHOVEL, tools.shovel(), ingot, RecipeCategory.TOOLS).category(RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "shovel"));
-        tool(HOE, tools.hoe(), ingot, RecipeCategory.TOOLS).category(RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "hoe"));
+        tool(SWORD, tools.sword(), ingot, RecipeCategory.COMBAT).save(output, MekanismTools.rl(baseToolsPath + "sword"));
+        tool(SPEAR, tools.spear(), ingot, RecipeCategory.COMBAT).save(output, MekanismTools.rl(baseToolsPath + "spear"));
+        tool(PICKAXE, tools.pickaxe(), ingot, RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "pickaxe"));
+        tool(AXE, tools.axe(), ingot, RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "axe"));
+        tool(SHOVEL, tools.shovel(), ingot, RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "shovel"));
+        tool(HOE, tools.hoe(), ingot, RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "hoe"));
         //TODO - 1.20.5: Do we care this no longer accepts tools from other mods?
         PaxelShapedRecipeBuilder.shaped(tools.paxel())
               .pattern(PAXEL)
@@ -174,7 +174,6 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .define(PICKAXE_CHAR, tools.pickaxe())
               .define(SHOVEL_CHAR, tools.shovel())
               .define(ROD_CHAR, this.items, Tags.Items.RODS_WOODEN)
-              .category(RecipeCategory.TOOLS)
               .unlockedBy("has_ingot", has(ingot))
               .save(output, MekanismTools.rl(baseToolsPath + "paxel"));
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
@@ -215,7 +214,6 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .define(PICKAXE_CHAR, this.items, pickaxe)
               .define(SHOVEL_CHAR, this.items, shovel)
               .define(ROD_CHAR, this.items, Tags.Items.RODS_WOODEN)
-              .category(RecipeCategory.TOOLS)
               .unlockedBy(criterion)
               .save(output);
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget

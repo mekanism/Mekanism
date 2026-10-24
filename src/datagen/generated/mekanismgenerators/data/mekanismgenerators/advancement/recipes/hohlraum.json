@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_gold_dust": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:dusts/gold"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismgenerators:hohlraum"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_gold_dust"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismgenerators:hohlraum"
+    ]
+  }
+}

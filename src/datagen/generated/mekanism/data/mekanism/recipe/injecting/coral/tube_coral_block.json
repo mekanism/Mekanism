@@ -4,6 +4,7 @@
     "amount": 5,
     "ingredient": "#mekanism:water_vapor"
   },
+  "group": "mekanism:coral_revival",
   "item_input": {
     "count": 1,
     "ingredient": "minecraft:dead_tube_coral_block"

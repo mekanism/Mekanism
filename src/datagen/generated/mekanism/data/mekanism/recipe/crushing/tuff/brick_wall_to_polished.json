@@ -1,5 +1,7 @@
 {
   "type": "mekanism:crushing",
+  "category": "building",
+  "group": "mekanism:polished_tuff_conversion",
   "input": {
     "count": 1,
     "ingredient": "minecraft:tuff_brick_wall"
