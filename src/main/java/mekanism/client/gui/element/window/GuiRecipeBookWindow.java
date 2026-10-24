@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.window;
 
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.recipe_book.MekanismRecipeBookComponent;
+import mekanism.client.gui.recipe_book.VirtualRecipeBookComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.SelectedWindowData;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -22,10 +22,10 @@ public class GuiRecipeBookWindow extends GuiWindow {
     public static final int WIDTH_WITH_TABS = RecipeBookComponent.IMAGE_WIDTH + 30;
     public static final int HEIGHT = RecipeBookComponent.IMAGE_HEIGHT + Y_OFFSET;
 
-    private final MekanismRecipeBookComponent<?> recipeBook;
+    private final VirtualRecipeBookComponent<?> recipeBook;
     private final boolean isPrecisionSawmill;
 
-    public GuiRecipeBookWindow(IGuiWrapper gui, int x, int y, MekanismRecipeBookComponent<?> recipeBook, boolean isPrecisionSawmill, SelectedWindowData windowData) {
+    public GuiRecipeBookWindow(IGuiWrapper gui, int x, int y, VirtualRecipeBookComponent<?> recipeBook, boolean isPrecisionSawmill, SelectedWindowData windowData) {
         this.isPrecisionSawmill = isPrecisionSawmill;
         super(gui, x, y, RecipeBookComponent.IMAGE_WIDTH, HEIGHT, windowData);
         interactionStrategy = InteractionStrategy.ALL;

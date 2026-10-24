@@ -478,7 +478,7 @@ public abstract class MekanismContainer extends RecipeBookMenu implements ISecur
 
     @Override
     public final RecipeBookType getRecipeBookType() {
-        //TODO - 26.3: Do we want to try and extend this to supporting the formulaic assemblicator, robit crafting, and qio crafting windows?
+        //TODO - 26.3: Do we want to try and extend this to supporting the formulaic assemblicator, and qio crafting windows?
         if (getRecipeHandler() instanceof IRecipeLookupHandler<?> recipeLookup) {
             return recipeLookup.getRecipeBookType();
         }

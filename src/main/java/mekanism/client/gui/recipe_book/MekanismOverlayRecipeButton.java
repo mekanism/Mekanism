@@ -58,10 +58,22 @@ public class MekanismOverlayRecipeButton {
         }
         int inputCount = inputs.size();
         if (ingredients.size() == inputCount) {
-            int xPos = 1;
-            int yPos = 1;
             for (int i = 0; i < inputCount; i++) {
                 SlotDisplay ingredient = ingredients.get(i);
+                int xPos;
+                int yPos = 1;
+                switch (inputCount) {
+                    case 1 -> xPos = 1;
+                    case 2 -> xPos = i == 0 ? 0 : 2;
+                    case 3 -> {
+                        xPos = i;
+                        yPos = i == 1 ? 0 : 2;
+                    }
+                    default -> {
+                        xPos = i % 3;
+                        yPos = i / 3;
+                    }
+                }
                 switch (inputs.get(i)) {
                     case IInventorySlot _ -> {
                         List<ItemStack> items = ingredient.resolveForStacks(context);
@@ -84,14 +96,10 @@ public class MekanismOverlayRecipeButton {
                     default -> {
                     }
                 }
-                if (i % 2 == 0) {
-                    xPos++;
-                } else {
-                    yPos++;
-                }
             }
         }
         if (inputCount == 1) {
+            //Re-use vanilla's single input smelting sprites
             enabledSprite = OverlaySmeltingRecipeButton.ENABLED_SPRITE;
             highlightedEnabledSprite = OverlaySmeltingRecipeButton.ENABLED_SPRITE;
             disabledSprite = OverlaySmeltingRecipeButton.DISABLED_SPRITE;

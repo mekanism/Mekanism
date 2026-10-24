@@ -15,6 +15,7 @@ import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.gui.recipe_book.IGhostRecipeComponent;
 import mekanism.client.gui.recipe_book.MekanismRecipeBookComponent;
+import mekanism.client.gui.recipe_book.VirtualRecipeBookComponent;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -68,7 +69,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     private IWarningTracker warningTracker;
     private long lastMSInitialized;
     @Nullable
-    protected MekanismRecipeBookComponent<?> recipeBookComponent;
+    protected VirtualRecipeBookComponent<?> recipeBookComponent;
 
     private boolean hasClicked = false;
 
@@ -742,15 +743,15 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     protected <T extends IGhostRecipeComponent> T addRecipeBookComponentNoRender(T component, boolean result) {
-        if (recipeBookComponent != null) {
-            recipeBookComponent.addComponent(component, result);
+        if (recipeBookComponent instanceof MekanismRecipeBookComponent<?> recipeBook) {
+            recipeBook.addComponent(component, result);
         }
         return component;
     }
 
     protected <T extends GuiElement & IGhostRecipeComponent> T addRecipeBookComponent(T component, boolean result) {
-        if (recipeBookComponent != null) {
-            recipeBookComponent.addComponent(component, result);
+        if (recipeBookComponent instanceof MekanismRecipeBookComponent<?> recipeBook) {
+            recipeBook.addComponent(component, result);
         }
         return addRenderableWidget(component);
     }
