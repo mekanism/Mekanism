@@ -1,6 +1,5 @@
 {
   "type": "mekanism:crushing",
-  "category": "processing",
   "group": "mekanism:prismarine_shards",
   "input": {
     "count": 2,

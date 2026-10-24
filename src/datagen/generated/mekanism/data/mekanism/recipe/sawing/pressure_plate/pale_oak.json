@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "category": "wood_type",
   "group": "mekanism:pressure_plate",
   "input": {
     "count": 1,

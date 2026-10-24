@@ -269,8 +269,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, ingotTag),
               new ItemStackTemplate(dust)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(dustGroup)
+        ).group(dustGroup)
               .unlockedBy("has_ingot", has(ingotTag))
               .save(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
 
@@ -291,7 +290,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, clumpTag),
               new ItemStackTemplate(dirtyDust)
-        ).category(CrushingBookCategory.PROCESSING)
+        ).category(CrushingBookCategory.EFFICIENCY)
               .group(dirtyDust.key())
               .unlockedBy("has_clump", has(clumpTag))
               .save(consumer, Mekanism.rl(basePath + "dirty_dust/from_clump"));
@@ -472,8 +471,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, ItemIds.COAL),
               MekanismItems.COAL_DUST.asTemplate()
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(MekanismItems.COAL_DUST.key())
+        ).group(MekanismItems.COAL_DUST.key())
               .unlockedBy(hasCriterion(ItemIds.COAL))
               .save(consumer, Mekanism.rl(basePath + "to_dust"));
         ItemStackIngredient forOre = IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_COAL, 8);
@@ -528,8 +526,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, gemTag),
               new ItemStackTemplate(dust)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(dust.key())
+        ).group(dust.key())
               .unlockedBy("has_gem", has(gemTag))
               .save(consumer, Mekanism.rl(basePath + "to_dust"));
         ItemStackIngredient forOre = IngredientCreatorAccess.item().from(this.items, dustTag, toOre);
@@ -561,7 +558,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.ORES_NETHERITE_SCRAP),
               MekanismItems.DIRTY_NETHERITE_SCRAP.asTemplate(3)
-        ).category(CrushingBookCategory.PROCESSING)
+        ).category(CrushingBookCategory.EFFICIENCY)
               .unlockedBy("has_ancient_debris", has(Tags.BlockItems.ORES_NETHERITE_SCRAP))
               .save(consumer, Mekanism.rl(basePath + "ancient_debris_to_dirty_scrap"));
         Identifier scrapGroup = ItemIds.NETHERITE_SCRAP.identifier();
@@ -597,8 +594,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.INGOTS_NETHERITE),
               MekanismItems.NETHERITE_DUST.asTemplate()
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(MekanismItems.NETHERITE_DUST.key())
+        ).group(MekanismItems.NETHERITE_DUST.key())
               .unlockedBy("has_netherite_ingot", has(Tags.Items.INGOTS_NETHERITE))
               .save(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
         //Netherite Dust to Ancient Debris
@@ -629,8 +625,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.INGOTS_BRONZE),
               MekanismItems.BRONZE_DUST.asTemplate()
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(MekanismItems.BRONZE_DUST.getId())
+        ).group(MekanismItems.BRONZE_DUST.getId())
               .unlockedBy("has_bronze_ingot", has(MekanismTags.Items.INGOTS_BRONZE))
               .save(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
         //Ingot
@@ -718,8 +713,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE),
               template(ItemIds.GLOWSTONE_DUST)
-        ).category(CrushingBookCategory.PROCESSING)
-              .unlockedBy("has_refined_glowstone_ingot", has(MekanismTags.Items.INGOTS_REFINED_GLOWSTONE))
+        ).unlockedBy("has_refined_glowstone_ingot", has(MekanismTags.Items.INGOTS_REFINED_GLOWSTONE))
               .save(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
     }
 
@@ -729,8 +723,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN),
               MekanismItems.REFINED_OBSIDIAN_DUST.asTemplate()
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(MekanismItems.REFINED_OBSIDIAN_DUST.getId())
+        ).group(MekanismItems.REFINED_OBSIDIAN_DUST.getId())
               .unlockedBy("has_refined_obsidian_ingot", has(MekanismTags.Items.INGOTS_REFINED_OBSIDIAN))
               .save(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
         //from obsidian dust
@@ -777,8 +770,7 @@ class OreProcessingRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.INGOTS_STEEL),
               MekanismItems.STEEL_DUST.asTemplate()
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(MekanismItems.STEEL_DUST.getId())
+        ).group(MekanismItems.STEEL_DUST.getId())
               .unlockedBy("has_steel_ingot", has(MekanismTags.Items.INGOTS_STEEL))
               .save(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
     }

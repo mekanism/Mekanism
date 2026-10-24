@@ -1,0 +1,175 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_steel_axe": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_axe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_boots": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_boots"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_chestplate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_chestplate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_helmet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_helmet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_hoe": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_hoe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_horse_armor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_horse_armor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_leggings": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_leggings"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_nautilus_armor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_nautilus_armor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_paxel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_paxel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_pickaxe": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_pickaxe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_shield": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_shield"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_shovel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_shovel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_spear": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_spear"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_sword": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanismtools:steel_sword"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanismtools:steel/nugget_from_smelting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_steel_helmet",
+      "has_steel_chestplate",
+      "has_steel_leggings",
+      "has_steel_boots",
+      "has_steel_horse_armor",
+      "has_steel_nautilus_armor",
+      "has_steel_axe",
+      "has_steel_hoe",
+      "has_steel_paxel",
+      "has_steel_pickaxe",
+      "has_steel_shield",
+      "has_steel_shovel",
+      "has_steel_sword",
+      "has_steel_spear"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanismtools:steel/nugget_from_smelting"
+    ]
+  }
+}

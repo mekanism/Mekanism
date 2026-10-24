@@ -28,8 +28,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, certusQuartz),
                     foreignItemStack(AEItemIds.CERTUS_QUARTZ_DUST)
-              ).category(CrushingBookCategory.PROCESSING)
-              .unlockedBy("has_certus_quartz", has(certusQuartz))
+              ).unlockedBy("has_certus_quartz", has(certusQuartz))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "certus_crystal_to_dust"));
 
@@ -37,8 +36,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEItemIds.FLUIX_CRYSTAL),
                     foreignItemStack(AEItemIds.FLUIX_DUST)
-              ).category(CrushingBookCategory.PROCESSING)
-              .unlockedBy(hasCriterion(foreignItem(AEItemIds.FLUIX_CRYSTAL)))
+              ).unlockedBy(hasCriterion(foreignItem(AEItemIds.FLUIX_CRYSTAL)))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "fluix_crystal_to_dust"));
 
@@ -46,8 +44,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BLOCK),
                     foreignItemStack(AEItemIds.SKY_DUST)
-              ).category(CrushingBookCategory.PROCESSING)
-              .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BLOCK)))
+              ).unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BLOCK)))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "sky_stone_to_dust"));
 
@@ -63,8 +60,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(items, ItemIds.ENDER_PEARL),
                     foreignItemStack(AEItemIds.ENDER_DUST)
-              ).category(CrushingBookCategory.PROCESSING)
-              .unlockedBy(hasCriterion(ItemIds.ENDER_PEARL))
+              ).unlockedBy(hasCriterion(ItemIds.ENDER_PEARL))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "ender_pearl_to_dust"));
 
@@ -72,8 +68,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.SANDS),
                     foreignItemStack(AEItemIds.SILICON)
-              ).category(CrushingBookCategory.PROCESSING)
-              .unlockedBy("has_sand", has(Tags.BlockItems.SANDS))
+              ).unlockedBy("has_sand", has(Tags.BlockItems.SANDS))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "sand_to_silicon"));
 

@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:sticks_only",
   "input": {
     "count": 3,
     "ingredient": "minecraft:ladder"

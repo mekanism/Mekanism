@@ -1,47 +1,28 @@
 package mekanism.client.gui.recipe_book;
 
-import com.google.common.collect.Iterables;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.display.recipe.MekanismRecipeDisplay;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
-import mekanism.common.recipe.lookup.IRecipeLookupHandler.RecipeContainers;
-import mekanism.common.registration.impl.RecipeBookCategoryDeferredRegister.MekanismRecipeBookTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.screens.recipebook.GhostSlots;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton;
-import net.minecraft.client.gui.screens.recipebook.RecipeButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 import net.minecraft.client.gui.screens.recipebook.SearchRecipeBookCategory;
-import net.minecraft.client.gui.screens.recipebook.SlotSelectTime;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.context.ContextMap;
-import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.RecipeBookMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.ExtendedRecipeBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.display.FurnaceRecipeDisplay;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
-import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.item.crafting.display.RecipeDisplayId;
-import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.client.RecipeBookManager;
 import net.neoforged.neoforge.client.recipebook.RecipeOverlayButtonCreator;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -64,9 +45,14 @@ public abstract class VirtualRecipeBookComponent<MENU extends RecipeBookMenu> ex
         return slot instanceof InventoryContainerSlot inventorySlot && inventorySlot.isRecipeCraftingSlot();
     }
 
+    @Override
+    protected MekanismRecipeBookTabButton createTabButton(int x, int y, RecipeBookComponent.TabInfo tabInfo, Button.OnPress onPress) {
+        return new MekanismRecipeBookTabButton(x, y, tabInfo, onPress);
+    }
 
     @Override
     public void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, @Nullable Slot hoveredSlot) {
+        //TODO - 26.3: Allow extracting tooltips for the recipe book tabs
         if (isVisible()) {
             //Reimplementation of relevant recipe book page tooltip rendering
             if (this.minecraft.gui.screen() != null && this.recipeBookPage.hoveredButton instanceof MekanismRecipeButton recipeButton && !this.recipeBookPage.overlay.isVisible()) {

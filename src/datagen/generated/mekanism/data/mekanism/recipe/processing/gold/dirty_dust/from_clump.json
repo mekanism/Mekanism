@@ -1,6 +1,6 @@
 {
   "type": "mekanism:crushing",
-  "category": "processing",
+  "category": "efficiency",
   "group": "mekanism:dirty_dust_gold",
   "input": {
     "count": 1,

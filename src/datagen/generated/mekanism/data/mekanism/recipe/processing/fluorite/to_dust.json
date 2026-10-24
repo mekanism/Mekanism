@@ -1,6 +1,5 @@
 {
   "type": "mekanism:crushing",
-  "category": "processing",
   "group": "mekanism:dust_fluorite",
   "input": {
     "count": 1,

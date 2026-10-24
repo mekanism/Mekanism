@@ -58,15 +58,13 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.DRIPSTONE_BLOCK),
               template(BlockItemIds.POINTED_DRIPSTONE, 4)
-        ).category(CrushingBookCategory.PROCESSING)
-              .unlockedBy(hasCriterion(BlockItemIds.DRIPSTONE_BLOCK))
+        ).unlockedBy(hasCriterion(BlockItemIds.DRIPSTONE_BLOCK))
               .save(consumer, Mekanism.rl(basePath + "pointed_dripstone_from_block"));
         //Honecomb Block -> Honeycomb
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.HONEYCOMB_BLOCK),
               template(ItemIds.HONEYCOMB, 4)
-        ).category(CrushingBookCategory.PROCESSING)
-              .unlockedBy(hasCriterion(BlockItemIds.HONEYCOMB_BLOCK))
+        ).unlockedBy(hasCriterion(BlockItemIds.HONEYCOMB_BLOCK))
               .save(consumer, Mekanism.rl(basePath + "honeycomb_from_block"));
         //Purpur Block -> Purpur Pillar
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -79,8 +77,7 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, ItemIds.CHARCOAL),
               MekanismItems.CHARCOAL_DUST.asTemplate()
-        ).category(CrushingBookCategory.PROCESSING)
-              .unlockedBy(hasCriterion(ItemIds.CHARCOAL))
+        ).unlockedBy(hasCriterion(ItemIds.CHARCOAL))
               .save(consumer, Mekanism.rl(basePath + "charcoal_dust"));
         //Cobblestone -> Gravel
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -93,8 +90,7 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, ItemIds.FLINT),
               template(ItemIds.GUNPOWDER)
-        ).category(CrushingBookCategory.PROCESSING)
-              .unlockedBy(hasCriterion(ItemIds.FLINT))
+        ).unlockedBy(hasCriterion(ItemIds.FLINT))
               .save(consumer, Mekanism.rl(basePath + "flint_to_gunpowder"));
         //Gravel -> Sand
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -114,28 +110,26 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, ItemIds.MUSIC_DISC_5),
               template(ItemIds.DISC_FRAGMENT_5, 9)
-        ).category(CrushingBookCategory.PROCESSING)
-              .unlockedBy(hasCriterion(ItemIds.MUSIC_DISC_5))
+        ).unlockedBy(hasCriterion(ItemIds.MUSIC_DISC_5))
               .save(consumer, Mekanism.rl(basePath + "break_disc_5"));
         //Obsidian -> obsidian dust
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.OBSIDIANS_NORMAL),
               MekanismItems.OBSIDIAN_DUST.asTemplate(4)
-        ).category(CrushingBookCategory.PROCESSING)
-              .unlockedBy("has_obsidian", has(Tags.BlockItems.OBSIDIANS_NORMAL))
+        ).unlockedBy("has_obsidian", has(Tags.BlockItems.OBSIDIANS_NORMAL))
               .save(consumer, Mekanism.rl(basePath + "obsidian_to_dust"));
         //Blaze Rod -> blaze powder
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.RODS_BLAZE),
               template(ItemIds.BLAZE_POWDER, 4)
-        ).category(CrushingBookCategory.PROCESSING)
+        ).category(CrushingBookCategory.EFFICIENCY)
               .unlockedBy("has_blaze_rod", has(Tags.Items.RODS_BLAZE))
               .save(consumer, Mekanism.rl(basePath + "blaze_rod"));
         //Breeze Rod -> wind charge
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.RODS_BREEZE),
               template(ItemIds.WIND_CHARGE, 6)
-        ).category(CrushingBookCategory.PROCESSING)
+        ).category(CrushingBookCategory.EFFICIENCY)
               .unlockedBy("has_breeze_rod", has(Tags.Items.RODS_BREEZE))
               .save(consumer, Mekanism.rl(basePath + "breeze_rod"));
         //Bone -> bone meal
@@ -143,7 +137,7 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, ItemIds.BONE),
               template(ItemIds.BONE_MEAL, BONEMEAL_FROM_BONE)
-        ).category(CrushingBookCategory.PROCESSING)
+        ).category(CrushingBookCategory.EFFICIENCY)
               .group(Mekanism.rl("bone_meal"))
               .unlockedBy(hasCriterion(ItemIds.BONE))
               .save(consumer, Mekanism.rl(basePath + "bone"));
@@ -151,7 +145,7 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.STORAGE_BLOCKS_BONE_MEAL),
               template(ItemIds.BONE_MEAL, 9)//must be the same as vanilla needs to make a block
-        ).category(CrushingBookCategory.PROCESSING)
+        ).category(CrushingBookCategory.EFFICIENCY)
               .group(Mekanism.rl("bone_meal"))
               .unlockedBy("has_bone_block", has(Tags.BlockItems.STORAGE_BLOCKS_BONE_MEAL))
               .save(consumer, Mekanism.rl(basePath + "bone_block"));
@@ -196,7 +190,7 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.DRIED_GHAST),
               template(ItemIds.GHAST_TEAR, 3)
-        ).category(CrushingBookCategory.PROCESSING)
+        ).category(CrushingBookCategory.EFFICIENCY)
               .unlockedBy(hasCriterion(BlockItemIds.DRIED_GHAST))
               .save(consumer, Mekanism.rl(basePath + "dried_ghast"));
     }
@@ -206,32 +200,28 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL),
               template(BlockItemIds.TRIPWIRE, 4)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(Mekanism.rl("string"))
+        ).group(Mekanism.rl("string"))
               .unlockedBy("has_wool", has(ItemTags.WOOL))
               .save(consumer, Mekanism.rl(basePath + "from_wool"));
         //Wool Slabs -> String
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL_SLABS),
               template(BlockItemIds.TRIPWIRE, 2)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(Mekanism.rl("string"))
+        ).group(Mekanism.rl("string"))
               .unlockedBy("has_wool", has(ItemTags.WOOL_SLABS))
               .save(consumer, Mekanism.rl(basePath + "from_wool_slabs"));
         //Wool Stairs -> String
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL_STAIRS),
               template(BlockItemIds.TRIPWIRE, 6)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(Mekanism.rl("string"))
+        ).group(Mekanism.rl("string"))
               .unlockedBy("has_wool", has(ItemTags.WOOL_STAIRS))
               .save(consumer, Mekanism.rl(basePath + "from_wool_stairs"));
         //Cushions -> String
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, ItemTags.CUSHIONS),
               template(BlockItemIds.TRIPWIRE, 6)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(Mekanism.rl("string"))
+        ).group(Mekanism.rl("string"))
               .unlockedBy("has_cushion", has(ItemTags.CUSHIONS))
               .save(consumer, Mekanism.rl(basePath + "from_cushions"));
     }
@@ -884,16 +874,14 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE),
               template(ItemIds.PRISMARINE_SHARD, 4)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(Mekanism.rl("prismarine_shards"))
+        ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE))
               .save(consumer, Mekanism.rl(basePath + "shard_from_block"));
         //Prismarine Slabs -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_SLAB),
               template(ItemIds.PRISMARINE_SHARD, 2)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(Mekanism.rl("prismarine_shards"))
+        ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE_SLAB))
               .save(consumer, Mekanism.rl(basePath + "shard_from_slabs"));
         //Prismarine Stairs -> Prismarine Shards
@@ -901,32 +889,28 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_STAIRS),
               template(ItemIds.PRISMARINE_SHARD, 4)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(Mekanism.rl("prismarine_shards"))
+        ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE_STAIRS))
               .save(consumer, Mekanism.rl(basePath + "shard_from_stairs"));
         //Prismarine Wall -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_WALL),
               template(ItemIds.PRISMARINE_SHARD, 4)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(Mekanism.rl("prismarine_shards"))
+        ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE_WALL))
               .save(consumer, Mekanism.rl(basePath + "shard_from_wall"));
         //Prismarine Brick -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_BRICKS),
               template(ItemIds.PRISMARINE_SHARD, 9)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(Mekanism.rl("prismarine_shards"))
+        ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE_BRICKS))
               .save(consumer, Mekanism.rl(basePath + "shard_from_brick"));
         //Prismarine Brick Slabs -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_BRICK_SLAB, 2),
               template(ItemIds.PRISMARINE_SHARD, 9)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(Mekanism.rl("prismarine_shards"))
+        ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE_BRICK_SLAB))
               .save(consumer, Mekanism.rl(basePath + "shard_from_brick_slabs"));
         //Prismarine Brick Stairs -> Prismarine Shards
@@ -934,8 +918,7 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_BRICK_STAIRS),
               template(ItemIds.PRISMARINE_SHARD, 9)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(Mekanism.rl("prismarine_shards"))
+        ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE_BRICK_STAIRS))
               .save(consumer, Mekanism.rl(basePath + "shard_from_brick_stairs"));
     }
@@ -945,8 +928,7 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.STORAGE_BLOCKS_RESIN),
               template(BlockItemIds.RESIN_CLUMP, 9)
-        ).category(CrushingBookCategory.PROCESSING)
-              .unlockedBy("has_resin_block", has(Tags.BlockItems.STORAGE_BLOCKS_RESIN))
+        ).unlockedBy("has_resin_block", has(Tags.BlockItems.STORAGE_BLOCKS_RESIN))
               .save(consumer, Mekanism.rl(basePath + "clump_from_block"));
         //Resin Bricks -> Resin Blocks
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -1099,8 +1081,7 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(
               input,
               new ItemStackTemplate(bioFuelType, countOutput)
-        ).category(CrushingBookCategory.PROCESSING)
-              .group(bioFuelType.key())
+        ).group(bioFuelType.key())
               .unlockedBy(criteria)
               .save(consumer, Mekanism.rl(basePath + filename));
     }

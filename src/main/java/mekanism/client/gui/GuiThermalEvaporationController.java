@@ -43,7 +43,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
 
     @Override
     protected MekanismRecipeBookComponent<?> createRecipeBookComponent() {
-        return new MekanismRecipeBookComponent<>(menu, tile.getMultiblock(), this::font);
+        return new MekanismRecipeBookComponent<>(menu, tile.getMultiblock(), registryAccess(), this::font);
     }
 
     @Override

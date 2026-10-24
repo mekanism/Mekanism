@@ -1,6 +1,6 @@
 {
   "type": "mekanism:crushing",
-  "category": "processing",
+  "category": "efficiency",
   "input": {
     "count": 1,
     "ingredient": "minecraft:dried_ghast"

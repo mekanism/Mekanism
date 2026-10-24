@@ -3,6 +3,7 @@ package mekanism.common.recipe.impl;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
+import mekanism.api.recipes.book.PaintingBookCategory;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -72,7 +73,8 @@ class PaintingRecipeProvider extends BaseSubRecipeProvider {
                       IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), PigmentExtractingRecipeProvider.DYE_RATE),
                       false,
                       new ItemStackTemplate(items.getOrThrow(dye))
-                ).group(dye)
+                ).category(PaintingBookCategory.DYE)
+                      .group(dye)
                       .unlockedBy("has_needed_dye", has(dyeColor.getTag()))
                       .save(consumer, Mekanism.rl(basePath + dyeColor));
             }

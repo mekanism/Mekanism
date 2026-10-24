@@ -55,7 +55,8 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
                     IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismTags.Chemicals.WATER_VAPOR, 1),
                     true,
                     template(BlockItemIds.MUD)
-              ).unlockedBy(hasCriterion(BlockItemIds.DIRT))
+              ).category(InjectingBookCategory.BUILDING)
+              .unlockedBy(hasCriterion(BlockItemIds.DIRT))
               .save(consumer, Mekanism.rl(basePath + "dirt_to_mud"));
         //Gunpowder -> sulfur
         ItemStackChemicalToItemStackRecipeBuilder.injecting(

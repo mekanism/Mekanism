@@ -1,5 +1,6 @@
 {
   "type": "mekanism:painting",
+  "category": "dye",
   "chemical_input": {
     "amount": 256,
     "ingredient": "mekanism:blue"

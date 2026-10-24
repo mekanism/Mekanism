@@ -1,6 +1,6 @@
 {
   "type": "mekanism:crushing",
-  "category": "processing",
+  "category": "efficiency",
   "group": "mekanism:bone_meal",
   "input": {
     "count": 1,

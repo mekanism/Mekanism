@@ -178,11 +178,10 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .save(output, MekanismTools.rl(baseToolsPath + "paxel"));
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
-            String baseNuggetFrom = name + "/nugget_from_";
             List<Holder<Item>> inputs = new ArrayList<>(armor.asList());
             inputs.addAll(tools.asList());
-            RecipeProviderUtil.addSmeltingBlastingRecipes(output, Ingredient.of(HolderSet.direct(inputs)), nugget, 0.1F, 200, null,
-                  MekanismTools.rl(baseNuggetFrom), inputs.stream()
+            RecipeProviderUtil.addSmeltingBlastingRecipes(output, Ingredient.of(HolderSet.direct(inputs)), nugget, 0.1F, 200, nugget.key().identifier(),
+                  MekanismTools.rl(name + "/nugget_from"), inputs.stream()
                         .map(this::hasCriterion)
                         .toArray(RecipeCriterion[]::new)
             );
@@ -218,9 +217,8 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .save(output);
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
-            String baseNuggetFrom = nugget.identifier().getPath() + "_from_";
-            RecipeProviderUtil.addSmeltingBlastingRecipes(output, ingredient(paxel), items.getOrThrow(nugget), 0.1F, 200, null,
-                  MekanismTools.rl(baseNuggetFrom), new RecipeCriterion("has_paxel", has(paxel)));
+            RecipeProviderUtil.addSmeltingBlastingRecipes(output, ingredient(paxel), items.getOrThrow(nugget), 0.1F, 200, nugget.identifier(),
+                  MekanismTools.rl(nugget.identifier().getPath() + "_from"), new RecipeCriterion("has_paxel", has(paxel)));
         }
     }
 

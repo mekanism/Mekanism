@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:planks_and_book",
   "input": {
     "count": 1,
     "ingredient": "#c:bookshelves"

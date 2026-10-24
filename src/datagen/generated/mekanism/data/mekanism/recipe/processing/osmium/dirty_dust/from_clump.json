@@ -1,6 +1,6 @@
 {
   "type": "mekanism:crushing",
-  "category": "processing",
+  "category": "efficiency",
   "group": "mekanism:dirty_dust_osmium",
   "input": {
     "count": 1,

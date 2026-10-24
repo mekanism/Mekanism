@@ -5,14 +5,18 @@ import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import java.util.Optional;
 import java.util.function.IntFunction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter.Provider;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.references.BlockItemIds;
+import net.minecraft.references.ItemIds;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
@@ -24,25 +28,25 @@ import org.jspecify.annotations.Nullable;
 /// @see net.minecraft.world.item.crafting.CookingBookCategory
 /// @since 10.8.0
 public enum SmeltingBookCategory implements MekanismBookCategory {
-    FOOD(CookingBookCategory.FOOD, RecipeBookCategories.FURNACE_FOOD, Items.PORKCHOP, null),
+    FOOD(CookingBookCategory.FOOD, RecipeBookCategories.FURNACE_FOOD, ItemIds.PORKCHOP, null),
     //TODO: If we end up adding support for blasting at some point, vanilla's recipe book uses different icons for blasting blocks and misc
-    BLOCKS(CookingBookCategory.BLOCKS, RecipeBookCategories.FURNACE_BLOCKS, Items.STONE, null),
-    MISC(CookingBookCategory.MISC, RecipeBookCategories.FURNACE_MISC, Items.LAVA_BUCKET, Items.EMERALD);
+    BLOCKS(CookingBookCategory.BLOCKS, RecipeBookCategories.FURNACE_BLOCKS, BlockItemIds.STONE.item(), null),
+    MISC(CookingBookCategory.MISC, RecipeBookCategories.FURNACE_MISC, ItemIds.LAVA_BUCKET, ItemIds.EMERALD);
 
     public static final Codec<SmeltingBookCategory> CODEC = StringRepresentable.fromEnum(SmeltingBookCategory::values);
     public static final IntFunction<SmeltingBookCategory> BY_ID = ByIdMap.continuous(SmeltingBookCategory::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, SmeltingBookCategory> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, SmeltingBookCategory::ordinal);
 
     private final RecipeBookCategory category;
-    private final Item primaryIcon;
+    private final Holder<Item> primaryIcon;
     @Nullable
-    private final Item secondaryIcon;
+    private final Holder<Item> secondaryIcon;
     private final String name;
 
-    SmeltingBookCategory(CookingBookCategory cookingBookCategory, RecipeBookCategory recipeBookCategory, Item primaryIcon, @Nullable Item secondaryIcon) {
+    SmeltingBookCategory(CookingBookCategory cookingBookCategory, RecipeBookCategory recipeBookCategory, ResourceKey<Item> primaryIcon, @Nullable ResourceKey<Item> secondaryIcon) {
         this.name = cookingBookCategory.getSerializedName();
-        this.primaryIcon = primaryIcon;
-        this.secondaryIcon = secondaryIcon;
+        this.primaryIcon = MekanismBookCategory.createItem(primaryIcon);
+        this.secondaryIcon = MekanismBookCategory.createItem(secondaryIcon);
         this.category = recipeBookCategory;
     }
 
@@ -66,12 +70,12 @@ public enum SmeltingBookCategory implements MekanismBookCategory {
     }
 
     @Override
-    public ItemStack getPrimaryIcon() {
+    public Object getPrimaryIcon(Provider holderLookup) {
         return new ItemStack(primaryIcon);
     }
 
     @Override
-    public Optional<ItemStack> getSecondaryIcon() {
+    public Optional<Object> getSecondaryIcon(Provider holderLookup) {
         return secondaryIcon == null ? Optional.empty() : Optional.of(new ItemStack(secondaryIcon));
     }
 

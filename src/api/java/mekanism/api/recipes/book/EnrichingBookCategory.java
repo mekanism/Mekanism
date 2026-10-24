@@ -7,10 +7,14 @@ import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter.Provider;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.references.BlockItemIds;
+import net.minecraft.references.ItemIds;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
@@ -23,10 +27,10 @@ import org.jspecify.annotations.Nullable;
 ///
 /// @since 10.8.0
 public enum EnrichingBookCategory implements MekanismBookCategory {
-    BUILDING("building", "enrichment_chamber", null),
-    EFFICIENCY("efficiency", "enrichment_chamber", null),
-    DECORATIVE("decorative", "enrichment_chamber", null),
-    MISC("misc", "enrichment_chamber", null);
+    BUILDING("building", BlockItemIds.POLISHED_BLACKSTONE_BRICKS.item(), null),
+    EFFICIENCY("efficiency", "enriched_diamond", "dust_iron"),
+    DECORATIVE("decorative", ItemIds.DYE.magenta(), null),
+    MISC("misc", ItemIds.FLINT, MekanismBookCategory.createMekanismKey("hdpe_sheet"));
 
     public static final Codec<EnrichingBookCategory> CODEC = StringRepresentable.fromEnum(EnrichingBookCategory::values);
     public static final IntFunction<EnrichingBookCategory> BY_ID = ByIdMap.continuous(EnrichingBookCategory::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
@@ -39,13 +43,13 @@ public enum EnrichingBookCategory implements MekanismBookCategory {
     private final String name;
 
     EnrichingBookCategory(String name, String primaryMekIcon, @Nullable String secondaryMekIcon) {
-        this(name, MekanismBookCategory.createMekanismItem(primaryMekIcon), MekanismBookCategory.createMekanismItem(secondaryMekIcon));
+        this(name, MekanismBookCategory.createMekanismKey(primaryMekIcon), MekanismBookCategory.createMekanismKey(secondaryMekIcon));
     }
 
-    EnrichingBookCategory(String name, Holder<Item> primaryIcon, @Nullable Holder<Item> secondaryIcon) {
+    EnrichingBookCategory(String name, ResourceKey<Item> primaryIcon, @Nullable ResourceKey<Item> secondaryIcon) {
         this.name = name;
-        this.primaryIcon = primaryIcon;
-        this.secondaryIcon = secondaryIcon;
+        this.primaryIcon = MekanismBookCategory.createItem(primaryIcon);
+        this.secondaryIcon = MekanismBookCategory.createItem(secondaryIcon);
         this.categoryHolder = MekanismBookCategory.createHolder(MekanismRecipeTypes.NAME_ENRICHING, this.name);
     }
 
@@ -70,12 +74,12 @@ public enum EnrichingBookCategory implements MekanismBookCategory {
     }
 
     @Override
-    public ItemStack getPrimaryIcon() {
+    public Object getPrimaryIcon(Provider holderLookup) {
         return new ItemStack(primaryIcon);
     }
 
     @Override
-    public Optional<ItemStack> getSecondaryIcon() {
+    public Optional<Object> getSecondaryIcon(Provider holderLookup) {
         return secondaryIcon == null ? Optional.empty() : Optional.of(new ItemStack(secondaryIcon));
     }
 

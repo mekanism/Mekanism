@@ -5,11 +5,15 @@ import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import java.util.Optional;
 import java.util.function.IntFunction;
+import mekanism.api.chemical.ChemicalIds;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter.Provider;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
@@ -35,13 +39,13 @@ public enum PigmentMixingBookCategory implements MekanismBookCategory {
     private final String name;
 
     PigmentMixingBookCategory(String name, String primaryMekIcon, @Nullable String secondaryMekIcon) {
-        this(name, MekanismBookCategory.createMekanismItem(primaryMekIcon), MekanismBookCategory.createMekanismItem(secondaryMekIcon));
+        this(name, MekanismBookCategory.createMekanismKey(primaryMekIcon), MekanismBookCategory.createMekanismKey(secondaryMekIcon));
     }
 
-    PigmentMixingBookCategory(String name, Holder<Item> primaryIcon, @Nullable Holder<Item> secondaryIcon) {
+    PigmentMixingBookCategory(String name, ResourceKey<Item> primaryIcon, @Nullable ResourceKey<Item> secondaryIcon) {
         this.name = name;
-        this.primaryIcon = primaryIcon;
-        this.secondaryIcon = secondaryIcon;
+        this.primaryIcon = MekanismBookCategory.createItem(primaryIcon);
+        this.secondaryIcon = MekanismBookCategory.createItem(secondaryIcon);
         this.categoryHolder = MekanismBookCategory.createHolder(MekanismRecipeTypes.NAME_PIGMENT_MIXING, this.name);
     }
 
@@ -56,12 +60,16 @@ public enum PigmentMixingBookCategory implements MekanismBookCategory {
     }
 
     @Override
-    public ItemStack getPrimaryIcon() {
+    public Object getPrimaryIcon(Provider holderLookup) {
+        if (this == MISC) {
+            //Try to render misc as dark red pigment
+            return holderLookup.get(ChemicalIds.SIMPLE_PIGMENTS.darkRed()).<Object>map(ChemicalResource::of).orElseGet(() -> new ItemStack(primaryIcon));
+        }
         return new ItemStack(primaryIcon);
     }
 
     @Override
-    public Optional<ItemStack> getSecondaryIcon() {
+    public Optional<Object> getSecondaryIcon(Provider holderLookup) {
         return secondaryIcon == null ? Optional.empty() : Optional.of(new ItemStack(secondaryIcon));
     }
 

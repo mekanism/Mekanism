@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "category": "food",
   "input": {
     "count": 1,
     "ingredient": "minecraft:melon"

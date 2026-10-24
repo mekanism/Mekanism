@@ -2,6 +2,7 @@ package mekanism.common.recipe.impl;
 
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
+import mekanism.api.recipes.book.SawingBookCategory;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
@@ -73,7 +74,8 @@ class SawingRecipeProvider extends BaseSubRecipeProvider {
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(items, BlockItemIds.BARREL),
               template(BlockItemIds.OAK_PLANKS, 7)
-        ).unlockedBy(hasCriterion(BlockItemIds.BARREL))
+        ).group(Mekanism.rl("planks_only"))
+              .unlockedBy(hasCriterion(BlockItemIds.BARREL))
               .save(consumer, Mekanism.rl(basePath + "barrel"));
         //Bookshelf
         SawmillRecipeBuilder.sawing(
@@ -81,7 +83,8 @@ class SawingRecipeProvider extends BaseSubRecipeProvider {
               template(BlockItemIds.OAK_PLANKS, 6),
               template(ItemIds.BOOK, 3),
               1
-        ).unlockedBy("has_bookshelf", has(Tags.BlockItems.BOOKSHELVES))
+        ).group(Mekanism.rl("planks_and_book"))
+              .unlockedBy("has_bookshelf", has(Tags.BlockItems.BOOKSHELVES))
               .save(consumer, Mekanism.rl(basePath + "bookshelf"));
         //Chiseled Bookshelf
         SawmillRecipeBuilder.sawing(
@@ -95,7 +98,8 @@ class SawingRecipeProvider extends BaseSubRecipeProvider {
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(items, BlockItemIds.CHEST),
               template(BlockItemIds.OAK_PLANKS, 8)
-        ).unlockedBy(hasCriterion(BlockItemIds.CHEST))
+        ).group(Mekanism.rl("planks_only"))
+              .unlockedBy(hasCriterion(BlockItemIds.CHEST))
               .save(consumer, Mekanism.rl(basePath + "chest"));
         //Composter
         SawmillRecipeBuilder.sawing(
@@ -107,13 +111,15 @@ class SawingRecipeProvider extends BaseSubRecipeProvider {
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(items, BlockItemIds.CRAFTING_TABLE),
               template(BlockItemIds.OAK_PLANKS, 4)
-        ).unlockedBy(hasCriterion(BlockItemIds.CRAFTING_TABLE))
+        ).group(Mekanism.rl("planks_only"))
+              .unlockedBy(hasCriterion(BlockItemIds.CRAFTING_TABLE))
               .save(consumer, Mekanism.rl(basePath + "crafting_table"));
         //Fences
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.FENCES_WOODEN),
               template(ItemIds.STICK, 3)
-        ).unlockedBy("has_fence", has(Tags.BlockItems.FENCES_WOODEN))
+        ).group(Mekanism.rl("sticks_only"))
+              .unlockedBy("has_fence", has(Tags.BlockItems.FENCES_WOODEN))
               .save(consumer, Mekanism.rl(basePath + "fences"));
         //Item Frame
         SawmillRecipeBuilder.sawing(
@@ -135,7 +141,8 @@ class SawingRecipeProvider extends BaseSubRecipeProvider {
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(items, BlockItemIds.LADDER, 3),
               template(ItemIds.STICK, 7)
-        ).unlockedBy(hasCriterion(BlockItemIds.LADDER))
+        ).group(Mekanism.rl("sticks_only"))
+              .unlockedBy(hasCriterion(BlockItemIds.LADDER))
               .save(consumer, Mekanism.rl(basePath + "ladder"));
         //Lectern
         SawmillRecipeBuilder.sawing(
@@ -143,7 +150,8 @@ class SawingRecipeProvider extends BaseSubRecipeProvider {
               template(BlockItemIds.OAK_PLANKS, 8),
               template(ItemIds.BOOK, 3),
               1
-        ).unlockedBy(hasCriterion(BlockItemIds.LECTERN))
+        ).group(Mekanism.rl("planks_and_book"))
+              .unlockedBy(hasCriterion(BlockItemIds.LECTERN))
               .save(consumer, Mekanism.rl(basePath + "lectern"));
         //Note block
         SawmillRecipeBuilder.sawing(
@@ -157,7 +165,8 @@ class SawingRecipeProvider extends BaseSubRecipeProvider {
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(items, BlockItemIds.MELON),
               template(ItemIds.MELON_SLICE, 9)
-        ).unlockedBy(hasCriterion(BlockItemIds.MELON))
+        ).category(SawingBookCategory.FOOD)
+              .unlockedBy(hasCriterion(BlockItemIds.MELON))
               .save(consumer, Mekanism.rl(basePath + "melon"));
         //Planks
         SawmillRecipeBuilder.sawing(
@@ -165,7 +174,8 @@ class SawingRecipeProvider extends BaseSubRecipeProvider {
               template(ItemIds.STICK, 6),
               MekanismItems.SAWDUST.asTemplate(),
               0.25
-        ).unlockedBy("has_plank", has(ItemTags.PLANKS))
+        ).group(Mekanism.rl("sticks_and_dust"))
+              .unlockedBy("has_plank", has(ItemTags.PLANKS))
               .save(consumer, Mekanism.rl(basePath + "planks"));
         //Pumpkin
         SawmillRecipeBuilder.sawing(
@@ -173,7 +183,8 @@ class SawingRecipeProvider extends BaseSubRecipeProvider {
               template(BlockItemIds.CARVED_PUMPKIN, 1),
               template(BlockItemIds.PUMPKIN_CROP, 4),
               1
-        ).unlockedBy("has_pumpkin", has(Tags.BlockItems.PUMPKINS_NORMAL))
+        ).category(SawingBookCategory.FOOD)
+              .unlockedBy("has_pumpkin", has(Tags.BlockItems.PUMPKINS_NORMAL))
               .save(consumer, Mekanism.rl(basePath + "pumpkin"));
         //Redstone torch
         SawmillRecipeBuilder.sawing(
@@ -189,7 +200,8 @@ class SawingRecipeProvider extends BaseSubRecipeProvider {
               template(ItemIds.STICK, 3),
               MekanismItems.SAWDUST.asTemplate(),
               0.125
-        ).unlockedBy("has_slab", has(ItemTags.WOODEN_SLABS))
+        ).group(Mekanism.rl("sticks_and_dust"))
+              .unlockedBy("has_slab", has(ItemTags.WOODEN_SLABS))
               .save(consumer, Mekanism.rl(basePath + "slabs"));
         //Stairs
         SawmillRecipeBuilder.sawing(
@@ -197,7 +209,8 @@ class SawingRecipeProvider extends BaseSubRecipeProvider {
               template(ItemIds.STICK, 9),
               MekanismItems.SAWDUST.asTemplate(),
               0.375
-        ).unlockedBy("has_stairs", has(ItemTags.WOODEN_STAIRS))
+        ).group(Mekanism.rl("sticks_and_dust"))
+              .unlockedBy("has_stairs", has(ItemTags.WOODEN_STAIRS))
               .save(consumer, Mekanism.rl(basePath + "stairs"));
         //Stick
         SawmillRecipeBuilder.sawing(
@@ -221,7 +234,8 @@ class SawingRecipeProvider extends BaseSubRecipeProvider {
               template(ItemIds.STICK, 3),
               MekanismItems.SAWDUST.asTemplate(),
               0.25
-        ).unlockedBy("has_sign", has(ItemTags.SIGNS))
+        ).group(Mekanism.rl("sticks_and_dust"))
+              .unlockedBy("has_sign", has(ItemTags.SIGNS))
               .save(consumer, Mekanism.rl(basePath + "sign"));
         //Torch
         SawmillRecipeBuilder.sawing(

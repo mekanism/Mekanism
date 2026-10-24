@@ -1,6 +1,5 @@
 {
   "type": "mekanism:crushing",
-  "category": "processing",
   "group": "mekanism:dust_osmium",
   "input": {
     "count": 1,

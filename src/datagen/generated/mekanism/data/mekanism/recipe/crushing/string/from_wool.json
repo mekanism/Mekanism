@@ -1,6 +1,5 @@
 {
   "type": "mekanism:crushing",
-  "category": "processing",
   "group": "mekanism:string",
   "input": {
     "count": 1,

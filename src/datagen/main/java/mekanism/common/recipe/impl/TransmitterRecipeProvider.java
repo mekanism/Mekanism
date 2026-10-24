@@ -46,7 +46,7 @@ class TransmitterRecipeProvider extends BaseSubRecipeProvider {
                     TripleLine.of(Pattern.REDSTONE, Pattern.REDSTONE, Pattern.REDSTONE))
               ).define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .define(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
-              .define(Pattern.CONSTANT, this.items, Tags.Items.BARS)
+              .define(Pattern.CONSTANT, this.items, Tags.BlockItems.BARS)
               .category(RecipeCategory.REDSTONE)
               .unlockedBy("has_steel_ingot", has(MekanismTags.Items.INGOTS_STEEL))
               .save(consumer, Mekanism.rl(basePath + "diversion_transporter"));
@@ -54,7 +54,7 @@ class TransmitterRecipeProvider extends BaseSubRecipeProvider {
         ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.RESTRICTIVE_TRANSPORTER, 2)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
-              .define(Pattern.CONSTANT, this.items, Tags.Items.BARS)
+              .define(Pattern.CONSTANT, this.items, Tags.BlockItems.BARS)
               .category(RecipeCategory.REDSTONE)//Use the redstone category so it shows up with hoppers
               .unlockedBy("has_steel_ingot", has(MekanismTags.Items.INGOTS_STEEL))
               .save(consumer, Mekanism.rl(basePath + "restrictive_transporter"));
@@ -75,7 +75,7 @@ class TransmitterRecipeProvider extends BaseSubRecipeProvider {
     }
 
     private void addPressurizedTubeRecipes(RecipeOutput consumer, String basePath, String group) {
-        addBasicTransmitterRecipe(consumer, basePath, MekanismBlocks.BASIC_PRESSURIZED_TUBE, Tags.Items.GLASS_BLOCKS_CHEAP, group);
+        addBasicTransmitterRecipe(consumer, basePath, MekanismBlocks.BASIC_PRESSURIZED_TUBE, Tags.BlockItems.GLASS_BLOCKS_CHEAP.item(), group);
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ADVANCED_PRESSURIZED_TUBE, MekanismBlocks.BASIC_PRESSURIZED_TUBE, MekanismTags.Items.ALLOYS_INFUSED, group);
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ELITE_PRESSURIZED_TUBE, MekanismBlocks.ADVANCED_PRESSURIZED_TUBE, MekanismTags.Items.ALLOYS_REINFORCED, group);
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE, MekanismBlocks.ELITE_PRESSURIZED_TUBE, MekanismTags.Items.ALLOYS_ATOMIC, group);

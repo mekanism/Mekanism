@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "group": "copper_nugget",
+  "ingredient": "mekanismtools:copper_paxel",
+  "result": {
+    "id": "minecraft:copper_nugget"
+  }
+}

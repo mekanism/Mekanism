@@ -1,5 +1,6 @@
 {
   "type": "mekanism:pigment_mixing",
+  "group": "mekanism:aqua",
   "left_input": {
     "amount": 1,
     "ingredient": "mekanism:light_blue"

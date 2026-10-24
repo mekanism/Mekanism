@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "group": "mekanism:planks_only",
   "input": {
     "count": 1,
     "ingredient": "minecraft:chest"

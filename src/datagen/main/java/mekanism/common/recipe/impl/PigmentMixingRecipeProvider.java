@@ -11,7 +11,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.references.ItemIds;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
@@ -81,11 +80,7 @@ class PigmentMixingRecipeProvider extends BaseSubRecipeProvider {
               IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(leftInput), leftInputAmount),
               IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(rightInput), rightInputAmount),
               chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.pick(output), leftInputAmount + rightInputAmount)
-        );
-        DyeColor outputDye = output.getDyeColor();
-        if (outputDye != null) {
-            builder.group(ItemIds.DYE.pick(outputDye));
-        }
+        ).group(Mekanism.rl(output.getRegistryPrefix()));
         unlockedByDye(builder, leftInput.getDyeColor());
         unlockedByDye(builder, rightInput.getDyeColor());
         builder.save(consumer, Mekanism.rl(basePath + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix()));

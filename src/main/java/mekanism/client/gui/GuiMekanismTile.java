@@ -41,7 +41,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     @Nullable
     protected MekanismRecipeBookComponent<?> createRecipeBookComponent() {
         if (tile instanceof IRecipeLookupHandler<?> recipeLookupHandler) {
-            return new MekanismRecipeBookComponent<>(menu, recipeLookupHandler, this::font);
+            return new MekanismRecipeBookComponent<>(menu, recipeLookupHandler, registryAccess(), this::font);
         }
         return null;
     }

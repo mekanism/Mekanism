@@ -1,6 +1,6 @@
 {
   "type": "mekanism:pigment_mixing",
-  "group": "purple_dye",
+  "group": "mekanism:purple",
   "left_input": {
     "amount": 1,
     "ingredient": "mekanism:blue"

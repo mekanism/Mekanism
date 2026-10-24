@@ -5,11 +5,16 @@ import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import java.util.Optional;
 import java.util.function.IntFunction;
+import mekanism.api.chemical.ChemicalIds;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter.Provider;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.references.BlockItemIds;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
@@ -22,7 +27,7 @@ import org.jspecify.annotations.Nullable;
 ///
 /// @since 10.8.0
 public enum ChemicalConversionBookCategory implements MekanismBookCategory {
-    MISC("misc", "enriched_diamond", null);
+    MISC("misc", BlockItemIds.RED_MUSHROOM.item(), MekanismBookCategory.createMekanismKey("enriched_diamond"));
 
     public static final Codec<ChemicalConversionBookCategory> CODEC = StringRepresentable.fromEnum(ChemicalConversionBookCategory::values);
     public static final IntFunction<ChemicalConversionBookCategory> BY_ID = ByIdMap.continuous(ChemicalConversionBookCategory::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
@@ -35,13 +40,13 @@ public enum ChemicalConversionBookCategory implements MekanismBookCategory {
     private final String name;
 
     ChemicalConversionBookCategory(String name, String primaryMekIcon, @Nullable String secondaryMekIcon) {
-        this(name, MekanismBookCategory.createMekanismItem(primaryMekIcon), MekanismBookCategory.createMekanismItem(secondaryMekIcon));
+        this(name, MekanismBookCategory.createMekanismKey(primaryMekIcon), MekanismBookCategory.createMekanismKey(secondaryMekIcon));
     }
 
-    ChemicalConversionBookCategory(String name, Holder<Item> primaryIcon, @Nullable Holder<Item> secondaryIcon) {
+    ChemicalConversionBookCategory(String name, ResourceKey<Item> primaryIcon, @Nullable ResourceKey<Item> secondaryIcon) {
         this.name = name;
-        this.primaryIcon = primaryIcon;
-        this.secondaryIcon = secondaryIcon;
+        this.primaryIcon = MekanismBookCategory.createItem(primaryIcon);
+        this.secondaryIcon = MekanismBookCategory.createItem(secondaryIcon);
         this.categoryHolder = MekanismBookCategory.createHolder(MekanismRecipeTypes.NAME_CHEMICAL_CONVERSION, this.name);
     }
 
@@ -56,12 +61,20 @@ public enum ChemicalConversionBookCategory implements MekanismBookCategory {
     }
 
     @Override
-    public ItemStack getPrimaryIcon() {
+    public Object getPrimaryIcon(Provider holderLookup) {
         return new ItemStack(primaryIcon);
     }
 
     @Override
-    public Optional<ItemStack> getSecondaryIcon() {
+    public Optional<Object> getSecondaryIcon(Provider holderLookup) {
+        if (this == MISC) {
+            //Try to render misc as diamond
+            Optional<Object> result = holderLookup.get(ChemicalIds.DIAMOND).map(ChemicalResource::of);
+            if (result.isPresent()) {
+                return result;
+            }
+            //Fall through to fallback icon
+        }
         return secondaryIcon == null ? Optional.empty() : Optional.of(new ItemStack(secondaryIcon));
     }
 

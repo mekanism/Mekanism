@@ -1,6 +1,7 @@
 package mekanism.common.recipe.compat;
 
 import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
+import mekanism.api.recipes.book.SawingBookCategory;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.core.Holder;
@@ -29,7 +30,8 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(items, ItemIds.BEEF),
                     new ItemStackTemplate(ModItems.MINCED_BEEF.get(), 2)
-              ).group(Mekanism.rl("fd_meat"))
+              ).category(SawingBookCategory.FOOD)
+              .group(Mekanism.rl("fd_meat"))
               .unlockedBy(hasCriterion(ItemIds.BEEF))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "minced_beef"));
@@ -37,7 +39,8 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(items, ItemIds.PORKCHOP),
                     new ItemStackTemplate(ModItems.BACON.get(), 2)
-              ).group(Mekanism.rl("fd_cooked_meat"))
+              ).category(SawingBookCategory.FOOD)
+              .group(Mekanism.rl("fd_cooked_meat"))
               .unlockedBy(hasCriterion(ItemIds.PORKCHOP))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "raw_bacon"));
@@ -45,14 +48,16 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(items, ItemIds.MUTTON),
                     new ItemStackTemplate(ModItems.MUTTON_CHOPS.get(), 2)
-              ).group(Mekanism.rl("fd_meat"))
+              ).category(SawingBookCategory.FOOD)
+              .group(Mekanism.rl("fd_meat"))
               .unlockedBy(hasCriterion(ItemIds.MUTTON))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "raw_mutton_chops"));
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(items, ItemIds.COOKED_MUTTON),
                     new ItemStackTemplate(ModItems.COOKED_MUTTON_CHOPS.get(), 2)
-              ).group(Mekanism.rl("fd_cooked_meat"))
+              ).category(SawingBookCategory.FOOD)
+              .group(Mekanism.rl("fd_cooked_meat"))
               .unlockedBy(hasCriterion(ItemIds.COOKED_MUTTON))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "mutton_chops"));
@@ -62,7 +67,8 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(items.getOrThrow(ItemIds.PORKCHOP), 2),
                     new ItemStackTemplate(bone),
                     1
-              ).group(Mekanism.rl("fd_meat"))
+              ).category(SawingBookCategory.FOOD)
+              .group(Mekanism.rl("fd_meat"))
               .unlockedBy(hasCriterion(ModItems.HAM.get()))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "ham_processing"));
@@ -71,7 +77,8 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(items.getOrThrow(ItemIds.COOKED_PORKCHOP), 2),
                     new ItemStackTemplate(bone),
                     1
-              ).group(Mekanism.rl("fd_cooked_meat"))
+              ).category(SawingBookCategory.FOOD)
+              .group(Mekanism.rl("fd_cooked_meat"))
               .unlockedBy(hasCriterion(ModItems.SMOKED_HAM.get())).addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "smoked_ham_processing"));
         //Chicken
@@ -80,7 +87,8 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(ModItems.CHICKEN_CUTS.get(), 2),
                     new ItemStackTemplate(boneMeal),
                     1
-              ).group(Mekanism.rl("fd_meat"))
+              ).category(SawingBookCategory.FOOD)
+              .group(Mekanism.rl("fd_meat"))
               .unlockedBy(hasCriterion(ItemIds.CHICKEN))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "raw_chicken_cuts"));
@@ -89,7 +97,8 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(ModItems.COOKED_CHICKEN_CUTS.get(), 2),
                     new ItemStackTemplate(boneMeal),
                     1
-              ).group(Mekanism.rl("fd_cooked_meat"))
+              ).category(SawingBookCategory.FOOD)
+              .group(Mekanism.rl("fd_cooked_meat"))
               .unlockedBy(hasCriterion(ItemIds.COOKED_CHICKEN))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "chicken_cuts"));
@@ -99,7 +108,8 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(ModItems.SALMON_SLICE.get(), 2),
                     new ItemStackTemplate(boneMeal),
                     1
-              ).group(Mekanism.rl("fd_fish"))
+              ).category(SawingBookCategory.FOOD)
+              .group(Mekanism.rl("fd_fish"))
               .unlockedBy(hasCriterion(ItemIds.SALMON))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "raw_salmon_slice"));
@@ -108,7 +118,8 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(ModItems.COOKED_SALMON_SLICE.get(), 2),
                     new ItemStackTemplate(boneMeal),
                     1
-              ).group(Mekanism.rl("fd_cooked_fish"))
+              ).category(SawingBookCategory.FOOD)
+              .group(Mekanism.rl("fd_cooked_fish"))
               .unlockedBy(hasCriterion(ItemIds.COOKED_SALMON))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "salmon_slice"));
@@ -118,7 +129,8 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(ModItems.COD_SLICE.get(), 2),
                     new ItemStackTemplate(boneMeal),
                     1
-              ).group(Mekanism.rl("fd_fish"))
+              ).category(SawingBookCategory.FOOD)
+              .group(Mekanism.rl("fd_fish"))
               .unlockedBy(hasCriterion(ItemIds.COD))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "raw_cod_slice"));
@@ -127,7 +139,8 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(ModItems.COOKED_COD_SLICE.get(), 2),
                     new ItemStackTemplate(boneMeal),
                     1
-              ).group(Mekanism.rl("fd_cooked_fish"))
+              ).category(SawingBookCategory.FOOD)
+              .group(Mekanism.rl("fd_cooked_fish"))
               .unlockedBy(hasCriterion(ItemIds.COOKED_COD))
               .addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "cod_slice"));

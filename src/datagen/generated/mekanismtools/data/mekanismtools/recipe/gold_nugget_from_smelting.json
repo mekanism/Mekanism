@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "group": "gold_nugget",
+  "ingredient": "mekanismtools:gold_paxel",
+  "result": {
+    "id": "minecraft:gold_nugget"
+  }
+}

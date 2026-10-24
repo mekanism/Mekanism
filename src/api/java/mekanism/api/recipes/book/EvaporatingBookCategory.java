@@ -5,17 +5,25 @@ import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import java.util.Optional;
 import java.util.function.IntFunction;
+import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter.Provider;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
 /// Recipe book categories for evaporating recipes.
@@ -27,6 +35,7 @@ public enum EvaporatingBookCategory implements MekanismBookCategory {
     public static final Codec<EvaporatingBookCategory> CODEC = StringRepresentable.fromEnum(EvaporatingBookCategory::values);
     public static final IntFunction<EvaporatingBookCategory> BY_ID = ByIdMap.continuous(EvaporatingBookCategory::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     public static final StreamCodec<ByteBuf, EvaporatingBookCategory> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, EvaporatingBookCategory::ordinal);
+    private static final Holder<Fluid> BRINE = DeferredHolder.create(ResourceKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "brine")));
 
     private final Holder<RecipeBookCategory> categoryHolder;
     private final Holder<Item> primaryIcon;
@@ -35,13 +44,13 @@ public enum EvaporatingBookCategory implements MekanismBookCategory {
     private final String name;
 
     EvaporatingBookCategory(String name, String primaryMekIcon, @Nullable String secondaryMekIcon) {
-        this(name, MekanismBookCategory.createMekanismItem(primaryMekIcon), MekanismBookCategory.createMekanismItem(secondaryMekIcon));
+        this(name, MekanismBookCategory.createMekanismKey(primaryMekIcon), MekanismBookCategory.createMekanismKey(secondaryMekIcon));
     }
 
-    EvaporatingBookCategory(String name, Holder<Item> primaryIcon, @Nullable Holder<Item> secondaryIcon) {
+    EvaporatingBookCategory(String name, ResourceKey<Item> primaryIcon, @Nullable ResourceKey<Item> secondaryIcon) {
         this.name = name;
-        this.primaryIcon = primaryIcon;
-        this.secondaryIcon = secondaryIcon;
+        this.primaryIcon = MekanismBookCategory.createItem(primaryIcon);
+        this.secondaryIcon = MekanismBookCategory.createItem(secondaryIcon);
         this.categoryHolder = MekanismBookCategory.createHolder(MekanismRecipeTypes.NAME_EVAPORATING, this.name);
     }
 
@@ -56,12 +65,15 @@ public enum EvaporatingBookCategory implements MekanismBookCategory {
     }
 
     @Override
-    public ItemStack getPrimaryIcon() {
+    public Object getPrimaryIcon(Provider holderLookup) {
+        if (this == MISC) {
+            return FluidResource.of(BRINE);
+        }
         return new ItemStack(primaryIcon);
     }
 
     @Override
-    public Optional<ItemStack> getSecondaryIcon() {
+    public Optional<Object> getSecondaryIcon(Provider holderLookup) {
         return secondaryIcon == null ? Optional.empty() : Optional.of(new ItemStack(secondaryIcon));
     }
 

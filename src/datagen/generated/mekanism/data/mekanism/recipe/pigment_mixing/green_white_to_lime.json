@@ -1,6 +1,6 @@
 {
   "type": "mekanism:pigment_mixing",
-  "group": "lime_dye",
+  "group": "mekanism:lime",
   "left_input": {
     "amount": 1,
     "ingredient": "mekanism:green"

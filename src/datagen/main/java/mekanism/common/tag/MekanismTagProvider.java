@@ -92,7 +92,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addPellets();
         addUpgrades();
         addColorableItems();
-        getBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
+        getBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.BlockItems.ORES.block(), BlockTags.LOGS);
         getBuilder(MekanismTags.Blocks.INCORRECT_FOR_DISASSEMBLER);
         getBuilder(MekanismTags.Blocks.INCORRECT_FOR_MEKA_TOOL);
 
@@ -114,7 +114,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Items.getProcessedResource(ResourceType.CLUMP, PrimaryResource.GOLD)
         );
         getBuilder(MekanismAPITags.Items.MEKASUIT_HUD_RENDERER).add(MekanismAPITags.Items.MODULE_CONTAINERS_ARMOR_HELMET);
-        getBuilder(MekanismTags.Items.STONE_CRAFTING_MATERIALS).add(ItemTags.STONE_CRAFTING_MATERIALS, Tags.Items.COBBLESTONES_NORMAL);
+        getBuilder(MekanismTags.Items.STONE_CRAFTING_MATERIALS).add(ItemTags.STONE_CRAFTING_MATERIALS, Tags.BlockItems.COBBLESTONES_NORMAL.item());
         getBuilder(MekanismTags.Items.MUFFLING_CENTER).add(
               Tags.Items.BRICKS,
               Tags.Items.INGOTS_IRON,
@@ -499,10 +499,10 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addStorage() {
         getBuilder(MekanismTags.Blocks.BARRELS_PERSONAL).add(MekanismBlocks.PERSONAL_BARREL);
-        getBuilder(Tags.Blocks.BARRELS).add(MekanismTags.Blocks.BARRELS_PERSONAL);
+        getBuilder(Tags.BlockItems.BARRELS.block()).add(MekanismTags.Blocks.BARRELS_PERSONAL);
         getBuilder(MekanismTags.Blocks.CHESTS_ELECTRIC).add(MekanismBlocks.PERSONAL_CHEST);
         getBuilder(MekanismTags.Blocks.CHESTS_PERSONAL).add(MekanismBlocks.PERSONAL_CHEST);
-        getBuilder(Tags.Blocks.CHESTS).add(MekanismTags.Blocks.CHESTS_ELECTRIC, MekanismTags.Blocks.CHESTS_PERSONAL);
+        getBuilder(Tags.BlockItems.CHESTS.block()).add(MekanismTags.Blocks.CHESTS_ELECTRIC, MekanismTags.Blocks.CHESTS_PERSONAL);
         getBuilder(MekanismTags.BlockItems.PERSONAL_STORAGE.item()).add(MekanismBlocks.PERSONAL_BARREL.getItemHolder(), MekanismBlocks.PERSONAL_CHEST.getItemHolder());
         getBuilder(MekanismTags.BlockItems.PERSONAL_STORAGE.block()).add(MekanismTags.Blocks.BARRELS_PERSONAL, MekanismTags.Blocks.CHESTS_PERSONAL);
     }
@@ -516,12 +516,12 @@ public class MekanismTagProvider extends BaseTagProvider {
             //Note: Neo ore tag has this tag added automatically so we can skip adding to it manually
             addToTags(BlockItemTags.ORES, tag);
             if (type.getResource() == MiscResource.FLUORITE) {
-                addToTags(Tags.Items.ORE_RATES_DENSE, Tags.Blocks.ORE_RATES_DENSE, oreBlockType.stone(), oreBlockType.deepslate());
+                addToTags(Tags.BlockItems.ORE_RATES_DENSE, oreBlockType.stone(), oreBlockType.deepslate());
             } else {
-                addToTags(Tags.Items.ORE_RATES_SINGULAR, Tags.Blocks.ORE_RATES_SINGULAR, oreBlockType.stone(), oreBlockType.deepslate());
+                addToTags(Tags.BlockItems.ORE_RATES_SINGULAR, oreBlockType.stone(), oreBlockType.deepslate());
             }
-            addToTags(Tags.Items.ORES_IN_GROUND_DEEPSLATE, Tags.Blocks.ORES_IN_GROUND_DEEPSLATE, oreBlockType.deepslate());
-            addToTags(Tags.Items.ORES_IN_GROUND_STONE, Tags.Blocks.ORES_IN_GROUND_STONE, oreBlockType.stone());
+            addToTags(Tags.BlockItems.ORES_IN_GROUND_DEEPSLATE, oreBlockType.deepslate());
+            addToTags(Tags.BlockItems.ORES_IN_GROUND_STONE, oreBlockType.stone());
             getBuilder(BlockTags.SNAPS_GOAT_HORN).add(oreBlockType.stone(), oreBlockType.deepslate());
         }
     }
@@ -533,7 +533,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTags(MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_OBSIDIAN, MekanismBlocks.REFINED_OBSIDIAN_BLOCK);
         addToTags(MekanismTags.BlockItems.STORAGE_BLOCKS_STEEL, MekanismBlocks.STEEL_BLOCK);
         addToTags(MekanismTags.BlockItems.STORAGE_BLOCKS_FLUORITE, MekanismBlocks.FLUORITE_BLOCK);
-        addToTags(Tags.Items.STORAGE_BLOCKS, Tags.Blocks.STORAGE_BLOCKS,
+        addToTags(Tags.BlockItems.STORAGE_BLOCKS,
               MekanismTags.BlockItems.STORAGE_BLOCKS_BRONZE, MekanismTags.BlockItems.STORAGE_BLOCKS_CHARCOAL, MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_GLOWSTONE,
               MekanismTags.BlockItems.STORAGE_BLOCKS_REFINED_OBSIDIAN, MekanismTags.BlockItems.STORAGE_BLOCKS_STEEL, MekanismTags.BlockItems.STORAGE_BLOCKS_FLUORITE
         );
@@ -541,8 +541,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         for (Map.Entry<BlockResourceInfo, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             BlockItemTagId tag = MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(entry.getKey());
             addToTags(tag, entry.getValue());
-            getBuilder(Tags.Items.STORAGE_BLOCKS).addAsItems(tag);
-            getBuilder(Tags.Blocks.STORAGE_BLOCKS).addAsBlocks(tag);
+            addToTags(Tags.BlockItems.STORAGE_BLOCKS, tag);
         }
     }
 

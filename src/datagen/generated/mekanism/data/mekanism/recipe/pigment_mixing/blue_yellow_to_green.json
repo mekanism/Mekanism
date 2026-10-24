@@ -1,6 +1,6 @@
 {
   "type": "mekanism:pigment_mixing",
-  "group": "green_dye",
+  "group": "mekanism:green",
   "left_input": {
     "amount": 1,
     "ingredient": "mekanism:blue"

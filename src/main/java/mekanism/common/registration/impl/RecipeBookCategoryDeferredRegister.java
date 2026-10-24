@@ -41,11 +41,7 @@ public class RecipeBookCategoryDeferredRegister extends MekanismDeferredRegister
     }
 
     public MekanismDeferredHolder<RecipeBookCategory, RecipeBookCategory> register(String recipeType, MekanismBookCategory bookCategory) {
-        return register(recipeType + "_" + bookCategory.getSerializedName());
-    }
-
-    public MekanismDeferredHolder<RecipeBookCategory, RecipeBookCategory> register(String name) {
-        return register(name, RecipeBookCategory::new);
+        return register(recipeType + "_" + bookCategory.getSerializedName(), () -> new MekanismRecipeBookCategory(bookCategory));
     }
 
     public List<MekanismRecipeBookTypes> getTypes() {
@@ -53,5 +49,14 @@ public class RecipeBookCategoryDeferredRegister extends MekanismDeferredRegister
     }
 
     public record MekanismRecipeBookTypes(List<MekanismBookCategory> categories, Component filterName, Predicate<RecipeDisplay> displayMatches) implements ExtendedRecipeBookCategory {
+    }
+
+    public static class MekanismRecipeBookCategory extends RecipeBookCategory {
+
+        public final MekanismBookCategory category;
+
+        public MekanismRecipeBookCategory(MekanismBookCategory category) {
+            this.category = category;
+        }
     }
 }

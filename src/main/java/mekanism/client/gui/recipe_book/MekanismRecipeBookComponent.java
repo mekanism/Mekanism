@@ -8,7 +8,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import mekanism.api.recipes.display.recipe.MekanismRecipeDisplay;
-import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.RecipeContainers;
 import mekanism.common.registration.impl.RecipeBookCategoryDeferredRegister.MekanismRecipeBookTypes;
@@ -19,6 +18,7 @@ import net.minecraft.client.gui.screens.recipebook.GhostSlots;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 import net.minecraft.client.gui.screens.recipebook.SlotSelectTime;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
@@ -46,7 +46,7 @@ public class MekanismRecipeBookComponent<MENU extends RecipeBookMenu> extends Vi
 
     //TODO - 26.3: When transferring and requiring stacked inputs it doesn't transfer enough.
     // It also then doesn't display ghost things for stuff that can't be transferred for stuff like fluids
-    public MekanismRecipeBookComponent(MENU menu, IRecipeLookupHandler<?> recipeLookup, Supplier<Font> fontSupplier) {
+    public MekanismRecipeBookComponent(MENU menu, IRecipeLookupHandler<?> recipeLookup, HolderGetter.Provider holderLookup, Supplier<Font> fontSupplier) {
         MekanismRecipeBookTypes bookCategories = recipeLookup.getBookCategories();
         this.bookCategories = bookCategories;
         //TODO - 26.3: Implement
@@ -64,9 +64,15 @@ public class MekanismRecipeBookComponent<MENU extends RecipeBookMenu> extends Vi
               //Append the category as the first tab in the same way TabInfo(SearchRecipeBookCategory category) would construct it
               Stream.of(new RecipeBookComponent.TabInfo(new ItemStack(Items.COMPASS), Optional.empty(), bookCategories)),
               bookCategories.categories().stream().map(category -> new RecipeBookComponent.TabInfo(
-                    category.getPrimaryIcon(), category.getSecondaryIcon(), category.toRecipeBookCategory()
+                    convertIconToPlaceholder(category.getPrimaryIcon(holderLookup)),
+                    category.getSecondaryIcon(holderLookup).map(MekanismRecipeBookComponent::convertIconToPlaceholder),
+                    category.toRecipeBookCategory()
               ))
         ).toList(), buttonCreator);
+    }
+
+    private static ItemStack convertIconToPlaceholder(Object object) {
+        return object instanceof ItemStack stack ? stack : ItemStack.EMPTY;
     }
 
     public void addComponent(IGhostRecipeComponent component, boolean result) {
@@ -80,11 +86,6 @@ public class MekanismRecipeBookComponent<MENU extends RecipeBookMenu> extends Vi
     @Override
     protected WidgetSprites getFilterButtonTextures() {
         return filterButtonTextures;
-    }
-
-    @Override
-    protected boolean isCraftingSlot(Slot slot) {
-        return slot instanceof InventoryContainerSlot inventorySlot && inventorySlot.isRecipeCraftingSlot();
     }
 
     @Override

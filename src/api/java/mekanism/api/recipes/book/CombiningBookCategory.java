@@ -7,9 +7,13 @@ import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter.Provider;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.references.BlockItemIds;
+import net.minecraft.references.ItemIds;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
@@ -22,9 +26,9 @@ import org.jspecify.annotations.Nullable;
 ///
 /// @since 10.8.0
 public enum CombiningBookCategory implements MekanismBookCategory {
-    BUILDING("building", "combiner", null),
-    DECORATIVE("decorative", "combiner", null),
-    MISC("misc", "combiner", null);
+    BUILDING("building", BlockItemIds.GOLD_ORE.item(), null),
+    DECORATIVE("decorative", ItemIds.DYE.purple(), null),
+    MISC("misc", ItemIds.GLOW_INK_SAC, null);
 
     public static final Codec<CombiningBookCategory> CODEC = StringRepresentable.fromEnum(CombiningBookCategory::values);
     public static final IntFunction<CombiningBookCategory> BY_ID = ByIdMap.continuous(CombiningBookCategory::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
@@ -37,13 +41,13 @@ public enum CombiningBookCategory implements MekanismBookCategory {
     private final String name;
 
     CombiningBookCategory(String name, String primaryMekIcon, @Nullable String secondaryMekIcon) {
-        this(name, MekanismBookCategory.createMekanismItem(primaryMekIcon), MekanismBookCategory.createMekanismItem(secondaryMekIcon));
+        this(name, MekanismBookCategory.createMekanismKey(primaryMekIcon), MekanismBookCategory.createMekanismKey(secondaryMekIcon));
     }
 
-    CombiningBookCategory(String name, Holder<Item> primaryIcon, @Nullable Holder<Item> secondaryIcon) {
+    CombiningBookCategory(String name, ResourceKey<Item> primaryIcon, @Nullable ResourceKey<Item> secondaryIcon) {
         this.name = name;
-        this.primaryIcon = primaryIcon;
-        this.secondaryIcon = secondaryIcon;
+        this.primaryIcon = MekanismBookCategory.createItem(primaryIcon);
+        this.secondaryIcon = MekanismBookCategory.createItem(secondaryIcon);
         this.categoryHolder = MekanismBookCategory.createHolder(MekanismRecipeTypes.NAME_COMBINING, this.name);
     }
 
@@ -58,12 +62,12 @@ public enum CombiningBookCategory implements MekanismBookCategory {
     }
 
     @Override
-    public ItemStack getPrimaryIcon() {
+    public Object getPrimaryIcon(Provider holderLookup) {
         return new ItemStack(primaryIcon);
     }
 
     @Override
-    public Optional<ItemStack> getSecondaryIcon() {
+    public Optional<Object> getSecondaryIcon(Provider holderLookup) {
         return secondaryIcon == null ? Optional.empty() : Optional.of(new ItemStack(secondaryIcon));
     }
 

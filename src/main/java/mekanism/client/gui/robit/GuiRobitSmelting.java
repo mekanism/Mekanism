@@ -16,7 +16,7 @@ public class GuiRobitSmelting extends GuiRobit<RobitContainer> {
         super(container, inv, title);
         inventoryLabelY += 1;
         dynamicSlots = true;
-        this.recipeBookComponent = new MekanismRecipeBookComponent<>(menu, robit, this::font);
+        this.recipeBookComponent = new MekanismRecipeBookComponent<>(menu, robit, registryAccess(), this::font);
     }
 
     @Override

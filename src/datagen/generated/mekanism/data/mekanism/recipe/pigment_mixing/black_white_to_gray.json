@@ -1,6 +1,6 @@
 {
   "type": "mekanism:pigment_mixing",
-  "group": "gray_dye",
+  "group": "mekanism:gray",
   "left_input": {
     "amount": 1,
     "ingredient": "mekanism:black"

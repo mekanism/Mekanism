@@ -1,6 +1,6 @@
 {
   "type": "mekanism:pigment_mixing",
-  "group": "orange_dye",
+  "group": "mekanism:orange",
   "left_input": {
     "amount": 1,
     "ingredient": "mekanism:red"

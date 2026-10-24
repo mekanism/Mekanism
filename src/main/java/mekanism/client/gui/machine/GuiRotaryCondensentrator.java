@@ -127,7 +127,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
 
     @Override
     protected MekanismRecipeBookComponent<?> createRecipeBookComponent() {
-        return new MekanismRecipeBookComponent<>(menu, tile, this::font) {
+        return new MekanismRecipeBookComponent<>(menu, tile, registryAccess(), this::font) {
             @Override
             protected void selectMatchingRecipes(RecipeCollection collection, StackedItemContents stackedContents) {
                 //Only match the recipes that match for the given mode

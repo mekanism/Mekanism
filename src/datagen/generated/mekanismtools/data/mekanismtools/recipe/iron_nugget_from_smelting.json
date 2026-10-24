@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "group": "iron_nugget",
+  "ingredient": "mekanismtools:iron_paxel",
+  "result": {
+    "id": "minecraft:iron_nugget"
+  }
+}
