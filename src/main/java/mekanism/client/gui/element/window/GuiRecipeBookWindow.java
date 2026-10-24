@@ -30,6 +30,10 @@ public class GuiRecipeBookWindow extends GuiWindow {
         super(gui, x, y, RecipeBookComponent.IMAGE_WIDTH, HEIGHT, windowData);
         interactionStrategy = InteractionStrategy.ALL;
         this.recipeBook = recipeBook;
+        if (!isPinned() && this.recipeBook.isVisibleAccordingToBookData()) {
+            //Ensure we are marked as pinned (this has to happen before we adopt the position as that sets it to being visible)
+            togglePinned();
+        }
         this.recipeBook.adoptPosition(getX(), getY() + Y_OFFSET);
     }
 
