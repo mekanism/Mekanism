@@ -181,7 +181,7 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
                 @Nullable
                 @Override
                 protected Object getRecipeHandler() {
-                    return isMultiblock ? ((TileEntityMultiblock<?>) tile).getManager() : super.getRecipeHandler();
+                    return isMultiblock ? ((TileEntityMultiblock<?>) tile).getMultiblock() : super.getRecipeHandler();
                 }
             };
             register(name, () -> MekanismContainerType.tile(tileClass, factory));

@@ -641,7 +641,7 @@ public abstract class BaseComputerHelper {
 
         TableType.builder(tagFilterClass, deviceName + " filter with Tag filter properties")
               .extendedFrom(deviceFilterType)
-              .addField(SerializationConstants.TAG, String.class, "The tag to filter. e.g. " + Tags.Items.ORES.location())
+              .addField(SerializationConstants.TAG, String.class, "The tag to filter. e.g. " + Tags.BlockItems.ORES.item().location())
               .build(types);
     }
 }
