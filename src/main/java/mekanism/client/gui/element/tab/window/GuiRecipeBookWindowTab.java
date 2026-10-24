@@ -20,8 +20,12 @@ public class GuiRecipeBookWindowTab extends GuiWindowCreatorTab<MekanismRecipeBo
     private final boolean isPrecisionSawmill;
 
     public GuiRecipeBookWindowTab(IGuiWrapper gui, MekanismRecipeBookComponent<?> recipeBook, boolean isPrecisionSawmill, Supplier<GuiRecipeBookWindowTab> elementSupplier) {
+        this(gui, recipeBook, false, 62, isPrecisionSawmill, elementSupplier);
+    }
+
+    public GuiRecipeBookWindowTab(IGuiWrapper gui, MekanismRecipeBookComponent<?> recipeBook, boolean left, int y, boolean isPrecisionSawmill, Supplier<GuiRecipeBookWindowTab> elementSupplier) {
         this.isPrecisionSawmill = isPrecisionSawmill;
-        super(RecipeBookComponent.RECIPE_BUTTON_SPRITES.enabled(), gui, recipeBook, gui.getImageWidth(), 62, 26, 20, 18, false, elementSupplier);
+        super(RecipeBookComponent.RECIPE_BUTTON_SPRITES.enabled(), gui, recipeBook, left ? -26 : gui.getImageWidth(), y, 26, 20, 18, left, elementSupplier);
         setTooltip(MekanismLang.RECIPE_BOOK);
     }
 

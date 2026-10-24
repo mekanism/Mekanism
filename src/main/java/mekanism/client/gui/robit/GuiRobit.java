@@ -5,6 +5,7 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
+import mekanism.client.gui.element.tab.window.GuiRecipeBookWindowTab;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.entity.IEntityContainer;
@@ -14,10 +15,15 @@ import mekanism.common.network.to_server.button.PacketEntityButtonPress.ClickedE
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import org.jetbrains.annotations.UnknownNullability;
 
 public abstract class GuiRobit<CONTAINER extends AbstractContainerMenu & IEntityContainer<EntityRobit>> extends GuiMekanism<CONTAINER> {
 
     protected final EntityRobit robit;
+
+    /// May be null if init hasn't been called yet, or if the tab doesn't support the recipe book
+    @UnknownNullability
+    private GuiRecipeBookWindowTab recipeBookWindowTab;
 
     protected GuiRobit(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -28,6 +34,9 @@ public abstract class GuiRobit<CONTAINER extends AbstractContainerMenu & IEntity
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiSecurityTab(this, robit, 120));
+        if (recipeBookComponent != null) {
+            recipeBookWindowTab = addRenderableWidget(new GuiRecipeBookWindowTab(this, recipeBookComponent, true, 6, false, () -> recipeBookWindowTab));
+        }
         addRenderableWidget(GuiSideHolder.create(this, imageWidth, 6, 106, false, false, SpecialColors.TAB_ROBIT_MENU));
         addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 10, 18, Mekanism.rl("button/main"),
               (element, _, _) -> PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_MAIN, ((GuiRobit<?>) element.gui()).robit))))
