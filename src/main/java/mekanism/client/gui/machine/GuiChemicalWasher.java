@@ -30,9 +30,9 @@ public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWas
     @Override
     protected void addGuiElements() {
         //Add the side holder before the slots, as it holds a couple of the slots
-        addRenderableWidget(GuiSideHolder.create(this, imageWidth, 66, 57, false, true, SpecialColors.TAB_CHEMICAL_WASHER));
+        addRenderableWidget(GuiSideHolder.create(this, -26, 66, 57, true, true, SpecialColors.TAB_CHEMICAL_WASHER));
         super.addGuiElements();
-        addRenderableWidget(GuiTexturedElement.downArrow(this, imageWidth + 8, 91));
+        addRenderableWidget(GuiTexturedElement.downArrow(this, -17, 90));
         addRenderableWidget(new GuiHorizontalPowerBar(this, tile.energyContainer(), 115, 75))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY))
               .warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE));

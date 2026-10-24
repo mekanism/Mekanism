@@ -158,9 +158,9 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
-        builder.addContainer(fluidSlot = FluidInventorySlot.fill(fluidTank, listener, 180, 71));
+        builder.addContainer(fluidSlot = FluidInventorySlot.fill(fluidTank, listener, -21, 71));
         //Output slot for the fluid container that was used as an input
-        builder.addContainer(fluidOutputSlot = OutputInventorySlot.at(listener, 180, 102));
+        builder.addContainer(fluidOutputSlot = OutputInventorySlot.at(listener, -21, 102));
         builder.addContainer(slurryOutputSlot = ChemicalInventorySlot.drain(outputTank, listener, 152, 56));
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 14));
         slurryOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
