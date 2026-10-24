@@ -114,6 +114,11 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
     }
 
     @Override
+    public boolean hasPersistentData() {
+        return true;
+    }
+
+    @Override
     public Rect2i getIngredientBounds(double mouseX, double mouseY) {
         return new Rect2i(getX() + 1, getY() + 1, width - 2, height - 2);
     }

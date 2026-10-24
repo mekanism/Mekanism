@@ -9,6 +9,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
@@ -93,6 +94,9 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTa
 
     @Override
     public Optional<?> getIngredient(double mouseX, double mouseY) {
+        if (ghostRecipeData != null) {
+            return Optional.of(ghostRecipeData.getCurrent());
+        }
         IChemicalTank tank = getContainer();
         return tank == null || tank.isEmpty() ? Optional.empty() : Optional.of(tank.resource().toStack(tank.amountAsInt()));
     }
@@ -100,6 +104,12 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTa
     @Override
     public TransmissionType getTransmission() {
         return TransmissionType.CHEMICAL;
+    }
+
+    @Override
+    public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
+        ghostRecipeData = ((GuiChemicalGauge) element).ghostRecipeData;
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.recipe_book.IGhostRecipeComponent;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.capabilities.merged.MergedTank;
@@ -143,6 +144,14 @@ public class GuiMergedTankGauge extends GuiGauge<@Nullable Void> implements IRec
     @Override
     protected boolean isRenderingGhost() {
         return fluidGauge.isRenderingGhost() || chemicalGauge.isRenderingGhost();
+    }
+
+    @Override
+    public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
+        GuiMergedTankGauge mergedGauge = (GuiMergedTankGauge) element;
+        fluidGauge.syncFrom(mergedGauge.fluidGauge);
+        chemicalGauge.syncFrom(mergedGauge.chemicalGauge);
     }
 
     @Override

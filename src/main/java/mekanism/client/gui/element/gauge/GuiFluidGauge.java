@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -99,8 +100,17 @@ public class GuiFluidGauge extends GuiTankGauge<FluidResource, IFluidTank> {
 
     @Override
     public Optional<?> getIngredient(double mouseX, double mouseY) {
+        if (ghostRecipeData != null) {
+            return Optional.of(ghostRecipeData.getCurrent());
+        }
         IFluidTank tank = getContainer();
         return tank == null || tank.isEmpty() ? Optional.empty() : Optional.of(tank.resource().toStack(tank.amountAsInt()));
+    }
+
+    @Override
+    public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
+        ghostRecipeData = ((GuiFluidGauge) element).ghostRecipeData;
     }
 
     @Override

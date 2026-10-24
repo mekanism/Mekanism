@@ -130,6 +130,11 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
         return buttonInfo.button() == InputConstants.MOUSE_BUTTON_LEFT || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
     }
 
+    @Override
+    public boolean hasPersistentData() {
+        return true;
+    }
+
     protected abstract Object toIngredientStack(RESOURCE resource, long amount);
 
     @Override

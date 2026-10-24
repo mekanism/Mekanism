@@ -2,11 +2,13 @@ package mekanism.client.gui.element.bar;
 
 import com.google.common.primitives.Ints;
 import java.util.List;
+import java.util.Optional;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.util.MekanismUtils;
@@ -76,6 +78,20 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalResource, IChemicalTank> 
     @Override
     protected Object toIngredientStack(ChemicalResource resource, long amount) {
         return resource.toStack(Ints.saturatedCast(amount));
+    }
+
+    @Override
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
+        if (ghostRecipeData != null) {
+            return Optional.of(ghostRecipeData.getCurrent());
+        }
+        return super.getIngredient(mouseX, mouseY);
+    }
+
+    @Override
+    public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
+        ghostRecipeData = ((GuiChemicalBar) element).ghostRecipeData;
     }
 
     @Override

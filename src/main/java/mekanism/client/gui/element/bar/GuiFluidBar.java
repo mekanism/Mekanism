@@ -2,8 +2,10 @@ package mekanism.client.gui.element.bar;
 
 import com.google.common.primitives.Ints;
 import java.util.List;
+import java.util.Optional;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
@@ -77,6 +79,20 @@ public class GuiFluidBar extends GuiTankBar<FluidResource, IFluidTank> {
     @Override
     protected Object toIngredientStack(FluidResource resource, long amount) {
         return resource.toStack(Ints.saturatedCast(amount));
+    }
+
+    @Override
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
+        if (ghostRecipeData != null) {
+            return Optional.of(ghostRecipeData.getCurrent());
+        }
+        return super.getIngredient(mouseX, mouseY);
+    }
+
+    @Override
+    public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
+        ghostRecipeData = ((GuiFluidBar) element).ghostRecipeData;
     }
 
     @Override

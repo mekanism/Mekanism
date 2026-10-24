@@ -1,12 +1,14 @@
 package mekanism.client.gui.recipe_book;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.recipebook.CraftingRecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.GhostSlots;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.recipebook.PlaceRecipeHelper;
 import net.minecraft.util.context.ContextMap;

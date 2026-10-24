@@ -3,7 +3,6 @@ package mekanism.client.gui.element.slot;
 import java.util.Optional;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.VirtualSlotContainerScreen;
-import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.inventory.container.IGUIWindow;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -11,12 +10,11 @@ import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHelper {
+public class GuiVirtualSlot extends GuiSlot {
 
     @Nullable
     private IVirtualSlot virtualSlot;
@@ -85,12 +83,11 @@ public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHe
 
     @Override
     public Optional<?> getIngredient(double mouseX, double mouseY) {
+        Optional<?> ingredient = super.getIngredient(mouseX, mouseY);
+        if (ingredient.isPresent() || virtualSlot == null) {
+            return ingredient;
+        }
         //Note: We can get away with just using the stack to render
-        return virtualSlot == null ? Optional.empty() : Optional.of(virtualSlot.getStackToRender());
-    }
-
-    @Override
-    public Rect2i getIngredientBounds(double mouseX, double mouseY) {
-        return new Rect2i(getX() + 1, getY() + 1, 16, 16);
+        return Optional.of(virtualSlot.getStackToRender());
     }
 }

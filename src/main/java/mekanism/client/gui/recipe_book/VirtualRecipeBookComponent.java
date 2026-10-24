@@ -1,8 +1,10 @@
 package mekanism.client.gui.recipe_book;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -14,6 +16,7 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 import net.minecraft.client.gui.screens.recipebook.SearchRecipeBookCategory;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
@@ -29,7 +32,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
 //TODO - 26.4: Double check nothing changed that might have broken this, the overlay, or the ghost slots
-public abstract class VirtualRecipeBookComponent<MENU extends RecipeBookMenu> extends RecipeBookComponent<MENU> {
+public abstract class VirtualRecipeBookComponent<MENU extends RecipeBookMenu> extends RecipeBookComponent<MENU> implements IRecipeViewerIngredientHelper {
 
     private final Supplier<Font> fontSupplier;
     private int x;
@@ -108,6 +111,23 @@ public abstract class VirtualRecipeBookComponent<MENU extends RecipeBookMenu> ex
             }
         }
         return false;
+    }
+
+    @Override
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
+        if (this.minecraft.gui.screen() != null && this.recipeBookPage.hoveredButton instanceof MekanismRecipeButton recipeButton && !this.recipeBookPage.overlay.isVisible()) {
+            return recipeButton.getIngredient(mouseX, mouseY);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Rect2i getIngredientBounds(double mouseX, double mouseY) {
+        if (this.minecraft.gui.screen() != null && this.recipeBookPage.hoveredButton instanceof MekanismRecipeButton recipeButton && !this.recipeBookPage.overlay.isVisible()) {
+            return recipeButton.getIngredientBounds(mouseX, mouseY);
+        }
+        //Note: This should never be the case as we validated we had an ingredient but if it is just return the entire gui portion
+        return new Rect2i(x, y, IMAGE_WIDTH, IMAGE_HEIGHT);
     }
 
     public void init(Minecraft minecraft) {

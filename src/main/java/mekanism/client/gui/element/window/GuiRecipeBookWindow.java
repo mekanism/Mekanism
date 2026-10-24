@@ -1,7 +1,9 @@
 package mekanism.client.gui.element.window;
 
+import java.util.Optional;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.recipe_book.VirtualRecipeBookComponent;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.SelectedWindowData;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -12,10 +14,11 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.PreeditEvent;
+import net.minecraft.client.renderer.Rect2i;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 
-public class GuiRecipeBookWindow extends GuiWindow {
+public class GuiRecipeBookWindow extends GuiWindow implements IRecipeViewerIngredientHelper {
 
     private static final int Y_OFFSET = 10;
     //Account for the width of the tabs
@@ -138,5 +141,15 @@ public class GuiRecipeBookWindow extends GuiWindow {
     public void tick() {
         super.tick();
         this.recipeBook.tick();
+    }
+
+    @Override
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
+        return recipeBook.getIngredient(mouseX, mouseY);
+    }
+
+    @Override
+    public Rect2i getIngredientBounds(double mouseX, double mouseY) {
+        return recipeBook.getIngredientBounds(mouseX, mouseY);
     }
 }

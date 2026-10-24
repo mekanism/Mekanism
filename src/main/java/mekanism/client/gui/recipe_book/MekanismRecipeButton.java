@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import net.minecraft.client.Minecraft;
@@ -20,6 +22,7 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 import net.minecraft.client.gui.screens.recipebook.SlotSelectTime;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.context.ContextMap;
@@ -33,7 +36,7 @@ import net.neoforged.neoforge.client.ClientTooltipFlag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 
-public class MekanismRecipeButton extends RecipeButton {
+public class MekanismRecipeButton extends RecipeButton implements IRecipeViewerIngredientHelper {
 
     //Keep a reference to the slot select time to skip having to AT the reference
     private final SlotSelectTime slotSelectTime;
@@ -200,6 +203,16 @@ public class MekanismRecipeButton extends RecipeButton {
         } else {
             output.add(NarratedElementType.USAGE, Component.translatable("narration.button.usage.hovered"));
         }
+    }
+
+    @Override
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
+        return Optional.of(getGeneralDisplayStack());
+    }
+
+    @Override
+    public Rect2i getIngredientBounds(double mouseX, double mouseY) {
+        return new Rect2i(getX(), getY(), getWidth(), getHeight());
     }
 
     private record ResolvedEntry(RecipeDisplayId id, List<Object> display) {

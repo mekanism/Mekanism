@@ -71,7 +71,14 @@ public class GuiElementHandler {
         }
         GuiWindow guiWindow = gui.getWindowHovering(mouseX, mouseY);
         //If no window is being hovered, then check the elements in general; otherwise, check the elements of the window
-        return getIngredientUnderMouse(guiWindow == null ? gui.children() : guiWindow.children(), mouseX, mouseY, ingredientWrapper);
+        Optional<INGREDIENT> ingredient = getIngredientUnderMouse(guiWindow == null ? gui.children() : guiWindow.children(), mouseX, mouseY, ingredientWrapper);
+        if (ingredient.isEmpty() && guiWindow instanceof IRecipeViewerIngredientHelper helper) {
+            Optional<?> windowIngredient = helper.getIngredient(mouseX, mouseY);
+            if (windowIngredient.isPresent()) {
+                return Optional.ofNullable(ingredientWrapper.apply(helper, windowIngredient.get()));
+            }
+        }
+        return ingredient;
     }
 
     private static <INGREDIENT> Optional<INGREDIENT> getIngredientUnderMouse(List<? extends GuiEventListener> children, double mouseX, double mouseY,

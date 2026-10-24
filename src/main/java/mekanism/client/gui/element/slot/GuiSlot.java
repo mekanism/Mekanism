@@ -2,6 +2,7 @@ package mekanism.client.gui.element.slot;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
@@ -14,6 +15,7 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.recipe_book.IGhostRecipeComponent;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -32,6 +34,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.recipebook.SlotSelectTime;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -43,7 +46,7 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.Nullable;
 
-public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, IGhostRecipeComponent, ISupportsWarning<GuiSlot> {
+public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, IGhostRecipeComponent, ISupportsWarning<GuiSlot>, IRecipeViewerIngredientHelper {
 
     private static final int INVALID_SLOT_COLOR = MekanismRenderer.getColorARGB(EnumColor.DARK_RED, 0.8F);
     public static final int DEFAULT_HOVER_COLOR = 0x80FFFFFF;
@@ -334,6 +337,17 @@ public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, IGh
     }
 
     @Override
+    public boolean hasPersistentData() {
+        return true;
+    }
+
+    @Override
+    public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
+        ghostRecipeData = ((GuiSlot) element).ghostRecipeData;
+    }
+
+    @Override
     public void setGhostData(SlotDisplay contents, Iterable<SlotDisplay> recipeContext, ContextMap context, SlotSelectTime slotSelectTime, boolean isResultSlot) {
         List<ItemStack> entries = contents.resolveForStacks(context);
         if (entries.isEmpty()) {
@@ -346,5 +360,29 @@ public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, IGh
     @Override
     public void clearGhostData() {
         ghostRecipeData = null;
+    }
+
+    @Override
+    public boolean isActive() {
+        //When there is ghost data treat it as active for isMouseOver checks
+        return super.isActive() || this.visible && ghostRecipeData != null;
+    }
+
+    @Override
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
+        if (ghostRecipeData != null) {
+            return Optional.of(ghostRecipeData.getCurrent());
+        } else if (storedStackSupplier != null) {
+            ItemStack stored = storedStackSupplier.get();
+            if (!stored.isEmpty()) {
+                return Optional.of(stored);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Rect2i getIngredientBounds(double mouseX, double mouseY) {
+        return new Rect2i(getX() + 1, getY() + 1, 16, 16);
     }
 }
