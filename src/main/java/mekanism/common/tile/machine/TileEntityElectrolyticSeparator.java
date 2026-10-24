@@ -318,12 +318,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     @Override
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED)) {
             double speed = Math.pow(2, totalInstalled);
             baselineMaxOperations = (int) speed;
             dumpRate = (int) (BASE_DUMP_RATE * speed);
         }
+        //Must run after the operations update, as the max energy depends on it
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     @Override
