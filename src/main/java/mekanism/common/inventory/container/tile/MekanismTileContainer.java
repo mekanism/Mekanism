@@ -104,7 +104,7 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
 
     @Nullable
     @Override
-    protected TILE getRecipeHandler() {
+    protected Object getRecipeHandler() {
         return tile;
     }
 }

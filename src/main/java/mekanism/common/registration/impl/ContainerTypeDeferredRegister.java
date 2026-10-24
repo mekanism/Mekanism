@@ -14,6 +14,7 @@ import mekanism.common.inventory.container.type.MekanismItemContainerType.IMekan
 import mekanism.common.registration.INamedEntry;
 import mekanism.common.registration.MekanismDeferredRegister;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
@@ -24,6 +25,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.MenuType.MenuSupplier;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.network.IContainerFactory;
+import org.jspecify.annotations.Nullable;
 
 public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<MenuType<?>> {
 
@@ -119,6 +121,7 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
         private final Class<TILE> tileClass;
         private int offsetX, offsetY;
         private int armorSlotsX = -1, armorSlotsY = -1, offhandOffset = -1;
+        private boolean isMultiblock;
 
         private ContainerBuilder(String name, Class<TILE> tileClass) {
             this.name = name;
@@ -128,6 +131,14 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
         public ContainerBuilder<TILE> offset(int offsetX, int offsetY) {
             this.offsetX = offsetX;
             this.offsetY = offsetY;
+            return this;
+        }
+
+        public ContainerBuilder<TILE> multiblock() {
+            if (!TileEntityMultiblock.class.isAssignableFrom(tileClass)) {
+                throw new IllegalStateException("Can only set multiblock redirect for multiblocks.");
+            }
+            this.isMultiblock = true;
             return this;
         }
 
@@ -165,6 +176,12 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
                     if (armorSlotsX != -1 && armorSlotsY != -1) {
                         addArmorSlots(inv, armorSlotsX, armorSlotsY, offhandOffset);
                     }
+                }
+
+                @Nullable
+                @Override
+                protected Object getRecipeHandler() {
+                    return isMultiblock ? ((TileEntityMultiblock<?>) tile).getManager() : super.getRecipeHandler();
                 }
             };
             register(name, () -> MekanismContainerType.tile(tileClass, factory));

@@ -60,14 +60,14 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                   GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString())
             );
         }).spacing(1).recipeViewerCategories(GeneratorsRVRecipeType.FISSION));
-        addRenderableWidget(new GuiMergedTankGauge(() -> tile.getMultiblock().coolantTank, tile::getMultiblock, GaugeType.STANDARD, this, 6, 13)
-              .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA)));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().fuelTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 25, 13)
-              .setLabel(GeneratorsLang.FISSION_FUEL_TANK.translateColored(EnumColor.DARK_GREEN)));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().heatedCoolantTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 152, 13)
-              .setLabel(GeneratorsLang.FISSION_HEATED_COOLANT_TANK.translateColored(EnumColor.ORANGE)));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().wasteTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 171, 13)
-              .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN)));
+        addRecipeBookComponent(new GuiMergedTankGauge(() -> tile.getMultiblock().coolantTank, tile::getMultiblock, GaugeType.STANDARD, this, 6, 13), false)
+              .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA));
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().fuelTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 25, 13), false)
+              .setLabel(GeneratorsLang.FISSION_FUEL_TANK.translateColored(EnumColor.DARK_GREEN));
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().heatedCoolantTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 152, 13), true)
+              .setLabel(GeneratorsLang.FISSION_HEATED_COOLANT_TANK.translateColored(EnumColor.ORANGE));
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().wasteTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 171, 13), true)
+              .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN));
         addRenderableWidget(new GuiHeatTab(this, () -> {
             Component environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
