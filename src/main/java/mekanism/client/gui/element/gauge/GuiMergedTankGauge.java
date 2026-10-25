@@ -147,6 +147,11 @@ public class GuiMergedTankGauge extends GuiGauge<@Nullable Void> implements IRec
     }
 
     @Override
+    public boolean hasPersistentData() {
+        return isRenderingGhost() || super.hasPersistentData();
+    }
+
+    @Override
     public void syncFrom(GuiElement element) {
         super.syncFrom(element);
         GuiMergedTankGauge mergedGauge = (GuiMergedTankGauge) element;

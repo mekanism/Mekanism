@@ -115,7 +115,7 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
 
     @Override
     public boolean hasPersistentData() {
-        return true;
+        return isRenderingGhost() || super.hasPersistentData();
     }
 
     @Override

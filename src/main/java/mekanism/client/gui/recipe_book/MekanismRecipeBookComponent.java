@@ -24,19 +24,15 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.RecipeBookMenu;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.FurnaceRecipeDisplay;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
-import net.minecraft.world.item.crafting.display.RecipeDisplayId;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.client.recipebook.RecipeOverlayButtonCreator;
-import org.jspecify.annotations.Nullable;
 
-//TODO - 26.4: Double check nothing changed that might have broken this, the overlay, or the ghost slots
 public class MekanismRecipeBookComponent<MENU extends RecipeBookMenu> extends VirtualRecipeBookComponent<MENU> {
 
     private final List<IGhostRecipeComponent> ghostInputs = new ArrayList<>();
@@ -116,6 +112,7 @@ public class MekanismRecipeBookComponent<MENU extends RecipeBookMenu> extends Vi
             List<Ingredient> craftingRequirements = entry.craftingRequirements().get();
             //If we have no ingredients that means we are all chemicals or fluids, so mark it as not being craftable
             // as we don't support transferring chemicals or fluids currently
+            //TODO: Can we add support for them by checking capabilities or stuff?
             return !craftingRequirements.isEmpty() && stackedContents.canCraft(craftingRequirements, null);
         }
         return false;
@@ -138,12 +135,6 @@ public class MekanismRecipeBookComponent<MENU extends RecipeBookMenu> extends Vi
     }
 
     @Override
-    public void fillGhostRecipe(RecipeDisplay recipe) {
-        clearGhostValues();
-        super.fillGhostRecipe(recipe);
-    }
-
-    @Override
     protected void fillGhostRecipe(GhostSlots ghostSlots, RecipeDisplay recipe, ContextMap context) {
         List<SlotDisplay> inputIngredients;
         List<SlotDisplay> outputDisplays;
@@ -158,7 +149,7 @@ public class MekanismRecipeBookComponent<MENU extends RecipeBookMenu> extends Vi
         }
         SlotSelectTime slotSelectTime = this.recipeBookPage.overlay.slotSelectTime;
         Iterable<SlotDisplay> recipeContext = Iterables.concat(inputIngredients, outputDisplays);
-        //TODO - 26.3: Figure out how to handle this for factories/the cache index
+        //TODO - 26.3: Figure out how to handle this for factories/the cache index and how the extra container is at the end of all the primary ones
         int inputCount = ghostInputs.size();
         if (inputCount == inputIngredients.size()) {
             for (int i = 0; i < inputCount; i++) {
@@ -176,23 +167,6 @@ public class MekanismRecipeBookComponent<MENU extends RecipeBookMenu> extends Vi
             }
             ghostOutputs.get(i).setGhostData(output, recipeContext, context, slotSelectTime, true);
         }
-    }
-
-    @Override
-    public void slotClicked(@Nullable Slot slot) {
-        if (slot != null && this.isCraftingSlot(slot)) {
-            clearGhostValues();
-            super.slotClicked(slot);
-        }
-    }
-
-    @Override
-    protected boolean tryPlaceRecipe(RecipeCollection recipeCollection, RecipeDisplayId recipe, boolean useMaxItems) {
-        if (super.tryPlaceRecipe(recipeCollection, recipe, useMaxItems)) {
-            clearGhostValues();
-            return true;
-        }
-        return false;
     }
 
     @Override

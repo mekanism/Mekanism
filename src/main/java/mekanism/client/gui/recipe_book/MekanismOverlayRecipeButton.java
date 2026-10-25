@@ -17,6 +17,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent;
 import net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent.OverlayCraftingRecipeButton;
 import net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent.OverlayRecipeButton;
@@ -36,15 +37,29 @@ import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 //TODO - 26.4: Make this extend OverlayRecipeButton directly
 public class MekanismOverlayRecipeButton {
 
+    private static final WidgetSprites ONE_INPUT = new WidgetSprites(
+          OverlaySmeltingRecipeButton.ENABLED_SPRITE,
+          OverlaySmeltingRecipeButton.DISABLED_SPRITE,
+          OverlaySmeltingRecipeButton.HIGHLIGHTED_ENABLED_SPRITE,
+          OverlaySmeltingRecipeButton.HIGHLIGHTED_DISABLED_SPRITE
+    );
+    private static final WidgetSprites TWO_INPUT;
+    private static final WidgetSprites THREE_INPUT;
+    private static final WidgetSprites FALLBACK_INPUT = new WidgetSprites(
+          OverlayCraftingRecipeButton.ENABLED_SPRITE,
+          OverlayCraftingRecipeButton.DISABLED_SPRITE,
+          OverlayCraftingRecipeButton.HIGHLIGHTED_ENABLED_SPRITE,
+          OverlayCraftingRecipeButton.HIGHLIGHTED_DISABLED_SPRITE
+    );
+    static {
+        //TODO - 26.3: Replace these with dedicated custom sprites
+        TWO_INPUT = FALLBACK_INPUT;
+        THREE_INPUT = FALLBACK_INPUT;
+    }
+
     @SuppressWarnings("JoinDeclarationAndAssignmentJava")//Don't bother joining as they are still separate to make it easier in 26.4 to make this a proper subclass instead
     public static OverlayRecipeButton construct(OverlayRecipeComponent parent, int x, int y, RecipeDisplayId id, RecipeDisplay recipe, ContextMap context, boolean isCraftable,
           Supplier<Font> fontSupplier, List<? extends IResourceContainer<?>> inputs) {
-        //TODO: These should become proper fields
-        final Identifier enabledSprite;
-        final Identifier highlightedEnabledSprite;
-        final Identifier disabledSprite;
-        final Identifier highlightedDisabledSprite;
-        //TODO: Constructor logic
         List<OverlayRecipeButton.Pos> slots = new ArrayList<>();
         List<ChemicalPos> chemicalTanks = new ArrayList<>();
         List<FluidPos> fluidTanks = new ArrayList<>();
@@ -98,26 +113,17 @@ public class MekanismOverlayRecipeButton {
                 }
             }
         }
-        if (inputCount == 1) {
-            //Re-use vanilla's single input smelting sprites
-            enabledSprite = OverlaySmeltingRecipeButton.ENABLED_SPRITE;
-            highlightedEnabledSprite = OverlaySmeltingRecipeButton.ENABLED_SPRITE;
-            disabledSprite = OverlaySmeltingRecipeButton.DISABLED_SPRITE;
-            highlightedDisabledSprite = OverlaySmeltingRecipeButton.HIGHLIGHTED_DISABLED_SPRITE;
-        } else if (inputCount == 2 && false) {
-            //TODO - 26.3: Switch this out with custom ones
-        } else if (inputCount == 3 && false) {
-            //TODO - 26.3: Switch this out with custom ones
-        } else {//Fallback to vanilla crafting
-            enabledSprite = OverlayCraftingRecipeButton.ENABLED_SPRITE;
-            highlightedEnabledSprite = OverlayCraftingRecipeButton.ENABLED_SPRITE;
-            disabledSprite = OverlayCraftingRecipeButton.DISABLED_SPRITE;
-            highlightedDisabledSprite = OverlayCraftingRecipeButton.HIGHLIGHTED_DISABLED_SPRITE;
-        }
         //TODO: These three should be proper fields as well (which is why they aren't joined with their assignment)
         final List<OverlayRecipeButton.Pos> items;
         final List<ChemicalPos> chemicals;
         final List<FluidPos> fluids;
+        final WidgetSprites sprites;
+        sprites = switch (inputCount) {
+            case 1 -> ONE_INPUT;
+            case 2 -> TWO_INPUT;
+            case 3 -> THREE_INPUT;
+            default -> FALLBACK_INPUT;
+        };
         items = List.copyOf(slots);
         chemicals = List.copyOf(chemicalTanks);
         fluids = List.copyOf(fluidTanks);
@@ -168,10 +174,7 @@ public class MekanismOverlayRecipeButton {
 
             @Override
             protected Identifier getSprite(boolean isCraftable) {
-                if (isCraftable) {
-                    return this.isHoveredOrFocused() ? highlightedEnabledSprite : enabledSprite;
-                }
-                return this.isHoveredOrFocused() ? highlightedDisabledSprite : disabledSprite;
+                return sprites.get(isCraftable, isHoveredOrFocused());
             }
         };
     }

@@ -338,7 +338,7 @@ public class GuiSlot extends GuiElement implements IRecipeViewerGhostTarget, IGh
 
     @Override
     public boolean hasPersistentData() {
-        return true;
+        return ghostRecipeData != null || super.hasPersistentData();
     }
 
     @Override

@@ -132,7 +132,7 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
 
     @Override
     public boolean hasPersistentData() {
-        return true;
+        return isRenderingGhost() || super.hasPersistentData();
     }
 
     protected abstract Object toIngredientStack(RESOURCE resource, long amount);

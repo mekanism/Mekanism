@@ -55,7 +55,6 @@ public abstract class VirtualRecipeBookComponent<MENU extends RecipeBookMenu> ex
 
     @Override
     public void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, @Nullable Slot hoveredSlot) {
-        //TODO - 26.3: Allow extracting tooltips for the recipe book tabs
         if (isVisible()) {
             //Reimplementation of relevant recipe book page tooltip rendering
             if (this.minecraft.gui.screen() != null && this.recipeBookPage.hoveredButton instanceof MekanismRecipeButton recipeButton && !this.recipeBookPage.overlay.isVisible()) {
