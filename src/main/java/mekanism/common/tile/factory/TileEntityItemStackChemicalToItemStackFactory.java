@@ -56,10 +56,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -243,11 +241,6 @@ public class TileEntityItemStackChemicalToItemStackFactory<BOOK_CATEGORY extends
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
-    }
-
-    @Override
-    public boolean recipeMatches(ServerLevel level, RecipeHolder<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipe, int cacheIndex) {
-        return recipe.value().matches(new SingleItemChemicalRecipeInput(inputHandlers[cacheIndex].getInput(), chemicalInputHandler.getInput()), level);
     }
 
     @Override

@@ -41,18 +41,16 @@ import mekanism.common.inventory.container.sync.SyncableRegistryEntry;
 import mekanism.common.inventory.container.sync.SyncableResource;
 import mekanism.common.inventory.container.sync.SyncableShort;
 import mekanism.common.inventory.container.sync.SyncableStreamCodec;
+import mekanism.common.lib.recipetransfer.PlaceMekanismRecipe;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.container.PacketUpdateContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
-import mekanism.common.recipe.lookup.IRecipeLookupHandler.RecipeContainers;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.recipebook.ServerPlaceRecipe;
-import net.minecraft.recipebook.ServerPlaceRecipe.CraftingMenuAccess;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Util;
@@ -67,10 +65,10 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -431,42 +429,24 @@ public abstract class MekanismContainer extends RecipeBookMenu implements ISecur
     @Override
     public final PostPlaceAction handlePlacement(boolean useMaxItems, boolean allowDroppingItemsToClear, RecipeHolder<?> recipe, ServerLevel level, Inventory inventory) {
         if (getRecipeHandler() instanceof IRecipeLookupHandler<?> recipeLookup) {
-            return handlePlacement(recipeLookup, useMaxItems, allowDroppingItemsToClear, recipe, level, inventory);
+            return handlePlacement(recipeLookup, useMaxItems, allowDroppingItemsToClear, recipe, inventory);
         }
         return PostPlaceAction.NOTHING;
     }
 
-    private <INPUT extends RecipeInput, RECIPE extends MekanismRecipe<INPUT, ?, ?>> PostPlaceAction handlePlacement(IRecipeLookupHandler<?> recipeLookup, boolean useMaxItems,
-          boolean allowDroppingItemsToClear, RecipeHolder<?> recipe, ServerLevel level, Inventory inventory) {
-        RecipeHolder<RECIPE> typedRecipe = (RecipeHolder<RECIPE>) recipe;
-        //TODO - 26.3: Figure out how to get the cache index?
-        int cacheIndex = 0;
-        CraftingMenuAccess<RECIPE> craftingMenuAccess = ((IRecipeLookupHandler<RECIPE>) recipeLookup).asCraftingMenuAccess(level, false, cacheIndex);
-        if (craftingMenuAccess != null) {
-            RecipeContainers recipeContainers = recipeLookup.getRecipeContainers(cacheIndex);
-            List<Slot> inputGridSlots = new ArrayList<>();
-            List<Slot> slotsToClear = new ArrayList<>();
-            for (IResourceContainer<?> input : recipeContainers.inputs()) {
-                InventoryContainerSlot slot = getContainerSlotByRecipeContainer(input);
-                if (slot != null) {
-                    inputGridSlots.add(slot);
-                    slotsToClear.add(slot);
-                }
-            }
-            for (IResourceContainer<?> output : recipeContainers.outputs()) {
-                InventoryContainerSlot slot = getContainerSlotByRecipeContainer(output);
-                if (slot != null) {
-                    slotsToClear.add(slot);
-                }
-            }
-            if (inputGridSlots.isEmpty()) {
-                //No input slots are present, assume it is chemical and fluid only and just let it try to place the ghost recipe
-                return PostPlaceAction.PLACE_GHOST_RECIPE;
-            }
-            return ServerPlaceRecipe.placeRecipe(craftingMenuAccess, inputGridSlots.size(), 1, inputGridSlots, slotsToClear, inventory, typedRecipe, useMaxItems,
-                  allowDroppingItemsToClear);
+    @SuppressWarnings("unchecked")
+    private <RECIPE extends MekanismRecipe<?, ?, ?>> PostPlaceAction handlePlacement(IRecipeLookupHandler<RECIPE> recipeLookup, boolean useMaxItems,
+          boolean allowDroppingItemsToClear, RecipeHolder<?> recipe, Inventory inventory) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            //TODO - 26.3: Figure out how to get the cache index?
+            int cacheIndex = 0;
+            PlayerInventoryWrapper playerInventory = PlayerInventoryWrapper.of(inventory);
+            //Note: We use the automation type of manual as this was initiated by a player interaction
+            PostPlaceAction action = PlaceMekanismRecipe.placeRecipe(playerInventory, (RECIPE) recipe.value(), useMaxItems, allowDroppingItemsToClear,
+                  recipeLookup.getRecipeContainers(cacheIndex), transaction, AutomationType.MANUAL);
+            transaction.commit();
+            return action;
         }
-        return PostPlaceAction.NOTHING;
     }
 
     @Override

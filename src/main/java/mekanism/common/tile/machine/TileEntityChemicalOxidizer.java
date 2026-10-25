@@ -46,7 +46,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -164,11 +163,6 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     @Override
     public RecipeContainers getRecipeContainers(int cacheIndex) {
         return recipeContainers;
-    }
-
-    @Override
-    public boolean recipeMatches(ServerLevel level, RecipeHolder<ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo>> recipe, int cacheIndex) {
-        return recipe.value().matches(new SingleRecipeInput(inputHandler.getInput()), level);
     }
 
     public MachineEnergyContainer<TileEntityChemicalOxidizer> energyContainer() {

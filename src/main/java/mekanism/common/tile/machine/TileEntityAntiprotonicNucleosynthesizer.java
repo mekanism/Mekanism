@@ -59,7 +59,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -209,11 +208,6 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     @Override
     public RecipeContainers getRecipeContainers(int cacheIndex) {
         return recipeContainers;
-    }
-
-    @Override
-    public boolean recipeMatches(ServerLevel level, RecipeHolder<NucleosynthesizingRecipe> recipe, int cacheIndex) {
-        return recipe.value().matches(new SingleItemChemicalRecipeInput(itemInputHandler.getInput(), gasInputHandler.getInput()), level);
     }
 
     public MachineEnergyContainer<TileEntityAntiprotonicNucleosynthesizer> energyContainer() {

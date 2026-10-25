@@ -47,7 +47,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.UnknownNullability;
@@ -159,11 +158,6 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     @Override
     public RecipeContainers getRecipeContainers(int cacheIndex) {
         return recipeContainers;
-    }
-
-    @Override
-    public boolean recipeMatches(ServerLevel level, RecipeHolder<CombinerRecipe> recipe, int cacheIndex) {
-        return recipe.value().matches(new BiItemRecipeInput(inputHandler.getInput(), extraInputHandler.getInput()), level);
     }
 
     @Override

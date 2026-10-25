@@ -13,14 +13,10 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.registration.impl.RecipeBookCategoryDeferredRegister;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.recipebook.ServerPlaceRecipe.CraftingMenuAccess;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.StackedContentsCompatible;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jspecify.annotations.Nullable;
 
 //TODO - 26.3: Try to add support for some of the things in RecipeCraftingHolder
@@ -94,42 +90,8 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> ex
         }
     }
 
-    @Nullable
-    default CraftingMenuAccess<RECIPE> asCraftingMenuAccess(ServerLevel level, boolean includeNonItems, int cacheIndex) {
-        RecipeContainers recipeContainers = getRecipeContainers(cacheIndex);
-        return new CraftingMenuAccess<>() {
-            @Override
-            public void fillCraftSlotsStackedContents(StackedItemContents stackedContents) {
-                fillStackedContents(stackedContents);
-            }
-
-            @Override
-            public void clearCraftingContent() {
-                for (IResourceContainer<?> inputContainer : recipeContainers.inputs()) {
-                    clearContainerIfValid(inputContainer, includeNonItems);
-                }
-                for (IResourceContainer<?> outputContainer : recipeContainers.outputs()) {
-                    clearContainerIfValid(outputContainer, includeNonItems);
-                }
-            }
-
-            private <RESOURCE extends Resource> void clearContainerIfValid(IResourceContainer<RESOURCE> container, boolean includeNonItems) {
-                if (includeNonItems || container instanceof IInventorySlot) {
-                    container.setContents(container.stackHelper().empty(), null);
-                }
-            }
-
-            @Override
-            public boolean recipeMatches(RecipeHolder<RECIPE> recipe) {
-                return IRecipeLookupHandler.this.recipeMatches(level, recipe, cacheIndex);
-            }
-        };
-    }
-
     /// {@return the resource containers that pertain to recipe processing}
     RecipeContainers getRecipeContainers(int cacheIndex);
-
-    boolean recipeMatches(ServerLevel level, RecipeHolder<RECIPE> recipe, int cacheIndex);
 
     /// {@return the corresponding recipe book type}
     default RecipeBookType getRecipeBookType() {

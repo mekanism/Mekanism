@@ -112,7 +112,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -659,11 +658,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     @Override
     public RecipeContainers getRecipeContainers(int cacheIndex) {
         return recipeContainers;
-    }
-
-    @Override
-    public boolean recipeMatches(ServerLevel level, RecipeHolder<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>> recipe, int cacheIndex) {
-        return recipe.value().matches(new SingleRecipeInput(inputHandler.getInput()), level);
     }
 
     public BooleanSupplier getWarningCheck(RecipeError error) {

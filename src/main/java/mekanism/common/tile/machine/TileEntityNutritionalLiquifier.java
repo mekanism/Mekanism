@@ -59,7 +59,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.UseRemainder;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -255,11 +254,6 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @Override
     public RecipeContainers getRecipeContainers(int cacheIndex) {
         return recipeContainers;
-    }
-
-    @Override
-    public boolean recipeMatches(ServerLevel level, RecipeHolder<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>> recipe, int cacheIndex) {
-        return recipe.value().matches(new SingleRecipeInput(inputHandler.getInput()), level);
     }
 
     public MachineEnergyContainer<TileEntityNutritionalLiquifier> energyContainer() {

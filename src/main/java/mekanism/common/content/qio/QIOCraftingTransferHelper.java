@@ -79,7 +79,7 @@ public class QIOCraftingTransferHelper {
             if (slot.hasItem()) {
                 if (slot.mayPickup(player)) {
                     ItemStack stack = slot.getItem();
-                    reverseLookup.computeIfAbsent(ItemResource.of(stack), item -> new ItemTypeSource()).addSlot(inventorySlotIndex, stack.count());
+                    reverseLookup.computeIfAbsent(ItemResource.of(stack), _ -> new ItemTypeSource()).addSlot(inventorySlotIndex, stack.count());
                 }
             } else {
                 emptyInventorySlots++;

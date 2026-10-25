@@ -59,7 +59,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -214,11 +213,6 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     @Override
     public RecipeContainers getRecipeContainers(int cacheIndex) {
         return recipeContainers;
-    }
-
-    @Override
-    public boolean recipeMatches(ServerLevel level, RecipeHolder<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>> recipe, int cacheIndex) {
-        return recipe.value().matches(new SingleFluidChemicalRecipeInput(fluidInputHandler.getInput(), slurryInputHandler.getInput()), level);
     }
 
     @Override

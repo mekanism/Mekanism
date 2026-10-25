@@ -55,7 +55,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
@@ -221,11 +220,6 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalC
     @Override
     public RecipeContainers getRecipeContainers(int cacheIndex) {
         return recipeContainers;
-    }
-
-    @Override
-    public boolean recipeMatches(ServerLevel level, RecipeHolder<ChemicalChemicalToChemicalRecipe<ChemicalInfusingBookCategory, ChemicalInfusingBookInfo>> recipe, int cacheIndex) {
-        return recipe.value().matches(new BiChemicalRecipeInput(leftInputHandler.getInput(), rightInputHandler.getInput()), level);
     }
 
     @Override

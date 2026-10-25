@@ -46,7 +46,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -154,11 +153,6 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     @Override
     public RecipeContainers getRecipeContainers(int cacheIndex) {
         return recipeContainers;
-    }
-
-    @Override
-    public boolean recipeMatches(ServerLevel level, RecipeHolder<SawmillRecipe> recipe, int cacheIndex) {
-        return recipe.value().matches(new SingleRecipeInput(inputHandler.getInput()), level);
     }
 
     @Override

@@ -32,10 +32,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -144,11 +142,6 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
               .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
-    }
-
-    @Override
-    public boolean recipeMatches(ServerLevel level, RecipeHolder<CombinerRecipe> recipe, int cacheIndex) {
-        return recipe.value().matches(new BiItemRecipeInput(inputHandlers[cacheIndex].getInput(), extraInputHandler.getInput()), level);
     }
 
     @Override

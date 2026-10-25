@@ -49,7 +49,6 @@ import mekanism.common.util.LightLevelUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -214,11 +213,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     @Override
     public RecipeContainers getRecipeContainers(int cacheIndex) {
         return recipeContainers;
-    }
-
-    @Override
-    public boolean recipeMatches(ServerLevel level, RecipeHolder<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>> recipe, int cacheIndex) {
-        return recipe.value().matches(new SingleChemicalRecipeInput(inputHandler.getInput()), level);
     }
 
     @Override
