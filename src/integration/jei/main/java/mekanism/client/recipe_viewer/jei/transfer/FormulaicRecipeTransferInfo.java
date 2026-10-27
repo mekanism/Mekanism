@@ -1,9 +1,10 @@
-package mekanism.client.recipe_viewer.jei;
+package mekanism.client.recipe_viewer.jei.transfer;
 
 import java.util.List;
 import java.util.Optional;
 import mekanism.client.recipe_viewer.RVTransferUtils;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
+import mekanism.common.registries.MekanismContainerTypes;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.recipe.types.IRecipeType;
@@ -21,7 +22,7 @@ public class FormulaicRecipeTransferInfo implements IRecipeTransferInfo<Formulai
 
     @Override
     public Optional<MenuType<FormulaicAssemblicatorContainer>> getMenuType() {
-        return Optional.empty();
+        return Optional.of(MekanismContainerTypes.FORMULAIC_ASSEMBLICATOR.value());
     }
 
     @Override

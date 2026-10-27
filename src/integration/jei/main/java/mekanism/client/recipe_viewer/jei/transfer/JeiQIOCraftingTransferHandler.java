@@ -1,4 +1,4 @@
-package mekanism.client.recipe_viewer.jei;
+package mekanism.client.recipe_viewer.jei.transfer;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +14,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.transfer.IRecipeTransferContext;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
@@ -57,16 +58,29 @@ public class JeiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
 
     @Nullable
     @Override
+    @Deprecated(since = "JEI 30.30.0", forRemoval = true)
     public IRecipeTransferError transferRecipe(CONTAINER container, RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player,
           boolean maxTransfer, boolean doTransfer) {
         return QIOCraftingTransferHandler.transferRecipe(new JeiRecipeInfo(container, recipeHolder, recipeSlots, player, maxTransfer ? Integer.MAX_VALUE : 1, handlerHelper, stackHelper),
               doTransfer);
     }
 
+    @Nullable
+    @Override
+    public IRecipeTransferError transferRecipe(IRecipeTransferContext<RecipeHolder<CraftingRecipe>, CONTAINER> context, boolean doTransfer) {
+        return QIOCraftingTransferHandler.transferRecipe(new JeiRecipeInfo(context, handlerHelper, stackHelper), doTransfer);
+    }
+
     private record JeiRecipeInfo(
           QIOItemViewerContainer container, RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player, int transferAmount,
           IRecipeTransferHandlerHelper handlerHelper, IStackHelper stackHelper
     ) implements RVRecipeInfo<IRecipeTransferError, JeiRecipeSlot, Object> {
+
+        public JeiRecipeInfo(IRecipeTransferContext<RecipeHolder<CraftingRecipe>, ? extends QIOItemViewerContainer> context,
+              IRecipeTransferHandlerHelper handlerHelper, IStackHelper stackHelper) {
+            this(context.getContainer(), context.getRecipe(), context.getRecipeSlots(), context.getPlayer(), context.isMaxTransfer() ? Integer.MAX_VALUE : 1,
+                  handlerHelper, stackHelper);
+        }
 
         @Override
         public IRecipeTransferError createInternalError() {

@@ -40,6 +40,9 @@ import mekanism.client.recipe_viewer.jei.machine.PressurizedReactionRecipeCatego
 import mekanism.client.recipe_viewer.jei.machine.RotaryCondensentratorRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.SPSRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.SawmillRecipeCategory;
+import mekanism.client.recipe_viewer.jei.transfer.CombinerTransferHandler;
+import mekanism.client.recipe_viewer.jei.transfer.FormulaicRecipeTransferInfo;
+import mekanism.client.recipe_viewer.jei.transfer.JeiQIOCraftingTransferHandler;
 import mekanism.client.recipe_viewer.recipe.BoilerRecipeViewerRecipe;
 import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
@@ -49,6 +52,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
+import mekanism.common.inventory.container.entity.robit.RobitContainer;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -304,7 +308,6 @@ public class MekanismJEI implements IModPlugin {
         //Note: Use a "full" bucket's worth of heavy water, so that JEI renders it as desired in the info page
         registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.asStack(FluidType.BUCKET_VOLUME), NeoForgeTypes.FLUID_STACK,
               MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get()));
-        //TODO - 26.3: Can we just add this to the base module item?
         registry.addIngredientInfo(MekanismRegistries.MODULES.stream().map(data -> IModuleHelper.INSTANCE.asStack(MekanismRegistries.MODULES.wrapAsHolder(data))).toList(),
               VanillaTypes.ITEM_STACK, MekanismLang.RECIPE_VIEWER_INFO_MODULE_INSTALLATION.translate());
     }
@@ -337,5 +340,17 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeTransferHandler(new FormulaicRecipeTransferInfo());
         registry.addRecipeTransferHandler(new JeiQIOCraftingTransferHandler<>(transferHelper, stackHelper, MekanismContainerTypes.QIO_DASHBOARD.get(), QIODashboardContainer.class), RecipeTypes.CRAFTING);
         registry.addRecipeTransferHandler(new JeiQIOCraftingTransferHandler<>(transferHelper, stackHelper, MekanismContainerTypes.PORTABLE_QIO_DASHBOARD.get(), PortableQIODashboardContainer.class), RecipeTypes.CRAFTING);
+        RecipeRegistryHelper.addSimpleTransferHandler(registry, RobitContainer.class, MekanismContainerTypes.SMELTING_ROBIT.get(), RecipeViewerRecipeType.SMELTING);
+        //TODO: Add support for transferring into factories?
+        RecipeRegistryHelper.addSimpleTransferHandler(registry, MekanismContainerTypes.ENRICHMENT_CHAMBER.get(), RecipeViewerRecipeType.ENRICHING);
+        RecipeRegistryHelper.addSimpleTransferHandler(registry, MekanismContainerTypes.CRUSHER.get(), RecipeViewerRecipeType.CRUSHING);
+        RecipeRegistryHelper.addSimpleTransferHandler(registry, MekanismContainerTypes.ENERGIZED_SMELTER.get(), RecipeViewerRecipeType.SMELTING);
+        RecipeRegistryHelper.addSimpleTransferHandler(registry, RobitContainer.class, MekanismContainerTypes.SMELTING_ROBIT.get(), RecipeViewerRecipeType.SMELTING);
+        RecipeRegistryHelper.addTransferHandler(registry, new CombinerTransferHandler(transferHelper));
+        RecipeRegistryHelper.addSimpleTransferHandler(registry, MekanismContainerTypes.CHEMICAL_OXIDIZER.get(), RecipeViewerRecipeType.OXIDIZING);
+        RecipeRegistryHelper.addSimpleTransferHandler(registry, MekanismContainerTypes.PRECISION_SAWMILL.get(), RecipeViewerRecipeType.SAWING);
+        RecipeRegistryHelper.addSimpleTransferHandler(registry, MekanismContainerTypes.NUTRITIONAL_LIQUIFIER.get(), RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION);
+        RecipeRegistryHelper.addSimpleTransferHandler(registry, MekanismContainerTypes.PIGMENT_EXTRACTOR.get(), RecipeViewerRecipeType.PIGMENT_EXTRACTING);
+        //TODO - 26.3: Energy conversion/chemical conversion transfer handling? Look at JEI's transfer handling for furnace fuel?
     }
 }

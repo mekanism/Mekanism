@@ -47,6 +47,7 @@ import mekanism.common.network.to_client.container.PacketUpdateContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
+import mekanism.common.recipe.lookup.IRecipeLookupHandler.RecipeContainers;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
@@ -428,22 +429,31 @@ public abstract class MekanismContainer extends RecipeBookMenu implements ISecur
 
     @Override
     public final PostPlaceAction handlePlacement(boolean useMaxItems, boolean allowDroppingItemsToClear, RecipeHolder<?> recipe, ServerLevel level, Inventory inventory) {
-        if (getRecipeHandler() instanceof IRecipeLookupHandler<?> recipeLookup) {
-            return handlePlacement(recipeLookup, useMaxItems, allowDroppingItemsToClear, recipe, inventory);
+        RecipeContainers recipeContainers = getRecipeContainers();
+        if (recipeContainers != null) {
+            return handlePlacement(recipeContainers, useMaxItems, allowDroppingItemsToClear, recipe, inventory);
         }
         return PostPlaceAction.NOTHING;
     }
 
-    @SuppressWarnings("unchecked")
-    private <RECIPE extends MekanismRecipe<?, ?, ?>> PostPlaceAction handlePlacement(IRecipeLookupHandler<RECIPE> recipeLookup, boolean useMaxItems,
-          boolean allowDroppingItemsToClear, RecipeHolder<?> recipe, Inventory inventory) {
-        try (Transaction transaction = Transaction.openRoot()) {
+    @Nullable
+    public RecipeContainers getRecipeContainers() {
+        if (getRecipeHandler() instanceof IRecipeLookupHandler<?> recipeLookup) {
             //TODO - 26.3: Figure out how to get the cache index?
             int cacheIndex = 0;
+            return recipeLookup.getRecipeContainers(cacheIndex);
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <RECIPE extends MekanismRecipe<?, ?, ?>> PostPlaceAction handlePlacement(RecipeContainers recipeContainers, boolean useMaxItems,
+          boolean allowDroppingItemsToClear, RecipeHolder<?> recipe, Inventory inventory) {
+        try (Transaction transaction = Transaction.openRoot()) {
             PlayerInventoryWrapper playerInventory = PlayerInventoryWrapper.of(inventory);
             //Note: We use the automation type of manual as this was initiated by a player interaction
             PostPlaceAction action = PlaceMekanismRecipe.placeRecipe(playerInventory, (RECIPE) recipe.value(), useMaxItems, allowDroppingItemsToClear,
-                  recipeLookup.getRecipeContainers(cacheIndex), transaction, AutomationType.MANUAL);
+                  recipeContainers, transaction, AutomationType.MANUAL);
             transaction.commit();
             return action;
         }
