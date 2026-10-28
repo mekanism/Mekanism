@@ -15,7 +15,7 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.lib.recipetransfer.PlaceMekanismRecipe.RecipePlacementHelper;
+import mekanism.common.lib.recipetransfer.RecipePlacementHelper;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketTransferMekanismRecipe;
@@ -36,7 +36,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.transfer.resource.ResourceStack;
@@ -155,20 +154,24 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
             this.totalSlots = totalSlots;
             this.recipeKey = recipeKey;
         }
+
         @Override
         public ResourceHandler<ItemResource> itemHandler() {
             return mainSlots;
-        }
-
-        @Override
-        public boolean sendItemsToPlayerInventory(ItemResource resource, int amount, TransactionContext transaction) {
-            return ResourceHandlerUtil.insertStacking(itemHandler(), resource, amount, transaction) == amount;
         }
 
         @Nullable
         @Override
         public IRecipeTransferError successNoAction() {
             return null;
+        }
+
+        @Override
+        public IRecipeTransferError error() {
+            if (!missingSlots.isEmpty()) {
+                return MISSING_SLOTS;
+            }
+            return transferHelper.createInternalError();
         }
 
         @Override

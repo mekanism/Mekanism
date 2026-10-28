@@ -1,9 +1,14 @@
 package mekanism.common.lib.recipetransfer;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap.Entry;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
@@ -26,9 +31,9 @@ import net.minecraft.world.inventory.RecipeBookMenu;
 import net.minecraft.world.inventory.RecipeBookMenu.PostPlaceAction;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
+import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
@@ -200,143 +205,118 @@ public class PlaceMekanismRecipe {
 
     public static <RESULT extends @Nullable Object> RESULT placeRecipe(RecipePlacementHelper<RESULT> helper, ItemStackIngredient input, IInventorySlot inputSlot,
           TransactionContext transaction, AutomationType automationType) {
-        ItemResource currentResource = inputSlot.resource();
-        int currentStored = inputSlot.amountAsInt();
-        if (input.testType(currentResource)) {
-            //Input type matches
-            int perRecipeAmount = input.getNeededAmount(currentResource);
-            int inputCapacity = inputSlot.capacityAsInt(currentResource);
-            if (inputCapacity >= perRecipeAmount) {
-                int amountToMove;
-                int minimumRequired;
-                if (currentStored < perRecipeAmount) {
-                    minimumRequired = perRecipeAmount - currentStored;
-                    //Target moving until filled, or until we are at the perRecipeAmount
-                    amountToMove = helper.useMaxItems() ? Math.max(0, inputCapacity - currentStored) : minimumRequired;
-                } else {
-                    if (!helper.useMaxItems()) {
-                        //We have enough stored, and aren't trying to fill it to the maximum amount, just return that nothing needs to change
-                        return helper.successNoAction();
-                    }
-                    //Try to fill the slot
-                    amountToMove = Math.max(0, inputCapacity - currentStored);
-                    minimumRequired = 0;
-                }
-                if (amountToMove > 0 && amountToMove >= minimumRequired) {
-                    //If we are going to try to move stuff, see how much we can actually insert into the slot
-                    try (Transaction simulation = Transaction.open(transaction)) {
-                        amountToMove = inputSlot.insert(currentResource, amountToMove, simulation, automationType);
-                    }
-                }
-                //If we have to move at least the amount needed to complete the recipe try to do so, otherwise consider that this input cannot match
-                // and fall through to treating the current one as invalid
-                if (amountToMove >= minimumRequired) {
-                    if (amountToMove == 0) {
-                        //We don't actually need to transfer anything more as the slot is full
-                        return helper.successNoAction();
-                    }
-                    try (Transaction subTransaction = Transaction.open(transaction)) {
-                        int extracted = helper.itemHandler().extract(currentResource, amountToMove, subTransaction);
-                        //If we can extract at least the amount we needed consider it valid
-                        if (extracted >= minimumRequired) {
-                            //If we couldn't extract anything (but were just trying to use more items),
-                            // or we can insert everything we extracted into our slot
-                            if (extracted == 0 || inputSlot.insert(currentResource, extracted, subTransaction, automationType) == extracted) {
-                                //We succeeded in moving things to where they should be, commit the changes and return that nothing else needs to be done
-                                subTransaction.commit();
-                                helper.markInputUsed(0, currentResource, extracted);
-                                return helper.success();
-                            }
-                        }
-                    }
-                }
-            } else if (currentStored >= perRecipeAmount) {
-                //We have enough stored, and are already fully filled. In general this will only happen if a slot size changes
-                return helper.successNoAction();
-            }
-            //We can't get enough of this input stored so consider it invalid and fall through and continue trying
-        }
-        try (Transaction subTransaction = Transaction.open(transaction)) {
-            if (!currentResource.isEmpty()) {
-                if (inputSlot.extract(currentResource, currentStored, subTransaction, automationType) != currentStored || !inputSlot.isEmpty()) {
-                    //If we couldn't extract it all, or if after doing so it still isn't empty, we can't handle it for this recipe:
-                    // so just fallback to placing the ghost recipe as we don't require clearing the slots to render ghost recipes
-                    return helper.unableToClearInput(0);
-                }
-            }
-            ResourceHandler<ItemResource> playerInventory = helper.itemHandler();
-            Set<ItemResource> seenResources = new HashSet<>();
-            for (int slot = 0, size = playerInventory.size(); slot < size; slot++) {
-                ItemResource inventoryResource = playerInventory.getResource(slot);
-                if (!inventoryResource.isEmpty() && seenResources.add(inventoryResource) && input.testType(inventoryResource)) {
-                    //If it is a resource we haven't seen yet, and one that is valid as an input, try seeing if we can add it to the slot
-                    int perRecipeAmount = input.getNeededAmount(inventoryResource);
-                    int toExtract = helper.useMaxItems() ? inputSlot.capacityAsInt(inventoryResource) : perRecipeAmount;
-                    //This also acts as an implicit toExtract > 0
-                    if (toExtract >= perRecipeAmount) {
-                        try (Transaction simulation = Transaction.open(subTransaction)) {
-                            //See how much of the inventory resource we can actually insert
-                            toExtract = inputSlot.insert(inventoryResource, toExtract, simulation, automationType);
-                        }
-                        //If we have room to insert the amount for at least one recipe, see how much we actually have available
-                        if (toExtract >= perRecipeAmount) {
-                            try (Transaction forResource = Transaction.open(subTransaction)) {
-                                int extracted = playerInventory.extract(inventoryResource, toExtract, forResource);
-                                if (extracted >= perRecipeAmount && inputSlot.insert(inventoryResource, extracted, forResource, automationType) == extracted) {
-                                    //If we extracted enough for at least one recipe, and transferred it into the inventory slot
-                                    // commit the move, and break out of trying to find the recipe input
-                                    forResource.commit();
-                                    helper.markInputUsed(0, inventoryResource, extracted);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (inputSlot.isEmpty()) {
-                //We failed to find anything to move into it, bail
-                return helper.missingItems(0);
-            }
-            if (!currentResource.isEmpty()) {
-                //At the end try moving the input back into the player's inventory
-                if (!helper.sendItemsToPlayerInventory(currentResource, currentStored, subTransaction)) {
-                    //Abort, we can't put the items from the input slot into the player's inventory, and we are not allowed to drop them
-                    return helper.notEnoughRoom();
-                }
-            }
-            //Success, nothing left to do. Commit the movement
-            subTransaction.commit();
-            return helper.success();
-        }
+        return placeRecipe(helper, List.of(input), List.of(inputSlot), transaction, automationType);
     }
 
     public static <RESULT extends @Nullable Object> RESULT placeRecipe(RecipePlacementHelper<RESULT> helper, ItemStackIngredient input, IInventorySlot inputSlot,
           ItemStackIngredient extraInput, IInventorySlot extraSlot, TransactionContext transaction, AutomationType automationType) {
-        //TODO - 26.3: Implement this
-        return helper.notEnoughRoom();
+        return placeRecipe(helper, List.of(input, extraInput), List.of(inputSlot, extraSlot), transaction, automationType);
     }
 
-    public interface RecipePlacementHelper<RESULT extends @Nullable Object> {
-
-        ResourceHandler<ItemResource> itemHandler();
-
-        boolean sendItemsToPlayerInventory(ItemResource resource, int amount, TransactionContext transaction);
-
-        RESULT successNoAction();
-
-        RESULT success();
-
-        RESULT missingItems(int slot);
-
-        RESULT notEnoughRoom();
-
-        RESULT unableToClearInput(int slot);
-
-        default void markInputUsed(int slotUsedFor, ItemResource resource, int amount) {
+    public static <RESULT extends @Nullable Object> RESULT placeRecipe(RecipePlacementHelper<RESULT> helper, List<ItemStackIngredient> itemIngredients,
+          List<IInventorySlot> slots, TransactionContext transaction, AutomationType automationType) {
+        Int2ObjectMap<ResourceStack<ItemResource>> resultState = RecipeIngredientResolver.solveFor(helper, itemIngredients, slots, transaction, automationType);
+        if (resultState.isEmpty()) {
+            return helper.error();
         }
+        return tryTransfer(helper, slots, resultState, transaction);
+    }
 
-        boolean useMaxItems();
+    public static <RESULT extends @Nullable Object> RESULT tryTransfer(RecipePlacementHelper<RESULT> helper, List<? extends IResourceContainer<?>> inputContainers,
+          Int2ObjectMap<ResourceStack<ItemResource>> resultState, TransactionContext transaction) {
+        boolean moveNeeded = false;
+        Object2IntMap<ItemResource> resourcesToReturn = new Object2IntOpenHashMap<>();
+        //Extract from the slots if necessary
+        for (ObjectIterator<Entry<ResourceStack<ItemResource>>> iterator = Int2ObjectMaps.fastIterator(resultState); iterator.hasNext(); ) {
+            Int2ObjectMap.Entry<ResourceStack<ItemResource>> entry = iterator.next();
+            int slotUsedFor = entry.getIntKey();
+            if (slotUsedFor < 0 || slotUsedFor >= inputContainers.size()) {
+                //Mekanism.logger.warn("Received transfer request from: {}, with invalid slot index: {}.", player, slotUsedFor);
+                return helper.error();
+            }
+            if (!(inputContainers.get(slotUsedFor) instanceof IInventorySlot slot)) {
+                //Mekanism.logger.warn("Received transfer request from: {}, with container index: {}, but that container is not a slot.", player, slotUsedFor);
+                return helper.error();
+            }
+            ItemResource resource = entry.getValue().resource();
+            ItemResource currentType = slot.resource();
+            if (!currentType.isEmpty()) {
+                int stored = slot.amountAsInt();
+                if (currentType.equals(resource)) {
+                    int target = entry.getValue().amount();
+                    if (stored == target) {
+                        //Remove the iterator, no reason to try and insert into it for the second loop
+                        iterator.remove();
+                    } else if (stored > target) {
+                        //We need to remove some from the slot and put it into limbo
+                        int toExtract = target - stored;
+                        if (toExtract <= 0) {
+                            Mekanism.logger.warn("Tried to transfer {} of {} out of slot: {}", toExtract, resource, stored);
+                            return helper.error();
+                        }
+                        if (slot.extract(currentType, toExtract, transaction, AutomationType.MANUAL) < toExtract) {
+                            //Bail, couldn't remove input item
+                            //Mekanism.logger.warn("Received transfer request from: {}, with slot index: {}, but could not extract partial contents from that slot.", player, slotUsedFor);
+                            return helper.error();
+                        }
+                        moveNeeded = true;
+                        resourcesToReturn.mergeInt(currentType, toExtract, Integer::sum);
+                    }
+                } else {
+                    //Resource is different, we have to start by trying to extract it
+                    if (slot.extract(currentType, stored, transaction, AutomationType.MANUAL) < stored || !slot.isEmpty()) {
+                        //Bail, couldn't remove input item
+                        //Mekanism.logger.warn("Received transfer request from: {}, with slot index: {}, but could not extract contents from that slot.", player, slotUsedFor);
+                        return helper.error();
+                    }
+                    moveNeeded = true;
+                    resourcesToReturn.mergeInt(currentType, stored, Integer::sum);
+                }
+            }
+        }
+        //Insert into the slots
+        for (ObjectIterator<Int2ObjectMap.Entry<ResourceStack<ItemResource>>> iterator = Int2ObjectMaps.fastIterator(resultState); iterator.hasNext(); ) {
+            moveNeeded = true;
+            Int2ObjectMap.Entry<ResourceStack<ItemResource>> entry = iterator.next();
+            int slotUsedFor = entry.getIntKey();
+            IInventorySlot slot = (IInventorySlot) inputContainers.get(slotUsedFor);
+            ItemResource resource = entry.getValue().resource();
+            int amountToTransfer = entry.getValue().amount() - slot.amountAsInt();
+            //We extract above if the target is smaller than the amount, or if it is equal then we remove the iterator
+            assert amountToTransfer > 0;
+            if (resourcesToReturn.containsKey(resource)) {
+                int inLimbo = resourcesToReturn.getInt(resource);
+                int available = Math.min(inLimbo, amountToTransfer);
+                if (slot.insert(resource, available, transaction, AutomationType.MANUAL) != available) {
+                    /*Mekanism.logger.warn("Received transfer request from: {}, with slot index: {}, but could not move the expected items ({} of {}) from another slot to that slot.",
+                          player, slotUsedFor, available, resource);*/
+                    return helper.error();
+                } else if (amountToTransfer < inLimbo) {
+                    resourcesToReturn.put(resource, inLimbo - amountToTransfer);
+                    continue;
+                }
+                resourcesToReturn.removeInt(resource);
+                if (amountToTransfer == inLimbo) {
+                    continue;
+                }
+                amountToTransfer -= inLimbo;
+            }
+            if (helper.itemHandler().extract(resource, amountToTransfer, transaction) < amountToTransfer ||
+                slot.insert(resource, amountToTransfer, transaction, AutomationType.MANUAL) != amountToTransfer) {
+                /*Mekanism.logger.warn("Received transfer request from: {}, with slot index: {}, but could not transfer the expected items ({} of {}) from the player's inventory to that slot.",
+                      player, slotUsedFor, amountToTransfer, resource);*/
+                return helper.error();
+            }
+        }
+        for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(resourcesToReturn); iterator.hasNext(); ) {
+            Object2IntMap.Entry<ItemResource> entry = iterator.next();
+            int toInsert = entry.getIntValue();
+            if (!helper.sendItemsToPlayerInventory(entry.getKey(), toInsert, transaction)) {
+                //Mekanism.logger.warn("Received transfer request from: {}, but could not return items currently in recipe slots to the player.", player);
+                return helper.notEnoughRoom();
+            }
+        }
+        return moveNeeded ? helper.success() : helper.successNoAction();
     }
 
     private static class RecipeBookPlacementHelper implements RecipePlacementHelper<RecipeBookMenu.PostPlaceAction> {
@@ -364,12 +344,7 @@ public class PlaceMekanismRecipe {
                 playerInventory.placeItemBackInInventory(resource, amount, transaction);
                 return true;
             }
-            return ResourceHandlerUtil.insertStacking(itemHandler(), resource, amount, transaction) == amount;
-        }
-
-        @Override
-        public PostPlaceAction successNoAction() {
-            return PostPlaceAction.NOTHING;
+            return RecipePlacementHelper.super.sendItemsToPlayerInventory(resource, amount, transaction);
         }
 
         @Override
@@ -378,20 +353,9 @@ public class PlaceMekanismRecipe {
         }
 
         @Override
-        public PostPlaceAction missingItems(int slot) {
+        public PostPlaceAction error() {
             return DEFAULT_ACTION;
         }
-
-        @Override
-        public PostPlaceAction notEnoughRoom() {
-            return DEFAULT_ACTION;
-        }
-
-        @Override
-        public PostPlaceAction unableToClearInput(int slot) {
-            return DEFAULT_ACTION;
-        }
-
         @Override
         public boolean useMaxItems() {
             return useMaxItems;
