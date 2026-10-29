@@ -94,9 +94,15 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
                 int maxEnergyThisTick = MathUtils.multiplyClamped(energyDensity, Math.min(Mth.ceil(cachedFuel.maxBurnPerTick() * fullness), availableFuel));
                 if (maxEnergyThisTick > 0) {
                     try (Transaction transaction = Transaction.openRoot()) {
-                        int inserted = energyContainer().insert(maxEnergyThisTick, transaction, AutomationType.INTERNAL);
-                        if (inserted > 0) {
-                            //calculate the mB for this amount of energy, rounded up
+                        int accepted;
+                        try (Transaction simulation = Transaction.open(transaction)) {
+                            accepted = energyContainer().insert(maxEnergyThisTick, simulation, AutomationType.INTERNAL);
+                        }
+                        // Only consume whole mB when all of their energy fits in the buffer.
+                        int wholeFuelEnergy = accepted - accepted % energyDensity;
+                        int inserted = energyContainer().insert(wholeFuelEnergy, transaction, AutomationType.INTERNAL);
+                        if (inserted > 0 && inserted == wholeFuelEnergy) {
+                            // The inserted energy is an exact multiple of the fuel energy density.
                             int mbThisTick = Math.ceilDiv(inserted, energyDensity);
                             if (fuelTank.extract(fuel, mbThisTick, transaction, AutomationType.INTERNAL) == mbThisTick) {
                                 gasUsedLastTick = mbThisTick;
