@@ -100,13 +100,15 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
                         }
                         // Only consume whole mB when all of their energy fits in the buffer.
                         int wholeFuelEnergy = accepted - accepted % energyDensity;
-                        int inserted = energyContainer().insert(wholeFuelEnergy, transaction, AutomationType.INTERNAL);
-                        if (inserted > 0 && inserted == wholeFuelEnergy) {
-                            // The inserted energy is an exact multiple of the fuel energy density.
-                            int mbThisTick = Math.ceilDiv(inserted, energyDensity);
-                            if (fuelTank.extract(fuel, mbThisTick, transaction, AutomationType.INTERNAL) == mbThisTick) {
-                                gasUsedLastTick = mbThisTick;
-                                transaction.commit();
+                        if (wholeFuelEnergy > 0) {
+                            int inserted = energyContainer().insert(wholeFuelEnergy, transaction, AutomationType.INTERNAL);
+                            if (inserted == wholeFuelEnergy) {
+                                // The inserted energy is an exact multiple of the fuel energy density.
+                                int mbThisTick = inserted / energyDensity;
+                                if (fuelTank.extract(fuel, mbThisTick, transaction, AutomationType.INTERNAL) == mbThisTick) {
+                                    gasUsedLastTick = mbThisTick;
+                                    transaction.commit();
+                                }
                             }
                         }
                     }

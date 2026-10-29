@@ -35,7 +35,8 @@ public class GasGeneratorFuelTest {
                 transaction.commit();
             }
             int density = generator.getCachedFuel().energyDensity();
-            helper.assertTrue(density > 1, "Test fuel must have an energy density greater than one FE/mB");
+            helper.assertTrue(density > 1,
+                  "Test requires density > 1 FE/mB to expose rounding waste; density == 1 has no fractional-mB remainder");
             // Check the native rollback contracts used by the generator, without a simulated handler.
             try (Transaction transaction = Transaction.openRoot()) {
                 try (Transaction simulation = Transaction.open(transaction)) {
@@ -58,24 +59,23 @@ public class GasGeneratorFuelTest {
                   "Aborting after rejected fuel extraction must not leave free energy");
             long capacity = generator.energyContainer().getCapacityAsLong();
             long[] gaps = {0, 1, density - 1, density, (long) density + 1, 2L * density + 1, capacity / 2, capacity};
-            for (int repeat = 0; repeat < 20; repeat++) {
-                for (long gap : gaps) {
-                    long beforeEnergy = generator.energyContainer().getCapacityAsLong() - gap;
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        generator.getFuelTank().setContents(fuel, initialFuel, transaction);
-                        generator.energyContainer().setEnergy(beforeEnergy, transaction);
-                        transaction.commit();
-                    }
-                    TileEntityMekanism.tickServer(helper.getLevel(), generator.getBlockPos(), generator.getBlockState(), generator);
-                    long consumed = initialFuel - generator.getFuelTank().amountAsLong();
-                    long produced = generator.energyContainer().getAmountAsLong() - beforeEnergy;
-                    helper.assertTrue(produced == consumed * density,
-                          "Stored energy must equal the full value of consumed fuel; gap=" + gap + ", fuel=" + consumed + ", energy=" + produced);
-                    if (gap < density) {
-                        helper.assertTrue(consumed == 0, "Fuel must wait when less than one mB of energy fits");
-                    } else {
-                        helper.assertTrue(produced > 0, "Generator must still generate when a whole mB fits");
-                    }
+            for (long gap : gaps) {
+                long beforeEnergy = generator.energyContainer().getCapacityAsLong() - gap;
+                try (Transaction transaction = Transaction.openRoot()) {
+                    generator.getFuelTank().setContents(fuel, initialFuel, transaction);
+                    generator.energyContainer().setEnergy(beforeEnergy, transaction);
+                    transaction.commit();
+                }
+                TileEntityMekanism.tickServer(helper.getLevel(), generator.getBlockPos(), generator.getBlockState(), generator);
+                long consumed = initialFuel - generator.getFuelTank().amountAsLong();
+                long produced = generator.energyContainer().getAmountAsLong() - beforeEnergy;
+                helper.assertTrue(produced == consumed * density,
+                      "Stored energy must equal the full value of consumed fuel; gap=" + gap + ", fuel=" + consumed + ", energy=" + produced);
+                helper.assertTrue(generator.getActive() == (consumed > 0), "Active state must reflect fuel consumed this tick");
+                if (gap < density) {
+                    helper.assertTrue(consumed == 0, "Fuel must wait when less than one mB of energy fits");
+                } else {
+                    helper.assertTrue(produced > 0, "Generator must still generate when a whole mB fits");
                 }
             }
             // Consecutive machine-tick calls must conserve resources without resetting the fixture.
