@@ -13,6 +13,7 @@ import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.client.gui.element.window.GuiWindow;
+import mekanism.client.gui.recipe_book.BookComponentType;
 import mekanism.client.gui.recipe_book.IGhostRecipeComponent;
 import mekanism.client.gui.recipe_book.MekanismRecipeBookComponent;
 import mekanism.client.gui.recipe_book.VirtualRecipeBookComponent;
@@ -732,7 +733,12 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                     guiSlot.validity(() -> checkValidity(index));
                 }
                 if (containerSlot.isRecipeCraftingSlot()) {
-                    addRecipeBookComponent(guiSlot, slotType == ContainerSlotType.OUTPUT);
+                    BookComponentType bookComponentType = switch (slotType) {
+                        case EXTRA -> BookComponentType.EXTRA;
+                        case OUTPUT -> BookComponentType.OUTPUT;
+                        default -> BookComponentType.INPUT;
+                    };
+                    addRecipeBookComponent(guiSlot, bookComponentType);
                 } else {
                     addRenderableWidget(guiSlot);
                 }
@@ -742,16 +748,16 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
     }
 
-    protected <T extends IGhostRecipeComponent> T addRecipeBookComponentNoRender(T component, boolean result) {
+    protected <T extends IGhostRecipeComponent> T addRecipeBookComponentNoRender(T component, BookComponentType type) {
         if (recipeBookComponent instanceof MekanismRecipeBookComponent<?> recipeBook) {
-            recipeBook.addComponent(component, result);
+            recipeBook.addComponent(component, type);
         }
         return component;
     }
 
-    protected <T extends GuiElement & IGhostRecipeComponent> T addRecipeBookComponent(T component, boolean result) {
+    protected <T extends GuiElement & IGhostRecipeComponent> T addRecipeBookComponent(T component, BookComponentType type) {
         if (recipeBookComponent instanceof MekanismRecipeBookComponent<?> recipeBook) {
-            recipeBook.addComponent(component, result);
+            recipeBook.addComponent(component, type);
         }
         return addRenderableWidget(component);
     }

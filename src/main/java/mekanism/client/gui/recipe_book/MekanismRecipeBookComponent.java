@@ -72,8 +72,8 @@ public class MekanismRecipeBookComponent<MENU extends RecipeBookMenu> extends Vi
         return object instanceof ItemStack stack ? stack : ItemStack.EMPTY;
     }
 
-    public void addComponent(IGhostRecipeComponent component, boolean result) {
-        if (result) {
+    public void addComponent(IGhostRecipeComponent component, BookComponentType type) {
+        if (type.isResult()) {
             this.ghostOutputs.add(component);
         } else {
             this.ghostInputs.add(component);
@@ -175,7 +175,10 @@ public class MekanismRecipeBookComponent<MENU extends RecipeBookMenu> extends Vi
         }
         SlotSelectTime slotSelectTime = this.recipeBookPage.overlay.slotSelectTime;
         Iterable<SlotDisplay> recipeContext = Iterables.concat(inputIngredients, outputDisplays);
-        //TODO - 26.3: Figure out how to handle this for factories/the cache index and how the extra container is at the end of all the primary ones
+        //TODO: Improve how we handle the cache index so that we can support more than just the first index?
+        int cacheIndex = 0;
+        List<IGhostRecipeComponent> ghostInputs = ghostInputs(cacheIndex);
+        List<IGhostRecipeComponent> ghostOutputs = ghostOutputs(cacheIndex);
         int inputCount = ghostInputs.size();
         if (inputCount == inputIngredients.size()) {
             for (int i = 0; i < inputCount; i++) {
@@ -200,5 +203,13 @@ public class MekanismRecipeBookComponent<MENU extends RecipeBookMenu> extends Vi
         super.init(minecraft);
         this.ghostInputs.clear();
         this.ghostOutputs.clear();
+    }
+
+    protected List<IGhostRecipeComponent> ghostInputs(int cacheIndex) {
+        return ghostInputs;
+    }
+
+    protected List<IGhostRecipeComponent> ghostOutputs(int cacheIndex) {
+        return ghostOutputs;
     }
 }

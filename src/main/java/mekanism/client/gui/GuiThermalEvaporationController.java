@@ -13,6 +13,7 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.tab.GuiWarningTab;
+import mekanism.client.gui.recipe_book.BookComponentType;
 import mekanism.client.gui.recipe_book.MekanismRecipeBookComponent;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
@@ -70,9 +71,9 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         }, 58, 62))
               //Note: We just apply this warning to the bar as we don't have an arrow or anything here
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
-        inputGauge = addRecipeBookComponent(new GuiFluidGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getFluidTanks(), GaugeType.STANDARD, this, 6, 13), false)
+        inputGauge = addRecipeBookComponent(new GuiFluidGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getFluidTanks(), GaugeType.STANDARD, this, 6, 13), BookComponentType.INPUT)
               .warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT));
-        addRecipeBookComponent(new GuiFluidGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getFluidTanks(), GaugeType.STANDARD, this, OUTPUT_GAUGE_X, 13), true)
+        addRecipeBookComponent(new GuiFluidGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getFluidTanks(), GaugeType.STANDARD, this, OUTPUT_GAUGE_X, 13), BookComponentType.OUTPUT)
               .warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE));
         addRenderableWidget(new GuiHeatTab(this, () -> {
             Component environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);

@@ -10,7 +10,10 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiSortingTab;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.client.gui.recipe_book.BookComponentType;
+import mekanism.client.gui.recipe_book.FactoryRecipeBookComponent;
+import mekanism.client.gui.recipe_book.MekanismRecipeBookComponent;
+import mekanism.common.inventory.container.tile.FactoryContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
@@ -22,33 +25,24 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jspecify.annotations.Nullable;
 
-public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, MekanismTileContainer<TileEntityFactory<?>>> {
+public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, FactoryContainer> {
 
     @Nullable
     private GuiDumpButton dumpButton;
 
-    private static int calcHeight(MekanismTileContainer<TileEntityFactory<?>> container) {
+    public GuiFactory(FactoryContainer container, Inventory inv, Component title) {
         TileEntityFactory<?> tile = container.getTileEntity();
+        int imageWidth = DEFAULT_IMAGE_WIDTH;
         int imageHeight = DEFAULT_IMAGE_HEIGHT;
+        if (tile.tier == FactoryTier.ULTIMATE) {
+            imageWidth += 34;
+        }
         if (tile.hasSecondaryResourceBar()) {
             imageHeight += 11;
         } else if (tile instanceof TileEntitySawingFactory) {
             imageHeight += 21;
         }
-        return imageHeight;
-    }
-
-    private static int calcWidth(MekanismTileContainer<TileEntityFactory<?>> container) {
-        TileEntityFactory<?> tile = container.getTileEntity();
-        int imageWidth = DEFAULT_IMAGE_WIDTH;
-        if (tile.tier == FactoryTier.ULTIMATE) {
-            imageWidth += 34;
-        }
-        return imageWidth;
-    }
-
-    public GuiFactory(MekanismTileContainer<TileEntityFactory<?>> container, Inventory inv, Component title) {
-        super(container, inv, title, calcWidth(container), calcHeight(container));
+        super(container, inv, title, imageWidth, imageHeight);
         if (tile.hasSecondaryResourceBar() || tile instanceof TileEntitySawingFactory) {
             inventoryLabelY += 2;
         } else {
@@ -62,6 +56,11 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     }
 
     @Override
+    protected MekanismRecipeBookComponent<?> createRecipeBookComponent() {
+        return new FactoryRecipeBookComponent<>(menu, tile, registryAccess(), this::font);
+    }
+
+    @Override
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiSortingTab(this, tile));
@@ -71,7 +70,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
         if (tile.hasSecondaryResourceBar()) {
             if (tile instanceof TileEntityItemStackChemicalToItemStackFactory<?, ?> factory) {
                 addRecipeBookComponent(new GuiChemicalBar(this, GuiTankBar.getProvider(factory.getChemicalTank(), tile.getChemicalTanks()), 7, 76,
-                      tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true), false)
+                      tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true), BookComponentType.EXTRA)
                       .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT, 0));
                 dumpButton = addRenderableWidget(new GuiDumpButton(this, (TileEntityFactory<?> & IHasDumpButton) tile, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
             }

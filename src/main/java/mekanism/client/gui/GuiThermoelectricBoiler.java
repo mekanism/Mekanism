@@ -13,6 +13,7 @@ import mekanism.client.gui.element.tab.GuiBoilerTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.tab.GuiWarningTab;
+import mekanism.client.gui.recipe_book.BookComponentType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -72,13 +73,13 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
                                    (multiblock.superheatingElements * MekanismConfig.general.superheatingHeatTransfer.get()));
             }
         }, 166, 13));
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().superheatedCoolantTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 6, 13), false)
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().superheatedCoolantTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 6, 13), BookComponentType.INPUT)
               .setLabel(MekanismLang.BOILER_HEATED_COOLANT_TANK.translateColored(EnumColor.ORANGE));
-        addRecipeBookComponent(new GuiFluidGauge(() -> tile.getMultiblock().waterTank, () -> tile.getMultiblock().getFluidTanks(), GaugeType.STANDARD, this, 26, 13), false)
+        addRecipeBookComponent(new GuiFluidGauge(() -> tile.getMultiblock().waterTank, () -> tile.getMultiblock().getFluidTanks(), GaugeType.STANDARD, this, 26, 13), BookComponentType.INPUT)
               .setLabel(MekanismLang.BOILER_WATER_TANK.translateColored(EnumColor.INDIGO));
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().steamTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 174, 13), true)
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().steamTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 174, 13), BookComponentType.OUTPUT)
               .setLabel(MekanismLang.BOILER_STEAM_TANK.translateColored(EnumColor.GRAY));
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().cooledCoolantTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 194, 13), true)
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().cooledCoolantTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 194, 13), BookComponentType.OUTPUT)
               .setLabel(MekanismLang.BOILER_COOLANT_TANK.translateColored(EnumColor.AQUA));
         addRenderableWidget(new GuiHeatTab(this, () -> {
             Component environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);

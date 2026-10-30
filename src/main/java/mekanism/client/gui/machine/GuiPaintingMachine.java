@@ -9,6 +9,7 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.GuiProgress.ColorDetails;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.recipe_book.BookComponentType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.machine.TileEntityPaintingMachine;
@@ -32,7 +33,7 @@ public class GuiPaintingMachine extends GuiConfigurableTile<TileEntityPaintingMa
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getActive));
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.pigmentTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 25, 13), false)
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.pigmentTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 25, 13), BookComponentType.EXTRA)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 64, 39).recipeViewerCategory(tile).colored(new PigmentColorDetails()))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));

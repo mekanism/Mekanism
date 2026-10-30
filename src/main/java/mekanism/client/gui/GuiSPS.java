@@ -7,6 +7,7 @@ import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
+import mekanism.client.gui.recipe_book.BookComponentType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.sps.SPSMultiblockData;
@@ -30,8 +31,8 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 7, 17), false);
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 151, 17), true);
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 7, 17), BookComponentType.INPUT);
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.STANDARD, this, 151, 17), BookComponentType.OUTPUT);
         addRenderableWidget(new GuiInnerScreen(this, 27, 17, 122, 60, () -> {
             List<Component> list = new ArrayList<>();
             SPSMultiblockData multiblock = tile.getMultiblock();

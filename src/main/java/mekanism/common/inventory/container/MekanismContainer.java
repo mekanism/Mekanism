@@ -439,7 +439,7 @@ public abstract class MekanismContainer extends RecipeBookMenu implements ISecur
     @Nullable
     public RecipeContainers getRecipeContainers() {
         if (getRecipeHandler() instanceof IRecipeLookupHandler<?> recipeLookup) {
-            //TODO - 26.3: Figure out how to get the cache index?
+            //TODO: Improve how we handle the cache index so that we can support more than just the first index?
             int cacheIndex = 0;
             return recipeLookup.getRecipeContainers(cacheIndex);
         }
@@ -468,7 +468,7 @@ public abstract class MekanismContainer extends RecipeBookMenu implements ISecur
 
     @Override
     public final RecipeBookType getRecipeBookType() {
-        //TODO - 26.3: Do we want to try and extend this to supporting the formulaic assemblicator, and qio crafting windows?
+        //TODO: Do we want to try and extend this to supporting the formulaic assemblicator, and qio crafting windows?
         if (getRecipeHandler() instanceof IRecipeLookupHandler<?> recipeLookup) {
             return recipeLookup.getRecipeBookType();
         }

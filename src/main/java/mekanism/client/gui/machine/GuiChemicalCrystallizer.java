@@ -14,6 +14,7 @@ import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.recipe_book.BookComponentType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
@@ -41,7 +42,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 157, 23))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getActive));
-        inputGauge = addRecipeBookComponent(new GuiChemicalGauge(() -> tile.inputTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 7, 4), false)
+        inputGauge = addRecipeBookComponent(new GuiChemicalGauge(() -> tile.inputTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 7, 4), BookComponentType.INPUT)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_INPUT));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 53, 61).recipeViewerCategory(tile))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));

@@ -9,6 +9,7 @@ import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.recipe_book.BookComponentType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.machine.TileEntityPressurizedReactionChamber;
@@ -27,11 +28,11 @@ public class GuiPRC extends GuiConfigurableTile<TileEntityPressurizedReactionCha
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getActive));
-        addRecipeBookComponent(new GuiFluidGauge(() -> tile.inputFluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 5, 15), false)
+        addRecipeBookComponent(new GuiFluidGauge(() -> tile.inputFluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 5, 15), BookComponentType.INPUT)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(TileEntityPressurizedReactionChamber.NOT_ENOUGH_FLUID_INPUT_ERROR));
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.inputGasTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 28, 15), false)
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.inputGasTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 28, 15), BookComponentType.INPUT)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(TileEntityPressurizedReactionChamber.NOT_ENOUGH_CHEMICAL_INPUT_ERROR));
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.outputGasTank, tile::getChemicalTanks, GaugeType.SMALL, this, 140, 45), true)
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.outputGasTank, tile::getChemicalTanks, GaugeType.SMALL, this, 140, 45), BookComponentType.OUTPUT)
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(TileEntityPressurizedReactionChamber.NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 163, 21)
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY)));

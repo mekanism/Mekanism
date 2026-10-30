@@ -14,6 +14,7 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.recipe_book.BookComponentType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.effect.BoltFeatureRenderer.BoltRenderState;
 import mekanism.client.render.lib.effect.BoltRenderer;
@@ -76,7 +77,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
               .padding(2)
               .recipeViewerCategory(tile);
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getEnergyUsed));
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.gasTank, tile::getChemicalTanks, GaugeType.SMALL_MED, this, 5, 18), false)
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.gasTank, tile::getChemicalTanks, GaugeType.SMALL_MED, this, 5, 18), BookComponentType.EXTRA)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT));
         addRenderableWidget(new GuiEnergyGauge(tile.energyContainer(), GaugeType.SMALL_MED, this, 172, 18))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));

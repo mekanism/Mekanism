@@ -341,7 +341,7 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeTransferHandler(new JeiQIOCraftingTransferHandler<>(transferHelper, stackHelper, MekanismContainerTypes.QIO_DASHBOARD.get(), QIODashboardContainer.class), RecipeTypes.CRAFTING);
         registry.addRecipeTransferHandler(new JeiQIOCraftingTransferHandler<>(transferHelper, stackHelper, MekanismContainerTypes.PORTABLE_QIO_DASHBOARD.get(), PortableQIODashboardContainer.class), RecipeTypes.CRAFTING);
         RecipeRegistryHelper.addSimpleTransferHandler(registry, RobitContainer.class, MekanismContainerTypes.SMELTING_ROBIT.get(), RecipeViewerRecipeType.SMELTING);
-        //TODO: Add support for transferring into factories?
+        //TODO: Add support for transferring into factories? At the very least like the recipe book does where it assumes the first slot?
         RecipeRegistryHelper.addSimpleTransferHandler(registry, MekanismContainerTypes.ENRICHMENT_CHAMBER.get(), RecipeViewerRecipeType.ENRICHING);
         RecipeRegistryHelper.addSimpleTransferHandler(registry, MekanismContainerTypes.CRUSHER.get(), RecipeViewerRecipeType.CRUSHING);
         RecipeRegistryHelper.addSimpleTransferHandler(registry, MekanismContainerTypes.ENERGIZED_SMELTER.get(), RecipeViewerRecipeType.SMELTING);

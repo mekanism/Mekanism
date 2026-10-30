@@ -11,6 +11,7 @@ import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.recipe_book.BookComponentType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.machine.TileEntityElectrolyticSeparator;
@@ -33,11 +34,11 @@ public class GuiElectrolyticSeparator extends GuiConfigurableTile<TileEntityElec
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getEnergyUsed));
-        fluidGauge = addRecipeBookComponent(new GuiFluidGauge(() -> tile.fluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 5, 10), false)
+        fluidGauge = addRecipeBookComponent(new GuiFluidGauge(() -> tile.fluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 5, 10), BookComponentType.INPUT)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_INPUT));
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.leftTank, tile::getChemicalTanks, GaugeType.SMALL, this, 58, 18), true)
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.leftTank, tile::getChemicalTanks, GaugeType.SMALL, this, 58, 18), BookComponentType.OUTPUT)
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(TileEntityElectrolyticSeparator.NOT_ENOUGH_SPACE_LEFT_OUTPUT_ERROR));
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.rightTank, tile::getChemicalTanks, GaugeType.SMALL, this, 100, 18), true)
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.rightTank, tile::getChemicalTanks, GaugeType.SMALL, this, 100, 18), BookComponentType.OUTPUT)
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(TileEntityElectrolyticSeparator.NOT_ENOUGH_SPACE_RIGHT_OUTPUT_ERROR));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY))

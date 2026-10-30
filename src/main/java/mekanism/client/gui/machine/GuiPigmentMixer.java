@@ -15,6 +15,7 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.GuiProgress.ColorDetails;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.recipe_book.BookComponentType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.machine.TileEntityPigmentMixer;
@@ -43,11 +44,11 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY))
               .warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE));
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getEnergyUsed));
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.leftInputTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 25, 13), false)
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.leftInputTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 25, 13), BookComponentType.INPUT)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_LEFT_INPUT));
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.outputTank, tile::getChemicalTanks, GaugeType.STANDARD, this, CENTER_GAUGE_X, 4), true)
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.outputTank, tile::getChemicalTanks, GaugeType.STANDARD, this, CENTER_GAUGE_X, 4), BookComponentType.OUTPUT)
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE));
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.rightInputTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 133, 13), false)
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.rightInputTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 133, 13), BookComponentType.INPUT)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_RIGHT_INPUT));
         addRenderableWidget(new GuiProgress(tile::getActive, ProgressType.SMALL_RIGHT, this, 47, 39).recipeViewerCategory(tile).colored(new LeftColorDetails()))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));

@@ -16,6 +16,7 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.IProgressInfoHandler.IBooleanProgressInfoHandler;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.recipe_book.BookComponentType;
 import mekanism.client.gui.recipe_book.IGhostRecipeComponent;
 import mekanism.client.gui.recipe_book.MekanismRecipeBookComponent;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
@@ -102,8 +103,8 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
 
         //Add a component to both input and output lists that properly redirects to the corresponding gauge
         DirectionalGhostRecipeComponent recipeComponent = new DirectionalGhostRecipeComponent(tile::getMode, fluidGauge, chemicalGauge);
-        addRecipeBookComponentNoRender(recipeComponent, false);
-        addRecipeBookComponentNoRender(recipeComponent, true);
+        addRecipeBookComponentNoRender(recipeComponent, BookComponentType.INPUT);
+        addRecipeBookComponentNoRender(recipeComponent, BookComponentType.OUTPUT);
     }
 
     @Override

@@ -15,6 +15,7 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.GuiProgress.ColorDetails;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.recipe_book.BookComponentType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.machine.TileEntityPigmentExtractor;
@@ -41,7 +42,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
         addRenderableWidget(new GuiHorizontalPowerBar(this, tile.energyContainer(), ENERGY_BAR_X, 75))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getActive));
-        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.pigmentTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 131, 13), true)
+        addRecipeBookComponent(new GuiChemicalGauge(() -> tile.pigmentTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 131, 13), BookComponentType.OUTPUT)
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 64, 40).recipeViewerCategory(tile).colored(new PigmentColorDetails()))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));

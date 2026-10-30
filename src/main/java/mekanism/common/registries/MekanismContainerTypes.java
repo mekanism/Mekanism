@@ -153,7 +153,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityDimensionalStabilizer>> DIMENSIONAL_STABILIZER = CONTAINER_TYPES.register(MekanismBlocks.DIMENSIONAL_STABILIZER, TileEntityDimensionalStabilizer.class);
 
     //Named
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFactory<?>>> FACTORY = CONTAINER_TYPES.register("factory", factoryClass(), FactoryContainer::new);
+    public static final ContainerTypeRegistryObject<FactoryContainer> FACTORY = CONTAINER_TYPES.register("factory", factoryClass(), FactoryContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityChemicalTank>> CHEMICAL_TANK = CONTAINER_TYPES.custom("chemical_tank", TileEntityChemicalTank.class).armorSideBar().build();
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFluidTank>> FLUID_TANK = CONTAINER_TYPES.custom("fluid_tank", TileEntityFluidTank.class).armorSideBar().build();
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityEnergyCube>> ENERGY_CUBE = CONTAINER_TYPES.custom("energy_cube", TileEntityEnergyCube.class).armorSideBar(180, 41, 0).build();
