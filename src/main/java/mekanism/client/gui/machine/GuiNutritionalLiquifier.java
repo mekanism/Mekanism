@@ -28,7 +28,7 @@ public class GuiNutritionalLiquifier extends GuiConfigurableTile<TileEntityNutri
 
     @Override
     protected void addGuiElements() {
-        //TODO - 26.3: Test the recipe book handling for the liquifier
+        //Note: This needs to be before super so that it gets added as an output before the item slot does
         addRecipeBookComponent(new GuiFluidGauge(() -> tile.fluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 133, 13), BookComponentType.OUTPUT)
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE));
         super.addGuiElements();
