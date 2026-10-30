@@ -128,8 +128,8 @@
 		},
 		{
 			"name": "bladeFrontConnector",
-			"from": [8, 14.44, 2.93],
-			"to": [9, 16.44, 5.93],
+			"from": [8.02, 14.44, 2.93],
+			"to": [8.98, 16.44, 5.93],
 			"light_emission": 15,
 			"faces": {
 				"east": {"uv": [13.75, 1.5, 14.5, 2.5], "texture": "#disassembler"},
@@ -216,19 +216,24 @@
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"translation": [-0.5, 2, 2.25]
+			"translation": [-0.5, 1, 2.4]
 		},
 		"thirdperson_lefthand": {
-			"translation": [0.5, 2, 2.25]
+			"translation": [0.5, 0, 2.1]
 		},
 		"firstperson_righthand": {
-			"translation": [8, -4, 0]
+			"rotation": [8, 10, 0],
+			"translation": [-1.13, -0.78, 1.21],
+			"scale": [0.56, 0.56, 0.56]
 		},
 		"firstperson_lefthand": {
-			"translation": [8, -4, 0]
+			"rotation": [12, 6, 8],
+			"translation": [2.8, -0.26, 1.11],
+			"scale": [0.6, 0.6, 0.6]
 		},
 		"ground": {
-			"translation": [0, 9, 0]
+			"translation": [-0.4, 2.5, 0.5],
+			"scale": [0.5, 0.5, 0.5]
 		},
 		"gui": {
 			"rotation": [-90, 45, 90],
