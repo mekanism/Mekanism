@@ -287,7 +287,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Painting Recipe that uses 256 mB Red Pigment to convert Clear Sand into Red Sand.")
               .blankLine()
               .recipe(PaintingRecipeManager.INSTANCE)
-              .addExample("paint_sand", IngredientCreatorAccess.item().from(items, Tags.Items.SANDS_COLORLESS),
+              .addExample("paint_sand", IngredientCreatorAccess.item().from(items, Tags.BlockItems.SANDS_COLORLESS),
                     IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.red(), 256),
                     RecipeProviderUtil.template(items, BlockItemIds.RED_SAND), false)
               .end()
@@ -299,7 +299,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds an Energy Conversion Recipe that allows converting Redstone Ore into 45 kJ of power.")
               .blankLine()
               .recipe(EnergyConversionRecipeManager.INSTANCE)
-              .addExample("redstone_ore_to_power", IngredientCreatorAccess.item().from(items, Tags.Items.ORES_REDSTONE), 45_000L)
+              .addExample("redstone_ore_to_power", IngredientCreatorAccess.item().from(items, Tags.BlockItems.ORES_REDSTONE), 45_000L)
               .end()
               .comment("Removes the Energy Conversion Recipe that allows converting Redstone Blocks into Power.")
               .blankLine()
@@ -367,7 +367,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Pigment Extracting Recipe that extracts 6,912 mB of Blue Pigment from a Lapis Lazuli Block.")
               .blankLine()
               .recipe(PigmentExtractingRecipeManager.INSTANCE)
-              .addExample("extract_lapis_block_pigment", IngredientCreatorAccess.item().from(items, Tags.Items.STORAGE_BLOCKS_LAPIS),
+              .addExample("extract_lapis_block_pigment", IngredientCreatorAccess.item().from(items, Tags.BlockItems.STORAGE_BLOCKS_LAPIS),
                     RecipeProviderUtil.chemicalTemplate(chemicals, ChemicalIds.SIMPLE_PIGMENTS.darkBlue(), 6_912))
               .end()
               .comment("Removes the Pigment Extracting Recipe that extracts Brown Pigment from Brown Dye.")
@@ -378,7 +378,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Nucleosynthesizing Recipe that converts a Block of Coal to a Block of Diamond in 9,000 ticks (7 minutes 30 seconds).")
               .blankLine()
               .recipe(NucleosynthesizingRecipeManager.INSTANCE)
-              .addExample("coal_block_to_diamond_block", IngredientCreatorAccess.item().from(items, Tags.Items.STORAGE_BLOCKS_COAL),
+              .addExample("coal_block_to_diamond_block", IngredientCreatorAccess.item().from(items, Tags.BlockItems.STORAGE_BLOCKS_COAL),
                     IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.ANTIMATTER, 36), RecipeProviderUtil.template(items, BlockItemIds.DIAMOND_BLOCK), 9_000, false)
               .end()
               .comment("Removes the Nucleosynthesizing Recipe that converts Tin Ingots into Iron Ingots.")
@@ -409,7 +409,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .recipe(PressurizedReactionRecipeManager.INSTANCE)
               .addExample("reaction/sawdust", IngredientCreatorAccess.item().from(items, MekanismTags.Items.DUSTS_WOOD), IngredientCreatorAccess.fluid().from(fluids, FluidTags.WATER, 350),
                     IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.HYDROGEN_CHLORIDE, 50), 45, RecipeProviderUtil.template(items, ItemIds.PAPER, 2), 25L)
-              .addExample("reaction/sand", IngredientCreatorAccess.item().from(items, Tags.Items.SANDS), IngredientCreatorAccess.fluid().from(fluids, MekanismTags.Fluids.CHLORINE, 100),
+              .addExample("reaction/sand", IngredientCreatorAccess.item().from(items, Tags.BlockItems.SANDS), IngredientCreatorAccess.fluid().from(fluids, MekanismTags.Fluids.CHLORINE, 100),
                     IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.HYDROGEN, 100), 300, new ItemStack(MekanismBlocks.SALT_BLOCK))
               .addExample("reaction/wooden_buttons", IngredientCreatorAccess.item().from(items, ItemTags.WOODEN_BUTTONS, 8), IngredientCreatorAccess.fluid().from(fluids, FluidTags.WATER, 25),
                     IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.OXYGEN, 25), 37, RecipeProviderUtil.chemicalTemplate(chemicals, ChemicalIds.HYDROGEN, 25))

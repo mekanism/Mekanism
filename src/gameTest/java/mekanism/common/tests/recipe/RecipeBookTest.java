@@ -50,9 +50,12 @@ public class RecipeBookTest {
             if (recipeType instanceof MekanismRecipeType<?, ?, ?, ?, ?> mekanismRecipeType) {
                 MekanismRecipeBookTypes bookCategories = mekanismRecipeType.getBookCategories();
                 for (MekanismBookCategory bookCategory : bookCategories.categories()) {
-                    helper.assertFalse(isEmpty(bookCategory.getPrimaryIcon(registryAccess)), "Primary icon for category " + bookCategory + " does not exist.");
+                    helper.assertFalse(isEmpty(bookCategory.getPrimaryIcon(registryAccess)), "Primary icon for category " + bookCategory.getSerializedName() + " does not exist.");
                     Optional<Object> secondaryIcon = bookCategory.getSecondaryIcon(registryAccess);
-                    secondaryIcon.ifPresent(stack -> helper.assertFalse(isEmpty(stack), "Secondary icon for category " + bookCategory + " does not exist."));
+                    //noinspection OptionalIsPresent - Capturing lambda
+                    if (secondaryIcon.isPresent()) {
+                        helper.assertFalse(isEmpty(secondaryIcon.get()), "Secondary icon for category " + bookCategory.getSerializedName() + " does not exist.");
+                    }
                 }
             }
         }

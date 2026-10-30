@@ -1,0 +1,8 @@
+{
+  "values": {
+    "mekanismadditions:obsidian_tnt": {
+      "burn_odds": 60,
+      "ignite_odds": 15
+    }
+  }
+}

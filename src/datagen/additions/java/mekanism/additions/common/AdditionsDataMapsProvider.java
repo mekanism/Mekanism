@@ -1,11 +1,14 @@
 package mekanism.additions.common;
 
 import java.util.concurrent.CompletableFuture;
+import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.block.FireBlock;
 import net.neoforged.neoforge.common.data.DataMapProvider;
+import net.neoforged.neoforge.registries.datamaps.builtin.Flammable;
 import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 import net.neoforged.neoforge.registries.datamaps.builtin.ParrotImitation;
 
@@ -27,5 +30,8 @@ public class AdditionsDataMapsProvider extends DataMapProvider {
               .add(AdditionsEntityTypes.BABY_STRAY, new ParrotImitation(SoundEvents.PARROT_IMITATE_STRAY), false)
               .add(AdditionsEntityTypes.BABY_WITHER_SKELETON, new ParrotImitation(SoundEvents.PARROT_IMITATE_WITHER_SKELETON), false)
         ;
+        builder(NeoForgeDataMaps.FLAMMABLE)
+              //Vanilla TNT uses IGNITE_MEDIUM, and BURN_INSTANT, given we are "obsidian" make ours slightly more stable against fire being spread than vanilla TNT
+              .add(AdditionsBlocks.OBSIDIAN_TNT, new Flammable(FireBlock.IGNITE_MEDIUM, FireBlock.BURN_EASY), false);
     }
 }

@@ -2,7 +2,6 @@ package mekanism.additions.common.block;
 
 import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,21 +21,24 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
-public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
+public class BlockObsidianTNT extends TntBlock implements SimpleWaterloggedBlock {
 
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
           box(0, 0, 0, 16, 3, 16),//Wooden1
@@ -80,13 +82,6 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
     }
 
     @Override
-    public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
-        //300 is 100% chance fire will spread to this block, 100 is default for TNT
-        // Given we are "obsidian" make ours slightly more stable against fire being spread than vanilla TNT
-        return 75;
-    }
-
-    @Override
     public boolean onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction side, @Nullable LivingEntity source, ItemStack ignitionItem) {
         if (level instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.TNT_EXPLODES)) {
             if (source instanceof Player player && player.gameMode() == GameType.ADVENTURE
@@ -121,14 +116,16 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
 
     @Override
     protected FluidState getFluidState(BlockState state) {
-        return getFluid(state);
+        return state.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos currentPos,
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos currentPos,
           Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
-        updateFluids(level, currentPos, state, scheduledTickAccess);
-        return super.updateShape(state, level, scheduledTickAccess, currentPos, facing, facingPos, facingState, random);
+        if (state.getValue(BlockStateProperties.WATERLOGGED)) {
+            ticks.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+        }
+        return super.updateShape(state, level, ticks, currentPos, facing, facingPos, facingState, random);
     }
 
     public static boolean createAndAddEntity(Level world, BlockPos pos, @Nullable LivingEntity igniter) {

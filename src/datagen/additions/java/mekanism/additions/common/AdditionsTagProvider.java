@@ -154,7 +154,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
         addToTags(AdditionsTags.Items.FENCES_PLASTIC_NORMAL, AdditionsTags.BlockItems.COMMON_FENCES_PLASTIC.block(), AdditionsBlocks.PLASTIC_FENCES);
         getBuilder(AdditionsTags.Items.FENCES_PLASTIC).add(AdditionsTags.Items.FENCES_PLASTIC_NORMAL);
         getBuilder(AdditionsTags.BlockItems.COMMON_FENCES_PLASTIC.item()).add(AdditionsTags.Items.FENCES_PLASTIC);
-        addToTags(Tags.Items.FENCES, Tags.Blocks.FENCES, AdditionsTags.BlockItems.COMMON_FENCES_PLASTIC);
+        addToTags(Tags.BlockItems.FENCES, AdditionsTags.BlockItems.COMMON_FENCES_PLASTIC);
         addToTags(BlockItemTags.FENCES, AdditionsTags.BlockItems.COMMON_FENCES_PLASTIC);
     }
 
@@ -162,7 +162,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
         addToTags(AdditionsTags.Items.FENCE_GATES_PLASTIC_NORMAL, AdditionsTags.BlockItems.COMMON_FENCE_GATES_PLASTIC.block(), AdditionsBlocks.PLASTIC_FENCE_GATES);
         getBuilder(AdditionsTags.Items.FENCE_GATES_PLASTIC).add(AdditionsTags.Items.FENCE_GATES_PLASTIC_NORMAL);
         getBuilder(AdditionsTags.BlockItems.COMMON_FENCE_GATES_PLASTIC.item()).add(AdditionsTags.Items.FENCE_GATES_PLASTIC);
-        addToTags(Tags.Items.FENCE_GATES, Tags.Blocks.FENCE_GATES, AdditionsTags.BlockItems.COMMON_FENCE_GATES_PLASTIC);
+        addToTags(Tags.BlockItems.FENCE_GATES, AdditionsTags.BlockItems.COMMON_FENCE_GATES_PLASTIC);
         addToTags(BlockItemTags.FENCE_GATES, AdditionsTags.BlockItems.COMMON_FENCE_GATES_PLASTIC);
     }
 
@@ -200,11 +200,11 @@ public class AdditionsTagProvider extends BaseTagProvider {
 
     private void addToTags(TagKey<Item> itemTag, TagKey<Block> blockTag, EnumColorCollection<? extends BlockRegistryObject<?, ?>> blockProviders) {
         addToTags(itemTag, blockTag, blockProviders.asList());
-        addToTags(Tags.Items.DYEABLE_REDYEABLE_SIMPLE , Tags.Blocks.DYEABLE_REDYEABLE_SIMPLE, blockProviders.asList());
+        addToTags(Tags.BlockItems.DYEABLE_REDYEABLE_SIMPLE, blockProviders.asList());
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, blockProviders, (color, provider) -> {
             DyeColor dyeColor = color.getDyeColor();
             if (dyeColor != null) {
-                addToTags(Tags.Items.DYED, Tags.Blocks.DYED, provider);
+                addToTags(Tags.BlockItems.DYED, provider);
                 addToTags(dyeColor.getDyedTag(), BlockTags.create(dyeColor.getDyedTag().location()), provider);
             }
         });
@@ -212,11 +212,11 @@ public class AdditionsTagProvider extends BaseTagProvider {
 
     private void addToTag(TagKey<Item> itemTag, EnumColorCollection<? extends Holder<Item>> itemProviders) {
         getBuilder(itemTag).add(itemProviders);
-        getBuilder(Tags.Items.DYEABLE_REDYEABLE_SIMPLE).add(itemProviders);
+        getBuilder(Tags.BlockItems.DYEABLE_REDYEABLE_SIMPLE.item()).add(itemProviders);
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, itemProviders, (color, provider) -> {
             DyeColor dyeColor = color.getDyeColor();
             if (dyeColor != null) {
-                getBuilder(Tags.Items.DYED).add(provider);
+                getBuilder(Tags.BlockItems.DYED.item()).add(provider);
                 getBuilder(dyeColor.getDyedTag()).add(provider);
             }
         });

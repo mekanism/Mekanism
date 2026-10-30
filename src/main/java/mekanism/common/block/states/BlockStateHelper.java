@@ -12,9 +12,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -47,6 +49,8 @@ public class BlockStateHelper {
         if (block instanceof IStateFluidLoggable fluidLoggable) {
             //Default the blocks to not being waterlogged, they have code to force waterlogging to true if being placed in water
             state = fluidLoggable.setState(state, Fluids.EMPTY);
+        } else if (block instanceof SimpleWaterloggedBlock) {
+            state = state.setValue(BlockStateProperties.WATERLOGGED, false);
         }
         if (block instanceof IStateStorage) {
             state = state.setValue(storageProperty, false);
@@ -66,6 +70,8 @@ public class BlockStateHelper {
         }
         if (block instanceof IStateFluidLoggable fluidLoggable) {
             properties.add(fluidLoggable.getFluidLoggedProperty());
+        } else if (block instanceof SimpleWaterloggedBlock) {
+            properties.add(BlockStateProperties.WATERLOGGED);
         }
         if (!properties.isEmpty()) {
             builder.add(properties.toArray(new Property[0]));
@@ -106,6 +112,10 @@ public class BlockStateHelper {
         if (state.getBlock() instanceof IStateFluidLoggable fluidLoggable) {
             FluidState fluidState = world.getFluidState(pos);
             state = fluidLoggable.setState(state, fluidState.getType());
+        } else if (state.getBlock() instanceof SimpleWaterloggedBlock) {
+            if (world.getFluidState(pos).is(Fluids.WATER)) {
+                state = state.setValue(BlockStateProperties.WATERLOGGED, true);
+            }
         }
         return state;
     }
@@ -134,6 +144,8 @@ public class BlockStateHelper {
                 //Try to set the new state to the same as the old one had if the old one was not empty
                 newState = newFluidLoggable.setState(newState, oldFluidState.getType());
             }
+        } else if (newBlock instanceof SimpleWaterloggedBlock && oldState.getFluidState().is(Fluids.WATER)) {
+            newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
         }
         return newState;
     }

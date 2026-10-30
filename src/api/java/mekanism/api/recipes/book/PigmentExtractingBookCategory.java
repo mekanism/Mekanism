@@ -24,7 +24,6 @@ import org.jspecify.annotations.Nullable;
 ///
 /// @since 10.8.0
 public enum PigmentExtractingBookCategory implements MekanismBookCategory {
-    DECORATIVE("decorative", "pigment_extracting", null),
     MISC("misc", "dye_base", null);
 
     public static final Codec<PigmentExtractingBookCategory> CODEC = StringRepresentable.fromEnum(PigmentExtractingBookCategory::values);
