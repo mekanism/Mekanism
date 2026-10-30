@@ -8,6 +8,7 @@ import mekanism.tools.client.ToolsSplashProvider;
 import mekanism.tools.client.ToolsSpriteSourceProvider;
 import mekanism.tools.client.integration.emi.ToolsEmiDefaults;
 import mekanism.tools.client.recipe_viewer.aliases.ToolsAliasMapping;
+import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.server.packs.PackType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -22,6 +23,7 @@ public class ToolsDataGenerator {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event) {
         //Client side data generators
+        event.createProvider(output -> PackMetadataGenerator.forFeaturePack(output, ToolsLang.PACK_DESCRIPTION.translate()));
         event.createProvider(ToolsLangProvider::new);
         event.createProvider(ToolsSpriteSourceProvider::new);
         event.createProvider(output -> new ToolsModelProvider(output, event.getResourceManager(PackType.CLIENT_RESOURCES)));

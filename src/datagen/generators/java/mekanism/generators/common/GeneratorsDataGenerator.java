@@ -7,6 +7,7 @@ import mekanism.generators.client.GeneratorsSoundProvider;
 import mekanism.generators.client.GeneratorsSplashProvider;
 import mekanism.generators.client.integration.emi.GeneratorsEmiDefaults;
 import mekanism.generators.client.recipe_viewer.alias.GeneratorsAliasMapping;
+import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.server.packs.PackType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -21,6 +22,7 @@ public class GeneratorsDataGenerator {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event) {
         //Client side data generators
+        event.createProvider(output -> PackMetadataGenerator.forFeaturePack(output, GeneratorsLang.PACK_DESCRIPTION.translate()));
         event.createProvider(GeneratorsLangProvider::new);
         event.createProvider(GeneratorsSoundProvider::new);
         event.createProvider(output -> new GeneratorsModelProvider(output, event.getResourceManager(PackType.CLIENT_RESOURCES)));

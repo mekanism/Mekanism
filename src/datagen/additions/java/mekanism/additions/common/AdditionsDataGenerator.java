@@ -8,6 +8,7 @@ import mekanism.additions.client.AdditionsSpriteSourceProvider;
 import mekanism.additions.client.integration.emi.AdditionsEmiDefaults;
 import mekanism.additions.client.recipe_viewer.aliases.AdditionsAliasMapping;
 import mekanism.common.PersistingDisabledProvidersProvider;
+import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.server.packs.PackType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -22,6 +23,7 @@ public class AdditionsDataGenerator {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event) {
         //Client side data generators
+        event.createProvider(output -> PackMetadataGenerator.forFeaturePack(output, AdditionsLang.PACK_DESCRIPTION.translate()));
         event.createProvider(AdditionsLangProvider::new);
         event.createProvider(AdditionsSoundProvider::new);
         event.createProvider(AdditionsSpriteSourceProvider::new);

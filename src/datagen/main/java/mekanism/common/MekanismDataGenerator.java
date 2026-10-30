@@ -30,6 +30,7 @@ import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.tag.MekanismTagProvider;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Util;
@@ -68,6 +69,7 @@ public class MekanismDataGenerator {
     public static void gatherData(GatherDataEvent.Client event) {
         ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         //Client side data generators
+        event.createProvider(output -> PackMetadataGenerator.forFeaturePack(output, MekanismLang.PACK_DESCRIPTION.translate()));
         event.createProvider(MekanismLangProvider::new);
         event.createProvider(output -> new PrideRobitTextureProvider(output, clientResources));
         event.createProvider(MekanismSoundProvider::new);
