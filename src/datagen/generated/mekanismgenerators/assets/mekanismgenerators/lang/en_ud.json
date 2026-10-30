@@ -56,6 +56,8 @@
   "configuration.mekanismgenerators.capacity.wind_generator.energy.tooltip": "ɹoʇɐɹǝuǝ⅁ puᴉM :ɟo ʎʇᴉɔɐdɐɔ ʎᵷɹǝuǝ ǝsɐᗺ",
   "configuration.mekanismgenerators.gear.meka_suit.charge_rate.geothermal": "ǝʇɐᴚ ᵷuᴉᵷɹɐɥƆ ꞁɐɯɹǝɥʇoǝ⅁",
   "configuration.mekanismgenerators.gear.meka_suit.charge_rate.geothermal.tooltip": "˙ʇuǝᴉqɯɐ ǝʌoqɐ Ʞ000'⥝ ɟo ǝɹnʇɐɹǝdɯǝʇ ɐ sɐɥ ɐʌɐꞁ 'ʇuǝᴉqɯɐ ǝʌoqɐ Ʞ00ᘔ~ ɟo ǝɹnʇɐɹǝdɯǝʇ ɐ ᵷuᴉʌɐɥ sɐ pǝʇɐǝɹʇ sᴉ ǝɹᴉℲ ˙pǝᵷɹǝɯqns sᴉ sʇuɐԀ ʇᴉnSɐʞǝW ǝɥʇ ɟo ɥɔnɯ ʍoɥ uo pǝsɐq uʍop sǝꞁɐɔs ǝnꞁɐʌ sᴉɥ⟘ ˙pǝꞁꞁɐʇsuᴉ ǝpɐɹᵷdn ɹǝd 'ʇuǝᴉqɯɐ ǝʌoqɐ ǝǝɹᵷǝp ɹǝd 'ʞɔᴉʇ ɹǝd ƎℲ uᴉ ǝʇɐɹ ᵷuᴉᵷɹɐɥɔ ꞁɐɯɹǝɥʇoǝ⅁",
+  "configuration.mekanismgenerators.gear.meka_suit.charge_rate.solar": "ǝʇɐᴚ ᵷuᴉᵷɹɐɥƆ ɹɐꞁoS",
+  "configuration.mekanismgenerators.gear.meka_suit.charge_rate.solar.tooltip": "˙pǝꞁꞁɐʇsuᴉ ǝpɐɹᵷdn ɹǝd 'ʇǝɯꞁǝɥ ǝɥʇ ɟo ʇ/ƎℲ uᴉ ǝʇɐɹ ᵷuᴉᵷɹɐɥɔǝɹ ɹɐꞁoS",
   "configuration.mekanismgenerators.gear.meka_suit.damage_absorption.heat": "uoᴉʇɔnpǝᴚ ǝᵷɐɯɐᗡ ʇɐǝH",
   "configuration.mekanismgenerators.gear.meka_suit.damage_absorption.heat.tooltip": "˙pǝꞁꞁɐʇsuᴉ ʎꞁꞁɐnʇɔɐ ǝɹɐ sʇᴉun ʎuɐɯ ʍoɥ uo pǝsɐq ʎꞁɹɐǝuᴉꞁ uʍop sǝꞁɐɔs ɹǝqɯnu sᴉɥ⟘ ˙pǝꞁꞁɐʇsuᴉ sʇᴉun ɹoʇɐɹǝuǝᵷ ꞁɐɯɹǝɥʇoǝᵷ ɯnɯᴉxɐɯ ɥʇᴉʍ sʇuɐԀ ʇᴉnSɐʞǝW ʎq pǝʇɐᵷǝu ǝᵷɐɯɐp ʇɐǝɥ ɟo ʇuǝɔɹǝԀ",
   "configuration.mekanismgenerators.server.fission": "ɹoʇɔɐǝᴚ uoᴉssᴉℲ",

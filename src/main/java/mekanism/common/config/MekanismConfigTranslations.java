@@ -441,7 +441,6 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GEAR_MEKA_SUIT_CHARGE_RATE("gear.meka_suit.charge_rate", "Charge Rate", "Amount of energy the MekaSuit can accept per tick. Quadratically scaled by upgrades."),
     GEAR_MEKA_SUIT_CHARGE_RATE_INVENTORY("gear.meka_suit.charge_rate.inventory", "Inventory Charge Rate",
           "Charge rate of inventory items in FE/t when charging the player's inventory with the Charge Distribution Unit."),
-    GEAR_MEKA_SUIT_CHARGE_RATE_SOLAR("gear.meka_suit.charge_rate.solar", "Solar Charging Rate", "Solar recharging rate in FE/t of the helmet, per upgrade installed."),
     GEAR_MEKA_SUIT_FLIGHT_VIBRATIONS("gear.meka_suit.gravitational_vibrations", "Gravitational Vibrations",
           "Should the Gravitational Modulation unit give off vibrations that can be detected by Sculk Sensors and Shriekers when in use."),
     GEAR_MEKA_SUIT_PASTE_CAPACITY("gear.meka_suit.paste.capacity", "Nutritional Paste Capacity", "Maximum amount in mB of Nutritional Paste storable by the nutritional injection unit."),

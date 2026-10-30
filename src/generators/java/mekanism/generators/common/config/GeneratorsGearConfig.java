@@ -14,6 +14,7 @@ public class GeneratorsGearConfig extends BaseMekanismConfig {
 
     //MekaSuit
     public final CachedIntValue mekaSuitGeothermalChargingRate;
+    public final CachedIntValue mekaSuitSolarRechargingRate;
     public final CachedFloatValue mekaSuitHeatDamageReductionRatio;
 
     GeneratorsGearConfig() {
@@ -22,6 +23,8 @@ public class GeneratorsGearConfig extends BaseMekanismConfig {
         MekanismConfigTranslations.GEAR_MEKA_SUIT.applyToBuilder(builder).push(GearConfig.MEKASUIT_CATEGORY);
         mekaSuitGeothermalChargingRate = CachedIntValue.wrap(this, GeneratorsConfigTranslations.GEAR_MEKA_SUIT_GEOTHERMAL.applyToBuilder(builder)
               .defineInRange("geothermalChargingRate", 10, 0, Integer.MAX_VALUE / 8));
+        mekaSuitSolarRechargingRate = CachedIntValue.wrap(this, GeneratorsConfigTranslations.GEAR_MEKA_SUIT_CHARGE_RATE_SOLAR.applyToBuilder(builder)
+              .defineInRange("solarRechargingRate", 500, 0, Integer.MAX_VALUE));
 
         MekanismConfigTranslations.GEAR_MEKA_SUIT_DAMAGE_ABSORPTION.applyToBuilder(builder).push(GearConfig.MEKASUIT_DAMAGE_CATEGORY);
         mekaSuitHeatDamageReductionRatio = CachedFloatValue.wrap(this, GeneratorsConfigTranslations.GEAR_MEKA_SUIT_HEAT_DAMAGE.applyToBuilder(builder)

@@ -104,7 +104,6 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue mekaSuitEnergyUsageSprintBoost;
     public final CachedIntValue mekaSuitEnergyUsageGravitationalModulation;
     public final CachedIntValue mekaSuitInventoryChargeRate;
-    public final CachedIntValue mekaSuitSolarRechargingRate;
     public final CachedIntValue mekaSuitEnergyUsageVisionEnhancement;
     public final CachedIntValue mekaSuitEnergyUsageHydrostaticRepulsion;
     public final CachedIntValue mekaSuitEnergyUsageNutritionalInjection;
@@ -276,8 +275,6 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("chargeRate", 100_000, 0, Integer.MAX_VALUE));
         mekaSuitInventoryChargeRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_CHARGE_RATE_INVENTORY.applyToBuilder(builder)
               .defineInRange("inventoryChargeRate", 10_000, 0, Integer.MAX_VALUE));
-        mekaSuitSolarRechargingRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_CHARGE_RATE_SOLAR.applyToBuilder(builder)
-              .defineInRange("solarRechargingRate", 500, 0, Integer.MAX_VALUE));
         mekaSuitGravitationalVibrations = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_FLIGHT_VIBRATIONS.applyToBuilder(builder)
               .define("gravitationalVibrations", true));
         mekaSuitNutritionalMaxStorage = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_PASTE_CAPACITY.applyToBuilder(builder)

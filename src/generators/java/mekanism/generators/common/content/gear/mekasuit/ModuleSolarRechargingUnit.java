@@ -3,8 +3,8 @@ package mekanism.generators.common.content.gear.mekasuit;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.math.MathUtils;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LightLevelUtils;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.biome.Biome;
@@ -37,7 +37,7 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
                 // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
                 // (like the End) have rainfall set, but can't actually support rain.
                 float humidityEff = needsRainCheck ? -0.3F * b.getModifiedClimateSettings().downfall() : 0.0F;
-                double peakOutput = MekanismConfig.gear.mekaSuitSolarRechargingRate.get() * (1.0D + tempEff + humidityEff);
+                double peakOutput = MekanismGeneratorsConfig.gear.mekaSuitSolarRechargingRate.get() * (1.0D + tempEff + humidityEff);
 
                 //Get the brightness of the sun; this includes rain penalty from Vanilla
                 float brightness = LightLevelUtils.getSunBrightness(player.level(), player.blockPosition());
