@@ -120,7 +120,7 @@ public class UsageConfig extends BaseMekanismConfig {
         teleporterDistance = CachedIntValue.wrap(this, MekanismConfigTranslations.USAGE_TELEPORTER_DISTANCE.applyToBuilder(builder)
               .defineInRange("distance", 2, 0, Integer.MAX_VALUE));
         teleporterDimensionPenalty = CachedIntValue.wrap(this, MekanismConfigTranslations.USAGE_TELEPORTER_PENALTY.applyToBuilder(builder)
-              .defineInRange("dimensionPenalty", 1000, 0, Integer.MAX_VALUE));
+              .defineInRange("dimensionPenalty", 1_000, 0, Integer.MAX_VALUE));
         builder.pop();
 
         configSpec = builder.build();

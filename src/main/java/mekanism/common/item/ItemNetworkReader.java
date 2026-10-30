@@ -9,10 +9,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.transmitter.Transmitter;
-import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -25,16 +22,14 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jspecify.annotations.Nullable;
 
-public class ItemNetworkReader extends ItemEnergized {
+public class ItemNetworkReader extends Item {
 
     public ItemNetworkReader(Properties properties) {
         super(properties.rarity(Rarity.UNCOMMON).stacksTo(1));
@@ -57,22 +52,6 @@ public class ItemNetworkReader extends ItemEnergized {
             BlockPos pos = context.getClickedPos();
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile != null) {
-                if (MekanismUtils.isPlayingMode(player)) {
-                    int energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
-                    if (energyPerUse > 0) {
-                        EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccess.forStack(context.getItemInHand())));
-                        if (energyHandler == null) {
-                            return InteractionResult.FAIL;
-                        }
-                        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
-                            if (energyHandler.extract(energyPerUse, transaction) < energyPerUse) {
-                                return InteractionResult.FAIL;
-                            }
-                            transaction.commit();
-                        }
-                    }
-                }
                 Direction opposite = context.getClickedFace().getOpposite();
                 if (tile instanceof TileEntityTransmitter transmitterTile) {
                     displayTransmitterInfo(player, world, pos, transmitterTile, opposite);

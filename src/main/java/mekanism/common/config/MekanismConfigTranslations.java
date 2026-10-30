@@ -390,11 +390,6 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GEAR_JETPACK_CAPACITY("gear.jetpack.capacity", "Capacity", "Jetpack tank capacity in mB."),
     GEAR_JETPACK_FILL_RATE("gear.jetpack.fill_rate", "Fill Rate", "Rate in mB/t at which a Jetpack's tank can accept hydrogen."),
 
-    GEAR_NETWORK_READER("gear.network_reader", "Network Reader", "Settings for configuring Network Readers", true),
-    GEAR_NETWORK_READER_MAX_ENERGY("gear.network_reader.max_energy", "Max Energy", "Maximum amount of energy the Network Reader can contain."),
-    GEAR_NETWORK_READER_CHARGE_RATE("gear.network_reader.charge_rate", "Charge Rate", "Amount of energy the Network Reader can accept per tick."),
-    GEAR_NETWORK_READER_ENERGY_USAGE("gear.network_reader.energy_usage", "Energy Usage", "Energy usage for each network reading."),
-
     GEAR_PORTABLE_TELEPORTER("gear.portable_teleporter", "Portable Teleporter", "Settings for configuring the Portable Teleporter", true),
     GEAR_PORTABLE_TELEPORTER_MAX_ENERGY("gear.portable_teleporter.max_energy", "Max Energy", "Maximum amount of energy the Portable Teleporter can contain."),
     GEAR_PORTABLE_TELEPORTER_CHARGE_RATE("gear.portable_teleporter.charge_rate", "Charge Rate", "Amount of energy the Portable Teleporter can accept per tick."),

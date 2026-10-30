@@ -62,10 +62,6 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedLongValue portableTeleporterMaxEnergy;
     public final CachedIntValue portableTeleporterChargeRate;
     public final CachedIntValue portableTeleporterDelay;
-    //Network Reader
-    public final CachedLongValue networkReaderMaxEnergy;
-    public final CachedIntValue networkReaderChargeRate;
-    public final CachedIntValue networkReaderEnergyUsage;
     //Scuba Tank
     public final CachedLongValue scubaTankCapacity;
     public final CachedIntValue scubaFillRate;
@@ -193,14 +189,6 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("capacity", 24L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         jetpackFillRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_JETPACK_FILL_RATE.applyToBuilder(builder)
               .defineInRange("fillRate", 16, 1, Integer.MAX_VALUE));
-        builder.pop();
-
-        MekanismConfigTranslations.GEAR_NETWORK_READER.applyToBuilder(builder).push("network_reader");
-        networkReaderMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_NETWORK_READER_MAX_ENERGY, "maxEnergy", 60_000L);
-        networkReaderChargeRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_NETWORK_READER_CHARGE_RATE.applyToBuilder(builder)
-              .defineInRange("chargeRate", 300, 0, Integer.MAX_VALUE));
-        networkReaderEnergyUsage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_NETWORK_READER_ENERGY_USAGE.applyToBuilder(builder)
-              .defineInRange("energyUsage", 400, 0, Integer.MAX_VALUE));
         builder.pop();
 
         MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER.applyToBuilder(builder).push("portable_teleporter");
