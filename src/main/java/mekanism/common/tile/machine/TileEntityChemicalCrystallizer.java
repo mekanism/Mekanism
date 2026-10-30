@@ -47,6 +47,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
@@ -115,6 +116,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
         builder.addContainer(inputSlot = ChemicalInventorySlot.fill(inputTank, listener, 8, 65))
               .setSlotOverlay(SlotOverlay.PLUS);
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 129, 57))
+              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience)
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 5));
         return builder.build();
@@ -144,7 +146,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     }
 
     @Override
-    public @Nullable ChemicalCrystallizerRecipe getRecipe(int cacheIndex) {
+    public @Nullable RecipeHolder<ChemicalCrystallizerRecipe> getRecipe(int cacheIndex) {
         return getRecipeType().getInputCache().findFirstRecipe(level, inputHandler.getInput());
     }
 
@@ -156,8 +158,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 

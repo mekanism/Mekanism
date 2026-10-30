@@ -46,6 +46,7 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IEitherSideRecipeLookupHandler.EitherSideChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.EitherSideChemical;
+import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -57,12 +58,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>> implements IBoundingBlock,
+public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>,
+      RecipeCacheLookupMonitor<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>>> implements IBoundingBlock,
       EitherSideChemicalRecipeLookupHandler<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
@@ -207,7 +210,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
 
     @Nullable
     @Override
-    public ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo> getRecipe(int cacheIndex) {
+    public RecipeHolder<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>> getRecipe(int cacheIndex) {
         return findFirstRecipe(leftInputHandler, rightInputHandler);
     }
 
@@ -218,8 +221,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setBaselineMaxOperations(() -> baselineMaxOperations)
-              .setOnFinish(this::markForSave);
+              .setBaselineMaxOperations(() -> baselineMaxOperations);
     }
 
     @Override

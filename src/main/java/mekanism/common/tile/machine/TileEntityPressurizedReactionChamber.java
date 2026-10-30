@@ -58,6 +58,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -167,6 +168,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
                     this::containsRecipeA, recipeCacheListener, 54, 40))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(NOT_ENOUGH_ITEM_INPUT_ERROR)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 40))
+              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience)
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR)));
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 141, 22));
         return builder.build();
@@ -224,7 +226,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
 
     @Nullable
     @Override
-    public PressurizedReactionRecipe getRecipe(int cacheIndex) {
+    public RecipeHolder<PressurizedReactionRecipe> getRecipe(int cacheIndex) {
         return findFirstRecipe(itemInputHandler, fluidInputHandler, gasInputHandler);
     }
 
@@ -236,8 +238,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 

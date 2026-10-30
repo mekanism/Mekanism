@@ -50,7 +50,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -65,7 +64,7 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
-import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
+import mekanism.common.recipe.lookup.monitor.ProgressRecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismDataSerializers;
@@ -112,6 +111,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -172,12 +172,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     private GlobalPos homeLocation;
     private int lastTextureUpdate;
     private int textureIndex;
-    private int progress;
 
     /// The players currently using this robit.
     private final Set<Player> playersUsing = new ObjectOpenHashSet<>();
 
-    private final RecipeCacheLookupMonitor<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>> recipeCacheLookupMonitor;
+    private final ProgressRecipeCacheLookupMonitor<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>> recipeCacheLookupMonitor;
     private final BooleanSupplier recheckAllRecipeErrors;
     private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
 
@@ -198,7 +197,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         getNavigation().setCanFloat(false);
         setPathfindingMalus(PathType.UNPASSABLE_RAIL, 0.0F);
         setCustomNameVisible(true);
-        recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
+        recipeCacheLookupMonitor = new ProgressRecipeCacheLookupMonitor<>(this);
         // Choose a random offset to check for all errors. We do this to ensure that not every tile tries to recheck errors for every
         // recipe the same tick and thus create uneven spikes of CPU usage
         int checkOffset = level().getRandom().nextInt(TileEntityRecipeMachine.RECIPE_CHECK_FREQUENCY);
@@ -223,7 +222,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         inventorySlots.add(smeltingInputSlot);
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had (like if it had xp logic or something)
         // Yes we probably do want this to allow for experience. Though maybe we should allow for experience for all our recipes/smelting recipes? V10
-        OutputInventorySlot smeltingOutputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35);
+        OutputInventorySlot smeltingOutputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35)
+              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience);
         inventorySlots.add(smeltingOutputSlot);
         smeltingInputSlot.tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         smeltingOutputSlot.tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
@@ -443,19 +443,13 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         ItemEntity entityItem = new ItemEntity(level(), getX(), getY() + 0.3, getZ(), getItemVariant());
         entityItem.setDeltaMovement(0, random.nextGaussian() * 0.05F + 0.2F, 0);
         level().addFreshEntity(entityItem);
+        if (level() instanceof ServerLevel serverLevel) {
+            recipeCacheLookupMonitor.getRecipesToAwardAndPopExperience(serverLevel, position());
+        }
     }
 
     public float getScaledProgress() {
-        return getOperatingTicks() / (float) ticksRequired;
-    }
-
-    public int getOperatingTicks() {
-        return progress;
-    }
-
-    @Override
-    public int getSavedOperatingTicks(int cacheIndex) {
-        return getOperatingTicks();
+        return recipeCacheLookupMonitor.getSavedOperatingTicks(0) / (float) ticksRequired;
     }
 
     @Override
@@ -468,8 +462,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         output.storeNullable(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC, homeLocation);
         ContainerType.ITEM.saveTo(output, inventorySlots);
         ContainerType.ENERGY.saveTo(output, energyContainer);
-        output.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
         output.store(SerializationConstants.SKIN, SKIN_KEY_CODEC, getSkinId());
+        recipeCacheLookupMonitor.saveAdditional(output);
     }
 
     @Override
@@ -482,8 +476,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         homeLocation = input.read(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC).orElse(null);
         ContainerType.ITEM.readFrom(input, inventorySlots);
         ContainerType.ENERGY.readFrom(input, energyContainer);
-        progress = input.getIntOr(SerializationConstants.PROGRESS, 0);
         setSkin(input.read(SerializationConstants.SKIN, SKIN_KEY_CODEC).orElse(MekanismRobitSkins.BASE), null);
+        recipeCacheLookupMonitor.loadAdditional(input);
     }
 
     @Override
@@ -595,7 +589,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
 
     @Override
     public void onContentsChanged() {
-        //TODO: Do we need to save the things? Probably, if not remove the call to here from createNewCachedRecipe
+        markForSave();
     }
 
     public List<IInventorySlot> getContainerInventorySlots(MenuType<?> containerType) {
@@ -620,9 +614,14 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         return RecipeViewerRecipeType.SMELTING;
     }
 
+    @Override
+    public void markForSave() {
+        //Entities save when unloaded automatically
+    }
+
     @Nullable
     @Override
-    public ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo> getRecipe(int cacheIndex) {
+    public RecipeHolder<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
@@ -650,9 +649,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
                   }
               })
               .setEnergyRequirements(MekanismConfig.usage.energizedSmelter, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
-              .setOnFinish(this::onContentsChanged)
-              .setOperatingTicksChanged(operatingTicks -> progress = operatingTicks);
+              .setRequiredTicks(() -> ticksRequired);
     }
 
     @Override
@@ -674,7 +671,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         if (containerType == MekanismContainerTypes.MAIN_ROBIT.get()) {
             container.track(SyncableLong.create(energyContainer));
         } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT.get()) {
-            container.track(SyncableInt.create(() -> progress, value -> progress = value));
+            container.track(recipeCacheLookupMonitor.operatingTicksAsSyncable());
             container.trackArray(trackedErrors);
         }
     }

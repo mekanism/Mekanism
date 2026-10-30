@@ -13,6 +13,7 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -76,7 +77,7 @@ public interface IDoubleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
     ///
     /// @return Recipe matching the given inputs, or `null` if no recipe matches.
     @Nullable
-    default RECIPE findFirstRecipe(INPUT_A inputA, INPUT_B inputB) {
+    default RecipeHolder<RECIPE> findFirstRecipe(INPUT_A inputA, INPUT_B inputB) {
         return getRecipeType().getInputCache().findFirstRecipe(getLevel(), inputA, inputB);
     }
 
@@ -87,7 +88,7 @@ public interface IDoubleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
     ///
     /// @return Recipe matching the given inputs, or `null` if no recipe matches.
     @Nullable
-    default RECIPE findFirstRecipe(IInputHandler<HOLDER_A, INPUT_A> inputAHandler, IInputHandler<HOLDER_B, INPUT_B> inputBHandler) {
+    default RecipeHolder<RECIPE> findFirstRecipe(IInputHandler<HOLDER_A, INPUT_A> inputAHandler, IInputHandler<HOLDER_B, INPUT_B> inputBHandler) {
         return findFirstRecipe(inputAHandler.getInput(), inputBHandler.getInput());
     }
 

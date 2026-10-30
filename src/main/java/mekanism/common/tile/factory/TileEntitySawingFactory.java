@@ -43,6 +43,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -97,8 +98,10 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
                 updateSortingListener.onContentsChanged();
                 lookupMonitor.unpause();
             };
-            OutputInventorySlot outputSlot = OutputInventorySlot.at(updateSortingAndUnpause, xPos, 57);
-            OutputInventorySlot secondaryOutputSlot = OutputInventorySlot.at(updateSortingAndUnpause, xPos, 77);
+            OutputInventorySlot outputSlot = OutputInventorySlot.at(updateSortingAndUnpause, xPos, 57)
+                  .setOnTakeCheck(lookupMonitor::awardUsedRecipesAndPopExperience);
+            OutputInventorySlot secondaryOutputSlot = OutputInventorySlot.at(updateSortingAndUnpause, xPos, 77)
+                  .setOnTakeCheck(lookupMonitor::awardUsedRecipesAndPopExperience);
             //Note: As we are an item factory that has comparator's based on items we can just use the monitor as a listener directly
             FactoryInputInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, lookupMonitor, xPos, 13);
             int index = i;
@@ -137,7 +140,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
 
     @Nullable
     @Override
-    protected SawmillRecipe findRecipe(ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    protected RecipeHolder<SawmillRecipe> findRecipe(ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         ItemResource extra = secondaryOutputSlot == null ? ItemResource.EMPTY : secondaryOutputSlot.resource();
         return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.resource(), extra, CAN_OUTPUTS_STACK);
     }
@@ -154,7 +157,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
 
     @Nullable
     @Override
-    public SawmillRecipe getRecipe(int cacheIndex) {
+    public RecipeHolder<SawmillRecipe> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandlers[cacheIndex]);
     }
 
@@ -166,8 +169,6 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 
@@ -188,7 +189,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
 
     @Override
     public SawmillUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new SawmillUpgradeData(provider, redstone, getControlType(), energyContainer, progress, energySlot, inputSlots, outputSlots, isSorting(), getComponents(), problemPath());
+        return new SawmillUpgradeData(provider, redstone, getControlType(), energyContainer, energySlot, recipeCacheLookupMonitors, inputSlots, outputSlots, isSorting(), getComponents(), problemPath());
     }
 
     //Methods relating to IComputerTile

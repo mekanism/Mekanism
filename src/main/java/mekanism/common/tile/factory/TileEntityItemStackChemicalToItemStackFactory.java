@@ -58,6 +58,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -180,9 +181,9 @@ public class TileEntityItemStackChemicalToItemStackFactory<BOOK_CATEGORY extends
 
     @Nullable
     @Override
-    protected ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> findRecipe(ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    protected RecipeHolder<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> findRecipe(ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         //TODO: Give it something that is not empty when we don't have a stored gas stack for getting the output?
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, chemicalTank.resource(), outputSlot.resource(), CAN_OUTPUT_STACK);
+        return getRecipeType().getInputCache().findTypeBasedRecipeHolder(level, fallbackInput, chemicalTank.resource(), outputSlot.resource(), CAN_OUTPUT_STACK);
     }
 
     @Override
@@ -219,7 +220,7 @@ public class TileEntityItemStackChemicalToItemStackFactory<BOOK_CATEGORY extends
 
     @Nullable
     @Override
-    public ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> getRecipe(int cacheIndex) {
+    public RecipeHolder<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandlers[cacheIndex], chemicalInputHandler);
     }
 
@@ -238,8 +239,6 @@ public class TileEntityItemStackChemicalToItemStackFactory<BOOK_CATEGORY extends
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 
@@ -304,7 +303,7 @@ public class TileEntityItemStackChemicalToItemStackFactory<BOOK_CATEGORY extends
 
     @Override
     public AdvancedMachineUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new AdvancedMachineUpgradeData(provider, redstone, getControlType(), energyContainer, progress, usedSoFar, chemicalTank, extraSlot, energySlot,
+        return new AdvancedMachineUpgradeData(provider, redstone, getControlType(), energyContainer, recipeCacheLookupMonitors, usedSoFar, chemicalTank, extraSlot, energySlot,
               inputSlots, outputSlots, isSorting(), getComponents(), problemPath());
     }
 

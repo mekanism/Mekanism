@@ -17,10 +17,10 @@ import net.neoforged.neoforge.common.util.TriPredicate;
 import org.jspecify.annotations.Nullable;
 
 /// Basic implementation for [IInputRecipeCache] for handling recipes with a single input.
-public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>, RECIPE extends MekanismRecipe<?, ?, ?> & Predicate<STACK>,
-      CACHE extends IInputCache<TYPE, STACK, INGREDIENT, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
+public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>,
+      RECIPE extends MekanismRecipe<?, ?, ?> & Predicate<STACK>, CACHE extends IInputCache<TYPE, STACK, INGREDIENT, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
 
-    private final Set<RECIPE> complexRecipes = new HashSet<>();
+    private final Set<RecipeHolder<RECIPE>> complexRecipes = new HashSet<>();
     private final Function<RECIPE, INGREDIENT> inputExtractor;
     private final CACHE cache;
 
@@ -54,21 +54,21 @@ public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<T
     ///
     /// @return Recipe matching the given input, or `null` if no recipe matches.
     @Nullable
-    public RECIPE findFirstRecipe(@Nullable Level world, STACK input) {
+    public RecipeHolder<RECIPE> findFirstRecipe(@Nullable Level world, STACK input) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
         }
         initCacheIfNeeded(world);
-        RECIPE recipe = findFirstRecipe(input, cache.getRecipes(input));
+        RecipeHolder<RECIPE> recipe = findFirstRecipe(input, cache.getRecipes(input));
         return recipe == null ? findFirstRecipe(input, complexRecipes) : recipe;
     }
 
     @Nullable
-    private RECIPE findFirstRecipe(STACK input, Iterable<RECIPE> recipes) {
-        for (RECIPE recipe : recipes) {
-            if (recipe.test(input)) {
-                return recipe;
+    private RecipeHolder<RECIPE> findFirstRecipe(STACK input, Iterable<RecipeHolder<RECIPE>> recipes) {
+        for (RecipeHolder<RECIPE> recipeHolder : recipes) {
+            if (recipeHolder.value().test(input)) {
+                return recipeHolder;
             }
         }
         return null;
@@ -82,20 +82,33 @@ public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<T
     /// @return Recipe matching the given input, or `null` if no recipe matches.
     @Nullable
     public RECIPE findTypeBasedRecipe(@Nullable Level world, TypedInstance<TYPE> input) {
+        RecipeHolder<RECIPE> recipeHolder = findTypeBasedRecipeHolder(world, input);
+        return recipeHolder == null ? null : recipeHolder.value();
+    }
+
+    /// Finds the first recipe that matches the given input type ignoring the size requirement.
+    ///
+    /// @param world World.
+    /// @param input Recipe input.
+    ///
+    /// @return Recipe matching the given input, or `null` if no recipe matches.
+    @Nullable
+    public RecipeHolder<RECIPE> findTypeBasedRecipeHolder(@Nullable Level world, TypedInstance<TYPE> input) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
         }
         initCacheIfNeeded(world);
-        RECIPE recipe = cache.findFirstRecipe(input, ConstantPredicates.alwaysTrue());
-        if (recipe == null) {
-            for (RECIPE complexRecipe : complexRecipes) {
+        RecipeHolder<RECIPE> recipeHolder = cache.findFirstRecipe(input, ConstantPredicates.alwaysTrue());
+        if (recipeHolder == null) {
+            for (RecipeHolder<RECIPE> complexRecipeHolder : complexRecipes) {
+                RECIPE complexRecipe = complexRecipeHolder.value();
                 if (inputExtractor.apply(complexRecipe).testType(input)) {
-                    return complexRecipe;
+                    return complexRecipeHolder;
                 }
             }
         }
-        return recipe;
+        return recipeHolder;
     }
 
     /// Finds the first recipe that matches the given input type ignoring the size requirement and also matches the given recipe predicate.
@@ -106,20 +119,22 @@ public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<T
     ///
     /// @return Recipe matching the given input, or `null` if no recipe matches.
     @Nullable
-    public <INPUT extends TypedInstance<TYPE>, DATA> RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT input, DATA data, TriPredicate<? super RECIPE, INPUT, DATA> matchCriteria) {
+    public <INPUT extends TypedInstance<TYPE>, DATA> RecipeHolder<RECIPE> findTypeBasedRecipe(@Nullable Level world, INPUT input, DATA data, TriPredicate<? super RECIPE, INPUT, DATA> matchCriteria) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
         }
         initCacheIfNeeded(world);
-        for (RECIPE recipe : cache.getRecipes(input)) {
+        for (RecipeHolder<RECIPE> recipeHolder : cache.getRecipes(input)) {
+            RECIPE recipe = recipeHolder.value();
             if (matchCriteria.test(recipe, input, data)) {
-                return recipe;
+                return recipeHolder;
             }
         }
-        for (RECIPE complexRecipe : complexRecipes) {
+        for (RecipeHolder<RECIPE> complexRecipeHolder : complexRecipes) {
+            RECIPE complexRecipe = complexRecipeHolder.value();
             if (inputExtractor.apply(complexRecipe).testType(input) && matchCriteria.test(complexRecipe, input, data)) {
-                return complexRecipe;
+                return complexRecipeHolder;
             }
         }
         return null;
@@ -133,21 +148,22 @@ public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<T
     ///
     /// @return Recipe matching the given input, or `null` if no recipe matches.
     @Nullable
-    public <INPUT extends TypedInstance<TYPE>, DATA_1, DATA_2> RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT input, DATA_1 data1, DATA_2 data2,
+    public <INPUT extends TypedInstance<TYPE>, DATA_1, DATA_2> RecipeHolder<RECIPE> findTypeBasedRecipe(@Nullable Level world, INPUT input, DATA_1 data1, DATA_2 data2,
           CheckRecipeType<TYPE, INPUT, RECIPE, DATA_1, DATA_2> matchCriteria) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
         }
         initCacheIfNeeded(world);
-        for (RECIPE recipe : cache.getRecipes(input)) {
-            if (matchCriteria.testType(recipe, input, data1, data2)) {
-                return recipe;
+        for (RecipeHolder<RECIPE> recipeHolder : cache.getRecipes(input)) {
+            if (matchCriteria.testType(recipeHolder.value(), input, data1, data2)) {
+                return recipeHolder;
             }
         }
-        for (RECIPE complexRecipe : complexRecipes) {
+        for (RecipeHolder<RECIPE> complexRecipeHolder : complexRecipes) {
+            RECIPE complexRecipe = complexRecipeHolder.value();
             if (inputExtractor.apply(complexRecipe).testType(input) && matchCriteria.testType(complexRecipe, input, data1, data2)) {
-                return complexRecipe;
+                return complexRecipeHolder;
             }
         }
         return null;
@@ -157,8 +173,8 @@ public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<T
     protected void initCache(List<RecipeHolder<RECIPE>> recipes) {
         for (RecipeHolder<RECIPE> recipeHolder : recipes) {
             RECIPE recipe = recipeHolder.value();
-            if (cache.mapInputs(recipe, inputExtractor.apply(recipe))) {
-                complexRecipes.add(recipe);
+            if (cache.mapInputs(recipeHolder, inputExtractor.apply(recipe))) {
+                complexRecipes.add(recipeHolder);
             }
         }
     }

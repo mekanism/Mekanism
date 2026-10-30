@@ -1,6 +1,7 @@
 package mekanism.api.recipes.cache;
 
 import mekanism.api.recipes.MekanismRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jspecify.annotations.Nullable;
 
 /// Interface for helping implement objects that can handle cached recipes.
@@ -21,14 +22,14 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe<?, ?, ?>> {
         if (currentCache == null || !currentCache.isInputValid()) {
             if (cacheInvalid || !hasNoRecipe(cacheIndex)) {
                 //If our cache is not valid, or we may have a recipe, check if we do
-                RECIPE recipe = getRecipe(cacheIndex);
-                if (recipe == null) {
+                RecipeHolder<RECIPE> recipeHolder = getRecipe(cacheIndex);
+                if (recipeHolder == null) {
                     //If we don't, mark that we have no recipe so that we can cache and short circuit following
                     // recipe lookups until either the cache becomes invalid or we may have a recipe again
                     setHasNoRecipe(cacheIndex);
                 } else {
                     //Otherwise, create a new cached recipe
-                    CachedRecipe<RECIPE> cached = createNewCachedRecipe(recipe, cacheIndex);
+                    CachedRecipe<RECIPE> cached = createNewCachedRecipe(recipeHolder, cacheIndex);
                     if (currentCache == null || cached != null) {
                         //Only override our cached recipe if we were able to find a recipe that matches, or we don't have a cached recipe.
                         // This way if we end up getting back to the same recipe we won't have to recalculate quite as much
@@ -77,16 +78,16 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe<?, ?, ?>> {
     ///
     /// @implNote This method should ignore what recipe is currently cached as this method is mainly used for finding a backing recipe to create a new cached recipe.
     @Nullable
-    RECIPE getRecipe(int cacheIndex);
+    RecipeHolder<RECIPE> getRecipe(int cacheIndex);
 
     /// Creates a new cached recipe representing a given recipe.
     ///
-    /// @param recipe     The backing recipe to create a cached version of.
-    /// @param cacheIndex The "recipe index" for which cache to interact with.
+    /// @param recipeHolder The backing recipe to create a cached version of.
+    /// @param cacheIndex   The "recipe index" for which cache to interact with.
     ///
     /// @return A new cached recipe representing the given recipe, or null if the holder does not handle the given cacheIndex.
     @Nullable
-    CachedRecipe<RECIPE> createNewCachedRecipe(RECIPE recipe, int cacheIndex);
+    CachedRecipe<RECIPE> createNewCachedRecipe(RecipeHolder<RECIPE> recipeHolder, int cacheIndex);
 
     /// Checks if the cache should be invalidated because it is no longer valid.
     ///

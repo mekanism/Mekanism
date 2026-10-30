@@ -18,7 +18,7 @@ import org.jspecify.annotations.Nullable;
 public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>,
       RECIPE extends MekanismRecipe<?, ?, ?> & BiPredicate<STACK, STACK>, CACHE extends IInputCache<TYPE, STACK, INGREDIENT, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
 
-    private final Set<RECIPE> complexRecipes = new HashSet<>();
+    private final Set<RecipeHolder<RECIPE>> complexRecipes = new HashSet<>();
     private final Function<RECIPE, INGREDIENT> inputAExtractor;
     private final Function<RECIPE, INGREDIENT> inputBExtractor;
     private final CACHE cache;
@@ -53,7 +53,8 @@ public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstan
         if (cache.contains(input)) {
             return true;
         }
-        for (RECIPE recipe : complexRecipes) {
+        for (RecipeHolder<RECIPE> recipeHolder : complexRecipes) {
+            RECIPE recipe = recipeHolder.value();
             if (inputAExtractor.apply(recipe).testType(input) || inputBExtractor.apply(recipe).testType(input)) {
                 return true;
             }
@@ -93,8 +94,9 @@ public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstan
         return containsInput(inputA, inputB, complexRecipes);
     }
 
-    private boolean containsInput(TypedInstance<TYPE> inputA, TypedInstance<TYPE> inputB, Iterable<RECIPE> recipes) {
-        for (RECIPE recipe : recipes) {
+    private boolean containsInput(TypedInstance<TYPE> inputA, TypedInstance<TYPE> inputB, Iterable<RecipeHolder<RECIPE>> recipes) {
+        for (RecipeHolder<RECIPE> recipeHolder : recipes) {
+            RECIPE recipe = recipeHolder.value();
             INGREDIENT ingredientA = inputAExtractor.apply(recipe);
             INGREDIENT ingredientB = inputBExtractor.apply(recipe);
             if (ingredientB.testType(inputB) && ingredientA.testType(inputA) || ingredientA.testType(inputB) && ingredientB.testType(inputA)) {
@@ -112,24 +114,24 @@ public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstan
     ///
     /// @return Recipe matching the given inputs, or `null` if no recipe matches.
     @Nullable
-    public RECIPE findFirstRecipe(@Nullable Level world, STACK inputA, STACK inputB) {
+    public RecipeHolder<RECIPE> findFirstRecipe(@Nullable Level world, STACK inputA, STACK inputB) {
         if (cache.isEmpty(inputA) || cache.isEmpty(inputB)) {
             //Don't allow empty inputs
             return null;
         }
         initCacheIfNeeded(world);
         //Lookup a recipe from the input map
-        RECIPE recipe = findFirstRecipe(inputA, inputB, cache.getRecipes(inputA));
+        RecipeHolder<RECIPE> recipe = findFirstRecipe(inputA, inputB, cache.getRecipes(inputA));
         // if there is no recipe, then check if any of our complex recipes match
         return recipe == null ? findFirstRecipe(inputA, inputB, complexRecipes) : recipe;
     }
 
     @Nullable
-    private RECIPE findFirstRecipe(STACK inputA, STACK inputB, Iterable<RECIPE> recipes) {
-        for (RECIPE recipe : recipes) {
+    private RecipeHolder<RECIPE> findFirstRecipe(STACK inputA, STACK inputB, Iterable<RecipeHolder<RECIPE>> recipes) {
+        for (RecipeHolder<RECIPE> recipeHolder : recipes) {
             //Note: The recipe's test method checks both directions
-            if (recipe.test(inputA, inputB)) {
-                return recipe;
+            if (recipeHolder.value().test(inputA, inputB)) {
+                return recipeHolder;
             }
         }
         return null;
@@ -139,10 +141,10 @@ public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstan
     protected void initCache(List<RecipeHolder<RECIPE>> recipes) {
         for (RecipeHolder<RECIPE> recipeHolder : recipes) {
             RECIPE recipe = recipeHolder.value();
-            boolean complexA = cache.mapInputs(recipe, inputAExtractor.apply(recipe));
-            boolean complexB = cache.mapInputs(recipe, inputBExtractor.apply(recipe));
+            boolean complexA = cache.mapInputs(recipeHolder, inputAExtractor.apply(recipe));
+            boolean complexB = cache.mapInputs(recipeHolder, inputBExtractor.apply(recipe));
             if (complexA || complexB) {
-                complexRecipes.add(recipe);
+                complexRecipes.add(recipeHolder);
             }
         }
     }

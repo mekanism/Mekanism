@@ -4,6 +4,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
+import net.minecraft.world.entity.player.Player;
 
 public class CraftingWindowOutputInventorySlot extends CraftingWindowInventorySlot {
 
@@ -16,7 +17,7 @@ public class CraftingWindowOutputInventorySlot extends CraftingWindowInventorySl
     }
 
     @Override
-    public VirtualInventoryContainerSlot createContainerSlot() {
-        return new VirtualCraftingOutputSlot(this, getSlotOverlay(), craftingWindow);
+    public VirtualInventoryContainerSlot createContainerSlot(Player player) {
+        return new VirtualCraftingOutputSlot(this, getSlotOverlay(), player, craftingWindow);
     }
 }

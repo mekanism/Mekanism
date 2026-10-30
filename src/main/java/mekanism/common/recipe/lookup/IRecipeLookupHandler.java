@@ -16,10 +16,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.StackedContentsCompatible;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.3: Try to add support for some of the things in RecipeCraftingHolder
 public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> extends IContentsListener, StackedContentsCompatible {
 
     /// @return The world for this [IRecipeLookupHandler].
@@ -34,14 +34,7 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> ex
         return null;
     }
 
-    /// Returns how many operating ticks were saved for purposes of persisting through saves how far a cached recipe is through processing.
-    ///
-    /// @param cacheIndex The "recipe index" for which cache to interact with.
-    ///
-    /// @return Number of operating ticks that had passed before saving.
-    default int getSavedOperatingTicks(int cacheIndex) {
-        return 0;
-    }
+    void markForSave();
 
     /// Tries to lookup/get the recipe that a given cacheIndex would represent the slots/tanks/etc. for.
     ///
@@ -49,7 +42,7 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> ex
     ///
     /// @return Recipe that a given cacheIndex corresponds to, or null if there is no matching recipe.
     @Nullable
-    RECIPE getRecipe(int cacheIndex);
+    RecipeHolder<RECIPE> getRecipe(int cacheIndex);
 
     /// Creates a new cached recipe representing a given recipe.
     ///

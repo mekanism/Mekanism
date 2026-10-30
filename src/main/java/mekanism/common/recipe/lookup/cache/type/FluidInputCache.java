@@ -7,6 +7,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.CompoundFluidIngredient;
@@ -19,21 +20,21 @@ import org.jspecify.annotations.Nullable;
 public class FluidInputCache<RECIPE extends MekanismRecipe<?, ?, ?>> extends ComponentSensitiveInputCache<Fluid, FluidStack, FluidStackIngredient, RECIPE> {
 
     @Override
-    public boolean mapInputs(RECIPE recipe, FluidStackIngredient inputIngredient) {
-        return mapIngredient(recipe, inputIngredient.ingredient().ingredient());
+    public boolean mapInputs(RecipeHolder<RECIPE> recipeHolder, FluidStackIngredient inputIngredient) {
+        return mapIngredient(recipeHolder, inputIngredient.ingredient().ingredient());
     }
 
-    private boolean mapIngredient(RECIPE recipe, FluidIngredient input) {
+    private boolean mapIngredient(RecipeHolder<RECIPE> recipeHolder, FluidIngredient input) {
         if (input.isSimple() && input instanceof SimpleFluidIngredient simpleFluidIngredient) {
             //Simple ingredients don't actually check anything related to NBT,
             // so we can add the items to our base/raw input cache directly
-            mapPlainFluidSet(recipe, simpleFluidIngredient.fluidSet());
+            mapPlainFluidSet(recipeHolder, simpleFluidIngredient.fluidSet());
         } else if (input instanceof CompoundFluidIngredient compoundIngredient) {
             //Special handling for neo's compound ingredient to map all children as best as we can
             // as maybe some of them are simple
             boolean result = false;
             for (FluidIngredient child : compoundIngredient.children()) {
-                result |= mapIngredient(recipe, child);
+                result |= mapIngredient(recipeHolder, child);
             }
             return result;
         } else if (input instanceof DataComponentFluidIngredient componentIngredient && componentIngredient.isStrict()) {
@@ -41,12 +42,12 @@ public class FluidInputCache<RECIPE extends MekanismRecipe<?, ?, ?>> extends Com
             DataComponentExactPredicate componentPredicate = componentIngredient.components();
             if (componentPredicate.alwaysMatches()) {
                 //why is this a component ingredient? lol
-                mapPlainFluidSet(recipe, componentIngredient.fluidSet());
+                mapPlainFluidSet(recipeHolder, componentIngredient.fluidSet());
                 return false;
             }
             DataComponentPatch patch = componentIngredient.components().asPatch();
             for (Holder<Fluid> holder : componentIngredient.fluidSet()) {
-                addComponentInputCache(holder, patch, recipe);
+                addComponentInputCache(holder, patch, recipeHolder);
             }
         } else {
             //Else it is a custom ingredient, so we don't have a great way of handling it using the normal extraction checks
@@ -56,11 +57,11 @@ public class FluidInputCache<RECIPE extends MekanismRecipe<?, ?, ?>> extends Com
         return false;
     }
 
-    private void mapPlainFluidSet(RECIPE recipe, HolderSet<Fluid> fluidSet) {
+    private void mapPlainFluidSet(RecipeHolder<RECIPE> recipeHolder, HolderSet<Fluid> fluidSet) {
         for (Holder<Fluid> fluid : fluidSet) {
             if (fluid.isBound()) {
                 //Ignore unbound holders just in case
-                addInputCache(fluid, recipe);
+                addInputCache(fluid, recipeHolder);
             }
         }
     }

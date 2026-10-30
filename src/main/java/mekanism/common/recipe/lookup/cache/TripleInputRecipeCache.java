@@ -22,10 +22,10 @@ public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
       CACHE_A extends IInputCache<HOLDER_A, INPUT_A, INGREDIENT_A, RECIPE>, CACHE_B extends IInputCache<HOLDER_B, INPUT_B, INGREDIENT_B, RECIPE>,
       CACHE_C extends IInputCache<HOLDER_C, INPUT_C, INGREDIENT_C, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
 
-    private final Set<RECIPE> complexIngredientA = new HashSet<>();
-    private final Set<RECIPE> complexIngredientB = new HashSet<>();
-    private final Set<RECIPE> complexIngredientC = new HashSet<>();
-    private final Set<RECIPE> complexRecipes = new HashSet<>();
+    private final Set<RecipeHolder<RECIPE>> complexIngredientA = new HashSet<>();
+    private final Set<RecipeHolder<RECIPE>> complexIngredientB = new HashSet<>();
+    private final Set<RecipeHolder<RECIPE>> complexIngredientC = new HashSet<>();
+    private final Set<RecipeHolder<RECIPE>> complexRecipes = new HashSet<>();
     private final Function<RECIPE, INGREDIENT_A> inputAExtractor;
     private final Function<RECIPE, INGREDIENT_B> inputBExtractor;
     private final Function<RECIPE, INGREDIENT_C> inputCExtractor;
@@ -152,9 +152,9 @@ public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
           HOLDER_2, INPUT_2 extends TypedInstance<HOLDER_2>, INGREDIENT_2 extends InputIngredient<HOLDER_2, INPUT_2>, CACHE_2 extends IInputCache<HOLDER_2, INPUT_2, INGREDIENT_2, RECIPE>,
           HOLDER_3, INPUT_3 extends TypedInstance<HOLDER_3>, INGREDIENT_3 extends InputIngredient<HOLDER_3, INPUT_3>, CACHE_3 extends IInputCache<HOLDER_3, INPUT_3, INGREDIENT_3, RECIPE>>
     boolean containsGrouping(@Nullable Level world,
-          TypedInstance<HOLDER_1> input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1,
-          TypedInstance<HOLDER_2> input2, Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2,
-          TypedInstance<HOLDER_3> input3, Function<RECIPE, INGREDIENT_3> input3Extractor, CACHE_3 cache3, Set<RECIPE> complexIngredients3) {
+          TypedInstance<HOLDER_1> input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RecipeHolder<RECIPE>> complexIngredients1,
+          TypedInstance<HOLDER_2> input2, Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RecipeHolder<RECIPE>> complexIngredients2,
+          TypedInstance<HOLDER_3> input3, Function<RECIPE, INGREDIENT_3> input3Extractor, CACHE_3 cache3, Set<RecipeHolder<RECIPE>> complexIngredients3) {
         if (cache1.isEmpty(input1)) {
             if (cache3.isEmpty(input3)) {
                 //If 1 and 3 are empty just check 2. We have this extra check here as containsPairing will always return true
@@ -171,13 +171,15 @@ public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
         }
         initCacheIfNeeded(world);
         //Note: If cache 1 contains input 1 then we only need to test the type of input 2 and 3 as we already know input 1 matches
-        for (RECIPE recipe : cache1.getRecipes(input1)) {
+        for (RecipeHolder<RECIPE> recipeHolder : cache1.getRecipes(input1)) {
+            RECIPE recipe = recipeHolder.value();
             if (input2Extractor.apply(recipe).testType(input2) && input3Extractor.apply(recipe).testType(input3)) {
                 return true;
             }
         }
         //Our quick lookup 1 cache does not contain it, check any recipes where the 1 ingredient was complex
-        for (RECIPE recipe : complexIngredients1) {
+        for (RecipeHolder<RECIPE> recipeHolder : complexIngredients1) {
+            RECIPE recipe = recipeHolder.value();
             if (input1Extractor.apply(recipe).testType(input1) &&
                 input2Extractor.apply(recipe).testType(input2) &&
                 input3Extractor.apply(recipe).testType(input3)) {
@@ -198,23 +200,23 @@ public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
     ///
     /// @implNote Lookups up the recipe first from the A input map (the fact that it is A is arbitrary and just as well could be B or C).
     @Nullable
-    public RECIPE findFirstRecipe(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
+    public RecipeHolder<RECIPE> findFirstRecipe(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
         if (cacheA.isEmpty(inputA) || cacheB.isEmpty(inputB)) {
             //Don't allow empty inputs
             return null;
         }
         initCacheIfNeeded(world);
         //Lookup a recipe from the A input map (the fact that it is A is arbitrary, it just as well could be B or C)
-        RECIPE recipe = findFirstRecipe(inputA, inputB, inputC, cacheA.getRecipes(inputA));
+        RecipeHolder<RECIPE> recipe = findFirstRecipe(inputA, inputB, inputC, cacheA.getRecipes(inputA));
         // if there is no recipe, then check if any of our complex recipes (either a, b, or c being complex) match
         return recipe == null ? findFirstRecipe(inputA, inputB, inputC, complexRecipes) : recipe;
     }
 
     @Nullable
-    private RECIPE findFirstRecipe(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC, Iterable<RECIPE> recipes) {
-        for (RECIPE recipe : recipes) {
-            if (recipe.test(inputA, inputB, inputC)) {
-                return recipe;
+    private RecipeHolder<RECIPE> findFirstRecipe(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC, Iterable<RecipeHolder<RECIPE>> recipes) {
+        for (RecipeHolder<RECIPE> recipeHolder : recipes) {
+            if (recipeHolder.value().test(inputA, inputB, inputC)) {
+                return recipeHolder;
             }
         }
         return null;
@@ -224,20 +226,20 @@ public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
     protected void initCache(List<RecipeHolder<RECIPE>> recipes) {
         for (RecipeHolder<RECIPE> recipeHolder : recipes) {
             RECIPE recipe = recipeHolder.value();
-            boolean complexA = cacheA.mapInputs(recipe, inputAExtractor.apply(recipe));
-            boolean complexB = cacheB.mapInputs(recipe, inputBExtractor.apply(recipe));
-            boolean complexC = cacheC.mapInputs(recipe, inputCExtractor.apply(recipe));
+            boolean complexA = cacheA.mapInputs(recipeHolder, inputAExtractor.apply(recipe));
+            boolean complexB = cacheB.mapInputs(recipeHolder, inputBExtractor.apply(recipe));
+            boolean complexC = cacheC.mapInputs(recipeHolder, inputCExtractor.apply(recipe));
             if (complexA) {
-                complexIngredientA.add(recipe);
+                complexIngredientA.add(recipeHolder);
             }
             if (complexB) {
-                complexIngredientB.add(recipe);
+                complexIngredientB.add(recipeHolder);
             }
             if (complexC) {
-                complexIngredientC.add(recipe);
+                complexIngredientC.add(recipeHolder);
             }
             if (complexA || complexB || complexC) {
-                complexRecipes.add(recipe);
+                complexRecipes.add(recipeHolder);
             }
         }
     }

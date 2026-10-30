@@ -19,6 +19,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.util.strategy.BasicStrategy;
 import org.jspecify.annotations.Nullable;
 
@@ -28,7 +29,7 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
       extends BaseInputCache<KEY, INPUT, INGREDIENT, RECIPE> {
 
     /// Map of ResourceKey to Map of components to lists.
-    private final Map<ResourceKey<KEY>, Map<DataComponentMap, List<RECIPE>>> componentInputCache = new Reference2ObjectOpenHashMap<>();
+    private final Map<ResourceKey<KEY>, Map<DataComponentMap, List<RecipeHolder<RECIPE>>>> componentInputCache = new Reference2ObjectOpenHashMap<>();
 
     @Override
     public void clear() {
@@ -51,21 +52,21 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
             Mekanism.logger.warn("Component Input cache contains check received a direct holder or an unbound intrusive holder");
             return false;
         }
-        Map<DataComponentMap, List<RECIPE>> holderMatch = componentInputCache.get(key);
+        Map<DataComponentMap, List<RecipeHolder<RECIPE>>> holderMatch = componentInputCache.get(key);
         return holderMatch != null && holderMatch.containsKey(asDCHolder.getComponents());
     }
 
     /// @implNote Checks the more specific Data Component based cache before checking the more generic base type.
     @Override
-    public Iterable<RECIPE> getRecipes(TypedInstance<KEY> input) {
+    public Iterable<RecipeHolder<RECIPE>> getRecipes(TypedInstance<KEY> input) {
         if (componentInputCache.isEmpty() || !(input instanceof DataComponentHolder dataComponentHolder)) {
             return super.getRecipes(input);
         }
-        List<RECIPE> nbtRecipes = getComponentMatches(input, dataComponentHolder);
+        List<RecipeHolder<RECIPE>> nbtRecipes = getComponentMatches(input, dataComponentHolder);
         if (nbtRecipes == null) {
             return super.getRecipes(input);
         }
-        Collection<RECIPE> basicRecipes = (Collection<RECIPE>) super.getRecipes(input);
+        Collection<RecipeHolder<RECIPE>> basicRecipes = (Collection<RecipeHolder<RECIPE>>) super.getRecipes(input);
         if (basicRecipes.isEmpty()) {
             return nbtRecipes;
         }
@@ -73,13 +74,13 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
     }
 
     @Nullable
-    private List<RECIPE> getComponentMatches(TypedInstance<KEY> input, DataComponentHolder asDCHolder) {
+    private List<RecipeHolder<RECIPE>> getComponentMatches(TypedInstance<KEY> input, DataComponentHolder asDCHolder) {
         ResourceKey<KEY> key = input.typeHolder().keyOrNull();
         if (key == null) {
             Mekanism.logger.warn("Component Input matches check received a direct holder or an unbound intrusive holder");
             return null;
         }
-        Map<DataComponentMap, List<RECIPE>> holderMatches = componentInputCache.get(key);
+        Map<DataComponentMap, List<RecipeHolder<RECIPE>>> holderMatches = componentInputCache.get(key);
         if (holderMatches == null) {
             return null;
         }
@@ -90,32 +91,32 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
     ///
     /// @param inputHolder Holder representing the KEY
     /// @param patch       The component patch to apply against inputHolder for storing in the index
-    /// @param recipe      Recipe to add.
-    protected void addComponentInputCache(Holder<KEY> inputHolder, DataComponentPatch patch, RECIPE recipe) {
+    /// @param recipeHolder      Recipe to add.
+    protected void addComponentInputCache(Holder<KEY> inputHolder, DataComponentPatch patch, RecipeHolder<RECIPE> recipeHolder) {
         ResourceKey<KEY> key = inputHolder.keyOrNull();
         if (key == null) {
             Mekanism.logger.warn("Component Input Cache received a direct holder or an unbound intrusive holder");
             return;
         }
         DataComponentMap components = PatchedDataComponentMap.fromPatch(inputHolder.components(), patch);
-        Map<DataComponentMap, List<RECIPE>> holderMatch = componentInputCache.get(key);
+        Map<DataComponentMap, List<RecipeHolder<RECIPE>>> holderMatch = componentInputCache.get(key);
         if (holderMatch == null) {
-            componentInputCache.put(key, Collections.singletonMap(components, Collections.singletonList(recipe)));
+            componentInputCache.put(key, Collections.singletonMap(components, Collections.singletonList(recipeHolder)));
         } else {
             if (holderMatch.size() == 1) {
-                Map<DataComponentMap, List<RECIPE>> newMap = new Object2ObjectOpenCustomHashMap<>(1, Hash.VERY_FAST_LOAD_FACTOR, BasicStrategy.BASIC);
+                Map<DataComponentMap, List<RecipeHolder<RECIPE>>> newMap = new Object2ObjectOpenCustomHashMap<>(1, Hash.VERY_FAST_LOAD_FACTOR, BasicStrategy.BASIC);
                 newMap.putAll(holderMatch);
                 holderMatch = newMap;
             }
-            List<RECIPE> existing = holderMatch.get(components);
+            List<RecipeHolder<RECIPE>> existing = holderMatch.get(components);
             if (existing == null) {
-                holderMatch.put(components, Collections.singletonList(recipe));
+                holderMatch.put(components, Collections.singletonList(recipeHolder));
             } else if (existing.size() == 1) {
-                List<RECIPE> newList = new ArrayList<>(existing);
-                newList.add(recipe);
+                List<RecipeHolder<RECIPE>> newList = new ArrayList<>(existing);
+                newList.add(recipeHolder);
                 holderMatch.put(components, newList);
             } else {
-                existing.add(recipe);
+                existing.add(recipeHolder);
             }
         }
     }

@@ -57,6 +57,7 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.FluidRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
+import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
@@ -75,6 +76,7 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -85,7 +87,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<ElectrolysisRecipe> implements IHasGasMode, FluidRecipeLookupHandler<ElectrolysisRecipe> {
+public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<ElectrolysisRecipe, RecipeCacheLookupMonitor<ElectrolysisRecipe>> implements IHasGasMode,
+      FluidRecipeLookupHandler<ElectrolysisRecipe> {
 
     public static final RecipeError NOT_ENOUGH_SPACE_LEFT_OUTPUT_ERROR = RecipeError.create();
     public static final RecipeError NOT_ENOUGH_SPACE_RIGHT_OUTPUT_ERROR = RecipeError.create();
@@ -302,7 +305,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     @Nullable
     @Override
-    public ElectrolysisRecipe getRecipe(int cacheIndex) {
+    public RecipeHolder<ElectrolysisRecipe> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
@@ -314,8 +317,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
               .setActive(this::setActive)
               .setOperationsCost(isHydrogenElectrolysis(recipe))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setBaselineMaxOperations(() -> baselineMaxOperations)
-              .setOnFinish(this::markForSave);
+              .setBaselineMaxOperations(() -> baselineMaxOperations);
     }
 
     @Override

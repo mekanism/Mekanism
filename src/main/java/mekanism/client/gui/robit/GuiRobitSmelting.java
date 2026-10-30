@@ -4,6 +4,7 @@ import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.recipe_book.MekanismRecipeBookComponent;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.entity.robit.RobitContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -16,7 +17,9 @@ public class GuiRobitSmelting extends GuiRobit<RobitContainer> {
         super(container, inv, title);
         inventoryLabelY += 1;
         dynamicSlots = true;
-        this.recipeBookComponent = new MekanismRecipeBookComponent<>(menu, robit, registryAccess(), this::font);
+        if (!Mekanism.hooks.isRecipeBookDisabled()) {
+            this.recipeBookComponent = new MekanismRecipeBookComponent<>(menu, robit, registryAccess(), this::font);
+        }
     }
 
     @Override

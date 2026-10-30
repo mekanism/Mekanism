@@ -12,6 +12,7 @@ import mekanism.common.component.containers.item.ComponentBackedBinInventorySlot
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
@@ -95,7 +96,7 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     @Nullable
     @Override
-    public InventoryContainerSlot createContainerSlot() {
+    public InventoryContainerSlot createContainerSlot(Player player) {
         return null;
     }
 

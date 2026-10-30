@@ -54,6 +54,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -138,6 +139,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
         builder.addContainer(inputSlot = InputInventorySlot.at((itemType, _) -> containsRecipeAB(itemType, pigmentTank.resource()), this::containsRecipeA, recipeCacheListener, 45, 35))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35))
+              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience)
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 144, 35));
         pigmentInputSlot.setSlotOverlay(SlotOverlay.MINUS);
@@ -166,7 +168,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
 
     @Nullable
     @Override
-    public ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo> getRecipe(int cacheIndex) {
+    public RecipeHolder<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> getRecipe(int cacheIndex) {
         return findFirstRecipe(itemInputHandler, pigmentInputHandler);
     }
 
@@ -185,8 +187,6 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 

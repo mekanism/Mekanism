@@ -18,6 +18,7 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -97,8 +98,9 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
         if (!fillTankFromSlot(transaction)) {
             //If filling from item failed, try doing it by conversion
             ItemStack current = resource().toStack(amountAsInt());
-            ItemStackToChemicalRecipe<?, ?> foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
-            if (foundRecipe != null) {
+            RecipeHolder<? extends ItemStackToChemicalRecipe<?, ?>> foundRecipeHolder = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
+            if (foundRecipeHolder != null) {
+                ItemStackToChemicalRecipe<?, ?> foundRecipe = foundRecipeHolder.value();
                 ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
                 if (!itemInput.isEmpty()) {
                     ChemicalStackTemplate output = foundRecipe.getOutput(itemInput);

@@ -1,7 +1,6 @@
 package mekanism.common.tile.prefab;
 
 import java.util.List;
-import mekanism.api.SerializationConstants;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.upgrade.Upgrade;
@@ -9,18 +8,16 @@ import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.recipe.lookup.monitor.ProgressRecipeCacheLookupMonitor;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 
-public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?, ?, ?>> extends TileEntityRecipeMachine<RECIPE> {
+public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?, ?, ?>> extends TileEntityRecipeMachine<RECIPE, ProgressRecipeCacheLookupMonitor<RECIPE>> {
 
-    private int operatingTicks;
     protected int baseTicksRequired;
     public int ticksRequired;
     private int operationsPerTick = 1;//will increase for modified upgrade multipliers
@@ -31,39 +28,23 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?,
         ticksRequired = this.baseTicksRequired;
     }
 
+    @Override
+    protected ProgressRecipeCacheLookupMonitor<RECIPE> createNewCacheMonitor() {
+        return new ProgressRecipeCacheLookupMonitor<>(this);
+    }
+
     public float getScaledProgress() {
-        return getOperatingTicks() / (float) ticksRequired;
+        return getRecipeProgress() / (float) ticksRequired;
     }
 
-    protected void setOperatingTicks(int ticks) {
-        this.operatingTicks = ticks;
-    }
-
-    @ComputerMethod(nameOverride = "getRecipeProgress")
-    public int getOperatingTicks() {
-        return operatingTicks;
+    @ComputerMethod
+    public int getRecipeProgress() {
+        return recipeCacheLookupMonitor.getSavedOperatingTicks(0);
     }
 
     @ComputerMethod
     public int getTicksRequired() {
         return ticksRequired;
-    }
-
-    @Override
-    public int getSavedOperatingTicks(int cacheIndex) {
-        return getOperatingTicks();
-    }
-
-    @Override
-    public void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
-        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, 0);
-    }
-
-    @Override
-    public void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
-        output.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
     }
 
     @Override
@@ -82,7 +63,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?,
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableInt.create(this::getOperatingTicks, this::setOperatingTicks));
+        container.track(recipeCacheLookupMonitor.operatingTicksAsSyncable());
         container.track(SyncableInt.create(this::getTicksRequired, value -> ticksRequired = value));
     }
 }

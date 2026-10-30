@@ -1,6 +1,5 @@
 package mekanism.client.gui.item;
 
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,8 +39,8 @@ import org.jspecify.annotations.Nullable;
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     private final List<BlockInfo<?>> blockList = new ArrayList<>();
-    private final Reference2IntMap<Block> blockFrequencies = new Reference2IntOpenHashMap<>();
-    private final Reference2IntMap<FluidResource> fluidFrequencies = new Reference2IntOpenHashMap<>();
+    private final Reference2IntOpenHashMap<Block> blockFrequencies = new Reference2IntOpenHashMap<>();
+    private final Reference2IntOpenHashMap<FluidResource> fluidFrequencies = new Reference2IntOpenHashMap<>();
     private final int minHeight;
     @Nullable
     private GuiScrollBar scrollBar;
@@ -59,7 +58,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 state = Blocks.AIR.defaultBlockState();
             }
             Block block = state.getBlock();
-            blockFrequencies.mergeInt(block, 1, Integer::sum);
+            blockFrequencies.addTo(block, 1);
             //Try to get the clone item stack as maybe it has one, though it might not have a corresponding block
             ItemStack stack = state.getCloneItemStack(p, level, false, player);
             if (stack.isEmpty()) {
@@ -77,14 +76,14 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                         TextureAtlasSprite texture = MekanismRenderer.getFluidTexture(f, FluidTextureType.STILL);
                         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, 16, 16, MekanismRenderer.color(f));
                     }));
-                    fluidFrequencies.mergeInt(fluidType, 1, Integer::sum);
+                    fluidFrequencies.addTo(fluidType, 1);
                 }
             } else {
                 blockList.add(new BlockInfo<>(state, stack, GuiGraphicsExtractor::item));
                 FluidState fluid = state.getFluidState();
                 if (!fluid.isEmpty()) {//Take the fluid into account for frequency count
                     //TODO: Do we want to render the fact that it is fluid logged in some way?
-                    fluidFrequencies.mergeInt(FluidResource.of(fluid.getType()), 1, Integer::sum);
+                    fluidFrequencies.addTo(FluidResource.of(fluid.getType()), 1);
                 }
             }
         }

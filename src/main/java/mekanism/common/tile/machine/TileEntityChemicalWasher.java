@@ -53,12 +53,14 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.FluidChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.FluidChemical;
+import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -66,7 +68,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>>
+public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>,
+      RecipeCacheLookupMonitor<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>>>
       implements FluidChemicalRecipeLookupHandler<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
@@ -195,7 +198,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
 
     @Nullable
     @Override
-    public FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo> getRecipe(int cacheIndex) {
+    public RecipeHolder<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>> getRecipe(int cacheIndex) {
         return getRecipeType().getInputCache().findFirstRecipe(level, fluidInputHandler.getInput(), slurryInputHandler.getInput(), false);
     }
 
@@ -206,8 +209,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setBaselineMaxOperations(() -> baselineMaxOperations)
-              .setOnFinish(this::markForSave);
+              .setBaselineMaxOperations(() -> baselineMaxOperations);
     }
 
     @Override

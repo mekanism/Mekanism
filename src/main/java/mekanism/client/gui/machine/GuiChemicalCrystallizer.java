@@ -20,6 +20,7 @@ import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jspecify.annotations.Nullable;
 
 public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemicalCrystallizer, MekanismTileContainer<TileEntityChemicalCrystallizer>> {
@@ -84,13 +85,13 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
 
         @Nullable
         private ChemicalCrystallizerRecipe getRecipeAndCache() {
-            ChemicalCrystallizerRecipe recipe = tile.getRecipe(0);
+            RecipeHolder<ChemicalCrystallizerRecipe> recipe = tile.getRecipe(0);
             if (recipe == null) {
                 cachedRecipe = null;
             } else {
-                cachedRecipe = new WeakReference<>(recipe);
+                cachedRecipe = new WeakReference<>(recipe.value());
             }
-            return recipe;
+            return recipe == null ? null : recipe.value();
         }
     }
 }

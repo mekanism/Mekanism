@@ -120,8 +120,9 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
         TriState state = TriState.from(tile.getMode());
         if (lastMode != state) {
             lastMode = state;
-            assert recipeBookComponent != null;
-            recipeBookComponent.recipesUpdated();
+            if (recipeBookComponent != null) {//May be null if the recipe book is disabled
+                recipeBookComponent.recipesUpdated();
+            }
         }
     }
 

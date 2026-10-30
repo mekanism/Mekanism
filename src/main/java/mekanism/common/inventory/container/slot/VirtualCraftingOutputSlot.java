@@ -17,13 +17,15 @@ import org.jspecify.annotations.Nullable;
 public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot implements IHasExtraData {
 
     private final QIOCraftingWindow craftingWindow;
+    private final Player player;
     /// @apiNote For use on client side to store if we can craft or not. On the server side we check it directly
     private boolean canCraft;
     private int amountCrafted;
 
-    public VirtualCraftingOutputSlot(BasicInventorySlot slot, @Nullable SlotOverlay slotOverlay, QIOCraftingWindow craftingWindow) {
-        super(slot, craftingWindow.getWindowData(), slotOverlay);
+    public VirtualCraftingOutputSlot(BasicInventorySlot slot, @Nullable SlotOverlay slotOverlay, Player player, QIOCraftingWindow craftingWindow) {
+        this.player = player;
         this.craftingWindow = craftingWindow;
+        super(slot, craftingWindow.getWindowData(), slotOverlay);
     }
 
     @Override
@@ -114,22 +116,24 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
 
     @Override
     public boolean mayPickup(Player player) {
-        if (player.level().isClientSide() || !(player instanceof ServerPlayer serverPlayer)) {
-            return canCraft && super.mayPickup(player);
-        }
-        return craftingWindow.canViewRecipe(serverPlayer) && super.mayPickup(player);
+        return canCraft(player) && super.mayPickup(player);
     }
 
     @Override
     public ItemStack getStackCopy() {
-        //Note: We check canCraft even on the server side, as we don't have a player context here and as there is only one container per player
-        // we can just hackily update the canCraft variable while syncing it to the client
-        return canCraft ? super.getStackCopy() : ItemStack.EMPTY;
+        return canCraft(player) ? super.getStackCopy() : ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack getStackToRender() {
-        return canCraft ? super.getStackToRender() : ItemStack.EMPTY;
+        return canCraft(player) ? super.getStackToRender() : ItemStack.EMPTY;
+    }
+
+    private boolean canCraft(Player player) {
+        if (player.level().isClientSide() || !(player instanceof ServerPlayer serverPlayer)) {
+            return canCraft;
+        }
+        return craftingWindow.canViewRecipe(serverPlayer);
     }
 
     public ItemStack shiftClickSlot(Player player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
@@ -143,27 +147,8 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     }
 
     @Override
-    public void addTrackers(Player player, Consumer<ISyncableData> tracker) {
-        if (player.level().isClientSide() || !(player instanceof ServerPlayer serverPlayer)) {
-            //If we are on the client or not a server player entity for some reason return our cached value
-            tracker.accept(SyncableBoolean.create(() -> canCraft, value -> canCraft = value));
-        } else {
-            //Otherwise if we are on the server validate if the player can craft or not
-            // Note: We handle syncing the canCraft concept for our slots by just checking if the "owning" player is able to perform
-            // the craft. We can get away with doing this as for the most part even server side containers are on a per player basis
-            // so there is no harm in hiding/showing the output in the rare cases that another mod may let you hook into viewing an
-            // existing container and interact with it.
-            //TODO: Eventually if this does turn out to be an issue, it can probably be solved/worked around by using some per player
-            // aware syncable boolean. In theory it shouldn't be that hard to create, as sync packet wise we could just have it take
-            // two lists:
-            // 1. The current one
-            // 2. The player specific one
-            // and then when encoding it just add the sizes together and pretend they are all part of the first list for purposes of
-            // what the client is aware of as the client shouldn't care about them
-            //Note: We also update the value of canCraft here while syncing so that we ensure a closer to up to date value on the server
-            // for purposes of our getItem and hasItem overrides
-            tracker.accept(SyncableBoolean.create(() -> canCraft = craftingWindow.canViewRecipe(serverPlayer), value -> canCraft = value));
-        }
+    public void addTrackers(Consumer<ISyncableData> tracker) {
+        tracker.accept(SyncableBoolean.create(() -> canCraft(player), value -> canCraft = value));
     }
 
     @Override

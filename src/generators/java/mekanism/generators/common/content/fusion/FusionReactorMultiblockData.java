@@ -469,7 +469,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                 ContainerType.FLUID.clampContents(waterTank, transaction);
                 ContainerType.CHEMICAL.clampContents(steamTank, transaction);
             }
-            markDirty();
+            markForSave();
         }
     }
 
@@ -489,7 +489,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public void setBurning(boolean burn) {
         if (burning != burn) {
             burning = burn;
-            markDirty();
+            markForSave();
         }
     }
 
@@ -591,7 +591,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         protected void onRootCommit(Double originalState) {
             super.onRootCommit(originalState);
             if (!Mth.equal(originalState, temperature)) {
-                markDirty();
+                markForSave();
             }
         }
     }

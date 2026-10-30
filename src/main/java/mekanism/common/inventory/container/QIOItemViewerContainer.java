@@ -182,19 +182,19 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     @Override
-    protected void addSlots() {
-        super.addSlots();
+    protected void addSlots(Player player) {
+        super.addSlots(player);
         for (QIOCraftingWindow craftingWindow : craftingWindowHolder.getCraftingWindows()) {
             byte tableIndex = craftingWindow.getWindowIndex();
             for (int slotIndex = 0; slotIndex < QIOCraftingWindow.SLOTS_PER_WINDOW; slotIndex++) {
-                addCraftingSlot(craftingWindow.getInputSlot(slotIndex), tableIndex, slotIndex);
+                addCraftingSlot(player, craftingWindow.getInputSlot(slotIndex), tableIndex, slotIndex);
             }
-            addCraftingSlot(craftingWindow.getOutputSlot(), tableIndex, 9);
+            addCraftingSlot(player, craftingWindow.getOutputSlot(), tableIndex, 9);
         }
     }
 
-    private void addCraftingSlot(CraftingWindowInventorySlot slot, byte tableIndex, int slotIndex) {
-        VirtualInventoryContainerSlot containerSlot = slot.createContainerSlot();
+    private void addCraftingSlot(Player player, CraftingWindowInventorySlot slot, byte tableIndex, int slotIndex) {
+        VirtualInventoryContainerSlot containerSlot = slot.createContainerSlot(player);
         craftingSlots[tableIndex][slotIndex] = containerSlot;
         addSlot(containerSlot);
     }

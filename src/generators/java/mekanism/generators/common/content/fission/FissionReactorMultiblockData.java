@@ -355,7 +355,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             setForceDisable(false);
         }
         if (!Mth.equal(reactorDamage, lastDamage)) {
-            markDirty();
+            markForSave();
         }
     }
 
@@ -525,7 +525,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         // update previous burn
         lastBurnRate = toBurn;
         if (!Mth.equal(lastPartialWaste, partialWaste) || !Mth.equal(lastBurnRemaining, burnRemaining)) {
-            markDirty();
+            markForSave();
         }
     }
 
@@ -549,7 +549,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     void setForceDisable(boolean forceDisable) {
         if (this.forceDisable != forceDisable) {
             this.forceDisable = forceDisable;
-            markDirty();
+            markForSave();
             if (this.forceDisable) {
                 //If we are force disabling it, deactivate the reactor
                 setActive(false);
@@ -571,7 +571,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         //Don't allow setting it to active if we are forcibly disabled
         if (this.active != active && (!active || !isForceDisabled())) {
             this.active = active;
-            markDirty();
+            markForSave();
         }
     }
 
@@ -629,7 +629,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         rate = Math.clamp(rate, 0, getMaxBurnRate());
         if (!Mth.equal(rateLimit, rate)) {
             rateLimit = rate;
-            markDirty();
+            markForSave();
         }
     }
 

@@ -43,7 +43,7 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe<?, 
 
     /// Helper to check if a cache contains a given input, or if not, if the complex recipe fallback set contains a matching recipe.
     protected <TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>, CACHE extends IInputCache<TYPE, STACK, INGREDIENT, RECIPE>> boolean containsInput(
-          @Nullable Level world, TypedInstance<TYPE> input, Function<RECIPE, INGREDIENT> inputExtractor, CACHE cache, Set<RECIPE> complexRecipes) {
+          @Nullable Level world, TypedInstance<TYPE> input, Function<RECIPE, INGREDIENT> inputExtractor, CACHE cache, Set<RecipeHolder<RECIPE>> complexRecipes) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return false;
@@ -52,8 +52,8 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe<?, 
         if (cache.contains(input)) {
             return true;
         }
-        for (RECIPE recipe : complexRecipes) {
-            if (inputExtractor.apply(recipe).testType(input)) {
+        for (RecipeHolder<RECIPE> recipe : complexRecipes) {
+            if (inputExtractor.apply(recipe.value()).testType(input)) {
                 return true;
             }
         }
@@ -68,8 +68,8 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe<?, 
     protected <HOLDER_1, INPUT_1 extends TypedInstance<HOLDER_1>, INGREDIENT_1 extends InputIngredient<HOLDER_1, INPUT_1>,
           CACHE_1 extends IInputCache<HOLDER_1, INPUT_1, INGREDIENT_1, RECIPE>, HOLDER_2, INPUT_2 extends TypedInstance<HOLDER_2>,
           INGREDIENT_2 extends InputIngredient<HOLDER_2, INPUT_2>, CACHE_2 extends IInputCache<HOLDER_2, INPUT_2, INGREDIENT_2, RECIPE>> boolean containsPairing(
-          @Nullable Level world, TypedInstance<HOLDER_1> input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1,
-          TypedInstance<HOLDER_2> input2, Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2) {
+          @Nullable Level world, TypedInstance<HOLDER_1> input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RecipeHolder<RECIPE>> complexIngredients1,
+          TypedInstance<HOLDER_2> input2, Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RecipeHolder<RECIPE>> complexIngredients2) {
         if (cache1.isEmpty(input1)) {
             //Note: We don't bother checking if 2 is empty here as it will be verified in containsInput
             return containsInput(world, input2, input2Extractor, cache2, complexIngredients2);
@@ -78,13 +78,15 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe<?, 
         }
         initCacheIfNeeded(world);
         //Note: If cache 1 contains input 1 then we only need to test the type of input 2 as we already know input 1 matches
-        for (RECIPE recipe : cache1.getRecipes(input1)) {
+        for (RecipeHolder<RECIPE> recipeHolder : cache1.getRecipes(input1)) {
+            RECIPE recipe = recipeHolder.value();
             if (input2Extractor.apply(recipe).testType(input2)) {
                 return true;
             }
         }
         //Our quick lookup 1 cache does not contain it, check any recipes where the 1 ingredient was complex
-        for (RECIPE recipe : complexIngredients1) {
+        for (RecipeHolder<RECIPE> recipeHolder : complexIngredients1) {
+            RECIPE recipe = recipeHolder.value();
             if (input1Extractor.apply(recipe).testType(input1) && input2Extractor.apply(recipe).testType(input2)) {
                 return true;
             }

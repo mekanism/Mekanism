@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jspecify.annotations.Nullable;
 
 /// Base interface describing how a specific input type is cached to allow for quick lookup of recipes by input both for finding the recipes and checking if any even
@@ -32,7 +33,7 @@ public interface IInputCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT
     /// @param input Input to check.
     ///
     /// @return Recipes for the given input that matches the given criteria, or empty if no recipe matches.
-    Iterable<RECIPE> getRecipes(TypedInstance<TYPE> input);
+    Iterable<RecipeHolder<RECIPE>> getRecipes(TypedInstance<TYPE> input);
 
     /// Finds the first recipe for the given input that matches the given match criteria. Note: that no validation is done here about the input matching the recipe's
     /// criteria in regard to required amounts, all that is done regarding the input is that the type is used in the recipe.
@@ -42,16 +43,16 @@ public interface IInputCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT
     ///
     /// @return Recipe for the given input that matches the given criteria, or `null` if no recipe matches.
     @Nullable
-    RECIPE findFirstRecipe(TypedInstance<TYPE> input, Predicate<RECIPE> matchCriteria);
+    RecipeHolder<RECIPE> findFirstRecipe(TypedInstance<TYPE> input, Predicate<RECIPE> matchCriteria);
 
     /// Maps the given ingredient and adds it into this [IInputCache] as a quicker lookup for the given recipe.
     ///
-    /// @param recipe          Recipe the given ingredient is an input of.
+    /// @param recipeHolder          Recipe the given ingredient is an input of.
     /// @param inputIngredient Ingredient to map and cache.
     ///
     /// @return `true` if any part of the ingredient is complex and the [mekanism.common.recipe.lookup.cache.IInputRecipeCache] will need to do extra handling, or `false`
     /// if we were able to fully cache the ingredient's components.
-    boolean mapInputs(RECIPE recipe, INGREDIENT inputIngredient);
+    boolean mapInputs(RecipeHolder<RECIPE> recipeHolder, INGREDIENT inputIngredient);
 
     /// Clears this [IInputCache]
     void clear();

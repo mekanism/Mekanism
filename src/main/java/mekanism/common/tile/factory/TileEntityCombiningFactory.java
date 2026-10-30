@@ -34,6 +34,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -110,9 +111,9 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
 
     @Nullable
     @Override
-    protected CombinerRecipe findRecipe(ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    protected RecipeHolder<CombinerRecipe> findRecipe(ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         //TODO: Give it something that is not empty when we don't have a stored secondary stack for getting the output?
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, extraSlot.resource(), outputSlot.resource(), CAN_OUTPUT_STACK);
+        return getRecipeType().getInputCache().findTypeBasedRecipeHolder(level, fallbackInput, extraSlot.resource(), outputSlot.resource(), CAN_OUTPUT_STACK);
     }
 
     @Override
@@ -127,7 +128,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
 
     @Nullable
     @Override
-    public CombinerRecipe getRecipe(int cacheIndex) {
+    public RecipeHolder<CombinerRecipe> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandlers[cacheIndex], extraInputHandler);
     }
 
@@ -139,8 +140,6 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 
@@ -157,6 +156,6 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
 
     @Override
     public CombinerUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new CombinerUpgradeData(provider, redstone, getControlType(), energyContainer, progress, energySlot, extraSlot, inputSlots, outputSlots, isSorting(), getComponents(), problemPath());
+        return new CombinerUpgradeData(provider, redstone, getControlType(), energyContainer, energySlot, recipeCacheLookupMonitors, extraSlot, inputSlots, outputSlots, isSorting(), getComponents(), problemPath());
     }
 }

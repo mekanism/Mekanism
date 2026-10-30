@@ -46,6 +46,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -149,7 +150,7 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
 
     @Nullable
     @Override
-    public ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo> getRecipe(int cacheIndex) {
+    public RecipeHolder<ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
@@ -161,8 +162,6 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 

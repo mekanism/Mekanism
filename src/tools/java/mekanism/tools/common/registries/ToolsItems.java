@@ -93,7 +93,7 @@ public class ToolsItems {
             if (!result.consumesAction()) {
                 //If using it as an axe failed, try to use it as a shovel
                 Reference<BlockTransformer> shovel = context.getLevel().registryAccess().getOrThrow(BlockTransformers.SHOVEL);
-                //Pass the shovel holder so that it uses that instead of looking it upu from the stack
+                //Pass the shovel holder so that it uses that instead of looking it up from the stack
                 return shovel.value().transformBlock(context, shovel);
             }
             return result;

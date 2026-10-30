@@ -10,6 +10,7 @@ import mekanism.common.recipe.lookup.IRecipeLookupHandler.IRecipeTypedLookupHand
 import mekanism.common.recipe.lookup.cache.EitherSideInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.EitherSideChemical;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
@@ -46,7 +47,7 @@ public interface IEitherSideRecipeLookupHandler<TYPE, INPUT extends TypedInstanc
     ///
     /// @return Recipe matching the given inputs, or `null` if no recipe matches.
     @Nullable
-    default RECIPE findFirstRecipe(INPUT inputA, INPUT inputB) {
+    default RecipeHolder<RECIPE> findFirstRecipe(INPUT inputA, INPUT inputB) {
         return getRecipeType().getInputCache().findFirstRecipe(getLevel(), inputA, inputB);
     }
 
@@ -57,7 +58,7 @@ public interface IEitherSideRecipeLookupHandler<TYPE, INPUT extends TypedInstanc
     ///
     /// @return Recipe matching the given inputs, or `null` if no recipe matches.
     @Nullable
-    default RECIPE findFirstRecipe(IInputHandler<TYPE, INPUT> inputAHandler, IInputHandler<TYPE, INPUT> inputBHandler) {
+    default RecipeHolder<RECIPE> findFirstRecipe(IInputHandler<TYPE, INPUT> inputAHandler, IInputHandler<TYPE, INPUT> inputBHandler) {
         return findFirstRecipe(inputAHandler.getInput(), inputBHandler.getInput());
     }
 

@@ -13,6 +13,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
@@ -36,7 +37,7 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public VirtualInventoryContainerSlot createContainerSlot() {
+    public VirtualInventoryContainerSlot createContainerSlot(Player player) {
         return new VirtualInventoryContainerSlot(this, new SelectedWindowData(WindowType.UPGRADE), getSlotOverlay());
     }
 }

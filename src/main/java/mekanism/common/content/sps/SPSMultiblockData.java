@@ -132,7 +132,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                 progress %= 1;
             }
             if (!Mth.equal(lastProgress, progress)) {
-                markDirty();
+                markForSave();
             }
         }
 
@@ -207,7 +207,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             }
             if (totalProcessed != inputProcessed) {
                 inputProcessed = totalProcessed;
-                markDirty();
+                markForSave();
             }
             transaction.commit();
             return processed;

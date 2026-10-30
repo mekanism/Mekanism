@@ -7,7 +7,7 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import net.minecraft.core.HolderLookup;
 
-public class NucleosynthesizerRecipeCacheLookupMonitor extends RecipeCacheLookupMonitor<NucleosynthesizingRecipe> {
+public class NucleosynthesizerRecipeCacheLookupMonitor extends ProgressRecipeCacheLookupMonitor<NucleosynthesizingRecipe> {
 
     public NucleosynthesizerRecipeCacheLookupMonitor(IRecipeLookupHandler<NucleosynthesizingRecipe> handler) {
         super(handler);

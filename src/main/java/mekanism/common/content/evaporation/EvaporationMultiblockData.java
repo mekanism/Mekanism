@@ -2,6 +2,7 @@ package mekanism.common.content.evaporation;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +57,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ValueUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.material.Fluid;
@@ -205,6 +209,14 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         }
     }
 
+    public void usedRecipesLoaded(Map<ResourceKey<Recipe<?>>, Integer> loadedUsage) {
+        recipeCacheLookupMonitor.usedRecipesLoaded(loadedUsage);
+    }
+
+    public Reference2IntMap<ResourceKey<Recipe<?>>> getRecipesUsed() {
+        return recipeCacheLookupMonitor.getRecipesUsed();
+    }
+
     @Override
     protected boolean hasFluidValveHandling() {
         return true;
@@ -278,7 +290,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
 
     @Nullable
     @Override
-    public FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo> getRecipe(int cacheIndex) {
+    public RecipeHolder<FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo>> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 

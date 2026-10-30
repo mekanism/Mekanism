@@ -24,12 +24,17 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?, ?, ?>> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
+public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?, ?, ?>, CACHE_LOOKUP extends RecipeCacheLookupMonitor<RECIPE>>
+      extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
     public static final int RECIPE_CHECK_FREQUENCY = 5 * SharedConstants.TICKS_PER_SECOND;
 
@@ -38,7 +43,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?, ?
     private final boolean[] trackedErrors;
 
     @UnknownNullability//Initialized in presetVariables
-    protected RecipeCacheLookupMonitor<RECIPE> recipeCacheLookupMonitor;
+    protected CACHE_LOOKUP recipeCacheLookupMonitor;
     @Nullable
     private IContentsListener recipeCacheSaveOnlyListener;
     @Nullable
@@ -65,8 +70,29 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?, ?
         recipeCacheLookupMonitor = createNewCacheMonitor();
     }
 
-    protected RecipeCacheLookupMonitor<RECIPE> createNewCacheMonitor() {
-        return new RecipeCacheLookupMonitor<>(this);
+    @SuppressWarnings("unchecked")
+    protected CACHE_LOOKUP createNewCacheMonitor() {
+        return (CACHE_LOOKUP) new RecipeCacheLookupMonitor<>(this);
+    }
+
+    @Override
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        recipeCacheLookupMonitor.loadAdditional(input);
+    }
+
+    @Override
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        recipeCacheLookupMonitor.saveAdditional(output);
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        if (this.level instanceof ServerLevel serverLevel) {
+            recipeCacheLookupMonitor.getRecipesToAwardAndPopExperience(serverLevel, Vec3.atCenterOf(pos));
+        }
     }
 
     protected IContentsListener getRecipeCacheSaveOnlyListener() {

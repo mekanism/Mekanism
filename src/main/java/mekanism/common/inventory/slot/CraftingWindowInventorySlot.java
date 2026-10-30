@@ -7,6 +7,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
@@ -28,7 +29,7 @@ public class CraftingWindowInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public VirtualInventoryContainerSlot createContainerSlot() {
+    public VirtualInventoryContainerSlot createContainerSlot(Player player) {
         return new VirtualInventoryContainerSlot(this, craftingWindow.getWindowData(), getSlotOverlay());
     }
 

@@ -8,16 +8,17 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jspecify.annotations.Nullable;
 
 public class ChemicalInputCache<RECIPE extends MekanismRecipe<?, ?, ?>> extends BaseInputCache<Chemical, ChemicalStack, ChemicalStackIngredient, RECIPE> {
 
     @Override
-    public boolean mapInputs(RECIPE recipe, ChemicalStackIngredient inputIngredient) {
+    public boolean mapInputs(RecipeHolder<RECIPE> recipeHolder, ChemicalStackIngredient inputIngredient) {
         for (Holder<Chemical> chemicalHolder : inputIngredient.ingredient().chemicals()) {
             if (!chemicalHolder.is(ChemicalIds.EMPTY)) {
                 //Ignore empty stacks as some mods have ingredients that some stacks are empty
-                addInputCache(chemicalHolder, recipe);
+                addInputCache(chemicalHolder, recipeHolder);
             }
         }
         return false;

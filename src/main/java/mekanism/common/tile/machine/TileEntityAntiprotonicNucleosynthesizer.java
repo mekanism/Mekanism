@@ -49,7 +49,7 @@ import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalReci
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.recipe.lookup.monitor.NucleosynthesizerRecipeCacheLookupMonitor;
-import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
+import mekanism.common.recipe.lookup.monitor.ProgressRecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
@@ -59,6 +59,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -124,7 +125,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     }
 
     @Override
-    protected RecipeCacheLookupMonitor<NucleosynthesizingRecipe> createNewCacheMonitor() {
+    protected ProgressRecipeCacheLookupMonitor<NucleosynthesizingRecipe> createNewCacheMonitor() {
         return new NucleosynthesizerRecipeCacheLookupMonitor(this);
     }
 
@@ -149,6 +150,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         builder.addContainer(inputSlot = InputInventorySlot.at((itemType, _) -> containsRecipeAB(itemType, gasTank.resource()), this::containsRecipeA, recipeCacheListener, 26, 40))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 152, 40))
+              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience)
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 173, 69));
         return builder.build();
@@ -181,7 +183,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
 
     @Nullable
     @Override
-    public NucleosynthesizingRecipe getRecipe(int cacheIndex) {
+    public RecipeHolder<NucleosynthesizingRecipe> getRecipe(int cacheIndex) {
         return findFirstRecipe(itemInputHandler, gasInputHandler);
     }
 
@@ -200,8 +202,6 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 

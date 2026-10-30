@@ -131,7 +131,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         dirty = false;
     }
 
-    public void markDirty() {
+    public void markForSave() {
         dirty = true;
     }
 
@@ -433,7 +433,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
 
     @Override
     public void onContentsChanged() {
-        markDirty();
+        markForSave();
     }
 
     @Override

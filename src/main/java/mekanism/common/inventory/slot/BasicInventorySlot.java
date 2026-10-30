@@ -16,6 +16,7 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.warning.ISupportsWarning;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -103,7 +104,7 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
 
     @Nullable
     @Override
-    public InventoryContainerSlot createContainerSlot() {
+    public InventoryContainerSlot createContainerSlot(Player player) {
         return new InventoryContainerSlot(this, x, y, slotType, slotOverlay, warningAdder);
     }
 
@@ -146,6 +147,11 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
 
     protected final ContainerSlotType getSlotType() {
         return slotType;
+    }
+
+    @Nullable
+    protected final Consumer<ISupportsWarning<?>> getWarningAdder() {
+        return warningAdder;
     }
 
     public ItemAccess asItemAccess() {

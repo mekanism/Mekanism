@@ -50,6 +50,7 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
+import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
@@ -57,12 +58,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>>
+public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>,
+      RecipeCacheLookupMonitor<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>>>
       implements IBoundingBlock, ChemicalRecipeLookupHandler<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
@@ -174,7 +177,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
 
     @Nullable
     @Override
-    public ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo> getRecipe(int cacheIndex) {
+    public RecipeHolder<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
@@ -184,7 +187,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
-              .setOnFinish(this::markForSave)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setBaselineMaxOperations(() -> baselineMaxOperations);
     }

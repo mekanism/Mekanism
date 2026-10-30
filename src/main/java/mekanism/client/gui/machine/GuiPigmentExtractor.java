@@ -22,6 +22,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
@@ -91,13 +92,13 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
 
         @Nullable
         private ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo> getRecipeAndCache() {
-            ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo> recipe = tile.getRecipe(0);
-            if (recipe == null) {
+            RecipeHolder<ItemStackToChemicalRecipe<PigmentExtractingBookCategory, PigmentExtractingBookInfo>> recipeHolder = tile.getRecipe(0);
+            if (recipeHolder == null) {
                 cachedRecipe = null;
             } else {
-                cachedRecipe = new WeakReference<>(recipe);
+                cachedRecipe = new WeakReference<>(recipeHolder.value());
             }
-            return recipe;
+            return recipeHolder == null ? null : recipeHolder.value();
         }
     }
 }

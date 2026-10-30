@@ -36,11 +36,11 @@ public class PersonalStorageItemContainer extends MekanismItemContainer {
     }
 
     @Override
-    protected void addSlots() {
-        super.addSlots();
+    protected void addSlots(Player player) {
+        super.addSlots(player);
         //Get all the inventory slots the item has
         for (IInventorySlot inventorySlot : itemInventory.getContainers()) {
-            Slot containerSlot = inventorySlot.createContainerSlot();
+            Slot containerSlot = inventorySlot.createContainerSlot(player);
             if (containerSlot != null) {
                 addSlot(containerSlot);
             }

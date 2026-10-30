@@ -22,6 +22,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jspecify.annotations.Nullable;
 
 public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer, MekanismTileContainer<TileEntityPigmentMixer>> {
@@ -113,13 +114,13 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
 
         @Nullable
         private ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo> getRecipeAndCache() {
-            ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo> recipe = tile.getRecipe(0);
-            if (recipe == null) {
+            RecipeHolder<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>> recipeHolder = tile.getRecipe(0);
+            if (recipeHolder == null) {
                 cachedRecipe = null;
             } else {
-                cachedRecipe = new WeakReference<>(recipe);
+                cachedRecipe = new WeakReference<>(recipeHolder.value());
             }
-            return recipe;
+            return recipeHolder == null ? null : recipeHolder.value();
         }
 
         private boolean isValid(ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo> recipe, ChemicalResource leftInput, ChemicalResource rightInput) {

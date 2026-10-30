@@ -46,6 +46,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -107,8 +108,10 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
         builder.addContainer(inputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheListener, 56, 17))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         //Note: We don't add the warning checks directly to the output slots as they are rendered as a singular slot
-        builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35));
-        builder.addContainer(secondaryOutputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 132, 35));
+        builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35))
+              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience);
+        builder.addContainer(secondaryOutputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 132, 35))
+              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience);
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 56, 53));
         return builder.build();
     }
@@ -133,7 +136,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
 
     @Nullable
     @Override
-    public SawmillRecipe getRecipe(int cacheIndex) {
+    public RecipeHolder<SawmillRecipe> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
@@ -145,8 +148,6 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 
@@ -157,7 +158,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
 
     @Override
     public SawmillUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new SawmillUpgradeData(provider, redstone, getControlType(), energyContainer, getOperatingTicks(), energySlot, inputSlot, outputSlot, secondaryOutputSlot,
+        return new SawmillUpgradeData(provider, redstone, getControlType(), energyContainer, recipeCacheLookupMonitor, energySlot, inputSlot, outputSlot, secondaryOutputSlot,
               getComponents(), problemPath());
     }
 

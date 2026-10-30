@@ -3,6 +3,7 @@ package mekanism.common.lib.multiblock;
 import mekanism.common.Mekanism;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.content.boiler.BoilerValidator;
+import mekanism.common.content.evaporation.EvaporationCache;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.content.evaporation.EvaporationValidator;
 import mekanism.common.content.matrix.MatrixMultiblockData;
@@ -22,7 +23,7 @@ public class MekanismMultiblocks {
     public static final MultiblockType<TankMultiblockData> TANK = REGISTRY.registerMultiblock("dynamic_tank", TankCache::new, TankValidator::new);
     public static final MultiblockType<MatrixMultiblockData> MATRIX = REGISTRY.registerMultiblock("induction_matrix", MultiblockCache::new, MatrixValidator::new);
     public static final MultiblockType<BoilerMultiblockData> BOILER = REGISTRY.registerMultiblock("thermoelectric_boiler", MultiblockCache::new, BoilerValidator::new);
-    public static final MultiblockType<EvaporationMultiblockData> EVAPORATION = REGISTRY.registerMultiblock("evaporation", MultiblockCache::new, EvaporationValidator::new);
+    public static final MultiblockType<EvaporationMultiblockData> EVAPORATION = REGISTRY.registerMultiblock("evaporation", EvaporationCache::new, EvaporationValidator::new);
     public static final MultiblockType<SPSMultiblockData> SPS = REGISTRY.registerMultiblock("sps", SPSCache::new, SPSValidator::new);
 
     public static void register(IEventBus bus) {

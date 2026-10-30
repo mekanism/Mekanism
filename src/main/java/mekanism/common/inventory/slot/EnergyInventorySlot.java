@@ -17,6 +17,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
@@ -81,7 +82,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             return true;
         }
         //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
-        ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findTypeBasedRecipe(levelSupplier.get(), itemType);
+        RecipeHolder<ItemStackToEnergyRecipe> foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findTypeBasedRecipeHolder(levelSupplier.get(), itemType);
         if (foundRecipe == null) {
             //No recipe, return that we can't insert it
             return false;
@@ -130,8 +131,9 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         if (!fillContainerFromSlot(transaction)) {
             //If filling from item failed, try doing it by conversion
             ItemStack current = resource().toStack(amountAsInt());
-            ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
-            if (foundRecipe != null) {
+            RecipeHolder<ItemStackToEnergyRecipe> foundRecipeHolder = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
+            if (foundRecipeHolder != null) {
+                ItemStackToEnergyRecipe foundRecipe = foundRecipeHolder.value();
                 ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
                 if (!itemInput.isEmpty()) {
                     try (Transaction subTransaction = Transaction.open(transaction)) {

@@ -67,7 +67,6 @@ public class MekanismRecipeButton extends RecipeButton implements IRecipeViewerI
         }
     }
 
-    //TODO - 26.3: Only match if they have the same between multiple types?
     private static boolean allRecipesHaveSameResultDisplay(List<ResolvedEntry> entries) {
         if (entries.size() < 2) {
             return true;

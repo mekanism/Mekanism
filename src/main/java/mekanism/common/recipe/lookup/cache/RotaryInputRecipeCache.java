@@ -22,8 +22,8 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
 
     private final ChemicalInputCache<RotaryRecipe> chemicalInputCache = new ChemicalInputCache<>();
     private final FluidInputCache<RotaryRecipe> fluidInputCache = new FluidInputCache<>();
-    private final Set<RotaryRecipe> complexChemicalInputRecipes = new HashSet<>();
-    private final Set<RotaryRecipe> complexFluidInputRecipes = new HashSet<>();
+    private final Set<RecipeHolder<RotaryRecipe>> complexChemicalInputRecipes = new HashSet<>();
+    private final Set<RecipeHolder<RotaryRecipe>> complexFluidInputRecipes = new HashSet<>();
 
     public RotaryInputRecipeCache(MekanismRecipeType<?, ?, ?, RotaryRecipe, ?> recipeType) {
         super(recipeType);
@@ -65,21 +65,21 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
     ///
     /// @return Recipe matching the given fluid input, or `null` if no recipe matches.
     @Nullable
-    public RotaryRecipe findFirstRecipe(@Nullable Level world, FluidStack input) {
+    public RecipeHolder<RotaryRecipe> findFirstRecipe(@Nullable Level world, FluidStack input) {
         if (fluidInputCache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
         }
         initCacheIfNeeded(world);
-        RotaryRecipe recipe = findFirstRecipe(input, fluidInputCache.getRecipes(input));
+        RecipeHolder<RotaryRecipe> recipe = findFirstRecipe(input, fluidInputCache.getRecipes(input));
         return recipe == null ? findFirstRecipe(input, complexFluidInputRecipes) : recipe;
     }
 
     @Nullable
-    private RotaryRecipe findFirstRecipe(FluidStack input, Iterable<RotaryRecipe> recipes) {
-        for (RotaryRecipe recipe : recipes) {
-            if (recipe.test(input)) {
-                return recipe;
+    private RecipeHolder<RotaryRecipe> findFirstRecipe(FluidStack input, Iterable<RecipeHolder<RotaryRecipe>> recipes) {
+        for (RecipeHolder<RotaryRecipe> recipeHolder : recipes) {
+            if (recipeHolder.value().test(input)) {
+                return recipeHolder;
             }
         }
         return null;
@@ -92,21 +92,21 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
     ///
     /// @return Recipe matching the given chemical input, or `null` if no recipe matches.
     @Nullable
-    public RotaryRecipe findFirstRecipe(@Nullable Level world, ChemicalStack input) {
+    public RecipeHolder<RotaryRecipe> findFirstRecipe(@Nullable Level world, ChemicalStack input) {
         if (chemicalInputCache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
         }
         initCacheIfNeeded(world);
-        RotaryRecipe recipe = findFirstRecipe(input, chemicalInputCache.getRecipes(input));
+        RecipeHolder<RotaryRecipe> recipe = findFirstRecipe(input, chemicalInputCache.getRecipes(input));
         return recipe == null ? findFirstRecipe(input, complexChemicalInputRecipes) : recipe;
     }
 
     @Nullable
-    private RotaryRecipe findFirstRecipe(ChemicalStack input, Iterable<RotaryRecipe> recipes) {
-        for (RotaryRecipe recipe : recipes) {
-            if (recipe.test(input)) {
-                return recipe;
+    private RecipeHolder<RotaryRecipe> findFirstRecipe(ChemicalStack input, Iterable<RecipeHolder<RotaryRecipe>> recipes) {
+        for (RecipeHolder<RotaryRecipe> recipeHolder : recipes) {
+            if (recipeHolder.value().test(input)) {
+                return recipeHolder;
             }
         }
         return null;
@@ -116,11 +116,11 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
     protected void initCache(List<RecipeHolder<RotaryRecipe>> recipes) {
         for (RecipeHolder<RotaryRecipe> recipeHolder : recipes) {
             RotaryRecipe recipe = recipeHolder.value();
-            if (recipe.hasFluidToChemical() && fluidInputCache.mapInputs(recipe, recipe.getFluidInput())) {
-                complexFluidInputRecipes.add(recipe);
+            if (recipe.hasFluidToChemical() && fluidInputCache.mapInputs(recipeHolder, recipe.getFluidInput())) {
+                complexFluidInputRecipes.add(recipeHolder);
             }
-            if (recipe.hasChemicalToFluid() && chemicalInputCache.mapInputs(recipe, recipe.getChemicalInput())) {
-                complexChemicalInputRecipes.add(recipe);
+            if (recipe.hasChemicalToFluid() && chemicalInputCache.mapInputs(recipeHolder, recipe.getChemicalInput())) {
+                complexChemicalInputRecipes.add(recipeHolder);
             }
         }
     }

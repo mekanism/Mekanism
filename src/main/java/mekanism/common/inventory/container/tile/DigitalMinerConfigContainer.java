@@ -3,6 +3,7 @@ package mekanism.common.inventory.container.tile;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 
 public class DigitalMinerConfigContainer extends MekanismTileContainer<TileEntityDigitalMiner> {
 
@@ -21,7 +22,7 @@ public class DigitalMinerConfigContainer extends MekanismTileContainer<TileEntit
     }
 
     @Override
-    protected void addSlots() {
+    protected void addSlots(Player player) {
         //Don't add the tile's slots
     }
 

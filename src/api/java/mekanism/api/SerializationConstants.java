@@ -270,6 +270,8 @@ public final class SerializationConstants {
     public static final String RADIOACTIVITY = "radioactivity";
     public static final String RADIUS = "radius";
     public static final String REACTOR_DAMAGE = "reactor_damage";
+    /// @since 10.8.0
+    public static final String RECIPES_USED = "recipes_used";
     public static final String RECURRING_NODES = "recurring_nodes";
     public static final String REDSTONE = "redstone";
     public static final String REPLACE_TARGET = "replace_target";

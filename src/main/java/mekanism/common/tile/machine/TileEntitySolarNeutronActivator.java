@@ -42,6 +42,7 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
+import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
@@ -49,6 +50,7 @@ import mekanism.common.util.LightLevelUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -56,8 +58,9 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>>
-      implements IBoundingBlock, ChemicalRecipeLookupHandler<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>> {
+public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>,
+      RecipeCacheLookupMonitor<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>>> implements IBoundingBlock,
+      ChemicalRecipeLookupHandler<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_INPUT,
@@ -172,7 +175,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
 
     @Nullable
     @Override
-    public ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo> getRecipe(int cacheIndex) {
+    public RecipeHolder<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
@@ -204,7 +207,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
-              .setOnFinish(this::markForSave)
               //Edge case handling, this should almost always end up being 1
               .setRequiredTicks(() -> productionRate > 0 && productionRate < 1 ? Mth.ceil(1 / productionRate) : 1)
               .setBaselineMaxOperations(() -> productionRate > 0 && productionRate < 1 ? 1 : (int) productionRate);

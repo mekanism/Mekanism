@@ -3,6 +3,7 @@ package mekanism.common.inventory.slot;
 import mekanism.api.IContentsListener;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
+import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
 
 public class EntangloporterInventorySlot extends BasicInventorySlot {
@@ -17,7 +18,7 @@ public class EntangloporterInventorySlot extends BasicInventorySlot {
 
     @Nullable
     @Override
-    public InventoryContainerSlot createContainerSlot() {
+    public InventoryContainerSlot createContainerSlot(Player player) {
         //Make sure the slot doesn't get added to the container
         return null;
     }

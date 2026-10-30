@@ -60,6 +60,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -190,7 +191,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     @Nullable
     @Override
-    public ChemicalDissolutionRecipe getRecipe(int cacheIndex) {
+    public RecipeHolder<ChemicalDissolutionRecipe> getRecipe(int cacheIndex) {
         return findFirstRecipe(itemInputHandler, gasInputHandler);
     }
 
@@ -209,8 +210,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 

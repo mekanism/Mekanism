@@ -111,6 +111,11 @@ public final class MekanismHooks {
         }
     }
 
+    public boolean isRecipeBookDisabled() {
+        //TODO - 26.3: Figure out how to implement compat for mods that remove the recipe book like https://www.curseforge.com/minecraft/mc-mods/notenoughrecipebook
+        return false;
+    }
+
     public boolean computerCompatEnabled() {
         return computerCraft.isLoaded();
     }

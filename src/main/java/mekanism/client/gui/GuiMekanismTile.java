@@ -6,6 +6,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.window.GuiRecipeBookWindowTab;
 import mekanism.client.gui.element.tab.window.GuiUpgradeWindowTab;
 import mekanism.client.gui.recipe_book.MekanismRecipeBookComponent;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
@@ -35,7 +36,9 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     protected GuiMekanismTile(CONTAINER container, Inventory inv, Component title, int imageWidth, int imageHeight) {
         tile = container.getTileEntity();
         super(container, inv, title, imageWidth, imageHeight);
-        this.recipeBookComponent = createRecipeBookComponent();
+        if (!Mekanism.hooks.isRecipeBookDisabled()) {
+            this.recipeBookComponent = createRecipeBookComponent();
+        }
     }
 
     @Nullable

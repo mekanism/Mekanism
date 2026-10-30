@@ -68,8 +68,8 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
     }
 
     @Override
-    protected void addSlots() {
-        super.addSlots();
+    protected void addSlots(Player player) {
+        super.addSlots(player);
         if (this instanceof IEmptyContainer) {
             //Don't include the inventory slots
             return;
@@ -77,14 +77,14 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
         if (tile.supportsUpgrades()) {
             TileComponentUpgrade upgradeComponent = Objects.requireNonNull(tile.getComponent(), "Upgrade component should be present");
             //Add the virtual slot for the upgrade (add them before the main inventory to make sure they take priority in targeting)
-            addSlot(upgradeSlot = upgradeComponent.getUpgradeSlot().createContainerSlot());
-            addSlot(upgradeOutputSlot = upgradeComponent.getUpgradeOutputSlot().createContainerSlot());
+            addSlot(upgradeSlot = upgradeComponent.getUpgradeSlot().createContainerSlot(player));
+            addSlot(upgradeOutputSlot = upgradeComponent.getUpgradeOutputSlot().createContainerSlot(player));
         }
         if (tile.hasInventory()) {
             //Get all the inventory slots the tile has
             List<IInventorySlot> inventorySlots = tile.getInventorySlots();
             for (IInventorySlot inventorySlot : inventorySlots) {
-                Slot containerSlot = inventorySlot.createContainerSlot();
+                Slot containerSlot = inventorySlot.createContainerSlot(player);
                 if (containerSlot != null) {
                     addSlot(containerSlot);
                 }

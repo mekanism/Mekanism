@@ -286,7 +286,7 @@ public class TurbineMultiblockData extends MultiblockData {
     public void setDumpMode(GasMode mode) {
         if (dumpMode != mode) {
             dumpMode = mode;
-            markDirty();
+            markForSave();
         }
     }
 

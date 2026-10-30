@@ -2,6 +2,7 @@ package mekanism.api.inventory;
 
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -12,8 +13,10 @@ import org.jspecify.annotations.Nullable;
 public interface IInventorySlot extends IResourceContainer<ItemResource> {
 
     /// {@return a slot that should be automatically added to container, or null if this slot should not be added}
+    ///
+    /// @param player Player the container is being made for.
     @Nullable
-    default Slot createContainerSlot() {
+    default Slot createContainerSlot(Player player) {
         return null;
     }
 

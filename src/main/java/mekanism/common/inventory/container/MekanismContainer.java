@@ -126,7 +126,7 @@ public abstract class MekanismContainer extends RecipeBookMenu implements ISecur
         super.addSlot(slot);
         if (slot instanceof IHasExtraData hasExtraData) {
             //If the slot has any extra data, allow it to add any trackers it may have
-            hasExtraData.addTrackers(inv.player, this::track);
+            hasExtraData.addTrackers(this::track);
         }
         if (slot instanceof InventoryContainerSlot inventorySlot) {
             inventoryContainerSlots.add(inventorySlot);
@@ -147,7 +147,7 @@ public abstract class MekanismContainer extends RecipeBookMenu implements ISecur
 
     /// Adds slots and opens, must be called at end of extending classes constructors
     protected void addSlotsAndOpen() {
-        addSlots();
+        addSlots(inv.player);
         addInventorySlots(inv);
         openInventory(inv);
     }
@@ -244,7 +244,7 @@ public abstract class MekanismContainer extends RecipeBookMenu implements ISecur
         return new HotBarSlot(inv, index, x, y);
     }
 
-    protected void addSlots() {
+    protected void addSlots(Player player) {
     }
 
     public List<InventoryContainerSlot> getInventoryContainerSlots() {

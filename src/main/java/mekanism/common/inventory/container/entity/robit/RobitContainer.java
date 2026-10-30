@@ -16,11 +16,11 @@ public class RobitContainer extends MekanismEntityContainer<EntityRobit> {
     }
 
     @Override
-    protected void addSlots() {
-        super.addSlots();
+    protected void addSlots(Player player) {
+        super.addSlots(player);
         //Get all the inventory slots the entity has/exposes for this container type
         for (IInventorySlot inventorySlot : entity.getContainerInventorySlots(getType())) {
-            Slot containerSlot = inventorySlot.createContainerSlot();
+            Slot containerSlot = inventorySlot.createContainerSlot(player);
             if (containerSlot != null) {
                 addSlot(containerSlot);
             }

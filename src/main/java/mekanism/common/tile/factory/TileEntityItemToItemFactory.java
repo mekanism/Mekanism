@@ -53,7 +53,8 @@ public abstract class TileEntityItemToItemFactory<BOOK_CATEGORY extends Mekanism
                 updateSortingListener.onContentsChanged();
                 lookupMonitor.unpause();
             };
-            OutputInventorySlot outputSlot = OutputInventorySlot.at(updateSortingAndUnpause, xPos, 57);
+            OutputInventorySlot outputSlot = OutputInventorySlot.at(updateSortingAndUnpause, xPos, 57)
+                  .setOnTakeCheck(lookupMonitor::awardUsedRecipesAndPopExperience);
             //Note: As we are an item factory that has comparator's based on items we can just use the monitor as a listener directly
             FactoryInputInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, recipeCacheLookupMonitors[i], xPos, 13);
             int index = i;

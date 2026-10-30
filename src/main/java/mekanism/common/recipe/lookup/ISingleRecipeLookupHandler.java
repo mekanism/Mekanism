@@ -13,13 +13,14 @@ import mekanism.common.recipe.lookup.cache.SingleInputRecipeCache;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
 /// Helper expansion of [IRecipeLookupHandler] for easily implementing contains and find recipe lookups for recipes that take a single input using the input cache.
 public interface ISingleRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TYPE>, RECIPE extends MekanismRecipe<?, ?, ?> & Predicate<INPUT>,
-      INPUT_CACHE extends SingleInputRecipeCache<TYPE, INPUT, ?, ? extends RECIPE, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
+      INPUT_CACHE extends SingleInputRecipeCache<TYPE, INPUT, ?, RECIPE, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /// Checks if there is a matching recipe of type [#getRecipeType()] that has the given input.
     ///
@@ -36,7 +37,7 @@ public interface ISingleRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TY
     ///
     /// @return Recipe matching the given input, or `null` if no recipe matches.
     @Nullable
-    default RECIPE findFirstRecipe(INPUT input) {
+    default RecipeHolder<RECIPE> findFirstRecipe(INPUT input) {
         return getRecipeType().getInputCache().findFirstRecipe(getLevel(), input);
     }
 
@@ -46,7 +47,7 @@ public interface ISingleRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TY
     ///
     /// @return Recipe matching the given input, or `null` if no recipe matches.
     @Nullable
-    default RECIPE findFirstRecipe(IInputHandler<TYPE, INPUT> inputHandler) {
+    default RecipeHolder<RECIPE> findFirstRecipe(IInputHandler<TYPE, INPUT> inputHandler) {
         return findFirstRecipe(inputHandler.getInput());
     }
 

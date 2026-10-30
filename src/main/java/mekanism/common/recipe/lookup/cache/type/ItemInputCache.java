@@ -10,6 +10,7 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -18,36 +19,36 @@ import org.jspecify.annotations.Nullable;
 public class ItemInputCache<RECIPE extends MekanismRecipe<?, ?, ?>> extends ComponentSensitiveInputCache<Item, ItemStack, ItemStackIngredient, RECIPE> {
 
     @Override
-    public boolean mapInputs(RECIPE recipe, ItemStackIngredient inputIngredient) {
-        return mapIngredient(recipe, inputIngredient.ingredient().ingredient());
+    public boolean mapInputs(RecipeHolder<RECIPE> recipeHolder, ItemStackIngredient inputIngredient) {
+        return mapIngredient(recipeHolder, inputIngredient.ingredient().ingredient());
     }
 
-    private boolean mapIngredient(RECIPE recipe, Ingredient input) {
+    private boolean mapIngredient(RecipeHolder<RECIPE> recipeHolder, Ingredient input) {
         if (!input.isCustom()) {
             //Vanilla ingredients don't actually check anything related to NBT,
             // so we can add the items to our base/raw input cache directly
             for (Holder<Item> item : input.getValues()) {
-                addInputCache(item, recipe);
+                addInputCache(item, recipeHolder);
             }
         } else if (input.isSimple()) {
             //Simple ingredients don't actually check anything related to NBT,
             // so we can add the items to our base/raw input cache directly
             for (Holder<Item> item : Objects.requireNonNull(input.getCustomIngredient()).items().toList()) {
-                addInputCache(item, recipe);
+                addInputCache(item, recipeHolder);
             }
         } else if (input.getCustomIngredient() instanceof CompoundIngredient(List<Ingredient> children)) {
             //Special handling for neo's compound ingredient to map all children as best as we can
             // as maybe some of them are simple
             boolean result = false;
             for (Ingredient child : children) {
-                result |= mapIngredient(recipe, child);
+                result |= mapIngredient(recipeHolder, child);
             }
             return result;
         } else if (input.getCustomIngredient() instanceof DataComponentIngredient componentIngredient && componentIngredient.componentsExhaustive()) {
             //Special handling for neo's NBT Ingredient as it requires an exact component match
             DataComponentPatch components = componentIngredient.components();
             for (Holder<Item> holder : componentIngredient.itemSet()) {
-                addComponentInputCache(holder, components, recipe);
+                addComponentInputCache(holder, components, recipeHolder);
             }
         } else {
             //Else it is a custom ingredient, so we don't have a great way of handling it using the normal extraction checks

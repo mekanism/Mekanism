@@ -2,6 +2,7 @@ package mekanism.client.gui.robit;
 
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.recipe_book.VirtualCraftingRecipeBookComponent;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -13,7 +14,9 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
         super(container, inv, title);
         inventoryLabelY += 1;
         dynamicSlots = true;
-        this.recipeBookComponent = new VirtualCraftingRecipeBookComponent(menu, this::font);
+        if (!Mekanism.hooks.isRecipeBookDisabled()) {
+            this.recipeBookComponent = new VirtualCraftingRecipeBookComponent(menu, this::font);
+        }
     }
 
     @Override

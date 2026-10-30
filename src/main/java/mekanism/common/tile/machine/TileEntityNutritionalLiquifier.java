@@ -21,6 +21,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
@@ -47,18 +48,23 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.ValueUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.UseRemainder;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -145,6 +151,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         builder.addContainer(inputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheListener, 26, 36))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(listener, 110, 36))
+              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience)
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR)));
         builder.addContainer(containerFillSlot = FluidInventorySlot.drain(fluidTank, listener, 155, 25));
         builder.addContainer(containerOutputSlot = OutputInventorySlot.at(listener, 155, 56));
@@ -202,20 +209,20 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     @Nullable
     @Override
-    public ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo> findFirstRecipe(ItemStack input) {
+    public RecipeHolder<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>> findFirstRecipe(ItemStack input) {
         //Explicit recipes take precedent over dynamic ones
-        ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo> recipe = ItemRecipeLookupHandler.super.findFirstRecipe(input);
+        RecipeHolder<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>> recipe = ItemRecipeLookupHandler.super.findFirstRecipe(input);
         return recipe == null ? createDynamicRecipe(input) : recipe;
     }
 
     @Nullable
     @Override
-    public ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo> getRecipe(int cacheIndex) {
+    public RecipeHolder<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
     @Nullable
-    public static ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo> createDynamicRecipe(ItemStack stack) {
+    public static RecipeHolder<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>> createDynamicRecipe(ItemStack stack) {
         //TODO: try to move this to something akin to vanilla's CustomRecipe, we already have a lot of the logic in place to do so, but that would allow
         // pack makers to remove the builtin recipes
         if (stack.isEmpty()) {
@@ -227,14 +234,15 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
             return null;
         }
         UseRemainder remainder = stack.get(DataComponents.USE_REMAINDER);
-        return new BasicLiquificationRecipe(
+        Identifier syntheticId = RegistryUtils.synthetic(stack.typeHolder().key().identifier(), "liquification", Mekanism.MODID);
+        return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, syntheticId), new BasicLiquificationRecipe(
               NO_DISPLAY, new LiquificationBookInfo(LiquificationBookCategory.MISC, "dynamic"),
               IngredientCreatorAccess.item().from(stack, 1),
               new FluidOptionalItemOutput(
                     MekanismFluids.NUTRITIONAL_PASTE.asTemplate(food.nutrition() * 50),
                     remainder == null ? null : remainder.convertInto()
               )
-        );
+        ));
     }
 
     @Override
@@ -246,8 +254,6 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(this::setOperatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 

@@ -46,6 +46,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -144,7 +145,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
 
     @Nullable
     @Override
-    public ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo> getRecipe(int cacheIndex) {
+    public RecipeHolder<ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo>> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
@@ -155,9 +156,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(this::setOperatingTicks);
+              .setRequiredTicks(this::getTicksRequired);
     }
 
     @Override

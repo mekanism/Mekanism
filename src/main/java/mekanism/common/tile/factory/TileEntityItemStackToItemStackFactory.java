@@ -18,6 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -67,7 +68,7 @@ public class TileEntityItemStackToItemStackFactory<BOOK_CATEGORY extends Mekanis
 
     @Nullable
     @Override
-    protected ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> findRecipe(ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    protected RecipeHolder<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> findRecipe(ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.resource(), CAN_OUTPUT_STACK);
     }
 
@@ -90,7 +91,7 @@ public class TileEntityItemStackToItemStackFactory<BOOK_CATEGORY extends Mekanis
 
     @Nullable
     @Override
-    public ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> getRecipe(int cacheIndex) {
+    public RecipeHolder<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandlers[cacheIndex]);
     }
 
@@ -102,13 +103,11 @@ public class TileEntityItemStackToItemStackFactory<BOOK_CATEGORY extends Mekanis
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks)
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 
     @Override
     public MachineUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new MachineUpgradeData(provider, redstone, getControlType(), energyContainer, progress, energySlot, inputSlots, outputSlots, isSorting(), getComponents(), problemPath());
+        return new MachineUpgradeData(provider, redstone, getControlType(), energyContainer, energySlot, recipeCacheLookupMonitors, inputSlots, outputSlots, isSorting(), getComponents(), problemPath());
     }
 }
