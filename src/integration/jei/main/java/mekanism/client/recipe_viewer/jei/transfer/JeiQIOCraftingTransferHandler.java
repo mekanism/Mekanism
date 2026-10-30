@@ -18,6 +18,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferContext;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import mezz.jei.api.recipe.transfer.RecipeTransferResult;
 import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -68,7 +69,8 @@ public class JeiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     @Nullable
     @Override
     public IRecipeTransferError transferRecipe(IRecipeTransferContext<RecipeHolder<CraftingRecipe>, CONTAINER> context, boolean doTransfer) {
-        return QIOCraftingTransferHandler.transferRecipe(new JeiRecipeInfo(context, handlerHelper, stackHelper), doTransfer);
+        return QIOCraftingTransferHandler.transferRecipe(new JeiRecipeInfo(context, handlerHelper, stackHelper), doTransfer, context.getTransferId(),
+              successful -> context.completeRecipeTransfer(successful ? RecipeTransferResult.SUCCESS : RecipeTransferResult.REJECTED));
     }
 
     private record JeiRecipeInfo(

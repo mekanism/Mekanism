@@ -13,6 +13,7 @@ import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularItemTypeSou
 import mekanism.common.content.qio.QIOServerCraftingTransferHandler;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.to_client.qio.PacketQIOCraftingTransferResult;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
@@ -29,11 +30,16 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 //Note: While our logic is not dependent on knowing about transferMultiple, we make use of it for encoding and decoding
 // as when it is false we can reduce how many bytes the packet is by a good amount by making assumptions about the sizes of things
 public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boolean transferMultiple, boolean rejectToInventory,
-                                          Byte2ObjectMap<List<SingularItemTypeSource>> sources) implements IMekanismPacket {
+                                          Byte2ObjectMap<List<SingularItemTypeSource>> sources, int transferId) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketQIOFillCraftingWindow> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("fill_qio"));
     private static final StreamCodec<ByteBuf, ResourceKey<Recipe<?>>> RECIPE_ID_CODEC = ResourceKey.streamCodec(Registries.RECIPE);
     public static final StreamCodec<ByteBuf, PacketQIOFillCraftingWindow> STREAM_CODEC = StreamCodec.ofMember(PacketQIOFillCraftingWindow::write, PacketQIOFillCraftingWindow::decode);
+
+    public PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boolean transferMultiple, boolean rejectToInventory,
+          Byte2ObjectMap<List<SingularItemTypeSource>> sources) {
+        this(recipeID, transferMultiple, rejectToInventory, sources, -1);
+    }
 
     @Override
     public CustomPacketPayload.Type<PacketQIOFillCraftingWindow> type() {
@@ -42,7 +48,17 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
 
     @Override
     public void handle(IPayloadContext context) {
-        Player player = context.player();
+        boolean successful = false;
+        try {
+            successful = tryTransfer(context.player());
+        } finally {
+            if (transferId != -1 && context.listener().hasChannel(PacketQIOCraftingTransferResult.TYPE)) {
+                context.reply(new PacketQIOCraftingTransferResult(transferId, successful));
+            }
+        }
+    }
+
+    private boolean tryTransfer(Player player) {
         if (player.containerMenu instanceof QIOItemViewerContainer container) {
             byte selectedCraftingGrid = container.getSelectedCraftingGrid(player.getUUID());
             if (selectedCraftingGrid == -1) {
@@ -52,7 +68,7 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
                 if (recipeHolder != null) {
                     Recipe<?> recipe = recipeHolder.value();
                     if (recipe instanceof CraftingRecipe craftingRecipe) {
-                        QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, rejectToInventory, player, recipeID.identifier(), craftingRecipe, sources);
+                        return QIOServerCraftingTransferHandler.tryTransferWithResult(container, selectedCraftingGrid, rejectToInventory, player, recipeID.identifier(), craftingRecipe, sources);
                     } else {
                         Mekanism.logger.warn("Received transfer request from: {}, but the type ({}) of the specified recipe was not a crafting recipe.",
                               player, recipe.getClass());
@@ -62,6 +78,7 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
                 }
             }
         }
+        return false;
     }
 
     private void write(ByteBuf buffer) {
@@ -103,6 +120,10 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
                 }
             }
         }
+        // Preserve the original packet layout when the peer does not support transfer results.
+        if (transferId != -1) {
+            ByteBufCodecs.VAR_INT.encode(buffer, transferId);
+        }
     }
 
     private static PacketQIOFillCraftingWindow decode(ByteBuf buffer) {
@@ -126,6 +147,7 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
                 }
             }
         }
-        return new PacketQIOFillCraftingWindow(recipeID, transferMultiple, rejectToInventory, sources);
+        int transferId = buffer.isReadable() ? ByteBufCodecs.VAR_INT.decode(buffer) : -1;
+        return new PacketQIOFillCraftingWindow(recipeID, transferMultiple, rejectToInventory, sources, transferId);
     }
 }

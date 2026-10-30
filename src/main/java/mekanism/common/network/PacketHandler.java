@@ -14,6 +14,7 @@ import mekanism.common.network.to_client.configuration.SyncAllSecurityData;
 import mekanism.common.network.to_client.container.PacketUpdateContainer;
 import mekanism.common.network.to_client.player_data.PacketPlayerData;
 import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
+import mekanism.common.network.to_client.qio.PacketQIOCraftingTransferResult;
 import mekanism.common.network.to_client.qio.PacketUpdateItemViewer;
 import mekanism.common.network.to_client.radiation.PacketEnvironmentalRadiationData;
 import mekanism.common.network.to_client.security.PacketBatchSecurityUpdate;
@@ -167,6 +168,7 @@ public class PacketHandler extends BasePacketHandler {
         registrar.play(PacketSetDeltaMovement.TYPE, PacketSetDeltaMovement.STREAM_CODEC);
 
         //QIO
+        registrar.optional().play(PacketQIOCraftingTransferResult.TYPE, PacketQIOCraftingTransferResult.STREAM_CODEC);
         registrar.play(PacketUpdateItemViewer.TYPE, PacketUpdateItemViewer.STREAM_CODEC);
         killItemViewer = registrar.playInstanced(Mekanism.rl("kill_qio"), (_, context) -> {
             if (context.player().containerMenu instanceof QIOItemViewerContainer container) {

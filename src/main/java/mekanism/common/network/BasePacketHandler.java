@@ -34,6 +34,10 @@ public abstract class BasePacketHandler {
 
     protected record PacketRegistrar(PayloadRegistrar registrar, boolean toServer) {
 
+        public PacketRegistrar optional() {
+            return new PacketRegistrar(registrar.optional(), toServer);
+        }
+
         public <MSG extends IMekanismPacket> void configuration(CustomPacketPayload.Type<MSG> type, StreamCodec<? super FriendlyByteBuf, MSG> reader) {
             if (toServer) {
                 registrar.configurationToServer(type, reader, IMekanismPacket::handle);
