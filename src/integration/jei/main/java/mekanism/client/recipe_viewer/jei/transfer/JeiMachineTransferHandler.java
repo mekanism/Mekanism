@@ -50,8 +50,8 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
     protected enum TransferResult {
         SUCCESS,
         SUCCESS_NO_ACTION,
-        MISSING_SLOTS,
-        NOT_ENOUGH_ROOM,
+        MISSING_ITEMS,
+        INVENTORY_FULL,
         INTERNAL_ERROR
     }
 
@@ -110,13 +110,6 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
             JeiPlacementHelper helper = new JeiPlacementHelper(context.getPlayer(), context.isMaxTransfer(), inputSlots.size(), context.getRecipe().id());
             TransferResult result = transferRecipe(recipeContainers, context.getRecipe().value(), helper, ignored, AutomationType.MANUAL);
             return switch (result) {
-                case SUCCESS_NO_ACTION -> {
-                    if (doTransfer) {
-                        // The inputs already match, so no transfer packet or server completion is needed.
-                        context.completeRecipeTransfer(RecipeTransferResult.SUCCESS);
-                    }
-                    yield null;
-                }
                 case SUCCESS -> {
                     if (doTransfer) {
                         helper.sendTransferPacket(context.getTransferId(),
@@ -124,7 +117,14 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
                     }
                     yield null;
                 }
-                case MISSING_SLOTS -> {
+                case SUCCESS_NO_ACTION -> {
+                    if (doTransfer) {
+                        // The inputs already match, so no transfer packet or server completion is needed.
+                        context.completeRecipeTransfer(RecipeTransferResult.SUCCESS);
+                    }
+                    yield null;
+                }
+                case MISSING_ITEMS -> {
                     if (doTransfer) {
                         context.completeRecipeTransfer(RecipeTransferResult.REJECTED);
                     }
@@ -134,7 +134,7 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
                     }
                     yield transferHelper.createUserErrorForMissingSlots(MekanismLang.JEI_MISSING_ITEMS.translate(), helper.missingSlots.intStream().mapToObj(inputSlots::get).toList());
                 }
-                case NOT_ENOUGH_ROOM -> {
+                case INVENTORY_FULL -> {
                     if (doTransfer) {
                         context.completeRecipeTransfer(RecipeTransferResult.REJECTED);
                     }
@@ -179,7 +179,7 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
         @Override
         public TransferResult error() {
             if (!missingSlots.isEmpty()) {
-                return TransferResult.MISSING_SLOTS;
+                return TransferResult.MISSING_ITEMS;
             }
             return TransferResult.INTERNAL_ERROR;
         }
@@ -197,12 +197,12 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
                 }
                 missingSlots.add(slot);
             }
-            return TransferResult.MISSING_SLOTS;
+            return TransferResult.MISSING_ITEMS;
         }
 
         @Override
         public TransferResult notEnoughRoom() {
-            return TransferResult.NOT_ENOUGH_ROOM;
+            return TransferResult.INVENTORY_FULL;
         }
 
         @Override
