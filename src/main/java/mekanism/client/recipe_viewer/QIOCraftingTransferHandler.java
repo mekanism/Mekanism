@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer;
 
 import com.google.common.primitives.Ints;
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMaps;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Consumer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -94,7 +94,7 @@ public class QIOCraftingTransferHandler {
     /// The completion callback runs on the client thread after the server finishes an executed transfer.
     @Nullable
     public static <RESULT, SLOT extends RVRecipeSlot, ITEM_UUID> RESULT transferRecipe(RVRecipeInfo<RESULT, SLOT, ITEM_UUID> recipeHelper, boolean execute,
-          int transferId, @Nullable Consumer<Boolean> completion) {
+          int transferId, @Nullable BooleanConsumer completion) {
         if (recipeHelper.transferAmount() < 1) {
             //Short circuit if for some reason our caller is trying to transfer an invalid amount of items
             return recipeHelper.createInternalError();
@@ -359,8 +359,8 @@ public class QIOCraftingTransferHandler {
                 if (requestResult) {
                     RVTransferUtils.registerTransfer(transferId, completion);
                 }
-                PacketUtils.sendToServer(new PacketQIOFillCraftingWindow(recipeHelper.id(), toTransfer > 1,
-                      MekanismConfig.client.qioRejectsToInventory.get(), sources, requestResult ? transferId : -1));
+                PacketUtils.sendToServer(new PacketQIOFillCraftingWindow(recipeHelper.id(), toTransfer > 1, MekanismConfig.client.qioRejectsToInventory.get(),
+                      sources, requestResult ? transferId : -1));
             }
         }
         return null;

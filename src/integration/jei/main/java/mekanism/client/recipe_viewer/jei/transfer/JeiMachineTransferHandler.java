@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer.jei.transfer;
 
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -8,7 +9,6 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntLists;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import mekanism.api.AutomationType;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.client.recipe_viewer.RVTransferUtils;
@@ -89,29 +89,7 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
     @Deprecated(since = "JEI 30.30.0", forRemoval = true)
     public final IRecipeTransferError transferRecipe(CONTAINER container, RecipeHolder<RECIPE> recipeHolder, IRecipeSlotsView recipeSlots, Player player,
           boolean maxTransfer, boolean doTransfer) {
-        RecipeContainers recipeContainers = container.getRecipeContainers();
-        if (recipeContainers == null) {
-            Mekanism.logger.error("Unable to find recipe input for container of type: {}", BuiltInRegistries.MENU.getKey(menuType));
-            return transferHelper.createInternalError();
-        }
-        try (Transaction ignored = TransactionHelper.openTransactionSafe()) {
-            List<IRecipeSlotView> inputSlots = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
-            JeiPlacementHelper helper = new JeiPlacementHelper(player, maxTransfer, inputSlots.size(), recipeHolder.id());
-            IRecipeTransferError error = transferRecipe(recipeContainers, recipeHolder.value(), helper, ignored, AutomationType.MANUAL);
-            if (error == SUCCESS) {
-                if (doTransfer) {
-                    helper.sendTransferPacket(-1, null);
-                }
-                return null;
-            } else if (error == MISSING_SLOTS) {
-                if (helper.missingSlots.isEmpty()) {
-                    Mekanism.logger.error("Recipe transfer for {} returned that there were missing inputs, but somehow didn't specify which inputs.", recipeHolder.id().identifier());
-                    return transferHelper.createInternalError();
-                }
-                return transferHelper.createUserErrorForMissingSlots(MekanismLang.JEI_MISSING_ITEMS.translate(), helper.missingSlots.intStream().mapToObj(inputSlots::get).toList());
-            }
-            return error;
-        }
+        throw new UnsupportedOperationException("Use transferRecipe(IRecipeTransferContext, boolean) instead");
     }
 
     @Nullable
@@ -149,6 +127,7 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
                 return transferHelper.createUserErrorForMissingSlots(MekanismLang.JEI_MISSING_ITEMS.translate(), helper.missingSlots.intStream().mapToObj(inputSlots::get).toList());
             }
             if (error == null && doTransfer) {
+                // The inputs already match, so no transfer packet or server completion is needed.
                 context.completeRecipeTransfer(RecipeTransferResult.SUCCESS);
             }
             return error;
@@ -225,13 +204,13 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
             itemsTransferred.put(slotUsedFor, new ResourceStack<>(resource, amount));
         }
 
-        public void sendTransferPacket(int transferId, @Nullable Consumer<Boolean> completion) {
+        public void sendTransferPacket(int transferId, BooleanConsumer completion) {
             if (!itemsTransferred.isEmpty()) {
-                if (transferId != -1 && completion != null) {
-                    RVTransferUtils.registerTransfer(transferId, completion);
-                }
+                RVTransferUtils.registerTransfer(transferId, completion);
                 PacketUtils.sendToServer(new PacketTransferMekanismRecipe(itemsTransferred, transferId));
-            } else if (completion != null) {
+            } else {
+                // In theory sendTransferPacket should never get called if there is nothing being transferred.
+                // Just in case this happens, mark the completion as successful as there was nothing that needed to be done.
                 completion.accept(true);
             }
         }

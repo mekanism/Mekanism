@@ -35,10 +35,6 @@ public record PacketTransferMekanismRecipe(Int2ObjectMap<ResourceStack<ItemResou
           PacketTransferMekanismRecipe::new
     );
 
-    public PacketTransferMekanismRecipe(Int2ObjectMap<ResourceStack<ItemResource>> resultState) {
-        this(resultState, -1);
-    }
-
     @Override
     public Type<PacketTransferMekanismRecipe> type() {
         return TYPE;
@@ -50,9 +46,7 @@ public record PacketTransferMekanismRecipe(Int2ObjectMap<ResourceStack<ItemResou
         try {
             successful = tryTransfer(context.player());
         } finally {
-            if (transferId != -1) {
-                context.reply(new PacketRecipeTransferResult(transferId, successful));
-            }
+            context.reply(new PacketRecipeTransferResult(transferId, successful));
         }
     }
 
@@ -63,12 +57,11 @@ public record PacketTransferMekanismRecipe(Int2ObjectMap<ResourceStack<ItemResou
                 Mekanism.logger.warn("Received transfer request from: {}, but the container did not have any recipe containers.", player);
             } else {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    if (!PlaceMekanismRecipe.tryTransfer(new PacketRecipePlacementHelper(player), recipeContainers.inputs(), resultState, transaction)) {
-                        return false;
+                    if (PlaceMekanismRecipe.tryTransfer(new PacketRecipePlacementHelper(player), recipeContainers.inputs(), resultState, transaction)) {
+                        transaction.commit();
+                        return true;
                     }
-                    transaction.commit();
                 }
-                return true;
             }
         }
         return false;

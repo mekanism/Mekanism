@@ -68,7 +68,7 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
                 if (recipeHolder != null) {
                     Recipe<?> recipe = recipeHolder.value();
                     if (recipe instanceof CraftingRecipe craftingRecipe) {
-                        return QIOServerCraftingTransferHandler.tryTransferWithResult(container, selectedCraftingGrid, rejectToInventory, player, recipeID.identifier(), craftingRecipe, sources);
+                        return QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, rejectToInventory, player, recipeID.identifier(), craftingRecipe, sources);
                     } else {
                         Mekanism.logger.warn("Received transfer request from: {}, but the type ({}) of the specified recipe was not a crafting recipe.",
                               player, recipe.getClass());
@@ -120,7 +120,7 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
                 }
             }
         }
-        ByteBufCodecs.VAR_INT.encode(buffer, transferId);
+        ByteBufCodecs.INT.encode(buffer, transferId);
     }
 
     private static PacketQIOFillCraftingWindow decode(ByteBuf buffer) {
@@ -144,7 +144,7 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
                 }
             }
         }
-        int transferId = ByteBufCodecs.VAR_INT.decode(buffer);
+        int transferId = ByteBufCodecs.INT.decode(buffer);
         return new PacketQIOFillCraftingWindow(recipeID, transferMultiple, rejectToInventory, sources, transferId);
     }
 }

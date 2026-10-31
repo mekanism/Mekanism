@@ -62,8 +62,7 @@ public class JeiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     @Deprecated(since = "JEI 30.30.0", forRemoval = true)
     public IRecipeTransferError transferRecipe(CONTAINER container, RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player,
           boolean maxTransfer, boolean doTransfer) {
-        return QIOCraftingTransferHandler.transferRecipe(new JeiRecipeInfo(container, recipeHolder, recipeSlots, player, maxTransfer ? Integer.MAX_VALUE : 1, handlerHelper, stackHelper),
-              doTransfer);
+        throw new UnsupportedOperationException("Use transferRecipe(IRecipeTransferContext, boolean) instead");
     }
 
     @Nullable
