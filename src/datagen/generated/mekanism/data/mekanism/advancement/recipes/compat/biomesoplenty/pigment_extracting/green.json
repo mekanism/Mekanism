@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/biomesoplenty/pigment_extracting/green"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tiny_cactus": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:tiny_cactus"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tiny_cactus"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/biomesoplenty/pigment_extracting/green"
+    ]
+  }
+}

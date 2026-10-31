@@ -6,6 +6,8 @@
     }
   ],
   "type": "mekanism:enriching",
+  "category": "decorative",
+  "group": "brown_dye",
   "input": {
     "count": 1,
     "ingredient": "biomesoplenty:cattail"

@@ -6,6 +6,8 @@
     }
   ],
   "type": "mekanism:enriching",
+  "category": "decorative",
+  "group": "green_dye",
   "input": {
     "count": 1,
     "ingredient": "biomesoplenty:tiny_cactus"

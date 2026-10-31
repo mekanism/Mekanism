@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/biomesoplenty/sawing/hanging_sign/umbran"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_umbran_hanging_sign": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:umbran_hanging_sign"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_umbran_hanging_sign"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/biomesoplenty/sawing/hanging_sign/umbran"
+    ]
+  }
+}

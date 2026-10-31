@@ -6,6 +6,8 @@
     }
   ],
   "type": "mekanism:sawing",
+  "category": "wood_type",
+  "group": "mekanism:hanging_sign",
   "input": {
     "count": 1,
     "ingredient": "biomesoplenty:willow_hanging_sign"

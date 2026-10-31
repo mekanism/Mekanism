@@ -6,6 +6,8 @@
     }
   ],
   "type": "mekanism:sawing",
+  "category": "wood_type",
+  "group": "mekanism:door",
   "input": {
     "count": 1,
     "ingredient": "biomesoplenty:dead_door"

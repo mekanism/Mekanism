@@ -6,6 +6,8 @@
     }
   ],
   "type": "mekanism:sawing",
+  "category": "wood_type",
+  "group": "mekanism:boat",
   "input": {
     "count": 1,
     "ingredient": "biomesoplenty:mahogany_boat"

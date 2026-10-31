@@ -6,6 +6,8 @@
     }
   ],
   "type": "mekanism:enriching",
+  "category": "decorative",
+  "group": "magenta_dye",
   "input": {
     "count": 1,
     "ingredient": "biomesoplenty:purple_wildflowers"

@@ -6,6 +6,8 @@
     }
   ],
   "type": "mekanism:sawing",
+  "category": "wood_type",
+  "group": "mekanism:fence_gate",
   "input": {
     "count": 1,
     "ingredient": "biomesoplenty:redwood_fence_gate"

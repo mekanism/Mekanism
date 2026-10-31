@@ -6,6 +6,8 @@
     }
   ],
   "type": "mekanism:sawing",
+  "category": "wood_type",
+  "group": "mekanism:chest_boat",
   "input": {
     "count": 1,
     "ingredient": "biomesoplenty:maple_chest_boat"

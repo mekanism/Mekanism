@@ -6,6 +6,7 @@
     }
   ],
   "type": "mekanism:pigment_extracting",
+  "group": "gray_dye",
   "input": {
     "count": 1,
     "ingredient": "biomesoplenty:wilted_lily"

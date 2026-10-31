@@ -6,6 +6,8 @@
     }
   ],
   "type": "mekanism:sawing",
+  "category": "wood_type",
+  "group": "mekanism:log",
   "input": {
     "count": 1,
     "ingredient": "#biomesoplenty:hellbark_logs"

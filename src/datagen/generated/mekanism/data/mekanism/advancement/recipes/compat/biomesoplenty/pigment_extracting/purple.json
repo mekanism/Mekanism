@@ -1,0 +1,49 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lavender": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:lavender"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/biomesoplenty/pigment_extracting/purple"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_violet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:violet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_violet",
+      "has_lavender"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/biomesoplenty/pigment_extracting/purple"
+    ]
+  }
+}
