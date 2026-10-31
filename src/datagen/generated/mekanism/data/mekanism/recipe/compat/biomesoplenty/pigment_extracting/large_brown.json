@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
   "type": "mekanism:pigment_extracting",
   "group": "brown_dye",
   "input": {

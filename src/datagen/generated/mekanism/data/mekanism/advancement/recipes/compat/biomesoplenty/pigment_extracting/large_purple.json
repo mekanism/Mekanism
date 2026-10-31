@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_tall_lavender": {

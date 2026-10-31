@@ -7,7 +7,6 @@ import java.util.Optional;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalStackTemplate;
-import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
@@ -43,7 +42,6 @@ import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jspecify.annotations.Nullable;
 
@@ -102,13 +100,13 @@ public class RecipeProviderUtil {
               hangingSign == null ? null : items.getOrThrow(hangingSign.item()),
               items.getOrThrow(strippedLog.item()),
               items.getOrThrow(shelf.item()),
-              woodType.name(), null);
+              woodType.name());
     }
 
     @SuppressWarnings("deprecation")
     public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> items, String basePath, Item planks, @Nullable Item boat,
           @Nullable Item chestBoat, Item door, Item fenceGate, @Nullable TagKey<Item> log, Item pressurePlate, Item trapdoor,
-          @Nullable Item hangingSign, Item strippedLog, Item shelf, String name, @Nullable ICondition condition) {
+          @Nullable Item hangingSign, Item strippedLog, Item shelf, String name) {
         addPrecisionSawmillWoodTypeRecipes(consumer, items, basePath,
               planks.builtInRegistryHolder(),
               boat == null ? null : boat.builtInRegistryHolder(),
@@ -121,104 +119,112 @@ public class RecipeProviderUtil {
               hangingSign == null ? null : hangingSign.builtInRegistryHolder(),
               strippedLog.builtInRegistryHolder(),
               shelf.builtInRegistryHolder(),
-              name, condition);
+              name);
     }
 
     public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> items, String basePath, Holder<Item> planks,
           @Nullable Holder<Item> boat, @Nullable Holder<Item> chestBoat, Holder<Item> door, Holder<Item> fenceGate, @Nullable TagKey<Item> log,
           Holder<Item> pressurePlate, Holder<Item> trapdoor, @Nullable Holder<Item> hangingSign, Holder<Item> strippedLog, Holder<Item> shelf,
-          String name, @Nullable ICondition condition) {
+          String name) {
         if (boat != null) {
             //Boat
-            save(consumer, SawmillRecipeBuilder.sawing(
-                  IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(boat)),
-                  new ItemStackTemplate(planks, 5)
-            ).category(SawingBookCategory.WOOD_TYPE)
+            SawmillRecipeBuilder.sawing(
+                        IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(boat)),
+                        new ItemStackTemplate(planks, 5)
+                  ).category(SawingBookCategory.WOOD_TYPE)
                   .group(Mekanism.rl("boat"))
-                  .unlockedBy(hasCriterion(items, boat)), basePath + "boat/" + name, condition);
+                  .unlockedBy(hasCriterion(items, boat))
+                  .save(consumer, basePath + "boat/" + name);
             if (chestBoat != null) {
                 //Chest Boat
-                save(consumer, SawmillRecipeBuilder.sawing(
-                      IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(chestBoat)),
-                      new ItemStackTemplate(boat),
-                      template(items, BlockItemIds.CHEST),
-                      1
-                ).category(SawingBookCategory.WOOD_TYPE)
+                SawmillRecipeBuilder.sawing(
+                            IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(chestBoat)),
+                            new ItemStackTemplate(boat),
+                            template(items, BlockItemIds.CHEST),
+                            1
+                      ).category(SawingBookCategory.WOOD_TYPE)
                       .group(Mekanism.rl("chest_boat"))
-                      .unlockedBy(hasCriterion(items, chestBoat)), basePath + "chest_boat/" + name, condition);
+                      .unlockedBy(hasCriterion(items, chestBoat))
+                      .save(consumer, basePath + "chest_boat/" + name);
             }
         }
         //Door
-        save(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(door)),
-              new ItemStackTemplate(planks, 2)
-        ).category(SawingBookCategory.WOOD_TYPE)
+        SawmillRecipeBuilder.sawing(
+                    IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(door)),
+                    new ItemStackTemplate(planks, 2)
+              ).category(SawingBookCategory.WOOD_TYPE)
               .group(Mekanism.rl("door"))
-              .unlockedBy(hasCriterion(items, door)), basePath + "door/" + name, condition);
+              .unlockedBy(hasCriterion(items, door))
+              .save(consumer, basePath + "door/" + name);
         //Fence Gate
-        save(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(fenceGate)),
-              new ItemStackTemplate(planks, 2),
-              template(items, ItemIds.STICK, 4),
-              1
-        ).category(SawingBookCategory.WOOD_TYPE)
+        SawmillRecipeBuilder.sawing(
+                    IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(fenceGate)),
+                    new ItemStackTemplate(planks, 2),
+                    template(items, ItemIds.STICK, 4),
+                    1
+              ).category(SawingBookCategory.WOOD_TYPE)
               .group(Mekanism.rl("fence_gate"))
-              .unlockedBy(hasCriterion(items, fenceGate)), basePath + "fence_gate/" + name, condition);
+              .unlockedBy(hasCriterion(items, fenceGate))
+              .save(consumer, basePath + "fence_gate/" + name);
         if (log != null) {
             //Log
-            save(consumer, SawmillRecipeBuilder.sawing(
-                  IngredientCreatorAccess.item().from(items, log),
-                  new ItemStackTemplate(planks, 6),
-                  MekanismItems.SAWDUST.asTemplate(),
-                  0.25
-            ).category(SawingBookCategory.WOOD_TYPE)
+            SawmillRecipeBuilder.sawing(
+                        IngredientCreatorAccess.item().from(items, log),
+                        new ItemStackTemplate(planks, 6),
+                        MekanismItems.SAWDUST.asTemplate(),
+                        0.25
+                  ).category(SawingBookCategory.WOOD_TYPE)
                   .group(Mekanism.rl("log"))
-                  .unlockedBy("has_log", has(items, log)), basePath + "log/" + name, condition);
+                  .unlockedBy("has_log", has(items, log))
+                  .save(consumer, basePath + "log/" + name);
         }
         if (hangingSign != null) {
             //Hanging sign
-            save(consumer, SawmillRecipeBuilder.sawing(
-                  IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(hangingSign)),
-                  new ItemStackTemplate(planks, 2),
-                  MekanismItems.SAWDUST.asTemplate(),
-                  0.5
-            ).category(SawingBookCategory.WOOD_TYPE)
+            SawmillRecipeBuilder.sawing(
+                        IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(hangingSign)),
+                        new ItemStackTemplate(planks, 2),
+                        MekanismItems.SAWDUST.asTemplate(),
+                        0.5
+                  ).category(SawingBookCategory.WOOD_TYPE)
                   .group(Mekanism.rl("hanging_sign"))
-                  .unlockedBy(hasCriterion(items, hangingSign)), basePath + "hanging_sign/" + name, condition);
+                  .unlockedBy(hasCriterion(items, hangingSign))
+                  .save(consumer, basePath + "hanging_sign/" + name);
         }
         //Pressure plate
-        save(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(pressurePlate)),
-              new ItemStackTemplate(planks),
-              MekanismItems.SAWDUST.asTemplate(2),
-              0.25
-        ).category(SawingBookCategory.WOOD_TYPE)
+        SawmillRecipeBuilder.sawing(
+                    IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(pressurePlate)),
+                    new ItemStackTemplate(planks),
+                    MekanismItems.SAWDUST.asTemplate(2),
+                    0.25
+              ).category(SawingBookCategory.WOOD_TYPE)
               .group(Mekanism.rl("pressure_plate"))
-              .unlockedBy(hasCriterion(items, pressurePlate)), basePath + "pressure_plate/" + name, condition);
+              .unlockedBy(hasCriterion(items, pressurePlate))
+              .save(consumer, basePath + "pressure_plate/" + name);
         //Trapdoor
-        save(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(trapdoor)),
-              new ItemStackTemplate(planks, 3)
-        ).category(SawingBookCategory.WOOD_TYPE)
+        SawmillRecipeBuilder.sawing(
+                    IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(trapdoor)),
+                    new ItemStackTemplate(planks, 3)
+              ).category(SawingBookCategory.WOOD_TYPE)
               .group(Mekanism.rl("trapdoor"))
-              .unlockedBy(hasCriterion(items, trapdoor)), basePath + "trapdoor/" + name, condition);
+              .unlockedBy(hasCriterion(items, trapdoor))
+              .save(consumer, basePath + "trapdoor/" + name);
         //Shelf
-        save(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(shelf)),
-              new ItemStackTemplate(strippedLog)
-        ).category(SawingBookCategory.WOOD_TYPE)
+        SawmillRecipeBuilder.sawing(
+                    IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(shelf)),
+                    new ItemStackTemplate(strippedLog)
+              ).category(SawingBookCategory.WOOD_TYPE)
               .group(Mekanism.rl("shelf"))
-              .unlockedBy(hasCriterion(items, shelf)), basePath + "shelf/" + name, condition);
+              .unlockedBy(hasCriterion(items, shelf))
+              .save(consumer, basePath + "shelf/" + name);
     }
 
-    public static void addSandStoneToSandRecipe(RecipeOutput consumer, HolderGetter<Item> items, String path, @Nullable ICondition condition, BlockItemId sand,
-          TagKey<Item> sandstoneTag) {
-        save(consumer, ItemStackToItemStackRecipeBuilder.crushing(
-                          IngredientCreatorAccess.item().from(items, sandstoneTag),
-                          template(items, sand, 2)
-                    ).category(CrushingBookCategory.BUILDING)
-                    .unlockedBy("has_sandstone", has(items, sandstoneTag)),
-              path, condition);
+    public static void addSandStoneToSandRecipe(RecipeOutput consumer, HolderGetter<Item> items, String path, BlockItemId sand, TagKey<Item> sandstoneTag) {
+        ItemStackToItemStackRecipeBuilder.crushing(
+                    IngredientCreatorAccess.item().from(items, sandstoneTag),
+                    template(items, sand, 2)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy("has_sandstone", has(items, sandstoneTag))
+              .save(consumer, path);
     }
 
     @SuppressWarnings("unchecked")
@@ -257,9 +263,9 @@ public class RecipeProviderUtil {
     public static void addPigmentExtractingDyeRecipe(RecipeOutput consumer, HolderGetter<Item> items, HolderGetter<Chemical> chemicals, String basePath, EnumColor color,
           int outputAmount, String name, ResourceKey<Item>... inputs) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
-              IngredientCreatorAccess.item().from(items, inputs),
-              chemicalTemplate(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), outputAmount)
-        ).group(ItemIds.DYE.pick(Objects.requireNonNull(color.getDyeColor())))
+                    IngredientCreatorAccess.item().from(items, inputs),
+                    chemicalTemplate(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), outputAmount)
+              ).group(ItemIds.DYE.pick(Objects.requireNonNull(color.getDyeColor())))
               .unlockedBy(Arrays.stream(inputs).map(input -> hasCriterion(items, input)))
               .save(consumer, basePath + name);
     }
@@ -272,14 +278,6 @@ public class RecipeProviderUtil {
               ).group(ItemIds.DYE.pick(Objects.requireNonNull(color.getDyeColor())))
               .unlockedBy("has_flower", has(items, input))
               .save(consumer, basePath + name);
-    }
-
-    public static void save(RecipeOutput consumer, MekanismRecipeBuilder<?, ?, ?> builder, String path, @Nullable ICondition condition) {
-        if (condition != null) {
-            //If there is a condition, add it to the recipe builder
-            builder.addCondition(condition);
-        }
-        builder.save(consumer, path);
     }
 
     public static ItemStackTemplate template(HolderGetter<Item> items, ResourceKey<Item> item) {

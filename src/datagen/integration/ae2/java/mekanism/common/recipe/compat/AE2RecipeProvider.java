@@ -28,7 +28,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, certusQuartz),
                     foreignItemStack(AEItemIds.CERTUS_QUARTZ_DUST)
               ).unlockedBy("has_certus_quartz", has(certusQuartz))
-              .addCondition(modLoaded)
               .save(output, basePath + "certus_crystal_to_dust");
 
         //Fluix Crystal -> Fluix Dust
@@ -36,7 +35,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEItemIds.FLUIX_CRYSTAL),
                     foreignItemStack(AEItemIds.FLUIX_DUST)
               ).unlockedBy(hasCriterion(foreignItem(AEItemIds.FLUIX_CRYSTAL)))
-              .addCondition(modLoaded)
               .save(output, basePath + "fluix_crystal_to_dust");
 
         //Sky Stone -> Sky Stone Dust
@@ -44,7 +42,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BLOCK),
                     foreignItemStack(AEItemIds.SKY_DUST)
               ).unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BLOCK)))
-              .addCondition(modLoaded)
               .save(output, basePath + "sky_stone_to_dust");
 
         //Sky Stone Dust -> Sky Stone
@@ -52,7 +49,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEItemIds.SKY_DUST),
                     foreignItemStack(AEBlockIds.SKY_STONE_BLOCK)
               ).unlockedBy(hasCriterion(foreignItem(AEItemIds.SKY_DUST)))
-              .addCondition(modLoaded)
               .save(output, basePath + "sky_stone_dust_to_sky_stone");
 
         //Ender Pearl -> Ender Dust
@@ -60,7 +56,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(items, ItemIds.ENDER_PEARL),
                     foreignItemStack(AEItemIds.ENDER_DUST)
               ).unlockedBy(hasCriterion(ItemIds.ENDER_PEARL))
-              .addCondition(modLoaded)
               .save(output, basePath + "ender_pearl_to_dust");
 
         //Sand -> Silicon
@@ -68,7 +63,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.SANDS),
                     foreignItemStack(AEItemIds.SILICON)
               ).unlockedBy("has_sand", has(Tags.BlockItems.SANDS))
-              .addCondition(modLoaded)
               .save(output, basePath + "sand_to_silicon");
 
         //Certus Dust to Silicon
@@ -76,7 +70,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEItemIds.CERTUS_QUARTZ_DUST),
                     foreignItemStack(AEItemIds.SILICON, 2)
               ).unlockedBy(hasCriterion(foreignItem(AEItemIds.CERTUS_QUARTZ_DUST)))
-              .addCondition(modLoaded)
               .save(output, basePath + "certus_quartz_dust_to_silicon");
 
         addDecorativeRecipes(output, basePath + "decorative/");
@@ -99,7 +92,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_CHEST)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_CHEST)))
-              .addCondition(modLoaded)
               .save(output, basePath + "smooth_chest_to_chest");
 
         //Smooth Sky Stone -> Sky Stone
@@ -108,7 +100,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_BLOCK)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_BLOCK)))
-              .addCondition(modLoaded)
               .save(output, basePath + "smooth_to_stone");
         //Smooth Sky Stone Slab -> Sky Stone Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -116,7 +107,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_SLAB)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_SLAB)))
-              .addCondition(modLoaded)
               .save(output, basePath + "smooth_slab_to_slab");
         //Smooth Sky Stone Stairs -> Sky Stone Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -124,7 +114,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_STAIRS)))
-              .addCondition(modLoaded)
               .save(output, basePath + "smooth_stairs_to_stairs");
         //Smooth Sky Stone Wall -> Sky Stone Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -132,7 +121,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_WALL)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_WALL)))
-              .addCondition(modLoaded)
               .save(output, basePath + "smooth_wall_to_wall");
 
         //Sky Stone Brick -> Smooth Sky Stone
@@ -141,7 +129,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_BLOCK)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK)))
-              .addCondition(modLoaded)
               .save(output, basePath + "brick_to_smooth");
         //Sky Stone Brick Slab -> Smooth Sky Stone Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -149,7 +136,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_SLAB)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK_SLAB)))
-              .addCondition(modLoaded)
               .save(output, basePath + "brick_slab_to_smooth_slab");
         //Sky Stone Brick Stairs -> Smooth Sky Stone Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -157,7 +143,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK_STAIRS)))
-              .addCondition(modLoaded)
               .save(output, basePath + "brick_stairs_to_smooth_stairs");
         //Sky Stone Brick Wall -> Smooth Sky Stone Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -165,7 +150,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_WALL)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK_WALL)))
-              .addCondition(modLoaded)
               .save(output, basePath + "brick_wall_to_smooth_wall");
 
         //Sky Stone Small Brick -> Sky Stone Brick
@@ -174,7 +158,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_SMALL_BRICK)))
-              .addCondition(modLoaded)
               .save(output, basePath + "small_brick_to_brick");
         //Sky Stone Small Brick Slab -> Sky Stone Brick Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -182,7 +165,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK_SLAB)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB)))
-              .addCondition(modLoaded)
               .save(output, basePath + "small_brick_slab_to_brick_slab");
         //Sky Stone Small Brick Stairs -> Sky Stone Brick Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -190,7 +172,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS)))
-              .addCondition(modLoaded)
               .save(output, basePath + "small_brick_stairs_to_brick_stairs");
         //Sky Stone Small Brick Wall -> Sky Stone Brick Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -198,7 +179,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK_WALL)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_SMALL_BRICK_WALL)))
-              .addCondition(modLoaded)
               .save(output, basePath + "small_brick_wall_to_brick_wall");
     }
 
@@ -209,7 +189,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_CHEST)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_CHEST)))
-              .addCondition(modLoaded)
               .save(output, basePath + "chest_to_smooth_chest");
 
         //Sky Stone Slab -> Smooth Sky Stone Slab
@@ -218,7 +197,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_SLAB)))
-              .addCondition(modLoaded)
               .save(output, basePath + "slab_to_smooth_slab");
         //Sky Stone Stairs -> Smooth Sky Stone Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -226,7 +204,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_STAIRS)))
-              .addCondition(modLoaded)
               .save(output, basePath + "stairs_to_smooth_stairs");
         //Sky Stone Wall -> Smooth Sky Stone Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -234,7 +211,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SMOOTH_SKY_STONE_WALL)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_WALL)))
-              .addCondition(modLoaded)
               .save(output, basePath + "wall_to_smooth_wall");
 
         //Smooth Sky Stone -> Sky Stone Brick
@@ -243,7 +219,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_BLOCK)))
-              .addCondition(modLoaded)
               .save(output, basePath + "smooth_to_brick");
         //Smooth Sky Stone Slab -> Sky Stone Brick Slab
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -251,7 +226,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_SLAB)))
-              .addCondition(modLoaded)
               .save(output, basePath + "smooth_slab_to_brick_slab");
         //Smooth Sky Stone Stairs -> Sky Stone Brick Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -259,7 +233,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_STAIRS)))
-              .addCondition(modLoaded)
               .save(output, basePath + "smooth_stairs_to_brick_stairs");
         //Smooth Sky Stone Wall -> Sky Stone Brick Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -267,7 +240,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_BRICK_WALL)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SMOOTH_SKY_STONE_WALL)))
-              .addCondition(modLoaded)
               .save(output, basePath + "smooth_wall_to_brick_wall");
 
         //Sky Stone Brick -> Sky Stone Small Brick
@@ -276,7 +248,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_SMALL_BRICK)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK)))
-              .addCondition(modLoaded)
               .save(output, basePath + "brick_to_small_brick");
         //Sky Stone Brick Slab -> Sky Stone Small Brick Slab
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -284,7 +255,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK_SLAB)))
-              .addCondition(modLoaded)
               .save(output, basePath + "brick_slab_to_small_brick_slab");
         //Sky Stone Brick Stairs -> Sky Stone Small Brick Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -292,7 +262,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK_STAIRS)))
-              .addCondition(modLoaded)
               .save(output, basePath + "brick_stairs_to_small_brick_stairs");
         //Sky Stone Brick Wall -> Sky Stone Small Brick Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -300,7 +269,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.SKY_STONE_SMALL_BRICK_WALL)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.SKY_STONE_BRICK_WALL)))
-              .addCondition(modLoaded)
               .save(output, basePath + "brick_wall_to_small_brick_wall");
     }
 
@@ -316,7 +284,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_BLOCK)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_BLOCK)))
-              .addCondition(modLoaded)
               .save(output, basePath + "block_to_chiseled_block");
         //Certus Quartz Slab -> Chiseled Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -324,7 +291,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_SLAB)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_SLAB)))
-              .addCondition(modLoaded)
               .save(output, basePath + "slab_to_chiseled_slab");
         //Certus Quartz Stairs -> Chiseled Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -332,7 +298,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_STAIRS)))
-              .addCondition(modLoaded)
               .save(output, basePath + "stairs_to_chiseled_stairs");
         //Certus Quartz Wall -> Chiseled Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -340,7 +305,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_WALL)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_WALL)))
-              .addCondition(modLoaded)
               .save(output, basePath + "wall_to_chiseled_wall");
 
         //Chiseled Certus Quartz Block -> Certus Quartz Pillar Block
@@ -349,7 +313,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_BLOCK)))
-              .addCondition(modLoaded)
               .save(output, basePath + "chiseled_block_to_pillar");
         //Chiseled Certus Quartz Slab -> Certus Quartz Pillar Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -357,7 +320,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR_SLAB)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_SLAB)))
-              .addCondition(modLoaded)
               .save(output, basePath + "chiseled_slab_to_pillar_slab");
         //Chiseled Certus Quartz Stairs -> Certus Quartz Pillar Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -365,7 +327,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_STAIRS)))
-              .addCondition(modLoaded)
               .save(output, basePath + "chiseled_stairs_to_pillar_stairs");
         //Chiseled Certus Quartz Wall -> Certus Quartz Pillar Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -373,7 +334,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR_WALL)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_WALL)))
-              .addCondition(modLoaded)
               .save(output, basePath + "chiseled_wall_to_pillar_wall");
 
         //Certus Quartz Pillar Block -> Certus Quartz Block
@@ -382,7 +342,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_BLOCK)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR)))
-              .addCondition(modLoaded)
               .save(output, basePath + "pillar_to_block");
         //Certus Quartz Pillar Slab -> Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -390,7 +349,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_SLAB)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR_SLAB)))
-              .addCondition(modLoaded)
               .save(output, basePath + "pillar_slab_to_slab");
         //Certus Quartz Pillar Stairs -> Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -398,7 +356,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR_STAIRS)))
-              .addCondition(modLoaded)
               .save(output, basePath + "pillar_stairs_to_stairs");
         //Certus Quartz Pillar Wall -> Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -406,7 +363,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_WALL)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR_WALL)))
-              .addCondition(modLoaded)
               .save(output, basePath + "pillar_wall_to_wall");
     }
 
@@ -417,7 +373,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_BLOCK)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_BLOCK)))
-              .addCondition(modLoaded)
               .save(output, basePath + "chiseled_block_to_block");
         //Chiseled Certus Quartz Slab -> Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -425,7 +380,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_SLAB)))
-              .addCondition(modLoaded)
               .save(output, basePath + "chiseled_slab_to_slab");
         //Chiseled Certus Quartz Stairs -> Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -433,7 +387,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_STAIRS)))
-              .addCondition(modLoaded)
               .save(output, basePath + "chiseled_stairs_to_stairs");
         //Chiseled Certus Quartz Wall -> Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -441,7 +394,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_WALL)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.CHISELED_QUARTZ_WALL)))
-              .addCondition(modLoaded)
               .save(output, basePath + "chiseled_wall_to_wall");
 
         //Certus Quartz Pillar Block -> Chiseled Certus Quartz Block
@@ -450,7 +402,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_BLOCK)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR)))
-              .addCondition(modLoaded)
               .save(output, basePath + "pillar_to_chiseled_block");
         //Certus Quartz Pillar Slab -> Chiseled Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -458,7 +409,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR_SLAB)))
-              .addCondition(modLoaded)
               .save(output, basePath + "pillar_slab_to_chiseled_slab");
         //Certus Quartz Pillar Stairs -> Chiseled Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -466,7 +416,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR_STAIRS)))
-              .addCondition(modLoaded)
               .save(output, basePath + "pillar_stairs_to_chiseled_stairs");
         //Certus Quartz Pillar Wall -> Chiseled Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -474,7 +423,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.CHISELED_QUARTZ_WALL)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_PILLAR_WALL)))
-              .addCondition(modLoaded)
               .save(output, basePath + "pillar_wall_to_chiseled_wall");
 
         //Certus Quartz Block -> Certus Quartz Pillar Block
@@ -483,7 +431,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_BLOCK)))
-              .addCondition(modLoaded)
               .save(output, basePath + "block_to_pillar");
         //Certus Quartz Slab -> Certus Quartz Pillar Slab
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -491,7 +438,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_SLAB)))
-              .addCondition(modLoaded)
               .save(output, basePath + "slab_to_pillar_slab");
         //Certus Quartz Stairs -> Certus Quartz Pillar Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -499,7 +445,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_STAIRS)))
-              .addCondition(modLoaded)
               .save(output, basePath + "stairs_to_pillar_stairs");
         //Certus Quartz Wall -> Certus Quartz Pillar Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -507,7 +452,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     foreignItemStack(AEBlockIds.QUARTZ_PILLAR_WALL)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(foreignBlock(AEBlockIds.QUARTZ_WALL)))
-              .addCondition(modLoaded)
               .save(output, basePath + "wall_to_pillar_wall");
     }
 }

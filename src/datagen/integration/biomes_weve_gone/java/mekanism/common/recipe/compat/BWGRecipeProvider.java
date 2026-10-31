@@ -1,5 +1,6 @@
 package mekanism.common.recipe.compat;
 
+import java.util.Arrays;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
@@ -58,16 +59,18 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         for (BWGWoodSet woodType : BWGWoodSet.woodsets()) {
             RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, this.items, basePath, woodType.planks().asItem(), woodType.boatItem().get(),
                   woodType.chestBoatItem().get(), woodType.door().asItem(), woodType.fenceGate().asItem(), woodType.logItemTag(), woodType.pressurePlate().asItem(),
-                  woodType.trapdoor().asItem(), woodType.hangingSignItem(), woodType.strippedLogStem().asItem(), woodType.shelf().asItem(), woodType.name(), modLoaded);
+                  woodType.trapdoor().asItem(), woodType.hangingSignItem(), woodType.strippedLogStem().asItem(), woodType.shelf().asItem(), woodType.name());
         }
     }
 
     private void addSandRecipes(RecipeOutput consumer, String basePath) {
         for (BWGSandSet sandSet : BWGSandSet.getSandSets()) {
-            RecipeProviderUtil.save(consumer, ItemStackToItemStackRecipeBuilder.crushing(
+            ItemStackToItemStackRecipeBuilder.crushing(
                   IngredientCreatorAccess.item().from(items, sandSet.getSandstoneBlocksItemTag()),
                   new ItemStackTemplate(sandSet.getSand().asItem(), 2)
-            ), basePath + sandSet.getName(), modLoaded);
+            ).category(CrushingBookCategory.BUILDING)
+                  .unlockedBy("has_sandstone", has(sandSet.getSandstoneBlocksItemTag()))
+                  .save(consumer, basePath + sandSet.getName());
         }
     }
 
@@ -98,7 +101,6 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.DECORATIVE)
               .group(output)
               .unlockedBy("has_flowers", has(makesDyeTag))
-              .addCondition(modLoaded)
               .addCondition(tagNotEmpty)
               .save(consumer, basePath + "dye/" + name);
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
@@ -108,7 +110,6 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
                     chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.pick(color), large ? 2 * flowerRate : flowerRate)
               ).group(output)
               .unlockedBy("has_flowers", has(makesDyeTag))
-              .addCondition(modLoaded)
               .addCondition(tagNotEmpty)
               .save(consumer, basePath + "pigment_extracting/" + name);
     }
@@ -138,7 +139,6 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(BWGBlocks.DACITE_SET.getBase().asItem(), 2)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BWGBlocks.DACITE_PILLAR.get().asItem()))
-              .addCondition(modLoaded)
               .save(consumer, basePath + "from_dacite_pillar");
     }
 
@@ -160,7 +160,6 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(BWGBlocks.WHITE_DACITE_SET.getBase().asItem(), 2)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BWGBlocks.WHITE_DACITE_PILLAR.get().asItem()))
-              .addCondition(modLoaded)
               .save(consumer, basePath + "from_white_dacite_pillar");
     }
 
@@ -194,7 +193,6 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl(group))
               .unlockedBy(hasCriterion(input.asItem()))
-              .addCondition(modLoaded)
               .save(consumer, path);
     }
 
@@ -277,7 +275,6 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl(group))
               .unlockedBy(hasCriterion(input.asItem()))
-              .addCondition(modLoaded)
               .save(consumer, path);
     }
 
@@ -312,7 +309,6 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               ).category(MetallurgicInfusingBookCategory.BUILDING)
               .group(Mekanism.rl(group))
               .unlockedBy(hasCriterion(input.asItem()))
-              .addCondition(modLoaded)
               .save(consumer, path);
     }
 }

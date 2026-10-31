@@ -26,10 +26,10 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(RecipeOutput consumer, String basePath) {
-        addDyeRecipes(consumer, basePath);
-        addPrecisionSawmillRecipes(consumer, basePath + "sawing/");
-        addSandRecipes(consumer, basePath + "sandstone_to_sand/");
+    protected void registerRecipes(RecipeOutput output, String basePath) {
+        addDyeRecipes(output, basePath);
+        addPrecisionSawmillRecipes(output, basePath + "sawing/");
+        addSandRecipes(output, basePath + "sandstone_to_sand/");
     }
 
     private void addPrecisionSawmillRecipes(RecipeOutput consumer, String basePath) {
@@ -77,7 +77,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     private void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, String basePath, Item planks, Item boat, Item chestBoat, Item door, Item fenceGate,
           Item pressurePlate, Item trapdoor, Item hangingSign, Item strippedLog, Item shelf, String name) {
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, this.items, basePath, planks, boat, chestBoat, door, fenceGate,
-              tag(name + "_logs"), pressurePlate, trapdoor, hangingSign, strippedLog, shelf, name, modLoaded);
+              tag(name + "_logs"), pressurePlate, trapdoor, hangingSign, strippedLog, shelf, name);
     }
 
     private void addSandRecipes(RecipeOutput consumer, String basePath) {
@@ -93,12 +93,12 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     private void addSandStoneToSandRecipe(RecipeOutput consumer, String path, Item sand, Item... sandstones) {
-        RecipeProviderUtil.save(consumer, ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(sandstones),
-              new ItemStackTemplate(sand, 2)
-        ).category(CrushingBookCategory.BUILDING)
-              .unlockedBy(Arrays.stream(sandstones).map(this::hasCriterion)),
-              path, modLoaded);
+        ItemStackToItemStackRecipeBuilder.crushing(
+                    IngredientCreatorAccess.item().from(sandstones),
+                    new ItemStackTemplate(sand, 2)
+              ).category(CrushingBookCategory.BUILDING)
+              .unlockedBy(Arrays.stream(sandstones).map(this::hasCriterion))
+              .save(consumer, path);
     }
 
     private void addDyeRecipes(RecipeOutput consumer, String basePath) {
@@ -141,7 +141,6 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.DECORATIVE)
               .group(output)
               .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
-              .addCondition(modLoaded)
               .save(consumer, basePath + "dye/" + color.getRegistryPrefix());
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         int flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
@@ -150,7 +149,6 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
                     chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.pick(color), flowerRate)
               ).group(output)
               .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
-              .addCondition(modLoaded)
               .save(consumer, basePath + "pigment_extracting/" + color.getRegistryPrefix());
     }
 
@@ -162,7 +160,6 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.DECORATIVE)
               .group(output)
               .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
-              .addCondition(modLoaded)
               .save(consumer, basePath + "dye/large_" + color.getRegistryPrefix());
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         int largeFlowerRate = 6 * PigmentExtractingRecipeProvider.DYE_RATE;

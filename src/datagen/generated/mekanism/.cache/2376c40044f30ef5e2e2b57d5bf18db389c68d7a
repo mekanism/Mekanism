@@ -1,4 +1,4 @@
-// Registries for Reloadable (mekanism[0]): [mekanism]	2026-10-31T11:15:36.5443971	Registries for Reloadable (mekanism[0]): [mekanism]
+// Registries for Reloadable (mekanism[0]): [mekanism]	2026-10-31T14:58:56.8623	Registries for Reloadable (mekanism[0]): [mekanism]
 cc0f85f030befc152798d57b040f40fe7b1e67be data/mekanism/advancement/advanced_control_circuit.json
 e00a71a74d7c77c23cd21bbb6af2460c9035af75 data/mekanism/advancement/advanced_qio_drive.json
 c6b503463ec0aa67902a2d9e498b907d2d1702aa data/mekanism/advancement/alarm.json
@@ -411,10 +411,10 @@ ec1792c00caa7e13505a9b9419f4fcec0e6c1579 data/mekanism/advancement/recipes/compa
 938fb6c8e41f982f4bb3759f3c70b6bd5c8e6fb3 data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/cyan.json
 40c3b4527e117ecfadc75b40a46b5a9b68d97932 data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/gray.json
 090fb9a5a56384e4345700fafe2d53cf352922db data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/green.json
-37faf8f3a585a63099e2498bff518e2f17673c7b data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/large_brown.json
-10f2e33b472190141d85fef79a435fb843676a17 data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/large_light_blue.json
-94f5136df045f7860e0b7892a1d1576e6b304054 data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/large_purple.json
-3b17b38b20d0aafedd292fdf0e573e229af555e3 data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/large_white.json
+8704fd101e43508afd62eb95fbeb2c30b70303bc data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/large_brown.json
+0c4a2784027b57e14c4490e8790db39327525ff0 data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/large_light_blue.json
+429771835bc857c575feb507709113d57c613a2c data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/large_purple.json
+03058f20276613c494c2dcd19d18c15473c64dad data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/large_white.json
 823e5fc523899a79aea49b2388bd0a1052ab59d0 data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/light_blue.json
 a7459907562158edb26f5b75af7975de2462beb2 data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/light_gray.json
 b156a578afc0b1332bf8f038579ac9d0adccf62f data/mekanism/advancement/recipes/compat/biomesoplenty/pigment_extracting/magenta.json
@@ -2658,10 +2658,10 @@ f3f6f6d5910e4b391e500fd776a2a7cdcf888f8c data/mekanism/recipe/compat/biomesoplen
 57239ef9dfd9f0ba9074b1afcf113f5487e4f65a data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/cyan.json
 38d180dc9691b141717c641e2009d3d196f29d51 data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/gray.json
 5342f8d552d27e2e0924093dd958cc1a03b79b63 data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/green.json
-4fb2f7544dec124e22f17aae6d26e763fb93000b data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/large_brown.json
-d6ac62a0a584dd133a5edefa2ec749d5c267e88a data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/large_light_blue.json
-cd6651fc6acd3f63e293f7611ae71c61c0690c26 data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/large_purple.json
-7fedc77dd648a0817c101b31875748582c019f43 data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/large_white.json
+edc258f219aaed2ca8c8d937f1ceda590df67129 data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/large_brown.json
+ca05885ed59a687b61eaa11b5d255522aea6852e data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/large_light_blue.json
+ea879f29bdc0ed17c4287b0c4e586ab209bafeec data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/large_purple.json
+add310735ebed6422d6015633560d8374bd8654d data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/large_white.json
 33132537903969334c9b6ab073865ab0b7702dd2 data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/light_blue.json
 03c5cd7c4ed1189d28e1bb53d240e1cc3374bbc9 data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/light_gray.json
 806a1afeb2514319f0417505c01173c0778aca31 data/mekanism/recipe/compat/biomesoplenty/pigment_extracting/magenta.json

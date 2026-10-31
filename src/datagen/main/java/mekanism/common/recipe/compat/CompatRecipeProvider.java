@@ -19,14 +19,15 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.conditions.AndCondition;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
+import net.neoforged.neoforge.common.data.ScopedRecipeOutput;
 
 //TODO: Decide if we should have compat recipes go into their own data packs
 public abstract class CompatRecipeProvider extends BaseSubRecipeProvider {
 
     protected final HolderGetter<Block> blocks;
     protected final String modid;
-    protected final ICondition modLoaded;
-    protected final ICondition allModsLoaded;
+    private final ICondition modLoaded;
+    private final ICondition allModsLoaded;
 
     protected CompatRecipeProvider(BootstrapContextAccess contextAccess, String modid, String... secondaryMods) {
         super(contextAccess.lookup(Registries.ITEM), contextAccess.lookup(Registries.FLUID), contextAccess.lookup(MekanismRegistries.Keys.CHEMICAL));
@@ -48,7 +49,9 @@ public abstract class CompatRecipeProvider extends BaseSubRecipeProvider {
     @Override
     public final void addRecipes(RecipeOutput consumer) {
         String basePath = getBasePath();
-        registerRecipes(consumer, basePath);
+        try (ScopedRecipeOutput output = consumer.withContext(builder -> builder.withConditions(allModsLoaded))) {
+            registerRecipes(output, basePath);
+        }
     }
 
     protected abstract void registerRecipes(RecipeOutput consumer, String basePath);

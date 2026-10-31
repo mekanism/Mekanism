@@ -150,9 +150,9 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
               .unlockedBy("has_bone_block", has(Tags.BlockItems.STORAGE_BLOCKS_BONE_MEAL))
               .save(output, basePath + "bone_block");
         //Red Sandstone -> Sand
-        RecipeProviderUtil.addSandStoneToSandRecipe(output, this.items, basePath + "red_sandstone_to_sand", null, BlockItemIds.RED_SAND, Tags.BlockItems.SANDSTONE_RED_BLOCKS.item());
+        RecipeProviderUtil.addSandStoneToSandRecipe(output, this.items, basePath + "red_sandstone_to_sand", BlockItemIds.RED_SAND, Tags.BlockItems.SANDSTONE_RED_BLOCKS.item());
         //Sandstone -> Sand
-        RecipeProviderUtil.addSandStoneToSandRecipe(output, this.items, basePath + "sandstone_to_sand", null, BlockItemIds.SAND, Tags.BlockItems.SANDSTONE_UNCOLORED_BLOCKS.item());
+        RecipeProviderUtil.addSandStoneToSandRecipe(output, this.items, basePath + "sandstone_to_sand", BlockItemIds.SAND, Tags.BlockItems.SANDSTONE_UNCOLORED_BLOCKS.item());
         //Soul Soil -> Soul Sand
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.SOUL_SOIL),
