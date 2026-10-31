@@ -2,33 +2,23 @@ package mekanism
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import org.gradle.api.DefaultTask
 import org.gradle.api.file.Directory
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
-import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFile
-import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.util.PatternFilterable
 
-import javax.inject.Inject
 import java.util.function.BinaryOperator
 
-abstract class MergeModuleResources extends DefaultTask {
+abstract class MergeModuleResources extends MergeServiceTask {
 
     private static Closure<PatternFilterable> atlasFilter = { PatternFilterable pf -> pf.include('**/assets/*/atlases/**/*.json') }
     private static Closure<PatternFilterable> dataMapFilter = { PatternFilterable pf -> pf.include('**/data/*/data_maps/**/*.json') }
     private static Closure<PatternFilterable> tagFilter = { PatternFilterable pf -> pf.include('**/data/*/tags/**/*.json') }
-    static Closure<PatternFilterable> serviceFilter = { PatternFilterable pf -> pf.include('**/META-INF/services/*') }
-
-    @Internal
-    final DirectoryProperty generatedDir
 
     @InputFiles
     abstract FileCollection resources
@@ -39,26 +29,16 @@ abstract class MergeModuleResources extends DefaultTask {
     final Provider<Directory> generatedAssets
     @OutputDirectory
     final Provider<Directory> generatedData
-    @OutputDirectory
-    final Provider<Directory> generatedMetaInf
     @OutputFile
     final Provider<RegularFile> pathsToExclude
 
     MergeModuleResources() {
-        generatedDir = objectFactory.directoryProperty().convention(projectLayout.buildDirectory.dir('generated'))
         //Output directories we care about and produce
         generatedAssets = generatedDir.dir('assets')
         generatedData = generatedDir.dir('data')
-        generatedMetaInf = generatedDir.dir('META-INF')
 
         pathsToExclude = generatedDir.file('pathsToExclude.txt')
     }
-
-    @Inject
-    protected abstract ObjectFactory getObjectFactory()
-
-    @Inject
-    protected abstract ProjectLayout getProjectLayout()
 
     @TaskAction
     protected void merge() {
@@ -91,26 +71,6 @@ abstract class MergeModuleResources extends DefaultTask {
             text = text.isEmpty() ? file.text : appender.apply(text, file.text)
         }
         writeOutputFile(toExclude, name, text)
-    }
-
-    private Map<String, List<String>> getReverseLookup(Closure<PatternFilterable> filter, FileCollection files, String prefix) {
-        Map<String, List<String>> reverseLookup = [:]
-        for (def file : files.asFileTree.matching(filter)) {
-            //Add the sourceSet to the reverse lookup
-            def split = file.path.split(prefix, 2)
-            if (split.length == 2) {
-                //Theoretically this should always be the case
-                String trimmedPath = prefix + split[1]
-                def paths = reverseLookup[trimmedPath]
-                if (paths == null) {
-                    reverseLookup[trimmedPath] = paths = []
-                }
-                paths.add(file.path)
-            } else {
-                logger.error('Failed to split path "{}" by prefix: "{}"', file.path, prefix)
-            }
-        }
-        return reverseLookup
     }
 
     private void mergeAtlases(List<String> toExclude) {
@@ -200,32 +160,5 @@ abstract class MergeModuleResources extends DefaultTask {
         if (outputAsJson != null) {
             writeOutputFile(toExclude, outputPath, JsonOutput.toJson(outputAsJson))
         }
-    }
-
-    private void mergeServices(List<String> toExclude, FileCollection files) {
-        for (def entry : getReverseLookup(serviceFilter, files, 'META-INF').entrySet()) {
-            mergeSimpleLines(toExclude, entry.key, entry.value)
-        }
-    }
-
-    private void mergeSimpleLines(List<String> toExclude, String outputPath, List<String> paths) {
-        //logger.quiet('{} appeared {} times', outputPath, paths.size())
-        if (paths.size() < 2) {
-            //Skip any there is only a single element for
-            return
-        }
-        String text = ''
-        for (def file : objectFactory.fileCollection().from(paths)) {
-            text = text.isEmpty() ? file.text : text + '\n' + file.text
-        }
-        writeOutputFile(toExclude, outputPath, text)
-    }
-
-    private void writeOutputFile(List<String> toExclude, String outputPath, String text) {
-        toExclude.add(outputPath)
-        def outputFile = generatedDir.file(outputPath).get().asFile
-        //Make all parent directories needed
-        outputFile.parentFile.mkdirs()
-        outputFile.text = text
     }
 }

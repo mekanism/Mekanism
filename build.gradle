@@ -7,6 +7,7 @@ import mekanism.AllJar
 import mekanism.IntegrationScope
 import mekanism.IntegrationSettings
 import mekanism.MergeModuleResources
+import mekanism.MergeServiceDescriptors
 import mekanism.OptimizePng
 import mekanism.OutputChangelog
 import mekanism.PerModule
@@ -62,7 +63,7 @@ ext {
     //Integrations that we sometimes have to disable compilation of when porting to newer mc versions
     integrations = [
             'ae2'             : new IntegrationSettings(shouldCompile: true, scope: IntegrationScope.DATA_ONLY),
-            'biomes_o_plenty' : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.DATA_ONLY),
+            'biomes_o_plenty' : new IntegrationSettings(shouldCompile: true, scope: IntegrationScope.DATA_ONLY),
             'biomes_weve_gone': new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.DATA_ONLY),
             'computer_craft'  : new IntegrationSettings(shouldCompile: true),
             'crafttweaker'    : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL),
@@ -357,11 +358,11 @@ void setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
                 sourceSets.runData.runtimeClasspath += extraSourceSet.runtimeClasspath
                 for (def integration : integrations as Map<String, IntegrationSettings>) {
                     if (integration.value.scope().hasData) {
-                        if (integration.value.perModule().datagen() || base == project.sourceSets.main) {
+                        if (integration.value.perModule().datagen() || SourceSet.isMain(base)) {
                             def moduleDataIntegration = getIntegrationDataSourceSet(integration.key, base.name).get()
                             moduleDataIntegration.compileClasspath += extraSourceSet.output
                             moduleDataIntegration.runtimeClasspath += extraSourceSet.runtimeClasspath
-                            if (base != project.sourceSets.main) {
+                            if (!SourceSet.isMain(base)) {
                                 //If we haven't already added the main extra source set to this integration, we need to do so here
                                 moduleDataIntegration.compileClasspath += getExtraSourceSet(project.sourceSets.main, extraType).get().output
                             }
@@ -389,7 +390,7 @@ SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
     extraSourceSet.compileClasspath += project.sourceSets.api.output
     extraSourceSet.compileClasspath += project.sourceSets.main.output
     extraSourceSet.runtimeClasspath += project.sourceSets.main.runtimeClasspath
-    if (baseSourceSet != project.sourceSets.main) {
+    if (!SourceSet.isMain(baseSourceSet)) {
         //If the base sourceSet is main it already is the extra source set and has a reference to the base one from before this if statement
         extraSourceSet.compileClasspath += getExtraSourceSet(project.sourceSets.main, extra).get().output
         extraSourceSet.compileClasspath += baseSourceSet.output
@@ -430,7 +431,7 @@ void setupTasks(SourceSet sourceSet) {
         //Configure specific compile tasks to have the proper annotation processor info
         options.annotationProcessorPath = configurations.annotationProcessor
         options.compilerArgs.addAll([
-                "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? '' : sourceSet.name}",//annotation processor param
+                "-AmekanismModule=mekanism${SourceSet.isMain(sourceSet) ? '' : sourceSet.name}",//annotation processor param
                 '-parameters'
         ])
     })
@@ -464,6 +465,27 @@ void setupTasks(SourceSet sourceSet) {
         def extraSourceSet = getExtraSourceSet(sourceSet, extraType).get()
         tasks.named(extraSourceSet.processResourcesTaskName, { dependsOn(compileTask) })
     }
+}
+
+def mergeServiceDescriptors = tasks.register('mergeDataServiceDescriptors', MergeServiceDescriptors) {
+    for (def integration : integrations as Map<String, IntegrationSettings>) {
+        if (integration.value.shouldCompile() && integration.value.scope().hasData) {
+            String path = integration.key
+            if (integration.value.perModule().enabled()) {
+                path += '/main'
+            }
+            if (resources == null) {
+                resources = layout.projectDirectory.files("src/datagen/integration/${path}/resources_to_merge")
+            } else {
+                resources += layout.projectDirectory.files("src/datagen/integration/${path}/resources_to_merge")
+            }
+        }
+    }
+    generatedDir.set(layout.buildDirectory.dir('generated/merged-datagen-services') as Provider<? extends Directory>)
+}
+
+getExtraSourceSet(sourceSets.main, 'datagen').configure {
+    resources.srcDir(mergeServiceDescriptors.flatMap { it.generatedDir })
 }
 
 void setGroups(SourceSet sourceSet) {
@@ -833,7 +855,7 @@ def getManifestAttributes(String title) {
 void addIntegrationFiles(AbstractCopyTask task, SourceSet baseSourceSet, Transformer<?, SourceSet> transformer) {
     for (def integration : integrations as Map<String, IntegrationSettings>) {
         if (integration.value.shouldCompile() && integration.value.scope().hasBase) {
-            if (baseSourceSet == sourceSets.main || integration.value.perModule().enabled()) {
+            if (SourceSet.isMain(baseSourceSet) || integration.value.perModule().enabled()) {
                 def integrationSourceSet = getIntegrationSourceSet(integration.key, baseSourceSet.name)
                 task.from(integrationSourceSet.map(transformer))
                 task.dependsOn(integrationSourceSet.map(s -> s.classesTaskName))
