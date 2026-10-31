@@ -8,8 +8,10 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntLists;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import mekanism.api.AutomationType;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.client.recipe_viewer.RVTransferUtils;
 import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.Mekanism;
@@ -28,6 +30,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError.Type;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import mezz.jei.api.recipe.transfer.RecipeTransferResult;
 import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -97,7 +100,7 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
             IRecipeTransferError error = transferRecipe(recipeContainers, recipeHolder.value(), helper, ignored, AutomationType.MANUAL);
             if (error == SUCCESS) {
                 if (doTransfer) {
-                    helper.sendTransferPacket();
+                    helper.sendTransferPacket(-1, null);
                 }
                 return null;
             } else if (error == MISSING_SLOTS) {
@@ -125,7 +128,8 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
             IRecipeTransferError error = transferRecipe(recipeContainers, context.getRecipe().value(), helper, ignored, AutomationType.MANUAL);
             if (error == SUCCESS) {
                 if (doTransfer) {
-                    helper.sendTransferPacket();
+                    helper.sendTransferPacket(context.getTransferId(),
+                          successful -> context.completeRecipeTransfer(successful ? RecipeTransferResult.SUCCESS : RecipeTransferResult.REJECTED));
                 }
                 return null;
             } else if (error == MISSING_SLOTS) {
@@ -134,6 +138,9 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
                     return transferHelper.createInternalError();
                 }
                 return transferHelper.createUserErrorForMissingSlots(MekanismLang.JEI_MISSING_ITEMS.translate(), helper.missingSlots.intStream().mapToObj(inputSlots::get).toList());
+            }
+            if (error == null && doTransfer) {
+                context.completeRecipeTransfer(RecipeTransferResult.SUCCESS);
             }
             return error;
         }
@@ -209,9 +216,14 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
             itemsTransferred.put(slotUsedFor, new ResourceStack<>(resource, amount));
         }
 
-        public void sendTransferPacket() {
+        public void sendTransferPacket(int transferId, @Nullable Consumer<Boolean> completion) {
             if (!itemsTransferred.isEmpty()) {
-                PacketUtils.sendToServer(new PacketTransferMekanismRecipe(itemsTransferred));
+                if (transferId != -1 && completion != null) {
+                    RVTransferUtils.registerTransfer(transferId, completion);
+                }
+                PacketUtils.sendToServer(new PacketTransferMekanismRecipe(itemsTransferred, transferId));
+            } else if (completion != null) {
+                completion.accept(true);
             }
         }
 

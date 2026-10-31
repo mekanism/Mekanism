@@ -13,7 +13,7 @@ import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularItemTypeSou
 import mekanism.common.content.qio.QIOServerCraftingTransferHandler;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.to_client.qio.PacketQIOCraftingTransferResult;
+import mekanism.common.network.to_client.PacketRecipeTransferResult;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
@@ -52,8 +52,8 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
         try {
             successful = tryTransfer(context.player());
         } finally {
-            if (transferId != -1 && context.listener().hasChannel(PacketQIOCraftingTransferResult.TYPE)) {
-                context.reply(new PacketQIOCraftingTransferResult(transferId, successful));
+            if (transferId != -1) {
+                context.reply(new PacketRecipeTransferResult(transferId, successful));
             }
         }
     }
@@ -120,10 +120,7 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
                 }
             }
         }
-        // Preserve the original packet layout when the peer does not support transfer results.
-        if (transferId != -1) {
-            ByteBufCodecs.VAR_INT.encode(buffer, transferId);
-        }
+        ByteBufCodecs.VAR_INT.encode(buffer, transferId);
     }
 
     private static PacketQIOFillCraftingWindow decode(ByteBuf buffer) {
@@ -147,7 +144,7 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
                 }
             }
         }
-        int transferId = buffer.isReadable() ? ByteBufCodecs.VAR_INT.decode(buffer) : -1;
+        int transferId = ByteBufCodecs.VAR_INT.decode(buffer);
         return new PacketQIOFillCraftingWindow(recipeID, transferMultiple, rejectToInventory, sources, transferId);
     }
 }

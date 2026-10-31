@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import mekanism.client.model.robit.RobitSkinManager;
-import mekanism.client.recipe_viewer.QIOCraftingTransferHandler;
+import mekanism.client.recipe_viewer.RVTransferUtils;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.tileentity.RenderSPS;
 import mekanism.client.render.transmitter.TransmitterContentsManager;
@@ -91,7 +91,7 @@ public class MekanismClient {
         clientSecurityMap.clear();
         clientUUIDMap.clear();
         clientRecipeMap = RecipeMap.EMPTY;
-        QIOCraftingTransferHandler.clearPendingTransfers();
+        RVTransferUtils.clearPendingTransfers();
 
         ClientTickHandler.reset();
         SoundHandler.radiationSoundMap.clear();

@@ -9,8 +9,6 @@ import it.unimi.dsi.fastutil.bytes.ByteArraySet;
 import it.unimi.dsi.fastutil.bytes.ByteIterator;
 import it.unimi.dsi.fastutil.bytes.ByteList;
 import it.unimi.dsi.fastutil.bytes.ByteSet;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -38,9 +36,7 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.network.PacketUtils;
-import mekanism.common.network.to_client.qio.PacketQIOCraftingTransferResult;
 import mekanism.common.network.to_server.qio.PacketQIOFillCraftingWindow;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -53,19 +49,6 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 public class QIOCraftingTransferHandler {
-
-    private static final Int2ObjectMap<Consumer<Boolean>> pendingTransfers = new Int2ObjectOpenHashMap<>();
-
-    public static void clearPendingTransfers() {
-        pendingTransfers.clear();
-    }
-
-    public static void completeTransfer(int transferId, boolean successful) {
-        Consumer<Boolean> completion = pendingTransfers.remove(transferId);
-        if (completion != null) {
-            completion.accept(successful);
-        }
-    }
 
     public interface RVRecipeSlot {
 
@@ -108,7 +91,7 @@ public class QIOCraftingTransferHandler {
         return transferRecipe(recipeHelper, execute, -1, null);
     }
 
-    /// The completion callback runs on the client thread after an executed transfer, if the server supports transfer results.
+    /// The completion callback runs on the client thread after the server finishes an executed transfer.
     @Nullable
     public static <RESULT, SLOT extends RVRecipeSlot, ITEM_UUID> RESULT transferRecipe(RVRecipeInfo<RESULT, SLOT, ITEM_UUID> recipeHelper, boolean execute,
           int transferId, @Nullable Consumer<Boolean> completion) {
@@ -372,14 +355,12 @@ public class QIOCraftingTransferHandler {
                 // things may not fully be accurate on the client side with the stacks that JEI lets us know match the recipe, as
                 // they may require extra NBT that is server side only.
                 //TODO: If the sources are all from the crafting window and are already in the correct spots, there is no need to send this packet
-                boolean requestResult = completion != null && transferId != -1 && recipeHelper.player() instanceof LocalPlayer player
-                      && player.connection.hasChannel(PacketQIOCraftingTransferResult.TYPE);
+                boolean requestResult = transferId != -1 && completion != null;
+                if (requestResult) {
+                    RVTransferUtils.registerTransfer(transferId, completion);
+                }
                 PacketUtils.sendToServer(new PacketQIOFillCraftingWindow(recipeHelper.id(), toTransfer > 1,
                       MekanismConfig.client.qioRejectsToInventory.get(), sources, requestResult ? transferId : -1));
-                if (requestResult) {
-                    // Replies are handled on the client thread after this callback is registered.
-                    pendingTransfers.put(transferId, completion);
-                }
             }
         }
         return null;

@@ -7,6 +7,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.lib.recipetransfer.PlaceMekanismRecipe;
 import mekanism.common.lib.recipetransfer.RecipePlacementHelper;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.to_client.PacketRecipeTransferResult;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.RecipeContainers;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -19,7 +20,7 @@ import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
-public record PacketTransferMekanismRecipe(Int2ObjectMap<ResourceStack<ItemResource>> resultState) implements IMekanismPacket {
+public record PacketTransferMekanismRecipe(Int2ObjectMap<ResourceStack<ItemResource>> resultState, int transferId) implements IMekanismPacket {
 
     public static final Type<PacketTransferMekanismRecipe> TYPE = new Type<>(Mekanism.rl("transfer_recipe"));
     private static final StreamCodec<RegistryFriendlyByteBuf, Int2ObjectMap<ResourceStack<ItemResource>>> ITEMS_TRANSFERRED_CODEC = ByteBufCodecs.map(
@@ -30,8 +31,13 @@ public record PacketTransferMekanismRecipe(Int2ObjectMap<ResourceStack<ItemResou
           ));
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketTransferMekanismRecipe> STREAM_CODEC = StreamCodec.composite(
           ITEMS_TRANSFERRED_CODEC, PacketTransferMekanismRecipe::resultState,
+          ByteBufCodecs.VAR_INT, PacketTransferMekanismRecipe::transferId,
           PacketTransferMekanismRecipe::new
     );
+
+    public PacketTransferMekanismRecipe(Int2ObjectMap<ResourceStack<ItemResource>> resultState) {
+        this(resultState, -1);
+    }
 
     @Override
     public Type<PacketTransferMekanismRecipe> type() {
@@ -40,19 +46,32 @@ public record PacketTransferMekanismRecipe(Int2ObjectMap<ResourceStack<ItemResou
 
     @Override
     public void handle(IPayloadContext context) {
-        Player player = context.player();
+        boolean successful = false;
+        try {
+            successful = tryTransfer(context.player());
+        } finally {
+            if (transferId != -1) {
+                context.reply(new PacketRecipeTransferResult(transferId, successful));
+            }
+        }
+    }
+
+    private boolean tryTransfer(Player player) {
         if (player.containerMenu instanceof MekanismContainer container) {
             RecipeContainers recipeContainers = container.getRecipeContainers();
             if (recipeContainers == null) {
                 Mekanism.logger.warn("Received transfer request from: {}, but the container did not have any recipe containers.", player);
             } else {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    if (PlaceMekanismRecipe.tryTransfer(new PacketRecipePlacementHelper(player), recipeContainers.inputs(), resultState, transaction)) {
-                        transaction.commit();
+                    if (!PlaceMekanismRecipe.tryTransfer(new PacketRecipePlacementHelper(player), recipeContainers.inputs(), resultState, transaction)) {
+                        return false;
                     }
+                    transaction.commit();
                 }
+                return true;
             }
         }
+        return false;
     }
 
     private record PacketRecipePlacementHelper(ResourceHandler<ItemResource> mainSlots) implements RecipePlacementHelper<Boolean> {
