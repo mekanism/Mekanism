@@ -4,7 +4,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
-import mekanism.common.Mekanism;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
@@ -37,12 +36,12 @@ class UpgradeRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "upgrade/";
-        addUpgradeRecipe(consumer, UpgradeIds.ANCHOR, MekanismTags.Items.DUSTS_DIAMOND, basePath);
-        addUpgradeRecipe(consumer, UpgradeIds.ENERGY, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD), basePath);
-        addUpgradeRecipe(consumer, UpgradeIds.FILTER, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.TIN), basePath);
-        addUpgradeRecipe(consumer, UpgradeIds.CHEMICAL, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.IRON), basePath);
+        addUpgradeRecipe(output, UpgradeIds.ANCHOR, MekanismTags.Items.DUSTS_DIAMOND, basePath);
+        addUpgradeRecipe(output, UpgradeIds.ENERGY, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD), basePath);
+        addUpgradeRecipe(output, UpgradeIds.FILTER, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.TIN), basePath);
+        addUpgradeRecipe(output, UpgradeIds.CHEMICAL, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.IRON), basePath);
         ExtendedShapedRecipeBuilder.shaped(IUpgradeHelper.INSTANCE.asTemplate(upgrades, UpgradeIds.MUFFLING))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
@@ -52,8 +51,8 @@ class UpgradeRecipeProvider extends BaseSubRecipeProvider {
               .define(Pattern.INGOT, this.items, MekanismTags.Items.MUFFLING_CENTER)
               .category(RecipeCategory.TOOLS)
               .unlockedBy("has_wool", has(ItemTags.WOOL))
-              .save(consumer, Mekanism.rl(basePath + getSaveName(UpgradeIds.MUFFLING)));
-        addUpgradeRecipe(consumer, UpgradeIds.SPEED, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.OSMIUM), basePath);
+              .save(output, basePath + getSaveName(UpgradeIds.MUFFLING));
+        addUpgradeRecipe(output, UpgradeIds.SPEED, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.OSMIUM), basePath);
         ExtendedShapedRecipeBuilder.shaped(IUpgradeHelper.INSTANCE.asTemplate(upgrades, UpgradeIds.STONE_GENERATOR))
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, MekanismRecipeProvider.GLASS_CHAR, Pattern.EMPTY),
@@ -66,10 +65,10 @@ class UpgradeRecipeProvider extends BaseSubRecipeProvider {
               .category(RecipeCategory.TOOLS)
               .unlockedBy("has_water_bucket", has(Tags.Items.BUCKETS_WATER))
               .unlockedBy("has_lava_bucket", has(Tags.Items.BUCKETS_LAVA))
-              .save(consumer, Mekanism.rl(basePath + getSaveName(UpgradeIds.STONE_GENERATOR)));
+              .save(output, basePath + getSaveName(UpgradeIds.STONE_GENERATOR));
     }
 
-    private void addUpgradeRecipe(RecipeOutput consumer, ResourceKey<Upgrade> upgrade, TagKey<Item> dustTag, String basePath) {
+    private void addUpgradeRecipe(RecipeOutput output, ResourceKey<Upgrade> upgrade, TagKey<Item> dustTag, String basePath) {
         ExtendedShapedRecipeBuilder.shaped(IUpgradeHelper.INSTANCE.asTemplate(upgrades, upgrade))
               .pattern(UPGRADE_PATTERN)
               .define(MekanismRecipeProvider.GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
@@ -77,7 +76,7 @@ class UpgradeRecipeProvider extends BaseSubRecipeProvider {
               .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .category(RecipeCategory.TOOLS)
               .unlockedBy("has_alloy", has(MekanismTags.Items.ALLOYS_INFUSED))
-              .save(consumer, Mekanism.rl(basePath + getSaveName(upgrade)));
+              .save(output, basePath + getSaveName(upgrade));
     }
 
     private String getSaveName(ResourceKey<Upgrade> upgrade) {

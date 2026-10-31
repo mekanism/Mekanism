@@ -4,7 +4,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.core.HolderGetter;
@@ -21,7 +20,7 @@ class ChemicalCrystallizerRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "crystallizing/";
         //Salt
         ChemicalCrystallizerRecipeBuilder.crystallizing(
@@ -29,12 +28,12 @@ class ChemicalCrystallizerRecipeProvider extends BaseSubRecipeProvider {
               MekanismItems.SALT.asTemplate()
         ).unlockedBy("in_brine", RecipeProvider.insideOf(MekanismFluids.BRINE.getBlock()))
               .unlockedBy("has_raw_meat", has(Tags.Items.FOODS_RAW_MEAT))
-              .save(consumer, Mekanism.rl(basePath + "salt"));
+              .save(output, basePath + "salt");
         //Lithium
         ChemicalCrystallizerRecipeBuilder.crystallizing(
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.LITHIUM, 100),
               MekanismItems.LITHIUM_DUST.asTemplate()
         ).unlockedBy("in_lithium", RecipeProvider.insideOf(MekanismFluids.LITHIUM.getBlock()))
-              .save(consumer, Mekanism.rl(basePath + "lithium"));
+              .save(output, basePath + "lithium");
     }
 }

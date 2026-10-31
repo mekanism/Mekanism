@@ -32,16 +32,16 @@ class PlasticStairsRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "plastic/stairs/";
-        registerPlasticStairs(consumer, AdditionsBlocks.PLASTIC_STAIRS, AdditionsBlocks.PLASTIC_BLOCKS, AdditionsTags.Items.STAIRS_PLASTIC_NORMAL, false, basePath, "");
-        registerPlasticStairs(consumer, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS, AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS,
+        registerPlasticStairs(output, AdditionsBlocks.PLASTIC_STAIRS, AdditionsBlocks.PLASTIC_BLOCKS, AdditionsTags.Items.STAIRS_PLASTIC_NORMAL, false, basePath, "");
+        registerPlasticStairs(output, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS, AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS,
               AdditionsTags.Items.STAIRS_PLASTIC_TRANSPARENT, true, basePath + "transparent/", "transparent_");
-        registerPlasticStairs(consumer, AdditionsBlocks.PLASTIC_GLOW_STAIRS, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, AdditionsTags.Items.STAIRS_PLASTIC_GLOW, false,
+        registerPlasticStairs(output, AdditionsBlocks.PLASTIC_GLOW_STAIRS, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, AdditionsTags.Items.STAIRS_PLASTIC_GLOW, false,
               basePath + "glow/", "glow_");
     }
 
-    private void registerPlasticStairs(RecipeOutput consumer, EnumColorCollection<? extends BlockRegistryObject<?, ?>> blocks,
+    private void registerPlasticStairs(RecipeOutput output, EnumColorCollection<? extends BlockRegistryObject<?, ?>> blocks,
           EnumColorCollection<? extends BlockRegistryObject<?, ?>> plasticMap, TagKey<Item> blockType, boolean transparent, String basePath, String groupName) {
         HolderSet.Named<Item> typeTag = this.items.getOrThrow(blockType);
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, blocks, (color, block) -> {
@@ -53,11 +53,11 @@ class PlasticStairsRecipeProvider extends BaseSubRecipeProvider {
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .group(MekanismAdditions.rl(groupName + "plastic_stairs"))
                   .unlockedBy("has_plastic", has(plastic))
-                  .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+                  .save(output, basePath + color.getRegistryPrefix());
             if (transparent) {
-                PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, this.items, this.chemicals, result, typeTag, color, basePath, groupName + "plastic_stairs_recolor");
+                PlasticBlockRecipeProvider.registerTransparentRecolor(output, this.items, this.chemicals, result, typeTag, color, basePath, groupName + "plastic_stairs_recolor");
             } else {
-                PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, result, typeTag, color, basePath, groupName + "plastic_stairs_recolor");
+                PlasticBlockRecipeProvider.registerRecolor(output, this.items, this.chemicals, result, typeTag, color, basePath, groupName + "plastic_stairs_recolor");
             }
         });
     }

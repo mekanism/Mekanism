@@ -26,15 +26,15 @@ class TierInstallerRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "tier_installer/";
-        addTierInstallerRecipe(consumer, basePath, MekanismItems.BASIC_TIER_INSTALLER, Tags.Items.INGOTS_IRON, MekanismTags.Items.ALLOYS_BASIC, MekanismTags.Items.CIRCUITS_BASIC);
-        addTierInstallerRecipe(consumer, basePath, MekanismItems.ADVANCED_TIER_INSTALLER, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM), MekanismTags.Items.ALLOYS_INFUSED, MekanismTags.Items.CIRCUITS_ADVANCED);
-        addTierInstallerRecipe(consumer, basePath, MekanismItems.ELITE_TIER_INSTALLER, Tags.Items.INGOTS_GOLD, MekanismTags.Items.ALLOYS_REINFORCED, MekanismTags.Items.CIRCUITS_ELITE);
-        addTierInstallerRecipe(consumer, basePath, MekanismItems.ULTIMATE_TIER_INSTALLER, Tags.Items.GEMS_DIAMOND, MekanismTags.Items.ALLOYS_ATOMIC, MekanismTags.Items.CIRCUITS_ULTIMATE);
+        addTierInstallerRecipe(output, basePath, MekanismItems.BASIC_TIER_INSTALLER, Tags.Items.INGOTS_IRON, MekanismTags.Items.ALLOYS_BASIC, MekanismTags.Items.CIRCUITS_BASIC);
+        addTierInstallerRecipe(output, basePath, MekanismItems.ADVANCED_TIER_INSTALLER, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM), MekanismTags.Items.ALLOYS_INFUSED, MekanismTags.Items.CIRCUITS_ADVANCED);
+        addTierInstallerRecipe(output, basePath, MekanismItems.ELITE_TIER_INSTALLER, Tags.Items.INGOTS_GOLD, MekanismTags.Items.ALLOYS_REINFORCED, MekanismTags.Items.CIRCUITS_ELITE);
+        addTierInstallerRecipe(output, basePath, MekanismItems.ULTIMATE_TIER_INSTALLER, Tags.Items.GEMS_DIAMOND, MekanismTags.Items.ALLOYS_ATOMIC, MekanismTags.Items.CIRCUITS_ULTIMATE);
     }
 
-    private void addTierInstallerRecipe(RecipeOutput consumer, String basePath, ItemRegistryObject<ItemTierInstaller> tierInstaller, TagKey<Item> ingotTag,
+    private void addTierInstallerRecipe(RecipeOutput output, String basePath, ItemRegistryObject<ItemTierInstaller> tierInstaller, TagKey<Item> ingotTag,
           TagKey<Item> alloyTag, TagKey<Item> circuitTag) {
         ExtendedShapedRecipeBuilder.shaped(tierInstaller)
               .pattern(MekanismRecipeProvider.TIER_PATTERN)
@@ -45,6 +45,6 @@ class TierInstallerRecipeProvider extends BaseSubRecipeProvider {
               .category(RecipeCategory.TOOLS)
               .group(Mekanism.rl("tier_installer"))
               .unlockedBy("has_circuit", has(circuitTag))
-              .save(consumer, Mekanism.rl(basePath + tierInstaller.value().getToTier().getLowerName()));
+              .save(output, basePath + tierInstaller.value().getToTier().getLowerName());
     }
 }

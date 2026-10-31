@@ -99,7 +99,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY));
 
     public ToolsRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
-        super(recipeOutput, advancementOutput);
+        super(recipeOutput, advancementOutput, MekanismTools.MODID);
     }
 
     @Override
@@ -125,10 +125,10 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         ArmorCollection armor = material.armor;
         ToolCollection tools = material.tools;
         String baseArmorPath = name + "/armor/";
-        armor(HELMET, armor.helmet(), ingot).save(output, MekanismTools.rl(baseArmorPath + "helmet"));
-        armor(CHESTPLATE, armor.chestplate(), ingot).save(output, MekanismTools.rl(baseArmorPath + "chestplate"));
-        armor(LEGGINGS, armor.leggings(), ingot).save(output, MekanismTools.rl(baseArmorPath + "leggings"));
-        armor(BOOTS, armor.boots(), ingot).save(output, MekanismTools.rl(baseArmorPath + "boots"));
+        armor(HELMET, armor.helmet(), ingot).save(output, baseArmorPath + "helmet");
+        armor(CHESTPLATE, armor.chestplate(), ingot).save(output, baseArmorPath + "chestplate");
+        armor(LEGGINGS, armor.leggings(), ingot).save(output, baseArmorPath + "leggings");
+        armor(BOOTS, armor.boots(), ingot).save(output, baseArmorPath + "boots");
 
         ExtendedShapedRecipeBuilder.shaped(armor.horse())
               .pattern(HORSE_ARMOR)
@@ -136,7 +136,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.INGOT, this.items, ingot)
               .category(RecipeCategory.COMBAT)
               .unlockedBy("has_horse_armor", has(baseHorseArmor))
-              .save(output, MekanismTools.rl(baseArmorPath + "horse"));
+              .save(output, baseArmorPath + "horse");
         ExtendedShapedRecipeBuilder.shaped(armor.nautilus())
               .pattern(NAUTILUS_ARMOR)
               .define(Pattern.PREVIOUS, this.items, baseNautilusArmor)
@@ -144,7 +144,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.NUGGET, this.items, nuggetTag == null ? ingot : nuggetTag)
               .category(RecipeCategory.COMBAT)
               .unlockedBy("has_nautilus_armor", has(baseNautilusArmor))
-              .save(output, MekanismTools.rl(baseArmorPath + "nautilus"));
+              .save(output, baseArmorPath + "nautilus");
 
         ItemRegistryObject<ShieldItem> shield = material.tools.shield();
         ExtendedShapedRecipeBuilder.shaped(shield)
@@ -154,19 +154,19 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .category(RecipeCategory.COMBAT)
               .unlockedBy(hasCriterion(ItemIds.SHIELD))
               .unlockedBy("has_ingot", has(ingot))
-              .save(output, MekanismTools.rl(name + "/shield"));
+              .save(output, name + "/shield");
         SpecialRecipeBuilder.special(() -> new ShieldDecorationRecipe(
               tag(ItemTags.BANNERS),
               Ingredient.of(shield),
               new ItemStackTemplate(shield)
         )).save(output, name + "/shield_decoration");
         String baseToolsPath = name + "/tools/";
-        tool(SWORD, tools.sword(), ingot, RecipeCategory.COMBAT).save(output, MekanismTools.rl(baseToolsPath + "sword"));
-        tool(SPEAR, tools.spear(), ingot, RecipeCategory.COMBAT).save(output, MekanismTools.rl(baseToolsPath + "spear"));
-        tool(PICKAXE, tools.pickaxe(), ingot, RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "pickaxe"));
-        tool(AXE, tools.axe(), ingot, RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "axe"));
-        tool(SHOVEL, tools.shovel(), ingot, RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "shovel"));
-        tool(HOE, tools.hoe(), ingot, RecipeCategory.TOOLS).save(output, MekanismTools.rl(baseToolsPath + "hoe"));
+        tool(SWORD, tools.sword(), ingot, RecipeCategory.COMBAT).save(output, baseToolsPath + "sword");
+        tool(SPEAR, tools.spear(), ingot, RecipeCategory.COMBAT).save(output, baseToolsPath + "spear");
+        tool(PICKAXE, tools.pickaxe(), ingot, RecipeCategory.TOOLS).save(output, baseToolsPath + "pickaxe");
+        tool(AXE, tools.axe(), ingot, RecipeCategory.TOOLS).save(output, baseToolsPath + "axe");
+        tool(SHOVEL, tools.shovel(), ingot, RecipeCategory.TOOLS).save(output, baseToolsPath + "shovel");
+        tool(HOE, tools.hoe(), ingot, RecipeCategory.TOOLS).save(output, baseToolsPath + "hoe");
         //TODO - 1.20.5: Do we care this no longer accepts tools from other mods?
         PaxelShapedRecipeBuilder.shaped(tools.paxel())
               .pattern(PAXEL)
@@ -175,13 +175,13 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .define(SHOVEL_CHAR, tools.shovel())
               .define(ROD_CHAR, this.items, Tags.Items.RODS_WOODEN)
               .unlockedBy("has_ingot", has(ingot))
-              .save(output, MekanismTools.rl(baseToolsPath + "paxel"));
+              .save(output, baseToolsPath + "paxel");
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             List<Holder<Item>> inputs = new ArrayList<>(armor.asList());
             inputs.addAll(tools.asList());
             RecipeProviderUtil.addSmeltingBlastingRecipes(output, Ingredient.of(HolderSet.direct(inputs)), nugget, 0.1F, 200, nugget.key().identifier(),
-                  MekanismTools.rl(name + "/nugget_from"), inputs.stream()
+                  name + "/nugget_from", inputs.stream()
                         .map(this::hasCriterion)
                         .toArray(RecipeCriterion[]::new)
             );
@@ -218,7 +218,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             RecipeProviderUtil.addSmeltingBlastingRecipes(output, ingredient(paxel), items.getOrThrow(nugget), 0.1F, 200, nugget.identifier(),
-                  MekanismTools.rl(nugget.identifier().getPath() + "_from"), new RecipeCriterion("has_paxel", has(paxel)));
+                  nugget.identifier().getPath() + "_from", new RecipeCriterion("has_paxel", has(paxel)));
         }
     }
 

@@ -7,11 +7,9 @@ import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.book.CrushingBookCategory;
 import mekanism.api.recipes.book.EnrichingBookCategory;
-import mekanism.api.recipes.book.PigmentExtractingBookCategory;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -144,7 +142,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               .group(output)
               .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
+              .save(consumer, basePath + "dye/" + color.getRegistryPrefix());
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         int flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
@@ -153,7 +151,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).group(output)
               .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "pigment_extracting/" + color.getRegistryPrefix()));
+              .save(consumer, basePath + "pigment_extracting/" + color.getRegistryPrefix());
     }
 
     private void largeDye(RecipeOutput consumer, String basePath, ResourceKey<Item> output, EnumColor color, Item... inputs) {
@@ -165,7 +163,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               .group(output)
               .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "dye/large_" + color.getRegistryPrefix()));
+              .save(consumer, basePath + "dye/large_" + color.getRegistryPrefix());
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         int largeFlowerRate = 6 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
@@ -173,6 +171,6 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
                     chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.pick(color), largeFlowerRate)
               ).group(output)
               .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
-              .save(consumer, Mekanism.rl(basePath + "pigment_extracting/large_" + color.getRegistryPrefix()));
+              .save(consumer, basePath + "pigment_extracting/large_" + color.getRegistryPrefix());
     }
 }

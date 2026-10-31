@@ -39,7 +39,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "injecting/";
         //Brick -> clay ball
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
@@ -48,7 +48,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
                     true,
                     template(ItemIds.CLAY_BALL)
               ).unlockedBy("has_brick", has(Tags.Items.BRICKS_NORMAL))
-              .save(consumer, Mekanism.rl(basePath + "brick_to_clay_ball"));
+              .save(output, basePath + "brick_to_clay_ball");
         //Dirt -> mud
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
                     IngredientCreatorAccess.item().from(this.items, BlockItemIds.DIRT),
@@ -57,7 +57,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
                     template(BlockItemIds.MUD)
               ).category(InjectingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.DIRT))
-              .save(consumer, Mekanism.rl(basePath + "dirt_to_mud"));
+              .save(output, basePath + "dirt_to_mud");
         //Gunpowder -> sulfur
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
                     IngredientCreatorAccess.item().from(this.items, Tags.Items.GUNPOWDERS),
@@ -65,7 +65,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
                     true,
                     MekanismItems.SULFUR_DUST.asTemplate()
               ).unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDERS))
-              .save(consumer, Mekanism.rl(basePath + "gunpowder_to_sulfur"));
+              .save(output, basePath + "gunpowder_to_sulfur");
         //Terracotta -> clay
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
                     IngredientCreatorAccess.item().from(this.items, BlockItemIds.TERRACOTTA),
@@ -74,13 +74,13 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
                     template(BlockItemIds.CLAY)
               ).category(InjectingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.TERRACOTTA))
-              .save(consumer, Mekanism.rl(basePath + "terracotta_to_clay"));
-        addChemicalInjectorConcreteRecipes(consumer, basePath + "concrete/");
-        addChemicalInjectorCoralRevivalRecipes(consumer, basePath + "coral/");
-        addChemicalInjectorOxidizingRecipe(consumer, basePath + "oxidizing/");
+              .save(output, basePath + "terracotta_to_clay");
+        addChemicalInjectorConcreteRecipes(output, basePath + "concrete/");
+        addChemicalInjectorCoralRevivalRecipes(output, basePath + "coral/");
+        addChemicalInjectorOxidizingRecipe(output, basePath + "oxidizing/");
     }
 
-    private void addChemicalInjectorConcreteRecipes(RecipeOutput consumer, String basePath) {
+    private void addChemicalInjectorConcreteRecipes(RecipeOutput output, String basePath) {
         ColorCollection.VALUES.forEach(color -> ItemStackChemicalToItemStackRecipeBuilder.injecting(
                     IngredientCreatorAccess.item().from(this.items, BlockItemIds.CONCRETE_POWDER.pick(color)),
                     IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismTags.Chemicals.WATER_VAPOR, 1),
@@ -89,31 +89,31 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
               ).category(InjectingBookCategory.BUILDING)
               .group(Mekanism.rl("concrete"))
               .unlockedBy("has_concrete_powder", has(BlockItemIds.CONCRETE_POWDER.pick(color)))
-              .save(consumer, Mekanism.rl(basePath + color)));
+              .save(output, basePath + color));
     }
 
-    private void addChemicalInjectorCoralRevivalRecipes(RecipeOutput consumer, String basePath) {
+    private void addChemicalInjectorCoralRevivalRecipes(RecipeOutput output, String basePath) {
         //Just re-use this biome tag as it is the closest to what we want
         RecipeCriterion inWarmOcean = new RecipeCriterion("in_warm_ocean", PlayerTrigger.TriggerInstance.located(LocationPredicate.Builder.location().setBiomes(
               biomes.getOrThrow(BiomeTags.HAS_OCEAN_RUIN_WARM))));
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_BRAIN_CORAL_BLOCK, BlockItemIds.BRAIN_CORAL_BLOCK, 5);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_BUBBLE_CORAL_BLOCK, BlockItemIds.BUBBLE_CORAL_BLOCK, 5);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_FIRE_CORAL_BLOCK, BlockItemIds.FIRE_CORAL_BLOCK, 5);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_HORN_CORAL_BLOCK, BlockItemIds.HORN_CORAL_BLOCK, 5);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_TUBE_CORAL_BLOCK, BlockItemIds.TUBE_CORAL_BLOCK, 5);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_BRAIN_CORAL, BlockItemIds.BRAIN_CORAL, 3);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_BUBBLE_CORAL, BlockItemIds.BUBBLE_CORAL, 3);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_FIRE_CORAL, BlockItemIds.FIRE_CORAL, 3);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_HORN_CORAL, BlockItemIds.HORN_CORAL, 3);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_TUBE_CORAL, BlockItemIds.TUBE_CORAL, 3);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_BRAIN_CORAL_FAN, BlockItemIds.BRAIN_CORAL_FAN, 3);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_BUBBLE_CORAL_FAN, BlockItemIds.BUBBLE_CORAL_FAN, 3);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_FIRE_CORAL_FAN, BlockItemIds.FIRE_CORAL_FAN, 3);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_HORN_CORAL_FAN, BlockItemIds.HORN_CORAL_FAN, 3);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, inWarmOcean, BlockItemIds.DEAD_TUBE_CORAL_FAN, BlockItemIds.TUBE_CORAL_FAN, 3);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_BRAIN_CORAL_BLOCK, BlockItemIds.BRAIN_CORAL_BLOCK, 5);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_BUBBLE_CORAL_BLOCK, BlockItemIds.BUBBLE_CORAL_BLOCK, 5);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_FIRE_CORAL_BLOCK, BlockItemIds.FIRE_CORAL_BLOCK, 5);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_HORN_CORAL_BLOCK, BlockItemIds.HORN_CORAL_BLOCK, 5);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_TUBE_CORAL_BLOCK, BlockItemIds.TUBE_CORAL_BLOCK, 5);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_BRAIN_CORAL, BlockItemIds.BRAIN_CORAL, 3);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_BUBBLE_CORAL, BlockItemIds.BUBBLE_CORAL, 3);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_FIRE_CORAL, BlockItemIds.FIRE_CORAL, 3);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_HORN_CORAL, BlockItemIds.HORN_CORAL, 3);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_TUBE_CORAL, BlockItemIds.TUBE_CORAL, 3);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_BRAIN_CORAL_FAN, BlockItemIds.BRAIN_CORAL_FAN, 3);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_BUBBLE_CORAL_FAN, BlockItemIds.BUBBLE_CORAL_FAN, 3);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_FIRE_CORAL_FAN, BlockItemIds.FIRE_CORAL_FAN, 3);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_HORN_CORAL_FAN, BlockItemIds.HORN_CORAL_FAN, 3);
+        addChemicalInjectorCoralRevivalRecipe(output, basePath, inWarmOcean, BlockItemIds.DEAD_TUBE_CORAL_FAN, BlockItemIds.TUBE_CORAL_FAN, 3);
     }
 
-    private void addChemicalInjectorCoralRevivalRecipe(RecipeOutput consumer, String basePath, RecipeCriterion inWarmOcean, BlockItemId dead, BlockItemId living, int water) {
+    private void addChemicalInjectorCoralRevivalRecipe(RecipeOutput output, String basePath, RecipeCriterion inWarmOcean, BlockItemId dead, BlockItemId living, int water) {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
                     IngredientCreatorAccess.item().from(this.items, dead),
                     IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismTags.Chemicals.WATER_VAPOR, water),
@@ -121,10 +121,10 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
                     template(living)
               ).group(Mekanism.rl("coral_revival"))
               .unlockedBy(inWarmOcean)
-              .save(consumer, Mekanism.rl(basePath + living.item().identifier().getPath()));
+              .save(output, basePath + living.item().identifier().getPath());
     }
 
-    private void addChemicalInjectorOxidizingRecipe(RecipeOutput consumer, String basePath) {
+    private void addChemicalInjectorOxidizingRecipe(RecipeOutput output, String basePath) {
         //Generate baseline recipes from weathering recipe set
         ChemicalStackIngredient oxygen = IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.OXYGEN, 1);
         //TODO - 26.3: Switch this to being created at runtime and making use of the Neo DataMap?
@@ -151,7 +151,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
                   ).category(InjectingBookCategory.BUILDING)
                   .group(group)
                   .unlockedBy("has_weathering", has(input.asItem()))
-                  .save(consumer, Mekanism.rl(basePath + path));
+                  .save(output, basePath + path);
         }
     }
 }

@@ -8,7 +8,6 @@ import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -46,11 +45,11 @@ class InfusionConversionRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToChemicalRecipeBuilder.chemicalConversion(input, output)
               .group(output.typeHolder().key())
               .unlockedBy(Arrays.stream(criteria))
-              .save(consumer, Mekanism.rl("chemical_conversion/" + basePath + recipeName));
+              .save(consumer, "chemical_conversion/" + basePath + recipeName);
         ItemStackToChemicalRecipeBuilder.oxidizing(input, output)
               .group(output.typeHolder().key())
               .unlockedBy(Arrays.stream(criteria))
-              .save(consumer, Mekanism.rl("oxidizing/" + basePath + recipeName));
+              .save(consumer, "oxidizing/" + basePath + recipeName);
     }
 
     private void addInfusionConversionBioRecipes(RecipeOutput consumer, String basePath) {

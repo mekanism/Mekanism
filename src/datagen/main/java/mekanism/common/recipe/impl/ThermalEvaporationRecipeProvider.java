@@ -1,7 +1,6 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.chemical.Chemical;
-import mekanism.common.Mekanism;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
@@ -22,7 +21,7 @@ class ThermalEvaporationRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "thermal_evaporation/";
         //Block
         ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.THERMAL_EVAPORATION_BLOCK, 4)
@@ -35,7 +34,7 @@ class ThermalEvaporationRecipeProvider extends BaseSubRecipeProvider {
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_copper_ingot", has(Tags.Items.INGOTS_COPPER))
               .unlockedBy("has_steel_ingot", has(MekanismTags.Items.INGOTS_STEEL))
-              .save(consumer, Mekanism.rl(basePath + "block"));
+              .save(output, basePath + "block");
         //Controller
         ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER)
               .pattern(RecipePattern.createPattern(
@@ -48,7 +47,7 @@ class ThermalEvaporationRecipeProvider extends BaseSubRecipeProvider {
               .define(MekanismRecipeProvider.GLASS_CHAR, this.items, Tags.BlockItems.GLASS_PANES)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_casing", has(MekanismBlocks.THERMAL_EVAPORATION_BLOCK))
-              .save(consumer, Mekanism.rl(basePath + "controller"));
+              .save(output, basePath + "controller");
         //Valve
         ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.THERMAL_EVAPORATION_VALVE)
               .pattern(RecipePattern.createPattern(
@@ -59,6 +58,6 @@ class ThermalEvaporationRecipeProvider extends BaseSubRecipeProvider {
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ADVANCED)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_casing", has(MekanismBlocks.THERMAL_EVAPORATION_BLOCK))
-              .save(consumer, Mekanism.rl(basePath + "valve"));
+              .save(output, basePath + "valve");
     }
 }

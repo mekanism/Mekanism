@@ -82,7 +82,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     private final List<ISubRecipeProvider> compatProviders = new ArrayList<>();
 
     public MekanismRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput, Set<String> disabledCompats) {
-        super(recipeOutput, advancementOutput);
+        super(recipeOutput, advancementOutput, Mekanism.MODID);
 
         //Mod Compat Recipe providers
         checkCompat(disabledCompats, "ae2");
@@ -222,12 +222,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .requires(MekanismItems.SULFUR_DUST)
               .group("yellow_dye")//Vanilla group for things that make yellow dye
               .unlockedBy(hasCriterion(MekanismItems.SULFUR_DUST))
-              .save(output, Mekanism.rl("sulfur_dye"));
+              .save(output, "sulfur_dye");
         //Charcoal
         ExtendedShapelessRecipeBuilder.shapeless(this.items, ItemIds.CHARCOAL, 9)
               .requires(MekanismBlocks.CHARCOAL_BLOCK)
               .unlockedBy(hasCriterion(ItemIds.CHARCOAL))
-              .save(output, Mekanism.rl("charcoal"));
+              .save(output, "charcoal");
         //Chargepad
         MekDataShapedRecipeBuilder.shaped(MekanismBlocks.CHARGEPAD)
               .pattern(RecipePattern.createPattern(
@@ -896,7 +896,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT))
               ).define(Pattern.CONSTANT, this.items, MekanismTags.Items.DUSTS_WOOD)
               .unlockedBy("has_sawdust", has(MekanismTags.Items.DUSTS_WOOD))
-              .save(output, Mekanism.rl("paper"));
+              .save(output, "paper");
 
         //Twice the number of slots need items in them than for vanilla chests as that means the backpack style feature is more useful then
         RecipeCriterion personalStorageLotsOfItems = RecipeProviderUtil.lotsOfItems(20);
@@ -1020,7 +1020,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.OSMIUM, osmiumIngot(this.items))
               .category(RecipeCategory.TRANSPORTATION)
               .unlockedBy("has_minecart", has(ItemIds.MINECART))//Same unlock condition as vanilla rails
-              .save(output, Mekanism.rl("rails"));
+              .save(output, "rails");
         //Resistive heater
         MekDataShapedRecipeBuilder.shaped(MekanismBlocks.RESISTIVE_HEATER)
               .pattern(RecipePattern.createPattern(
@@ -1951,13 +1951,13 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.NUCLEAR_WASTE, 10),
                     chemicalTemplate(ChemicalIds.PLUTONIUM, 1)
               ).unlockedBy("has_waste_barrel", has(MekanismBlocks.RADIOACTIVE_WASTE_BARREL))
-              .save(output, Mekanism.rl(basePath + "plutonium"));
+              .save(output, basePath + "plutonium");
         //polonium
         ChemicalToChemicalRecipeBuilder.activating(
                     IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.NUCLEAR_WASTE, 10),
                     chemicalTemplate(ChemicalIds.POLONIUM, 1)
               ).unlockedBy("has_waste_barrel", has(MekanismBlocks.RADIOACTIVE_WASTE_BARREL))
-              .save(output, Mekanism.rl(basePath + "polonium"));
+              .save(output, basePath + "polonium");
 
         //plutonium pellet
         PressurizedReactionRecipeBuilder.reaction(
@@ -1968,7 +1968,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     MekanismItems.PLUTONIUM_PELLET.asTemplate(),
                     chemicalTemplate(ChemicalIds.SPENT_NUCLEAR_WASTE, 1_000)
               ).unlockedBy("has_fluorite", has(MekanismTags.Items.DUSTS_FLUORITE))
-              .save(output, Mekanism.rl(basePath + "plutonium_pellet/from_reaction"));
+              .save(output, basePath + "plutonium_pellet/from_reaction");
         //polonium pellet
         PressurizedReactionRecipeBuilder.reaction(
                     IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_FLUORITE),
@@ -1978,7 +1978,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     MekanismItems.POLONIUM_PELLET.asTemplate(),
                     chemicalTemplate(ChemicalIds.SPENT_NUCLEAR_WASTE, 1_000)
               ).unlockedBy("has_fluorite", has(MekanismTags.Items.DUSTS_FLUORITE))
-              .save(output, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
+              .save(output, basePath + "polonium_pellet/from_reaction");
 
         //antimatter pellet
         ChemicalCrystallizerRecipeBuilder.crystallizing(
@@ -1988,7 +1988,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     //Note: Requires both pellets
                     MekanismTags.Items.PELLETS_PLUTONIUM,
                     MekanismTags.Items.PELLETS_POLONIUM
-              )).save(output, Mekanism.rl(basePath + "antimatter_pellet/from_gas"));
+              )).save(output, basePath + "antimatter_pellet/from_gas");
 
         //back to antimatter
         ItemStackToChemicalRecipeBuilder.oxidizing(
@@ -1996,6 +1996,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               chemicalTemplate(ChemicalIds.ANTIMATTER, 1_000)
         ).group(ChemicalIds.ANTIMATTER)
               .unlockedBy("has_antimatter", has(MekanismTags.Items.PELLETS_ANTIMATTER))
-              .save(output, Mekanism.rl(basePath + "antimatter/from_pellet"));
+              .save(output, basePath + "antimatter/from_pellet");
     }
 }

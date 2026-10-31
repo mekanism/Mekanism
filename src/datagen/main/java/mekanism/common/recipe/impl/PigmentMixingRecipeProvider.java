@@ -83,7 +83,7 @@ class PigmentMixingRecipeProvider extends BaseSubRecipeProvider {
         ).group(Mekanism.rl(output.getRegistryPrefix()));
         unlockedByDye(builder, leftInput.getDyeColor());
         unlockedByDye(builder, rightInput.getDyeColor());
-        builder.save(consumer, Mekanism.rl(basePath + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix()));
+        builder.save(consumer,basePath + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix());
     }
 
     private void unlockedByDye(MekanismRecipeBuilder<?, ?, ?> builder, @Nullable DyeColor color) {

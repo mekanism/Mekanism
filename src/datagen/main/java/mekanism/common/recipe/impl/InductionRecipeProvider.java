@@ -35,10 +35,10 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "induction/";
-        addInductionCellRecipes(consumer, basePath + "cell/");
-        addInductionProviderRecipes(consumer, basePath + "provider/");
+        addInductionCellRecipes(output, basePath + "cell/");
+        addInductionProviderRecipes(output, basePath + "provider/");
         //Casing
         ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.INDUCTION_CASING, 4)
               .pattern(RecipePattern.createPattern(
@@ -49,7 +49,7 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
               .define(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy(hasCriterion(MekanismItems.ENERGY_TABLET))
-              .save(consumer, Mekanism.rl(basePath + "casing"));
+              .save(output, basePath + "casing");
         //Port
         ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.INDUCTION_PORT, 2)
               .pattern(RecipePattern.createPattern(
@@ -61,10 +61,10 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
               .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_ELITE))
-              .save(consumer, Mekanism.rl(basePath + "port"));
+              .save(output, basePath + "port");
     }
 
-    private void addInductionCellRecipes(RecipeOutput consumer, String basePath) {
+    private void addInductionCellRecipes(RecipeOutput output, String basePath) {
         //Basic needs to be handled slightly differently
         MekDataShapedRecipeBuilder.shaped(MekanismBlocks.BASIC_INDUCTION_CELL)
               .pattern(RecipePattern.createPattern(
@@ -78,13 +78,13 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
               .group(Mekanism.rl("induction_cell"))
               .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
               .unlockedBy("has_energy_cube", has(MekanismBlocks.BASIC_ENERGY_CUBE))
-              .save(consumer, Mekanism.rl(basePath + "basic"));
-        addTieredInductionCellRecipe(consumer, basePath, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.BASIC_INDUCTION_CELL, MekanismBlocks.ADVANCED_ENERGY_CUBE);
-        addTieredInductionCellRecipe(consumer, basePath, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.ELITE_ENERGY_CUBE);
-        addTieredInductionCellRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
+              .save(output, basePath + "basic");
+        addTieredInductionCellRecipe(output, basePath, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.BASIC_INDUCTION_CELL, MekanismBlocks.ADVANCED_ENERGY_CUBE);
+        addTieredInductionCellRecipe(output, basePath, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.ELITE_ENERGY_CUBE);
+        addTieredInductionCellRecipe(output, basePath, MekanismBlocks.ULTIMATE_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
     }
 
-    private void addTieredInductionCellRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> cell, BlockRegistryObject<?, ?> previousCell,
+    private void addTieredInductionCellRecipe(RecipeOutput output, String basePath, BlockRegistryObject<?, ?> cell, BlockRegistryObject<?, ?> previousCell,
           BlockRegistryObject<?, ?> energyCube) {
         String tierName = Attribute.getBaseTierNN(cell).getLowerName();
         MekDataShapedRecipeBuilder.shaped(cell)
@@ -96,10 +96,10 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
               .group(Mekanism.rl("induction_cell"))
               .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
               .unlockedBy("has_energy_cube", has(energyCube))
-              .save(consumer, Mekanism.rl(basePath + tierName));
+              .save(output, basePath + tierName);
     }
 
-    private void addInductionProviderRecipes(RecipeOutput consumer, String basePath) {
+    private void addInductionProviderRecipes(RecipeOutput output, String basePath) {
         //Basic needs to be handled slightly differently
         ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.BASIC_INDUCTION_PROVIDER)
               .pattern(RecipePattern.createPattern(
@@ -113,13 +113,13 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
               .group(Mekanism.rl("induction_provider"))
               .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
               .unlockedBy("has_energy_cube", has(MekanismBlocks.BASIC_ENERGY_CUBE))
-              .save(consumer, Mekanism.rl(basePath + "basic"));
-        addTieredInductionProviderRecipe(consumer, basePath, MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, MekanismBlocks.BASIC_INDUCTION_PROVIDER, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ADVANCED);
-        addTieredInductionProviderRecipe(consumer, basePath, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ELITE);
-        addTieredInductionProviderRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ULTIMATE);
+              .save(output, basePath + "basic");
+        addTieredInductionProviderRecipe(output, basePath, MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, MekanismBlocks.BASIC_INDUCTION_PROVIDER, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ADVANCED);
+        addTieredInductionProviderRecipe(output, basePath, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ELITE);
+        addTieredInductionProviderRecipe(output, basePath, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ULTIMATE);
     }
 
-    private void addTieredInductionProviderRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> provider, BlockRegistryObject<?, ?> previousProvider,
+    private void addTieredInductionProviderRecipe(RecipeOutput output, String basePath, BlockRegistryObject<?, ?> provider, BlockRegistryObject<?, ?> previousProvider,
           BlockRegistryObject<?, ?> energyCube, TagKey<Item> circuitTag) {
         String tierName = Attribute.getBaseTierNN(provider).getLowerName();
         ExtendedShapedRecipeBuilder.shaped(provider)
@@ -131,6 +131,6 @@ class InductionRecipeProvider extends BaseSubRecipeProvider {
               .group(Mekanism.rl("induction_provider"))
               .unlockedBy("has_casing", has(MekanismBlocks.INDUCTION_CASING))
               .unlockedBy("has_energy_cube", has(energyCube))
-              .save(consumer, Mekanism.rl(basePath + tierName));
+              .save(output, basePath + tierName);
     }
 }

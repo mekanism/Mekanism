@@ -50,7 +50,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.GLOWSTONE, PLASTIC_SHEET_CHAR, Pattern.GLOWSTONE));
 
     public AdditionsRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
-        super(recipeOutput, advancementOutput);
+        super(recipeOutput, advancementOutput, MekanismAdditions.MODID);
     }
 
     @Override
@@ -106,14 +106,14 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                       .category(RecipeCategory.DECORATIONS)
                       .group(MekanismAdditions.rl("balloon"))
                       .unlockedBy("has_leather", has(Tags.Items.LEATHERS))
-                      .save(output, MekanismAdditions.rl(basePath + colorString));
+                      .save(output, basePath + colorString);
                 ExtendedShapelessRecipeBuilder.shapeless(balloon)
                       .requires(recolorInput)
                       .requires(this.items, dye.getTag())
                       .category(RecipeCategory.DECORATIONS)
                       .group(MekanismAdditions.rl("balloon_recolor"))
                       .unlockedBy("has_needed_dye", has(dye.getTag()))
-                      .save(output, MekanismAdditions.rl(basePath + "recolor/" + colorString));
+                      .save(output, basePath + "recolor/" + colorString);
             }
             ItemStackChemicalToItemStackRecipeBuilder.painting(
                   IngredientCreatorAccess.item().from(recolorInput),
@@ -122,7 +122,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                   new ItemStackTemplate(balloon)
             ).group(MekanismAdditions.rl("balloon_painting"))
                   .unlockedBy("has_needed_dye", has(dye == null ? AdditionsTags.Items.BALLOONS : dye.getTag()))
-                  .save(output, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
+                  .save(output, basePath + "recolor/painting/" + colorString);
         });
     }
 
@@ -144,7 +144,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                       .unlockedBy("has_plastic", has(MekanismItems.HDPE_PELLET))
                       .unlockedBy("has_plastic_sheet", has(MekanismItems.HDPE_SHEET))
                       .unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
-                      .save(output, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+                      .save(output, basePath + color.getRegistryPrefix());
             }
             PlasticBlockRecipeProvider.registerRecolor(output, this.items, this.chemicals, glowPanel, glowPanelTag, color, basePath, "glow_panels_recolor");
         });

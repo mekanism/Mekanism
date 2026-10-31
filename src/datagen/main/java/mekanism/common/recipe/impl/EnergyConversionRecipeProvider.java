@@ -3,7 +3,6 @@ package mekanism.common.recipe.impl;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.ItemStackToEnergyRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -30,6 +29,6 @@ class EnergyConversionRecipeProvider extends BaseSubRecipeProvider {
               IngredientCreatorAccess.item().from(this.items, inputTag),
               output
         ).unlockedBy("has_" + name, has(inputTag))
-              .save(consumer, Mekanism.rl(basePath + name));
+              .save(consumer, basePath + name);
     }
 }

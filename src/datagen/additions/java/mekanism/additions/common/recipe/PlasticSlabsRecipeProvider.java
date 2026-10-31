@@ -30,16 +30,16 @@ class PlasticSlabsRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "plastic/slab/";
-        registerPlasticSlabs(consumer, AdditionsBlocks.PLASTIC_SLABS, AdditionsBlocks.PLASTIC_BLOCKS, AdditionsTags.Items.SLABS_PLASTIC_NORMAL, false, basePath, "");
-        registerPlasticSlabs(consumer, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS, AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS,
+        registerPlasticSlabs(output, AdditionsBlocks.PLASTIC_SLABS, AdditionsBlocks.PLASTIC_BLOCKS, AdditionsTags.Items.SLABS_PLASTIC_NORMAL, false, basePath, "");
+        registerPlasticSlabs(output, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS, AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS,
               AdditionsTags.Items.SLABS_PLASTIC_TRANSPARENT, true, basePath + "transparent/", "transparent_");
-        registerPlasticSlabs(consumer, AdditionsBlocks.PLASTIC_GLOW_SLABS, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, AdditionsTags.Items.SLABS_PLASTIC_GLOW, false,
+        registerPlasticSlabs(output, AdditionsBlocks.PLASTIC_GLOW_SLABS, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, AdditionsTags.Items.SLABS_PLASTIC_GLOW, false,
               basePath + "glow/", "glow_");
     }
 
-    private void registerPlasticSlabs(RecipeOutput consumer, EnumColorCollection<? extends BlockRegistryObject<?, ?>> blocks,
+    private void registerPlasticSlabs(RecipeOutput output, EnumColorCollection<? extends BlockRegistryObject<?, ?>> blocks,
           EnumColorCollection<? extends BlockRegistryObject<?, ?>> plasticMap, TagKey<Item> blockType, boolean transparent, String basePath, String groupName) {
         HolderSet.Named<Item> typeTag = this.items.getOrThrow(blockType);
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, blocks, (color, block) -> {
@@ -51,11 +51,11 @@ class PlasticSlabsRecipeProvider extends BaseSubRecipeProvider {
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .group(MekanismAdditions.rl(groupName + "plastic_slabs"))
                   .unlockedBy("has_plastic", has(plastic))
-                  .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+                  .save(output, basePath + color.getRegistryPrefix());
             if (transparent) {
-                PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, this.items, this.chemicals, slab, typeTag, color, basePath, groupName + "plastic_slabs_recolor");
+                PlasticBlockRecipeProvider.registerTransparentRecolor(output, this.items, this.chemicals, slab, typeTag, color, basePath, groupName + "plastic_slabs_recolor");
             } else {
-                PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, slab, typeTag, color, basePath, groupName + "plastic_slabs_recolor");
+                PlasticBlockRecipeProvider.registerRecolor(output, this.items, this.chemicals, slab, typeTag, color, basePath, groupName + "plastic_slabs_recolor");
             }
             ExtendedShapedRecipeBuilder.shaped(plastic, 1)
                   .pattern(PLASTIC_RECOMBINATION)
@@ -63,7 +63,7 @@ class PlasticSlabsRecipeProvider extends BaseSubRecipeProvider {
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .group(MekanismAdditions.rl(groupName + "plastic_recombination"))
                   .unlockedBy("has_plastic_slab", has(slab))
-                  .save(consumer, MekanismAdditions.rl(basePath + "recombination/" + color.getRegistryPrefix()));
+                  .save(output, basePath + "recombination/" + color.getRegistryPrefix());
         });
     }
 }

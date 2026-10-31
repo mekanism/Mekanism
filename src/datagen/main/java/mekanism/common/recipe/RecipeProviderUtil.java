@@ -54,19 +54,19 @@ public class RecipeProviderUtil {
     }
 
     public static void addSmeltingBlastingRecipes(RecipeOutput consumer, Ingredient smeltingInput, Holder<Item> output, float experience, int smeltingTime,
-          @Nullable Identifier group, Identifier baseLocation, RecipeCriterion... criteria) {
+          @Nullable Identifier group, String baseLocation, RecipeCriterion... criteria) {
         ExtendedCookingRecipeBuilder.blasting(CookingBookCategory.MISC, output, smeltingInput, smeltingTime / 2)
               .experience(experience)
               .category(RecipeCategory.MISC)
               .group(group)
               .unlockedBy(Arrays.stream(criteria))
-              .save(consumer, baseLocation.withSuffix("_blasting"));
+              .save(consumer, baseLocation + "_blasting");
         ExtendedCookingRecipeBuilder.smelting(CookingBookCategory.MISC, output, smeltingInput, smeltingTime)
               .experience(experience)
               .category(RecipeCategory.MISC)
               .group(group)
               .unlockedBy(Arrays.stream(criteria))
-              .save(consumer, baseLocation.withSuffix("_smelting"));
+              .save(consumer, baseLocation + "_smelting");
     }
 
     /// Copied from the recipe unlock condition for vanilla chests, with values of `10` for `occupied`
@@ -234,7 +234,7 @@ public class RecipeProviderUtil {
               ).category(EnrichingBookCategory.DECORATIVE)
               .group(dye)
               .unlockedBy(Arrays.stream(inputs).map(input -> hasCriterion(items, input)))
-              .save(consumer, Mekanism.rl(basePath + name));
+              .save(consumer, basePath + name);
     }
 
     public static void addEnrichingDyeRecipe(RecipeOutput consumer, HolderGetter<Item> items, String basePath, ResourceKey<Item> dye, int outputAmount, String name, TagKey<Item> input) {
@@ -244,7 +244,7 @@ public class RecipeProviderUtil {
               ).category(EnrichingBookCategory.DECORATIVE)
               .group(dye)
               .unlockedBy("has_flower", has(items, input))
-              .save(consumer, Mekanism.rl(basePath + name));
+              .save(consumer, basePath + name);
     }
 
     @SuppressWarnings("unchecked")
@@ -261,7 +261,7 @@ public class RecipeProviderUtil {
               chemicalTemplate(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), outputAmount)
         ).group(ItemIds.DYE.pick(Objects.requireNonNull(color.getDyeColor())))
               .unlockedBy(Arrays.stream(inputs).map(input -> hasCriterion(items, input)))
-              .save(consumer, Mekanism.rl(basePath + name));
+              .save(consumer, basePath + name);
     }
 
     public static void addPigmentExtractingDyeRecipe(RecipeOutput consumer, HolderGetter<Item> items, HolderGetter<Chemical> chemicals, String basePath, EnumColor color,
@@ -271,7 +271,7 @@ public class RecipeProviderUtil {
                     chemicalTemplate(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), outputAmount)
               ).group(ItemIds.DYE.pick(Objects.requireNonNull(color.getDyeColor())))
               .unlockedBy("has_flower", has(items, input))
-              .save(consumer, Mekanism.rl(basePath + name));
+              .save(consumer, basePath + name);
     }
 
     public static void save(RecipeOutput consumer, MekanismRecipeBuilder<?, ?, ?> builder, String path, @Nullable ICondition condition) {
@@ -279,7 +279,7 @@ public class RecipeProviderUtil {
             //If there is a condition, add it to the recipe builder
             builder.addCondition(condition);
         }
-        builder.save(consumer, Mekanism.rl(path));
+        builder.save(consumer, path);
     }
 
     public static ItemStackTemplate template(HolderGetter<Item> items, ResourceKey<Item> item) {

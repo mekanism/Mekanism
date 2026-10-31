@@ -19,11 +19,11 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(RecipeOutput consumer, String basePath) {
-        addPrecisionSawmillRecipes(consumer, basePath + "sawing/");
+    protected void registerRecipes(RecipeOutput output, String basePath) {
+        addPrecisionSawmillRecipes(output, basePath + "sawing/");
     }
 
-    private void addPrecisionSawmillRecipes(RecipeOutput consumer, String basePath) {
+    private void addPrecisionSawmillRecipes(RecipeOutput output, String basePath) {
         Holder<Item> bone = items.getOrThrow(ItemIds.BONE);
         Holder<Item> boneMeal = items.getOrThrow(ItemIds.BONE_MEAL);
         //Beef
@@ -34,7 +34,7 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl("fd_meat"))
               .unlockedBy(hasCriterion(ItemIds.BEEF))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "minced_beef"));
+              .save(output, basePath + "minced_beef");
         //Pork
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(items, ItemIds.PORKCHOP),
@@ -43,7 +43,7 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl("fd_cooked_meat"))
               .unlockedBy(hasCriterion(ItemIds.PORKCHOP))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "raw_bacon"));
+              .save(output, basePath + "raw_bacon");
         //Mutton
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(items, ItemIds.MUTTON),
@@ -52,7 +52,7 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl("fd_meat"))
               .unlockedBy(hasCriterion(ItemIds.MUTTON))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "raw_mutton_chops"));
+              .save(output, basePath + "raw_mutton_chops");
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(items, ItemIds.COOKED_MUTTON),
                     new ItemStackTemplate(ModItems.COOKED_MUTTON_CHOPS.get(), 2)
@@ -60,7 +60,7 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl("fd_cooked_meat"))
               .unlockedBy(hasCriterion(ItemIds.COOKED_MUTTON))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "mutton_chops"));
+              .save(output, basePath + "mutton_chops");
         //Ham
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(ModItems.HAM.get()),
@@ -71,7 +71,7 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl("fd_meat"))
               .unlockedBy(hasCriterion(ModItems.HAM.get()))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "ham_processing"));
+              .save(output, basePath + "ham_processing");
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(ModItems.SMOKED_HAM.get()),
                     new ItemStackTemplate(items.getOrThrow(ItemIds.COOKED_PORKCHOP), 2),
@@ -80,7 +80,7 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
               ).category(SawingBookCategory.FOOD)
               .group(Mekanism.rl("fd_cooked_meat"))
               .unlockedBy(hasCriterion(ModItems.SMOKED_HAM.get())).addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "smoked_ham_processing"));
+              .save(output, basePath + "smoked_ham_processing");
         //Chicken
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(items, ItemIds.CHICKEN),
@@ -91,7 +91,7 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl("fd_meat"))
               .unlockedBy(hasCriterion(ItemIds.CHICKEN))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "raw_chicken_cuts"));
+              .save(output, basePath + "raw_chicken_cuts");
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(items, ItemIds.COOKED_CHICKEN),
                     new ItemStackTemplate(ModItems.COOKED_CHICKEN_CUTS.get(), 2),
@@ -101,7 +101,7 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl("fd_cooked_meat"))
               .unlockedBy(hasCriterion(ItemIds.COOKED_CHICKEN))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "chicken_cuts"));
+              .save(output, basePath + "chicken_cuts");
         //Salmon
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(items, ItemIds.SALMON),
@@ -112,7 +112,7 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl("fd_fish"))
               .unlockedBy(hasCriterion(ItemIds.SALMON))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "raw_salmon_slice"));
+              .save(output, basePath + "raw_salmon_slice");
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(items, ItemIds.COOKED_SALMON),
                     new ItemStackTemplate(ModItems.COOKED_SALMON_SLICE.get(), 2),
@@ -122,7 +122,7 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl("fd_cooked_fish"))
               .unlockedBy(hasCriterion(ItemIds.COOKED_SALMON))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "salmon_slice"));
+              .save(output, basePath + "salmon_slice");
         //Cod
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(items, ItemIds.COD),
@@ -133,7 +133,7 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl("fd_fish"))
               .unlockedBy(hasCriterion(ItemIds.COD))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "raw_cod_slice"));
+              .save(output, basePath + "raw_cod_slice");
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(items, ItemIds.COOKED_COD),
                     new ItemStackTemplate(ModItems.COOKED_COD_SLICE.get(), 2),
@@ -143,6 +143,6 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl("fd_cooked_fish"))
               .unlockedBy(hasCriterion(ItemIds.COOKED_COD))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "cod_slice"));
+              .save(output, basePath + "cod_slice");
     }
 }

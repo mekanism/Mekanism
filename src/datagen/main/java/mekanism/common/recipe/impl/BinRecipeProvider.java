@@ -37,10 +37,10 @@ class BinRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         //Special recipes (bins)
-        SpecialRecipeBuilder.special(BinInsertRecipe::new).save(consumer, ResourceKey.create(Registries.RECIPE, MekanismRecipeSerializersInternal.BIN_INSERT.getId()));
-        SpecialRecipeBuilder.special(BinExtractRecipe::new).save(consumer, ResourceKey.create(Registries.RECIPE, MekanismRecipeSerializersInternal.BIN_EXTRACT.getId()));
+        SpecialRecipeBuilder.special(BinInsertRecipe::new).save(output, ResourceKey.create(Registries.RECIPE, MekanismRecipeSerializersInternal.BIN_INSERT.getId()));
+        SpecialRecipeBuilder.special(BinExtractRecipe::new).save(output, ResourceKey.create(Registries.RECIPE, MekanismRecipeSerializersInternal.BIN_EXTRACT.getId()));
         //Recipes for making bins
         String basePath = "bin/";
         //Note: For the basic bin, we have to handle the empty slot differently than batching it against our bin pattern
@@ -57,13 +57,13 @@ class BinRecipeProvider extends BaseSubRecipeProvider {
               //Require having multiple full stacks of items in addition to having items in the inventory
               .unlockedBy(RecipeProviderUtil.lotsOfItems(10, 5))
               .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
-              .save(consumer, Mekanism.rl(basePath + "basic"));
-        addTieredBin(consumer, basePath, MekanismBlocks.ADVANCED_BIN, MekanismBlocks.BASIC_BIN, MekanismTags.Items.CIRCUITS_ADVANCED, MekanismTags.Items.ALLOYS_INFUSED);
-        addTieredBin(consumer, basePath, MekanismBlocks.ELITE_BIN, MekanismBlocks.ADVANCED_BIN, MekanismTags.Items.CIRCUITS_ELITE, MekanismTags.Items.ALLOYS_REINFORCED);
-        addTieredBin(consumer, basePath, MekanismBlocks.ULTIMATE_BIN, MekanismBlocks.ELITE_BIN, MekanismTags.Items.CIRCUITS_ULTIMATE, MekanismTags.Items.ALLOYS_ATOMIC);
+              .save(output, basePath + "basic");
+        addTieredBin(output, basePath, MekanismBlocks.ADVANCED_BIN, MekanismBlocks.BASIC_BIN, MekanismTags.Items.CIRCUITS_ADVANCED, MekanismTags.Items.ALLOYS_INFUSED);
+        addTieredBin(output, basePath, MekanismBlocks.ELITE_BIN, MekanismBlocks.ADVANCED_BIN, MekanismTags.Items.CIRCUITS_ELITE, MekanismTags.Items.ALLOYS_REINFORCED);
+        addTieredBin(output, basePath, MekanismBlocks.ULTIMATE_BIN, MekanismBlocks.ELITE_BIN, MekanismTags.Items.CIRCUITS_ULTIMATE, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addTieredBin(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> bin, BlockRegistryObject<?, ?> previousBin, TagKey<Item> circuitTag,
+    private void addTieredBin(RecipeOutput output, String basePath, BlockRegistryObject<?, ?> bin, BlockRegistryObject<?, ?> previousBin, TagKey<Item> circuitTag,
           TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTierNN(bin).getLowerName();
         MekDataShapedRecipeBuilder.shaped(bin)
@@ -75,6 +75,6 @@ class BinRecipeProvider extends BaseSubRecipeProvider {
               .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
               .group(Mekanism.rl("bin"))
               .unlockedBy("has_circuit", has(circuitTag))
-              .save(consumer, Mekanism.rl(basePath + tierName));
+              .save(output, basePath + tierName);
     }
 }

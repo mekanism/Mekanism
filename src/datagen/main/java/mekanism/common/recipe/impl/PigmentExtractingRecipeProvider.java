@@ -6,7 +6,6 @@ import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.EnumColorCollection;
-import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
@@ -45,13 +44,13 @@ public class PigmentExtractingRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "pigment_extracting/";
-        addExtractionRecipes(consumer, basePath);
-        addFlowerExtractionRecipes(consumer, basePath);
+        addExtractionRecipes(output, basePath);
+        addFlowerExtractionRecipes(output, basePath);
     }
 
-    private void addFlowerExtractionRecipes(RecipeOutput consumer, String basePath) {
+    private void addFlowerExtractionRecipes(RecipeOutput output, String basePath) {
         basePath += "flower/";
         //Flowers -> 4x dye output
         //Note: We use this higher rate as the pigment extractor is rather effective at extracting
@@ -61,71 +60,71 @@ public class PigmentExtractingRecipeProvider extends BaseSubRecipeProvider {
         int flowerRate = 3 * DYE_RATE;
         int largeFlowerRate = 2 * flowerRate;
         //Red
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.RED, largeFlowerRate, "large_red", BlockItemIds.ROSE_BUSH);
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.RED, flowerRate, "small_red",
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.RED, largeFlowerRate, "large_red", BlockItemIds.ROSE_BUSH);
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.RED, flowerRate, "small_red",
               ItemIds.BEETROOT,
               BlockItemIds.POPPY.item(),
               BlockItemIds.RED_TULIP.item()
         );
         //Cyan
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.DARK_AQUA, largeFlowerRate, "large_cyan", BlockItemIds.PITCHER_PLANT);
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.DARK_AQUA, largeFlowerRate, "large_cyan", BlockItemIds.PITCHER_PLANT);
         //Green
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.DARK_GREEN, flowerRate, "green", Tags.Items.CROPS_CACTUS);
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.DARK_GREEN, flowerRate, "green", Tags.Items.CROPS_CACTUS);
         //Light gray
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.GRAY, flowerRate, "light_gray",
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.GRAY, flowerRate, "light_gray",
               BlockItemIds.AZURE_BLUET,
               BlockItemIds.OXEYE_DAISY,
               BlockItemIds.WHITE_TULIP
         );
         //Gray
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.DARK_GRAY, flowerRate, "gray", BlockItemIds.CLOSED_EYEBLOSSOM);
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.DARK_GRAY, flowerRate, "gray", BlockItemIds.CLOSED_EYEBLOSSOM);
         //Pink
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.BRIGHT_PINK, largeFlowerRate, "large_pink", BlockItemIds.PEONY);
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.BRIGHT_PINK, flowerRate, "small_pink",
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.BRIGHT_PINK, largeFlowerRate, "large_pink", BlockItemIds.PEONY);
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.BRIGHT_PINK, flowerRate, "small_pink",
               BlockItemIds.CACTUS_FLOWER,
               BlockItemIds.PINK_TULIP,
               BlockItemIds.PINK_PETALS
         );
         //Lime
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.BRIGHT_GREEN, flowerRate, "lime", BlockItemIds.SEA_PICKLE);
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.BRIGHT_GREEN, flowerRate, "lime", BlockItemIds.SEA_PICKLE);
         //Yellow
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.YELLOW, largeFlowerRate, "large_yellow", BlockItemIds.SUNFLOWER);
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.YELLOW, flowerRate, "small_yellow",
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.YELLOW, largeFlowerRate, "large_yellow", BlockItemIds.SUNFLOWER);
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.YELLOW, flowerRate, "small_yellow",
               BlockItemIds.DANDELION,
               BlockItemIds.GOLDEN_DANDELION,
               BlockItemIds.WILDFLOWERS
         );
         //Light blue
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.INDIGO, flowerRate, "light_blue", BlockItemIds.BLUE_ORCHID);
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.INDIGO, flowerRate, "light_blue", BlockItemIds.BLUE_ORCHID);
         //Magenta
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.PINK, largeFlowerRate, "large_magenta", BlockItemIds.LILAC);
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.PINK, flowerRate, "small_magenta", BlockItemIds.ALLIUM);
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.PINK, largeFlowerRate, "large_magenta", BlockItemIds.LILAC);
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.PINK, flowerRate, "small_magenta", BlockItemIds.ALLIUM);
         //Orange
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.ORANGE, flowerRate, "orange",
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.ORANGE, flowerRate, "orange",
               BlockItemIds.OPEN_EYEBLOSSOM,
               BlockItemIds.ORANGE_TULIP,
               BlockItemIds.TORCHFLOWER
         );
         //Blue
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.DARK_BLUE, flowerRate, "blue",
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.DARK_BLUE, flowerRate, "blue",
               BlockItemIds.CORNFLOWER.item(),
               ItemIds.LAPIS_LAZULI
         );
         //Brown
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.BROWN, flowerRate, "brown", Tags.Items.CROPS_COCOA_BEAN);
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.BROWN, flowerRate, "brown", Tags.Items.CROPS_COCOA_BEAN);
         //Black
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.BLACK, flowerRate, "black",
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.BLACK, flowerRate, "black",
               ItemIds.INK_SAC,
               BlockItemIds.WITHER_ROSE.item()
         );
         //White
-        RecipeProviderUtil.addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, EnumColor.WHITE, flowerRate, "white",
+        RecipeProviderUtil.addPigmentExtractingDyeRecipe(output, items, chemicals, basePath, EnumColor.WHITE, flowerRate, "white",
               ItemIds.BONE_MEAL,
               BlockItemIds.LILY_OF_THE_VALLEY.item()
         );
     }
 
-    private void addExtractionRecipes(RecipeOutput consumer, String basePath) {
+    private void addExtractionRecipes(RecipeOutput output, String basePath) {
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, ChemicalIds.SIMPLE_PIGMENTS, (color, pigment) -> {
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
@@ -134,29 +133,29 @@ public class PigmentExtractingRecipeProvider extends BaseSubRecipeProvider {
                       chemicalTemplate(pigment, DYE_RATE)
                 ).group(ItemIds.DYE.pick(dye))
                       .unlockedBy("has_dye", has(dye.getTag()))
-                      .save(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
+                      .save(output, basePath + "dye/" + color.getRegistryPrefix());
                 //TODO: Eventually we may want to consider taking patterns into account
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_BANNERS, pigment, BANNER_RATE, basePath + "banner/");
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_CANDLE, pigment, CANDLE_RATE, basePath + "candle/");
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_CUSHIONS, pigment, CUSHION_RATE, basePath + "cushion/");
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_CONCRETE, pigment, CONCRETE_RATE, basePath + "concrete/");
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_CONCRETE_SLABS, pigment, CONCRETE_SLAB_RATE, basePath + "concrete/slabs/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_BANNERS, pigment, BANNER_RATE, basePath + "banner/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_CANDLE, pigment, CANDLE_RATE, basePath + "candle/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_CUSHIONS, pigment, CUSHION_RATE, basePath + "cushion/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_CONCRETE, pigment, CONCRETE_RATE, basePath + "concrete/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_CONCRETE_SLABS, pigment, CONCRETE_SLAB_RATE, basePath + "concrete/slabs/");
                 //1:1 with concrete via stone cutter
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_CONCRETE_STAIRS, pigment, CONCRETE_RATE, basePath + "concrete/stairs/");
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_CONCRETE_POWDER, pigment, CONCRETE_POWDER_RATE, basePath + "concrete_powder/");
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_CARPETS, pigment, CARPET_RATE, basePath + "carpet/");
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_TERRACOTTA, pigment, CONCRETE_RATE, basePath + "terracotta/");
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_GLAZED_TERRACOTTA, pigment, GLAZED_TERRACOTTA_RATE, basePath + "terracotta/glazed/");
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_GLASS, pigment, STAINED_GLASS_RATE, basePath + "stained_glass/");
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_GLASS_PANES, pigment, STAINED_GLASS_PANE_RATE, basePath + "stained_glass_pane/");
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_WOOL, pigment, WOOL_RATE, basePath + "wool/");
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_WOOL_SLABS, pigment, WOOL_SLAB_RATE, basePath + "wool/slabs/");
-                addExtractionRecipe(consumer, color, dye, MekanismTags.Items.COLORABLE_WOOL_STAIRS, pigment, WOOL_STAIR_RATE, basePath + "wool/stairs/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_CONCRETE_STAIRS, pigment, CONCRETE_RATE, basePath + "concrete/stairs/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_CONCRETE_POWDER, pigment, CONCRETE_POWDER_RATE, basePath + "concrete_powder/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_CARPETS, pigment, CARPET_RATE, basePath + "carpet/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_TERRACOTTA, pigment, CONCRETE_RATE, basePath + "terracotta/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_GLAZED_TERRACOTTA, pigment, GLAZED_TERRACOTTA_RATE, basePath + "terracotta/glazed/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_GLASS, pigment, STAINED_GLASS_RATE, basePath + "stained_glass/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_GLASS_PANES, pigment, STAINED_GLASS_PANE_RATE, basePath + "stained_glass_pane/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_WOOL, pigment, WOOL_RATE, basePath + "wool/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_WOOL_SLABS, pigment, WOOL_SLAB_RATE, basePath + "wool/slabs/");
+                addExtractionRecipe(output, color, dye, MekanismTags.Items.COLORABLE_WOOL_STAIRS, pigment, WOOL_STAIR_RATE, basePath + "wool/stairs/");
             }
         });
     }
 
-    private void addExtractionRecipe(RecipeOutput consumer, EnumColor color, DyeColor dye, TagKey<Item> input, ResourceKey<Chemical> pigment, int rate, String basePath) {
+    private void addExtractionRecipe(RecipeOutput output, EnumColor color, DyeColor dye, TagKey<Item> input, ResourceKey<Chemical> pigment, int rate, String basePath) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(IntersectionIngredient.of(
                     Ingredient.of(this.items.getOrThrow(input)),
@@ -165,6 +164,6 @@ public class PigmentExtractingRecipeProvider extends BaseSubRecipeProvider {
               chemicalTemplate(pigment, rate)
         ).group(ItemIds.DYE.pick(dye))
               .unlockedBy("has_dye", has(dye.getTag()))
-              .save(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
+              .save(output, basePath + color.getRegistryPrefix());
     }
 }

@@ -31,17 +31,19 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
+import org.jspecify.annotations.Nullable;
 
 public abstract class BaseRecipeProvider extends RecipeProvider {
 
     protected final HolderGetter<Fluid> fluids;
     protected final HolderGetter<Chemical> chemicals;
 
-    protected BaseRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
-        super(recipeOutput, advancementOutput);
+    protected BaseRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput, @Nullable String defaultModId, ICondition... conditions) {
+        super(recipeOutput, advancementOutput, defaultModId, conditions);
         this.fluids = this.output.lookup(Registries.FLUID);
         this.chemicals = this.output.lookup(MekanismRegistries.Keys.CHEMICAL);
     }

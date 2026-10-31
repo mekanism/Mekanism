@@ -36,13 +36,13 @@ class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "plastic/";
-        registerPlasticFences(consumer, basePath + "fence/");
-        registerPlasticFenceGates(consumer, basePath + "fence_gate/");
+        registerPlasticFences(output, basePath + "fence/");
+        registerPlasticFenceGates(output, basePath + "fence_gate/");
     }
 
-    private void registerPlasticFences(RecipeOutput consumer, String basePath) {
+    private void registerPlasticFences(RecipeOutput output, String basePath) {
         HolderSet.Named<Item> fencesTag = this.items.getOrThrow(AdditionsTags.Items.FENCES_PLASTIC_NORMAL);
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_FENCES, (color, fence) -> {
             Holder<Item> result = fence.getItemHolder();
@@ -54,12 +54,12 @@ class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
                   .category(RecipeCategory.DECORATIONS)
                   .group(MekanismAdditions.rl("plastic_fences"))
                   .unlockedBy("has_plastic", has(plastic))
-                  .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-            PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, result, fencesTag, color, basePath, "plastic_fences_recolor");
+                  .save(output, basePath + color.getRegistryPrefix());
+            PlasticBlockRecipeProvider.registerRecolor(output, this.items, this.chemicals, result, fencesTag, color, basePath, "plastic_fences_recolor");
         });
     }
 
-    private void registerPlasticFenceGates(RecipeOutput consumer, String basePath) {
+    private void registerPlasticFenceGates(RecipeOutput output, String basePath) {
         HolderSet.Named<Item> gatesTag = this.items.getOrThrow(AdditionsTags.Items.FENCE_GATES_PLASTIC_NORMAL);
         EnumColorCollection.zipApply(EnumColorCollection.VALUES, AdditionsBlocks.PLASTIC_FENCE_GATES, (color, fenceGate) -> {
             Holder<Item> result = fenceGate.getItemHolder();
@@ -71,8 +71,8 @@ class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
                   .category(RecipeCategory.REDSTONE)
                   .group(MekanismAdditions.rl("plastic_fence_gates"))
                   .unlockedBy("has_plastic", has(plastic))
-                  .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-            PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, this.chemicals, result, gatesTag, color, basePath, "plastic_fence_gates_recolor");
+                  .save(output, basePath + color.getRegistryPrefix());
+            PlasticBlockRecipeProvider.registerRecolor(output, this.items, this.chemicals, result, gatesTag, color, basePath, "plastic_fence_gates_recolor");
         });
     }
 }

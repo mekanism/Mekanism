@@ -32,7 +32,7 @@ class ChemicalTankRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "chemical_tank/";
         TagKey<Item> osmiumIngot = MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM);
         //Note: For the basic chemical tank, we have to handle the empty slot differently than batching it against our chemical tank pattern
@@ -46,13 +46,13 @@ class ChemicalTankRecipeProvider extends BaseSubRecipeProvider {
               .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
               .group(Mekanism.rl("chemical_tank"))
               .unlockedBy("has_osmium_ingot", has(osmiumIngot))
-              .save(consumer, Mekanism.rl(basePath + "basic"));
-        addTieredChemicalTank(consumer, basePath, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismBlocks.BASIC_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_INFUSED);
-        addTieredChemicalTank(consumer, basePath, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_REINFORCED);
-        addTieredChemicalTank(consumer, basePath, MekanismBlocks.ULTIMATE_CHEMICAL_TANK, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_ATOMIC);
+              .save(output, basePath + "basic");
+        addTieredChemicalTank(output, basePath, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismBlocks.BASIC_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_INFUSED);
+        addTieredChemicalTank(output, basePath, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_REINFORCED);
+        addTieredChemicalTank(output, basePath, MekanismBlocks.ULTIMATE_CHEMICAL_TANK, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addTieredChemicalTank(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> tank, BlockRegistryObject<?, ?> previousTank, TagKey<Item> alloyTag) {
+    private void addTieredChemicalTank(RecipeOutput output, String basePath, BlockRegistryObject<?, ?> tank, BlockRegistryObject<?, ?> previousTank, TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTierNN(tank).getLowerName();
         MekDataShapedRecipeBuilder.shaped(tank)
               .pattern(CHEMICAL_TANK_PATTERN)
@@ -62,6 +62,6 @@ class ChemicalTankRecipeProvider extends BaseSubRecipeProvider {
               .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
               .group(Mekanism.rl("chemical_tank"))
               .unlockedBy("has_alloy", has(alloyTag))
-              .save(consumer, Mekanism.rl(basePath + tierName));
+              .save(output, basePath + tierName);
     }
 }

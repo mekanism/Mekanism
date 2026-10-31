@@ -39,7 +39,7 @@ class ControlCircuitRecipeProvider extends BaseSubRecipeProvider {
               false,
               MekanismItems.BASIC_CONTROL_CIRCUIT.asTemplate()
         ).unlockedBy("has_osmium_ingpt", has(osmiumIngot))
-              .save(consumer, Mekanism.rl(basePath + "basic"));
+              .save(consumer, basePath + "basic");
         addCircuitUpgradeRecipe(consumer, MekanismItems.ADVANCED_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC, MekanismTags.Items.ALLOYS_INFUSED,
               MekanismAPITags.Chemicals.REDSTONE, 10, basePath, "advanced");
         addCircuitUpgradeRecipe(consumer, MekanismItems.ELITE_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED, MekanismTags.Items.ALLOYS_REINFORCED,
@@ -57,7 +57,7 @@ class ControlCircuitRecipeProvider extends BaseSubRecipeProvider {
               .define(Pattern.ALLOY, this.items, alloyTag)
               .group(Mekanism.rl("circuit_upgrade"))
               .unlockedBy("has_alloy", has(alloyTag))
-              .save(consumer, Mekanism.rl(basePath + name));
+              .save(consumer, basePath + name);
         //infusion variants that save on the base ingots needed, but take extra infusion material
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(this.items, circuitTag),
@@ -65,6 +65,6 @@ class ControlCircuitRecipeProvider extends BaseSubRecipeProvider {
               false,
               new ItemStackTemplate(output)
         ).unlockedBy("has_alloy", has(alloyTag))
-              .save(consumer, Mekanism.rl(basePath + "infused_" + name));
+              .save(consumer, basePath + "infused_" + name);
     }
 }

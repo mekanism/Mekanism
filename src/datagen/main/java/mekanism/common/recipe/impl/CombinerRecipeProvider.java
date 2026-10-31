@@ -6,7 +6,6 @@ import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.recipes.book.CombiningBookCategory;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.HolderGetter;
@@ -27,11 +26,11 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "combining/";
-        addCombinerDyeRecipes(consumer, basePath + "dye/");
-        addCombinerGlowRecipes(consumer, basePath + "glow/");
-        addCombinerWaxingRecipes(consumer, basePath + "wax/");
+        addCombinerDyeRecipes(output, basePath + "dye/");
+        addCombinerGlowRecipes(output, basePath + "glow/");
+        addCombinerWaxingRecipes(output, basePath + "wax/");
         //Gravel
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, ItemIds.FLINT),
@@ -39,7 +38,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               template(BlockItemIds.GRAVEL)
         ).category(CombiningBookCategory.BUILDING)
               .unlockedBy(hasCriterion(ItemIds.FLINT))
-              .save(consumer, Mekanism.rl(basePath + "gravel"));
+              .save(output, basePath + "gravel");
         //Obsidian
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_OBSIDIAN, 4),
@@ -47,7 +46,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               template(BlockItemIds.OBSIDIAN)
         ).category(CombiningBookCategory.BUILDING)
               .unlockedBy("has_obsidian", has(MekanismTags.Items.DUSTS_OBSIDIAN))
-              .save(consumer, Mekanism.rl(basePath + "obsidian"));
+              .save(output, basePath + "obsidian");
         //Rooted Dirt
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.HANGING_ROOTS, 3),
@@ -55,7 +54,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               template(BlockItemIds.ROOTED_DIRT)
         ).category(CombiningBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.DIRT))
-              .save(consumer, Mekanism.rl(basePath + "rooted_dirt"));
+              .save(output, basePath + "rooted_dirt");
         //Packed mud
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.CROPS_WHEAT),
@@ -63,7 +62,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               template(BlockItemIds.PACKED_MUD)
         ).category(CombiningBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.MUD))
-              .save(consumer, Mekanism.rl(basePath + "packed_mud"));
+              .save(output, basePath + "packed_mud");
         //Muddy mangrove roots
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, BlockItemIds.MANGROVE_ROOTS),
@@ -71,10 +70,10 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               template(BlockItemIds.MUDDY_MANGROVE_ROOTS)
         ).category(CombiningBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.MUD))
-              .save(consumer, Mekanism.rl(basePath + "muddy_mangrove_roots"));
+              .save(output, basePath + "muddy_mangrove_roots");
     }
 
-    private void addCombinerDyeRecipes(RecipeOutput consumer, String basePath) {
+    private void addCombinerDyeRecipes(RecipeOutput output, String basePath) {
         //Black + white -> light gray
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLACK),
@@ -84,7 +83,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               .group(ItemIds.DYE.lightGray())
               .unlockedBy("has_black_dye", has(Tags.Items.DYES_BLACK))
               .unlockedBy("has_white_dye", has(Tags.Items.DYES_WHITE))
-              .save(consumer, Mekanism.rl(basePath + "black_to_light_gray"));
+              .save(output, basePath + "black_to_light_gray");
         //Blue + green -> cyan
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
@@ -94,7 +93,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               .group(ItemIds.DYE.cyan())
               .unlockedBy("has_blue_dye", has(Tags.Items.DYES_BLUE))
               .unlockedBy("has_green_dye", has(Tags.Items.DYES_GREEN))
-              .save(consumer, Mekanism.rl(basePath + "cyan"));
+              .save(output, basePath + "cyan");
         //Gray + white -> light gray
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GRAY),
@@ -104,7 +103,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               .group(ItemIds.DYE.lightGray())
               .unlockedBy("has_gray_dye", has(Tags.Items.DYES_GRAY))
               .unlockedBy("has_white_dye", has(Tags.Items.DYES_WHITE))
-              .save(consumer, Mekanism.rl(basePath + "gray_to_light_gray"));
+              .save(output, basePath + "gray_to_light_gray");
         //Blue + white -> light blue
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
@@ -114,7 +113,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               .group(ItemIds.DYE.lightBlue())
               .unlockedBy("has_blueu_dye", has(Tags.Items.DYES_BLUE))
               .unlockedBy("has_white_dye", has(Tags.Items.DYES_WHITE))
-              .save(consumer, Mekanism.rl(basePath + "light_blue"));
+              .save(output, basePath + "light_blue");
         //Green + white -> lime
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GREEN),
@@ -124,7 +123,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               .group(ItemIds.DYE.lime())
               .unlockedBy("has_green_dye", has(Tags.Items.DYES_GREEN))
               .unlockedBy("has_white_dye", has(Tags.Items.DYES_WHITE))
-              .save(consumer, Mekanism.rl(basePath + "lime"));
+              .save(output, basePath + "lime");
         //Purple + pink -> magenta
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_PURPLE),
@@ -134,7 +133,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               .group(ItemIds.DYE.magenta())
               .unlockedBy("has_purple_dye", has(Tags.Items.DYES_PURPLE))
               .unlockedBy("has_pink_dye", has(Tags.Items.DYES_PINK))
-              .save(consumer, Mekanism.rl(basePath + "magenta"));
+              .save(output, basePath + "magenta");
         //Red + yellow -> orange
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
@@ -144,7 +143,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               .group(ItemIds.DYE.orange())
               .unlockedBy("has_red_dye", has(Tags.Items.DYES_RED))
               .unlockedBy("has_yellow_dye", has(Tags.Items.DYES_YELLOW))
-              .save(consumer, Mekanism.rl(basePath + "orange"));
+              .save(output, basePath + "orange");
         //Red + white -> pink
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
@@ -154,7 +153,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               .group(ItemIds.DYE.pink())
               .unlockedBy("has_red_dye", has(Tags.Items.DYES_RED))
               .unlockedBy("has_white_dye", has(Tags.Items.DYES_WHITE))
-              .save(consumer, Mekanism.rl(basePath + "pink"));
+              .save(output, basePath + "pink");
         //Blue + red -> purple
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
@@ -164,10 +163,10 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               .group(ItemIds.DYE.purple())
               .unlockedBy("has_blue_dye", has(Tags.Items.DYES_BLUE))
               .unlockedBy("has_red_dye", has(Tags.Items.DYES_RED))
-              .save(consumer, Mekanism.rl(basePath + "purple"));
+              .save(output, basePath + "purple");
     }
 
-    private void addCombinerGlowRecipes(RecipeOutput consumer, String basePath) {
+    private void addCombinerGlowRecipes(RecipeOutput output, String basePath) {
         ItemStackIngredient glow = IngredientCreatorAccess.item().from(this.items, Tags.Items.DUSTS_GLOWSTONE);
         //Sweet Berries -> Glow Berries
         CombinerRecipeBuilder.combining(
@@ -175,24 +174,24 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
               glow,
               template(BlockItemIds.GLOW_BERRY_CROP)
         ).unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
-              .save(consumer, Mekanism.rl(basePath + "berries"));
+              .save(output, basePath + "berries");
         //Ink Sac -> Glow Ink Sac
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, ItemIds.INK_SAC),
               glow,
               template(ItemIds.GLOW_INK_SAC)
         ).unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
-              .save(consumer, Mekanism.rl(basePath + "ink_sac"));
+              .save(output, basePath + "ink_sac");
         //Item Frame -> Glow Item Frame
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, ItemIds.ITEM_FRAME),
               glow,
               template(ItemIds.GLOW_ITEM_FRAME)
         ).unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
-              .save(consumer, Mekanism.rl(basePath + "item_frame"));
+              .save(output, basePath + "item_frame");
     }
 
-    private void addCombinerWaxingRecipes(RecipeOutput consumer, String basePath) {
+    private void addCombinerWaxingRecipes(RecipeOutput output, String basePath) {
         //Generate baseline recipes from waxing recipe set
         ItemStackIngredient wax = IngredientCreatorAccess.item().from(this.items, ItemIds.HONEYCOMB);
         for (Map.Entry<Block, Block> entry : HoneycombItem.WAXABLES.get().entrySet()) {
@@ -216,7 +215,7 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
             ).category(CombiningBookCategory.BUILDING)
                   .group(group)
                   .unlockedBy("has_wax", has(ItemIds.HONEYCOMB))
-                  .save(consumer, Mekanism.rl(basePath + path));
+                  .save(output, basePath + path);
         }
     }
 }

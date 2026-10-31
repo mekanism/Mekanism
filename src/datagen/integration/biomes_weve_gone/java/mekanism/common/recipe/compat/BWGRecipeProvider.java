@@ -100,7 +100,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               .unlockedBy("has_flowers", has(makesDyeTag))
               .addCondition(modLoaded)
               .addCondition(tagNotEmpty)
-              .save(consumer, Mekanism.rl(basePath + "dye/" + name));
+              .save(consumer, basePath + "dye/" + name);
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         int flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
@@ -110,7 +110,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               .unlockedBy("has_flowers", has(makesDyeTag))
               .addCondition(modLoaded)
               .addCondition(tagNotEmpty)
-              .save(consumer, Mekanism.rl(basePath + "pigment_extracting/" + name));
+              .save(consumer, basePath + "pigment_extracting/" + name);
     }
 
     private void addCrushingRecipes(RecipeOutput consumer, String basePath) {
@@ -139,7 +139,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BWGBlocks.DACITE_PILLAR.get().asItem()))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "from_dacite_pillar"));
+              .save(consumer, basePath + "from_dacite_pillar");
     }
 
     private void addCrusherWhiteDaciteRecipes(RecipeOutput consumer, String basePath) {
@@ -161,7 +161,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BWGBlocks.WHITE_DACITE_PILLAR.get().asItem()))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(basePath + "from_white_dacite_pillar"));
+              .save(consumer, basePath + "from_white_dacite_pillar");
     }
 
     private void addCrusherRedRockRecipes(RecipeOutput consumer, String basePath) {
@@ -195,7 +195,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl(group))
               .unlockedBy(hasCriterion(input.asItem()))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(path));
+              .save(consumer, path);
     }
 
     private void addEnrichingRecipes(RecipeOutput consumer, String basePath) {
@@ -278,7 +278,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl(group))
               .unlockedBy(hasCriterion(input.asItem()))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(path));
+              .save(consumer, path);
     }
 
     private void addMetallurgicInfusingRecipes(RecipeOutput consumer, String basePath) {
@@ -313,6 +313,6 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               .group(Mekanism.rl(group))
               .unlockedBy(hasCriterion(input.asItem()))
               .addCondition(modLoaded)
-              .save(consumer, Mekanism.rl(path));
+              .save(consumer, path);
     }
 }

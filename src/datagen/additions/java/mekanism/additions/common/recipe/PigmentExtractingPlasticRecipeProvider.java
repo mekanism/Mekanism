@@ -1,6 +1,5 @@
 package mekanism.additions.common.recipe;
 
-import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
@@ -73,6 +72,6 @@ class PigmentExtractingPlasticRecipeProvider extends BaseSubRecipeProvider {
             builder.group(ItemIds.DYE.pick(dyeColor))
                   .unlockedBy("has_dye", has(dyeColor.getTag()));
         }
-        builder.save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+        builder.save(consumer, basePath + color.getRegistryPrefix());
     }
 }

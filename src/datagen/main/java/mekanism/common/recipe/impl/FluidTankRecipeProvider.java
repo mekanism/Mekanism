@@ -31,7 +31,7 @@ class FluidTankRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "fluid_tank/";
         //Note: For the basic fluid tank, we have to handle the empty slot differently than batching it against our fluid tank pattern
         ExtendedShapedRecipeBuilder.shaped(MekanismBlocks.BASIC_FLUID_TANK)
@@ -44,13 +44,13 @@ class FluidTankRecipeProvider extends BaseSubRecipeProvider {
               .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
               .group(Mekanism.rl("fluid_tank"))
               .unlockedBy("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-              .save(consumer, Mekanism.rl(basePath + "basic"));
-        addTieredFluidTank(consumer, basePath, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.BASIC_FLUID_TANK, MekanismTags.Items.ALLOYS_INFUSED);
-        addTieredFluidTank(consumer, basePath, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismTags.Items.ALLOYS_REINFORCED);
-        addTieredFluidTank(consumer, basePath, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismTags.Items.ALLOYS_ATOMIC);
+              .save(output, basePath + "basic");
+        addTieredFluidTank(output, basePath, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.BASIC_FLUID_TANK, MekanismTags.Items.ALLOYS_INFUSED);
+        addTieredFluidTank(output, basePath, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismTags.Items.ALLOYS_REINFORCED);
+        addTieredFluidTank(output, basePath, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addTieredFluidTank(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> tank, BlockRegistryObject<?, ?> previousTank, TagKey<Item> alloyTag) {
+    private void addTieredFluidTank(RecipeOutput output, String basePath, BlockRegistryObject<?, ?> tank, BlockRegistryObject<?, ?> previousTank, TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTierNN(tank).getLowerName();
         MekDataShapedRecipeBuilder.shaped(tank)
               .pattern(FLUID_TANK_PATTERN)
@@ -60,6 +60,6 @@ class FluidTankRecipeProvider extends BaseSubRecipeProvider {
               .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
               .group(Mekanism.rl("fluid_tank"))
               .unlockedBy("has_alloy", has(alloyTag))
-              .save(consumer, Mekanism.rl(basePath + tierName));
+              .save(output, basePath + tierName);
     }
 }

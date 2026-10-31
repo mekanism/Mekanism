@@ -3,7 +3,6 @@ package mekanism.common.recipe.impl;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.FluidToFluidRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
@@ -21,20 +20,20 @@ class EvaporatingRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "evaporating/";
         //Brine
         FluidToFluidRecipeBuilder.evaporating(
               IngredientCreatorAccess.fluid().from(fluids, FluidTags.WATER, 10),
               MekanismFluids.BRINE.asTemplate(1)
         ).unlockedBy("in_water", RecipeProvider.insideOf(Blocks.WATER))
-              .save(consumer, Mekanism.rl(basePath + "brine"));
+              .save(output, basePath + "brine");
         //Lithium
         FluidToFluidRecipeBuilder.evaporating(
               IngredientCreatorAccess.fluid().from(fluids, MekanismTags.Fluids.BRINE, 10),
               MekanismFluids.LITHIUM.asTemplate(1)
         ).unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
               .unlockedBy("in_brine", RecipeProvider.insideOf(MekanismFluids.BRINE.getBlock()))
-              .save(consumer, Mekanism.rl(basePath + "lithium"));
+              .save(output, basePath + "lithium");
     }
 }

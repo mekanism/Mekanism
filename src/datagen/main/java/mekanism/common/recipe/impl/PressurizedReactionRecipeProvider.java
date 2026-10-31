@@ -6,7 +6,6 @@ import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.recipes.book.ReactingBookCategory;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
@@ -26,14 +25,14 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "reaction/";
-        addCoalGasificationRecipes(consumer, basePath + "coal_gasification/");
-        addWoodGasificationRecipes(consumer, basePath + "wood_gasification/");
-        addSubstrateRecipes(consumer, basePath + "substrate/");
+        addCoalGasificationRecipes(output, basePath + "coal_gasification/");
+        addWoodGasificationRecipes(output, basePath + "wood_gasification/");
+        addSubstrateRecipes(output, basePath + "substrate/");
     }
 
-    private void addCoalGasificationRecipes(RecipeOutput consumer, String basePath) {
+    private void addCoalGasificationRecipes(RecipeOutput output, String basePath) {
         //Blocks
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(this.items, 1, List.of(
@@ -49,7 +48,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
               .group(MekanismItems.SULFUR_DUST.key())
               .unlockedBy("has_coal", has(Tags.BlockItems.STORAGE_BLOCKS_COAL))
               .unlockedBy("has_charcoal", has(MekanismTags.BlockItems.STORAGE_BLOCKS_CHARCOAL))
-              .save(consumer, Mekanism.rl(basePath + "blocks_coals"));
+              .save(output, basePath + "blocks_coals");
         //Coals
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(this.items, ItemTags.COALS),
@@ -61,7 +60,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
         ).category(ReactingBookCategory.GASIFICATION)
               .group(MekanismItems.SULFUR_DUST.key())
               .unlockedBy("has_coal", has(ItemTags.COALS))
-              .save(consumer, Mekanism.rl(basePath + "coals"));
+              .save(output, basePath + "coals");
         //Dusts
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(this.items, 1, List.of(
@@ -77,10 +76,10 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
               .group(MekanismItems.SULFUR_DUST.key())
               .unlockedBy("has_coal", has(MekanismTags.Items.DUSTS_COAL))
               .unlockedBy("has_charcoal", has(MekanismTags.Items.DUSTS_CHARCOAL))
-              .save(consumer, Mekanism.rl(basePath + "dusts_coals"));
+              .save(output, basePath + "dusts_coals");
     }
 
-    private void addWoodGasificationRecipes(RecipeOutput consumer, String basePath) {
+    private void addWoodGasificationRecipes(RecipeOutput output, String basePath) {
         //TODO: Figure out a way to specify only the woods that burn. Vanilla has a logs_that_burn tag but does not have one for the other types of wood
         // Maybe we could do a data component ingredient to match the presence of the fuel component?
         //Dusts, each worth a 32th of a log.
@@ -93,7 +92,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
         ).category(ReactingBookCategory.GASIFICATION)
               .group("hydrogen")
               .unlockedBy("has_sawdust", has(MekanismTags.Items.DUSTS_WOOD))
-              .save(consumer, Mekanism.rl(basePath + "dusts_wood"));
+              .save(output, basePath + "dusts_wood");
         //Logs, each worth one log.
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(this.items, ItemTags.LOGS_THAT_BURN, 4),
@@ -105,7 +104,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
         ).category(ReactingBookCategory.GASIFICATION)
               .group(MekanismItems.CHARCOAL_DUST.key())
               .unlockedBy("has_logs", has(ItemTags.LOGS_THAT_BURN))
-              .save(consumer, Mekanism.rl(basePath + "logs"));
+              .save(output, basePath + "logs");
         //Planks, each worth a 5th of a log.
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(
@@ -123,7 +122,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
               .group(MekanismItems.CHARCOAL_DUST.key())
               .unlockedBy("has_planks", has(ItemTags.PLANKS))
               .unlockedBy(hasCriterion(BlockItemIds.BAMBOO_MOSAIC))
-              .save(consumer, Mekanism.rl(basePath + "planks"));
+              .save(output, basePath + "planks");
         //Rods, each worth a 30th of a log.
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.RODS_WOODEN, 3),
@@ -134,7 +133,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
         ).category(ReactingBookCategory.GASIFICATION)
               .group("hydrogen")
               .unlockedBy("has_sticks", has(Tags.Items.RODS_WOODEN))
-              .save(consumer, Mekanism.rl(basePath + "rods_wooden"));
+              .save(output, basePath + "rods_wooden");
         //Slabs, each worth a 10th of a log.
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(
@@ -151,7 +150,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
               .group("hydrogen")
               .unlockedBy("has_wooden_slabs", has(ItemTags.WOODEN_SLABS))
               .unlockedBy(hasCriterion(BlockItemIds.BAMBOO_MOSAIC_SLAB))
-              .save(consumer, Mekanism.rl(basePath + "wooden_slabs"));
+              .save(output, basePath + "wooden_slabs");
         //Stairs, each worth a 6⅔th of a log.
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.ingredient(
@@ -168,10 +167,10 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
               .group("hydrogen")
               .unlockedBy("has_wooden_stairs", has(ItemTags.WOODEN_STAIRS))
               .unlockedBy(hasCriterion(BlockItemIds.BAMBOO_MOSAIC_STAIRS))
-              .save(consumer, Mekanism.rl(basePath + "wooden_stairs"));
+              .save(output, basePath + "wooden_stairs");
     }
 
-    private void addSubstrateRecipes(RecipeOutput consumer, String basePath) {
+    private void addSubstrateRecipes(RecipeOutput output, String basePath) {
         //Ethene + oxygen
         PressurizedReactionRecipeBuilder.reaction(
                     IngredientCreatorAccess.item().fromHolder(MekanismItems.SUBSTRATE),
@@ -181,7 +180,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
                     MekanismItems.HDPE_PELLET.asTemplate()
               ).energyRequired(10)
               .unlockedBy(hasCriterion(MekanismItems.SUBSTRATE))
-              .save(consumer, Mekanism.rl(basePath + "ethene_oxygen"));
+              .save(output, basePath + "ethene_oxygen");
         //Water + ethene
         PressurizedReactionRecipeBuilder.reaction(
                     IngredientCreatorAccess.item().fromHolder(MekanismItems.SUBSTRATE),
@@ -194,7 +193,7 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
               .group(MekanismItems.SUBSTRATE.key())
               //Only unlock once the player has made at least one substrate
               .unlockedBy(hasCriterion(MekanismItems.SUBSTRATE))
-              .save(consumer, Mekanism.rl(basePath + "water_ethene"));
+              .save(output, basePath + "water_ethene");
         //Water + hydrogen
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.FUELS_BIO, 2),
@@ -205,6 +204,6 @@ class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
               chemicalTemplate(ChemicalIds.ETHENE, 300)
         ).group(MekanismItems.SUBSTRATE.key())
               .unlockedBy("has_bio_fuel", has(MekanismTags.Items.FUELS_BIO))
-              .save(consumer, Mekanism.rl(basePath + "water_hydrogen"));
+              .save(output, basePath + "water_hydrogen");
     }
 }

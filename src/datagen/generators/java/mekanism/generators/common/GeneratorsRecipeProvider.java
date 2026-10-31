@@ -52,7 +52,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     private static final char FURNACE_CHAR = 'F';
 
     public GeneratorsRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
-        super(recipeOutput, advancementOutput);
+        super(recipeOutput, advancementOutput, MekanismGenerators.MODID);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     chemicalTemplate(ChemicalIds.OXYGEN, 1)
               ).energyMultiplier(2)
               .unlockedBy("in_water", insideOf(Blocks.WATER))
-              .save(output, MekanismGenerators.rl(basePath + "heavy_water"));
+              .save(output, basePath + "heavy_water");
     }
 
     private void addRotaryCondensentratorRecipes() {
@@ -94,7 +94,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               chemicalTemplate(chemicalOutput, 1),
               new FluidStackTemplate(fluidOutput, 1)
         ).unlockedBy("has_condensentrator", has(MekanismBlocks.ROTARY_CONDENSENTRATOR))
-              .save(output, MekanismGenerators.rl(basePath + chemicalOutput.identifier().getPath()));
+              .save(output, basePath + chemicalOutput.identifier().getPath());
     }
 
     private void addChemicalInfuserRecipes() {
@@ -105,7 +105,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.TRITIUM, 1),
               chemicalTemplate(ChemicalIds.FUSION_FUEL, 2)
         ).unlockedBy("in_heavy_water", insideOf(MekanismFluids.HEAVY_WATER.getBlock()))
-              .save(output, MekanismGenerators.rl(basePath + "fusion_fuel"));
+              .save(output, basePath + "fusion_fuel");
     }
 
     private void addSolarNeutronActivatorRecipes() {
@@ -114,7 +114,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.LITHIUM, 1),
               chemicalTemplate(ChemicalIds.TRITIUM, 1)
         ).unlockedBy("has_lithium_dust", has(MekanismTags.Items.DUSTS_LITHIUM))
-              .save(output, MekanismGenerators.rl(basePath + "tritium"));
+              .save(output, basePath + "tritium");
     }
 
     private void addGeneratorRecipes() {
@@ -143,7 +143,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.OSMIUM, osmiumIngot(this.items))
               .category(RecipeCategory.DECORATIONS)
               .unlockedBy(hasCriterion(MekanismItems.ENERGY_TABLET))
-              .save(output, MekanismGenerators.rl("generator/solar"));
+              .save(output, "generator/solar");
         //Advanced Solar Generator
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR)
               .pattern(RecipePattern.createPattern(
@@ -155,7 +155,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
               .category(RecipeCategory.DECORATIONS)
               .unlockedBy(hasCriterion(GeneratorsBlocks.SOLAR_GENERATOR))
-              .save(output, MekanismGenerators.rl("generator/advanced_solar"));
+              .save(output, "generator/advanced_solar");
         //Bio
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.BIO_GENERATOR)
               .pattern(RecipePattern.createPattern(
@@ -170,7 +170,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .category(RecipeCategory.DECORATIONS)
               .unlockedBy("has_alloy", has(MekanismTags.Items.ALLOYS_INFUSED))
               .unlockedBy("has_circuit", has(MekanismTags.Items.CIRCUITS_BASIC))
-              .save(output, MekanismGenerators.rl("generator/bio"));
+              .save(output, "generator/bio");
         //Gas Burning
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.GAS_BURNING_GENERATOR)
               .pattern(RecipePattern.createPattern(
@@ -184,7 +184,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .category(RecipeCategory.DECORATIONS)
               .unlockedBy("has_alloy", has(MekanismTags.Items.ALLOYS_INFUSED))
               .unlockedBy(hasCriterion(MekanismItems.ELECTROLYTIC_CORE))
-              .save(output, MekanismGenerators.rl("generator/gas_burning"));
+              .save(output, "generator/gas_burning");
         //Heat
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.HEAT_GENERATOR)
               .pattern(RecipePattern.createPattern(
@@ -198,7 +198,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(FURNACE_CHAR, this.items, Tags.BlockItems.PLAYER_WORKSTATIONS_FURNACES)
               .category(RecipeCategory.DECORATIONS)
               .unlockedBy("has_osmium_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM)))
-              .save(output, MekanismGenerators.rl("generator/heat"));
+              .save(output, "generator/heat");
         //Wind
         MekDataShapedRecipeBuilder.shaped(GeneratorsBlocks.WIND_GENERATOR)
               .pattern(RecipePattern.createPattern(
@@ -211,7 +211,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.OSMIUM, osmiumIngot(this.items))
               .category(RecipeCategory.DECORATIONS)
               .unlockedBy(hasCriterion(MekanismItems.ENERGY_TABLET))
-              .save(output, MekanismGenerators.rl("generator/wind"));
+              .save(output, "generator/wind");
     }
 
     private void addFissionReactorRecipes() {
@@ -225,7 +225,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.INGOT, leadIngot(this.items))
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_lead_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD)))
-              .save(output, MekanismGenerators.rl("fission_reactor/casing"));
+              .save(output, "fission_reactor/casing");
         // Port
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.FISSION_REACTOR_PORT, 2)
               .pattern(RecipePattern.createPattern(
@@ -236,7 +236,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(FRAME_CHAR, GeneratorsBlocks.FISSION_REACTOR_CASING)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_casing", has(GeneratorsBlocks.FISSION_REACTOR_CASING))
-              .save(output, MekanismGenerators.rl("fission_reactor/port"));
+              .save(output, "fission_reactor/port");
         //Logic Adapter
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER)
               .pattern(RecipePattern.createPattern(
@@ -248,7 +248,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .category(RecipeCategory.REDSTONE)
               .group(MekanismGenerators.rl("logic_adapter"))
               .unlockedBy("has_casing", has(GeneratorsBlocks.FISSION_REACTOR_CASING))
-              .save(output, MekanismGenerators.rl("fission_reactor/logic_adapter"));
+              .save(output, "fission_reactor/logic_adapter");
         //Fission Fuel Assembly
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.FISSION_FUEL_ASSEMBLY)
               .pattern(RecipePattern.createPattern(
@@ -260,7 +260,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .category(RecipeCategory.DECORATIONS)
               .unlockedBy("has_lead_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD)))
-              .save(output, MekanismGenerators.rl("fission_reactor/fuel_assembly"));
+              .save(output, "fission_reactor/fuel_assembly");
         //Control Rod Assembly
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.CONTROL_ROD_ASSEMBLY)
               .pattern(RecipePattern.createPattern(
@@ -272,7 +272,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .category(RecipeCategory.DECORATIONS)
               .unlockedBy("has_lead_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD)))
-              .save(output, MekanismGenerators.rl("fission_reactor/control_rod_assembly"));
+              .save(output, "fission_reactor/control_rod_assembly");
     }
 
     private void addGearModuleRecipes() {
@@ -328,7 +328,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.CONSTANT, this.items, MekanismTags.Items.PELLETS_POLONIUM)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_polonium", has(MekanismTags.Items.PELLETS_POLONIUM))
-              .save(output, MekanismGenerators.rl("reactor/frame"));
+              .save(output, "reactor/frame");
         //Glass
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.REACTOR_GLASS, 4)
               .pattern(RecipePattern.createPattern(
@@ -340,7 +340,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.STEEL, MekanismItems.ENRICHED_IRON)
               .category(RecipeCategory.DECORATIONS)
               .unlockedBy("has_glass", has(Tags.BlockItems.GLASS_BLOCKS_CHEAP))
-              .save(output, MekanismGenerators.rl("reactor/glass"));
+              .save(output, "reactor/glass");
         //Port
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.FUSION_REACTOR_PORT, 2)
               .pattern(RecipePattern.createPattern(
@@ -351,7 +351,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(FRAME_CHAR, GeneratorsBlocks.FUSION_REACTOR_FRAME)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_casing", has(GeneratorsBlocks.FUSION_REACTOR_FRAME))
-              .save(output, MekanismGenerators.rl("reactor/port"));
+              .save(output, "reactor/port");
         //Logic Adapter
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER)
               .pattern(RecipePattern.createPattern(
@@ -363,7 +363,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .category(RecipeCategory.REDSTONE)
               .group(MekanismGenerators.rl("logic_adapter"))
               .unlockedBy("has_casing", has(GeneratorsBlocks.FUSION_REACTOR_FRAME))
-              .save(output, MekanismGenerators.rl("reactor/logic_adapter"));
+              .save(output, "reactor/logic_adapter");
         //Controller
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER)
               .pattern(RecipePattern.createPattern(
@@ -376,7 +376,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_casing", has(GeneratorsBlocks.FUSION_REACTOR_FRAME))
-              .save(output, MekanismGenerators.rl("reactor/controller"));
+              .save(output, "reactor/controller");
     }
 
     private void addTurbineRecipes() {
@@ -426,7 +426,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               ).define(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .unlockedBy(hasCriterion(GeneratorsBlocks.TURBINE_ROTOR))
-              .save(output, MekanismGenerators.rl("turbine/blade"));
+              .save(output, "turbine/blade");
         //Rotor
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.TURBINE_ROTOR)
               .pattern(RecipePattern.createPattern(
@@ -437,7 +437,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_steel_ingot", has(MekanismTags.Items.INGOTS_STEEL))
-              .save(output, MekanismGenerators.rl("turbine/rotor"));
+              .save(output, "turbine/rotor");
         //Casing
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.TURBINE_CASING, 4)
               .pattern(RecipePattern.createPattern(
@@ -449,7 +449,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_osmium_ingot", has(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM)))
               .unlockedBy("has_steel_ingot", has(MekanismTags.Items.INGOTS_STEEL))
-              .save(output, MekanismGenerators.rl("turbine/casing"));
+              .save(output, "turbine/casing");
         //Valve
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.TURBINE_VALVE, 2)
               .pattern(RecipePattern.createPattern(
@@ -460,7 +460,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ADVANCED)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_casing", has(GeneratorsBlocks.TURBINE_CASING))
-              .save(output, MekanismGenerators.rl("turbine/valve"));
+              .save(output, "turbine/valve");
         //Vent
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.TURBINE_VENT, 2)
               .pattern(RecipePattern.createPattern(
@@ -471,6 +471,6 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .define(BARS_CHAR, this.items, Tags.BlockItems.BARS)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .unlockedBy("has_casing", has(GeneratorsBlocks.TURBINE_CASING))
-              .save(output, MekanismGenerators.rl("turbine/vent"));
+              .save(output, "turbine/vent");
     }
 }

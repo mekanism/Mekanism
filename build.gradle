@@ -75,7 +75,7 @@ ext {
             'jei'             : new IntegrationSettings(shouldCompile: true, perModule: PerModule.MODULE_ONLY),
             'projecte'        : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL),
             'recipe_stages'   : new IntegrationSettings(shouldCompile: false),
-            'the_one_probe'   : new IntegrationSettings(shouldCompile: false),
+            'the_one_probe'   : new IntegrationSettings(shouldCompile: true),
             'wthit'           : new IntegrationSettings(shouldCompile: false)
     ]
 }

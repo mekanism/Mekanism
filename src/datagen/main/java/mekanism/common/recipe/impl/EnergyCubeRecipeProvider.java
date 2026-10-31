@@ -60,6 +60,6 @@ class EnergyCubeRecipeProvider extends BaseSubRecipeProvider {
               .category(RecipeCategory.DECORATIONS)//Mirror what vanilla does for chests
               .group(Mekanism.rl("energy_cube"))
               .unlockedBy(recipeCriterion)
-              .save(consumer, Mekanism.rl(basePath + tierName));
+              .save(consumer, basePath + tierName);
     }
 }

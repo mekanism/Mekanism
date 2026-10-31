@@ -12,7 +12,6 @@ import mekanism.api.chemical.ChemicalInstance;
 import mekanism.api.recipes.book.MekanismBookCategory;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.triggers.Criterion;
-import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
@@ -20,7 +19,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeUnlockAdvancementBuilder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.fluids.FluidInstance;
@@ -207,16 +205,6 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
             throw new IllegalStateException("Cannot save recipe with no unlock criteria set");
         }
         recipeOutput.accept(id, asRecipe(), advancementHolder, conditions.toArray(new ICondition[0]));
-    }
-
-    /// Builds this recipe basing the name on the output item.
-    ///
-    /// @param recipeOutput Finished Recipe Consumer.
-    /// @param output       Output to base the recipe name off of.
-    ///
-    /// @since 10.7.11
-    protected void save(RecipeOutput recipeOutput, Holder<Item> output) {
-        save(recipeOutput, output.key().identifier());
     }
 
     public static ResourceKey<Recipe<?>> getDefaultRecipeId(FluidInstance fluid) {

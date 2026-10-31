@@ -4,7 +4,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
@@ -22,7 +21,7 @@ class SeparatingRecipeProvider extends BaseSubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput output) {
         String basePath = "separator/";
         //Brine
         ElectrolysisRecipeBuilder.separating(
@@ -31,13 +30,13 @@ class SeparatingRecipeProvider extends BaseSubRecipeProvider {
               chemicalTemplate(ChemicalIds.CHLORINE, 1)
         ).unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
               .unlockedBy("in_brine", RecipeProvider.insideOf(MekanismFluids.BRINE.getBlock()))
-              .save(consumer, Mekanism.rl(basePath + "brine"));
+              .save(output, basePath + "brine");
         //Water
         ElectrolysisRecipeBuilder.separating(
               IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 2),
               chemicalTemplate(ChemicalIds.HYDROGEN, 2),
               chemicalTemplate(ChemicalIds.OXYGEN, 1)
         ).unlockedBy("in_water", RecipeProvider.insideOf(Blocks.WATER))
-              .save(consumer, Mekanism.rl(basePath + "water"));
+              .save(output, basePath + "water");
     }
 }
