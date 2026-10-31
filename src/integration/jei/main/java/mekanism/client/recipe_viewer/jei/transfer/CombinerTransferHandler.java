@@ -13,10 +13,8 @@ import mekanism.common.lib.recipetransfer.PlaceMekanismRecipe;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.RecipeContainers;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.machine.TileEntityCombiner;
-import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.Nullable;
 
 public class CombinerTransferHandler extends JeiMachineTransferHandler<MekanismTileContainer<TileEntityCombiner>, CombinerRecipe> {
 
@@ -25,13 +23,13 @@ public class CombinerTransferHandler extends JeiMachineTransferHandler<MekanismT
     }
 
     @Override
-    protected @Nullable IRecipeTransferError transferRecipe(RecipeContainers recipeContainers, CombinerRecipe recipe, JeiPlacementHelper helper, TransactionContext transaction,
-          AutomationType automationType) {
+    protected TransferResult transferRecipe(RecipeContainers recipeContainers, CombinerRecipe recipe, JeiPlacementHelper helper, TransactionContext transaction,
+											AutomationType automationType) {
         List<? extends IResourceContainer<?>> inputs = recipeContainers.inputs();
         if (inputs.size() == 2 && inputs.getFirst() instanceof IInventorySlot inputSlot && inputs.getLast() instanceof IInventorySlot secondaryInput) {
             return PlaceMekanismRecipe.placeRecipe(helper, recipe.getMainInput(), inputSlot, recipe.getExtraInput(), secondaryInput, transaction, automationType);
         }
         Mekanism.logger.error("Encountered CombinerRecipe recipe via JEI Transfer but recipe containers were not as expected did not match");
-        return transferHelper.createInternalError();
+        return TransferResult.INTERNAL_ERROR;
     }
 }

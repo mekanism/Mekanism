@@ -27,7 +27,6 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.transfer.IRecipeTransferContext;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
-import mezz.jei.api.recipe.transfer.IRecipeTransferError.Type;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.transfer.RecipeTransferResult;
@@ -48,10 +47,13 @@ import org.jspecify.annotations.Nullable;
 
 public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContainer, RECIPE extends MekanismRecipe<?, ?, ?>> implements IRecipeTransferHandler<CONTAINER, RecipeHolder<RECIPE>> {
 
-    /// Helper marker
-    private static final IRecipeTransferError SUCCESS = () -> Type.INTERNAL;
-    /// Helper marker
-    private static final IRecipeTransferError MISSING_SLOTS = () -> Type.INTERNAL;
+    protected enum TransferResult {
+        SUCCESS,
+        SUCCESS_NO_ACTION,
+        MISSING_SLOTS,
+        NOT_ENOUGH_ROOM,
+        INTERNAL_ERROR
+    }
 
     private final IRecipeType<RecipeHolder<RECIPE>> recipeType;
     protected final IRecipeTransferHandlerHelper transferHelper;
@@ -80,9 +82,8 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
         return recipeType;
     }
 
-    @Nullable
-    protected abstract IRecipeTransferError transferRecipe(RecipeContainers recipeContainers, RECIPE recipe, JeiPlacementHelper helper, TransactionContext transaction,
-          AutomationType automationType);
+    protected abstract TransferResult transferRecipe(RecipeContainers recipeContainers, RECIPE recipe, JeiPlacementHelper helper, TransactionContext transaction,
+                                                     AutomationType automationType);
 
     @Nullable
     @Override
@@ -95,46 +96,61 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
     @Nullable
     @Override
     public final IRecipeTransferError transferRecipe(IRecipeTransferContext<RecipeHolder<RECIPE>, CONTAINER> context, boolean doTransfer) {
-        IRecipeTransferError error = tryTransferRecipe(context, doTransfer);
-        if (error != null && doTransfer) {
-            context.completeRecipeTransfer(RecipeTransferResult.REJECTED);
-        }
-        return error;
-    }
-
-    @Nullable
-    private IRecipeTransferError tryTransferRecipe(IRecipeTransferContext<RecipeHolder<RECIPE>, CONTAINER> context, boolean doTransfer) {
         RecipeContainers recipeContainers = context.getContainer().getRecipeContainers();
         if (recipeContainers == null) {
             Mekanism.logger.error("Unable to find recipe input for container of type: {}", BuiltInRegistries.MENU.getKey(menuType));
+            if (doTransfer) {
+                context.completeRecipeTransfer(RecipeTransferResult.REJECTED);
+            }
             return transferHelper.createInternalError();
         }
+
         try (Transaction ignored = TransactionHelper.openTransactionSafe()) {
             List<IRecipeSlotView> inputSlots = context.getRecipeSlots().getSlotViews(RecipeIngredientRole.INPUT);
             JeiPlacementHelper helper = new JeiPlacementHelper(context.getPlayer(), context.isMaxTransfer(), inputSlots.size(), context.getRecipe().id());
-            IRecipeTransferError error = transferRecipe(recipeContainers, context.getRecipe().value(), helper, ignored, AutomationType.MANUAL);
-            if (error == SUCCESS) {
-                if (doTransfer) {
-                    helper.sendTransferPacket(context.getTransferId(),
-                          successful -> context.completeRecipeTransfer(successful ? RecipeTransferResult.SUCCESS : RecipeTransferResult.REJECTED));
+            TransferResult result = transferRecipe(recipeContainers, context.getRecipe().value(), helper, ignored, AutomationType.MANUAL);
+            return switch (result) {
+                case SUCCESS_NO_ACTION -> {
+                    if (doTransfer) {
+                        // The inputs already match, so no transfer packet or server completion is needed.
+                        context.completeRecipeTransfer(RecipeTransferResult.SUCCESS);
+                    }
+                    yield null;
                 }
-                return null;
-            } else if (error == MISSING_SLOTS) {
-                if (helper.missingSlots.isEmpty()) {
-                    Mekanism.logger.error("Recipe transfer for {} returned that there were missing inputs, but somehow didn't specify which inputs.", context.getRecipe().id().identifier());
-                    return transferHelper.createInternalError();
+                case SUCCESS -> {
+                    if (doTransfer) {
+                        helper.sendTransferPacket(context.getTransferId(),
+                              successful -> context.completeRecipeTransfer(successful ? RecipeTransferResult.SUCCESS : RecipeTransferResult.REJECTED));
+                    }
+                    yield null;
                 }
-                return transferHelper.createUserErrorForMissingSlots(MekanismLang.JEI_MISSING_ITEMS.translate(), helper.missingSlots.intStream().mapToObj(inputSlots::get).toList());
-            }
-            if (error == null && doTransfer) {
-                // The inputs already match, so no transfer packet or server completion is needed.
-                context.completeRecipeTransfer(RecipeTransferResult.SUCCESS);
-            }
-            return error;
+                case MISSING_SLOTS -> {
+                    if (doTransfer) {
+                        context.completeRecipeTransfer(RecipeTransferResult.REJECTED);
+                    }
+                    if (helper.missingSlots.isEmpty()) {
+                        Mekanism.logger.error("Recipe transfer for {} returned that there were missing inputs, but somehow didn't specify which inputs.", context.getRecipe().id().identifier());
+                        yield transferHelper.createInternalError();
+                    }
+                    yield transferHelper.createUserErrorForMissingSlots(MekanismLang.JEI_MISSING_ITEMS.translate(), helper.missingSlots.intStream().mapToObj(inputSlots::get).toList());
+                }
+                case NOT_ENOUGH_ROOM -> {
+                    if (doTransfer) {
+                        context.completeRecipeTransfer(RecipeTransferResult.REJECTED);
+                    }
+                    yield transferHelper.createUserErrorWithTooltip(MekanismLang.JEI_INVENTORY_FULL.translate());
+                }
+                case INTERNAL_ERROR -> {
+                    if (doTransfer) {
+                        context.completeRecipeTransfer(RecipeTransferResult.REJECTED);
+                    }
+                    yield transferHelper.createInternalError();
+                }
+            };
         }
     }
 
-    protected class JeiPlacementHelper implements RecipePlacementHelper<@Nullable IRecipeTransferError> {
+    protected class JeiPlacementHelper implements RecipePlacementHelper<TransferResult> {
 
         private final ResourceHandler<ItemResource> mainSlots;
         private final ResourceKey<Recipe<?>> recipeKey;
@@ -155,45 +171,44 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
             return mainSlots;
         }
 
-        @Nullable
         @Override
-        public IRecipeTransferError successNoAction() {
-            return null;
+        public TransferResult successNoAction() {
+            return TransferResult.SUCCESS_NO_ACTION;
         }
 
         @Override
-        public IRecipeTransferError error() {
+        public TransferResult error() {
             if (!missingSlots.isEmpty()) {
-                return MISSING_SLOTS;
+                return TransferResult.MISSING_SLOTS;
             }
-            return transferHelper.createInternalError();
+            return TransferResult.INTERNAL_ERROR;
         }
 
         @Override
-        public IRecipeTransferError success() {
-            return SUCCESS;
+        public TransferResult success() {
+            return TransferResult.SUCCESS;
         }
 
         @Override
-        public IRecipeTransferError missingItems(int slot) {
+        public TransferResult missingItems(int slot) {
             if (slot >= 0 && slot < totalSlots) {
                 if (missingSlots.isEmpty()) {
                     missingSlots = new IntArrayList();
                 }
                 missingSlots.add(slot);
             }
-            return MISSING_SLOTS;
+            return TransferResult.MISSING_SLOTS;
         }
 
         @Override
-        public IRecipeTransferError notEnoughRoom() {
-            return transferHelper.createUserErrorWithTooltip(MekanismLang.JEI_INVENTORY_FULL.translate());
+        public TransferResult notEnoughRoom() {
+            return TransferResult.NOT_ENOUGH_ROOM;
         }
 
         @Override
-        public IRecipeTransferError unableToClearInput(int slot) {
+        public TransferResult unableToClearInput(int slot) {
             Mekanism.logger.error("Unable to clear recipe slot: {} for jei transfer request of recipe: {}", slot, recipeKey.identifier());
-            return transferHelper.createInternalError();
+            return TransferResult.INTERNAL_ERROR;
         }
 
         @Override
