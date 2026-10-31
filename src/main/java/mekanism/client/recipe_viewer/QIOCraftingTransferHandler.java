@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer;
 
 import com.google.common.primitives.Ints;
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMaps;
@@ -87,6 +88,13 @@ public class QIOCraftingTransferHandler {
 
     @Nullable
     public static <RESULT, SLOT extends RVRecipeSlot, ITEM_UUID> RESULT transferRecipe(RVRecipeInfo<RESULT, SLOT, ITEM_UUID> recipeHelper, boolean execute) {
+        return transferRecipe(recipeHelper, execute, -1, null);
+    }
+
+    /// The completion callback runs on the client thread after the server finishes an executed transfer.
+    @Nullable
+    public static <RESULT, SLOT extends RVRecipeSlot, ITEM_UUID> RESULT transferRecipe(RVRecipeInfo<RESULT, SLOT, ITEM_UUID> recipeHelper, boolean execute,
+          int transferId, @Nullable BooleanConsumer completion) {
         if (recipeHelper.transferAmount() < 1) {
             //Short circuit if for some reason our caller is trying to transfer an invalid amount of items
             return recipeHelper.createInternalError();
@@ -347,7 +355,12 @@ public class QIOCraftingTransferHandler {
                 // things may not fully be accurate on the client side with the stacks that JEI lets us know match the recipe, as
                 // they may require extra NBT that is server side only.
                 //TODO: If the sources are all from the crafting window and are already in the correct spots, there is no need to send this packet
-                PacketUtils.sendToServer(new PacketQIOFillCraftingWindow(recipeHelper.id(), toTransfer > 1, MekanismConfig.client.qioRejectsToInventory.get(), sources));
+                boolean requestResult = transferId != -1 && completion != null;
+                if (requestResult) {
+                    RVTransferUtils.registerTransfer(transferId, completion);
+                }
+                PacketUtils.sendToServer(new PacketQIOFillCraftingWindow(recipeHelper.id(), toTransfer > 1, MekanismConfig.client.qioRejectsToInventory.get(),
+                      sources, requestResult ? transferId : -1));
             }
         }
         return null;

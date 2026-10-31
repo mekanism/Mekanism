@@ -18,6 +18,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferContext;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import mezz.jei.api.recipe.transfer.RecipeTransferResult;
 import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -61,14 +62,18 @@ public class JeiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     @Deprecated(since = "JEI 30.30.0", forRemoval = true)
     public IRecipeTransferError transferRecipe(CONTAINER container, RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player,
           boolean maxTransfer, boolean doTransfer) {
-        return QIOCraftingTransferHandler.transferRecipe(new JeiRecipeInfo(container, recipeHolder, recipeSlots, player, maxTransfer ? Integer.MAX_VALUE : 1, handlerHelper, stackHelper),
-              doTransfer);
+        throw new UnsupportedOperationException("Use transferRecipe(IRecipeTransferContext, boolean) instead");
     }
 
     @Nullable
     @Override
     public IRecipeTransferError transferRecipe(IRecipeTransferContext<RecipeHolder<CraftingRecipe>, CONTAINER> context, boolean doTransfer) {
-        return QIOCraftingTransferHandler.transferRecipe(new JeiRecipeInfo(context, handlerHelper, stackHelper), doTransfer);
+        IRecipeTransferError error = QIOCraftingTransferHandler.transferRecipe(new JeiRecipeInfo(context, handlerHelper, stackHelper), doTransfer, context.getTransferId(),
+              successful -> context.completeRecipeTransfer(successful ? RecipeTransferResult.SUCCESS : RecipeTransferResult.REJECTED));
+        if (error != null && doTransfer) {
+            context.completeRecipeTransfer(RecipeTransferResult.REJECTED);
+        }
+        return error;
     }
 
     private record JeiRecipeInfo(

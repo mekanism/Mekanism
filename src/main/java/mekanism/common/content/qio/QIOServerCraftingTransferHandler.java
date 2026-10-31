@@ -41,14 +41,16 @@ public class QIOServerCraftingTransferHandler {
     private final QIOFrequency frequency;
     private final boolean rejectToInventory;
 
-    public static void tryTransfer(QIOItemViewerContainer container, byte selectedCraftingGrid, boolean rejectToInventory, Player player, Identifier recipeID,
+    public static boolean tryTransfer(QIOItemViewerContainer container, byte selectedCraftingGrid, boolean rejectToInventory, Player player, Identifier recipeID,
           CraftingRecipe recipe, Byte2ObjectMap<List<SingularItemTypeSource>> sources) {
         QIOServerCraftingTransferHandler transferHandler = new QIOServerCraftingTransferHandler(container, selectedCraftingGrid, rejectToInventory, player, recipeID);
         try (Transaction transaction = Transaction.openRoot()) {
             if (transferHandler.transferItems(recipe, sources, transaction)) {
                 transaction.commit();
+                return true;
             }
         }
+        return false;
     }
 
     private QIOServerCraftingTransferHandler(QIOItemViewerContainer container, byte selectedCraftingGrid, boolean rejectToInventory, Player player, Identifier recipeID) {

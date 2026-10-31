@@ -8,6 +8,7 @@ import mekanism.common.lib.Version;
 import mekanism.common.network.to_client.PacketHitBlockEffect;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketPortalFX;
+import mekanism.common.network.to_client.PacketRecipeTransferResult;
 import mekanism.common.network.to_client.PacketSetDeltaMovement;
 import mekanism.common.network.to_client.PacketUpdateTile;
 import mekanism.common.network.to_client.configuration.SyncAllSecurityData;
@@ -165,6 +166,7 @@ public class PacketHandler extends BasePacketHandler {
         registrar.play(PacketUpdateContainer.TYPE, PacketUpdateContainer.STREAM_CODEC);
         registrar.play(PacketUpdateTile.TYPE, PacketUpdateTile.STREAM_CODEC);
         registrar.play(PacketSetDeltaMovement.TYPE, PacketSetDeltaMovement.STREAM_CODEC);
+        registrar.play(PacketRecipeTransferResult.TYPE, PacketRecipeTransferResult.STREAM_CODEC);
 
         //QIO
         registrar.play(PacketUpdateItemViewer.TYPE, PacketUpdateItemViewer.STREAM_CODEC);
