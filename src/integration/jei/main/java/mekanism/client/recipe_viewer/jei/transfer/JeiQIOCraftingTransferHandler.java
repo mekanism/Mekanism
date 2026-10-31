@@ -69,8 +69,12 @@ public class JeiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     @Nullable
     @Override
     public IRecipeTransferError transferRecipe(IRecipeTransferContext<RecipeHolder<CraftingRecipe>, CONTAINER> context, boolean doTransfer) {
-        return QIOCraftingTransferHandler.transferRecipe(new JeiRecipeInfo(context, handlerHelper, stackHelper), doTransfer, context.getTransferId(),
+        IRecipeTransferError error = QIOCraftingTransferHandler.transferRecipe(new JeiRecipeInfo(context, handlerHelper, stackHelper), doTransfer, context.getTransferId(),
               successful -> context.completeRecipeTransfer(successful ? RecipeTransferResult.SUCCESS : RecipeTransferResult.REJECTED));
+        if (error != null && doTransfer) {
+            context.completeRecipeTransfer(RecipeTransferResult.REJECTED);
+        }
+        return error;
     }
 
     private record JeiRecipeInfo(

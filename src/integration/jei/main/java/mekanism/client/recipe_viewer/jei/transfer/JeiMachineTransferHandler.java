@@ -117,6 +117,15 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
     @Nullable
     @Override
     public final IRecipeTransferError transferRecipe(IRecipeTransferContext<RecipeHolder<RECIPE>, CONTAINER> context, boolean doTransfer) {
+        IRecipeTransferError error = tryTransferRecipe(context, doTransfer);
+        if (error != null && doTransfer) {
+            context.completeRecipeTransfer(RecipeTransferResult.REJECTED);
+        }
+        return error;
+    }
+
+    @Nullable
+    private IRecipeTransferError tryTransferRecipe(IRecipeTransferContext<RecipeHolder<RECIPE>, CONTAINER> context, boolean doTransfer) {
         RecipeContainers recipeContainers = context.getContainer().getRecipeContainers();
         if (recipeContainers == null) {
             Mekanism.logger.error("Unable to find recipe input for container of type: {}", BuiltInRegistries.MENU.getKey(menuType));
