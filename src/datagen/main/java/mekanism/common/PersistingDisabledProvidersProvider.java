@@ -21,7 +21,6 @@ import mekanism.client.recipe_viewer.alias.MekanismAliasMapping;
 import mekanism.common.integration.IMekCrTDatagen;
 import mekanism.common.integration.IMekProjectEDatagen;
 import mekanism.common.lib.FieldReflectionHelper;
-import mekanism.common.registries.MekanismRegistryProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -29,7 +28,8 @@ import net.minecraft.data.HashCache;
 import net.minecraft.data.HashCache.ProviderCache;
 import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.neoforge.data.event.PackGenerator;
 import org.jspecify.annotations.Nullable;
 
 /// Used for helping to persist specific integrations we have that aren't updated yet.
@@ -43,25 +43,25 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         globalCache = cache;
     }
 
-    public static void addDisableableProviders(GatherDataEvent event) {
-        String modid = event.getModContainer().getModId();
+    public static void addDisableableProviders(PackGenerator packGenerator, ModContainer modContainer) {
+        String modid = modContainer.getModId();
         Set<String> pathsToSkip = new HashSet<>();
         List<String> fakeProviders = new ArrayList<>();
         if (Mekanism.hooks.emi.isLoaded()) {
-            event.createProvider((output, lookup) -> IMekEmiDatagen.INSTANCE.aliasProvider(output, lookup, modid, MekanismAliasMapping::new));
+            packGenerator.createProvider((output, lookup) -> IMekEmiDatagen.INSTANCE.aliasProvider(output, lookup, modid, MekanismAliasMapping::new));
         } else {
             skipEmi(modid, pathsToSkip, fakeProviders);
         }
-        addGender(event, pathsToSkip, fakeProviders);
+        addGender(packGenerator, modid, pathsToSkip, fakeProviders);
         if (Mekanism.hooks.projecte.isLoaded()) {
-            event.createProvider(IMekProjectEDatagen.INSTANCE::customConversionProvider);
+            packGenerator.createProvider(IMekProjectEDatagen.INSTANCE::customConversionProvider);
         } else {
             Mekanism.logger.warn("Skipping and persisting existing {} data generated files for ProjectE", modid);
             pathsToSkip.add("pe_custom_conversions");
             fakeProviders.add("Custom EMC Conversions: " + modid);
         }
         if (Mekanism.hooks.craftTweaker.isLoaded()) {
-            event.createProvider(IMekCrTDatagen.INSTANCE::exampleProvider);
+            packGenerator.createProvider(IMekCrTDatagen.INSTANCE::exampleProvider);
         } else {
             Mekanism.logger.warn("Skipping and persisting existing {} data generated files for CraftTweaker", modid);
             pathsToSkip.add("scripts");
@@ -70,22 +70,22 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
 
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        event.createProvider(output -> new PersistingDisabledProvidersProvider(output, modid, MekanismRegistryProvider.DISABLED_COMPATS, pathsToSkip, fakeProviders));
+        packGenerator.createProvider(output -> new PersistingDisabledProvidersProvider(output, modid, MekanismDataGenerator.DISABLED_COMPATS, pathsToSkip, fakeProviders));
     }
 
-    public static void addDisabledEmiProvider(GatherDataEvent event, Supplier<IAliasMapping> mappings) {
-        String modid = event.getModContainer().getModId();
+    public static void addDisabledEmiProvider(PackGenerator packGenerator, ModContainer modContainer, Supplier<IAliasMapping> mappings) {
+        String modid = modContainer.getModId();
         Set<String> pathsToSkip = new HashSet<>();
         List<String> fakeProviders = new ArrayList<>();
         if (Mekanism.hooks.emi.isLoaded()) {
-            event.createProvider((output, lookup) -> IMekEmiDatagen.INSTANCE.aliasProvider(output, lookup, modid, mappings));
+            packGenerator.createProvider((output, lookup) -> IMekEmiDatagen.INSTANCE.aliasProvider(output, lookup, modid, mappings));
         } else {
             skipEmi(modid, pathsToSkip, fakeProviders);
         }
-        addGender(event, pathsToSkip, fakeProviders);
+        addGender(packGenerator, modid, pathsToSkip, fakeProviders);
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        event.createProvider(output -> new PersistingDisabledProvidersProvider(output, modid, Collections.emptySet(), pathsToSkip, fakeProviders));
+        packGenerator.createProvider(output -> new PersistingDisabledProvidersProvider(output, modid, Collections.emptySet(), pathsToSkip, fakeProviders));
     }
 
     private static void skipEmi(String modid, Set<String> pathsToSkip, List<String> fakeProviders) {
@@ -94,12 +94,11 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         fakeProviders.add("EMI Alias Provider: " + modid);
     }
 
-    private static void addGender(GatherDataEvent event, Set<String> pathsToSkip, List<String> fakeProviders) {
-        String modid = event.getModContainer().getModId();
+    private static void addGender(PackGenerator packGenerator, String modid, Set<String> pathsToSkip, List<String> fakeProviders) {
         if (Mekanism.hooks.genderMod.isLoaded()) {
             IMekGenderDatagen genderDatagen = IMekGenderDatagen.INSTANCES.get(modid);
             if (genderDatagen != null) {
-                event.createProvider(genderDatagen::armorProvider);
+                packGenerator.createProvider(genderDatagen::armorProvider);
             }
         } else {
             Mekanism.logger.warn("Skipping and persisting existing {} data generated files for Female Gender Mod", modid);

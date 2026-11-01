@@ -5,8 +5,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
-import net.neoforged.fml.util.ObfuscationReflectionHelper;
-import net.neoforged.fml.util.ObfuscationReflectionHelper.UnableToFindFieldException;
 import org.jspecify.annotations.Nullable;
 
 /// Helper  to make reflecting and grabbing the value of fields in a cached way easier
@@ -30,8 +28,9 @@ public class FieldReflectionHelper<CLASS, TYPE extends @Nullable Object> {
     public TYPE getValue(CLASS input) {
         if (field == null) {
             try {
-                field = ObfuscationReflectionHelper.findField(clazz, fieldName);
-            } catch (UnableToFindFieldException e) {
+                field = clazz.getDeclaredField(fieldName);
+                field.setAccessible(true);
+            } catch (NoSuchFieldException e) {
                 Mekanism.logger.error("Error getting {} {} field.", clazz.getSimpleName(), fieldName, e);
                 return fallback.get();
             }
