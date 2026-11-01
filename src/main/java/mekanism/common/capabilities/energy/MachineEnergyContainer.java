@@ -2,6 +2,10 @@ package mekanism.common.capabilities.energy;
 
 import java.util.Objects;
 import java.util.function.Predicate;
+
+import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
+
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.functions.ConstantPredicates;
@@ -10,14 +14,13 @@ import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderGetter;
-import org.jetbrains.annotations.Range;
-import org.jspecify.annotations.Nullable;
 
 public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends BasicEnergyContainer {
 
@@ -71,10 +74,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
 
     public void setMaxEnergy(long maxEnergy) {
         this.currentMaxEnergy = maxEnergy;
-        //Can't use ContainerType.ENERGY.clampContents, as getCapacityAsLong is never lower than the stored amount
-        if (getAmountAsLong() > maxEnergy) {
-            setEnergy(maxEnergy, null);
-        }
+        ContainerType.ENERGY.clampContents(this, null);
     }
 
     public int getEnergyPerTick() {
