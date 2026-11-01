@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 32,
+    "ingredient": "mekanism:green"
+  },
+  "group": "mekanism:paint_ball",
+  "item_input": {
+    "count": 1,
+    "ingredient": "ae2:matter_ball"
+  },
+  "output": {
+    "id": "ae2:green_paint_ball"
+  },
+  "per_tick_usage": false
+}

@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 32,
+    "ingredient": "mekanism:cyan"
+  },
+  "group": "mekanism:paint_ball",
+  "item_input": {
+    "count": 1,
+    "ingredient": "ae2:matter_ball"
+  },
+  "output": {
+    "id": "ae2:cyan_paint_ball"
+  },
+  "per_tick_usage": false
+}

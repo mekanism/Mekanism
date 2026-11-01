@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "category": "building",
+  "input": {
+    "count": 1,
+    "ingredient": "ae2:quartz_stairs"
+  },
+  "output": {
+    "id": "ae2:smooth_quartz_stairs"
+  }
+}

@@ -7,6 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.minecraft.world.item.DyeColor;
 
 /// Similar to [net.minecraft.world.level.block.ColorCollection] but with the extra colors we have in [EnumColor].
 ///
@@ -114,6 +115,27 @@ public record EnumColorCollection<TYPE>(
             case BLACK -> this.black;
             case DARK_RED -> this.darkRed;
             case AQUA -> this.aqua;
+        };
+    }
+
+    public TYPE pick(DyeColor color) {
+        return switch (color) {
+            case WHITE -> this.white;
+            case ORANGE -> this.orange;
+            case MAGENTA -> this.pink;
+            case LIGHT_BLUE -> this.indigo;
+            case YELLOW -> this.yellow;
+            case LIME -> this.brightGreen;
+            case PINK -> this.brightPink;
+            case GRAY -> this.darkGray;
+            case LIGHT_GRAY -> this.gray;
+            case CYAN -> this.darkAqua;
+            case PURPLE -> this.purple;
+            case BLUE -> this.darkBlue;
+            case BROWN -> this.brown;
+            case GREEN -> this.darkGreen;
+            case RED -> this.red;
+            case BLACK -> this.black;
         };
     }
 

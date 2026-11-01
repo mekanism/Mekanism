@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "ingredient": "ae2:crank"
+  },
+  "main_output": {
+    "count": 4,
+    "id": "minecraft:stick"
+  },
+  "secondary_chance": 1.0,
+  "secondary_output": {
+    "id": "minecraft:copper_ingot"
+  }
+}
