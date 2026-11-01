@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_polished_orpiment_stairs": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:polished_orpiment_stairs"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/biomesoplenty/enriching/orpiment/polished_stairs_to_brick"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_polished_orpiment_stairs"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/biomesoplenty/enriching/orpiment/polished_stairs_to_brick"
+    ]
+  }
+}

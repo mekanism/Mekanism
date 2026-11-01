@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:injecting",
+  "chemical_input": {
+    "amount": 5,
+    "ingredient": "#mekanism:water_vapor"
+  },
+  "item_input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:dried_salt"
+  },
+  "output": {
+    "id": "mekanism:block_salt"
+  },
+  "per_tick_usage": true
+}

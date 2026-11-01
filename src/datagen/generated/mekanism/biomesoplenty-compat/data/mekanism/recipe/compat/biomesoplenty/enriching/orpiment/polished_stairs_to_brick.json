@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "category": "building",
+  "group": "mekanism:orpiment_brick_conversion",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:polished_orpiment_stairs"
+  },
+  "output": {
+    "id": "biomesoplenty:orpiment_brick_stairs"
+  }
+}

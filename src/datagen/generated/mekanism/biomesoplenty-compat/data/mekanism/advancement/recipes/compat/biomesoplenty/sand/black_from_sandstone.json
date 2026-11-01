@@ -1,0 +1,65 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_black_sandstone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:black_sandstone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_chiseled_black_sandstone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:chiseled_black_sandstone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_cut_black_sandstone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:cut_black_sandstone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_smooth_black_sandstone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:smooth_black_sandstone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/biomesoplenty/sand/black_from_sandstone"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_black_sandstone",
+      "has_chiseled_black_sandstone",
+      "has_cut_black_sandstone",
+      "has_smooth_black_sandstone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/biomesoplenty/sand/black_from_sandstone"
+    ]
+  }
+}

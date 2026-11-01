@@ -3,7 +3,10 @@
   "group": "light_blue_dye",
   "input": {
     "count": 1,
-    "ingredient": "biomesoplenty:icy_iris"
+    "ingredient": [
+      "biomesoplenty:blue_hydrangea",
+      "biomesoplenty:icy_iris"
+    ]
   },
   "output": {
     "amount": 1536,

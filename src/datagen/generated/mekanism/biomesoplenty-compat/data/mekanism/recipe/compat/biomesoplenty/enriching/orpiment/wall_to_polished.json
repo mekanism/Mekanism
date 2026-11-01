@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "category": "building",
+  "group": "mekanism:polished_orpiment_conversion",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:orpiment_wall"
+  },
+  "output": {
+    "id": "biomesoplenty:polished_orpiment_wall"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_polished_sphalerite": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:polished_sphalerite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/biomesoplenty/crushing/sphalerite/from_polished"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_polished_sphalerite"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/biomesoplenty/crushing/sphalerite/from_polished"
+    ]
+  }
+}

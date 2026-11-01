@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "category": "building",
+  "group": "mekanism:orpiment_brick_conversion",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:chiseled_orpiment"
+  },
+  "output": {
+    "id": "biomesoplenty:orpiment_bricks"
+  }
+}

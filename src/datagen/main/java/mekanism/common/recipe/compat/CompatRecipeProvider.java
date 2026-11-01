@@ -1,6 +1,10 @@
 package mekanism.common.recipe.compat;
 
+import mekanism.api.MekanismAPITags;
 import mekanism.api.datagen.recipe.RecipeCriterion;
+import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
+import mekanism.api.recipes.book.MetallurgicInfusingBookCategory;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
 import net.minecraft.advancements.Advancement;
@@ -14,6 +18,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.ItemLike;
 
 public abstract class CompatRecipeProvider extends BaseRecipeProvider {
 
@@ -46,5 +51,17 @@ public abstract class CompatRecipeProvider extends BaseRecipeProvider {
 
     protected ItemStackTemplate foreignTemplate(Identifier id) {
         return foreignTemplate(id, 1);
+    }
+
+    protected void infuseMoss(ItemLike input, ItemLike output, String group, String path) {
+        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
+                    IngredientCreatorAccess.item().from(input),
+                    IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.BIO, 10),
+                    false,
+                    new ItemStackTemplate(output.asItem())
+              ).category(MetallurgicInfusingBookCategory.BUILDING)
+              .group(Mekanism.rl(group))
+              .unlockedBy(hasCriterion(input.asItem()))
+              .save(this.output, path);
     }
 }

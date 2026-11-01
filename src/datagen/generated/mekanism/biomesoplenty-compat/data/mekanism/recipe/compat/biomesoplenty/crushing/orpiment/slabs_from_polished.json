@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "category": "building",
+  "group": "mekanism:orpiment_conversion",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:polished_orpiment_slab"
+  },
+  "output": {
+    "id": "biomesoplenty:orpiment_slab"
+  }
+}

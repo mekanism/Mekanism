@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_origin_oak_boat": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:origin_oak_boat"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/biomesoplenty/sawing/boat/origin_oak"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_origin_oak_boat"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/biomesoplenty/sawing/boat/origin_oak"
+    ]
+  }
+}

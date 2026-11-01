@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sphalerite_slab": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:sphalerite_slab"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/biomesoplenty/enriching/sphalerite/slabs_to_polished"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_sphalerite_slab"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/biomesoplenty/enriching/sphalerite/slabs_to_polished"
+    ]
+  }
+}

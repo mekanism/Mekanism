@@ -299,16 +299,4 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         infuseMoss(from.getStairs(), to.getStairs(), group, basePath + "stairs_conversion_" + name);
         infuseMoss(from.getWall(), to.getWall(), group, basePath + "walls_conversion_" + name);
     }
-
-    private void infuseMoss(ItemLike input, ItemLike output, String group, String path) {
-        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-                    IngredientCreatorAccess.item().from(input),
-                    IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.BIO, 10),
-                    false,
-                    new ItemStackTemplate(output.asItem())
-              ).category(MetallurgicInfusingBookCategory.BUILDING)
-              .group(Mekanism.rl(group))
-              .unlockedBy(hasCriterion(input.asItem()))
-              .save(this.output, path);
-    }
 }

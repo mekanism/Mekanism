@@ -11,6 +11,16 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
+    "has_marigold": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:marigold"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
     "has_orange_cosmos": {
       "conditions": {
         "items": [
@@ -32,7 +42,8 @@
     [
       "has_the_recipe",
       "has_orange_cosmos",
-      "has_burning_blossom"
+      "has_burning_blossom",
+      "has_marigold"
     ]
   ],
   "rewards": {

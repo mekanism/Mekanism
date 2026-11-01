@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "category": "building",
+  "group": "mekanism:sphalerite_brick_conversion",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:polished_sphalerite"
+  },
+  "output": {
+    "id": "biomesoplenty:sphalerite_bricks"
+  }
+}

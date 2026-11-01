@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "group": "yellow_dye",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:goldenrod"
+  },
+  "output": {
+    "amount": 1536,
+    "id": "mekanism:yellow"
+  }
+}

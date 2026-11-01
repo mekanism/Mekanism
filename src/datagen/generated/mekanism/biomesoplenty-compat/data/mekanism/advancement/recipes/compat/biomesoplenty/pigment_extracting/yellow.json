@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_goldenrod": {
+    "has_origin_dandelion": {
       "conditions": {
         "items": [
           {
-            "items": "biomesoplenty:goldenrod"
+            "items": "biomesoplenty:origin_dandelion"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_goldenrod"
+      "has_origin_dandelion"
     ]
   ],
   "rewards": {

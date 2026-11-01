@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_orpiment_brick_wall": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:orpiment_brick_wall"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/biomesoplenty/crushing/orpiment/brick_wall_to_polished"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_orpiment_brick_wall"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/biomesoplenty/crushing/orpiment/brick_wall_to_polished"
+    ]
+  }
+}

@@ -4,7 +4,7 @@
   "group": "yellow_dye",
   "input": {
     "count": 1,
-    "ingredient": "biomesoplenty:goldenrod"
+    "ingredient": "biomesoplenty:origin_dandelion"
   },
   "output": {
     "count": 2,

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "category": "building",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:mossy_black_sand"
+  },
+  "output": {
+    "id": "biomesoplenty:black_sand"
+  }
+}

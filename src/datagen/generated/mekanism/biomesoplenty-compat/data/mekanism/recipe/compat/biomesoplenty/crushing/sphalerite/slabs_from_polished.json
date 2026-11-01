@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "category": "building",
+  "group": "mekanism:sphalerite_conversion",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:polished_sphalerite_slab"
+  },
+  "output": {
+    "id": "biomesoplenty:sphalerite_slab"
+  }
+}
