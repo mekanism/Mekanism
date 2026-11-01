@@ -46,7 +46,8 @@ abstract class AllJar extends Jar {
         // us to do it, is to turn collections into file trees, and then use a matching block on them as that allows it to lazily evaluate the
         // filter as the collection is defined to stay up to date if the backing collection changes
         from(filterFiles(mainOutput, 'crafttweaker_parameter_names.json'))
-        from(filterFiles(secondaryModuleOutputs))
+        //Each module has its own pack.mcmeta, so only keep the one from main
+        from(filterFiles(secondaryModuleOutputs, 'pack.mcmeta'))
 
         //And finally copy over the generated files
         from(generatedDir.asFileTree.matching({ PatternFilterable pf ->
