@@ -1,6 +1,7 @@
 {
   "type": "mekanism:crushing",
   "category": "building",
+  "group": "mekanism:sky_stone_brick_conversion",
   "input": {
     "count": 1,
     "ingredient": "ae2:sky_stone_small_brick_wall"

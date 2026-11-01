@@ -126,6 +126,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_CHEST),
                     foreignTemplate(AEBlockIds.SKY_STONE_CHEST)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_CHEST))
               .save(output, basePath + "smooth_chest_to_chest");
 
@@ -134,6 +135,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_BLOCK),
                     foreignTemplate(AEBlockIds.SKY_STONE_BLOCK)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_BLOCK))
               .save(output, basePath + "smooth_to_stone");
         //Smooth Sky Stone Slab -> Sky Stone Slab
@@ -141,6 +143,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_SLAB),
                     foreignTemplate(AEBlockIds.SKY_STONE_SLAB)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_SLAB))
               .save(output, basePath + "smooth_slab_to_slab");
         //Smooth Sky Stone Stairs -> Sky Stone Stairs
@@ -148,6 +151,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_STAIRS),
                     foreignTemplate(AEBlockIds.SKY_STONE_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_STAIRS))
               .save(output, basePath + "smooth_stairs_to_stairs");
         //Smooth Sky Stone Wall -> Sky Stone Wall
@@ -155,6 +159,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_WALL),
                     foreignTemplate(AEBlockIds.SKY_STONE_WALL)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_WALL))
               .save(output, basePath + "smooth_wall_to_wall");
 
@@ -163,6 +168,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK),
                     foreignTemplate(AEBlockIds.SMOOTH_SKY_STONE_BLOCK)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK))
               .save(output, basePath + "brick_to_smooth");
         //Sky Stone Brick Slab -> Smooth Sky Stone Slab
@@ -170,6 +176,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK_SLAB),
                     foreignTemplate(AEBlockIds.SMOOTH_SKY_STONE_SLAB)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK_SLAB))
               .save(output, basePath + "brick_slab_to_smooth_slab");
         //Sky Stone Brick Stairs -> Smooth Sky Stone Stairs
@@ -177,6 +184,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK_STAIRS),
                     foreignTemplate(AEBlockIds.SMOOTH_SKY_STONE_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK_STAIRS))
               .save(output, basePath + "brick_stairs_to_smooth_stairs");
         //Sky Stone Brick Wall -> Smooth Sky Stone Wall
@@ -184,6 +192,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK_WALL),
                     foreignTemplate(AEBlockIds.SMOOTH_SKY_STONE_WALL)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK_WALL))
               .save(output, basePath + "brick_wall_to_smooth_wall");
 
@@ -192,6 +201,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_SMALL_BRICK),
                     foreignTemplate(AEBlockIds.SKY_STONE_BRICK)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_SMALL_BRICK))
               .save(output, basePath + "small_brick_to_brick");
         //Sky Stone Small Brick Slab -> Sky Stone Brick Slab
@@ -199,6 +209,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB),
                     foreignTemplate(AEBlockIds.SKY_STONE_BRICK_SLAB)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB))
               .save(output, basePath + "small_brick_slab_to_brick_slab");
         //Sky Stone Small Brick Stairs -> Sky Stone Brick Stairs
@@ -206,6 +217,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS),
                     foreignTemplate(AEBlockIds.SKY_STONE_BRICK_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS))
               .save(output, basePath + "small_brick_stairs_to_brick_stairs");
         //Sky Stone Small Brick Wall -> Sky Stone Brick Wall
@@ -213,6 +225,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_SMALL_BRICK_WALL),
                     foreignTemplate(AEBlockIds.SKY_STONE_BRICK_WALL)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_SMALL_BRICK_WALL))
               .save(output, basePath + "small_brick_wall_to_brick_wall");
     }
@@ -223,6 +236,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_CHEST),
                     foreignTemplate(AEBlockIds.SMOOTH_SKY_STONE_CHEST)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_CHEST))
               .save(output, basePath + "chest_to_smooth_chest");
 
@@ -231,6 +245,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_SLAB),
                     foreignTemplate(AEBlockIds.SMOOTH_SKY_STONE_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_SLAB))
               .save(output, basePath + "slab_to_smooth_slab");
         //Sky Stone Stairs -> Smooth Sky Stone Stairs
@@ -238,6 +253,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_STAIRS),
                     foreignTemplate(AEBlockIds.SMOOTH_SKY_STONE_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_STAIRS))
               .save(output, basePath + "stairs_to_smooth_stairs");
         //Sky Stone Wall -> Smooth Sky Stone Wall
@@ -245,6 +261,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_WALL),
                     foreignTemplate(AEBlockIds.SMOOTH_SKY_STONE_WALL)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_WALL))
               .save(output, basePath + "wall_to_smooth_wall");
 
@@ -253,6 +270,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_BLOCK),
                     foreignTemplate(AEBlockIds.SKY_STONE_BRICK)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_BLOCK))
               .save(output, basePath + "smooth_to_brick");
         //Smooth Sky Stone Slab -> Sky Stone Brick Slab
@@ -260,6 +278,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_SLAB),
                     foreignTemplate(AEBlockIds.SKY_STONE_BRICK_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_SLAB))
               .save(output, basePath + "smooth_slab_to_brick_slab");
         //Smooth Sky Stone Stairs -> Sky Stone Brick Stairs
@@ -267,6 +286,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_STAIRS),
                     foreignTemplate(AEBlockIds.SKY_STONE_BRICK_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_STAIRS))
               .save(output, basePath + "smooth_stairs_to_brick_stairs");
         //Smooth Sky Stone Wall -> Sky Stone Brick Wall
@@ -274,6 +294,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_SKY_STONE_WALL),
                     foreignTemplate(AEBlockIds.SKY_STONE_BRICK_WALL)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_WALL))
               .save(output, basePath + "smooth_wall_to_brick_wall");
 
@@ -282,6 +303,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK),
                     foreignTemplate(AEBlockIds.SKY_STONE_SMALL_BRICK)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_small_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK))
               .save(output, basePath + "brick_to_small_brick");
         //Sky Stone Brick Slab -> Sky Stone Small Brick Slab
@@ -289,6 +311,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK_SLAB),
                     foreignTemplate(AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_small_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK_SLAB))
               .save(output, basePath + "brick_slab_to_small_brick_slab");
         //Sky Stone Brick Stairs -> Sky Stone Small Brick Stairs
@@ -296,6 +319,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK_STAIRS),
                     foreignTemplate(AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_small_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK_STAIRS))
               .save(output, basePath + "brick_stairs_to_small_brick_stairs");
         //Sky Stone Brick Wall -> Sky Stone Small Brick Wall
@@ -303,6 +327,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BRICK_WALL),
                     foreignTemplate(AEBlockIds.SKY_STONE_SMALL_BRICK_WALL)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("sky_stone_small_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK_WALL))
               .save(output, basePath + "brick_wall_to_small_brick_wall");
     }
@@ -318,6 +343,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_QUARTZ_BLOCK),
                     foreignTemplate(AEBlockIds.QUARTZ_BLOCK)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_QUARTZ_BLOCK))
               .save(output, basePath + "smooth_to_block");
         //Smooth Certus Quartz Slab -> Certus Quartz Slab
@@ -325,6 +351,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_QUARTZ_SLAB),
                     foreignTemplate(AEBlockIds.QUARTZ_SLAB)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_QUARTZ_SLAB))
               .save(output, basePath + "smooth_slab_to_slab");
         //Smooth Certus Quartz Stairs -> Certus Quartz Stairs
@@ -332,6 +359,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_QUARTZ_STAIRS),
                     foreignTemplate(AEBlockIds.QUARTZ_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_QUARTZ_STAIRS))
               .save(output, basePath + "smooth_stairs_to_stairs");
         //Smooth Certus Quartz Wall -> Certus Quartz Wall
@@ -339,6 +367,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SMOOTH_QUARTZ_WALL),
                     foreignTemplate(AEBlockIds.QUARTZ_WALL)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_QUARTZ_WALL))
               .save(output, basePath + "smooth_wall_to_wall");
 
@@ -347,6 +376,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_BLOCK),
                     foreignTemplate(AEBlockIds.CUT_QUARTZ_BLOCK)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BLOCK))
               .save(output, basePath + "block_to_cut");
         //Certus Quartz Slab -> Cut Certus Quartz Slab
@@ -354,6 +384,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_SLAB),
                     foreignTemplate(AEBlockIds.CUT_QUARTZ_SLAB)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_SLAB))
               .save(output, basePath + "slab_to_cut");
         //Certus Quartz Stairs -> Cut Certus Quartz Stairs
@@ -361,6 +392,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_STAIRS),
                     foreignTemplate(AEBlockIds.CUT_QUARTZ_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_STAIRS))
               .save(output, basePath + "stairs_to_cut");
         //Certus Quartz Wall -> Cut Certus Quartz Wall
@@ -368,6 +400,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_WALL),
                     foreignTemplate(AEBlockIds.CUT_QUARTZ_WALL)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_WALL))
               .save(output, basePath + "wall_to_cut");
 
@@ -376,6 +409,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CUT_QUARTZ_BLOCK),
                     foreignTemplate(AEBlockIds.QUARTZ_BRICKS)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_BLOCK))
               .save(output, basePath + "cut_block_to_brick");
         //Cut Certus Quartz Slab -> Certus Quartz Brick Slab
@@ -383,6 +417,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CUT_QUARTZ_SLAB),
                     foreignTemplate(AEBlockIds.QUARTZ_BRICK_SLAB)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_SLAB))
               .save(output, basePath + "cut_slab_to_brick");
         //Cut Certus Quartz Stairs -> Certus Quartz Brick Stairs
@@ -390,6 +425,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CUT_QUARTZ_STAIRS),
                     foreignTemplate(AEBlockIds.QUARTZ_BRICK_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_STAIRS))
               .save(output, basePath + "cut_stairs_to_brick");
         //Cut Certus Quartz Wall -> Certus Quartz Brick Wall
@@ -397,6 +433,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CUT_QUARTZ_WALL),
                     foreignTemplate(AEBlockIds.QUARTZ_BRICK_WALL)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_WALL))
               .save(output, basePath + "cut_wall_to_brick");
 
@@ -405,6 +442,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_BRICKS),
                     foreignTemplate(AEBlockIds.CHISELED_QUARTZ_BLOCK)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICKS))
               .save(output, basePath + "brick_to_chiseled");
         //Certus Quartz Brick Slab -> Chiseled Certus Quartz Slab
@@ -412,6 +450,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_BRICK_SLAB),
                     foreignTemplate(AEBlockIds.CHISELED_QUARTZ_SLAB)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICK_SLAB))
               .save(output, basePath + "brick_slab_to_chiseled");
         //Certus Quartz Brick Stairs -> Chiseled Certus Quartz Stairs
@@ -419,6 +458,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_BRICK_STAIRS),
                     foreignTemplate(AEBlockIds.CHISELED_QUARTZ_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICK_STAIRS))
               .save(output, basePath + "brick_stairs_to_chiseled");
         //Certus Quartz Brick Wall -> Chiseled Certus Quartz Wall
@@ -426,6 +466,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_BRICK_WALL),
                     foreignTemplate(AEBlockIds.CHISELED_QUARTZ_WALL)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICK_WALL))
               .save(output, basePath + "brick_wall_to_chiseled");
 
@@ -434,6 +475,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_BLOCK),
                     foreignTemplate(AEBlockIds.QUARTZ_PILLAR)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_pillar_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_BLOCK))
               .save(output, basePath + "chiseled_block_to_pillar");
         //Chiseled Certus Quartz Slab -> Certus Quartz Pillar Slab
@@ -441,6 +483,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_SLAB),
                     foreignTemplate(AEBlockIds.QUARTZ_PILLAR_SLAB)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_pillar_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_SLAB))
               .save(output, basePath + "chiseled_slab_to_pillar_slab");
         //Chiseled Certus Quartz Stairs -> Certus Quartz Pillar Stairs
@@ -448,6 +491,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_STAIRS),
                     foreignTemplate(AEBlockIds.QUARTZ_PILLAR_STAIRS)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_pillar_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_STAIRS))
               .save(output, basePath + "chiseled_stairs_to_pillar_stairs");
         //Chiseled Certus Quartz Wall -> Certus Quartz Pillar Wall
@@ -455,6 +499,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_WALL),
                     foreignTemplate(AEBlockIds.QUARTZ_PILLAR_WALL)
               ).category(CrushingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_pillar_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_WALL))
               .save(output, basePath + "chiseled_wall_to_pillar_wall");
     }
@@ -466,6 +511,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_PILLAR),
                     foreignTemplate(AEBlockIds.CHISELED_QUARTZ_BLOCK)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_PILLAR))
               .save(output, basePath + "pillar_to_chiseled_block");
         //Certus Quartz Pillar Slab -> Chiseled Certus Quartz Slab
@@ -473,6 +519,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_PILLAR_SLAB),
                     foreignTemplate(AEBlockIds.CHISELED_QUARTZ_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_PILLAR_SLAB))
               .save(output, basePath + "pillar_slab_to_chiseled_slab");
         //Certus Quartz Pillar Stairs -> Chiseled Certus Quartz Stairs
@@ -480,6 +527,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_PILLAR_STAIRS),
                     foreignTemplate(AEBlockIds.CHISELED_QUARTZ_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_PILLAR_STAIRS))
               .save(output, basePath + "pillar_stairs_to_chiseled_stairs");
         //Certus Quartz Pillar Wall -> Chiseled Certus Quartz Wall
@@ -487,6 +535,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_PILLAR_WALL),
                     foreignTemplate(AEBlockIds.CHISELED_QUARTZ_WALL)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_PILLAR_WALL))
               .save(output, basePath + "pillar_wall_to_chiseled_wall");
 
@@ -495,6 +544,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_BLOCK),
                     foreignTemplate(AEBlockIds.QUARTZ_BRICKS)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_BLOCK))
               .save(output, basePath + "chiseled_block_to_brick");
         //Chiseled Certus Quartz Slab -> Certus Quartz Brick Slab
@@ -502,6 +552,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_SLAB),
                     foreignTemplate(AEBlockIds.QUARTZ_BRICK_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_SLAB))
               .save(output, basePath + "chiseled_slab_to_brick");
         //Chiseled Certus Quartz Stairs -> Certus Quartz Brick Stairs
@@ -509,6 +560,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_STAIRS),
                     foreignTemplate(AEBlockIds.QUARTZ_BRICK_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_STAIRS))
               .save(output, basePath + "chiseled_stairs_to_brick");
         //Chiseled Certus Quartz Wall -> Certus Quartz Brick Wall
@@ -516,6 +568,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CHISELED_QUARTZ_WALL),
                     foreignTemplate(AEBlockIds.QUARTZ_BRICK_WALL)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_WALL))
               .save(output, basePath + "chiseled_wall_to_brick");
 
@@ -524,6 +577,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_BRICKS),
                     foreignTemplate(AEBlockIds.CUT_QUARTZ_BLOCK)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICKS))
               .save(output, basePath + "brick_block_to_cut");
         //Certus Quartz Brick Slab -> Cut Certus Quartz Slab
@@ -531,6 +585,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_BRICK_SLAB),
                     foreignTemplate(AEBlockIds.CUT_QUARTZ_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICK_SLAB))
               .save(output, basePath + "brick_slab_to_cut");
         //Certus Quartz Brick Stairs -> Cut Certus Quartz Stairs
@@ -538,6 +593,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_BRICK_STAIRS),
                     foreignTemplate(AEBlockIds.CUT_QUARTZ_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICK_STAIRS))
               .save(output, basePath + "brick_stairs_to_cut");
         //Certus Quartz Brick Wall -> Cut Certus Quartz Wall
@@ -545,6 +601,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_BRICK_WALL),
                     foreignTemplate(AEBlockIds.CUT_QUARTZ_WALL)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICK_WALL))
               .save(output, basePath + "brick_wall_to_cut");
 
@@ -553,6 +610,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CUT_QUARTZ_BLOCK),
                     foreignTemplate(AEBlockIds.QUARTZ_BLOCK)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_BLOCK))
               .save(output, basePath + "cut_block_to_block");
         //Cut Certus Quartz Slab -> Certus Quartz Slab
@@ -560,6 +618,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CUT_QUARTZ_SLAB),
                     foreignTemplate(AEBlockIds.QUARTZ_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_SLAB))
               .save(output, basePath + "cut_slab_to_slab");
         //Cut Certus Quartz Stairs -> Certus Quartz Stairs
@@ -567,6 +626,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CUT_QUARTZ_STAIRS),
                     foreignTemplate(AEBlockIds.QUARTZ_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_STAIRS))
               .save(output, basePath + "cut_stairs_to_stairs");
         //Cut Certus Quartz Wall -> Certus Quartz Wall
@@ -574,6 +634,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.CUT_QUARTZ_WALL),
                     foreignTemplate(AEBlockIds.QUARTZ_WALL)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_WALL))
               .save(output, basePath + "cut_wall_to_wall");
 
@@ -582,6 +643,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_BLOCK),
                     foreignTemplate(AEBlockIds.SMOOTH_QUARTZ_BLOCK)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("smooth_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BLOCK))
               .save(output, basePath + "block_to_smooth_block");
         //Certus Quartz Slab -> Smooth Certus Quartz Slab
@@ -589,6 +651,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_SLAB),
                     foreignTemplate(AEBlockIds.SMOOTH_QUARTZ_SLAB)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("smooth_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_SLAB))
               .save(output, basePath + "slab_to_smooth_slab");
         //Certus Quartz Stairs -> Smooth Certus Quartz Stairs
@@ -596,6 +659,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_STAIRS),
                     foreignTemplate(AEBlockIds.SMOOTH_QUARTZ_STAIRS)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("smooth_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_STAIRS))
               .save(output, basePath + "stairs_to_smooth_stairs");
         //Certus Quartz Wall -> Smooth Certus Quartz Wall
@@ -603,6 +667,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.QUARTZ_WALL),
                     foreignTemplate(AEBlockIds.SMOOTH_QUARTZ_WALL)
               ).category(EnrichingBookCategory.BUILDING)
+              .group(Mekanism.rl("smooth_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_WALL))
               .save(output, basePath + "wall_to_smooth_wall");
     }

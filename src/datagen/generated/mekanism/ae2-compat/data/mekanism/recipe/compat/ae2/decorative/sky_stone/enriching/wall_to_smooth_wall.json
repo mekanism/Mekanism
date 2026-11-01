@@ -1,6 +1,7 @@
 {
   "type": "mekanism:enriching",
   "category": "building",
+  "group": "mekanism:smooth_sky_stone_conversion",
   "input": {
     "count": 1,
     "ingredient": "ae2:sky_stone_wall"

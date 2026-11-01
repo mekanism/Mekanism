@@ -1,6 +1,7 @@
 {
   "type": "mekanism:crushing",
   "category": "building",
+  "group": "mekanism:cut_certus_quartz_conversion",
   "input": {
     "count": 1,
     "ingredient": "ae2:quartz_slab"

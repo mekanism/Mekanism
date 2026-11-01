@@ -1,6 +1,7 @@
 {
   "type": "mekanism:crushing",
   "category": "building",
+  "group": "mekanism:sky_stone_conversion",
   "input": {
     "count": 1,
     "ingredient": "ae2:smooth_sky_stone_stairs"

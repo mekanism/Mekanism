@@ -1,6 +1,7 @@
 {
   "type": "mekanism:enriching",
   "category": "building",
+  "group": "mekanism:certus_quartz_brick_conversion",
   "input": {
     "count": 1,
     "ingredient": "ae2:chiseled_quartz_block"
