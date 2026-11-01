@@ -7,6 +7,7 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.util.PatternFilterable
 
@@ -16,7 +17,8 @@ abstract class MergeServiceTask extends DefaultTask {
 
     static Closure<PatternFilterable> serviceFilter = { PatternFilterable pf -> pf.include('**/META-INF/services/*') }
 
-    @OutputDirectory
+    //Not an output itself as it defaults to the shared build/generated directory, which other tasks also write to
+    @Internal
     final DirectoryProperty generatedDir
 
     @OutputDirectory

@@ -484,8 +484,9 @@ def mergeServiceDescriptors = tasks.register('mergeDataServiceDescriptors', Merg
     generatedDir.set(layout.buildDirectory.dir('generated/merged-datagen-services') as Provider<? extends Directory>)
 }
 
-getExtraSourceSet(sourceSets.main, 'datagen').configure {
-    resources.srcDir(mergeServiceDescriptors.flatMap { it.generatedDir })
+getExtraSourceSet(sourceSets.main, 'datagen').configure { SourceSet datagen ->
+    datagen.resources.srcDir(mergeServiceDescriptors.flatMap { it.generatedDir })
+    tasks.named(datagen.processResourcesTaskName).configure { dependsOn(mergeServiceDescriptors) }
 }
 
 void setGroups(SourceSet sourceSet) {
