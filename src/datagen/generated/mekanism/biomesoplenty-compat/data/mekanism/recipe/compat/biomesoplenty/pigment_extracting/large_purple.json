@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "group": "purple_dye",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:tall_lavender"
+  },
+  "output": {
+    "amount": 1536,
+    "id": "mekanism:purple"
+  }
+}

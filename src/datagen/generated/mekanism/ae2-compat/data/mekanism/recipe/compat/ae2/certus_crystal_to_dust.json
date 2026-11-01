@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "#c:gems/certus_quartz"
+  },
+  "output": {
+    "id": "ae2:certus_quartz_dust"
+  }
+}

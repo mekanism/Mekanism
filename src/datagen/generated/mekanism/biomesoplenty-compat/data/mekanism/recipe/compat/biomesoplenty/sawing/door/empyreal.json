@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:sawing",
+  "category": "wood_type",
+  "group": "mekanism:door",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:empyreal_door"
+  },
+  "main_output": {
+    "count": 2,
+    "id": "biomesoplenty:empyreal_planks"
+  }
+}

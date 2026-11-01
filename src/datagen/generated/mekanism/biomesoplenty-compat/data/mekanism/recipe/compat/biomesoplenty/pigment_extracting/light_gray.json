@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "group": "light_gray_dye",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:endbloom"
+  },
+  "output": {
+    "amount": 768,
+    "id": "mekanism:light_gray"
+  }
+}

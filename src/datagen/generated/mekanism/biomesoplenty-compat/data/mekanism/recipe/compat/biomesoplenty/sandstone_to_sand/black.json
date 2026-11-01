@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:crushing",
+  "category": "building",
+  "input": {
+    "count": 1,
+    "ingredient": [
+      "biomesoplenty:black_sandstone",
+      "biomesoplenty:chiseled_black_sandstone",
+      "biomesoplenty:cut_black_sandstone",
+      "biomesoplenty:smooth_black_sandstone"
+    ]
+  },
+  "output": {
+    "count": 2,
+    "id": "biomesoplenty:black_sand"
+  }
+}

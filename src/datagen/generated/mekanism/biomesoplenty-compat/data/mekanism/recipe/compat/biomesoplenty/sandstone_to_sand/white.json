@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:crushing",
+  "category": "building",
+  "input": {
+    "count": 1,
+    "ingredient": [
+      "biomesoplenty:white_sandstone",
+      "biomesoplenty:chiseled_white_sandstone",
+      "biomesoplenty:cut_white_sandstone",
+      "biomesoplenty:smooth_white_sandstone"
+    ]
+  },
+  "output": {
+    "count": 2,
+    "id": "biomesoplenty:white_sand"
+  }
+}

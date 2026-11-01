@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "category": "wood_type",
+  "group": "mekanism:log",
+  "input": {
+    "count": 1,
+    "ingredient": "#biomesoplenty:magic_logs"
+  },
+  "main_output": {
+    "count": 6,
+    "id": "biomesoplenty:magic_planks"
+  },
+  "secondary_chance": 0.25,
+  "secondary_output": {
+    "id": "mekanism:sawdust"
+  }
+}

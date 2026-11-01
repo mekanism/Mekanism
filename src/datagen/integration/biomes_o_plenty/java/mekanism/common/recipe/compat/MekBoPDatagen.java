@@ -1,12 +1,14 @@
 package mekanism.common.recipe.compat;
 
-import net.minecraft.data.worldgen.BootstrapContextAccess;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.world.item.crafting.Recipe;
 
 public class MekBoPDatagen implements ICompatRecipeDatagen {
 
     @Override
-    public CompatRecipeProvider recipeProvider(BootstrapContextAccess contextAccess) {
-        return new BiomesOPlentyRecipeProvider(contextAccess, modid());
+    public CompatRecipeProvider apply(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        return new BiomesOPlentyRecipeProvider(recipeOutput, advancementOutput, modid());
     }
 
     @Override

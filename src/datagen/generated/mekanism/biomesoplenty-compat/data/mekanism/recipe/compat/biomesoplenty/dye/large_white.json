@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:enriching",
+  "category": "decorative",
+  "group": "white_dye",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:tall_white_lavender"
+  },
+  "output": {
+    "count": 4,
+    "id": "minecraft:white_dye"
+  }
+}

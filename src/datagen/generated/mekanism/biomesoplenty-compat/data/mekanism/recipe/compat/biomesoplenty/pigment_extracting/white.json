@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "group": "white_dye",
+  "input": {
+    "count": 1,
+    "ingredient": [
+      "biomesoplenty:white_lavender",
+      "biomesoplenty:white_petals"
+    ]
+  },
+  "output": {
+    "amount": 768,
+    "id": "mekanism:white"
+  }
+}

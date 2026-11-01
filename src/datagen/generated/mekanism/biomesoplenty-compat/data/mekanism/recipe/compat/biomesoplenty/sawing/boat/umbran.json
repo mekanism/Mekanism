@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:sawing",
+  "category": "wood_type",
+  "group": "mekanism:boat",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:umbran_boat"
+  },
+  "main_output": {
+    "count": 5,
+    "id": "biomesoplenty:umbran_planks"
+  }
+}

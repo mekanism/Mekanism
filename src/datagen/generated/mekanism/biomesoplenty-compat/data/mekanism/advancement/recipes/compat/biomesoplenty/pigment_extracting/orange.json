@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_burning_blossom": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:burning_blossom"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_orange_cosmos": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomesoplenty:orange_cosmos"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/biomesoplenty/pigment_extracting/orange"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_orange_cosmos",
+      "has_burning_blossom"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/biomesoplenty/pigment_extracting/orange"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "category": "wood_type",
+  "group": "mekanism:fence_gate",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:palm_fence_gate"
+  },
+  "main_output": {
+    "count": 2,
+    "id": "biomesoplenty:palm_planks"
+  },
+  "secondary_chance": 1.0,
+  "secondary_output": {
+    "count": 4,
+    "id": "minecraft:stick"
+  }
+}

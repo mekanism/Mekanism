@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:enriching",
+  "category": "decorative",
+  "group": "magenta_dye",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:purple_wildflowers"
+  },
+  "output": {
+    "count": 2,
+    "id": "minecraft:magenta_dye"
+  }
+}

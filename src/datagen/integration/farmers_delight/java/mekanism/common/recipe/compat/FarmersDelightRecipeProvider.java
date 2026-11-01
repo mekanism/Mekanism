@@ -4,26 +4,28 @@ import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
 import mekanism.api.recipes.book.SawingBookCategory;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.Holder;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.worldgen.BootstrapContextAccess;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.references.ItemIds;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 import vectorwing.farmersdelight.common.registry.ModItems;
 
 public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
 
-    public FarmersDelightRecipeProvider(BootstrapContextAccess contextAccess, String modid) {
-        super(contextAccess, modid);
+    public FarmersDelightRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput, String modid) {
+        super(recipeOutput, advancementOutput, modid);
     }
 
     @Override
-    protected void registerRecipes(RecipeOutput output, String basePath) {
-        addPrecisionSawmillRecipes(output, basePath + "sawing/");
+    protected void addRecipes() {
+        String basePath = getBasePath();
+        addPrecisionSawmillRecipes(basePath + "sawing/");
     }
 
-    private void addPrecisionSawmillRecipes(RecipeOutput output, String basePath) {
+    private void addPrecisionSawmillRecipes(String basePath) {
         Holder<Item> bone = items.getOrThrow(ItemIds.BONE);
         Holder<Item> boneMeal = items.getOrThrow(ItemIds.BONE_MEAL);
         //Beef

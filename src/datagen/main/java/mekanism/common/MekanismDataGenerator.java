@@ -12,9 +12,10 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -31,22 +32,31 @@ import mekanism.common.integration.computer.ComputerHelpProvider;
 import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.loot.MekanismBlockLootTables;
 import mekanism.common.loot.MekanismEntityLootTables;
+import mekanism.common.recipe.compat.ICompatRecipeDatagen;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.tag.MekanismTagProvider;
+import net.minecraft.DetectedVersion;
+import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.loot.LootTableProvider.SubProviderEntry;
 import net.minecraft.data.metadata.PackMetadataGenerator;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.server.packs.OverlayMetadataSection;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Util;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.config.ConfigTracker;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.conditions.NeoForgeConditions;
+import net.neoforged.neoforge.common.conditions.WithConditions;
+import net.neoforged.neoforge.common.data.GeneratingOverlayMetadataSection;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 import net.neoforged.neoforge.data.event.PackGenerator;
@@ -54,7 +64,6 @@ import net.neoforged.neoforge.data.event.PackGenerator;
 @EventBusSubscriber(modid = Mekanism.MODID)
 public class MekanismDataGenerator {
 
-    public static final Set<String> DISABLED_COMPATS = new HashSet<>();
     @SuppressWarnings("UnstableApiUsage")
     private static final FieldReflectionHelper<ConfigTracker, EnumMap<ModConfig.Type, Set<ModConfig>>> CONFIG_SETS =
           new FieldReflectionHelper<>(ConfigTracker.class, "configSets", () -> new EnumMap<>(ModConfig.Type.class));
@@ -78,10 +87,27 @@ public class MekanismDataGenerator {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event) {
+        List<WithConditions<OverlayMetadataSection.OverlayEntry>> clientOverlays = new ArrayList<>();
+        List<WithConditions<OverlayMetadataSection.OverlayEntry>> serverOverlays = new ArrayList<>();
+        //Add compat recipe datapacks
+        registerCompatRecipes(event, "ae2", serverOverlays);
+        registerCompatRecipes(event, "biomesoplenty", serverOverlays);
+        registerCompatRecipes(event, "biomeswevegone", serverOverlays);
+        registerCompatRecipes(event, "farmersdelight", serverOverlays);
+        //Main mekanism datagen
         PackGenerator packGenerator = event.getDefaultPackGenerator();
         ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         //Client side data generators
-        packGenerator.createProvider(output -> PackMetadataGenerator.forFeaturePack(output, MekanismLang.PACK_DESCRIPTION.translate()));
+        packGenerator.createProvider(output -> {
+            PackMetadataGenerator metadataGenerator = PackMetadataGenerator.forFeaturePack(output, MekanismLang.PACK_DESCRIPTION.translate());
+            if (!clientOverlays.isEmpty()) {
+                metadataGenerator.add(GeneratingOverlayMetadataSection.type(PackType.CLIENT_RESOURCES), new GeneratingOverlayMetadataSection(clientOverlays));
+            }
+            if (!serverOverlays.isEmpty()) {
+                metadataGenerator.add(GeneratingOverlayMetadataSection.type(PackType.SERVER_DATA), new GeneratingOverlayMetadataSection(serverOverlays));
+            }
+            return metadataGenerator;
+        });
         packGenerator.createProvider(MekanismLangProvider::new);
         packGenerator.createProvider(output -> new PrideRobitTextureProvider(output, clientResources));
         packGenerator.createProvider(MekanismSoundProvider::new);
@@ -99,6 +125,27 @@ public class MekanismDataGenerator {
         PersistingDisabledProvidersProvider.addDisableableProviders(packGenerator, event.getModContainer());
     }
 
+    private static void registerCompatRecipes(GatherDataEvent.Client event, String compatModId, List<WithConditions<OverlayMetadataSection.OverlayEntry>> serverOverlays) {
+        String directory = compatModId + "-compat";
+        PackGenerator packGenerator = event.getPackGenerator(event.getGenerator().getPackOutput(directory));
+        serverOverlays.add(new WithConditions<>(new OverlayMetadataSection.OverlayEntry(
+              //Calculate the version in the same way as PackMetadataGenerator#forFeaturePack does
+              DetectedVersion.BUILT_IN.packVersion(PackType.SERVER_DATA).minorRange(), directory
+        ), NeoForgeConditions.modLoaded(compatModId)));
+        if (ModList.get().isLoaded(compatModId)) {
+            ICompatRecipeDatagen compatRecipeDatagen = ICompatRecipeDatagen.INSTANCES.get(compatModId);
+            if (compatRecipeDatagen == null) {
+                throw new IllegalStateException("Mod: " + compatModId + " does not have a compat recipe service present");
+            }
+            packGenerator.createReloadableRegistryObjects(new RegistrySetBuilder().add(RecipeProvider.asBootstrap(compatRecipeDatagen)));
+        } else {
+            Mekanism.logger.warn("Skipping and persisting existing data generated compat recipes for {}.", compatModId);
+            //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
+            // DO NOT ADD OTHERS AFTER THIS ONE
+            PersistingDisabledProvidersProvider.skipRecipeProvider(packGenerator, directory);
+        }
+    }
+
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onGatherRegistries(GatherDataRegistryEntriesEvent event) {
         bootstrapConfigs(Mekanism.MODID);
@@ -107,7 +154,7 @@ public class MekanismDataGenerator {
                     new SubProviderEntry(MekanismEntityLootTables::new, LootContextParamSets.ENTITY)
               )
               .advancement(MekanismAdvancementProvider::new)
-              .recipe((recipeOutput, advancementOutput) -> new MekanismRecipeProvider(recipeOutput, advancementOutput, DISABLED_COMPATS))
+              .recipe(MekanismRecipeProvider::new)
         ;
     }
 

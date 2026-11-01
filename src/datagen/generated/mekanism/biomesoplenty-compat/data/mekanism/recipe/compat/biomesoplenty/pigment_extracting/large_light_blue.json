@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "group": "light_blue_dye",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:icy_iris"
+  },
+  "output": {
+    "amount": 1536,
+    "id": "mekanism:light_blue"
+  }
+}

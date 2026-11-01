@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:enriching",
+  "category": "decorative",
+  "group": "red_dye",
+  "input": {
+    "count": 1,
+    "ingredient": [
+      "biomesoplenty:origin_rose",
+      "biomesoplenty:waterlily"
+    ]
+  },
+  "output": {
+    "count": 2,
+    "id": "minecraft:red_dye"
+  }
+}

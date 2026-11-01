@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:sawing",
+  "category": "wood_type",
+  "group": "mekanism:trapdoor",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:umbran_trapdoor"
+  },
+  "main_output": {
+    "count": 3,
+    "id": "biomesoplenty:umbran_planks"
+  }
+}

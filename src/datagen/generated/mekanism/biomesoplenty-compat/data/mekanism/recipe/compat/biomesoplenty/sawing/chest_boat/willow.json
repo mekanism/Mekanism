@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "category": "wood_type",
+  "group": "mekanism:chest_boat",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:willow_chest_boat"
+  },
+  "main_output": {
+    "id": "biomesoplenty:willow_boat"
+  },
+  "secondary_chance": 1.0,
+  "secondary_output": {
+    "id": "minecraft:chest"
+  }
+}

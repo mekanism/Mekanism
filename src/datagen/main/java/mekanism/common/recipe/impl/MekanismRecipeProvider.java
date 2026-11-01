@@ -1,8 +1,6 @@
 package mekanism.common.recipe.impl;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.datagen.recipe.RecipeCriterion;
@@ -22,7 +20,6 @@ import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
-import mekanism.common.recipe.compat.ICompatRecipeDatagen;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
@@ -50,7 +47,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.Tags;
 
 public class MekanismRecipeProvider extends BaseRecipeProvider {
@@ -79,28 +75,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.ALLOY, Pattern.PREVIOUS, Pattern.ALLOY),
           TripleLine.of(Pattern.HDPE_CHAR, Pattern.HDPE_CHAR, Pattern.HDPE_CHAR));
 
-    private final List<ISubRecipeProvider> compatProviders = new ArrayList<>();
-
-    public MekanismRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput, Set<String> disabledCompats) {
+    public MekanismRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
         super(recipeOutput, advancementOutput, Mekanism.MODID);
-
-        //Mod Compat Recipe providers
-        checkCompat(disabledCompats, "ae2");
-        checkCompat(disabledCompats, "biomesoplenty");
-        checkCompat(disabledCompats, "biomeswevegone");
-        checkCompat(disabledCompats, "farmersdelight");
-    }
-
-    private void checkCompat(Set<String> disabledCompats, String modid) {
-        if (ModList.get().isLoaded(modid)) {
-            ICompatRecipeDatagen compatRecipeDatagen = ICompatRecipeDatagen.INSTANCES.get(modid);
-            if (compatRecipeDatagen == null) {
-                throw new IllegalStateException("Mod: " + modid + " does not have a compat recipe service present");
-            }
-            compatProviders.add(compatRecipeDatagen.recipeProvider(output));
-        } else {
-            disabledCompats.add(modid);
-        }
     }
 
     @Override
@@ -108,9 +84,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addMiscRecipes();
         addGearModuleRecipes();
         addLateGameRecipes();
-        for (ISubRecipeProvider compatProvider : compatProviders) {
-            compatProvider.addRecipes(output);
-        }
     }
 
     @Override

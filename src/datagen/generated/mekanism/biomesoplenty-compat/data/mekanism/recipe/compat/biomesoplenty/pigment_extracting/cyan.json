@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "group": "cyan_dye",
+  "input": {
+    "count": 1,
+    "ingredient": "biomesoplenty:glowflower"
+  },
+  "output": {
+    "amount": 768,
+    "id": "mekanism:cyan"
+  }
+}

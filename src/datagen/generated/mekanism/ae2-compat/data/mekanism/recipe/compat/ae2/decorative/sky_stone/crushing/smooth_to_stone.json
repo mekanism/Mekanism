@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "category": "building",
+  "input": {
+    "count": 1,
+    "ingredient": "ae2:smooth_sky_stone_block"
+  },
+  "output": {
+    "id": "ae2:sky_stone_block"
+  }
+}

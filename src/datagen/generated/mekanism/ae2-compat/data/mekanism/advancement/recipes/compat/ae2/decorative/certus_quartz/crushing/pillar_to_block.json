@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_quartz_pillar": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ae2:quartz_pillar"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/ae2/decorative/certus_quartz/crushing/pillar_to_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_quartz_pillar"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/ae2/decorative/certus_quartz/crushing/pillar_to_block"
+    ]
+  }
+}

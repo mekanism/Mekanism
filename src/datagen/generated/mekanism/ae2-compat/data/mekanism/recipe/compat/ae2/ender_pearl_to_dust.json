@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:ender_pearl"
+  },
+  "output": {
+    "id": "ae2:ender_dust"
+  }
+}

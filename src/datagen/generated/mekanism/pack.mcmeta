@@ -1,4 +1,52 @@
 {
+  "overlays": {
+    "entries": [
+      {
+        "neoforge:conditions": [
+          {
+            "type": "neoforge:mod_loaded",
+            "modid": "ae2"
+          }
+        ],
+        "directory": "ae2-compat",
+        "max_format": 121,
+        "min_format": 121
+      },
+      {
+        "neoforge:conditions": [
+          {
+            "type": "neoforge:mod_loaded",
+            "modid": "biomesoplenty"
+          }
+        ],
+        "directory": "biomesoplenty-compat",
+        "max_format": 121,
+        "min_format": 121
+      },
+      {
+        "neoforge:conditions": [
+          {
+            "type": "neoforge:mod_loaded",
+            "modid": "biomeswevegone"
+          }
+        ],
+        "directory": "biomeswevegone-compat",
+        "max_format": 121,
+        "min_format": 121
+      },
+      {
+        "neoforge:conditions": [
+          {
+            "type": "neoforge:mod_loaded",
+            "modid": "farmersdelight"
+          }
+        ],
+        "directory": "farmersdelight-compat",
+        "max_format": 121,
+        "min_format": 121
+      }
+    ]
+  },
   "pack": {
     "description": {
       "translate": "constants.mekanism.pack_description"

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_quartz_wall": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ae2:quartz_wall"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/ae2/decorative/certus_quartz/enriching/wall_to_pillar_wall"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_quartz_wall"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/ae2/decorative/certus_quartz/enriching/wall_to_pillar_wall"
+    ]
+  }
+}
