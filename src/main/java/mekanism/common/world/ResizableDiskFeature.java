@@ -8,10 +8,13 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismFeatureTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.DiskFeature;
@@ -36,35 +39,52 @@ public record ResizableDiskFeature(Holder<BlockStateProvider> stateProvider, Blo
         return new DiskFeature(stateProvider, target, radius, halfHeight.getAsInt());
     }
 
-    //Note: We don't bother registering this feature as we only use it to avoid having to copy the relevant code while also
-    // supporting mods that mixin to change how the disk feature places: https://github.com/mekanism/Mekanism/pull/7968
-    //TODO - 26.3: Reimplement support for retrogen without the log being spammed by
-    // Trying to mark a block for post processing  but this operation is not supported.
-    /*private static final Feature<DiskConfiguration> RETROGEN_DISK = new DiskFeature(DiskConfiguration.CODEC) {
-        @Override
-        protected void markAboveForPostProcessing(WorldGenLevel level, BlockPos placePos) {
-            BlockPos.MutableBlockPos pos = placePos.mutable();
-            for (int i = 0; i < 2; i++) {
-                pos.move(Direction.UP);
-                if (level.getBlockState(pos).isAir()) {
-                    return;
-                }
-                ChunkAccess chunk = level.getChunk(pos);
-                if (!(chunk instanceof LevelChunk)) {
-                    //If this chunk already exists, don't bother marking it for post-processing, as existing chunks don't support that
-                    chunk.markPosForPostProcessing(pos);
-                }
-            }
-        }
-    };*/
-
     @Override
     public MapCodec<? extends Feature> codec() {
         return MekanismFeatureTypes.DISK.get();
     }
 
+    /// Copy of vanilla [DiskFeature]
     @Override
     public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
-        return asVanillaFeature().place(level, chunkGenerator, random, origin);
+        if (level instanceof WorldGenRegion) {
+            //Place as vanilla as we aren't retrogening so we want to provide as best support for mods changing the disk feature as possible
+            // See: https://github.com/mekanism/Mekanism/pull/7968
+            return asVanillaFeature().place(level, chunkGenerator, random, origin);
+        }
+        boolean placedAny = false;
+        int originY = origin.getY();
+        int halfHeight = this.halfHeight.getAsInt();
+        int top = originY + halfHeight;
+        int bottom = originY - halfHeight - 1;
+        int r = this.radius.sample(random);
+        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
+
+        for (BlockPos columnPos : BlockPos.betweenClosed(origin.offset(-r, 0, -r), origin.offset(r, 0, r))) {
+            int xd = columnPos.getX() - origin.getX();
+            int zd = columnPos.getZ() - origin.getZ();
+            if (xd * xd + zd * zd <= r * r) {
+                placedAny |= this.placeColumn(level, random, top, bottom, mutablePos.set(columnPos));
+            }
+        }
+
+        return placedAny;
+    }
+
+    /// Copy of vanilla [DiskFeature] but without the call to markAboveForPostProcesssing as existing chunks don't support that.
+    private boolean placeColumn(WorldGenLevel level, RandomSource random, int top, int bottom, BlockPos.MutableBlockPos pos) {
+        boolean placedAny = false;
+        for (int y = top; y > bottom; y--) {
+            pos.setY(y);
+            if (this.target.test(level, pos)) {
+                BlockState state = this.stateProvider.value().getOptionalState(level, random, pos);
+                if (state != null) {
+                    level.setBlock(pos, state, Block.UPDATE_CLIENTS);
+                    placedAny = true;
+                }
+            }
+        }
+
+        return placedAny;
     }
 }
