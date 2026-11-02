@@ -86,8 +86,8 @@
 		},
 		{
 			"name": "bladeFrontUpper",
-			"from": [8, 14.22538, -13.12001],
-			"to": [9, 16.87538, -12.12001],
+			"from": [8.01, 14.22538, -13.12001],
+			"to": [8.99, 16.87538, -12.12001],
 			"light_emission": 15,
 			"rotation": {"angle": 45, "axis": "x", "origin": [0, 0, 0]},
 			"faces": {
@@ -115,8 +115,8 @@
 		},
 		{
 			"name": "neckAngled",
-			"from": [7.5, 10.73553, 13.76345],
-			"to": [9.5, 11.73553, 14.76345],
+			"from": [7.51, 10.73553, 13.76345],
+			"to": [9.49, 11.73553, 14.76345],
 			"rotation": {"angle": -45, "axis": "x", "origin": [0, 0, 0]},
 			"faces": {
 				"north": {"uv": [3.25, 0.5, 3.75, 1], "texture": "#disassembler"},
@@ -128,8 +128,8 @@
 		},
 		{
 			"name": "bladeFrontConnector",
-			"from": [8, 14.44, 2.93],
-			"to": [9, 16.44, 5.93],
+			"from": [8.01, 14.44, 2.93],
+			"to": [8.99, 16.44, 5.93],
 			"light_emission": 15,
 			"faces": {
 				"east": {"uv": [13.75, 1.5, 14.5, 2.5], "texture": "#disassembler"},
@@ -228,7 +228,8 @@
 			"translation": [8, -4, 0]
 		},
 		"ground": {
-			"translation": [0, 9, 0]
+			"translation": [0, 7.7, 0],
+			"scale": [0.9, 0.9, 0.9]
 		},
 		"gui": {
 			"rotation": [-90, 45, 90],
