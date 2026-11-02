@@ -20,6 +20,7 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
@@ -39,14 +40,15 @@ public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
     /// @param itemInput     Item input.
     /// @param chemicalInput Chemical input.
     /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
+    /// @param experience    Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output        Output.
     public BasicChemicalDissolutionRecipe(CommonInfo commonInfo, DissolutionBookInfo bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput,
-          boolean perTickUsage, ChemicalStackTemplate output) {
+          boolean perTickUsage, float experience, ChemicalStackTemplate output) {
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
         this.perTickUsage = perTickUsage;
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -123,6 +125,7 @@ public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.ITEM_INPUT).forGetter(ChemicalDissolutionRecipe::getItemInput),
               ChemicalStackIngredient.CODEC.fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(ChemicalDissolutionRecipe::getChemicalInput),
               Codec.BOOL.fieldOf(SerializationConstants.PER_TICK_USAGE).forGetter(ChemicalDissolutionRecipe::perTickUsage),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
               ChemicalStackTemplate.MAP_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output)
         ).apply(instance, factory::create));
     }
@@ -139,6 +142,7 @@ public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
               ItemStackIngredient.STREAM_CODEC, ChemicalDissolutionRecipe::getItemInput,
               ChemicalStackIngredient.STREAM_CODEC, ChemicalDissolutionRecipe::getChemicalInput,
               ByteBufCodecs.BOOL, ChemicalDissolutionRecipe::perTickUsage,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
               ChemicalStackTemplate.STREAM_CODEC, recipe -> recipe.output,
               factory::create
         );

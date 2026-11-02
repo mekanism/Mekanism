@@ -114,6 +114,6 @@ public class ItemStackChemicalToItemStackRecipeBuilder<BOOK_CATEGORY extends Mek
 
     @Override
     protected RECIPE asRecipe() {
-        return factory.create(commonInfo(), bookInfo(), itemInput, chemicalInput, perTickUsage, output);
+        return factory.create(commonInfo(), bookInfo(), itemInput, chemicalInput, perTickUsage, experience(), output);
     }
 }

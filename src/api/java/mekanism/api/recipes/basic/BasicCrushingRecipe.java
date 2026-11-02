@@ -22,8 +22,8 @@ public class BasicCrushingRecipe extends BasicItemStackToItemStackRecipe<Crushin
 
     private static final Holder<Item> CRUSHER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "crusher"));
 
-    public BasicCrushingRecipe(CommonInfo commonInfo, CrushingBookInfo bookInfo, ItemStackIngredient input, ItemStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_CRUSHING.value(), commonInfo, bookInfo, input, output);
+    public BasicCrushingRecipe(CommonInfo commonInfo, CrushingBookInfo bookInfo, ItemStackIngredient input, float experience, ItemStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_CRUSHING.value(), commonInfo, bookInfo, input, experience, output);
     }
 
     @Override
@@ -36,7 +36,8 @@ public class BasicCrushingRecipe extends BasicItemStackToItemStackRecipe<Crushin
         return List.of(new CrushingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(CRUSHER)
+              new SlotDisplay.ItemSlotDisplay(CRUSHER),
+              experience()
         ));
     }
 }

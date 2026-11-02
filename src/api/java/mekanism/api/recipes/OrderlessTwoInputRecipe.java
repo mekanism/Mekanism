@@ -17,10 +17,11 @@ public abstract class OrderlessTwoInputRecipe<HOLDER_TYPE, STACK extends TypedIn
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected OrderlessTwoInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
-        super(commonInfo, bookInfo);
+    protected OrderlessTwoInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     /// Gets a new output based on the given inputs, the order of these inputs which one is `input1` and which one is `input2` does not matter.

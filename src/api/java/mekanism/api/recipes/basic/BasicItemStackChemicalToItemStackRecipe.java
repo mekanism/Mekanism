@@ -17,6 +17,7 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -40,15 +41,16 @@ public abstract class BasicItemStackChemicalToItemStackRecipe<BOOK_CATEGORY exte
     /// @param itemInput     Item input.
     /// @param chemicalInput Chemical input.
     /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
+    /// @param experience    Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output        Output.
     public BasicItemStackChemicalToItemStackRecipe(RecipeType<? extends ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, CommonInfo commonInfo,
-          BOOK_INFO bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, boolean perTickUsage, ItemStackTemplate output) {
+          BOOK_INFO bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, boolean perTickUsage, float experience, ItemStackTemplate output) {
         this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
         this.perTickUsage = perTickUsage;
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -129,6 +131,7 @@ public abstract class BasicItemStackChemicalToItemStackRecipe<BOOK_CATEGORY exte
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.ITEM_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getItemInput),
               ChemicalStackIngredient.CODEC.fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getChemicalInput),
               Codec.BOOL.fieldOf(SerializationConstants.PER_TICK_USAGE).forGetter(ItemStackChemicalToItemStackRecipe::perTickUsage),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
               ItemStackTemplate.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output)
         ).apply(instance, factory::create));
     }
@@ -149,6 +152,7 @@ public abstract class BasicItemStackChemicalToItemStackRecipe<BOOK_CATEGORY exte
               ItemStackIngredient.STREAM_CODEC, ItemStackChemicalToItemStackRecipe::getItemInput,
               ChemicalStackIngredient.STREAM_CODEC, ItemStackChemicalToItemStackRecipe::getChemicalInput,
               ByteBufCodecs.BOOL, ItemStackChemicalToItemStackRecipe::perTickUsage,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
               ItemStackTemplate.STREAM_CODEC, recipe -> recipe.output,
               factory::create
         );

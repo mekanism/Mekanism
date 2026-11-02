@@ -12,7 +12,9 @@ import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
@@ -33,11 +35,12 @@ public abstract class BasicItemStackToFluidOptionalItemRecipe<BOOK_CATEGORY exte
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
     /// @param input      Input.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output     Output.
-    public BasicItemStackToFluidOptionalItemRecipe(CommonInfo commonInfo, BOOK_INFO bookInfo, ItemStackIngredient input, FluidOptionalItemOutput output) {
+    public BasicItemStackToFluidOptionalItemRecipe(CommonInfo commonInfo, BOOK_INFO bookInfo, ItemStackIngredient input, float experience, FluidOptionalItemOutput output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -97,6 +100,7 @@ public abstract class BasicItemStackToFluidOptionalItemRecipe<BOOK_CATEGORY exte
               Recipe.CommonInfo.MAP_CODEC.forGetter(MekanismRecipe::commonInfo),
               bookCodec.forGetter(MekanismRecipe::bookInfo),
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(ItemStackToFluidOptionalItemRecipe::getInput),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
               FluidOptionalItemOutput.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output)
         ).apply(instance, factory::create));
     }
@@ -115,6 +119,7 @@ public abstract class BasicItemStackToFluidOptionalItemRecipe<BOOK_CATEGORY exte
               CommonInfo.STREAM_CODEC, MekanismRecipe::commonInfo,
               bookCodec, MekanismRecipe::bookInfo,
               ItemStackIngredient.STREAM_CODEC, ItemStackToFluidOptionalItemRecipe::getInput,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
               FluidOptionalItemOutput.STREAM_CODEC, recipe -> recipe.output,
               factory::create
         );

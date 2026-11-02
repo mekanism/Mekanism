@@ -38,7 +38,7 @@ public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe<SmeltingBoo
             return new BasicSmeltingRecipe(original.commonInfo, new SmeltingBookInfo(
                   SmeltingBookCategory.fromVanilla(original.category()),
                   original.group()
-            ), input, original.result());
+            ), input, original.experience(), original.result());
         }
         return new WrappedSmelterRecipe(original);
     }
@@ -53,7 +53,7 @@ public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe<SmeltingBoo
         super(MekanismRecipeTypes.TYPE_SMELTING.value(), RecipeBuilder.createCraftingCommonInfo(wrapped.showNotification()), new SmeltingBookInfo(
               SmeltingBookCategory.fromVanilla(wrapped.category()),
               wrapped.group()
-        ));
+        ), wrapped.experience());
     }
 
     @Override

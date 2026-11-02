@@ -22,10 +22,11 @@ public class BasicPigmentExtractingRecipe extends BasicItemStackToChemicalRecipe
 
     private static final Holder<Item> PIGMENT_EXTRACTOR = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment_extractor"));
 
-    /// @param input  Input.
-    /// @param output Output.
-    public BasicPigmentExtractingRecipe(CommonInfo commonInfo, PigmentExtractingBookInfo bookInfo, ItemStackIngredient input, ChemicalStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_PIGMENT_EXTRACTING.value(), commonInfo, bookInfo, input, output);
+    /// @param input      Input.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
+    /// @param output     Output.
+    public BasicPigmentExtractingRecipe(CommonInfo commonInfo, PigmentExtractingBookInfo bookInfo, ItemStackIngredient input, float experience, ChemicalStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_PIGMENT_EXTRACTING.value(), commonInfo, bookInfo, input, experience, output);
     }
 
     @Override
@@ -33,7 +34,8 @@ public class BasicPigmentExtractingRecipe extends BasicItemStackToChemicalRecipe
         return List.of(new PigmentExtractingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(PIGMENT_EXTRACTOR)
+              new SlotDisplay.ItemSlotDisplay(PIGMENT_EXTRACTOR),
+              experience()
         ));
     }
 

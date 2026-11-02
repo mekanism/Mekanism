@@ -61,6 +61,6 @@ public class ChemicalChemicalToChemicalRecipeBuilder<BOOK_CATEGORY extends Mekan
 
     @Override
     protected RECIPE asRecipe() {
-        return factory.create(commonInfo(), bookInfo(), leftInput, rightInput, output);
+        return factory.create(commonInfo(), bookInfo(), leftInput, rightInput, experience(), output);
     }
 }

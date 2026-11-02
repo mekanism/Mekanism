@@ -28,10 +28,11 @@ public abstract class ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY extends M
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected ItemStackChemicalToItemStackRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
-        super(commonInfo, bookInfo);
+    protected ItemStackChemicalToItemStackRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -54,7 +55,9 @@ public abstract class ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY extends M
         /// @param itemInput     Item input ingredient.
         /// @param chemicalInput Chemical input ingredient.
         /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
+        /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param output        Output item.
-        RECIPE create(CommonInfo commonInfo, BOOK_INFO bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, boolean perTickUsage, ItemStackTemplate output);
+        RECIPE create(CommonInfo commonInfo, BOOK_INFO bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, boolean perTickUsage, float experience,
+              ItemStackTemplate output);
     }
 }

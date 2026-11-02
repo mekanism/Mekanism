@@ -31,10 +31,11 @@ public abstract class ItemStackToFluidOptionalItemRecipe<BOOK_CATEGORY extends M
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected ItemStackToFluidOptionalItemRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
-        super(commonInfo, bookInfo);
+    protected ItemStackToFluidOptionalItemRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     /// @apiNote Fluid must be present, but the item may be empty.
@@ -69,7 +70,8 @@ public abstract class ItemStackToFluidOptionalItemRecipe<BOOK_CATEGORY extends M
         /// @param commonInfo Common recipe info.
         /// @param bookInfo   Recipe book info.
         /// @param input      Input ingredient.
+        /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param output     Output fluid and potentially item.
-        RECIPE create(CommonInfo commonInfo, BOOK_INFO bookInfo, ItemStackIngredient input, FluidOptionalItemOutput output);
+        RECIPE create(CommonInfo commonInfo, BOOK_INFO bookInfo, ItemStackIngredient input, float experience, FluidOptionalItemOutput output);
     }
 }

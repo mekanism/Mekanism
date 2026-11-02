@@ -25,11 +25,12 @@ public class BasicEvaporatingRecipe extends BasicFluidToFluidRecipe<EvaporatingB
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
     /// @param input      Input.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output     Output.
     ///
     /// @since 10.8.0
-    public BasicEvaporatingRecipe(CommonInfo commonInfo, EvaporatingBookInfo bookInfo, FluidStackIngredient input, FluidStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_EVAPORATING.value(), commonInfo, bookInfo, input, output);
+    public BasicEvaporatingRecipe(CommonInfo commonInfo, EvaporatingBookInfo bookInfo, FluidStackIngredient input, float experience, FluidStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_EVAPORATING.value(), commonInfo, bookInfo, input, experience, output);
     }
 
     @Override
@@ -42,7 +43,8 @@ public class BasicEvaporatingRecipe extends BasicFluidToFluidRecipe<EvaporatingB
         return List.of(new EvaporatingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(THERMAL_EVAPORATION_CONTROLLER)
+              new SlotDisplay.ItemSlotDisplay(THERMAL_EVAPORATION_CONTROLLER),
+              experience()
         ));
     }
 }

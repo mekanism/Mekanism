@@ -26,10 +26,11 @@ public class BasicPaintingRecipe extends BasicItemStackChemicalToItemStackRecipe
     /// @param itemInput     Item input.
     /// @param chemicalInput Chemical input.
     /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
+    /// @param experience    Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output        Output.
     public BasicPaintingRecipe(CommonInfo commonInfo, PaintingBookInfo bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput,
-          boolean perTickUsage, ItemStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_PAINTING.value(), commonInfo, bookInfo, itemInput, chemicalInput, perTickUsage, output);
+          boolean perTickUsage, float experience, ItemStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_PAINTING.value(), commonInfo, bookInfo, itemInput, chemicalInput, perTickUsage, experience, output);
     }
 
     @Override
@@ -38,6 +39,7 @@ public class BasicPaintingRecipe extends BasicItemStackChemicalToItemStackRecipe
               getItemInput().display(),
               getChemicalInput().display(),
               perTickUsage(),
+              experience(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(PAINTING_MACHINE)
         ));

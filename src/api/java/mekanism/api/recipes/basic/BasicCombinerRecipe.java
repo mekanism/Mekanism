@@ -13,7 +13,9 @@ import mekanism.api.recipes.book.CombiningBookCategory.CombiningBookInfo;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -33,13 +35,14 @@ public class BasicCombinerRecipe extends CombinerRecipe {
     /// @param bookInfo   Recipe book info.
     /// @param mainInput  Main input.
     /// @param extraInput Secondary/extra input.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output     Output.
-    public BasicCombinerRecipe(CommonInfo commonInfo, CombiningBookInfo bookInfo, ItemStackIngredient mainInput, ItemStackIngredient extraInput,
+    public BasicCombinerRecipe(CommonInfo commonInfo, CombiningBookInfo bookInfo, ItemStackIngredient mainInput, ItemStackIngredient extraInput, float experience,
           ItemStackTemplate output) {
         this.mainInput = Objects.requireNonNull(mainInput, "Main input cannot be null.");
         this.extraInput = Objects.requireNonNull(extraInput, "Secondary/Extra input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -107,6 +110,7 @@ public class BasicCombinerRecipe extends CombinerRecipe {
               CombiningBookInfo.MAP_CODEC.forGetter(MekanismRecipe::bookInfo),
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.MAIN_INPUT).forGetter(CombinerRecipe::getMainInput),
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.EXTRA_INPUT).forGetter(CombinerRecipe::getExtraInput),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
               ItemStackTemplate.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output)
         ).apply(instance, factory::create));
     }
@@ -122,6 +126,7 @@ public class BasicCombinerRecipe extends CombinerRecipe {
               CombiningBookInfo.STREAM_CODEC, MekanismRecipe::bookInfo,
               ItemStackIngredient.STREAM_CODEC, CombinerRecipe::getMainInput,
               ItemStackIngredient.STREAM_CODEC, CombinerRecipe::getExtraInput,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
               ItemStackTemplate.STREAM_CODEC, recipe -> recipe.output,
               factory::create
         );

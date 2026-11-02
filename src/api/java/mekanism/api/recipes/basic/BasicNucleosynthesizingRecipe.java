@@ -43,17 +43,18 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
     /// @param itemInput     Item input.
     /// @param chemicalInput Chemical input.
     /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-    /// @param output        Output.
     /// @param duration      Duration in ticks that it takes the recipe to complete. Must be greater than zero.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
+    /// @param output        Output.
     public BasicNucleosynthesizingRecipe(CommonInfo commonInfo, NucleosynthesizingBookInfo bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput,
-          boolean perTickUsage, ItemStackTemplate output, int duration) {
+          boolean perTickUsage, int duration, float experience, ItemStackTemplate output) {
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         this.perTickUsage = perTickUsage;
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
         Preconditions.checkArgument(duration > 0, "Duration must be a number greater than zero.");
         this.duration = duration;
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -136,8 +137,9 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.ITEM_INPUT).forGetter(ItemStackChemicalToObjectRecipe::getItemInput),
               ChemicalStackIngredient.CODEC.fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(ItemStackChemicalToObjectRecipe::getChemicalInput),
               Codec.BOOL.fieldOf(SerializationConstants.PER_TICK_USAGE).forGetter(ItemStackChemicalToObjectRecipe::perTickUsage),
-              ItemStackTemplate.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output),
-              ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.DURATION).forGetter(NucleosynthesizingRecipe::getDuration)
+              ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.DURATION).forGetter(NucleosynthesizingRecipe::getDuration),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
+              ItemStackTemplate.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output)
         ).apply(instance, factory::create));
     }
 
@@ -153,8 +155,9 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
               ItemStackIngredient.STREAM_CODEC, ItemStackChemicalToObjectRecipe::getItemInput,
               ChemicalStackIngredient.STREAM_CODEC, ItemStackChemicalToObjectRecipe::getChemicalInput,
               ByteBufCodecs.BOOL, ItemStackChemicalToObjectRecipe::perTickUsage,
-              ItemStackTemplate.STREAM_CODEC, recipe -> recipe.output,
               ByteBufCodecs.VAR_INT, NucleosynthesizingRecipe::getDuration,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
+              ItemStackTemplate.STREAM_CODEC, recipe -> recipe.output,
               factory::create
         );
     }

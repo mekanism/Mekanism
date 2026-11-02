@@ -21,10 +21,11 @@ public abstract class ItemStackToEnergyRecipe extends ItemInputRecipe<Integer, E
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected ItemStackToEnergyRecipe(Recipe.CommonInfo commonInfo, EnergyConversionBookInfo bookInfo) {
-        super(commonInfo, bookInfo);
+    protected ItemStackToEnergyRecipe(Recipe.CommonInfo commonInfo, EnergyConversionBookInfo bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     /// Gets the output based on the given input.
@@ -57,7 +58,8 @@ public abstract class ItemStackToEnergyRecipe extends ItemInputRecipe<Integer, E
         /// @param commonInfo Common recipe info.
         /// @param bookInfo   Recipe book info.
         /// @param input      Input ingredient.
+        /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param output     Output energy. Must be greater than zero.
-        RECIPE create(CommonInfo commonInfo, EnergyConversionBookInfo bookInfo, ItemStackIngredient input, int output);
+        RECIPE create(CommonInfo commonInfo, EnergyConversionBookInfo bookInfo, ItemStackIngredient input, float experience, int output);
     }
 }

@@ -24,8 +24,8 @@ public class BasicPurifyingRecipe extends BasicItemStackChemicalToItemStackRecip
     private static final Holder<Item> PURIFICATION_CHAMBER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "purification_chamber"));
 
     public BasicPurifyingRecipe(CommonInfo commonInfo, PurifyingBookInfo bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput,
-          boolean perTickUsage, ItemStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_PURIFYING.value(), commonInfo, bookInfo, itemInput, chemicalInput, perTickUsage, output);
+          boolean perTickUsage, float experience, ItemStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_PURIFYING.value(), commonInfo, bookInfo, itemInput, chemicalInput, perTickUsage, experience, output);
     }
 
     @Override
@@ -39,6 +39,7 @@ public class BasicPurifyingRecipe extends BasicItemStackChemicalToItemStackRecip
               getItemInput().display(),
               getChemicalInput().display(),
               perTickUsage(),
+              experience(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(PURIFICATION_CHAMBER)
         ));

@@ -21,7 +21,6 @@ public interface ITileComponent extends ValueIOSerializable {
         String key = getComponentKey();
         ValueOutput child = output.child(key);
         serialize(child);
-        //TODO - 26.3: Do we want to just store it regardless and use output.putChild(getComponentKey(), this)?
         if (child.isEmpty()) {
             output.discard(key);
         }

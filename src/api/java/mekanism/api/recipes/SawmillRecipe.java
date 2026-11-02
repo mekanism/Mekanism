@@ -37,10 +37,11 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput, Sawing
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected SawmillRecipe(Recipe.CommonInfo commonInfo, SawingBookInfo bookInfo) {
-        super(commonInfo, bookInfo);
+    protected SawmillRecipe(Recipe.CommonInfo commonInfo, SawingBookInfo bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     /// For JEI, gets the main output representations to display.
@@ -76,7 +77,8 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput, Sawing
         return List.of(new SawingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(PRECISION_SAWMILL)
+              new SlotDisplay.ItemSlotDisplay(PRECISION_SAWMILL),
+              experience()
         ));
     }
 
@@ -118,12 +120,13 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput, Sawing
         /// @param commonInfo      Common recipe info.
         /// @param bookInfo        Recipe book info.
         /// @param input           Input.
+        /// @param experience      Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param mainOutput      Main Output.
         /// @param secondaryOutput Secondary Output (chance based).
         /// @param secondaryChance Chance of the secondary output being produced. This must be at least zero and at most one.
         ///
         /// @apiNote At least one output must not be empty.
-        RECIPE create(CommonInfo commonInfo, SawingBookInfo bookInfo, ItemStackIngredient input, @Nullable ItemStackTemplate mainOutput,
+        RECIPE create(CommonInfo commonInfo, SawingBookInfo bookInfo, ItemStackIngredient input, float experience, @Nullable ItemStackTemplate mainOutput,
               @Nullable ItemStackTemplate secondaryOutput, double secondaryChance);
     }
 }

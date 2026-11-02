@@ -238,6 +238,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, syntheticId), new BasicLiquificationRecipe(
               NO_DISPLAY, new LiquificationBookInfo(LiquificationBookCategory.MISC, "dynamic"),
               IngredientCreatorAccess.item().from(stack, 1),
+              0,
               new FluidOptionalItemOutput(
                     MekanismFluids.NUTRITIONAL_PASTE.asTemplate(food.nutrition() * 50),
                     remainder == null ? null : remainder.convertInto()

@@ -41,10 +41,11 @@ public abstract class ElectrolysisRecipe extends FluidInputRecipe<ElectrolysisRe
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected ElectrolysisRecipe(Recipe.CommonInfo commonInfo, ElectrolysisBookInfo bookInfo) {
-        super(commonInfo, bookInfo);
+    protected ElectrolysisRecipe(Recipe.CommonInfo commonInfo, ElectrolysisBookInfo bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     /// Gets the multiplier to the energy cost in relation to the configured hydrogen separating energy cost.
@@ -65,7 +66,8 @@ public abstract class ElectrolysisRecipe extends FluidInputRecipe<ElectrolysisRe
               getInput().display(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(ELECTROLYTIC_SEPARATOR),
-              getEnergyMultiplier()
+              getEnergyMultiplier(),
+              experience()
         ));
     }
 
@@ -111,7 +113,8 @@ public abstract class ElectrolysisRecipe extends FluidInputRecipe<ElectrolysisRe
         /// @param bookInfo         Recipe book info.
         /// @param input            Input ingredient.
         /// @param energyMultiplier Multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Must be at least one.
+        /// @param experience       Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param output           Output chemicals.
-        RECIPE create(CommonInfo commonInfo, ElectrolysisBookInfo bookInfo, FluidStackIngredient input, int energyMultiplier, ElectrolysisRecipeOutput output);
+        RECIPE create(CommonInfo commonInfo, ElectrolysisBookInfo bookInfo, FluidStackIngredient input, int energyMultiplier, float experience, ElectrolysisRecipeOutput output);
     }
 }

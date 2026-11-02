@@ -43,6 +43,6 @@ public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<Diss
 
     @Override
     protected ChemicalDissolutionRecipe asRecipe() {
-        return new BasicChemicalDissolutionRecipe(commonInfo(), bookInfo(), itemInput, chemicalInput, perTickUsage, output);
+        return new BasicChemicalDissolutionRecipe(commonInfo(), bookInfo(), itemInput, chemicalInput, perTickUsage, experience(), output);
     }
 }

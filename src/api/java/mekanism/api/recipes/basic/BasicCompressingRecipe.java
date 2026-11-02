@@ -24,8 +24,8 @@ public class BasicCompressingRecipe extends BasicItemStackChemicalToItemStackRec
     private static final Holder<Item> OSMIUM_COMPRESSOR = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "osmium_compressor"));
 
     public BasicCompressingRecipe(CommonInfo commonInfo, CompressingBookInfo bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput,
-          boolean perTickUsage, ItemStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_COMPRESSING.value(), commonInfo, bookInfo, itemInput, chemicalInput, perTickUsage, output);
+          boolean perTickUsage, float experience, ItemStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_COMPRESSING.value(), commonInfo, bookInfo, itemInput, chemicalInput, perTickUsage, experience, output);
     }
 
     @Override
@@ -39,6 +39,7 @@ public class BasicCompressingRecipe extends BasicItemStackChemicalToItemStackRec
               getItemInput().display(),
               getChemicalInput().display(),
               perTickUsage(),
+              experience(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(OSMIUM_COMPRESSOR)
         ));

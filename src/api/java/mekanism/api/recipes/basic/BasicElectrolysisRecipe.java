@@ -35,13 +35,15 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     /// @param bookInfo         Recipe book info.
     /// @param input            Input.
     /// @param energyMultiplier Multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Must be at least one.
+    /// @param experience       Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output           Output.
-    public BasicElectrolysisRecipe(CommonInfo commonInfo, ElectrolysisBookInfo bookInfo, FluidStackIngredient input, int energyMultiplier, ElectrolysisRecipeOutput output) {
+    public BasicElectrolysisRecipe(CommonInfo commonInfo, ElectrolysisBookInfo bookInfo, FluidStackIngredient input, int energyMultiplier, float experience,
+          ElectrolysisRecipeOutput output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.energyMultiplier = energyMultiplier;
         Preconditions.checkArgument(energyMultiplier >= 1, "Energy multiplier must be at least one.");
         this.output = Objects.requireNonNull(output, "Output cannot be null");
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -109,6 +111,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
               ElectrolysisBookInfo.MAP_CODEC.forGetter(MekanismRecipe::bookInfo),
               FluidStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(ElectrolysisRecipe::getInput),
               ExtraCodecs.POSITIVE_INT.optionalFieldOf(SerializationConstants.ENERGY_MULTIPLIER, 1).forGetter(ElectrolysisRecipe::getEnergyMultiplier),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
               ElectrolysisRecipeOutput.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output)
         ).apply(instance, factory::create));
     }
@@ -124,6 +127,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
               ElectrolysisBookInfo.STREAM_CODEC, MekanismRecipe::bookInfo,
               FluidStackIngredient.STREAM_CODEC, ElectrolysisRecipe::getInput,
               ByteBufCodecs.VAR_INT, ElectrolysisRecipe::getEnergyMultiplier,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
               ElectrolysisRecipeOutput.STREAM_CODEC, recipe -> recipe.output,
               factory::create
         );

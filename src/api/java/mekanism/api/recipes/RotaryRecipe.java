@@ -52,10 +52,11 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput, Rot
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected RotaryRecipe(Recipe.CommonInfo commonInfo, RotaryBookInfo bookInfo) {
-        super(commonInfo, bookInfo);
+    protected RotaryRecipe(Recipe.CommonInfo commonInfo, RotaryBookInfo bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     /// @return `true` if this recipe knows how to convert a chemical to a fluid.
@@ -180,12 +181,14 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput, Rot
                     hasChemicalToFluid() ? new CondensentratingRecipeDisplay(
                           getChemicalInput().display(),
                           getFluidOutputDisplay(),
-                          new SlotDisplay.ItemSlotDisplay(ROTARY_CONDENSENTRATOR)
+                          new SlotDisplay.ItemSlotDisplay(ROTARY_CONDENSENTRATOR),
+                          experience()
                     ) : null,
                     hasFluidToChemical() ? new DecondensentratingRecipeDisplay(
                           getFluidInput().display(),
                           getChemicalOutputDisplay(),
-                          new SlotDisplay.ItemSlotDisplay(ROTARY_CONDENSENTRATOR)
+                          new SlotDisplay.ItemSlotDisplay(ROTARY_CONDENSENTRATOR),
+                          experience()
                     ) : null
               ).filter(Objects::nonNull)
               .toList();
@@ -199,11 +202,12 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput, Rot
 
         /// @param commonInfo     Common recipe info.
         /// @param bookInfo       Recipe book info.
+        /// @param experience     Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param fluidInput     Fluid input.
         /// @param chemicalInput  Chemical input.
         /// @param chemicalOutput Chemical output.
         /// @param fluidOutput    Fluid output.
-        RECIPE create(CommonInfo commonInfo, RotaryBookInfo bookInfo, FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput,
+        RECIPE create(CommonInfo commonInfo, RotaryBookInfo bookInfo, float experience, FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput,
               ChemicalStackTemplate chemicalOutput, FluidStackTemplate fluidOutput);
     }
 
@@ -215,9 +219,10 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput, Rot
 
         /// @param commonInfo    Common recipe info.
         /// @param bookInfo      Recipe book info.
+        /// @param experience    Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param chemicalInput Chemical input.
         /// @param fluidOutput   Fluid output.
-        RECIPE create(CommonInfo commonInfo, RotaryBookInfo bookInfo, ChemicalStackIngredient chemicalInput, FluidStackTemplate fluidOutput);
+        RECIPE create(CommonInfo commonInfo, RotaryBookInfo bookInfo, float experience, ChemicalStackIngredient chemicalInput, FluidStackTemplate fluidOutput);
     }
 
     /// Helper interface for constructing [RotaryRecipes][RotaryRecipe]
@@ -228,8 +233,9 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput, Rot
 
         /// @param commonInfo     Common recipe info.
         /// @param bookInfo       Recipe book info.
+        /// @param experience     Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param fluidInput     Fluid input.
         /// @param chemicalOutput Chemical output.
-        RECIPE create(CommonInfo commonInfo, RotaryBookInfo bookInfo, FluidStackIngredient fluidInput, ChemicalStackTemplate chemicalOutput);
+        RECIPE create(CommonInfo commonInfo, RotaryBookInfo bookInfo, float experience, FluidStackIngredient fluidInput, ChemicalStackTemplate chemicalOutput);
     }
 }

@@ -22,8 +22,8 @@ public class BasicEnrichingRecipe extends BasicItemStackToItemStackRecipe<Enrich
 
     private static final Holder<Item> ENRICHMENT_CHAMBER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "enrichment_chamber"));
 
-    public BasicEnrichingRecipe(CommonInfo commonInfo, EnrichingBookInfo bookInfo, ItemStackIngredient input, ItemStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_ENRICHING.value(), commonInfo, bookInfo, input, output);
+    public BasicEnrichingRecipe(CommonInfo commonInfo, EnrichingBookInfo bookInfo, ItemStackIngredient input, float experience, ItemStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_ENRICHING.value(), commonInfo, bookInfo, input, experience, output);
     }
 
     @Override
@@ -36,7 +36,8 @@ public class BasicEnrichingRecipe extends BasicItemStackToItemStackRecipe<Enrich
         return List.of(new EnrichingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(ENRICHMENT_CHAMBER)
+              new SlotDisplay.ItemSlotDisplay(ENRICHMENT_CHAMBER),
+              experience()
         ));
     }
 }

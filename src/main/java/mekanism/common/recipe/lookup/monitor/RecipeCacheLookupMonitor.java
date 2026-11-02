@@ -243,8 +243,7 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
                 RecipeHolder<?> recipeHolder = holder.get();
                 recipesToAward.add(recipeHolder);
                 float experience = switch (recipeHolder.value()) {
-                    //TODO - 26.3: Support experience?
-                    //case MekanismRecipe<?, ?, ?> recipe -> recipe.experience();
+                    case MekanismRecipe<?, ?, ?> recipe -> recipe.experience();
                     case SmeltingRecipe recipe -> recipe.experience();
                     default -> 0;
                 };

@@ -12,7 +12,9 @@ import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -31,12 +33,13 @@ public abstract class BasicItemStackToItemStackRecipe<BOOK_CATEGORY extends Meka
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
     /// @param input      Input.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output     Output.
     public BasicItemStackToItemStackRecipe(RecipeType<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, CommonInfo commonInfo, BOOK_INFO bookInfo,
-          ItemStackIngredient input, ItemStackTemplate output) {
+          ItemStackIngredient input, float experience, ItemStackTemplate output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
-        super(recipeType, commonInfo, bookInfo);
+        super(recipeType, commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -96,6 +99,7 @@ public abstract class BasicItemStackToItemStackRecipe<BOOK_CATEGORY extends Meka
               Recipe.CommonInfo.MAP_CODEC.forGetter(MekanismRecipe::commonInfo),
               bookCodec.forGetter(MekanismRecipe::bookInfo),
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(ItemStackToItemStackRecipe::getInput),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
               ItemStackTemplate.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output)
         ).apply(instance, factory::create));
     }
@@ -114,6 +118,7 @@ public abstract class BasicItemStackToItemStackRecipe<BOOK_CATEGORY extends Meka
               CommonInfo.STREAM_CODEC, MekanismRecipe::commonInfo,
               bookCodec, MekanismRecipe::bookInfo,
               ItemStackIngredient.STREAM_CODEC, ItemStackToItemStackRecipe::getInput,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
               ItemStackTemplate.STREAM_CODEC, recipe -> recipe.output,
               factory::create
         );

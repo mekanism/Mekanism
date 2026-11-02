@@ -16,10 +16,11 @@ public abstract class FluidToFluidRecipe<BOOK_CATEGORY extends MekanismBookCateg
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected FluidToFluidRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
-        super(commonInfo, bookInfo);
+    protected FluidToFluidRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     /// Helper interface for constructing [FluidToFluidRecipes][FluidToFluidRecipe]
@@ -31,7 +32,8 @@ public abstract class FluidToFluidRecipe<BOOK_CATEGORY extends MekanismBookCateg
         /// @param commonInfo Common recipe info.
         /// @param bookInfo   Recipe book info.
         /// @param input      Input ingredient.
+        /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param output     Output fluid.
-        RECIPE create(CommonInfo commonInfo, BOOK_INFO bookInfo, FluidStackIngredient input, FluidStackTemplate output);
+        RECIPE create(CommonInfo commonInfo, BOOK_INFO bookInfo, FluidStackIngredient input, float experience, FluidStackTemplate output);
     }
 }

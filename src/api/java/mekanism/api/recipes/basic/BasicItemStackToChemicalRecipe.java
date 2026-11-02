@@ -14,7 +14,9 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
@@ -33,13 +35,14 @@ public abstract class BasicItemStackToChemicalRecipe<BOOK_CATEGORY extends Mekan
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
     /// @param input      Input.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output     Output.
-    public BasicItemStackToChemicalRecipe(RecipeType<ItemStackToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, CommonInfo commonInfo, BOOK_INFO bookInfo, ItemStackIngredient input,
-          ChemicalStackTemplate output) {
+    public BasicItemStackToChemicalRecipe(RecipeType<ItemStackToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, CommonInfo commonInfo, BOOK_INFO bookInfo,
+          ItemStackIngredient input, float experience, ChemicalStackTemplate output) {
         this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -106,6 +109,7 @@ public abstract class BasicItemStackToChemicalRecipe<BOOK_CATEGORY extends Mekan
               Recipe.CommonInfo.MAP_CODEC.forGetter(MekanismRecipe::commonInfo),
               bookCodec.forGetter(MekanismRecipe::bookInfo),
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(ItemStackToChemicalRecipe::getInput),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
               ChemicalStackTemplate.MAP_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output)
         ).apply(instance, factory::create));
     }
@@ -124,6 +128,7 @@ public abstract class BasicItemStackToChemicalRecipe<BOOK_CATEGORY extends Mekan
               CommonInfo.STREAM_CODEC, MekanismRecipe::commonInfo,
               bookCodec, MekanismRecipe::bookInfo,
               ItemStackIngredient.STREAM_CODEC, ItemStackToChemicalRecipe::getInput,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
               ChemicalStackTemplate.STREAM_CODEC, recipe -> recipe.output,
               factory::create
         );

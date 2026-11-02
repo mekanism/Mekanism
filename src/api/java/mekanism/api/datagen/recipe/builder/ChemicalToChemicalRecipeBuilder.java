@@ -55,6 +55,6 @@ public class ChemicalToChemicalRecipeBuilder<BOOK_CATEGORY extends MekanismBookC
 
     @Override
     protected RECIPE asRecipe() {
-        return factory.create(commonInfo(), bookInfo(), input, output);
+        return factory.create(commonInfo(), bookInfo(), input, experience(), output);
     }
 }

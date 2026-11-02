@@ -75,6 +75,6 @@ public class ItemStackToFluidOptionalItemRecipeBuilder<BOOK_CATEGORY extends Mek
 
     @Override
     protected RECIPE asRecipe() {
-        return factory.create(commonInfo(), bookInfo(), input, output);
+        return factory.create(commonInfo(), bookInfo(), input, experience(), output);
     }
 }

@@ -39,6 +39,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
 
     /// @param commonInfo     Common recipe info.
     /// @param bookInfo       Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param inputSolid     Item input.
     /// @param inputFluid     Fluid input.
     /// @param inputChemical  Chemical input.
@@ -48,7 +49,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     ///
     /// @apiNote At least one output must not be empty.
     public BasicPressurizedReactionRecipe(CommonInfo commonInfo, ReactingBookInfo bookInfo, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid,
-          ChemicalStackIngredient inputChemical, int energyRequired, int duration, PressurizedReactionRecipeOutput output) {
+          ChemicalStackIngredient inputChemical, int energyRequired, int duration, float experience, PressurizedReactionRecipeOutput output) {
         this.inputSolid = Objects.requireNonNull(inputSolid, "Item input cannot be null.");
         this.inputFluid = Objects.requireNonNull(inputFluid, "Fluid input cannot be null.");
         this.inputChemical = Objects.requireNonNull(inputChemical, "Chemical input cannot be null.");
@@ -57,7 +58,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
         Preconditions.checkArgument(duration > 0, "Duration must be positive.");
         this.duration = duration;
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -152,6 +153,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
               ChemicalStackIngredient.CODEC.fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(PressurizedReactionRecipe::getInputChemical),
               ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf(SerializationConstants.ENERGY_REQUIRED, 0).forGetter(PressurizedReactionRecipe::getEnergyRequired),
               ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.DURATION).forGetter(PressurizedReactionRecipe::getDuration),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
               PressurizedReactionRecipeOutput.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output)
         ).apply(instance, factory::create));
     }
@@ -170,6 +172,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
               ChemicalStackIngredient.STREAM_CODEC, PressurizedReactionRecipe::getInputChemical,
               ByteBufCodecs.VAR_INT, PressurizedReactionRecipe::getEnergyRequired,
               ByteBufCodecs.VAR_INT, PressurizedReactionRecipe::getDuration,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
               PressurizedReactionRecipeOutput.STREAM_CODEC, recipe -> recipe.output,
               factory::create
         );

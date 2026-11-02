@@ -38,6 +38,6 @@ public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<Energy
 
     @Override
     protected ItemStackToEnergyRecipe asRecipe() {
-        return new BasicItemStackToEnergyRecipe(commonInfo(), bookInfo(), input, output);
+        return new BasicItemStackToEnergyRecipe(commonInfo(), bookInfo(), input, experience(), output);
     }
 }

@@ -52,6 +52,6 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Cry
 
     @Override
     protected ChemicalCrystallizerRecipe asRecipe() {
-        return new BasicChemicalCrystallizerRecipe(commonInfo(), bookInfo(), input, typeDisplay, output);
+        return new BasicChemicalCrystallizerRecipe(commonInfo(), bookInfo(), input, typeDisplay, experience(), output);
     }
 }

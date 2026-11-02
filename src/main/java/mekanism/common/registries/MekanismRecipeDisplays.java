@@ -22,6 +22,7 @@ import mekanism.api.recipes.display.recipe.EnrichingRecipeDisplay;
 import mekanism.api.recipes.display.recipe.EvaporatingRecipeDisplay;
 import mekanism.api.recipes.display.recipe.InjectingRecipeDisplay;
 import mekanism.api.recipes.display.recipe.LiquificationRecipeDisplay;
+import mekanism.api.recipes.display.recipe.MekanismRecipeDisplay;
 import mekanism.api.recipes.display.recipe.MetallurgicInfusingRecipeDisplay;
 import mekanism.api.recipes.display.recipe.NucleosynthesizingRecipeDisplay;
 import mekanism.api.recipes.display.recipe.OxidizingRecipeDisplay;
@@ -59,13 +60,15 @@ public class MekanismRecipeDisplays extends MekanismRecipeSerializers {
                 SlotDisplay.CODEC.fieldOf(SerializationConstants.INGREDIENT).forGetter(ElectrolysisRecipeDisplay::ingredient),
                 SlotDisplay.CODEC.listOf(2, 2).xmap(SlotDisplay.Composite::new, SlotDisplay.Composite::contents).fieldOf(SerializationConstants.RESULT).forGetter(ElectrolysisRecipeDisplay::result),
                 SlotDisplay.CODEC.fieldOf(SerializationConstants.CRAFTING_STATION).forGetter(RecipeDisplay::craftingStation),
-                ExtraCodecs.POSITIVE_INT.optionalFieldOf(SerializationConstants.ENERGY_MULTIPLIER, 1).forGetter(ElectrolysisRecipeDisplay::energyMultiplier)
+                ExtraCodecs.POSITIVE_INT.optionalFieldOf(SerializationConstants.ENERGY_MULTIPLIER, 1).forGetter(ElectrolysisRecipeDisplay::energyMultiplier),
+                ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipeDisplay::experience)
           ).apply(i, ElectrolysisRecipeDisplay::new)), () -> StreamCodec.composite(
                 SlotDisplay.STREAM_CODEC, ElectrolysisRecipeDisplay::ingredient,
                 SlotDisplay.STREAM_CODEC, ElectrolysisRecipeDisplay::leftResult,
                 SlotDisplay.STREAM_CODEC, ElectrolysisRecipeDisplay::rightResult,
                 SlotDisplay.STREAM_CODEC, RecipeDisplay::craftingStation,
                 ByteBufCodecs.VAR_INT, ElectrolysisRecipeDisplay::energyMultiplier,
+                ByteBufCodecs.FLOAT, MekanismRecipeDisplay::experience,
                 ElectrolysisRecipeDisplay::new
           )
     );
@@ -78,12 +81,14 @@ public class MekanismRecipeDisplays extends MekanismRecipeSerializers {
                 SlotDisplay.CODEC.fieldOf(SerializationConstants.INGREDIENT).forGetter(CrystallizerRecipeDisplay::ingredient),
                 SlotDisplay.CODEC.optionalFieldOf(SerializationConstants.TYPE_DISPLAY, SlotDisplay.Empty.INSTANCE).forGetter(CrystallizerRecipeDisplay::typeDisplay),
                 SlotDisplay.CODEC.fieldOf(SerializationConstants.RESULT).forGetter(RecipeDisplay::result),
-                SlotDisplay.CODEC.fieldOf(SerializationConstants.CRAFTING_STATION).forGetter(RecipeDisplay::craftingStation)
+                SlotDisplay.CODEC.fieldOf(SerializationConstants.CRAFTING_STATION).forGetter(RecipeDisplay::craftingStation),
+                ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipeDisplay::experience)
           ).apply(i, CrystallizerRecipeDisplay::new)), () -> StreamCodec.composite(
                 SlotDisplay.STREAM_CODEC, CrystallizerRecipeDisplay::ingredient,
                 SlotDisplay.STREAM_CODEC, CrystallizerRecipeDisplay::typeDisplay,
                 SlotDisplay.STREAM_CODEC, RecipeDisplay::result,
                 SlotDisplay.STREAM_CODEC, RecipeDisplay::craftingStation,
+                ByteBufCodecs.FLOAT, MekanismRecipeDisplay::experience,
                 CrystallizerRecipeDisplay::new
           )
     );
@@ -98,7 +103,8 @@ public class MekanismRecipeDisplays extends MekanismRecipeSerializers {
                 Codec.BOOL.optionalFieldOf(SerializationConstants.PER_TICK_USAGE, false).forGetter(NucleosynthesizingRecipeDisplay::perTickSecondary),
                 SlotDisplay.CODEC.fieldOf(SerializationConstants.RESULT).forGetter(RecipeDisplay::result),
                 SlotDisplay.CODEC.fieldOf(SerializationConstants.CRAFTING_STATION).forGetter(RecipeDisplay::craftingStation),
-                ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.DURATION).forGetter(NucleosynthesizingRecipeDisplay::duration)
+                ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.DURATION).forGetter(NucleosynthesizingRecipeDisplay::duration),
+                ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(NucleosynthesizingRecipeDisplay::experience)
           ).apply(i, NucleosynthesizingRecipeDisplay::new)), () -> StreamCodec.composite(
                 SlotDisplay.STREAM_CODEC, NucleosynthesizingRecipeDisplay::ingredient,
                 SlotDisplay.STREAM_CODEC, NucleosynthesizingRecipeDisplay::secondIngredient,
@@ -106,6 +112,7 @@ public class MekanismRecipeDisplays extends MekanismRecipeSerializers {
                 SlotDisplay.STREAM_CODEC, RecipeDisplay::result,
                 SlotDisplay.STREAM_CODEC, RecipeDisplay::craftingStation,
                 ByteBufCodecs.VAR_INT, NucleosynthesizingRecipeDisplay::duration,
+                ByteBufCodecs.FLOAT, MekanismRecipeDisplay::experience,
                 NucleosynthesizingRecipeDisplay::new
           )
     );
@@ -123,16 +130,18 @@ public class MekanismRecipeDisplays extends MekanismRecipeSerializers {
                 SlotDisplay.CODEC.fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(ReactionRecipeDisplay::chemicalIngredient),
                 SlotDisplay.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(ReactionRecipeDisplay::result),
                 SlotDisplay.CODEC.fieldOf(SerializationConstants.CRAFTING_STATION).forGetter(RecipeDisplay::craftingStation),
+                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf(SerializationConstants.ENERGY_REQUIRED, 0).forGetter(ReactionRecipeDisplay::energyRequired),
                 ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.DURATION).forGetter(ReactionRecipeDisplay::duration),
-                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf(SerializationConstants.ENERGY_REQUIRED, 0).forGetter(ReactionRecipeDisplay::energyRequired)
+                ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipeDisplay::experience)
           ).apply(i, ReactionRecipeDisplay::new)), () -> StreamCodec.composite(
                 SlotDisplay.STREAM_CODEC, ReactionRecipeDisplay::itemIngredient,
                 SlotDisplay.STREAM_CODEC, ReactionRecipeDisplay::fluidIngredient,
                 SlotDisplay.STREAM_CODEC, ReactionRecipeDisplay::chemicalIngredient,
                 SlotDisplay.STREAM_CODEC, ReactionRecipeDisplay::result,
                 SlotDisplay.STREAM_CODEC, RecipeDisplay::craftingStation,
-                ByteBufCodecs.VAR_INT, ReactionRecipeDisplay::duration,
                 ByteBufCodecs.VAR_INT, ReactionRecipeDisplay::energyRequired,
+                ByteBufCodecs.VAR_INT, ReactionRecipeDisplay::duration,
+                ByteBufCodecs.FLOAT, MekanismRecipeDisplay::experience,
                 ReactionRecipeDisplay::new
           )
     );

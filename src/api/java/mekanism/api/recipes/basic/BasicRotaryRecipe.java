@@ -36,57 +36,60 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     ///
     /// @param commonInfo     Common recipe info.
     /// @param bookInfo       Recipe book info.
+    /// @param experience     Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param fluidInput     Fluid input.
     /// @param chemicalOutput Chemical output.
     ///
-    /// @apiNote It is recommended to use [#BasicRotaryRecipe(CommonInfo, RotaryBookInfo, FluidStackIngredient, ChemicalStackIngredient, ChemicalStackTemplate, FluidStackTemplate)]
-    /// over this constructor in combination with [#BasicRotaryRecipe(CommonInfo, RotaryBookInfo, ChemicalStackIngredient, FluidStackTemplate)] and making two separate
+    /// @apiNote It is recommended to use [#BasicRotaryRecipe(CommonInfo, RotaryBookInfo, float, FluidStackIngredient, ChemicalStackIngredient, ChemicalStackTemplate, FluidStackTemplate)]
+    /// over this constructor in combination with [#BasicRotaryRecipe(CommonInfo, RotaryBookInfo, float, ChemicalStackIngredient, FluidStackTemplate)] and making two separate
     /// recipes if the conversion will be possible in both directions.
-    public BasicRotaryRecipe(CommonInfo commonInfo, RotaryBookInfo bookInfo, FluidStackIngredient fluidInput, ChemicalStackTemplate chemicalOutput) {
+    public BasicRotaryRecipe(CommonInfo commonInfo, RotaryBookInfo bookInfo, float experience, FluidStackIngredient fluidInput, ChemicalStackTemplate chemicalOutput) {
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
         this.chemicalOutput = Objects.requireNonNull(chemicalOutput, "Chemical output cannot be null.");
         this.chemicalInput = null;
         this.fluidOutput = null;
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     /// Rotary recipe that converts a chemical into a fluid.
     ///
     /// @param commonInfo    Common recipe info.
     /// @param bookInfo      Recipe book info.
+    /// @param experience    Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param chemicalInput Chemical input.
     /// @param fluidOutput   Fluid output.
     ///
-    /// @apiNote It is recommended to use [#BasicRotaryRecipe(CommonInfo, RotaryBookInfo, FluidStackIngredient, ChemicalStackIngredient, ChemicalStackTemplate, FluidStackTemplate)]
-    /// over this constructor in combination with [#BasicRotaryRecipe(CommonInfo, RotaryBookInfo, FluidStackIngredient, ChemicalStackTemplate)] and making two separate
+    /// @apiNote It is recommended to use [#BasicRotaryRecipe(CommonInfo, RotaryBookInfo, float, FluidStackIngredient, ChemicalStackIngredient, ChemicalStackTemplate, FluidStackTemplate)]
+    /// over this constructor in combination with [#BasicRotaryRecipe(CommonInfo, RotaryBookInfo, float, FluidStackIngredient, ChemicalStackTemplate)] and making two separate
     /// recipes if the conversion will be possible in both directions.
-    public BasicRotaryRecipe(CommonInfo commonInfo, RotaryBookInfo bookInfo, ChemicalStackIngredient chemicalInput, FluidStackTemplate fluidOutput) {
+    public BasicRotaryRecipe(CommonInfo commonInfo, RotaryBookInfo bookInfo, float experience, ChemicalStackIngredient chemicalInput, FluidStackTemplate fluidOutput) {
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         this.fluidOutput = Objects.requireNonNull(fluidOutput, "Fluid output cannot be null.");
         this.fluidInput = null;
         this.chemicalOutput = null;
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     /// Rotary recipe that is capable of converting a fluid into a chemical and a chemical into a fluid.
     ///
     /// @param commonInfo     Common recipe info.
     /// @param bookInfo       Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param fluidInput     Fluid input.
     /// @param chemicalInput  Chemical input.
     /// @param chemicalOutput Chemical output.
     /// @param fluidOutput    Fluid output.
     ///
-    /// @apiNote It is recommended to use this constructor over using [#BasicRotaryRecipe(CommonInfo, RotaryBookInfo, FluidStackIngredient, ChemicalStackTemplate)] and
-    /// [#BasicRotaryRecipe(CommonInfo, RotaryBookInfo, ChemicalStackIngredient, FluidStackTemplate)] in combination and creating two recipes if the conversion will be
-    /// possible in both directions.
-    public BasicRotaryRecipe(CommonInfo commonInfo, RotaryBookInfo bookInfo, FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput,
+    /// @apiNote It is recommended to use this constructor over using [#BasicRotaryRecipe(CommonInfo, RotaryBookInfo, float, FluidStackIngredient, ChemicalStackTemplate)]
+    /// and [#BasicRotaryRecipe(CommonInfo, RotaryBookInfo, float, ChemicalStackIngredient, FluidStackTemplate)] in combination and creating two recipes if the conversion
+    /// will be possible in both directions.
+    public BasicRotaryRecipe(CommonInfo commonInfo, RotaryBookInfo bookInfo, float experience, FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput,
           ChemicalStackTemplate chemicalOutput, FluidStackTemplate fluidOutput) {
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
         this.chemicalOutput = Objects.requireNonNull(chemicalOutput, "Chemical output cannot be null.");
         this.fluidOutput = Objects.requireNonNull(fluidOutput, "Fluid output cannot be null.");
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override

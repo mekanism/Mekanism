@@ -12,7 +12,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 /// right output.
 ///
 /// @since 10.8.0
-public record ElectrolysisRecipeDisplay(SlotDisplay ingredient, SlotDisplay.Composite result, SlotDisplay craftingStation, int energyMultiplier)
+public record ElectrolysisRecipeDisplay(SlotDisplay ingredient, SlotDisplay.Composite result, SlotDisplay craftingStation, int energyMultiplier, float experience)
       implements OneInputRecipeDisplay {
 
     private static final DeferredHolder<Type<?>, Type<ElectrolysisRecipeDisplay>> TYPE = DeferredHolder.create(Registries.RECIPE_DISPLAY, MekanismRecipeTypes.NAME_SEPARATING);
@@ -23,10 +23,12 @@ public record ElectrolysisRecipeDisplay(SlotDisplay ingredient, SlotDisplay.Comp
         Objects.requireNonNull(craftingStation);
         Preconditions.checkArgument(result.contents().size() == 2, "Electrolysis results must have exactly two outputs.");
         Preconditions.checkArgument(energyMultiplier >= 1, "Energy multiplier must be at least one.");
+        Preconditions.checkArgument(experience >= 0, "Experience produced must not be negative");
     }
 
-    public ElectrolysisRecipeDisplay(SlotDisplay ingredient, SlotDisplay leftResult, SlotDisplay rightResult, SlotDisplay craftingStation, int energyMultiplier) {
-        this(ingredient, new SlotDisplay.Composite(List.of(leftResult, rightResult)), craftingStation, energyMultiplier);
+    public ElectrolysisRecipeDisplay(SlotDisplay ingredient, SlotDisplay leftResult, SlotDisplay rightResult, SlotDisplay craftingStation, int energyMultiplier,
+          float experience) {
+        this(ingredient, new SlotDisplay.Composite(List.of(leftResult, rightResult)), craftingStation, energyMultiplier, experience);
     }
 
     public SlotDisplay leftResult() {

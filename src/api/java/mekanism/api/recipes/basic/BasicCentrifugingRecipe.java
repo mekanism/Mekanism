@@ -23,8 +23,8 @@ public class BasicCentrifugingRecipe extends BasicChemicalToChemicalRecipe<Centr
 
     private static final Holder<Item> ISOTOPIC_CENTRIFUGE = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "isotopic_centrifuge"));
 
-    public BasicCentrifugingRecipe(Recipe.CommonInfo commonInfo, CentrifugingBookInfo bookInfo, ChemicalStackIngredient input, ChemicalStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_CENTRIFUGING.value(), commonInfo, bookInfo, input, output);
+    public BasicCentrifugingRecipe(Recipe.CommonInfo commonInfo, CentrifugingBookInfo bookInfo, ChemicalStackIngredient input, float experience, ChemicalStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_CENTRIFUGING.value(), commonInfo, bookInfo, input, experience, output);
     }
 
     @Override
@@ -37,7 +37,8 @@ public class BasicCentrifugingRecipe extends BasicChemicalToChemicalRecipe<Centr
         return List.of(new CentrifugingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(ISOTOPIC_CENTRIFUGE)
+              new SlotDisplay.ItemSlotDisplay(ISOTOPIC_CENTRIFUGE),
+              experience()
         ));
     }
 }

@@ -65,6 +65,6 @@ public class ItemStackToChemicalRecipeBuilder<BOOK_CATEGORY extends MekanismBook
 
     @Override
     protected RECIPE asRecipe() {
-        return factory.create(commonInfo(), bookInfo(), input, output);
+        return factory.create(commonInfo(), bookInfo(), input, experience(), output);
     }
 }

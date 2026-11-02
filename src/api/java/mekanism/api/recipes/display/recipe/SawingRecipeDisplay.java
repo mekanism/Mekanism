@@ -1,5 +1,6 @@
 package mekanism.api.recipes.display.recipe;
 
+import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.recipes.MekanismRecipeTypes;
@@ -14,7 +15,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 /// - the first element as a [chance display][ChanceSlotDisplay] is a grouping of multiple [chance displays][ChanceSlotDisplay].
 /// - a size of `2`, represents the main output with the first display, and the chance output with the second display.
 /// @since 10.8.0
-public record SawingRecipeDisplay(SlotDisplay ingredient, SlotDisplay result, SlotDisplay craftingStation) implements OneInputRecipeDisplay {
+public record SawingRecipeDisplay(SlotDisplay ingredient, SlotDisplay result, SlotDisplay craftingStation, float experience) implements OneInputRecipeDisplay {
 
     private static final DeferredHolder<Type<?>, Type<SawingRecipeDisplay>> TYPE = DeferredHolder.create(Registries.RECIPE_DISPLAY, MekanismRecipeTypes.NAME_SAWING);
 
@@ -22,6 +23,7 @@ public record SawingRecipeDisplay(SlotDisplay ingredient, SlotDisplay result, Sl
         Objects.requireNonNull(ingredient);
         Objects.requireNonNull(result);
         Objects.requireNonNull(craftingStation);
+        Preconditions.checkArgument(experience >= 0, "Experience produced must not be negative");
     }
 
     @Override

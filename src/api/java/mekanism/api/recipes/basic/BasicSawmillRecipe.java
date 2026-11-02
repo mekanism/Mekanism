@@ -20,6 +20,7 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -41,12 +42,13 @@ public class BasicSawmillRecipe extends SawmillRecipe {
     /// @param commonInfo      Common recipe info.
     /// @param bookInfo        Recipe book info.
     /// @param input           Input.
+    /// @param experience      Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param mainOutput      Main Output.
     /// @param secondaryOutput Secondary Output (chance based).
     /// @param secondaryChance Chance of the secondary output being produced. This must be at least zero and at most one.
     ///
     /// @apiNote At least one output must not be empty.
-    public BasicSawmillRecipe(CommonInfo commonInfo, SawingBookInfo bookInfo, ItemStackIngredient input, @Nullable ItemStackTemplate mainOutput,
+    public BasicSawmillRecipe(CommonInfo commonInfo, SawingBookInfo bookInfo, ItemStackIngredient input, float experience, @Nullable ItemStackTemplate mainOutput,
           @Nullable ItemStackTemplate secondaryOutput, double secondaryChance) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         if (mainOutput == null && secondaryOutput == null) {
@@ -63,7 +65,7 @@ public class BasicSawmillRecipe extends SawmillRecipe {
         this.mainOutput = mainOutput;
         this.secondaryOutput = secondaryOutput;
         this.secondaryChance = secondaryChance;
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -156,6 +158,7 @@ public class BasicSawmillRecipe extends SawmillRecipe {
               Recipe.CommonInfo.MAP_CODEC.forGetter(MekanismRecipe::commonInfo),
               SawingBookInfo.MAP_CODEC.forGetter(MekanismRecipe::bookInfo),
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(SawmillRecipe::getInput),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
               SerializerHelper.oneRequired(
                     secondaryOutputField,
                     ItemStackTemplate.CODEC.optionalFieldOf(SerializationConstants.MAIN_OUTPUT), recipe -> Optional.ofNullable(recipe.mainOutput)
@@ -165,8 +168,8 @@ public class BasicSawmillRecipe extends SawmillRecipe {
                   double secondaryChance = sawmillRecipe.getSecondaryChance();
                   return secondaryChance == 0 ? Optional.empty() : Optional.of(secondaryChance);
               })
-        ).apply(instance, (commonInfo, bookInfo, input, mainOutput, secondaryOutput, secondChance) ->
-              factory.create(commonInfo, bookInfo, input, mainOutput.orElse(null), secondaryOutput.orElse(null), secondChance.orElse(0D))
+        ).apply(instance, (commonInfo, bookInfo, input, experience, mainOutput, secondaryOutput, secondChance) ->
+              factory.create(commonInfo, bookInfo, input, experience, mainOutput.orElse(null), secondaryOutput.orElse(null), secondChance.orElse(0D))
         ));
     }
 
@@ -180,11 +183,12 @@ public class BasicSawmillRecipe extends SawmillRecipe {
               CommonInfo.STREAM_CODEC, MekanismRecipe::commonInfo,
               SawingBookInfo.STREAM_CODEC, MekanismRecipe::bookInfo,
               ItemStackIngredient.STREAM_CODEC, SawmillRecipe::getInput,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
               ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC), recipe -> Optional.ofNullable(recipe.mainOutput),
               ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC), recipe -> Optional.ofNullable(recipe.secondaryOutput),
               ByteBufCodecs.DOUBLE, SawmillRecipe::getSecondaryChance,
-              (commonInfo, bookInfo, input, mainOutput, secondaryOutput, secondChance) ->
-                    factory.create(commonInfo, bookInfo, input, mainOutput.orElse(null), secondaryOutput.orElse(null), secondChance)
+              (commonInfo, bookInfo, input, experience, mainOutput, secondaryOutput, secondChance) ->
+                    factory.create(commonInfo, bookInfo, input, experience, mainOutput.orElse(null), secondaryOutput.orElse(null), secondChance)
         );
     }
 

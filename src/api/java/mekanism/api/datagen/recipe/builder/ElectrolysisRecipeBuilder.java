@@ -54,6 +54,6 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
 
     @Override
     protected ElectrolysisRecipe asRecipe() {
-        return new BasicElectrolysisRecipe(commonInfo(), bookInfo(), input, energyMultiplier, output);
+        return new BasicElectrolysisRecipe(commonInfo(), bookInfo(), input, energyMultiplier, experience(), output);
     }
 }

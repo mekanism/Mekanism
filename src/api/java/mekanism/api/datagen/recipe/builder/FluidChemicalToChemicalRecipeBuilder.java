@@ -48,6 +48,6 @@ public class FluidChemicalToChemicalRecipeBuilder<BOOK_CATEGORY extends Mekanism
 
     @Override
     protected RECIPE asRecipe() {
-        return factory.create(commonInfo(), bookInfo(), fluidInput, chemicalInput, output);
+        return factory.create(commonInfo(), bookInfo(), fluidInput, chemicalInput, experience(), output);
     }
 }

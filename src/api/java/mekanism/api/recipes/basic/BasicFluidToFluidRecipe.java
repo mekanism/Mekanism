@@ -12,7 +12,9 @@ import mekanism.api.recipes.book.MekanismBookCategory;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -33,13 +35,14 @@ public abstract class BasicFluidToFluidRecipe<BOOK_CATEGORY extends MekanismBook
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
     /// @param input      Input.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output     Output.
     protected BasicFluidToFluidRecipe(RecipeType<FluidToFluidRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, CommonInfo commonInfo, BOOK_INFO bookInfo,
-          FluidStackIngredient input, FluidStackTemplate output) {
+          FluidStackIngredient input, float experience, FluidStackTemplate output) {
         this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -102,6 +105,7 @@ public abstract class BasicFluidToFluidRecipe<BOOK_CATEGORY extends MekanismBook
               Recipe.CommonInfo.MAP_CODEC.forGetter(MekanismRecipe::commonInfo),
               bookCodec.forGetter(MekanismRecipe::bookInfo),
               FluidStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(FluidToFluidRecipe::getInput),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
               FluidStackTemplate.MAP_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output)
         ).apply(instance, factory::create));
     }
@@ -119,6 +123,7 @@ public abstract class BasicFluidToFluidRecipe<BOOK_CATEGORY extends MekanismBook
               CommonInfo.STREAM_CODEC, MekanismRecipe::commonInfo,
               bookCodec, MekanismRecipe::bookInfo,
               FluidStackIngredient.STREAM_CODEC, FluidToFluidRecipe::getInput,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
               FluidStackTemplate.STREAM_CODEC, recipe -> recipe.output,
               factory::create
         );

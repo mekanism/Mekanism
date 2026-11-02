@@ -79,11 +79,11 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryBookCategor
     protected RotaryRecipe asRecipe() {
         if (fluidInput != null && chemicalOutput != null) {
             if (chemicalInput != null && fluidOutput != null) {
-                return new BasicRotaryRecipe(commonInfo(), bookInfo(), fluidInput, chemicalInput, chemicalOutput, fluidOutput);
+                return new BasicRotaryRecipe(commonInfo(), bookInfo(), experience(), fluidInput, chemicalInput, chemicalOutput, fluidOutput);
             }
-            return new BasicRotaryRecipe(commonInfo(), bookInfo(), fluidInput, chemicalOutput);
+            return new BasicRotaryRecipe(commonInfo(), bookInfo(), experience(), fluidInput, chemicalOutput);
         } else if (chemicalInput != null && fluidOutput != null) {
-            return new BasicRotaryRecipe(commonInfo(), bookInfo(), chemicalInput, fluidOutput);
+            return new BasicRotaryRecipe(commonInfo(), bookInfo(), experience(), chemicalInput, fluidOutput);
         }
         throw new IllegalStateException("Invalid rotary recipe");
     }

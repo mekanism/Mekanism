@@ -24,8 +24,8 @@ public class BasicInjectingRecipe extends BasicItemStackChemicalToItemStackRecip
     private static final Holder<Item> CHEMICAL_INJECTION_CHAMBER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_injection_chamber"));
 
     public BasicInjectingRecipe(CommonInfo commonInfo, InjectingBookInfo bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput,
-          boolean perTickUsage, ItemStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_INJECTING.value(), commonInfo, bookInfo, itemInput, chemicalInput, perTickUsage, output);
+          boolean perTickUsage, float experience, ItemStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_INJECTING.value(), commonInfo, bookInfo, itemInput, chemicalInput, perTickUsage, experience, output);
     }
 
     @Override
@@ -39,6 +39,7 @@ public class BasicInjectingRecipe extends BasicItemStackChemicalToItemStackRecip
               getItemInput().display(),
               getChemicalInput().display(),
               perTickUsage(),
+              experience(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(CHEMICAL_INJECTION_CHAMBER)
         ));

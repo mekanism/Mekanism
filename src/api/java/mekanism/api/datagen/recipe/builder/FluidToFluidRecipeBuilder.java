@@ -43,6 +43,6 @@ public class FluidToFluidRecipeBuilder<BOOK_CATEGORY extends MekanismBookCategor
 
     @Override
     protected RECIPE asRecipe() {
-        return factory.create(commonInfo(), bookInfo(), input, output);
+        return factory.create(commonInfo(), bookInfo(), input, experience(), output);
     }
 }

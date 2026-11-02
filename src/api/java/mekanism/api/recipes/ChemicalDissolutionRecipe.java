@@ -24,10 +24,11 @@ public abstract class ChemicalDissolutionRecipe extends ItemStackChemicalToObjec
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected ChemicalDissolutionRecipe(Recipe.CommonInfo commonInfo, DissolutionBookInfo bookInfo) {
-        super(commonInfo, bookInfo);
+    protected ChemicalDissolutionRecipe(Recipe.CommonInfo commonInfo, DissolutionBookInfo bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -41,7 +42,8 @@ public abstract class ChemicalDissolutionRecipe extends ItemStackChemicalToObjec
               getItemInput().display(),
               getChemicalInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(CHEMICAL_DISSOLUTION_CHAMBER)
+              new SlotDisplay.ItemSlotDisplay(CHEMICAL_DISSOLUTION_CHAMBER),
+              experience()
         ));
     }
 
@@ -51,13 +53,14 @@ public abstract class ChemicalDissolutionRecipe extends ItemStackChemicalToObjec
     @FunctionalInterface
     public interface Factory<RECIPE extends ChemicalDissolutionRecipe> {
 
-        /// @param commonInfo  Common recipe info.
-        /// @param bookInfo    Recipe book info.
+        /// @param commonInfo    Common recipe info.
+        /// @param bookInfo      Recipe book info.
         /// @param itemInput     Item input.
         /// @param chemicalInput Chemical input.
         /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
+        /// @param experience    Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param output        Output.
         RECIPE create(CommonInfo commonInfo, DissolutionBookInfo bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, boolean perTickUsage,
-              ChemicalStackTemplate output);
+              float experience, ChemicalStackTemplate output);
     }
 }

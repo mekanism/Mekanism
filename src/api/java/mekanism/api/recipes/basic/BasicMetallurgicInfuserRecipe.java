@@ -25,10 +25,11 @@ public class BasicMetallurgicInfuserRecipe extends BasicItemStackChemicalToItemS
 
     /// @param itemInput     Item input.
     /// @param chemicalInput Infusion input.
+    /// @param experience    Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output        Output.
     public BasicMetallurgicInfuserRecipe(CommonInfo commonInfo, MetallurgicInfusingBookInfo bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput,
-          boolean perTickUsage, ItemStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_METALLURGIC_INFUSING.value(), commonInfo, bookInfo, itemInput, chemicalInput, perTickUsage, output);
+          boolean perTickUsage, float experience, ItemStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_METALLURGIC_INFUSING.value(), commonInfo, bookInfo, itemInput, chemicalInput, perTickUsage, experience, output);
     }
 
     @Override
@@ -37,6 +38,7 @@ public class BasicMetallurgicInfuserRecipe extends BasicItemStackChemicalToItemS
               getItemInput().display(),
               getChemicalInput().display(),
               perTickUsage(),
+              experience(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(METALLURGIC_INFUSER)
         ));

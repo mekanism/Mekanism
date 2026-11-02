@@ -22,8 +22,8 @@ public class BasicActivatingRecipe extends BasicChemicalToChemicalRecipe<Activat
 
     private static final Holder<Item> SOLAR_NEUTRON_ACTIVATOR = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "solar_neutron_activator"));
 
-    public BasicActivatingRecipe(CommonInfo commonInfo, ActivatingBookInfo bookInfo, ChemicalStackIngredient input, ChemicalStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_ACTIVATING.value(), commonInfo, bookInfo, input, output);
+    public BasicActivatingRecipe(CommonInfo commonInfo, ActivatingBookInfo bookInfo, ChemicalStackIngredient input, float experience, ChemicalStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_ACTIVATING.value(), commonInfo, bookInfo, input, experience, output);
     }
 
     @Override
@@ -36,7 +36,8 @@ public class BasicActivatingRecipe extends BasicChemicalToChemicalRecipe<Activat
         return List.of(new ActivatingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(SOLAR_NEUTRON_ACTIVATOR)
+              new SlotDisplay.ItemSlotDisplay(SOLAR_NEUTRON_ACTIVATOR),
+              experience()
         ));
     }
 }

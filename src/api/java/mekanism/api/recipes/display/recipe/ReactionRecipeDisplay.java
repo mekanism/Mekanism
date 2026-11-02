@@ -12,7 +12,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 ///
 /// @since 10.8.0
 public record ReactionRecipeDisplay(SlotDisplay itemIngredient, SlotDisplay fluidIngredient, SlotDisplay chemicalIngredient, SlotDisplay result,
-                                    SlotDisplay craftingStation, int duration, int energyRequired) implements MekanismRecipeDisplay {
+                                    SlotDisplay craftingStation, int energyRequired, int duration, float experience) implements MekanismRecipeDisplay {
 
     private static final DeferredHolder<Type<?>, Type<ReactionRecipeDisplay>> TYPE = DeferredHolder.create(Registries.RECIPE_DISPLAY, MekanismRecipeTypes.NAME_REACTION);
 
@@ -24,6 +24,7 @@ public record ReactionRecipeDisplay(SlotDisplay itemIngredient, SlotDisplay flui
         Objects.requireNonNull(craftingStation);
         Preconditions.checkArgument(duration > 0, "Duration must be positive.");
         Preconditions.checkArgument(energyRequired >= 0, "Energy required must not be negative");
+        Preconditions.checkArgument(experience >= 0, "Experience produced must not be negative");
     }
 
     @Override

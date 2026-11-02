@@ -77,6 +77,6 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawingBookCatego
 
     @Override
     protected SawmillRecipe asRecipe() {
-        return new BasicSawmillRecipe(commonInfo(), bookInfo(), input, mainOutput, secondaryOutput, secondaryChance);
+        return new BasicSawmillRecipe(commonInfo(), bookInfo(), input, experience(), mainOutput, secondaryOutput, secondaryChance);
     }
 }

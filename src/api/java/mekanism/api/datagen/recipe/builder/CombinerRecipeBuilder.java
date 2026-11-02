@@ -40,6 +40,6 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombiningBookCa
 
     @Override
     protected CombinerRecipe asRecipe() {
-        return new BasicCombinerRecipe(commonInfo(), bookInfo(), mainInput, extraInput, output);
+        return new BasicCombinerRecipe(commonInfo(), bookInfo(), mainInput, extraInput, experience(), output);
     }
 }

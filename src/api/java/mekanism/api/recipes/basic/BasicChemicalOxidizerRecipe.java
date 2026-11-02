@@ -22,8 +22,8 @@ public class BasicChemicalOxidizerRecipe extends BasicItemStackToChemicalRecipe<
 
     private static final Holder<Item> CHEMICAL_OXIDIZER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_oxidizer"));
 
-    public BasicChemicalOxidizerRecipe(CommonInfo commonInfo, OxidizingBookInfo bookInfo, ItemStackIngredient input, ChemicalStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_OXIDIZING.value(), commonInfo, bookInfo, input, output);
+    public BasicChemicalOxidizerRecipe(CommonInfo commonInfo, OxidizingBookInfo bookInfo, ItemStackIngredient input, float experience, ChemicalStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_OXIDIZING.value(), commonInfo, bookInfo, input, experience, output);
     }
 
     @Override
@@ -36,7 +36,8 @@ public class BasicChemicalOxidizerRecipe extends BasicItemStackToChemicalRecipe<
         return List.of(new OxidizingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(CHEMICAL_OXIDIZER)
+              new SlotDisplay.ItemSlotDisplay(CHEMICAL_OXIDIZER),
+              experience()
         ));
     }
 }

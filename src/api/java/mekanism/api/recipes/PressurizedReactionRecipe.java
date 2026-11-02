@@ -59,10 +59,11 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected PressurizedReactionRecipe(Recipe.CommonInfo commonInfo, ReactingBookInfo bookInfo) {
-        super(commonInfo, bookInfo);
+    protected PressurizedReactionRecipe(Recipe.CommonInfo commonInfo, ReactingBookInfo bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     /// Gets the item input ingredient.
@@ -149,8 +150,9 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
               getInputChemical().display(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(PRESSURIZED_REACTION_CHAMBER),
+              getEnergyRequired(),
               getDuration(),
-              getEnergyRequired()
+              experience()
         ));
     }
 
@@ -236,8 +238,9 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
         /// @param inputChemical  Chemical input.
         /// @param energyRequired Amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
         /// @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+        /// @param experience     Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param output         Output.
         RECIPE create(CommonInfo commonInfo, ReactingBookInfo bookInfo, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid,
-              ChemicalStackIngredient inputChemical, int energyRequired, int duration, PressurizedReactionRecipeOutput output);
+              ChemicalStackIngredient inputChemical, int energyRequired, int duration, float experience, PressurizedReactionRecipeOutput output);
     }
 }

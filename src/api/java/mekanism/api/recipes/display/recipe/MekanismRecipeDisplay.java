@@ -8,6 +8,9 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 /// @since 10.8.0
 public interface MekanismRecipeDisplay extends RecipeDisplay {
 
+    /// {@return amount of experience to that each process of the recipe contributes to the total experience}
+    float experience();
+
     /// {@return all input ingredient slot displays}
     List<SlotDisplay> ingredients();
 

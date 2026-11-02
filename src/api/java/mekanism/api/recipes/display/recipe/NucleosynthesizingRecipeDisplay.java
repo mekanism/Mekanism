@@ -11,7 +11,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 ///
 /// @since 10.8.0
 public record NucleosynthesizingRecipeDisplay(SlotDisplay ingredient, SlotDisplay secondIngredient, boolean perTickSecondary, SlotDisplay result,
-                                              SlotDisplay craftingStation, int duration) implements TwoInputPerTickRecipeDisplay {
+                                              SlotDisplay craftingStation, int duration, float experience) implements TwoInputPerTickRecipeDisplay {
 
     private static final DeferredHolder<Type<?>, Type<NucleosynthesizingRecipeDisplay>> TYPE = DeferredHolder.create(Registries.RECIPE_DISPLAY, MekanismRecipeTypes.NAME_NUCLEOSYNTHESIZING);
 
@@ -21,6 +21,7 @@ public record NucleosynthesizingRecipeDisplay(SlotDisplay ingredient, SlotDispla
         Objects.requireNonNull(result);
         Objects.requireNonNull(craftingStation);
         Preconditions.checkArgument(duration > 0, "Duration must be a number greater than zero.");
+        Preconditions.checkArgument(experience >= 0, "Experience produced must not be negative");
     }
 
     @Override

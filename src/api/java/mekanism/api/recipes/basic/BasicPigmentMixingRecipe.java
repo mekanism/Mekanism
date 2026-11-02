@@ -24,12 +24,13 @@ public class BasicPigmentMixingRecipe extends BasicChemicalChemicalToChemicalRec
 
     /// @param leftInput  Left input.
     /// @param rightInput Right input.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output     Output.
     ///
     /// @apiNote The order of the inputs does not matter.
     public BasicPigmentMixingRecipe(CommonInfo commonInfo, PigmentMixingBookInfo bookInfo, ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput,
-          ChemicalStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_PIGMENT_MIXING.value(), commonInfo, bookInfo, leftInput, rightInput, output);
+          float experience, ChemicalStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_PIGMENT_MIXING.value(), commonInfo, bookInfo, leftInput, rightInput, experience, output);
     }
 
     @Override
@@ -38,7 +39,8 @@ public class BasicPigmentMixingRecipe extends BasicChemicalChemicalToChemicalRec
               getLeftInput().display(),
               getRightInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(PIGMENT_MIXER)
+              new SlotDisplay.ItemSlotDisplay(PIGMENT_MIXER),
+              experience()
         ));
     }
 

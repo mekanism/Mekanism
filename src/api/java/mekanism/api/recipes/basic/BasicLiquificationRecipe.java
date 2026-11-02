@@ -28,9 +28,10 @@ public class BasicLiquificationRecipe extends BasicItemStackToFluidOptionalItemR
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
     /// @param input      Input.
+    /// @param experience    Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output     Output.
-    public BasicLiquificationRecipe(Recipe.CommonInfo commonInfo, LiquificationBookInfo bookInfo, ItemStackIngredient input, FluidOptionalItemOutput output) {
-        super(commonInfo, bookInfo, input, output);
+    public BasicLiquificationRecipe(Recipe.CommonInfo commonInfo, LiquificationBookInfo bookInfo, ItemStackIngredient input, float experience, FluidOptionalItemOutput output) {
+        super(commonInfo, bookInfo, input, experience, output);
     }
 
     @Override
@@ -48,7 +49,8 @@ public class BasicLiquificationRecipe extends BasicItemStackToFluidOptionalItemR
         return List.of(new LiquificationRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(NUTRITIONAL_LIQUIFIER)
+              new SlotDisplay.ItemSlotDisplay(NUTRITIONAL_LIQUIFIER),
+              experience()
         ));
     }
 }

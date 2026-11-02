@@ -34,14 +34,15 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
     /// @param input      Input.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output     Output, must be greater than zero.
-    public BasicItemStackToEnergyRecipe(CommonInfo commonInfo, EnergyConversionBookInfo bookInfo, ItemStackIngredient input, int output) {
+    public BasicItemStackToEnergyRecipe(CommonInfo commonInfo, EnergyConversionBookInfo bookInfo, ItemStackIngredient input, float experience, int output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         if (output <= 0) {
             throw new IllegalArgumentException("Output must be greater than zero.");
         }
         this.output = output;
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -93,7 +94,8 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
               getInput().display(),
               getOutputDisplay(),
               //TODO: What do we want to display as the work stations here
-              SlotDisplay.Empty.INSTANCE
+              SlotDisplay.Empty.INSTANCE,
+              experience()
         ));
     }
 
@@ -107,6 +109,7 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
               Recipe.CommonInfo.MAP_CODEC.forGetter(MekanismRecipe::commonInfo),
               EnergyConversionBookInfo.MAP_CODEC.forGetter(MekanismRecipe::bookInfo),
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(ItemStackToEnergyRecipe::getInput),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
               ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output)
         ).apply(instance, factory::create));
     }
@@ -121,6 +124,7 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
               CommonInfo.STREAM_CODEC, MekanismRecipe::commonInfo,
               EnergyConversionBookInfo.STREAM_CODEC, MekanismRecipe::bookInfo,
               ItemStackIngredient.STREAM_CODEC, ItemStackToEnergyRecipe::getInput,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
               ByteBufCodecs.VAR_INT, recipe -> recipe.output,
               factory::create
         );

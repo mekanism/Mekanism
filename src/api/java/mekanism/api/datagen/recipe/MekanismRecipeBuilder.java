@@ -37,6 +37,7 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
     private boolean requireUnlockCriteria = true;
     private boolean showNotification = true;
     private BOOK_CATEGORY category;
+    private float experience;
     @Nullable
     private String advancementCategory;
     @Nullable
@@ -176,6 +177,25 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
 
     protected BOOK_INFO bookInfo() {
         return bookInfoCreator.apply(category, Objects.requireNonNullElse(group, ""));
+    }
+
+    /// Sets the amount of experience to that each process of the recipe contributes to the total experience.
+    ///
+    /// @since 10.8.0
+    @Contract("_ -> this")
+    public BUILDER experience(float experience) {
+        if (experience < 0) {
+            throw new IllegalArgumentException("Experience cannot be negative.");
+        }
+        this.experience = experience;
+        return self();
+    }
+
+    /// Gets the amount of experience to that each process of the recipe contributes to the total experience.
+    ///
+    /// @since 10.8.0
+    protected float experience() {
+        return experience;
     }
 
     /// Gets a recipe result object.

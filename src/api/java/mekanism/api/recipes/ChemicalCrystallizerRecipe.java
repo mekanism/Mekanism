@@ -31,10 +31,11 @@ public abstract class ChemicalCrystallizerRecipe extends ChemicalInputRecipe<Ite
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected ChemicalCrystallizerRecipe(Recipe.CommonInfo commonInfo, CrystallizingBookInfo bookInfo) {
-        super(commonInfo, bookInfo);
+    protected ChemicalCrystallizerRecipe(Recipe.CommonInfo commonInfo, CrystallizingBookInfo bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -56,7 +57,8 @@ public abstract class ChemicalCrystallizerRecipe extends ChemicalInputRecipe<Ite
               getInput().display(),
               getTypeDisplay(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(CHEMICAL_CRYSTALLIZER)
+              new SlotDisplay.ItemSlotDisplay(CHEMICAL_CRYSTALLIZER),
+              experience()
         ));
     }
 
@@ -77,7 +79,8 @@ public abstract class ChemicalCrystallizerRecipe extends ChemicalInputRecipe<Ite
         /// @param bookInfo    Recipe book info.
         /// @param input       Input ingredient.
         /// @param typeDisplay Type display.
+        /// @param experience  Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param output      Output item.
-        RECIPE create(CommonInfo commonInfo, CrystallizingBookInfo bookInfo, ChemicalStackIngredient input, SlotDisplay typeDisplay, ItemStackTemplate output);
+        RECIPE create(CommonInfo commonInfo, CrystallizingBookInfo bookInfo, ChemicalStackIngredient input, SlotDisplay typeDisplay, float experience, ItemStackTemplate output);
     }
 }

@@ -23,8 +23,8 @@ public class BasicSmeltingRecipe extends BasicItemStackToItemStackRecipe<Smeltin
 
     private static final Holder<Item> ENERGIZED_SMELTER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "energized_smelter"));
 
-    public BasicSmeltingRecipe(Recipe.CommonInfo commonInfo, SmeltingBookInfo bookInfo, ItemStackIngredient input, ItemStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_SMELTING.value(), commonInfo, bookInfo, input, output);
+    public BasicSmeltingRecipe(Recipe.CommonInfo commonInfo, SmeltingBookInfo bookInfo, ItemStackIngredient input, float experience, ItemStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_SMELTING.value(), commonInfo, bookInfo, input, experience, output);
     }
 
     @Override
@@ -37,7 +37,8 @@ public class BasicSmeltingRecipe extends BasicItemStackToItemStackRecipe<Smeltin
         return List.of(new SmeltingRecipeDisplay(
               getInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(ENERGIZED_SMELTER)
+              new SlotDisplay.ItemSlotDisplay(ENERGIZED_SMELTER),
+              experience()
         ));
     }
 }

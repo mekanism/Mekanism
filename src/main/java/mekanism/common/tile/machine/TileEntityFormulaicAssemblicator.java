@@ -658,7 +658,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    //TODO - 26.3: Fix the placing into wrong slot briefly on the client side by ensuring the stock control map is synced to the client?
     private void buildStockControlMap() {
         if (formula.isEmpty()) {
             return;

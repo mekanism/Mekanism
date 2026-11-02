@@ -17,6 +17,7 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.Recipe.CommonInfo;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -31,30 +32,31 @@ public class RotaryRecipeSerializer {
               RecipeData.CODEC.flatXmap(recipe -> {
                   if (recipe.fluidInput.isPresent() && recipe.chemicalOutput.isPresent()) {
                       if (recipe.chemicalInput.isPresent() && recipe.fluidOutput.isPresent()) {
-                          return DataResult.success(bothWaysFactory.create(recipe.commonInfo(), recipe.bookInfo(), recipe.fluidInput.get(), recipe.chemicalInput.get(), recipe.chemicalOutput.get(), recipe.fluidOutput.get()));
+                          return DataResult.success(bothWaysFactory.create(recipe.commonInfo(), recipe.bookInfo(), recipe.experience(), recipe.fluidInput.get(), recipe.chemicalInput.get(), recipe.chemicalOutput.get(), recipe.fluidOutput.get()));
                       }
-                      return DataResult.success(toChemicalFactory.create(recipe.commonInfo(), recipe.bookInfo(), recipe.fluidInput.get(), recipe.chemicalOutput.get()));
+                      return DataResult.success(toChemicalFactory.create(recipe.commonInfo(), recipe.bookInfo(), recipe.experience(), recipe.fluidInput.get(), recipe.chemicalOutput.get()));
                   } else if (recipe.chemicalInput.isPresent() && recipe.fluidOutput.isPresent()) {
-                      return DataResult.success(toFluidFactory.create(recipe.commonInfo(), recipe.bookInfo(), recipe.chemicalInput.get(), recipe.fluidOutput.get()));
+                      return DataResult.success(toFluidFactory.create(recipe.commonInfo(), recipe.bookInfo(), recipe.experience(), recipe.chemicalInput.get(), recipe.fluidOutput.get()));
                   }
                   return DataResult.error(() -> "At least a fluid to chemical or a chemical to fluid recipe must be provided.");
-              }, recipe -> DataResult.success(new RecipeData(recipe.commonInfo(), recipe.bookInfo(), recipe.getFluidInputRaw(), recipe.getChemicalOutputRaw(), recipe.getChemicalInputRaw(), recipe.getFluidOutputRaw()))),
+              }, recipe -> DataResult.success(new RecipeData(recipe.commonInfo(), recipe.bookInfo(), recipe.experience(), recipe.getFluidInputRaw(), recipe.getChemicalOutputRaw(), recipe.getChemicalInputRaw(), recipe.getFluidOutputRaw()))),
               StreamCodec.composite(
                     CommonInfo.STREAM_CODEC, MekanismRecipe::commonInfo,
                     RotaryBookInfo.STREAM_CODEC, MekanismRecipe::bookInfo,
+                    ByteBufCodecs.FLOAT, MekanismRecipe::experience,
                     ByteBufCodecs.optional(FluidToChemical.STREAM_CODEC), recipe -> recipe.hasFluidToChemical() ? Optional.of(new FluidToChemical(recipe)) : Optional.empty(),
                     ByteBufCodecs.optional(ChemicalToFluid.STREAM_CODEC), recipe -> recipe.hasChemicalToFluid() ? Optional.of(new ChemicalToFluid(recipe)) : Optional.empty(),
-                    (commonInfo, bookInfo, toGas, toFluid) -> {
+                    (commonInfo, bookInfo, experience, toGas, toFluid) -> {
                         if (toGas.isPresent()) {
                             FluidToChemical fluidToChemical = toGas.get();
                             if (toFluid.isPresent()) {
                                 ChemicalToFluid chemicalToFluid = toFluid.get();
-                                return bothWaysFactory.create(commonInfo, bookInfo, fluidToChemical.input(), chemicalToFluid.input(), fluidToChemical.output(), chemicalToFluid.output());
+                                return bothWaysFactory.create(commonInfo, bookInfo, experience, fluidToChemical.input(), chemicalToFluid.input(), fluidToChemical.output(), chemicalToFluid.output());
                             }
-                            return toChemicalFactory.create(commonInfo, bookInfo, fluidToChemical.input(), fluidToChemical.output());
+                            return toChemicalFactory.create(commonInfo, bookInfo, experience, fluidToChemical.input(), fluidToChemical.output());
                         } else if (toFluid.isPresent()) {
                             ChemicalToFluid chemicalToFluid = toFluid.get();
-                            return toFluidFactory.create(commonInfo, bookInfo, chemicalToFluid.input(), chemicalToFluid.output());
+                            return toFluidFactory.create(commonInfo, bookInfo, experience, chemicalToFluid.input(), chemicalToFluid.output());
                         }
                         throw new DecoderException("A recipe got sent with no conversion in either direction.");
                     }
@@ -62,12 +64,13 @@ public class RotaryRecipeSerializer {
         );
     }
 
-    private record RecipeData(Recipe.CommonInfo commonInfo, RotaryBookInfo bookInfo,
+    private record RecipeData(Recipe.CommonInfo commonInfo, RotaryBookInfo bookInfo, float experience,
                               Optional<FluidStackIngredient> fluidInput, Optional<ChemicalStackTemplate> chemicalOutput,
                               Optional<ChemicalStackIngredient> chemicalInput, Optional<FluidStackTemplate> fluidOutput) {
 
         private static final RecordCodecBuilder<RecipeData, Recipe.CommonInfo> COMMON_INFO_FIELD = Recipe.CommonInfo.MAP_CODEC.forGetter(RecipeData::commonInfo);
         private static final RecordCodecBuilder<RecipeData, RotaryBookInfo> BOOK_INFO_FIELD = RotaryBookInfo.MAP_CODEC.forGetter(RecipeData::bookInfo);
+        private static final RecordCodecBuilder<RecipeData, Float> EXPERIENCE_FIELD = ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(RecipeData::experience);
 
         private static final RecordCodecBuilder<RecipeData, Optional<FluidStackIngredient>> FLUID_INPUT_FIELD = FluidStackIngredient.CODEC
               .optionalFieldOf(SerializationConstants.FLUID_INPUT)
@@ -84,25 +87,22 @@ public class RotaryRecipeSerializer {
               .forGetter(RecipeData::fluidOutput);
 
         private static final MapCodec<RecipeData> BOTH_WAYS_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-              COMMON_INFO_FIELD,
-              BOOK_INFO_FIELD,
+              COMMON_INFO_FIELD, BOOK_INFO_FIELD, EXPERIENCE_FIELD,
               FLUID_INPUT_FIELD,
               CHEMICAL_OUTPUT_FIELD,
               CHEMICAL_INPUT_FIELD,
               FLUID_OUTPUT_FIELD
         ).apply(i, RecipeData::new));
         private static final MapCodec<RecipeData> FLUID_TO_CHEMICAL_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-              COMMON_INFO_FIELD,
-              BOOK_INFO_FIELD,
+              COMMON_INFO_FIELD, BOOK_INFO_FIELD, EXPERIENCE_FIELD,
               FLUID_INPUT_FIELD,
               CHEMICAL_OUTPUT_FIELD
-        ).apply(i, (commonInfo, bookInfo, fluid, chemical) -> new RecipeData(commonInfo, bookInfo, fluid, chemical, Optional.empty(), Optional.empty())));
+        ).apply(i, (commonInfo, bookInfo, experience, fluid, chemical) -> new RecipeData(commonInfo, bookInfo, experience, fluid, chemical, Optional.empty(), Optional.empty())));
         private static final MapCodec<RecipeData> CHEMICAL_TO_FLUID_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-              COMMON_INFO_FIELD,
-              BOOK_INFO_FIELD,
+              COMMON_INFO_FIELD, BOOK_INFO_FIELD, EXPERIENCE_FIELD,
               CHEMICAL_INPUT_FIELD,
               FLUID_OUTPUT_FIELD
-        ).apply(i, (commonInfo, bookInfo, chemical, fluid) -> new RecipeData(commonInfo, bookInfo, Optional.empty(), Optional.empty(), chemical, fluid)));
+        ).apply(i, (commonInfo, bookInfo, experience, chemical, fluid) -> new RecipeData(commonInfo, bookInfo, experience, Optional.empty(), Optional.empty(), chemical, fluid)));
         private static final MapCodec<RecipeData> CODEC = NeoForgeExtraCodecs.withAlternative(BOTH_WAYS_CODEC, NeoForgeExtraCodecs.withAlternative(FLUID_TO_CHEMICAL_CODEC, CHEMICAL_TO_FLUID_CODEC));
     }
 

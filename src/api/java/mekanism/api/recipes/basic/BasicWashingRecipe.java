@@ -27,10 +27,11 @@ public class BasicWashingRecipe extends BasicFluidChemicalToChemicalRecipe<Washi
     /// @param bookInfo      Recipe book info.
     /// @param fluidInput    Fluid input.
     /// @param chemicalInput Chemical input.
+    /// @param experience    Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output        Output.
     public BasicWashingRecipe(CommonInfo commonInfo, WashingBookInfo bookInfo, FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput,
-          ChemicalStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_WASHING.value(), commonInfo, bookInfo, fluidInput, chemicalInput, output);
+          float experience, ChemicalStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_WASHING.value(), commonInfo, bookInfo, fluidInput, chemicalInput, experience, output);
     }
 
     @Override
@@ -39,7 +40,8 @@ public class BasicWashingRecipe extends BasicFluidChemicalToChemicalRecipe<Washi
               getChemicalInput().display(),
               getFluidInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(CHEMICAL_WASHER)
+              new SlotDisplay.ItemSlotDisplay(CHEMICAL_WASHER),
+              experience()
         ));
     }
 

@@ -1,5 +1,6 @@
 package mekanism.api.recipes.display.recipe;
 
+import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.recipes.MekanismRecipeTypes;
@@ -11,7 +12,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 /// Represents a nutritional liquification recipe display where a singular input produces a result.
 ///
 /// @since 10.8.0
-public record LiquificationRecipeDisplay(SlotDisplay ingredient, SlotDisplay result, SlotDisplay craftingStation) implements OneInputRecipeDisplay {
+public record LiquificationRecipeDisplay(SlotDisplay ingredient, SlotDisplay result, SlotDisplay craftingStation, float experience) implements OneInputRecipeDisplay {
 
     private static final DeferredHolder<Type<?>, Type<LiquificationRecipeDisplay>> TYPE = DeferredHolder.create(Registries.RECIPE_DISPLAY, MekanismRecipeTypes.NAME_LIQUIFICATION);
 
@@ -19,6 +20,7 @@ public record LiquificationRecipeDisplay(SlotDisplay ingredient, SlotDisplay res
         Objects.requireNonNull(ingredient);
         Objects.requireNonNull(result);
         Objects.requireNonNull(craftingStation);
+        Preconditions.checkArgument(experience >= 0, "Experience produced must not be negative");
     }
 
     @Override

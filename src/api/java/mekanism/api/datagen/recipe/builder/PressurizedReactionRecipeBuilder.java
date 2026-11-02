@@ -103,6 +103,6 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Reac
 
     @Override
     protected PressurizedReactionRecipe asRecipe() {
-        return new BasicPressurizedReactionRecipe(commonInfo(), bookInfo(), inputSolid, inputFluid, inputChemical, energyRequired, duration, output);
+        return new BasicPressurizedReactionRecipe(commonInfo(), bookInfo(), inputSolid, inputFluid, inputChemical, energyRequired, duration, experience(), output);
     }
 }

@@ -271,7 +271,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
     public void fillStackedContents(StackedItemContents contents) {
         //Note: getInventorySlots will return an empty list if we don't have an inventory
         for (IInventorySlot slot : getInventorySlots()) {
-            //TODO - 26.3: Should we be adding this regardless?
+            //TODO: Should we be adding this regardless?
             if (slot instanceof BasicInventorySlot basicSlot && basicSlot.isRecipeCraftingSlot()) {
                 //Similar to AbstractFurnaceBlockEntity we use accountStack instead of accountSimpleStack
                 contents.accountStack(basicSlot.asItemStack());

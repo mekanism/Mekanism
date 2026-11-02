@@ -20,10 +20,11 @@ public abstract class ChemicalToChemicalRecipe<BOOK_CATEGORY extends MekanismBoo
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected ChemicalToChemicalRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
-        super(commonInfo, bookInfo);
+    protected ChemicalToChemicalRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     /// Helper interface for constructing [ChemicalToChemicalRecipes][ChemicalToChemicalRecipe]
@@ -36,7 +37,8 @@ public abstract class ChemicalToChemicalRecipe<BOOK_CATEGORY extends MekanismBoo
         /// @param commonInfo Common recipe info.
         /// @param bookInfo   Recipe book info.
         /// @param input      Input ingredient.
+        /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param output     Output chemical.
-        RECIPE create(CommonInfo commonInfo, BOOK_INFO bookInfo, ChemicalStackIngredient input, ChemicalStackTemplate output);
+        RECIPE create(CommonInfo commonInfo, BOOK_INFO bookInfo, ChemicalStackIngredient input, float experience, ChemicalStackTemplate output);
     }
 }

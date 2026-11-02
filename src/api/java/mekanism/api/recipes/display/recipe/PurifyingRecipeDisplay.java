@@ -1,5 +1,6 @@
 package mekanism.api.recipes.display.recipe;
 
+import com.google.common.base.Preconditions;
 import java.util.Objects;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import net.minecraft.core.registries.Registries;
@@ -10,8 +11,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 /// tick.
 ///
 /// @since 10.8.0
-public record PurifyingRecipeDisplay(SlotDisplay ingredient, SlotDisplay secondIngredient, boolean perTickSecondary, SlotDisplay result, SlotDisplay craftingStation)
-      implements TwoInputPerTickRecipeDisplay {
+public record PurifyingRecipeDisplay(SlotDisplay ingredient, SlotDisplay secondIngredient, boolean perTickSecondary, float experience, SlotDisplay result,
+                                     SlotDisplay craftingStation) implements TwoInputPerTickRecipeDisplay {
 
     private static final DeferredHolder<Type<?>, Type<PurifyingRecipeDisplay>> TYPE = DeferredHolder.create(Registries.RECIPE_DISPLAY, MekanismRecipeTypes.NAME_PURIFYING);
 
@@ -20,6 +21,7 @@ public record PurifyingRecipeDisplay(SlotDisplay ingredient, SlotDisplay secondI
         Objects.requireNonNull(secondIngredient);
         Objects.requireNonNull(result);
         Objects.requireNonNull(craftingStation);
+        Preconditions.checkArgument(experience >= 0, "Experience produced must not be negative");
     }
 
     @Override

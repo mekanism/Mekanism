@@ -14,8 +14,8 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 public class BasicChemicalConversionRecipe extends BasicItemStackToChemicalRecipe<ChemicalConversionBookCategory, ChemicalConversionBookInfo> {
 
-    public BasicChemicalConversionRecipe(CommonInfo commonInfo, ChemicalConversionBookInfo bookInfo, ItemStackIngredient input, ChemicalStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_CHEMICAL_CONVERSION.value(), commonInfo, bookInfo, input, output);
+    public BasicChemicalConversionRecipe(CommonInfo commonInfo, ChemicalConversionBookInfo bookInfo, ItemStackIngredient input, float experience, ChemicalStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_CHEMICAL_CONVERSION.value(), commonInfo, bookInfo, input, experience, output);
     }
 
     @Override
@@ -29,7 +29,8 @@ public class BasicChemicalConversionRecipe extends BasicItemStackToChemicalRecip
               getInput().display(),
               getOutputDisplay(),
               //TODO: What do we want to display as the work stations here
-              SlotDisplay.Empty.INSTANCE
+              SlotDisplay.Empty.INSTANCE,
+              experience()
         ));
     }
 }

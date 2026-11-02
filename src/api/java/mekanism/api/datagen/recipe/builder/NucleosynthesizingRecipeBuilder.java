@@ -51,6 +51,6 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
 
     @Override
     protected NucleosynthesizingRecipe asRecipe() {
-        return new BasicNucleosynthesizingRecipe(commonInfo(), bookInfo(), itemInput, chemicalInput, perTickUsage, output, duration);
+        return new BasicNucleosynthesizingRecipe(commonInfo(), bookInfo(), itemInput, chemicalInput, perTickUsage, duration, experience(), output);
     }
 }

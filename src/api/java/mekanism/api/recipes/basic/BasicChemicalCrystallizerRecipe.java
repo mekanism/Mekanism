@@ -14,7 +14,9 @@ import mekanism.api.recipes.book.CrystallizingBookCategory.CrystallizingBookInfo
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
@@ -33,13 +35,14 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
     /// @param input      Input.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output     Output.
-    public BasicChemicalCrystallizerRecipe(CommonInfo commonInfo, CrystallizingBookInfo bookInfo, ChemicalStackIngredient input, SlotDisplay typeDisplay,
+    public BasicChemicalCrystallizerRecipe(CommonInfo commonInfo, CrystallizingBookInfo bookInfo, ChemicalStackIngredient input, SlotDisplay typeDisplay, float experience,
           ItemStackTemplate output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
         this.typeDisplay = Objects.requireNonNull(typeDisplay, "Type display cannot be null, to not have a type display pass empty.");
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -110,6 +113,7 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
               CrystallizingBookInfo.MAP_CODEC.forGetter(MekanismRecipe::bookInfo),
               ChemicalStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(ChemicalCrystallizerRecipe::getInput),
               SlotDisplay.CODEC.optionalFieldOf(SerializationConstants.TYPE_DISPLAY, SlotDisplay.Empty.INSTANCE).forGetter(ChemicalCrystallizerRecipe::getTypeDisplay),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
               ItemStackTemplate.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output)
         ).apply(instance, factory::create));
     }
@@ -126,6 +130,7 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
               CrystallizingBookInfo.STREAM_CODEC, MekanismRecipe::bookInfo,
               ChemicalStackIngredient.STREAM_CODEC, ChemicalCrystallizerRecipe::getInput,
               SlotDisplay.STREAM_CODEC, ChemicalCrystallizerRecipe::getTypeDisplay,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
               ItemStackTemplate.STREAM_CODEC, recipe -> recipe.output,
               factory::create
         );

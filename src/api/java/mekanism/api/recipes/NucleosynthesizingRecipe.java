@@ -33,10 +33,11 @@ public abstract class NucleosynthesizingRecipe extends ItemStackChemicalToItemSt
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected NucleosynthesizingRecipe(Recipe.CommonInfo commonInfo, NucleosynthesizingBookInfo bookInfo) {
-        super(commonInfo, bookInfo);
+    protected NucleosynthesizingRecipe(Recipe.CommonInfo commonInfo, NucleosynthesizingBookInfo bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -55,7 +56,8 @@ public abstract class NucleosynthesizingRecipe extends ItemStackChemicalToItemSt
               perTickUsage(),
               getOutputDisplay(),
               new SlotDisplay.ItemSlotDisplay(ANTIPROTONIC_NUCLEOSYNTHESIZER),
-              getDuration()
+              getDuration(),
+              experience()
         ));
     }
 
@@ -70,9 +72,10 @@ public abstract class NucleosynthesizingRecipe extends ItemStackChemicalToItemSt
         /// @param itemInput     Item input ingredient.
         /// @param chemicalInput Chemical input ingredient.
         /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-        /// @param output        Output item.
         /// @param duration      Duration in ticks that it takes the recipe to complete. Must be greater than zero.
-        RECIPE create(CommonInfo commonInfo, NucleosynthesizingBookInfo bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, boolean perTickUsage,
-              ItemStackTemplate output, int duration);
+        /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
+        /// @param output        Output item.
+        RECIPE create(CommonInfo commonInfo, NucleosynthesizingBookInfo bookInfo, ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput,
+              boolean perTickUsage, int duration, float experience, ItemStackTemplate output);
     }
 }

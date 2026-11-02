@@ -38,6 +38,8 @@ public final class SerializationConstants {
     public static final String TYPE_DISPLAY = "typeDisplay";
     public static final String ENERGY_MULTIPLIER = "energy_multiplier";
     public static final String ENERGY_REQUIRED = "energy_required";
+    /// @since 10.8.0
+    public static final String EXPERIENCE = "experience";
     public static final String DURATION = "duration";
     public static final String INPUT = "input";
     public static final String MAIN_INPUT = "main_input";

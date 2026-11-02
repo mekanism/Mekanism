@@ -16,7 +16,6 @@ public class ExtendedCookingRecipeBuilder<RECIPE extends AbstractCookingRecipe> 
     private final AbstractCookingRecipe.Factory<RECIPE> factory;
     private final Ingredient ingredient;
     private final int cookingTime;
-    private float experience;
 
     private ExtendedCookingRecipeBuilder(Holder<Item> result, int count, Ingredient ingredient, int cookingTime, CookingBookCategory bookCategory,
           AbstractCookingRecipe.Factory<RECIPE> factory) {
@@ -58,14 +57,6 @@ public class ExtendedCookingRecipeBuilder<RECIPE extends AbstractCookingRecipe> 
         return new ExtendedCookingRecipeBuilder<>(result, count, ingredient, cookingTime, CookingBookCategory.FOOD, SmokingRecipe::new);
     }
 
-    public ExtendedCookingRecipeBuilder<RECIPE> experience(float experience) {
-        if (experience < 0) {
-            throw new IllegalArgumentException("Experience cannot be negative.");
-        }
-        this.experience = experience;
-        return this;
-    }
-
     @Override
     protected RECIPE asRecipe() {
         return factory.create(
@@ -73,7 +64,7 @@ public class ExtendedCookingRecipeBuilder<RECIPE extends AbstractCookingRecipe> 
               bookInfo(),
               this.ingredient,
               this.result,
-              this.experience,
+              experience(),
               this.cookingTime
         );
     }

@@ -39,10 +39,11 @@ public abstract class CombinerRecipe extends SimpleTwoInputRecipe<Item, ItemStac
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected CombinerRecipe(Recipe.CommonInfo commonInfo, CombiningBookInfo bookInfo) {
-        super(commonInfo, bookInfo);
+    protected CombinerRecipe(Recipe.CommonInfo commonInfo, CombiningBookInfo bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     /// Gets the main input ingredient.
@@ -100,7 +101,8 @@ public abstract class CombinerRecipe extends SimpleTwoInputRecipe<Item, ItemStac
               getMainInput().display(),
               getExtraInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(COMBINER)
+              new SlotDisplay.ItemSlotDisplay(COMBINER),
+              experience()
         ));
     }
 
@@ -114,7 +116,8 @@ public abstract class CombinerRecipe extends SimpleTwoInputRecipe<Item, ItemStac
         /// @param bookInfo   Recipe book info.
         /// @param mainInput  Main input.
         /// @param extraInput Secondary/extra input.
+        /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param output     Output item.
-        RECIPE create(CommonInfo commonInfo, CombiningBookInfo bookInfo, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStackTemplate output);
+        RECIPE create(CommonInfo commonInfo, CombiningBookInfo bookInfo, ItemStackIngredient mainInput, ItemStackIngredient extraInput, float experience, ItemStackTemplate output);
     }
 }

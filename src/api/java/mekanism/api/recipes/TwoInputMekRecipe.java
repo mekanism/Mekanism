@@ -21,10 +21,11 @@ public abstract class TwoInputMekRecipe<HOLDER_A, STACK_A extends TypedInstance<
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected TwoInputMekRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
-        super(commonInfo, bookInfo);
+    protected TwoInputMekRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     /// Gets the first input ingredient.
@@ -75,10 +76,11 @@ public abstract class TwoInputMekRecipe<HOLDER_A, STACK_A extends TypedInstance<
 
         /// @param commonInfo Common recipe info.
         /// @param bookInfo   Recipe book info.
+        /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
         ///
         /// @since 10.8.0
-        protected SimpleTwoInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
-            super(commonInfo, bookInfo);
+        protected SimpleTwoInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo, float experience) {
+            super(commonInfo, bookInfo, experience);
         }
     }
 }

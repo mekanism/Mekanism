@@ -25,11 +25,13 @@ public abstract class ItemStackToItemStackRecipe<BOOK_CATEGORY extends MekanismB
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    public ItemStackToItemStackRecipe(RecipeType<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
+    public ItemStackToItemStackRecipe(RecipeType<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo,
+          float experience) {
         this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -55,7 +57,8 @@ public abstract class ItemStackToItemStackRecipe<BOOK_CATEGORY extends MekanismB
         /// @param commonInfo Common recipe info.
         /// @param bookInfo   Recipe book info.
         /// @param input      Input ingredient.
+        /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
         /// @param output     Output item.
-        RECIPE create(CommonInfo commonInfo, BOOK_INFO bookInfo, ItemStackIngredient input, ItemStackTemplate output);
+        RECIPE create(CommonInfo commonInfo, BOOK_INFO bookInfo, ItemStackIngredient input, float experience, ItemStackTemplate output);
     }
 }

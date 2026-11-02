@@ -38,10 +38,11 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
 
     /// @param commonInfo Common recipe info.
     /// @param bookInfo   Recipe book info.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     ///
     /// @since 10.8.0
-    protected SingleInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
-        super(commonInfo, bookInfo);
+    protected SingleInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo, float experience) {
+        super(commonInfo, bookInfo, experience);
     }
 
     /// Gets the input ingredient.
@@ -95,10 +96,11 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
 
         /// @param commonInfo Common recipe info.
         /// @param bookInfo   Recipe book info.
+        /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
         ///
         /// @since 10.8.0
-        protected ChemicalInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
-            super(commonInfo, bookInfo);
+        protected ChemicalInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo, float experience) {
+            super(commonInfo, bookInfo, experience);
         }
 
         @Override
@@ -123,10 +125,11 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
 
         /// @param commonInfo Common recipe info.
         /// @param bookInfo   Recipe book info.
+        /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
         ///
         /// @since 10.8.0
-        protected FluidInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
-            super(commonInfo, bookInfo);
+        protected FluidInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo, float experience) {
+            super(commonInfo, bookInfo, experience);
         }
 
         @Override
@@ -151,10 +154,11 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
 
         /// @param commonInfo Common recipe info.
         /// @param bookInfo   Recipe book info.
+        /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
         ///
         /// @since 10.8.0
-        protected ItemInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo) {
-            super(commonInfo, bookInfo);
+        protected ItemInputRecipe(Recipe.CommonInfo commonInfo, BOOK_INFO bookInfo, float experience) {
+            super(commonInfo, bookInfo, experience);
         }
 
         @Override

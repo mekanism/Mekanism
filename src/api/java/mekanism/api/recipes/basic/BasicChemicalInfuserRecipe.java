@@ -24,12 +24,13 @@ public class BasicChemicalInfuserRecipe extends BasicChemicalChemicalToChemicalR
 
     /// @param leftInput  Left input.
     /// @param rightInput Right input.
+    /// @param experience Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output     Output.
     ///
     /// @apiNote The order of the inputs does not matter.
     public BasicChemicalInfuserRecipe(CommonInfo commonInfo, ChemicalInfusingBookInfo bookInfo, ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput,
-          ChemicalStackTemplate output) {
-        super(MekanismRecipeTypes.TYPE_CHEMICAL_INFUSING.value(), commonInfo, bookInfo, leftInput, rightInput, output);
+          float experience, ChemicalStackTemplate output) {
+        super(MekanismRecipeTypes.TYPE_CHEMICAL_INFUSING.value(), commonInfo, bookInfo, leftInput, rightInput, experience, output);
     }
 
     @Override
@@ -38,7 +39,8 @@ public class BasicChemicalInfuserRecipe extends BasicChemicalChemicalToChemicalR
               getLeftInput().display(),
               getRightInput().display(),
               getOutputDisplay(),
-              new SlotDisplay.ItemSlotDisplay(CHEMICAL_INFUSER)
+              new SlotDisplay.ItemSlotDisplay(CHEMICAL_INFUSER),
+              experience()
         ));
     }
 

@@ -18,7 +18,9 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackSlotDisplay;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
@@ -45,14 +47,15 @@ public abstract class BasicFluidChemicalToChemicalRecipe<BOOK_CATEGORY extends M
     /// @param bookInfo      Recipe book info.
     /// @param fluidInput    Fluid input.
     /// @param chemicalInput Chemical input.
+    /// @param experience    Amount of experience to that each process of the recipe contributes to the total experience.
     /// @param output        Output.
     protected BasicFluidChemicalToChemicalRecipe(RecipeType<FluidChemicalToChemicalRecipe<BOOK_CATEGORY, BOOK_INFO>> recipeType, CommonInfo commonInfo, BOOK_INFO bookInfo,
-          FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate output) {
+          FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, float experience, ChemicalStackTemplate output) {
         this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
-        super(commonInfo, bookInfo);
+        super(commonInfo, bookInfo, experience);
     }
 
     @Override
@@ -130,6 +133,7 @@ public abstract class BasicFluidChemicalToChemicalRecipe<BOOK_CATEGORY extends M
               bookCodec.forGetter(MekanismRecipe::bookInfo),
               FluidStackIngredient.CODEC.fieldOf(SerializationConstants.FLUID_INPUT).forGetter(FluidChemicalToChemicalRecipe::getFluidInput),
               ChemicalStackIngredient.CODEC.fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(FluidChemicalToChemicalRecipe::getChemicalInput),
+              ExtraCodecs.NON_NEGATIVE_FLOAT.optionalFieldOf(SerializationConstants.EXPERIENCE, 0F).forGetter(MekanismRecipe::experience),
               ChemicalStackTemplate.MAP_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(recipe -> recipe.output)
         ).apply(instance, factory::create));
     }
@@ -148,6 +152,7 @@ public abstract class BasicFluidChemicalToChemicalRecipe<BOOK_CATEGORY extends M
               bookCodec, MekanismRecipe::bookInfo,
               FluidStackIngredient.STREAM_CODEC, FluidChemicalToChemicalRecipe::getFluidInput,
               ChemicalStackIngredient.STREAM_CODEC, FluidChemicalToChemicalRecipe::getChemicalInput,
+              ByteBufCodecs.FLOAT, MekanismRecipe::experience,
               ChemicalStackTemplate.STREAM_CODEC, recipe -> recipe.output,
               factory::create
         );
