@@ -1,14 +1,10 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "farmersdelight"
-    }
-  ],
   "type": "mekanism:sawing",
+  "category": "food",
+  "group": "mekanism:fd_cooked_meat",
   "input": {
     "count": 1,
-    "item": "farmersdelight:smoked_ham"
+    "ingredient": "farmersdelight:smoked_ham"
   },
   "main_output": {
     "count": 2,
@@ -16,7 +12,6 @@
   },
   "secondary_chance": 1.0,
   "secondary_output": {
-    "count": 1,
     "id": "minecraft:bone"
   }
 }

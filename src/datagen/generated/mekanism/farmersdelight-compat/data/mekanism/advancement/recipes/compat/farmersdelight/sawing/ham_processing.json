@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ham": {
+      "conditions": {
+        "items": [
+          {
+            "items": "farmersdelight:ham"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/farmersdelight/sawing/ham_processing"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ham"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/farmersdelight/sawing/ham_processing"
+    ]
+  }
+}

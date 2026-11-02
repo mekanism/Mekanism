@@ -1,14 +1,10 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "farmersdelight"
-    }
-  ],
   "type": "mekanism:sawing",
+  "category": "food",
+  "group": "mekanism:fd_cooked_meat",
   "input": {
     "count": 1,
-    "item": "minecraft:porkchop"
+    "ingredient": "minecraft:porkchop"
   },
   "main_output": {
     "count": 2,

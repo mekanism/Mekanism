@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_smoked_ham": {
+      "conditions": {
+        "items": [
+          {
+            "items": "farmersdelight:smoked_ham"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "mekanism:compat/farmersdelight/sawing/smoked_ham_processing"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_smoked_ham"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/farmersdelight/sawing/smoked_ham_processing"
+    ]
+  }
+}
