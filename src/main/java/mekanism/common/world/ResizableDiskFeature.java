@@ -19,16 +19,16 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 
 // Wrapper for vanilla's DiskFeature to support ResizableDiskConfig.halfHeight (mekanism config IntSupplier)
-public record ResizableDiskReplaceFeature(Holder<BlockStateProvider> stateProvider, BlockPredicate target, IntProvider radius, IntSupplier halfHeight) implements Feature {
+public record ResizableDiskFeature(Holder<BlockStateProvider> stateProvider, BlockPredicate target, IntProvider radius, IntSupplier halfHeight) implements Feature {
 
+    public static final MapCodec<ResizableDiskFeature> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+          BlockStateProvider.CODEC.fieldOf(SerializationConstants.STATE_PROVIDER).forGetter(ResizableDiskFeature::stateProvider),
+          BlockPredicate.CODEC.fieldOf(SerializationConstants.TARGET).forGetter(ResizableDiskFeature::target),
+          //Note: We apply vanilla's range requirements as part of the config instead of here so that it doesn't fail when trying to deserialize
+          IntProviders.CODEC.fieldOf(SerializationConstants.RADIUS).forGetter(ResizableDiskFeature::radius)
+    ).apply(builder, ResizableDiskFeature::new));
 
-    public static final MapCodec<ResizableDiskReplaceFeature> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          BlockStateProvider.CODEC.fieldOf(SerializationConstants.STATE_PROVIDER).forGetter(ResizableDiskReplaceFeature::stateProvider),
-          BlockPredicate.CODEC.fieldOf(SerializationConstants.TARGET).forGetter(ResizableDiskReplaceFeature::target),
-          IntProviders.codec(0, 8).fieldOf(SerializationConstants.RADIUS).forGetter(ResizableDiskReplaceFeature::radius)
-    ).apply(builder, ResizableDiskReplaceFeature::new));
-
-    public ResizableDiskReplaceFeature(Holder<BlockStateProvider> stateProvider, BlockPredicate target, IntProvider radius) {
+    public ResizableDiskFeature(Holder<BlockStateProvider> stateProvider, BlockPredicate target, IntProvider radius) {
         this(stateProvider, target, radius, MekanismConfig.world.salt.halfHeight);
     }
 
@@ -38,7 +38,8 @@ public record ResizableDiskReplaceFeature(Holder<BlockStateProvider> stateProvid
 
     //Note: We don't bother registering this feature as we only use it to avoid having to copy the relevant code while also
     // supporting mods that mixin to change how the disk feature places: https://github.com/mekanism/Mekanism/pull/7968
-    //TODO - 26.3: Reimplement support for retrogen
+    //TODO - 26.3: Reimplement support for retrogen without the log being spammed by
+    // Trying to mark a block for post processing  but this operation is not supported.
     /*private static final Feature<DiskConfiguration> RETROGEN_DISK = new DiskFeature(DiskConfiguration.CODEC) {
         @Override
         protected void markAboveForPostProcessing(WorldGenLevel level, BlockPos placePos) {

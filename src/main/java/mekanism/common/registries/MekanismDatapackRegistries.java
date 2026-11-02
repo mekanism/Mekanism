@@ -32,7 +32,7 @@ import mekanism.common.util.DatapackRegistryUtils;
 import mekanism.common.world.ConfigurableConstantInt;
 import mekanism.common.world.ConfigurableUniformInt;
 import mekanism.common.world.DisableableFeaturePlacement;
-import mekanism.common.world.ResizableDiskReplaceFeature;
+import mekanism.common.world.ResizableDiskFeature;
 import mekanism.common.world.ResizableOreFeature;
 import mekanism.common.world.height.ConfigurableHeightProvider;
 import net.minecraft.SharedConstants;
@@ -92,7 +92,7 @@ public class MekanismDatapackRegistries {
                           context.register(feature(name.withSuffix("_retrogen")), configureOreFeature(stoneOreReplaceables, deepslateOreReplaceables, oreVeinType, true));
                       }
                   }
-                  context.register(feature(Mekanism.rl("salt")), new ResizableDiskReplaceFeature(
+                  context.register(feature(Mekanism.rl("salt")), new ResizableDiskFeature(
                         BlockStateProvider.holderOf(MekanismBlocks.SALT_BLOCK.value()),
                         BlockPredicate.matchesBlocks(Blocks.DIRT, Blocks.CLAY),
                         ConfigurableUniformInt.SALT

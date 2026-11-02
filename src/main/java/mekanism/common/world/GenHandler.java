@@ -31,7 +31,6 @@ import net.minecraft.world.level.levelgen.RandomSupport;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.FeatureCountTracker;
-import net.minecraft.world.level.levelgen.placement.FeaturePlacer;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.jspecify.annotations.Nullable;
 
@@ -62,7 +61,7 @@ public class GenHandler {
             List<FeatureSorter.StepFeatureData> featureList = chunkGenerator.featuresPerStep.get();
             WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(RandomSupport.generateUniqueSeed()));
             long decorationSeed = random.setDecorationSeed(level.getSeed(), origin.getX(), origin.getZ());
-            FeaturePlacer placer = new FeaturePlacer(level, chunkGenerator);
+            RetrogenFeaturePlacer placer = new RetrogenFeaturePlacer(level, chunkGenerator);
             int stepIndex = GenerationStep.Decoration.UNDERGROUND_ORES.ordinal() - 1;
             ToIntFunction<PlacedFeature> featureIndex;
             if (stepIndex < featureList.size()) {
@@ -77,7 +76,7 @@ public class GenHandler {
             }
             List<MekFeature> features = getMekanismFeatures(level.registryAccess());
             for (MekFeature feature : features) {
-                generated |= place(level, chunkGenerator, placer, origin, random, decorationSeed, stepIndex, featureIndex, feature);
+                generated |= place(level, placer, origin, random, decorationSeed, stepIndex, featureIndex, feature);
             }
             level.setCurrentlyGenerating(null);
             if (SharedConstants.DEBUG_FEATURE_COUNT) {
@@ -87,18 +86,14 @@ public class GenHandler {
         return generated;
     }
 
-    private static boolean place(WorldGenLevel world, ChunkGenerator chunkGenerator, FeaturePlacer placer, BlockPos origin, WorldgenRandom random,
-          long decorationSeed, int decorationStep, ToIntFunction<PlacedFeature> featureIndex, MekFeature feature) {
+    private static boolean place(WorldGenLevel world, RetrogenFeaturePlacer placer, BlockPos origin, WorldgenRandom random, long decorationSeed, int decorationStep,
+          ToIntFunction<PlacedFeature> featureIndex, MekFeature feature) {
         PlacedFeature baseFeature = feature.feature().value();
         //Check the index of the source feature instead of the retrogen feature
         random.setFeatureSeed(decorationSeed, featureIndex.applyAsInt(baseFeature), decorationStep);
         world.setCurrentlyGenerating(feature::retrogenKey);
         try {
-            //Note: We call placeWithContext directly to allow for doing a placeWithBiomeCheck, except by having the context pretend
-            // it is the non retrogen feature which actually is added to the various biomes
-            //TODO - 26.3: I don't think this is using the correct context?
-            //return feature.retrogen().value().placeWithContext(new PlacementContext(world, chunkGenerator, Optional.of(baseFeature)), random, origin);
-            return placer.placeWithBiomeCheck(feature.retrogen().value(), random, origin);
+            return placer.placeWithBiomeCheck(feature.retrogen().value(), baseFeature, random, origin);
         } catch (Exception e) {
             CrashReport report = CrashReport.forThrowable(e, "Mekanism Retrogen Feature placement");
             report.addCategory("Feature").setDetail("Description", feature.retrogenKey());
@@ -128,7 +123,7 @@ public class GenHandler {
         return cachedFeatures;
     }
 
-    private record MekFeature(Holder<PlacedFeature> feature, Holder<PlacedFeature> retrogen, String retrogenKey) {
+    public record MekFeature(Holder<PlacedFeature> feature, Holder<PlacedFeature> retrogen, String retrogenKey) {
 
         @Nullable
         public static MekFeature create(Registry<PlacedFeature> placedFeatures, Identifier name) {
