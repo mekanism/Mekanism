@@ -39,6 +39,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
+import mekanism.common.inventory.container.sync.SyncableResource;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FormulaicCraftingSlot;
@@ -747,6 +748,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         for (int i = 0; i < 9; i++) {
             int index = i;
             container.track(SyncableItemStack.create(() -> formula.getInputStack(index), stack -> formula = formula.withStack(level, index, stack)));
+        }
+        for (int i = 0; i < stockControlMap.length; i++) {
+            int index = i;
+            container.track(SyncableResource.createItem(() -> stockControlMap[index], resource -> stockControlMap[index] = resource));
         }
     }
 
