@@ -324,6 +324,8 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     //World Config
     WORLD_RETROGEN("world.retrogen", "Retrogen",
           "Allows chunks to retrogen Mekanism salt and ore blocks. In general when enabling this you also want to bump the userWorldGenVersion."),
+    WORLD_RETROGEN_RESPECT_AVAILABLE_TIME("world.retrogen.respect_available_time", "Respect Available Time",
+          "Only attempt to retrogen chunks while there is time left during the current tick."),
     WORLD_WORLD_VERSION("world.world_version", "User World Version",
           "Change this value to cause Mekanism to regen its ore in all loaded chunks that have a version lower than this."),
     WORLD_HEIGHT_RANGE_PLATEAU("world.height_range.plateau", "Plateau",

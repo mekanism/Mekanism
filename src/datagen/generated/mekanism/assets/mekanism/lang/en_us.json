@@ -1755,6 +1755,8 @@
   "configuration.mekanism.world.osmium.upper.top_level.button": "Edit Upper Vein",
   "configuration.mekanism.world.osmium.upper.top_level.tooltip": "Upper Osmium Vein Generation Settings.",
   "configuration.mekanism.world.retrogen": "Retrogen",
+  "configuration.mekanism.world.retrogen.respect_available_time": "Respect Available Time",
+  "configuration.mekanism.world.retrogen.respect_available_time.tooltip": "Only attempt to retrogen chunks while there is time left during the current tick.",
   "configuration.mekanism.world.retrogen.tooltip": "Allows chunks to retrogen Mekanism salt and ore blocks. In general when enabling this you also want to bump the userWorldGenVersion.",
   "configuration.mekanism.world.salt": "Salt Generation Settings",
   "configuration.mekanism.world.salt.button": "Edit Salt Settings",

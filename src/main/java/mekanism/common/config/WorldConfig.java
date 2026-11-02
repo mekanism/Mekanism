@@ -22,6 +22,7 @@ public class WorldConfig extends BaseMekanismConfig {
     private final ModConfigSpec configSpec;
     public final CachedBooleanValue enableRegeneration;
     public final CachedIntValue userGenVersion;
+    public final CachedBooleanValue retrogenRespectAvailableTime;
 
     private final Map<OreType, OreConfig> ores = new EnumMap<>(OreType.class);
     public final SaltConfig salt;
@@ -33,6 +34,8 @@ public class WorldConfig extends BaseMekanismConfig {
               .define("enableRegeneration", false));
         userGenVersion = CachedIntValue.wrap(this, MekanismConfigTranslations.WORLD_WORLD_VERSION.applyToBuilder(builder)
               .defineInRange("userWorldGenVersion", 0, 0, Integer.MAX_VALUE));
+        retrogenRespectAvailableTime = CachedBooleanValue.wrap(this, MekanismConfigTranslations.WORLD_RETROGEN_RESPECT_AVAILABLE_TIME.applyToBuilder(builder)
+              .define("retrogenRespectAvailableTime", true));
         for (OreType ore : OreType.VALUES) {
             ores.put(ore, new OreConfig(this, builder, ore));
         }
