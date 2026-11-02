@@ -14,7 +14,6 @@ import mekanism.common.resource.ore.BaseOreConfig;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.ore.OreType.OreVeinType;
 import mekanism.common.world.height.ConfigurableHeightRange;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -121,15 +120,15 @@ public class WorldConfig extends BaseMekanismConfig {
             this.perChunk = CachedIntValue.wrap(config, MekanismConfigTranslations.WORLD_SALT_PER_CHUNK.applyToBuilder(builder)
                   .defineInRange("perChunk", perChunk, 1, 256));
             this.minRadius = CachedIntValue.wrap(config, MekanismConfigTranslations.WORLD_SALT_RADIUS_MIN.applyToBuilder(builder)
-                  .defineInRange("minRadius", baseRadius, 1, 4));
+                  .defineInRange("minRadius", baseRadius, 0, 8));
             this.maxRadius = CachedIntValue.wrap(config, MekanismConfigTranslations.WORLD_SALT_RADIUS_MAX.applyToBuilder(builder).define("maxRadius", spread, o -> {
-                if (o instanceof Integer value && value >= 1 && value <= 4) {
+                if (o instanceof Integer value && value >= 0 && value <= 8) {
                     return value >= this.minRadius.getOrDefault();
                 }
                 return false;
             }));
             this.halfHeight = CachedIntValue.wrap(config, MekanismConfigTranslations.WORLD_SALT_HALF_HEIGHT.applyToBuilder(builder)
-                  .defineInRange("halfHeight", ySize, 0, (DimensionType.MAX_Y - DimensionType.MIN_Y - 1) / 2));
+                  .defineInRange("halfHeight", ySize, 0, 4));
             builder.pop();
         }
     }

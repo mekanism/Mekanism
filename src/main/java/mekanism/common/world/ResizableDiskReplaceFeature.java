@@ -18,15 +18,14 @@ import net.minecraft.world.level.levelgen.feature.DiskFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 
-// Wrapper for vanilla's DiskReplaceFeature to support ResizableDiskConfig.halfHeight (mekanism config IntSupplier)
+// Wrapper for vanilla's DiskFeature to support ResizableDiskConfig.halfHeight (mekanism config IntSupplier)
 public record ResizableDiskReplaceFeature(Holder<BlockStateProvider> stateProvider, BlockPredicate target, IntProvider radius, IntSupplier halfHeight) implements Feature {
 
 
     public static final MapCodec<ResizableDiskReplaceFeature> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
           BlockStateProvider.CODEC.fieldOf(SerializationConstants.STATE_PROVIDER).forGetter(ResizableDiskReplaceFeature::stateProvider),
           BlockPredicate.CODEC.fieldOf(SerializationConstants.TARGET).forGetter(ResizableDiskReplaceFeature::target),
-          //TODO - 26.3: Vanilla seems to limit this between 0 and 8, should we follow suit?
-          IntProviders.CODEC.fieldOf(SerializationConstants.RADIUS).forGetter(ResizableDiskReplaceFeature::radius)
+          IntProviders.codec(0, 8).fieldOf(SerializationConstants.RADIUS).forGetter(ResizableDiskReplaceFeature::radius)
     ).apply(builder, ResizableDiskReplaceFeature::new));
 
     public ResizableDiskReplaceFeature(Holder<BlockStateProvider> stateProvider, BlockPredicate target, IntProvider radius) {
