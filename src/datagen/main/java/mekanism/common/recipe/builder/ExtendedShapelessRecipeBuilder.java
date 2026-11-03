@@ -27,6 +27,12 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<CraftingBo
 
     @Override
     @Contract("_ -> this")
+    public ExtendedShapelessRecipeBuilder experience(float experience) {
+        throw new UnsupportedOperationException("Crafting recipes cannot have an experience value set");
+    }
+
+    @Override
+    @Contract("_ -> this")
     public ExtendedShapelessRecipeBuilder category(RecipeCategory category) {
         return super.category(category).category(RecipeBuilder.determineCraftingBookCategory(category));
     }

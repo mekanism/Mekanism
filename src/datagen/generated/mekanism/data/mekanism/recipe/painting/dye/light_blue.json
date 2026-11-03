@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:light_blue"
   },
+  "experience": 0.15,
   "group": "light_blue_dye",
   "item_input": {
     "count": 1,

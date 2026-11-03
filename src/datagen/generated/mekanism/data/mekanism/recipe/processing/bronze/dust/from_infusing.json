@@ -4,6 +4,7 @@
     "amount": 10,
     "ingredient": "#mekanism:tin"
   },
+  "experience": 0.7,
   "group": "mekanism:dust_bronze",
   "item_input": {
     "count": 3,

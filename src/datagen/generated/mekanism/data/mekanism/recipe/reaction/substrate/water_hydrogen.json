@@ -5,6 +5,7 @@
     "ingredient": "mekanism:hydrogen"
   },
   "duration": 100,
+  "experience": 0.35,
   "fluid_input": {
     "amount": 10,
     "ingredient": "#minecraft:water"

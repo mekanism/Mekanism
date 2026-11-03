@@ -1,6 +1,7 @@
 {
   "type": "mekanism:crushing",
   "category": "building",
+  "experience": 0.1,
   "group": "mekanism:tuff_conversion",
   "input": {
     "count": 1,

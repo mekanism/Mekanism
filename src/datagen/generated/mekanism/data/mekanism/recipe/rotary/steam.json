@@ -8,6 +8,7 @@
     "amount": 1,
     "id": "mekanism:steam"
   },
+  "experience": 1.00000005E-4,
   "fluid_input": {
     "amount": 1,
     "ingredient": "#c:steam"

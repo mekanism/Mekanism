@@ -1,6 +1,7 @@
 {
   "type": "mekanism:enriching",
   "category": "efficiency",
+  "experience": 1.0,
   "group": "netherite_scrap",
   "input": {
     "count": 1,

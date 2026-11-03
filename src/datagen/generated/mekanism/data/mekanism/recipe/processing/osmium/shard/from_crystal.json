@@ -5,6 +5,7 @@
     "amount": 1,
     "ingredient": "mekanism:hydrogen_chloride"
   },
+  "experience": 0.35,
   "group": "mekanism:shard_osmium",
   "item_input": {
     "count": 1,

@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:light_gray"
   },
+  "experience": 0.15,
   "group": "light_gray_dye",
   "item_input": {
     "count": 1,

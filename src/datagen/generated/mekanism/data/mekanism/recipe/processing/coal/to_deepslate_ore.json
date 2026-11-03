@@ -1,6 +1,7 @@
 {
   "type": "mekanism:combining",
   "category": "building",
+  "experience": 0.2,
   "extra_input": {
     "count": 1,
     "ingredient": "#c:cobblestones/deepslate"

@@ -1,5 +1,6 @@
 {
   "type": "mekanism:pigment_extracting",
+  "experience": 0.1,
   "group": "gray_dye",
   "input": {
     "count": 1,

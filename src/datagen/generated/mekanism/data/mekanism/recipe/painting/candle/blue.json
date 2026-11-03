@@ -4,6 +4,7 @@
     "amount": 256,
     "ingredient": "mekanism:blue"
   },
+  "experience": 0.1,
   "group": "mekanism:candle_painting",
   "item_input": {
     "count": 1,

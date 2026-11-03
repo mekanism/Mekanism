@@ -1,6 +1,7 @@
 {
   "type": "mekanism:enriching",
   "category": "decorative",
+  "experience": 0.1,
   "group": "purple_dye",
   "input": {
     "count": 1,

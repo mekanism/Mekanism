@@ -4,6 +4,7 @@
     "amount": 20,
     "ingredient": "#mekanism:redstone"
   },
+  "experience": 0.2,
   "item_input": {
     "count": 1,
     "ingredient": "#c:ingots/osmium"

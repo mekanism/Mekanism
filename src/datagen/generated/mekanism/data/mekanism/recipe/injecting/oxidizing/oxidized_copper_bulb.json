@@ -5,6 +5,7 @@
     "amount": 1,
     "ingredient": "mekanism:oxygen"
   },
+  "experience": 0.1,
   "group": "weathered_to_oxidized",
   "item_input": {
     "count": 1,

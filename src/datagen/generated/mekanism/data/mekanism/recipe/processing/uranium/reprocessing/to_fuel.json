@@ -1,5 +1,6 @@
 {
   "type": "mekanism:oxidizing",
+  "experience": 0.95,
   "input": {
     "count": 1,
     "ingredient": "mekanism:reprocessed_fissile_fragment"

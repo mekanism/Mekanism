@@ -4,6 +4,7 @@
     "amount": 3,
     "ingredient": "#mekanism:water_vapor"
   },
+  "experience": 0.089999996,
   "group": "mekanism:coral_revival",
   "item_input": {
     "count": 1,

@@ -1,6 +1,7 @@
 {
   "type": "mekanism:crushing",
   "category": "building",
+  "experience": 0.1,
   "input": {
     "count": 1,
     "ingredient": "#c:sandstone/red_blocks"

@@ -77,6 +77,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     chemicalTemplate(ChemicalIds.OXYGEN, 1)
               ).energyMultiplier(2)
               .unlockedBy("in_water", insideOf(Blocks.WATER))
+              .minisculeExperience(0.2F)
               .save(output, basePath + "heavy_water");
     }
 
@@ -94,6 +95,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               chemicalTemplate(chemicalOutput, 1),
               new FluidStackTemplate(fluidOutput, 1)
         ).unlockedBy("has_condensentrator", has(MekanismBlocks.ROTARY_CONDENSENTRATOR))
+              .minisculeExperience(0.1F)
               .save(output, basePath + chemicalOutput.identifier().getPath());
     }
 
@@ -105,6 +107,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.TRITIUM, 1),
               chemicalTemplate(ChemicalIds.FUSION_FUEL, 2)
         ).unlockedBy("in_heavy_water", insideOf(MekanismFluids.HEAVY_WATER.getBlock()))
+              .minisculeExperience(0.35F)
               .save(output, basePath + "fusion_fuel");
     }
 
@@ -114,6 +117,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.LITHIUM, 1),
               chemicalTemplate(ChemicalIds.TRITIUM, 1)
         ).unlockedBy("has_lithium_dust", has(MekanismTags.Items.DUSTS_LITHIUM))
+              .minisculeExperience(0.2F)
               .save(output, basePath + "tritium");
     }
 
@@ -305,6 +309,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               false,
               GeneratorsItems.HOHLRAUM.asTemplate()
         ).unlockedBy("has_gold_dust", has(goldDust))
+              .experience(1)
               .save(output);
         //Laser Focus Matrix
         ExtendedShapedRecipeBuilder.shaped(GeneratorsBlocks.LASER_FOCUS_MATRIX, 2)

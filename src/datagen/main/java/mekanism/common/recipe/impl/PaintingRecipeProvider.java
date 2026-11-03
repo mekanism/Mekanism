@@ -26,6 +26,7 @@ import net.minecraft.world.level.material.Fluid;
 
 public class PaintingRecipeProvider extends BaseSubRecipeProvider {
 
+    public static final float RECOLORING_EXP = 0.1F;
     public static final int ONE_AT_A_TIME = PigmentExtractingRecipeProvider.DYE_RATE;
     public static final int FOUR_AT_A_TIME = ONE_AT_A_TIME / 4;
     public static final int EIGHT_AT_A_TIME = ONE_AT_A_TIME / 8;
@@ -74,6 +75,7 @@ public class PaintingRecipeProvider extends BaseSubRecipeProvider {
                   ).category(PaintingBookCategory.DYE)
                   .group(dye)
                   .unlockedBy("has_needed_dye", has(dyeColor.getTag()))
+                  .experience(0.15F)
                   .save(output, basePath + dyeColor);
         }
     }
@@ -93,6 +95,7 @@ public class PaintingRecipeProvider extends BaseSubRecipeProvider {
                         new ItemStackTemplate(result)
                   ).group(Mekanism.rl(group))
                   .unlockedBy("has_needed_dye", has(dyeColor.getTag()))
+                  .experience(RECOLORING_EXP)
                   .save(output, basePath + dyeColor);
         }
     }

@@ -5,6 +5,7 @@
     "amount": 10,
     "ingredient": "#mekanism:bio"
   },
+  "experience": 0.1,
   "group": "mekanism:mossy_cobble_addition",
   "item_input": {
     "count": 1,

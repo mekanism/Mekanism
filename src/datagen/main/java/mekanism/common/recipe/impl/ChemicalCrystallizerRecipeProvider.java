@@ -24,16 +24,19 @@ class ChemicalCrystallizerRecipeProvider extends BaseSubRecipeProvider {
         String basePath = "crystallizing/";
         //Salt
         ChemicalCrystallizerRecipeBuilder.crystallizing(
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.BRINE, 15),
-              MekanismItems.SALT.asTemplate()
-        ).unlockedBy("in_brine", RecipeProvider.insideOf(MekanismFluids.BRINE.getBlock()))
+                    IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.BRINE, 15),
+                    MekanismItems.SALT.asTemplate()
+              ).unlockedBy("in_brine", RecipeProvider.insideOf(MekanismFluids.BRINE.getBlock()))
+              //Allow raw meat because salt is often used to cure it
               .unlockedBy("has_raw_meat", has(Tags.Items.FOODS_RAW_MEAT))
+              .experience(0.15F)
               .save(output, basePath + "salt");
         //Lithium
         ChemicalCrystallizerRecipeBuilder.crystallizing(
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.LITHIUM, 100),
-              MekanismItems.LITHIUM_DUST.asTemplate()
-        ).unlockedBy("in_lithium", RecipeProvider.insideOf(MekanismFluids.LITHIUM.getBlock()))
+                    IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.LITHIUM, 100),
+                    MekanismItems.LITHIUM_DUST.asTemplate()
+              ).unlockedBy("in_lithium", RecipeProvider.insideOf(MekanismFluids.LITHIUM.getBlock()))
+              .experience(0.25F)
               .save(output, basePath + "lithium");
     }
 }

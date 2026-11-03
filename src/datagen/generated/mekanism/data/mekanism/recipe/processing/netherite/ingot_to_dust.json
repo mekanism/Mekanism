@@ -1,5 +1,6 @@
 {
   "type": "mekanism:crushing",
+  "experience": 0.5,
   "group": "mekanism:dust_netherite",
   "input": {
     "count": 1,

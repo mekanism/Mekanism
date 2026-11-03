@@ -4,6 +4,7 @@
     "amount": 32,
     "ingredient": "mekanism:green"
   },
+  "experience": 0.1,
   "group": "mekanism:glass_pane_painting",
   "item_input": {
     "count": 1,

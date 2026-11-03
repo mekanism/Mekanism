@@ -1,6 +1,7 @@
 {
   "type": "mekanism:crushing",
   "category": "efficiency",
+  "experience": 0.35,
   "group": "mekanism:dirty_dust_copper",
   "input": {
     "count": 1,

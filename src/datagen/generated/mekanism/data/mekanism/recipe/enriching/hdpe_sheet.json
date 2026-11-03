@@ -1,5 +1,6 @@
 {
   "type": "mekanism:enriching",
+  "experience": 0.35,
   "input": {
     "count": 3,
     "ingredient": "mekanism:hdpe_pellet"

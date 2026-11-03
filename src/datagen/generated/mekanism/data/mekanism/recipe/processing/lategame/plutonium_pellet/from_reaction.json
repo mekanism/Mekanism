@@ -5,6 +5,7 @@
     "ingredient": "mekanism:plutonium"
   },
   "duration": 100,
+  "experience": 3.0,
   "fluid_input": {
     "amount": 1000,
     "ingredient": "#minecraft:water"

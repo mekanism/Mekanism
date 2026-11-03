@@ -4,6 +4,7 @@
     "amount": 60,
     "ingredient": "#mekanism:redstone"
   },
+  "experience": 0.25,
   "item_input": {
     "count": 1,
     "ingredient": "#c:circuits/basic"

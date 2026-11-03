@@ -4,6 +4,7 @@
     "amount": 5,
     "ingredient": "#mekanism:water_vapor"
   },
+  "experience": 0.15,
   "item_input": {
     "count": 1,
     "ingredient": "biomesoplenty:dried_salt"

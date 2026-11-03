@@ -21,21 +21,24 @@ class OxidizingRecipeProvider extends BaseSubRecipeProvider {
         String basePath = "oxidizing/";
         //Brine
         ItemStackToChemicalRecipeBuilder.oxidizing(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SALT),
-              chemicalTemplate(ChemicalIds.BRINE, 15)
-        ).unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
+                    IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SALT),
+                    chemicalTemplate(ChemicalIds.BRINE, 15)
+              ).unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
+              .experience(0.1F)
               .save(output, basePath + "brine");
         //Lithium
         ItemStackToChemicalRecipeBuilder.oxidizing(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_LITHIUM),
-              chemicalTemplate(ChemicalIds.LITHIUM, 100)
-        ).unlockedBy("has_lithium", has(MekanismTags.Items.DUSTS_LITHIUM))
+                    IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_LITHIUM),
+                    chemicalTemplate(ChemicalIds.LITHIUM, 100)
+              ).unlockedBy("has_lithium", has(MekanismTags.Items.DUSTS_LITHIUM))
+              .experience(0.1F)
               .save(output, basePath + "lithium");
         //Sulfur dioxide
         ItemStackToChemicalRecipeBuilder.oxidizing(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SULFUR),
-              chemicalTemplate(ChemicalIds.SULFUR_DIOXIDE, 100)
-        ).unlockedBy("has_sulfur_dust", has(MekanismTags.Items.DUSTS_SULFUR))
+                    IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SULFUR),
+                    chemicalTemplate(ChemicalIds.SULFUR_DIOXIDE, 100)
+              ).unlockedBy("has_sulfur_dust", has(MekanismTags.Items.DUSTS_SULFUR))
+              .experience(0.1F)
               .save(output, basePath + "sulfur_dioxide");
     }
 }

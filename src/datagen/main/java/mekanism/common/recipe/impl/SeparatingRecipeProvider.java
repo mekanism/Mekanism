@@ -25,18 +25,20 @@ class SeparatingRecipeProvider extends BaseSubRecipeProvider {
         String basePath = "separator/";
         //Brine
         ElectrolysisRecipeBuilder.separating(
-              IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.BRINE, 10),
-              chemicalTemplate(ChemicalIds.SODIUM, 1),
-              chemicalTemplate(ChemicalIds.CHLORINE, 1)
-        ).unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
+                    IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.BRINE, 10),
+                    chemicalTemplate(ChemicalIds.SODIUM, 1),
+                    chemicalTemplate(ChemicalIds.CHLORINE, 1)
+              ).unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
               .unlockedBy("in_brine", RecipeProvider.insideOf(MekanismFluids.BRINE.getBlock()))
+              .minisculeExperience(0.15F)
               .save(output, basePath + "brine");
         //Water
         ElectrolysisRecipeBuilder.separating(
-              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 2),
-              chemicalTemplate(ChemicalIds.HYDROGEN, 2),
-              chemicalTemplate(ChemicalIds.OXYGEN, 1)
-        ).unlockedBy("in_water", RecipeProvider.insideOf(Blocks.WATER))
+                    IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 2),
+                    chemicalTemplate(ChemicalIds.HYDROGEN, 2),
+                    chemicalTemplate(ChemicalIds.OXYGEN, 1)
+              ).unlockedBy("in_water", RecipeProvider.insideOf(Blocks.WATER))
+              .minisculeExperience(0.1F)
               .save(output, basePath + "water");
     }
 }

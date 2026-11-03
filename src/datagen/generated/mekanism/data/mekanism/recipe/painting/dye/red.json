@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:red"
   },
+  "experience": 0.15,
   "group": "red_dye",
   "item_input": {
     "count": 1,

@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:black"
   },
+  "experience": 0.15,
   "group": "black_dye",
   "item_input": {
     "count": 1,

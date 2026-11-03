@@ -1,5 +1,6 @@
 {
   "type": "mekanism:enriching",
+  "experience": 0.05,
   "input": {
     "count": 1,
     "ingredient": "#c:dusts/charcoal"

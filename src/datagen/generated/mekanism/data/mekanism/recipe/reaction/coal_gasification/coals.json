@@ -6,6 +6,7 @@
     "ingredient": "mekanism:oxygen"
   },
   "duration": 100,
+  "experience": 0.1,
   "fluid_input": {
     "amount": 100,
     "ingredient": "#minecraft:water"

@@ -1924,12 +1924,14 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.NUCLEAR_WASTE, 10),
                     chemicalTemplate(ChemicalIds.PLUTONIUM, 1)
               ).unlockedBy("has_waste_barrel", has(MekanismBlocks.RADIOACTIVE_WASTE_BARREL))
+              .minisculeExperience(1)
               .save(output, basePath + "plutonium");
         //polonium
         ChemicalToChemicalRecipeBuilder.activating(
                     IngredientCreatorAccess.chemicalStack().from(this.chemicals, ChemicalIds.NUCLEAR_WASTE, 10),
                     chemicalTemplate(ChemicalIds.POLONIUM, 1)
               ).unlockedBy("has_waste_barrel", has(MekanismBlocks.RADIOACTIVE_WASTE_BARREL))
+              .minisculeExperience(1)
               .save(output, basePath + "polonium");
 
         //plutonium pellet
@@ -1941,6 +1943,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     MekanismItems.PLUTONIUM_PELLET.asTemplate(),
                     chemicalTemplate(ChemicalIds.SPENT_NUCLEAR_WASTE, 1_000)
               ).unlockedBy("has_fluorite", has(MekanismTags.Items.DUSTS_FLUORITE))
+              .experience(3)//1.5x the amount of smelting ancient debris
               .save(output, basePath + "plutonium_pellet/from_reaction");
         //polonium pellet
         PressurizedReactionRecipeBuilder.reaction(
@@ -1951,6 +1954,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     MekanismItems.POLONIUM_PELLET.asTemplate(),
                     chemicalTemplate(ChemicalIds.SPENT_NUCLEAR_WASTE, 1_000)
               ).unlockedBy("has_fluorite", has(MekanismTags.Items.DUSTS_FLUORITE))
+              .experience(3)//1.5x the amount of smelting ancient debris
               .save(output, basePath + "polonium_pellet/from_reaction");
 
         //antimatter pellet
@@ -1961,14 +1965,16 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     //Note: Requires both pellets
                     MekanismTags.Items.PELLETS_PLUTONIUM,
                     MekanismTags.Items.PELLETS_POLONIUM
-              )).save(output, basePath + "antimatter_pellet/from_gas");
+              )).experience(5)//2.5x the amount of smelting ancient debris
+              .save(output, basePath + "antimatter_pellet/from_gas");
 
         //back to antimatter
         ItemStackToChemicalRecipeBuilder.oxidizing(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PELLETS_ANTIMATTER),
-              chemicalTemplate(ChemicalIds.ANTIMATTER, 1_000)
-        ).group(ChemicalIds.ANTIMATTER)
+                    IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PELLETS_ANTIMATTER),
+                    chemicalTemplate(ChemicalIds.ANTIMATTER, 1_000)
+              ).group(ChemicalIds.ANTIMATTER)
               .unlockedBy("has_antimatter", has(MekanismTags.Items.PELLETS_ANTIMATTER))
+              .experience(0.3F)
               .save(output, basePath + "antimatter/from_pellet");
     }
 }

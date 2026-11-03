@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:green"
   },
+  "experience": 0.15,
   "group": "green_dye",
   "item_input": {
     "count": 1,

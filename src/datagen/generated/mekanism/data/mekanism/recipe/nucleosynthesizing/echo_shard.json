@@ -5,6 +5,7 @@
     "ingredient": "mekanism:antimatter"
   },
   "duration": 500,
+  "experience": 1.0,
   "item_input": {
     "count": 1,
     "ingredient": "#c:gems/amethyst"

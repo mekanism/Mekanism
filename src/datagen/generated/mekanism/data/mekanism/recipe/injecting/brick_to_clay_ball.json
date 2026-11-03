@@ -4,6 +4,7 @@
     "amount": 1,
     "ingredient": "#mekanism:water_vapor"
   },
+  "experience": 0.3,
   "item_input": {
     "count": 1,
     "ingredient": "#c:bricks/normal"

@@ -34,23 +34,23 @@ class ControlCircuitRecipeProvider extends BaseSubRecipeProvider {
         String basePath = "control_circuit/";
         TagKey<Item> osmiumIngot = MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM);
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(this.items, osmiumIngot),
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.REDSTONE, 20),
-              false,
-              MekanismItems.BASIC_CONTROL_CIRCUIT.asTemplate()
-        ).unlockedBy("has_osmium_ingpt", has(osmiumIngot))
+                    IngredientCreatorAccess.item().from(this.items, osmiumIngot),
+                    IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.REDSTONE, 20),
+                    false,
+                    MekanismItems.BASIC_CONTROL_CIRCUIT.asTemplate()
+              ).unlockedBy("has_osmium_ingpt", has(osmiumIngot))
+              .experience(0.2F)
               .save(consumer, basePath + "basic");
         addCircuitUpgradeRecipe(consumer, MekanismItems.ADVANCED_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC, MekanismTags.Items.ALLOYS_INFUSED,
-              MekanismAPITags.Chemicals.REDSTONE, 10, basePath, "advanced");
+              MekanismAPITags.Chemicals.REDSTONE, 10, 0.25F, basePath, "advanced");
         addCircuitUpgradeRecipe(consumer, MekanismItems.ELITE_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED, MekanismTags.Items.ALLOYS_REINFORCED,
-              MekanismAPITags.Chemicals.DIAMOND, 20, basePath, "elite");
+              MekanismAPITags.Chemicals.DIAMOND, 20, 0.3F, basePath, "elite");
         addCircuitUpgradeRecipe(consumer, MekanismItems.ULTIMATE_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE, MekanismTags.Items.ALLOYS_ATOMIC,
-              MekanismAPITags.Chemicals.REFINED_OBSIDIAN, 40, basePath, "ultimate");
+              MekanismAPITags.Chemicals.REFINED_OBSIDIAN, 40, 0.4F, basePath, "ultimate");
     }
 
     private void addCircuitUpgradeRecipe(RecipeOutput consumer, Holder<Item> output, TagKey<Item> circuitTag, TagKey<Item> alloyTag, TagKey<Chemical> infusionType,
-          int singleAlloyAmount, String basePath,
-          String name) {
+          int singleAlloyAmount, float exp, String basePath, String name) {
         ExtendedShapedRecipeBuilder.shaped(output)
               .pattern(circuitPattern)
               .define(Pattern.CIRCUIT, this.items, circuitTag)
@@ -60,11 +60,12 @@ class ControlCircuitRecipeProvider extends BaseSubRecipeProvider {
               .save(consumer, basePath + name);
         //infusion variants that save on the base ingots needed, but take extra infusion material
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(this.items, circuitTag),
-              IngredientCreatorAccess.chemicalStack().from(this.chemicals, infusionType, singleAlloyAmount * 6), /* 3x 2 alloys */
-              false,
-              new ItemStackTemplate(output)
-        ).unlockedBy("has_alloy", has(alloyTag))
+                    IngredientCreatorAccess.item().from(this.items, circuitTag),
+                    IngredientCreatorAccess.chemicalStack().from(this.chemicals, infusionType, singleAlloyAmount * 6), /* 3x 2 alloys */
+                    false,
+                    new ItemStackTemplate(output)
+              ).unlockedBy("has_alloy", has(alloyTag))
+              .experience(exp)
               .save(consumer, basePath + "infused_" + name);
     }
 }

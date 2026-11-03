@@ -13,6 +13,8 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
+import mekanism.common.recipe.impl.CrusherRecipeProvider;
+import mekanism.common.recipe.impl.EnrichingRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.advancements.Advancement;
@@ -69,6 +71,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
                   new ItemStackTemplate(sandSet.getSand().asItem(), 2)
             ).category(CrushingBookCategory.BUILDING)
                   .unlockedBy("has_sandstone", has(sandSet.getSandstoneBlocksItemTag()))
+                  .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
                   .save(this.output, basePath + sandSet.getName());
         }
     }
@@ -102,6 +105,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               .group(output)
               .unlockedBy("has_flowers", has(makesDyeTag))
               .addCondition(tagNotEmpty)
+              .experience(large ? EnrichingRecipeProvider.LARGE_DYE_EXP : EnrichingRecipeProvider.DYE_EXP)
               .save(this.output, basePath + "dye/" + name);
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         int flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
@@ -111,6 +115,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               ).group(output)
               .unlockedBy("has_flowers", has(makesDyeTag))
               .addCondition(tagNotEmpty)
+              .experience(large ? PigmentExtractingRecipeProvider.LARGE_DYE_EXP : PigmentExtractingRecipeProvider.DYE_EXP)
               .save(this.output, basePath + "pigment_extracting/" + name);
     }
 
@@ -139,6 +144,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(BWGBlocks.DACITE_SET.getBase().asItem(), 2)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BWGBlocks.DACITE_PILLAR.get().asItem()))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(this.output, basePath + "from_dacite_pillar");
     }
 
@@ -160,6 +166,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(BWGBlocks.WHITE_DACITE_SET.getBase().asItem(), 2)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BWGBlocks.WHITE_DACITE_PILLAR.get().asItem()))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(this.output, basePath + "from_white_dacite_pillar");
     }
 
@@ -193,6 +200,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl(group))
               .unlockedBy(hasCriterion(input.asItem()))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(this.output, path);
     }
 
@@ -275,6 +283,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl(group))
               .unlockedBy(hasCriterion(input.asItem()))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(this.output, path);
     }
 

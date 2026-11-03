@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:blasting",
+  "cookingtime": 100,
+  "experience": 0.7,
+  "group": "mekanism:fluorite_gem",
+  "ingredient": "mekanism:fluorite_ore",
+  "result": {
+    "id": "mekanism:fluorite_gem"
+  }
+}

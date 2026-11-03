@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:brown"
   },
+  "experience": 0.15,
   "group": "brown_dye",
   "item_input": {
     "count": 1,

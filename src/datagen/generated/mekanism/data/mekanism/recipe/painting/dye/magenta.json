@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:magenta"
   },
+  "experience": 0.15,
   "group": "magenta_dye",
   "item_input": {
     "count": 1,

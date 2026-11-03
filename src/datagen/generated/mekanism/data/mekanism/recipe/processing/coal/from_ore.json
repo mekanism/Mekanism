@@ -1,6 +1,7 @@
 {
   "type": "mekanism:enriching",
   "category": "efficiency",
+  "experience": 0.1,
   "group": "coal",
   "input": {
     "count": 1,

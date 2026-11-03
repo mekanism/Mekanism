@@ -4,6 +4,7 @@
     "amount": 32,
     "ingredient": "mekanism:black"
   },
+  "experience": 0.1,
   "group": "mekanismadditions:transparent_plastic_painting",
   "item_input": {
     "count": 1,

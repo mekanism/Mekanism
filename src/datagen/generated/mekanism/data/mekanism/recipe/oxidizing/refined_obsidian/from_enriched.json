@@ -1,5 +1,6 @@
 {
   "type": "mekanism:oxidizing",
+  "experience": 0.1,
   "group": "mekanism:refined_obsidian",
   "input": {
     "count": 1,

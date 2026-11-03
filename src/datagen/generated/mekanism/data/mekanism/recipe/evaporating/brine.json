@@ -1,5 +1,6 @@
 {
   "type": "mekanism:evaporating",
+  "experience": 1.00000005E-4,
   "input": {
     "amount": 10,
     "ingredient": "#minecraft:water"

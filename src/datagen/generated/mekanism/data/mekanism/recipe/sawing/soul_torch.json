@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "experience": 0.1,
   "input": {
     "count": 4,
     "ingredient": "minecraft:soul_torch"
@@ -8,7 +9,7 @@
     "count": 4,
     "id": "minecraft:torch"
   },
-  "secondary_chance": 1.0,
+  "secondary_chance": 0.8,
   "secondary_output": {
     "id": "minecraft:soul_soil"
   }

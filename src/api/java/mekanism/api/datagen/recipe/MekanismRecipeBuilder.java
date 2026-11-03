@@ -22,6 +22,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.fluids.FluidInstance;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
@@ -177,6 +178,15 @@ public abstract class MekanismRecipeBuilder<BOOK_CATEGORY, BOOK_INFO extends Rec
 
     protected BOOK_INFO bookInfo() {
         return bookInfoCreator.apply(category, Objects.requireNonNullElse(group, ""));
+    }
+
+    /// Sets the amount of experience to that each process of the recipe contributes to the total experience to a very small amount suitable for per tick chemical/fluid
+    /// processing recipes that are small amounts to allow easier divisibility.
+    ///
+    /// @since 10.8.0
+    @Contract("_ -> this")
+    public BUILDER minisculeExperience(float experience) {
+        return experience(experience / FluidType.BUCKET_VOLUME);
     }
 
     /// Sets the amount of experience to that each process of the recipe contributes to the total experience.

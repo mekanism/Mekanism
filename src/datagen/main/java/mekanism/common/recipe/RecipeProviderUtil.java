@@ -18,6 +18,7 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.builder.ExtendedCookingRecipeBuilder;
+import mekanism.common.recipe.impl.EnrichingRecipeProvider;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.advancements.predicates.ItemPredicate;
 import net.minecraft.advancements.predicates.MinMaxBounds;
@@ -134,7 +135,8 @@ public class RecipeProviderUtil {
                   ).category(SawingBookCategory.WOOD_TYPE)
                   .group(Mekanism.rl("boat"))
                   .unlockedBy(hasCriterion(items, boat))
-                  .save(consumer, basePath + "boat/" + name);
+                  .experience(0.1F)
+              .save(consumer, basePath + "boat/" + name);
             if (chestBoat != null) {
                 //Chest Boat
                 SawmillRecipeBuilder.sawing(
@@ -145,7 +147,8 @@ public class RecipeProviderUtil {
                       ).category(SawingBookCategory.WOOD_TYPE)
                       .group(Mekanism.rl("chest_boat"))
                       .unlockedBy(hasCriterion(items, chestBoat))
-                      .save(consumer, basePath + "chest_boat/" + name);
+                      .experience(0.1F)
+              .save(consumer, basePath + "chest_boat/" + name);
             }
         }
         //Door
@@ -155,6 +158,7 @@ public class RecipeProviderUtil {
               ).category(SawingBookCategory.WOOD_TYPE)
               .group(Mekanism.rl("door"))
               .unlockedBy(hasCriterion(items, door))
+              .experience(0.1F)
               .save(consumer, basePath + "door/" + name);
         //Fence Gate
         SawmillRecipeBuilder.sawing(
@@ -165,6 +169,7 @@ public class RecipeProviderUtil {
               ).category(SawingBookCategory.WOOD_TYPE)
               .group(Mekanism.rl("fence_gate"))
               .unlockedBy(hasCriterion(items, fenceGate))
+              .experience(0.1F)
               .save(consumer, basePath + "fence_gate/" + name);
         if (log != null) {
             //Log
@@ -176,7 +181,8 @@ public class RecipeProviderUtil {
                   ).category(SawingBookCategory.WOOD_TYPE)
                   .group(Mekanism.rl("log"))
                   .unlockedBy("has_log", has(items, log))
-                  .save(consumer, basePath + "log/" + name);
+                  .experience(0.1F)
+              .save(consumer, basePath + "log/" + name);
         }
         if (hangingSign != null) {
             //Hanging sign
@@ -188,7 +194,8 @@ public class RecipeProviderUtil {
                   ).category(SawingBookCategory.WOOD_TYPE)
                   .group(Mekanism.rl("hanging_sign"))
                   .unlockedBy(hasCriterion(items, hangingSign))
-                  .save(consumer, basePath + "hanging_sign/" + name);
+                  .experience(0.1F)
+              .save(consumer, basePath + "hanging_sign/" + name);
         }
         //Pressure plate
         SawmillRecipeBuilder.sawing(
@@ -199,6 +206,7 @@ public class RecipeProviderUtil {
               ).category(SawingBookCategory.WOOD_TYPE)
               .group(Mekanism.rl("pressure_plate"))
               .unlockedBy(hasCriterion(items, pressurePlate))
+              .experience(0.1F)
               .save(consumer, basePath + "pressure_plate/" + name);
         //Trapdoor
         SawmillRecipeBuilder.sawing(
@@ -207,6 +215,7 @@ public class RecipeProviderUtil {
               ).category(SawingBookCategory.WOOD_TYPE)
               .group(Mekanism.rl("trapdoor"))
               .unlockedBy(hasCriterion(items, trapdoor))
+              .experience(0.1F)
               .save(consumer, basePath + "trapdoor/" + name);
         //Shelf
         SawmillRecipeBuilder.sawing(
@@ -215,6 +224,7 @@ public class RecipeProviderUtil {
               ).category(SawingBookCategory.WOOD_TYPE)
               .group(Mekanism.rl("shelf"))
               .unlockedBy(hasCriterion(items, shelf))
+              .experience(0.1F)
               .save(consumer, basePath + "shelf/" + name);
     }
 
@@ -224,59 +234,67 @@ public class RecipeProviderUtil {
                     template(items, sand, 2)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy("has_sandstone", has(items, sandstoneTag))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(consumer, path);
     }
 
     @SuppressWarnings("unchecked")
-    public static void addEnrichingDyeRecipe(RecipeOutput consumer, HolderGetter<Item> items, String basePath, ResourceKey<Item> dye, int outputAmount, String name, BlockItemId... inputs) {
-        addEnrichingDyeRecipe(consumer, items, basePath, dye, outputAmount, name, Arrays.stream(inputs).map(BlockItemId::item).toArray(ResourceKey[]::new));
+    public static void addEnrichingDyeRecipe(RecipeOutput consumer, HolderGetter<Item> items, String basePath, ResourceKey<Item> dye, int outputAmount, float exp,
+          String name, BlockItemId... inputs) {
+        addEnrichingDyeRecipe(consumer, items, basePath, dye, outputAmount, exp, name, Arrays.stream(inputs).map(BlockItemId::item).toArray(ResourceKey[]::new));
     }
 
     @SafeVarargs
-    public static void addEnrichingDyeRecipe(RecipeOutput consumer, HolderGetter<Item> items, String basePath, ResourceKey<Item> dye, int outputAmount, String name, ResourceKey<Item>... inputs) {
+    public static void addEnrichingDyeRecipe(RecipeOutput consumer, HolderGetter<Item> items, String basePath, ResourceKey<Item> dye, int outputAmount, float exp,
+          String name, ResourceKey<Item>... inputs) {
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(items, inputs),
                     template(items, dye, outputAmount)
               ).category(EnrichingBookCategory.DECORATIVE)
               .group(dye)
               .unlockedBy(Arrays.stream(inputs).map(input -> hasCriterion(items, input)))
+              .experience(exp)
               .save(consumer, basePath + name);
     }
 
-    public static void addEnrichingDyeRecipe(RecipeOutput consumer, HolderGetter<Item> items, String basePath, ResourceKey<Item> dye, int outputAmount, String name, TagKey<Item> input) {
+    public static void addEnrichingDyeRecipe(RecipeOutput consumer, HolderGetter<Item> items, String basePath, ResourceKey<Item> dye, int outputAmount, float exp,
+          String name, TagKey<Item> input) {
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(items, input),
                     template(items, dye, outputAmount)
               ).category(EnrichingBookCategory.DECORATIVE)
               .group(dye)
               .unlockedBy("has_flower", has(items, input))
+              .experience(exp)
               .save(consumer, basePath + name);
     }
 
     @SuppressWarnings("unchecked")
     public static void addPigmentExtractingDyeRecipe(RecipeOutput consumer, HolderGetter<Item> items, HolderGetter<Chemical> chemicals, String basePath, EnumColor color,
-          int outputAmount, String name, BlockItemId... inputs) {
-        addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, color, outputAmount, name, Arrays.stream(inputs).map(BlockItemId::item).toArray(ResourceKey[]::new));
+          int outputAmount, float exp, String name, BlockItemId... inputs) {
+        addPigmentExtractingDyeRecipe(consumer, items, chemicals, basePath, color, outputAmount, exp, name, Arrays.stream(inputs).map(BlockItemId::item).toArray(ResourceKey[]::new));
     }
 
     @SafeVarargs
     public static void addPigmentExtractingDyeRecipe(RecipeOutput consumer, HolderGetter<Item> items, HolderGetter<Chemical> chemicals, String basePath, EnumColor color,
-          int outputAmount, String name, ResourceKey<Item>... inputs) {
+          int outputAmount, float exp, String name, ResourceKey<Item>... inputs) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     IngredientCreatorAccess.item().from(items, inputs),
                     chemicalTemplate(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), outputAmount)
               ).group(ItemIds.DYE.pick(Objects.requireNonNull(color.getDyeColor())))
               .unlockedBy(Arrays.stream(inputs).map(input -> hasCriterion(items, input)))
+              .experience(exp)
               .save(consumer, basePath + name);
     }
 
     public static void addPigmentExtractingDyeRecipe(RecipeOutput consumer, HolderGetter<Item> items, HolderGetter<Chemical> chemicals, String basePath, EnumColor color,
-          int outputAmount, String name, TagKey<Item> input) {
+          int outputAmount, float exp, String name, TagKey<Item> input) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     IngredientCreatorAccess.item().from(items, input),
                     chemicalTemplate(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(color), outputAmount)
               ).group(ItemIds.DYE.pick(Objects.requireNonNull(color.getDyeColor())))
               .unlockedBy("has_flower", has(items, input))
+              .experience(exp)
               .save(consumer, basePath + name);
     }
 

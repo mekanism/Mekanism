@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:orange"
   },
+  "experience": 0.15,
   "group": "orange_dye",
   "item_input": {
     "count": 1,

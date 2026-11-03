@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:cyan"
   },
+  "experience": 0.15,
   "group": "cyan_dye",
   "item_input": {
     "count": 1,

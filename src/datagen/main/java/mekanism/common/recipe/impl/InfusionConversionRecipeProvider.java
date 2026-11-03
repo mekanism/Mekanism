@@ -42,6 +42,7 @@ class InfusionConversionRecipeProvider extends BaseSubRecipeProvider {
 
     private static void infusionConversion(RecipeOutput consumer, ItemStackIngredient input, ChemicalStackTemplate output, String basePath, String recipeName,
           RecipeCriterion... criteria) {
+        //TODO: Do we want to allow the chemical conversion slots to somehow provide xp?
         ItemStackToChemicalRecipeBuilder.chemicalConversion(input, output)
               .group(output.typeHolder().key())
               .unlockedBy(Arrays.stream(criteria))
@@ -49,6 +50,7 @@ class InfusionConversionRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToChemicalRecipeBuilder.oxidizing(input, output)
               .group(output.typeHolder().key())
               .unlockedBy(Arrays.stream(criteria))
+              .experience(0.1F)
               .save(consumer, "oxidizing/" + basePath + recipeName);
     }
 

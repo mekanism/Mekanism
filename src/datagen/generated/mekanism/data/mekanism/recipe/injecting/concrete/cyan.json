@@ -5,6 +5,7 @@
     "amount": 1,
     "ingredient": "#mekanism:water_vapor"
   },
+  "experience": 0.15,
   "group": "mekanism:concrete",
   "item_input": {
     "count": 1,

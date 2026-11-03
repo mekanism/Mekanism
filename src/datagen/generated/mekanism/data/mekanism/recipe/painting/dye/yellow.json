@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:yellow"
   },
+  "experience": 0.15,
   "group": "yellow_dye",
   "item_input": {
     "count": 1,

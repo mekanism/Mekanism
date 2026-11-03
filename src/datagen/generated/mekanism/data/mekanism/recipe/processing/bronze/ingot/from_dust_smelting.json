@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "cookingtime": 200,
-  "experience": 0.35,
+  "experience": 0.5,
   "group": "mekanism:ingot_bronze",
   "ingredient": "mekanism:dust_bronze",
   "result": {

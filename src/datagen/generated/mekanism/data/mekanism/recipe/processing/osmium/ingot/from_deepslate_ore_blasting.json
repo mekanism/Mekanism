@@ -1,7 +1,7 @@
 {
   "type": "minecraft:blasting",
   "cookingtime": 100,
-  "experience": 0.6,
+  "experience": 0.7,
   "group": "mekanism:ingot_osmium",
   "ingredient": "mekanism:deepslate_osmium_ore",
   "result": {

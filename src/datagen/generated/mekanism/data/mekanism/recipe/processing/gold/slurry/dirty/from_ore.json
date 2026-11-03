@@ -5,6 +5,7 @@
     "amount": 1,
     "ingredient": "mekanism:sulfuric_acid"
   },
+  "experience": 0.5,
   "group": "mekanism:dirty_gold",
   "item_input": {
     "count": 1,

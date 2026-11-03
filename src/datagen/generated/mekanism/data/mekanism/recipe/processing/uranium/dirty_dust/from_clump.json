@@ -1,6 +1,7 @@
 {
   "type": "mekanism:crushing",
   "category": "efficiency",
+  "experience": 0.625,
   "group": "mekanism:dirty_dust_uranium",
   "input": {
     "count": 1,

@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:pink"
   },
+  "experience": 0.15,
   "group": "pink_dye",
   "item_input": {
     "count": 1,

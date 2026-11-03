@@ -1,6 +1,7 @@
 {
   "type": "mekanism:crystallizing",
   "category": "efficiency",
+  "experience": 0.5,
   "input": {
     "amount": 200,
     "ingredient": "mekanism:clean_lead"

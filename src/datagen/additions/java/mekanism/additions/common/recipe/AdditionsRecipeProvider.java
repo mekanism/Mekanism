@@ -13,6 +13,7 @@ import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
+import mekanism.common.recipe.impl.PaintingRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
@@ -122,6 +123,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                   new ItemStackTemplate(balloon)
             ).group(MekanismAdditions.rl("balloon_painting"))
                   .unlockedBy("has_needed_dye", has(dye == null ? AdditionsTags.Items.BALLOONS : dye.getTag()))
+                  .experience(PaintingRecipeProvider.RECOLORING_EXP)
                   .save(output, basePath + "recolor/painting/" + colorString);
         });
     }

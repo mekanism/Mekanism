@@ -63,7 +63,7 @@ class PigmentExtractingPlasticRecipeProvider extends BaseSubRecipeProvider {
         ItemStackToChemicalRecipeBuilder<PigmentExtractingBookCategory, PigmentExtractingBookInfo, ?> builder = ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(input.pick(color)),
               chemicalTemplate(pigment, rate)
-        );
+        ).experience(0.1F);
         DyeColor dyeColor = color.getDyeColor();
         if (dyeColor == null) {
             builder.group(color.getRegistryPrefix())

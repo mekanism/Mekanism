@@ -1,5 +1,6 @@
 {
   "type": "mekanism:centrifuging",
+  "experience": 0.001,
   "input": {
     "amount": 10,
     "ingredient": "mekanism:nuclear_waste"

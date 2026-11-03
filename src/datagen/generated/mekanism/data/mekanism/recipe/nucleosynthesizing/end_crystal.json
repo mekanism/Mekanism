@@ -5,6 +5,7 @@
     "ingredient": "mekanism:antimatter"
   },
   "duration": 750,
+  "experience": 1.15,
   "item_input": {
     "count": 1,
     "ingredient": "minecraft:beacon"

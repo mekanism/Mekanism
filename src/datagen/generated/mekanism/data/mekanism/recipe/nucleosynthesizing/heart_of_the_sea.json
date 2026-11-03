@@ -5,6 +5,7 @@
     "ingredient": "mekanism:antimatter"
   },
   "duration": 1250,
+  "experience": 1.5,
   "item_input": {
     "count": 1,
     "ingredient": "#c:nether_stars"

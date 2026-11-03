@@ -1,6 +1,7 @@
 {
   "type": "mekanism:sawing",
   "category": "food",
+  "experience": 0.25,
   "group": "mekanism:fd_fish",
   "input": {
     "count": 1,

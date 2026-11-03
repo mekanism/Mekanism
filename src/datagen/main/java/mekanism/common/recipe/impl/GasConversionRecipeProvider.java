@@ -26,37 +26,37 @@ class GasConversionRecipeProvider extends BaseSubRecipeProvider {
         String basePath = "chemical_conversion/";
         //Flint -> oxygen
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
-              IngredientCreatorAccess.item().from(this.items, ItemIds.FLINT),
-              chemicalTemplate(ChemicalIds.OXYGEN, 10)
-        ).unlockedBy(hasCriterion(ItemIds.FLINT))
+                    IngredientCreatorAccess.item().from(this.items, ItemIds.FLINT),
+                    chemicalTemplate(ChemicalIds.OXYGEN, 10)
+              ).unlockedBy(hasCriterion(ItemIds.FLINT))
               .save(output, basePath + "flint_to_oxygen");
         //Osmium block -> osmium
         TagKey<Item> osmiumBlock = MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.OSMIUM).item();
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.OSMIUM)),
-              chemicalTemplate(ChemicalIds.OSMIUM, 1_800)
-        ).group(ChemicalIds.OSMIUM)
+                    IngredientCreatorAccess.item().from(this.items, MekanismTags.BlockItems.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.OSMIUM)),
+                    chemicalTemplate(ChemicalIds.OSMIUM, 1_800)
+              ).group(ChemicalIds.OSMIUM)
               .unlockedBy("has_osmium", has(osmiumBlock))
               .save(output, basePath + "osmium_from_block");
         //Osmium ingot -> osmium
         TagKey<Item> osmiumIngot = MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM);
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
-              IngredientCreatorAccess.item().from(this.items, osmiumIngot),
-              chemicalTemplate(ChemicalIds.OSMIUM, 200)
-        ).group(ChemicalIds.OSMIUM)
+                    IngredientCreatorAccess.item().from(this.items, osmiumIngot),
+                    chemicalTemplate(ChemicalIds.OSMIUM, 200)
+              ).group(ChemicalIds.OSMIUM)
               .unlockedBy("has_osmium", has(osmiumIngot))
               .save(output, basePath + "osmium_from_ingot");
         //Salt -> hydrogen chloride
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SALT),
-              chemicalTemplate(ChemicalIds.HYDROGEN_CHLORIDE, 2)
-        ).unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
+                    IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SALT),
+                    chemicalTemplate(ChemicalIds.HYDROGEN_CHLORIDE, 2)
+              ).unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
               .save(output, basePath + "salt_to_hydrogen_chloride");
         //Sulfur -> sulfuric acid
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SULFUR),
-              chemicalTemplate(ChemicalIds.SULFURIC_ACID, 2)
-        ).unlockedBy("has_sulfur_dusut", has(MekanismTags.Items.DUSTS_SULFUR))
+                    IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SULFUR),
+                    chemicalTemplate(ChemicalIds.SULFURIC_ACID, 2)
+              ).unlockedBy("has_sulfur_dusut", has(MekanismTags.Items.DUSTS_SULFUR))
               .save(output, basePath + "sulfur_to_sulfuric_acid");
     }
 }

@@ -1,5 +1,6 @@
 {
   "type": "mekanism:separating",
+  "experience": 1.00000005E-4,
   "input": {
     "amount": 2,
     "ingredient": "#minecraft:water"

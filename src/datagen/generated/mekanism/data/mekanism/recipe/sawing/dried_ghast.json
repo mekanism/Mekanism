@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "experience": 0.8,
   "input": {
     "count": 1,
     "ingredient": "minecraft:dried_ghast"

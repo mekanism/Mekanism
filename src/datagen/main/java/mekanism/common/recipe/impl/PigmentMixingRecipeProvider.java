@@ -77,13 +77,14 @@ class PigmentMixingRecipeProvider extends BaseSubRecipeProvider {
 
     private void addMix(RecipeOutput consumer, EnumColor leftInput, int leftInputAmount, EnumColor rightInput, int rightInputAmount, EnumColor output, String basePath) {
         ChemicalChemicalToChemicalRecipeBuilder<PigmentMixingBookCategory, PigmentMixingBookInfo, ?> builder = ChemicalChemicalToChemicalRecipeBuilder.pigmentMixing(
-              IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(leftInput), leftInputAmount),
-              IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(rightInput), rightInputAmount),
-              chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.pick(output), leftInputAmount + rightInputAmount)
-        ).group(Mekanism.rl(output.getRegistryPrefix()));
+                    IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(leftInput), leftInputAmount),
+                    IngredientCreatorAccess.chemicalStack().from(chemicals, ChemicalIds.SIMPLE_PIGMENTS.pick(rightInput), rightInputAmount),
+                    chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.pick(output), leftInputAmount + rightInputAmount)
+              ).group(Mekanism.rl(output.getRegistryPrefix()))
+              .minisculeExperience(0.1F);
         unlockedByDye(builder, leftInput.getDyeColor());
         unlockedByDye(builder, rightInput.getDyeColor());
-        builder.save(consumer,basePath + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix());
+        builder.save(consumer, basePath + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix());
     }
 
     private void unlockedByDye(MekanismRecipeBuilder<?, ?, ?> builder, @Nullable DyeColor color) {

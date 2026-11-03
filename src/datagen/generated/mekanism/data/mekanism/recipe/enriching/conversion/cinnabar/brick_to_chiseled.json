@@ -1,6 +1,7 @@
 {
   "type": "mekanism:enriching",
   "category": "building",
+  "experience": 0.1,
   "group": "mekanism:chiseled_cinnabar_conversion",
   "input": {
     "count": 1,

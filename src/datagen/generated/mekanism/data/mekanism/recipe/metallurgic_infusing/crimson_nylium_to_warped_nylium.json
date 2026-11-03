@@ -5,6 +5,7 @@
     "amount": 10,
     "ingredient": "#mekanism:fungi"
   },
+  "experience": 0.1,
   "item_input": {
     "count": 1,
     "ingredient": "minecraft:crimson_nylium"

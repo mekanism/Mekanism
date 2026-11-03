@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "cookingtime": 200,
-  "experience": 0.3,
+  "experience": 0.35,
   "group": "mekanism:ingot_tin",
   "ingredient": "mekanism:dust_tin",
   "result": {

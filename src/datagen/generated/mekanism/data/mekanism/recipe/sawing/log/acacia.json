@@ -1,6 +1,7 @@
 {
   "type": "mekanism:sawing",
   "category": "wood_type",
+  "experience": 0.1,
   "group": "mekanism:log",
   "input": {
     "count": 1,

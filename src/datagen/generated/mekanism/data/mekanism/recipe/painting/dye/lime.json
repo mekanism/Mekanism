@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:lime"
   },
+  "experience": 0.15,
   "group": "lime_dye",
   "item_input": {
     "count": 1,

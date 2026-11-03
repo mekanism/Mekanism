@@ -1,6 +1,7 @@
 {
   "type": "mekanism:crushing",
   "category": "efficiency",
+  "experience": 0.6,
   "input": {
     "count": 1,
     "ingredient": "#c:rods/breeze"

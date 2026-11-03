@@ -5,6 +5,7 @@
     "amount": 2,
     "ingredient": "mekanism:hydrogen_chloride"
   },
+  "experience": 0.625,
   "group": "mekanism:shard_uranium",
   "item_input": {
     "count": 1,

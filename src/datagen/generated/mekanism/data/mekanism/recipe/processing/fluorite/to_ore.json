@@ -1,6 +1,7 @@
 {
   "type": "mekanism:combining",
   "category": "building",
+  "experience": 1.4,
   "extra_input": {
     "count": 1,
     "ingredient": "#c:cobblestones/normal"

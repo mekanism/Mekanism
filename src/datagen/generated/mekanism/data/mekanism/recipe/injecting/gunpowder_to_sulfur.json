@@ -4,6 +4,7 @@
     "amount": 1,
     "ingredient": "mekanism:hydrogen_chloride"
   },
+  "experience": 0.4,
   "item_input": {
     "count": 1,
     "ingredient": "#c:gunpowders"

@@ -1,5 +1,6 @@
 {
   "type": "mekanism:oxidizing",
+  "experience": 0.3,
   "group": "mekanism:antimatter",
   "input": {
     "count": 1,

@@ -1,5 +1,6 @@
 {
   "type": "mekanism:pigment_extracting",
+  "experience": 0.2,
   "group": "light_blue_dye",
   "input": {
     "count": 1,

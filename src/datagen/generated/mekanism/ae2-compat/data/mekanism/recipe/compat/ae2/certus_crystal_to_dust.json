@@ -1,5 +1,6 @@
 {
   "type": "mekanism:crushing",
+  "experience": 0.65,
   "input": {
     "count": 1,
     "ingredient": "#c:gems/certus_quartz"

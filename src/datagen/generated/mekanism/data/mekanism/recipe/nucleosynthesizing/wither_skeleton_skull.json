@@ -5,6 +5,7 @@
     "ingredient": "mekanism:antimatter"
   },
   "duration": 1250,
+  "experience": 1.4,
   "item_input": {
     "count": 1,
     "ingredient": "minecraft:skeleton_skull"

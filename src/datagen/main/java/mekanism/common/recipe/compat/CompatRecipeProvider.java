@@ -7,6 +7,7 @@ import mekanism.api.recipes.book.MetallurgicInfusingBookCategory;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
+import mekanism.common.recipe.impl.MetallurgicInfuserRecipeProvider;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -62,6 +63,7 @@ public abstract class CompatRecipeProvider extends BaseRecipeProvider {
               ).category(MetallurgicInfusingBookCategory.BUILDING)
               .group(Mekanism.rl(group))
               .unlockedBy(hasCriterion(input.asItem()))
+              .experience(MetallurgicInfuserRecipeProvider.MOSSY_CONVERSION_EXP)
               .save(this.output, path);
     }
 }

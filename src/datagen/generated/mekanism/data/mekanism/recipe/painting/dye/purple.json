@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:purple"
   },
+  "experience": 0.15,
   "group": "purple_dye",
   "item_input": {
     "count": 1,

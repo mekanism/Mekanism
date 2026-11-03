@@ -1,5 +1,6 @@
 {
   "type": "mekanism:crushing",
+  "experience": 0.2,
   "input": {
     "count": 1,
     "ingredient": "ae2:sky_stone_block"

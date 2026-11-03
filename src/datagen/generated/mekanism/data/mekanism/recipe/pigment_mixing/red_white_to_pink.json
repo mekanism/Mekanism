@@ -1,5 +1,6 @@
 {
   "type": "mekanism:pigment_mixing",
+  "experience": 1.00000005E-4,
   "group": "mekanism:pink",
   "left_input": {
     "amount": 1,

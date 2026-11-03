@@ -26,6 +26,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.data.recipes.packs.VanillaRecipeProvider;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
@@ -180,8 +181,8 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         if (nugget != null) {
             List<Holder<Item>> inputs = new ArrayList<>(armor.asList());
             inputs.addAll(tools.asList());
-            RecipeProviderUtil.addSmeltingBlastingRecipes(output, Ingredient.of(HolderSet.direct(inputs)), nugget, 0.1F, 200, nugget.key().identifier(),
-                  name + "/nugget_from", inputs.stream()
+            RecipeProviderUtil.addSmeltingBlastingRecipes(output, Ingredient.of(HolderSet.direct(inputs)), nugget, 0.1F, VanillaRecipeProvider.DEFAULT_COOKING_TIME,
+                  nugget.key().identifier(), name + "/nugget_from", inputs.stream()
                         .map(this::hasCriterion)
                         .toArray(RecipeCriterion[]::new)
             );
@@ -217,8 +218,8 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .save(output);
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
-            RecipeProviderUtil.addSmeltingBlastingRecipes(output, ingredient(paxel), items.getOrThrow(nugget), 0.1F, 200, nugget.identifier(),
-                  nugget.identifier().getPath() + "_from", new RecipeCriterion("has_paxel", has(paxel)));
+            RecipeProviderUtil.addSmeltingBlastingRecipes(output, ingredient(paxel), items.getOrThrow(nugget), 0.1F, VanillaRecipeProvider.DEFAULT_COOKING_TIME,
+                  nugget.identifier(), nugget.identifier().getPath() + "_from", new RecipeCriterion("has_paxel", has(paxel)));
         }
     }
 

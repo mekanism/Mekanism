@@ -6,6 +6,7 @@
   },
   "duration": 60,
   "energy_required": 10,
+  "experience": 0.2,
   "fluid_input": {
     "amount": 50,
     "ingredient": "#c:ethene"

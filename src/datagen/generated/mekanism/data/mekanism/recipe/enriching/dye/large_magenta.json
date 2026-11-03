@@ -1,6 +1,7 @@
 {
   "type": "mekanism:enriching",
   "category": "decorative",
+  "experience": 0.2,
   "group": "magenta_dye",
   "input": {
     "count": 1,

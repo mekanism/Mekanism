@@ -26,9 +26,9 @@ class EnergyConversionRecipeProvider extends BaseSubRecipeProvider {
 
     private void addEnergyConversionRecipe(RecipeOutput consumer, String basePath, String name, TagKey<Item> inputTag, int output) {
         ItemStackToEnergyRecipeBuilder.energyConversion(
-              IngredientCreatorAccess.item().from(this.items, inputTag),
-              output
-        ).unlockedBy("has_" + name, has(inputTag))
+                    IngredientCreatorAccess.item().from(this.items, inputTag),
+                    output
+              ).unlockedBy("has_" + name, has(inputTag))
               .save(consumer, basePath + name);
     }
 }

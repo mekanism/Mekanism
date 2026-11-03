@@ -1,5 +1,6 @@
 {
   "type": "mekanism:enriching",
+  "experience": 1.25,
   "input": {
     "count": 1,
     "ingredient": "#c:ingots/uranium"

@@ -4,6 +4,7 @@
     "amount": 1,
     "ingredient": "mekanism:oxygen"
   },
+  "experience": 0.35,
   "group": "mekanism:clump_copper",
   "item_input": {
     "count": 1,

@@ -5,6 +5,7 @@
     "amount": 256,
     "ingredient": "mekanism:white"
   },
+  "experience": 0.15,
   "group": "white_dye",
   "item_input": {
     "count": 1,

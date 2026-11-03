@@ -6,6 +6,7 @@
   },
   "duration": 400,
   "energy_required": 2,
+  "experience": 0.2,
   "fluid_input": {
     "amount": 200,
     "ingredient": "#minecraft:water"

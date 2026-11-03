@@ -5,6 +5,7 @@
     "amount": 2,
     "ingredient": "mekanism:sulfuric_acid"
   },
+  "experience": 0.35,
   "group": "mekanism:dirty_tin",
   "item_input": {
     "count": 1,

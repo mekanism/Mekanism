@@ -1,5 +1,6 @@
 {
   "type": "mekanism:chemical_infusing",
+  "experience": 1.00000005E-4,
   "left_input": {
     "amount": 1,
     "ingredient": "mekanism:sulfur_trioxide"

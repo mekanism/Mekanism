@@ -1,6 +1,7 @@
 {
   "type": "mekanism:sawing",
   "category": "food",
+  "experience": 0.3,
   "input": {
     "count": 1,
     "ingredient": "#c:pumpkins/normal"

@@ -4,6 +4,7 @@
     "amount": 40,
     "ingredient": "#mekanism:refined_obsidian"
   },
+  "experience": 0.4,
   "item_input": {
     "count": 1,
     "ingredient": "#mekanism:alloys/reinforced"

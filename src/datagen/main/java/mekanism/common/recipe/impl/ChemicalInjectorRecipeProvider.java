@@ -48,6 +48,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
                     true,
                     template(ItemIds.CLAY_BALL)
               ).unlockedBy("has_brick", has(Tags.Items.BRICKS_NORMAL))
+              .experience(0.3F)//Matches the rate vanilla uses for smelting clay to bricks
               .save(output, basePath + "brick_to_clay_ball");
         //Dirt -> mud
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
@@ -57,6 +58,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
                     template(BlockItemIds.MUD)
               ).category(InjectingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.DIRT))
+              .experience(0.15F)//Matches the rate vanilla has for drying sponges
               .save(output, basePath + "dirt_to_mud");
         //Gunpowder -> sulfur
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
@@ -65,6 +67,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
                     true,
                     MekanismItems.SULFUR_DUST.asTemplate()
               ).unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDERS))
+              .experience(0.4F)
               .save(output, basePath + "gunpowder_to_sulfur");
         //Terracotta -> clay
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
@@ -74,6 +77,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
                     template(BlockItemIds.CLAY)
               ).category(InjectingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.TERRACOTTA))
+              .experience(0.35F)//Matches the rate vanilla uses for smelting clay to terracotta
               .save(output, basePath + "terracotta_to_clay");
         addChemicalInjectorConcreteRecipes(output, basePath + "concrete/");
         addChemicalInjectorCoralRevivalRecipes(output, basePath + "coral/");
@@ -89,6 +93,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
               ).category(InjectingBookCategory.BUILDING)
               .group(Mekanism.rl("concrete"))
               .unlockedBy("has_concrete_powder", has(BlockItemIds.CONCRETE_POWDER.pick(color)))
+              .experience(0.15F)//Matches the rate vanilla has for drying sponges
               .save(output, basePath + color));
     }
 
@@ -121,6 +126,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
                     template(living)
               ).group(Mekanism.rl("coral_revival"))
               .unlockedBy(inWarmOcean)
+              .experience(0.03F * water)//Matches the rate vanilla has for drying sponges when making the full block wet again
               .save(output, basePath + living.item().identifier().getPath());
     }
 
@@ -151,6 +157,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
                   ).category(InjectingBookCategory.BUILDING)
                   .group(group)
                   .unlockedBy("has_weathering", has(input.asItem()))
+                  .experience(0.1F)
                   .save(output, basePath + path);
         }
     }

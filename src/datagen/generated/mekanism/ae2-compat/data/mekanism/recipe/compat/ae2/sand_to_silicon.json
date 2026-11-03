@@ -1,5 +1,6 @@
 {
   "type": "mekanism:crushing",
+  "experience": 0.35,
   "input": {
     "count": 1,
     "ingredient": "#c:sands"

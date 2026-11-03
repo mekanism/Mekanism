@@ -30,7 +30,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
-class CrusherRecipeProvider extends BaseSubRecipeProvider {
+public class CrusherRecipeProvider extends BaseSubRecipeProvider {
+
+    /// Mirror the amount vanilla considers small for basic things like smelting sand to glass or stone to smooth stone
+    public static final float DECORATIVE_CONVERSION_EXP = 0.1F;
+    private static final float UNPACKING_EXP = 0.1F;
 
     CrusherRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
         super(items, fluids, chemicals);
@@ -56,98 +60,112 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         addCrusherStringRecipes(output, basePath + "string/");
         //Dripstone Block -> Pointed Dripstone
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DRIPSTONE_BLOCK),
-              template(BlockItemIds.POINTED_DRIPSTONE, 4)
-        ).unlockedBy(hasCriterion(BlockItemIds.DRIPSTONE_BLOCK))
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.DRIPSTONE_BLOCK),
+                    template(BlockItemIds.POINTED_DRIPSTONE, 4)
+              ).unlockedBy(hasCriterion(BlockItemIds.DRIPSTONE_BLOCK))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "pointed_dripstone_from_block");
         //Honecomb Block -> Honeycomb
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.HONEYCOMB_BLOCK),
-              template(ItemIds.HONEYCOMB, 4)
-        ).unlockedBy(hasCriterion(BlockItemIds.HONEYCOMB_BLOCK))
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.HONEYCOMB_BLOCK),
+                    template(ItemIds.HONEYCOMB, 4)
+              ).unlockedBy(hasCriterion(BlockItemIds.HONEYCOMB_BLOCK))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "honeycomb_from_block");
         //Purpur Block -> Purpur Pillar
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PURPUR_PILLAR),
-              template(BlockItemIds.PURPUR_BLOCK)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.PURPUR_PILLAR),
+                    template(BlockItemIds.PURPUR_BLOCK)
+              ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.PURPUR_PILLAR))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "purpur_block_from_pillar");
         //Charcoal -> Charcoal Dust
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, ItemIds.CHARCOAL),
-              MekanismItems.CHARCOAL_DUST.asTemplate()
-        ).unlockedBy(hasCriterion(ItemIds.CHARCOAL))
+                    IngredientCreatorAccess.item().from(this.items, ItemIds.CHARCOAL),
+                    MekanismItems.CHARCOAL_DUST.asTemplate()
+              ).unlockedBy(hasCriterion(ItemIds.CHARCOAL))
+              .experience(0.1F / 4)
               .save(output, basePath + "charcoal_dust");
         //Cobblestone -> Gravel
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.COBBLESTONES_NORMAL),
-              template(BlockItemIds.GRAVEL)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.COBBLESTONES_NORMAL),
+                    template(BlockItemIds.GRAVEL)
+              ).category(CrushingBookCategory.BUILDING)
               .unlockedBy("has_cobblestone", has(Tags.BlockItems.COBBLESTONES_NORMAL))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "cobblestone_to_gravel");
         //Flint -> Gunpowder
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, ItemIds.FLINT),
-              template(ItemIds.GUNPOWDER)
-        ).unlockedBy(hasCriterion(ItemIds.FLINT))
+                    IngredientCreatorAccess.item().from(this.items, ItemIds.FLINT),
+                    template(ItemIds.GUNPOWDER)
+              ).unlockedBy(hasCriterion(ItemIds.FLINT))
+              .experience(0.1F)
               .save(output, basePath + "flint_to_gunpowder");
         //Gravel -> Sand
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.GRAVELS),
-              template(BlockItemIds.SAND)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.GRAVELS),
+                    template(BlockItemIds.SAND)
+              ).category(CrushingBookCategory.BUILDING)
               .unlockedBy("has_gravel", has(Tags.BlockItems.GRAVELS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "gravel_to_sand");
         //Mud bricks -> packed mud
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.MUD_BRICKS),
-              template(BlockItemIds.PACKED_MUD)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.MUD_BRICKS),
+                    template(BlockItemIds.PACKED_MUD)
+              ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.MUD_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "mud_bricks_to_packed");
         //Break music disc 5
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, ItemIds.MUSIC_DISC_5),
-              template(ItemIds.DISC_FRAGMENT_5, 9)
-        ).unlockedBy(hasCriterion(ItemIds.MUSIC_DISC_5))
+                    IngredientCreatorAccess.item().from(this.items, ItemIds.MUSIC_DISC_5),
+                    template(ItemIds.DISC_FRAGMENT_5, 9)
+              ).unlockedBy(hasCriterion(ItemIds.MUSIC_DISC_5))
+              .experience(0.1F)
               .save(output, basePath + "break_disc_5");
         //Obsidian -> obsidian dust
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.OBSIDIANS_NORMAL),
-              MekanismItems.OBSIDIAN_DUST.asTemplate(4)
-        ).unlockedBy("has_obsidian", has(Tags.BlockItems.OBSIDIANS_NORMAL))
+                    IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.OBSIDIANS_NORMAL),
+                    MekanismItems.OBSIDIAN_DUST.asTemplate(4)
+              ).unlockedBy("has_obsidian", has(Tags.BlockItems.OBSIDIANS_NORMAL))
+              .experience(0.25F)
               .save(output, basePath + "obsidian_to_dust");
         //Blaze Rod -> blaze powder
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.RODS_BLAZE),
-              template(ItemIds.BLAZE_POWDER, 4)
-        ).category(CrushingBookCategory.EFFICIENCY)
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.RODS_BLAZE),
+                    template(ItemIds.BLAZE_POWDER, 4)
+              ).category(CrushingBookCategory.EFFICIENCY)
               .unlockedBy("has_blaze_rod", has(Tags.Items.RODS_BLAZE))
+              .experience(0.6F)
               .save(output, basePath + "blaze_rod");
         //Breeze Rod -> wind charge
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.RODS_BREEZE),
-              template(ItemIds.WIND_CHARGE, 6)
-        ).category(CrushingBookCategory.EFFICIENCY)
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.RODS_BREEZE),
+                    template(ItemIds.WIND_CHARGE, 6)
+              ).category(CrushingBookCategory.EFFICIENCY)
               .unlockedBy("has_breeze_rod", has(Tags.Items.RODS_BREEZE))
+              .experience(0.6F)
               .save(output, basePath + "breeze_rod");
         //Bone -> bone meal
         final int BONEMEAL_FROM_BONE = 6;
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, ItemIds.BONE),
-              template(ItemIds.BONE_MEAL, BONEMEAL_FROM_BONE)
-        ).category(CrushingBookCategory.EFFICIENCY)
+                    IngredientCreatorAccess.item().from(this.items, ItemIds.BONE),
+                    template(ItemIds.BONE_MEAL, BONEMEAL_FROM_BONE)
+              ).category(CrushingBookCategory.EFFICIENCY)
               .group(Mekanism.rl("bone_meal"))
               .unlockedBy(hasCriterion(ItemIds.BONE))
+              .experience(0.2F)
               .save(output, basePath + "bone");
         //Bone block -> bone meal
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.STORAGE_BLOCKS_BONE_MEAL),
-              template(ItemIds.BONE_MEAL, 9)//must be the same as vanilla needs to make a block
-        ).category(CrushingBookCategory.EFFICIENCY)
+                    IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.STORAGE_BLOCKS_BONE_MEAL),
+                    template(ItemIds.BONE_MEAL, 9)//must be the same as vanilla needs to make a block
+              ).category(CrushingBookCategory.EFFICIENCY)
               .group(Mekanism.rl("bone_meal"))
               .unlockedBy("has_bone_block", has(Tags.BlockItems.STORAGE_BLOCKS_BONE_MEAL))
+              .experience(0.25F)
               .save(output, basePath + "bone_block");
         //Red Sandstone -> Sand
         RecipeProviderUtil.addSandStoneToSandRecipe(output, this.items, basePath + "red_sandstone_to_sand", BlockItemIds.RED_SAND, Tags.BlockItems.SANDSTONE_RED_BLOCKS.item());
@@ -155,202 +173,226 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         RecipeProviderUtil.addSandStoneToSandRecipe(output, this.items, basePath + "sandstone_to_sand", BlockItemIds.SAND, Tags.BlockItems.SANDSTONE_UNCOLORED_BLOCKS.item());
         //Soul Soil -> Soul Sand
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SOUL_SOIL),
-              template(BlockItemIds.SOUL_SAND)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.SOUL_SOIL),
+                    template(BlockItemIds.SOUL_SAND)
+              ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.SOUL_SOIL))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "soul_soil_to_soul_sand");
         //Polished or Smooth Basalt -> Basalt
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items,
-                    BlockItemIds.POLISHED_BASALT,
-                    BlockItemIds.SMOOTH_BASALT
-              ),
-              template(BlockItemIds.BASALT)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items,
+                          BlockItemIds.POLISHED_BASALT,
+                          BlockItemIds.SMOOTH_BASALT
+                    ),
+                    template(BlockItemIds.BASALT)
+              ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_BASALT))
               .unlockedBy(hasCriterion(BlockItemIds.SMOOTH_BASALT))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_or_smooth_basalt_to_basalt");
         //Chiseled Nether Bricks -> Nether Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_NETHER_BRICKS),
-              template(BlockItemIds.NETHER_BRICKS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_NETHER_BRICKS),
+                    template(BlockItemIds.NETHER_BRICKS)
+              ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.CHISELED_NETHER_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_nether_bricks_to_nether_bricks");
         //Nether Bricks -> Cracked Nether Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.NETHER_BRICKS),
-              template(BlockItemIds.CRACKED_NETHER_BRICKS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.NETHER_BRICKS),
+                    template(BlockItemIds.CRACKED_NETHER_BRICKS)
+              ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.NETHER_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "nether_bricks_to_cracked_nether_bricks");
 
         //Dried Ghast -> Ghast Tears
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DRIED_GHAST),
-              template(ItemIds.GHAST_TEAR, 3)
-        ).category(CrushingBookCategory.EFFICIENCY)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.DRIED_GHAST),
+                    template(ItemIds.GHAST_TEAR, 3)
+              ).category(CrushingBookCategory.EFFICIENCY)
               .unlockedBy(hasCriterion(BlockItemIds.DRIED_GHAST))
+              .experience(0.65F)
               .save(output, basePath + "dried_ghast");
     }
 
     private void addCrusherStringRecipes(RecipeOutput output, String basePath) {
         //Wool -> String
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL),
-              template(BlockItemIds.TRIPWIRE, 4)
-        ).group(Mekanism.rl("string"))
+                    IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL),
+                    template(BlockItemIds.TRIPWIRE, 4)
+              ).group(Mekanism.rl("string"))
               .unlockedBy("has_wool", has(ItemTags.WOOL))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "from_wool");
         //Wool Slabs -> String
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL_SLABS),
-              template(BlockItemIds.TRIPWIRE, 2)
-        ).group(Mekanism.rl("string"))
+                    IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL_SLABS),
+                    template(BlockItemIds.TRIPWIRE, 2)
+              ).group(Mekanism.rl("string"))
               .unlockedBy("has_wool", has(ItemTags.WOOL_SLABS))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "from_wool_slabs");
         //Wool Stairs -> String
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL_STAIRS),
-              template(BlockItemIds.TRIPWIRE, 6)
-        ).group(Mekanism.rl("string"))
+                    IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL_STAIRS),
+                    template(BlockItemIds.TRIPWIRE, 6)
+              ).group(Mekanism.rl("string"))
               .unlockedBy("has_wool", has(ItemTags.WOOL_STAIRS))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "from_wool_stairs");
         //Cushions -> String
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, ItemTags.CUSHIONS),
-              template(BlockItemIds.TRIPWIRE, 6)
-        ).group(Mekanism.rl("string"))
+                    IngredientCreatorAccess.item().from(this.items, ItemTags.CUSHIONS),
+                    template(BlockItemIds.TRIPWIRE, 6)
+              ).group(Mekanism.rl("string"))
               .unlockedBy("has_cushion", has(ItemTags.CUSHIONS))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "from_cushions");
     }
 
     private void addCrusherStoneRecipes(RecipeOutput output, String basePath) {
         //Stone -> Cobblestone
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.STONE),
-              template(BlockItemIds.COBBLESTONE)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.STONE),
+                    template(BlockItemIds.COBBLESTONE)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cobble_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.STONE))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "to_cobblestone");
         //Stone Stairs -> Cobblestone Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.STONE_STAIRS),
-              template(BlockItemIds.COBBLESTONE_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.STONE_STAIRS),
+                    template(BlockItemIds.COBBLESTONE_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cobble_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.STONE_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_to_cobblestone_stairs");
         //Stone Slabs -> Cobblestone Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.STONE_SLAB),
-              template(BlockItemIds.COBBLESTONE_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.STONE_SLAB),
+                    template(BlockItemIds.COBBLESTONE_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cobble_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.STONE_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slabs_to_cobblestone_slabs");
         //Chiseled Stone Bricks -> Stone Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_STONE_BRICKS),
-              template(BlockItemIds.STONE_BRICKS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_STONE_BRICKS),
+                    template(BlockItemIds.STONE_BRICKS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("stone_brick_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CHISELED_STONE_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_bricks_to_bricks");
         //Stone Bricks -> Cracked Stone Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.STONE_BRICKS),
-              template(BlockItemIds.CRACKED_STONE_BRICKS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.STONE_BRICKS),
+                    template(BlockItemIds.CRACKED_STONE_BRICKS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cracked_stone_brick_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.STONE_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "bricks_to_cracked_bricks");
         //Cracked Stone Bricks -> Stone
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CRACKED_STONE_BRICKS),
-              template(BlockItemIds.STONE)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CRACKED_STONE_BRICKS),
+                    template(BlockItemIds.STONE)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("stone_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CRACKED_STONE_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "from_cracked_bricks");
     }
 
     private void addCrusherCinnabarRecipes(RecipeOutput output, String basePath) {
         //Polished Cinnabar -> Cinnabar
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_CINNABAR),
-              template(BlockItemIds.CINNABAR)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_CINNABAR),
+                    template(BlockItemIds.CINNABAR)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cinnabar_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_CINNABAR))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "from_polished");
         //Polished Cinnabar Stairs -> Cinnabar Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_CINNABAR_STAIRS),
-              template(BlockItemIds.CINNABAR_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_CINNABAR_STAIRS),
+                    template(BlockItemIds.CINNABAR_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cinnabar_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_CINNABAR_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_from_polished");
         //Polished Cinnabar Slabs -> Cinnabar Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_CINNABAR_SLAB),
-              template(BlockItemIds.CINNABAR_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_CINNABAR_SLAB),
+                    template(BlockItemIds.CINNABAR_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cinnabar_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_CINNABAR_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slabs_from_polished");
         //Polished Cinnabar Walls -> Cinnabar Walls
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_CINNABAR_WALL),
-              template(BlockItemIds.CINNABAR_WALL)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_CINNABAR_WALL),
+                    template(BlockItemIds.CINNABAR_WALL)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cinnabar_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_CINNABAR_WALL))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "wall_from_polished");
 
         //Cinnabar Bricks -> Polished Cinnabar
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CINNABAR_BRICKS),
-              template(BlockItemIds.POLISHED_CINNABAR)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CINNABAR_BRICKS),
+                    template(BlockItemIds.POLISHED_CINNABAR)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_cinnabar_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CINNABAR_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "bricks_to_polished");
         //Cinnabar Brick Stairs -> Polished Cinnabar Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CINNABAR_BRICK_STAIRS),
-              template(BlockItemIds.POLISHED_CINNABAR_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CINNABAR_BRICK_STAIRS),
+                    template(BlockItemIds.POLISHED_CINNABAR_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_cinnabar_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CINNABAR_BRICK_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_stairs_to_polished");
         //Cinnabar Brick Slabs -> Polished Cinnabar Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CINNABAR_BRICK_SLAB),
-              template(BlockItemIds.POLISHED_CINNABAR_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CINNABAR_BRICK_SLAB),
+                    template(BlockItemIds.POLISHED_CINNABAR_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_cinnabar_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CINNABAR_BRICK_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_slabs_to_polished");
         //Cinnabar Brick Walls -> Polished Cinnabar Walls
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CINNABAR_BRICK_WALL),
-              template(BlockItemIds.POLISHED_CINNABAR_WALL)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CINNABAR_BRICK_WALL),
+                    template(BlockItemIds.POLISHED_CINNABAR_WALL)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_cinnabar_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CINNABAR_BRICK_WALL))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_wall_to_polished");
 
         //Chiseled Cinnabar -> Cinnabar Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_CINNABAR),
-              template(BlockItemIds.CINNABAR_BRICKS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_CINNABAR),
+                    template(BlockItemIds.CINNABAR_BRICKS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cinnabar_brick_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CHISELED_CINNABAR))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_to_brick");
     }
 
@@ -360,589 +402,659 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
         int potentRate = 9 * blockRate;
         //Sulfur Spikes -> Sulfur Dust
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_SPIKE),
-              MekanismItems.SULFUR_DUST.asTemplate(spikeRate)
-        ).group(MekanismItems.SULFUR_DUST.getId())
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_SPIKE),
+                    MekanismItems.SULFUR_DUST.asTemplate(spikeRate)
+              ).group(MekanismItems.SULFUR_DUST.getId())
               .unlockedBy(hasCriterion(BlockItemIds.SULFUR_SPIKE))
+              .experience(0.45F)
               .save(output, basePath + "spike_to_dust");
         //Sulfur -> Sulfur Dust
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR),
-              MekanismItems.SULFUR_DUST.asTemplate(blockRate)
-        ).group(MekanismItems.SULFUR_DUST.getId())
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR),
+                    MekanismItems.SULFUR_DUST.asTemplate(blockRate)
+              ).group(MekanismItems.SULFUR_DUST.getId())
               .unlockedBy(hasCriterion(BlockItemIds.SULFUR))
+              .experience(0.45F)
               .save(output, basePath + "to_dust");
         //Potent Sulfur -> Sulfur Dust
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POTENT_SULFUR),
-              MekanismItems.SULFUR_DUST.asTemplate(potentRate)
-        ).group(MekanismItems.SULFUR_DUST.getId())
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POTENT_SULFUR),
+                    MekanismItems.SULFUR_DUST.asTemplate(potentRate)
+              ).group(MekanismItems.SULFUR_DUST.getId())
               .unlockedBy(hasCriterion(BlockItemIds.POTENT_SULFUR))
+              .experience(0.65F)
               .save(output, basePath + "potent_to_dust");
 
         //Polished Sulfur -> Sulfur
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_SULFUR),
-              template(BlockItemIds.SULFUR)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_SULFUR),
+                    template(BlockItemIds.SULFUR)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sulfur_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_SULFUR))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "from_polished");
         //Polished Sulfur Stairs -> Sulfur Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_SULFUR_STAIRS),
-              template(BlockItemIds.SULFUR_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_SULFUR_STAIRS),
+                    template(BlockItemIds.SULFUR_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sulfur_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_SULFUR_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_from_polished");
         //Polished Sulfur Slabs -> Sulfur Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_SULFUR_SLAB),
-              template(BlockItemIds.SULFUR_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_SULFUR_SLAB),
+                    template(BlockItemIds.SULFUR_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sulfur_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_SULFUR_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slabs_from_polished");
         //Polished Sulfur Walls -> Sulfur Walls
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_SULFUR_WALL),
-              template(BlockItemIds.SULFUR_WALL)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_SULFUR_WALL),
+                    template(BlockItemIds.SULFUR_WALL)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sulfur_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_SULFUR_WALL))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "wall_from_polished");
 
         //Sulfur Bricks -> Polished Sulfur
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_BRICKS),
-              template(BlockItemIds.POLISHED_SULFUR)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_BRICKS),
+                    template(BlockItemIds.POLISHED_SULFUR)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_sulfur_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.SULFUR_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "bricks_to_polished");
         //Sulfur Brick Stairs -> Polished Sulfur Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_BRICK_STAIRS),
-              template(BlockItemIds.POLISHED_SULFUR_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_BRICK_STAIRS),
+                    template(BlockItemIds.POLISHED_SULFUR_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_sulfur_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.SULFUR_BRICK_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_stairs_to_polished");
         //Sulfur Brick Slabs -> Polished Sulfur Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_BRICK_SLAB),
-              template(BlockItemIds.POLISHED_SULFUR_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_BRICK_SLAB),
+                    template(BlockItemIds.POLISHED_SULFUR_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_sulfur_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.SULFUR_BRICK_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_slabs_to_polished");
         //Sulfur Brick Walls -> Polished Sulfur Walls
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_BRICK_WALL),
-              template(BlockItemIds.POLISHED_SULFUR_WALL)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.SULFUR_BRICK_WALL),
+                    template(BlockItemIds.POLISHED_SULFUR_WALL)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_sulfur_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.SULFUR_BRICK_WALL))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_wall_to_polished");
 
         //Chiseled Sulfur -> Sulfur Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_SULFUR),
-              template(BlockItemIds.SULFUR_BRICKS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_SULFUR),
+                    template(BlockItemIds.SULFUR_BRICKS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sulfur_brick_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CHISELED_SULFUR))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_to_brick");
     }
 
     private void addCrusherTuffRecipes(RecipeOutput output, String basePath) {
         //Polished Tuff -> Tuff
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_TUFF),
-              template(BlockItemIds.TUFF)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_TUFF),
+                    template(BlockItemIds.TUFF)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("tuff_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_TUFF))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "from_polished");
         //Polished Tuff Stairs -> Tuff Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_TUFF_STAIRS),
-              template(BlockItemIds.TUFF_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_TUFF_STAIRS),
+                    template(BlockItemIds.TUFF_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("tuff_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_TUFF_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_from_polished");
         //Polished Tuff Slabs -> Tuff Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_TUFF_SLAB),
-              template(BlockItemIds.TUFF_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_TUFF_SLAB),
+                    template(BlockItemIds.TUFF_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("tuff_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_TUFF_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slabs_from_polished");
         //Polished Tuff Walls -> Tuff Walls
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_TUFF_WALL),
-              template(BlockItemIds.TUFF_WALL)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_TUFF_WALL),
+                    template(BlockItemIds.TUFF_WALL)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("tuff_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_TUFF_WALL))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "wall_from_polished");
 
         //Tuff Bricks -> Polished Tuff
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_BRICKS),
-              template(BlockItemIds.POLISHED_TUFF)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_BRICKS),
+                    template(BlockItemIds.POLISHED_TUFF)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_tuff_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.TUFF_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "bricks_to_polished");
         //Tuff Brick Stairs -> Polished Tuff Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_BRICK_STAIRS),
-              template(BlockItemIds.POLISHED_TUFF_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_BRICK_STAIRS),
+                    template(BlockItemIds.POLISHED_TUFF_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_tuff_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.TUFF_BRICK_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_stairs_to_polished");
         //Tuff Brick Slabs -> Polished Tuff Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_BRICK_SLAB),
-              template(BlockItemIds.POLISHED_TUFF_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_BRICK_SLAB),
+                    template(BlockItemIds.POLISHED_TUFF_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_tuff_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.TUFF_BRICK_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_slabs_to_polished");
         //Tuff Brick Walls -> Polished Tuff Walls
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_BRICK_WALL),
-              template(BlockItemIds.POLISHED_TUFF_WALL)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_BRICK_WALL),
+                    template(BlockItemIds.POLISHED_TUFF_WALL)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_tuff_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.TUFF_BRICK_WALL))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_wall_to_polished");
 
         //Chiseled Tuff -> Tuff Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_TUFF),
-              template(BlockItemIds.TUFF_BRICKS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_TUFF),
+                    template(BlockItemIds.TUFF_BRICKS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("tuff_brick_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CHISELED_TUFF))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "tuff_brick_conversion");
     }
 
     private void addCrusherDeepslateRecipes(RecipeOutput output, String basePath) {
         //Deepslate -> Cobbled Deepslate
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE),
-              template(BlockItemIds.COBBLED_DEEPSLATE)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE),
+                    template(BlockItemIds.COBBLED_DEEPSLATE)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("deepslate_cobble_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.DEEPSLATE))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "to_cobbled");
 
         //Polished Deepslate -> Deepslate Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DEEPSLATE),
-              template(BlockItemIds.DEEPSLATE_BRICKS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DEEPSLATE),
+                    template(BlockItemIds.DEEPSLATE_BRICKS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("deepslate_brick_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_DEEPSLATE))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_to_bricks");
         //Polished Deepslate Stairs -> Deepslate Brick Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DEEPSLATE_STAIRS),
-              template(BlockItemIds.DEEPSLATE_BRICK_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DEEPSLATE_STAIRS),
+                    template(BlockItemIds.DEEPSLATE_BRICK_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("deepslate_brick_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_DEEPSLATE_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_stairs_to_brick");
         //Polished Deepslate Slabs -> Deepslate Brick Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DEEPSLATE_SLAB),
-              template(BlockItemIds.DEEPSLATE_BRICK_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DEEPSLATE_SLAB),
+                    template(BlockItemIds.DEEPSLATE_BRICK_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("deepslate_brick_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_DEEPSLATE_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_slabs_to_brick");
         //Polished Deepslate Wall -> Deepslate Brick Wall
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DEEPSLATE_WALL),
-              template(BlockItemIds.DEEPSLATE_BRICK_WALL)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DEEPSLATE_WALL),
+                    template(BlockItemIds.DEEPSLATE_BRICK_WALL)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("deepslate_brick_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_DEEPSLATE_WALL))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_wall_to_brick");
 
         //Deepslate Bricks -> Cracked Deepslate Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_BRICKS),
-              template(BlockItemIds.CRACKED_DEEPSLATE_BRICKS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_BRICKS),
+                    template(BlockItemIds.CRACKED_DEEPSLATE_BRICKS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cracked_deepslate_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.DEEPSLATE_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "bricks_to_cracked_bricks");
         //Cracked Deepslate Bricks -> Deepslate Tiles
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CRACKED_DEEPSLATE_BRICKS),
-              template(BlockItemIds.DEEPSLATE_TILES)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CRACKED_DEEPSLATE_BRICKS),
+                    template(BlockItemIds.DEEPSLATE_TILES)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("deepslate_tile_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CRACKED_DEEPSLATE_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "cracked_bricks_to_tile");
 
         //Deepslate Brick Stairs -> Deepslate Tile Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_BRICK_STAIRS),
-              template(BlockItemIds.DEEPSLATE_TILE_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_BRICK_STAIRS),
+                    template(BlockItemIds.DEEPSLATE_TILE_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("deepslate_tile_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.DEEPSLATE_BRICK_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_stairs_to_tile");
         //Deepslate Brick Slabs -> Deepslate Tile Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_BRICK_SLAB),
-              template(BlockItemIds.DEEPSLATE_TILE_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_BRICK_SLAB),
+                    template(BlockItemIds.DEEPSLATE_TILE_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("deepslate_tile_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.DEEPSLATE_BRICK_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_slabs_to_tile");
         //Deepslate Brick Wall -> Deepslate Tile Wall
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_BRICK_WALL),
-              template(BlockItemIds.DEEPSLATE_TILE_WALL)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_BRICK_WALL),
+                    template(BlockItemIds.DEEPSLATE_TILE_WALL)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("deepslate_tile_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.DEEPSLATE_BRICK_WALL))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_wall_to_tile");
 
         //Deepslate Tiles -> Cracked Deepslate Tiles
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_TILES),
-              template(BlockItemIds.CRACKED_DEEPSLATE_TILES)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_TILES),
+                    template(BlockItemIds.CRACKED_DEEPSLATE_TILES)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cracked_deepslate_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.DEEPSLATE_TILES))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "tile_to_cracked_tile");
         //Cracked Deepslate Tiles -> Chiseled Deepslate
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CRACKED_DEEPSLATE_TILES),
-              template(BlockItemIds.CHISELED_DEEPSLATE)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CRACKED_DEEPSLATE_TILES),
+                    template(BlockItemIds.CHISELED_DEEPSLATE)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("chiseled_deepslate_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CRACKED_DEEPSLATE_TILES))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "cracked_tile_to_chiseled");
 
         //Deepslate Tile Stairs -> Cobbled Deepslate Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_TILE_STAIRS),
-              template(BlockItemIds.COBBLED_DEEPSLATE_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_TILE_STAIRS),
+                    template(BlockItemIds.COBBLED_DEEPSLATE_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("deepslate_cobble_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.DEEPSLATE_TILE_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "tile_stairs_to_cobbled");
         //Deepslate Tile Slabs -> Cobbled Deepslate Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_TILE_SLAB),
-              template(BlockItemIds.COBBLED_DEEPSLATE_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_TILE_SLAB),
+                    template(BlockItemIds.COBBLED_DEEPSLATE_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("deepslate_cobble_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.DEEPSLATE_TILE_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "tile_slabs_to_cobbled");
         //Deepslate Tile Wall -> Cobbled Deepslate Wall
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_TILE_WALL),
-              template(BlockItemIds.COBBLED_DEEPSLATE_WALL)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_TILE_WALL),
+                    template(BlockItemIds.COBBLED_DEEPSLATE_WALL)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("deepslate_cobble_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.DEEPSLATE_TILE_WALL))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "tile_wall_to_cobbled");
 
         //Chiseled Deepslate -> Deepslate
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_DEEPSLATE),
-              template(BlockItemIds.DEEPSLATE)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_DEEPSLATE),
+                    template(BlockItemIds.DEEPSLATE)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("deepslate_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CHISELED_DEEPSLATE))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "from_chiseled");
     }
 
     private void addCrusherBlackstoneRecipes(RecipeOutput output, String basePath) {
         //Polished Blackstone -> Blackstone
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE),
-              template(BlockItemIds.BLACKSTONE)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE),
+                    template(BlockItemIds.BLACKSTONE)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("blackstone_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_BLACKSTONE))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "from_polished");
         //Polished Blackstone Wall -> Blackstone Wall
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE_WALL),
-              template(BlockItemIds.BLACKSTONE_WALL)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE_WALL),
+                    template(BlockItemIds.BLACKSTONE_WALL)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("blackstone_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_BLACKSTONE_WALL))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_wall_to_wall");
         //Polished Blackstone Stairs -> Blackstone Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE_STAIRS),
-              template(BlockItemIds.BLACKSTONE_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE_STAIRS),
+                    template(BlockItemIds.BLACKSTONE_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("blackstone_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_BLACKSTONE_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_stairs_to_stairs");
         //Polished Blackstone Slabs -> Blackstone Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE_SLAB),
-              template(BlockItemIds.BLACKSTONE_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE_SLAB),
+                    template(BlockItemIds.BLACKSTONE_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("blackstone_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_BLACKSTONE_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_slabs_to_slabs");
         //Chiseled Polished Blackstone Bricks -> Polished Blackstone Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_POLISHED_BLACKSTONE),
-              template(BlockItemIds.POLISHED_BLACKSTONE_BRICKS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_POLISHED_BLACKSTONE),
+                    template(BlockItemIds.POLISHED_BLACKSTONE_BRICKS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_blackstone_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CHISELED_POLISHED_BLACKSTONE))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_bricks_to_bricks");
         //Polished Blackstone Bricks -> Cracked Polished Blackstone Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE_BRICKS),
-              template(BlockItemIds.CRACKED_POLISHED_BLACKSTONE_BRICKS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE_BRICKS),
+                    template(BlockItemIds.CRACKED_POLISHED_BLACKSTONE_BRICKS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cracked_blackstone_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_BLACKSTONE_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "bricks_to_cracked_bricks");
         //Cracked Polished Blackstone Bricks -> Polished Blackstone
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CRACKED_POLISHED_BLACKSTONE_BRICKS),
-              template(BlockItemIds.POLISHED_BLACKSTONE)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CRACKED_POLISHED_BLACKSTONE_BRICKS),
+                    template(BlockItemIds.POLISHED_BLACKSTONE)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_blackstone_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CRACKED_POLISHED_BLACKSTONE_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "from_cracked_bricks");
     }
 
     private void addCrusherQuartzRecipes(RecipeOutput output, String basePath) {
         //Quartz Block -> Smooth Quartz Block
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_BLOCK),
-              template(BlockItemIds.SMOOTH_QUARTZ)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_BLOCK),
+                    template(BlockItemIds.SMOOTH_QUARTZ)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_quartz_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.QUARTZ_BLOCK))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "to_smooth_quartz");
         //Quartz Slab -> Smooth Quartz Slab
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_SLAB),
-              template(BlockItemIds.SMOOTH_QUARTZ_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_SLAB),
+                    template(BlockItemIds.SMOOTH_QUARTZ_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_quartz_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.QUARTZ_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slab_to_smooth_slab");
         //Quartz Stairs -> Smooth Quartz Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_STAIRS),
-              template(BlockItemIds.SMOOTH_QUARTZ_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_STAIRS),
+                    template(BlockItemIds.SMOOTH_QUARTZ_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_quartz_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.QUARTZ_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_to_smooth_stairs");
         //Smooth Quartz Block -> Quartz Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SMOOTH_QUARTZ),
-              template(BlockItemIds.QUARTZ_BRICKS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.SMOOTH_QUARTZ),
+                    template(BlockItemIds.QUARTZ_BRICKS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("quartz_brick_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.SMOOTH_QUARTZ))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_to_bricks");
         //Quartz Bricks -> Chiseled Quartz Block
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_BRICKS),
-              template(BlockItemIds.CHISELED_QUARTZ_BLOCK)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_BRICKS),
+                    template(BlockItemIds.CHISELED_QUARTZ_BLOCK)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("chiseled_quartz_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.QUARTZ_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "bricks_to_chiseled");
         //Chiseled Quartz Block -> Quartz Pillar
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_QUARTZ_BLOCK),
-              template(BlockItemIds.QUARTZ_PILLAR)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_QUARTZ_BLOCK),
+                    template(BlockItemIds.QUARTZ_PILLAR)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("quartz_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.CHISELED_QUARTZ_BLOCK))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_to_pillar");
         //Quartz Pillar -> Quartz Block
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_PILLAR),
-              template(BlockItemIds.QUARTZ_BLOCK)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_PILLAR),
+                    template(BlockItemIds.QUARTZ_BLOCK)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("quartz_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.QUARTZ_PILLAR))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "from_pillar");
     }
 
     private void addCrusherGraniteRecipes(RecipeOutput output, String basePath) {
         //Polished Granite -> Granite
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_GRANITE),
-              template(BlockItemIds.GRANITE)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_GRANITE),
+                    template(BlockItemIds.GRANITE)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("granite_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_GRANITE))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "from_polished");
         //Polished Granite Stairs -> Granite Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_GRANITE_STAIRS),
-              template(BlockItemIds.GRANITE_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_GRANITE_STAIRS),
+                    template(BlockItemIds.GRANITE_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("granite_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_GRANITE_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_from_polished_stairs");
         //Polished Granite Slab -> Granite Slab
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_GRANITE_SLAB),
-              template(BlockItemIds.GRANITE_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_GRANITE_SLAB),
+                    template(BlockItemIds.GRANITE_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("granite_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_GRANITE_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slab_from_polished_slab");
     }
 
     private void addCrusherDioriteRecipes(RecipeOutput output, String basePath) {
         //Polished Diorite -> Diorite
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DIORITE),
-              template(BlockItemIds.DIORITE)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DIORITE),
+                    template(BlockItemIds.DIORITE)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("diorite_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_DIORITE))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "from_polished");
         //Polished Diorite Stairs -> Granite Diorite
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DIORITE_STAIRS),
-              template(BlockItemIds.DIORITE_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DIORITE_STAIRS),
+                    template(BlockItemIds.DIORITE_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("diorite_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_DIORITE_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_from_polished_stairs");
         //Polished Diorite Slab -> Diorite Slab
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DIORITE_SLAB),
-              template(BlockItemIds.DIORITE_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DIORITE_SLAB),
+                    template(BlockItemIds.DIORITE_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("diorite_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_DIORITE_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slab_from_polished_slab");
     }
 
     private void addCrusherAndesiteRecipes(RecipeOutput output, String basePath) {
         //Polished Andesite -> Andesite
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_ANDESITE),
-              template(BlockItemIds.ANDESITE)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_ANDESITE),
+                    template(BlockItemIds.ANDESITE)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("andesite_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_ANDESITE))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "from_polished");
         //Polished Andesite Stairs -> Andesite Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_ANDESITE_STAIRS),
-              template(BlockItemIds.ANDESITE_STAIRS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_ANDESITE_STAIRS),
+                    template(BlockItemIds.ANDESITE_STAIRS)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("andesite_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_ANDESITE_STAIRS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_from_polished_stairs");
         //Polished Andesite Slab -> Andesite Slab
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_ANDESITE_SLAB),
-              template(BlockItemIds.ANDESITE_SLAB)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_ANDESITE_SLAB),
+                    template(BlockItemIds.ANDESITE_SLAB)
+              ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("andesite_conversion"))
               .unlockedBy(hasCriterion(BlockItemIds.POLISHED_ANDESITE_SLAB))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slab_from_polished_slab");
     }
 
     private void addCrusherPrismarineRecipes(RecipeOutput output, String basePath) {
         //Prismarine -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE),
-              template(ItemIds.PRISMARINE_SHARD, 4)
-        ).group(Mekanism.rl("prismarine_shards"))
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE),
+                    template(ItemIds.PRISMARINE_SHARD, 4)
+              ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "shard_from_block");
         //Prismarine Slabs -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_SLAB),
-              template(ItemIds.PRISMARINE_SHARD, 2)
-        ).group(Mekanism.rl("prismarine_shards"))
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_SLAB),
+                    template(ItemIds.PRISMARINE_SHARD, 2)
+              ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE_SLAB))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "shard_from_slabs");
         //Prismarine Stairs -> Prismarine Shards
         // Note: Uses 1 -> 4 as he stone cutter allows for one prismarine block to one step
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_STAIRS),
-              template(ItemIds.PRISMARINE_SHARD, 4)
-        ).group(Mekanism.rl("prismarine_shards"))
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_STAIRS),
+                    template(ItemIds.PRISMARINE_SHARD, 4)
+              ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE_STAIRS))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "shard_from_stairs");
         //Prismarine Wall -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_WALL),
-              template(ItemIds.PRISMARINE_SHARD, 4)
-        ).group(Mekanism.rl("prismarine_shards"))
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_WALL),
+                    template(ItemIds.PRISMARINE_SHARD, 4)
+              ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE_WALL))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "shard_from_wall");
         //Prismarine Brick -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_BRICKS),
-              template(ItemIds.PRISMARINE_SHARD, 9)
-        ).group(Mekanism.rl("prismarine_shards"))
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_BRICKS),
+                    template(ItemIds.PRISMARINE_SHARD, 9)
+              ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE_BRICKS))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "shard_from_brick");
         //Prismarine Brick Slabs -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_BRICK_SLAB, 2),
-              template(ItemIds.PRISMARINE_SHARD, 9)
-        ).group(Mekanism.rl("prismarine_shards"))
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_BRICK_SLAB, 2),
+                    template(ItemIds.PRISMARINE_SHARD, 9)
+              ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE_BRICK_SLAB))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "shard_from_brick_slabs");
         //Prismarine Brick Stairs -> Prismarine Shards
         // Note: Uses 1 -> 9 as the stone cutter allows for one brick to one step
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_BRICK_STAIRS),
-              template(ItemIds.PRISMARINE_SHARD, 9)
-        ).group(Mekanism.rl("prismarine_shards"))
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_BRICK_STAIRS),
+                    template(ItemIds.PRISMARINE_SHARD, 9)
+              ).group(Mekanism.rl("prismarine_shards"))
               .unlockedBy(hasCriterion(BlockItemIds.PRISMARINE_BRICK_STAIRS))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "shard_from_brick_stairs");
     }
 
     private void addCrusherResinRecipes(RecipeOutput output, String basePath) {
         //Block of Resin -> Resin clumps
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.STORAGE_BLOCKS_RESIN),
-              template(BlockItemIds.RESIN_CLUMP, 9)
-        ).unlockedBy("has_resin_block", has(Tags.BlockItems.STORAGE_BLOCKS_RESIN))
+                    IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.STORAGE_BLOCKS_RESIN),
+                    template(BlockItemIds.RESIN_CLUMP, 9)
+              ).unlockedBy("has_resin_block", has(Tags.BlockItems.STORAGE_BLOCKS_RESIN))
+              .experience(UNPACKING_EXP)
               .save(output, basePath + "clump_from_block");
         //Resin Bricks -> Resin Blocks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.RESIN_BRICKS),
-              template(BlockItemIds.RESIN_BLOCK)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.RESIN_BRICKS),
+                    template(BlockItemIds.RESIN_BLOCK)
+              ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.RESIN_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "resin_bricks_to_block");
         //Chiseled Resin Bricks -> Resin Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_RESIN_BRICKS),
-              template(BlockItemIds.RESIN_BRICKS)
-        ).category(CrushingBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_RESIN_BRICKS),
+                    template(BlockItemIds.RESIN_BRICKS)
+              ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.CHISELED_RESIN_BRICKS))
+              .experience(DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_resin_bricks_to_bricks");
     }
 
@@ -963,11 +1075,12 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
                 group = "unaffected";
             }
             ItemStackToItemStackRecipeBuilder.crushing(
-                  IngredientCreatorAccess.item().from(entry.getKey()),
-                  new ItemStackTemplate(result.asItem())
-            ).category(CrushingBookCategory.BUILDING)
+                        IngredientCreatorAccess.item().from(entry.getKey()),
+                        new ItemStackTemplate(result.asItem())
+                  ).category(CrushingBookCategory.BUILDING)
                   .group(group)
                   .unlockedBy("has_axe", has(ItemTags.AXES))
+                  .experience(DECORATIVE_CONVERSION_EXP)
                   .save(output, basePath + RegistryUtils.getPath(result));
         }
     }
@@ -1079,10 +1192,11 @@ class CrusherRecipeProvider extends BaseSubRecipeProvider {
     private void biofuel(RecipeOutput output, String basePath, String filename, Holder<Item> bioFuelType, int countOutput, ItemStackIngredient input,
           Stream<RecipeCriterion> criteria) {
         ItemStackToItemStackRecipeBuilder.crushing(
-              input,
-              new ItemStackTemplate(bioFuelType, countOutput)
-        ).group(bioFuelType.key())
+                    input,
+                    new ItemStackTemplate(bioFuelType, countOutput)
+              ).group(bioFuelType.key())
               .unlockedBy(criteria)
+              .experience(0.15F)
               .save(output, basePath + filename);
     }
 }

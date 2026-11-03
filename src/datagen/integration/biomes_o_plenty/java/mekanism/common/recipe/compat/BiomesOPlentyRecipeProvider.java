@@ -13,6 +13,8 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
+import mekanism.common.recipe.impl.CrusherRecipeProvider;
+import mekanism.common.recipe.impl.EnrichingRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
@@ -47,6 +49,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
                     true,
                     template(MekanismBlocks.SALT_BLOCK.getItemHolder().key())
               ).unlockedBy("in_water", insideOf(Blocks.WATER))
+              .experience(0.15F)//Matches the rate vanilla has for drying sponges
               .save(output, basePath + "injecting/salt");
     }
 
@@ -117,6 +120,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(BOPItems.BLACK_SAND)
               ).category(EnrichingBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BOPItems.MOSSY_BLACK_SAND))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(this.output, basePath + "black_mossy_removal");
         //Mossy sand creation
         infuseMoss(BOPItems.BLACK_SAND, BOPItems.MOSSY_BLACK_SAND, "mossy_black_sand_addition", basePath + "mossy/conversion_black");
@@ -128,6 +132,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
                     new ItemStackTemplate(sand, 2)
               ).category(CrushingBookCategory.BUILDING)
               .unlockedBy(Arrays.stream(sandstones).map(this::hasCriterion))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(this.output, path);
     }
 
@@ -171,6 +176,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.DECORATIVE)
               .group(output)
               .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
+              .experience(EnrichingRecipeProvider.DYE_EXP)
               .save(this.output, basePath + "dye/" + color.getRegistryPrefix());
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         int flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
@@ -179,6 +185,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
                     chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.pick(color), flowerRate)
               ).group(output)
               .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
+              .experience(PigmentExtractingRecipeProvider.DYE_EXP)
               .save(this.output, basePath + "pigment_extracting/" + color.getRegistryPrefix());
     }
 
@@ -190,6 +197,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.DECORATIVE)
               .group(output)
               .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
+              .experience(EnrichingRecipeProvider.LARGE_DYE_EXP)
               .save(this.output, basePath + "dye/large_" + color.getRegistryPrefix());
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         int largeFlowerRate = 6 * PigmentExtractingRecipeProvider.DYE_RATE;
@@ -198,6 +206,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
                     chemicalTemplate(ChemicalIds.SIMPLE_PIGMENTS.pick(color), largeFlowerRate)
               ).group(output)
               .unlockedBy(Arrays.stream(inputs).map(this::hasCriterion))
+              .experience(PigmentExtractingRecipeProvider.LARGE_DYE_EXP)
               .save(this.output, basePath + "pigment_extracting/large_" + color.getRegistryPrefix());
     }
 
@@ -219,6 +228,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sphalerite_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_SPHALERITE))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "from_polished");
         //Polished Sphalerite Stairs -> Sphalerite Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -227,6 +237,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sphalerite_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_SPHALERITE_STAIRS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_from_polished");
         //Polished Sphalerite Slabs -> Sphalerite Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -235,6 +246,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sphalerite_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_SPHALERITE_SLAB))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slabs_from_polished");
         //Polished Sphalerite Walls -> Sphalerite Walls
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -243,6 +255,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sphalerite_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_SPHALERITE_WALL))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "wall_from_polished");
 
         //Sphalerite Bricks -> Polished Sphalerite
@@ -252,6 +265,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_sphalerite_conversion"))
               .unlockedBy(hasCriterion(BOPItems.SPHALERITE_BRICKS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "bricks_to_polished");
         //Sphalerite Brick Stairs -> Polished Sphalerite Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -260,6 +274,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_sphalerite_conversion"))
               .unlockedBy(hasCriterion(BOPItems.SPHALERITE_BRICK_STAIRS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_stairs_to_polished");
         //Sphalerite Brick Slabs -> Polished Sphalerite Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -268,6 +283,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_sphalerite_conversion"))
               .unlockedBy(hasCriterion(BOPItems.SPHALERITE_BRICK_SLAB))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_slabs_to_polished");
         //Sphalerite Brick Walls -> Polished Sphalerite Walls
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -276,6 +292,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_sphalerite_conversion"))
               .unlockedBy(hasCriterion(BOPItems.SPHALERITE_BRICK_WALL))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_wall_to_polished");
 
         //Chiseled Sphalerite -> Sphalerite Bricks
@@ -285,6 +302,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sphalerite_brick_conversion"))
               .unlockedBy(hasCriterion(BOPItems.CHISELED_SPHALERITE))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_to_brick");
 
     }
@@ -297,6 +315,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_sphalerite_conversion"))
               .unlockedBy(hasCriterion(BOPItems.SPHALERITE))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "to_polished");
         //Sphalerite Stairs -> Polished Sphalerite Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -305,6 +324,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_sphalerite_conversion"))
               .unlockedBy(hasCriterion(BOPItems.SPHALERITE_STAIRS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_to_polished");
         //Sphalerite Slabs -> Polished Sphalerite Slabs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -313,6 +333,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_sphalerite_conversion"))
               .unlockedBy(hasCriterion(BOPItems.SPHALERITE_SLAB))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slabs_to_polished");
         //Sphalerite Walls -> Polished Sphalerite Walls
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -321,6 +342,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_sphalerite_conversion"))
               .unlockedBy(hasCriterion(BOPItems.SPHALERITE_WALL))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "wall_to_polished");
 
         //Polished Sphalerite -> Sphalerite Bricks
@@ -330,6 +352,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("sphalerite_brick_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_SPHALERITE))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_to_brick");
         //Polished Sphalerite Stairs -> Sphalerite Brick Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -338,6 +361,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("sphalerite_brick_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_SPHALERITE_STAIRS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_stairs_to_brick");
         //Polished Sphalerite Slabs -> Sphalerite Brick Slabs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -346,6 +370,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("sphalerite_brick_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_SPHALERITE_SLAB))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_slabs_to_brick");
         //Polished Sphalerite Walls -> Sphalerite Brick Walls
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -354,6 +379,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("sphalerite_brick_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_SPHALERITE_WALL))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_wall_to_brick");
 
         //Sphalerite Bricks -> Chiseled Sphalerite
@@ -363,6 +389,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("chiseled_sphalerite_conversion"))
               .unlockedBy(hasCriterion(BOPItems.SPHALERITE_BRICKS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_to_chiseled");
     }
 
@@ -374,6 +401,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("orpiment_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_ORPIMENT))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "from_polished");
         //Polished Orpiment Stairs -> Orpiment Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -382,6 +410,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("orpiment_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_ORPIMENT_STAIRS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_from_polished");
         //Polished Orpiment Slabs -> Orpiment Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -390,6 +419,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("orpiment_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_ORPIMENT_SLAB))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slabs_from_polished");
         //Polished Orpiment Walls -> Orpiment Walls
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -398,6 +428,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("orpiment_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_ORPIMENT_WALL))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "wall_from_polished");
 
         //Orpiment Bricks -> Polished Orpiment
@@ -407,6 +438,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_orpiment_conversion"))
               .unlockedBy(hasCriterion(BOPItems.ORPIMENT_BRICKS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "bricks_to_polished");
         //Orpiment Brick Stairs -> Polished Orpiment Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -415,6 +447,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_orpiment_conversion"))
               .unlockedBy(hasCriterion(BOPItems.ORPIMENT_BRICK_STAIRS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_stairs_to_polished");
         //Orpiment Brick Slabs -> Polished Orpiment Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -423,6 +456,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_orpiment_conversion"))
               .unlockedBy(hasCriterion(BOPItems.ORPIMENT_BRICK_SLAB))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_slabs_to_polished");
         //Orpiment Brick Walls -> Polished Orpiment Walls
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -431,6 +465,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_orpiment_conversion"))
               .unlockedBy(hasCriterion(BOPItems.ORPIMENT_BRICK_WALL))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_wall_to_polished");
 
         //Chiseled Orpiment -> Orpiment Bricks
@@ -440,6 +475,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("orpiment_brick_conversion"))
               .unlockedBy(hasCriterion(BOPItems.CHISELED_ORPIMENT))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_to_brick");
     }
 
@@ -451,6 +487,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_orpiment_conversion"))
               .unlockedBy(hasCriterion(BOPItems.ORPIMENT))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "to_polished");
         //Orpiment Stairs -> Polished Orpiment Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -459,6 +496,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_orpiment_conversion"))
               .unlockedBy(hasCriterion(BOPItems.ORPIMENT_STAIRS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_to_polished");
         //Orpiment Slabs -> Polished Orpiment Slabs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -467,6 +505,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_orpiment_conversion"))
               .unlockedBy(hasCriterion(BOPItems.ORPIMENT_SLAB))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slabs_to_polished");
         //Orpiment Walls -> Polished Orpiment Walls
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -475,6 +514,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("polished_orpiment_conversion"))
               .unlockedBy(hasCriterion(BOPItems.ORPIMENT_WALL))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "wall_to_polished");
 
         //Polished Orpiment -> Orpiment Bricks
@@ -484,6 +524,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("orpiment_brick_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_ORPIMENT))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_to_brick");
         //Polished Orpiment Stairs -> Orpiment Brick Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -492,6 +533,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("orpiment_brick_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_ORPIMENT_STAIRS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_stairs_to_brick");
         //Polished Orpiment Slabs -> Orpiment Brick Slabs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -500,6 +542,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("orpiment_brick_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_ORPIMENT_SLAB))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_slabs_to_brick");
         //Polished Orpiment Walls -> Orpiment Brick Walls
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -508,6 +551,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("orpiment_brick_conversion"))
               .unlockedBy(hasCriterion(BOPItems.POLISHED_ORPIMENT_WALL))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "polished_wall_to_brick");
 
         //Orpiment Bricks -> Chiseled Orpiment
@@ -517,6 +561,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("chiseled_orpiment_conversion"))
               .unlockedBy(hasCriterion(BOPItems.ORPIMENT_BRICKS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_to_chiseled");
     }
 }

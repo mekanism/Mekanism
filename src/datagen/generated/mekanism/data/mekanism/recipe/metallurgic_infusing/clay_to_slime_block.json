@@ -4,6 +4,7 @@
     "amount": 40,
     "ingredient": "#mekanism:bio"
   },
+  "experience": 1.0,
   "group": "mekanism:slime",
   "item_input": {
     "count": 1,

@@ -17,6 +17,8 @@ import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.impl.BaseSubRecipeProvider;
+import mekanism.common.recipe.impl.EnrichingRecipeProvider;
+import mekanism.common.recipe.impl.PaintingRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
@@ -188,6 +190,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
             ).category(EnrichingBookCategory.BUILDING)
                   .group(MekanismAdditions.rl("slick_plastic_enriching"))
                   .unlockedBy("has_plastic", has(plastic))
+                  .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
                   .save(output, basePath + "enriching/" + color.getRegistryPrefix());
             //Recolor recipes
             registerRecolor(output, this.items, this.chemicals, result, slickTag, color, basePath, "slick_plastic_recolor");
@@ -216,6 +219,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
               new ItemStackTemplate(result.value())
         ).group(MekanismAdditions.rl(groupName.replace("recolor", "painting")))
               .unlockedBy("has_needed_dye", RecipeProviderUtil.has(items, dye == null ? blockType.key() : dye.getTag()))
+              .experience(PaintingRecipeProvider.RECOLORING_EXP)
               .save(output, basePath + "recolor/painting/" + colorString);
     }
 
@@ -241,6 +245,7 @@ class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
               new ItemStackTemplate(result.value())
         ).group(MekanismAdditions.rl(groupName.replace("recolor", "painting")))
               .unlockedBy("has_needed_dye", RecipeProviderUtil.has(items, dye == null ? blockType.key() : dye.getTag()))
+              .experience(PaintingRecipeProvider.RECOLORING_EXP)
               .save(output, basePath + "recolor/painting/" + colorString);
     }
 }

@@ -1,6 +1,7 @@
 {
   "type": "mekanism:combining",
   "category": "building",
+  "experience": 2.0,
   "extra_input": {
     "count": 1,
     "ingredient": "#c:netherracks"

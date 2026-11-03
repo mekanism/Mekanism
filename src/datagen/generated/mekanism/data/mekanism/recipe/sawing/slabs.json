@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "experience": 0.1,
   "group": "mekanism:sticks_and_dust",
   "input": {
     "count": 1,

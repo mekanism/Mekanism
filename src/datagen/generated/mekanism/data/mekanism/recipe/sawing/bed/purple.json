@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "experience": 0.1,
   "group": "mekanism:bed",
   "input": {
     "count": 1,
@@ -9,7 +10,7 @@
     "count": 3,
     "id": "minecraft:oak_planks"
   },
-  "secondary_chance": 1.0,
+  "secondary_chance": 0.9,
   "secondary_output": {
     "count": 3,
     "id": "minecraft:purple_wool"

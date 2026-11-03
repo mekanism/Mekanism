@@ -1,5 +1,6 @@
 {
   "type": "mekanism:chemical_infusing",
+  "experience": 9.0E-4,
   "left_input": {
     "amount": 1,
     "ingredient": "mekanism:hydrofluoric_acid"

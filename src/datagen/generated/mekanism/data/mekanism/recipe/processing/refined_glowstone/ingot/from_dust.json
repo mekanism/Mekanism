@@ -4,6 +4,7 @@
     "amount": 1,
     "ingredient": "mekanism:osmium"
   },
+  "experience": 0.7,
   "item_input": {
     "count": 1,
     "ingredient": "#c:dusts/glowstone"

@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "experience": 0.1,
   "input": {
     "count": 1,
     "ingredient": "minecraft:item_frame"
@@ -8,7 +9,7 @@
     "count": 8,
     "id": "minecraft:stick"
   },
-  "secondary_chance": 1.0,
+  "secondary_chance": 0.9,
   "secondary_output": {
     "id": "minecraft:leather"
   }

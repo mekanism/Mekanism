@@ -50,11 +50,12 @@ class RotaryRecipeProvider extends BaseSubRecipeProvider {
     private void addRotaryCondensentratorRecipe(RecipeOutput output, String basePath, ResourceKey<Chemical> chemical, Holder<Fluid> fluidOutput, TagKey<Fluid> fluidInput) {
         Holder<Chemical> chemicalHolder = chemicals.getOrThrow(chemical);
         RotaryRecipeBuilder.rotary(
-              IngredientCreatorAccess.fluid().from(this.fluids, fluidInput, 1),
-              IngredientCreatorAccess.chemicalStack().fromHolder(chemicalHolder, 1),
-              new ChemicalStackTemplate(chemicalHolder, 1),
-              new FluidStackTemplate(fluidOutput, 1)
-        ).unlockedBy("has_condensentrator", has(MekanismBlocks.ROTARY_CONDENSENTRATOR))
+                    IngredientCreatorAccess.fluid().from(this.fluids, fluidInput, 1),
+                    IngredientCreatorAccess.chemicalStack().fromHolder(chemicalHolder, 1),
+                    new ChemicalStackTemplate(chemicalHolder, 1),
+                    new FluidStackTemplate(fluidOutput, 1)
+              ).unlockedBy("has_condensentrator", has(MekanismBlocks.ROTARY_CONDENSENTRATOR))
+              .minisculeExperience(0.1F)
               .save(output, basePath + chemical.identifier().getPath());
     }
 }

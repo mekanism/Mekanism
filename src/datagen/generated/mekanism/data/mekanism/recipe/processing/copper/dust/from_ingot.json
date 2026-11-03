@@ -1,5 +1,6 @@
 {
   "type": "mekanism:crushing",
+  "experience": 0.175,
   "group": "mekanism:dust_copper",
   "input": {
     "count": 1,

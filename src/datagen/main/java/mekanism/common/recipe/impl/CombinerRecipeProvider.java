@@ -33,42 +33,42 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
         addCombinerWaxingRecipes(output, basePath + "wax/");
         //Gravel
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, ItemIds.FLINT),
-              IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.COBBLESTONES_NORMAL),
-              template(BlockItemIds.GRAVEL)
-        ).category(CombiningBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, ItemIds.FLINT),
+                    IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.COBBLESTONES_NORMAL),
+                    template(BlockItemIds.GRAVEL)
+              ).category(CombiningBookCategory.BUILDING)
               .unlockedBy(hasCriterion(ItemIds.FLINT))
               .save(output, basePath + "gravel");
         //Obsidian
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_OBSIDIAN, 4),
-              IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.COBBLESTONES_DEEPSLATE),
-              template(BlockItemIds.OBSIDIAN)
-        ).category(CombiningBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_OBSIDIAN, 4),
+                    IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.COBBLESTONES_DEEPSLATE),
+                    template(BlockItemIds.OBSIDIAN)
+              ).category(CombiningBookCategory.BUILDING)
               .unlockedBy("has_obsidian", has(MekanismTags.Items.DUSTS_OBSIDIAN))
               .save(output, basePath + "obsidian");
         //Rooted Dirt
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.HANGING_ROOTS, 3),
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DIRT),
-              template(BlockItemIds.ROOTED_DIRT)
-        ).category(CombiningBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.HANGING_ROOTS, 3),
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.DIRT),
+                    template(BlockItemIds.ROOTED_DIRT)
+              ).category(CombiningBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.DIRT))
               .save(output, basePath + "rooted_dirt");
         //Packed mud
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.CROPS_WHEAT),
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.MUD),
-              template(BlockItemIds.PACKED_MUD)
-        ).category(CombiningBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.CROPS_WHEAT),
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.MUD),
+                    template(BlockItemIds.PACKED_MUD)
+              ).category(CombiningBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.MUD))
               .save(output, basePath + "packed_mud");
         //Muddy mangrove roots
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.MANGROVE_ROOTS),
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.MUD),
-              template(BlockItemIds.MUDDY_MANGROVE_ROOTS)
-        ).category(CombiningBookCategory.BUILDING)
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.MANGROVE_ROOTS),
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.MUD),
+                    template(BlockItemIds.MUDDY_MANGROVE_ROOTS)
+              ).category(CombiningBookCategory.BUILDING)
               .unlockedBy(hasCriterion(BlockItemIds.MUD))
               .save(output, basePath + "muddy_mangrove_roots");
     }
@@ -76,90 +76,90 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
     private void addCombinerDyeRecipes(RecipeOutput output, String basePath) {
         //Black + white -> light gray
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLACK),
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE, 2),
-              template(ItemIds.DYE.lightGray(), 6)
-        ).category(CombiningBookCategory.DECORATIVE)
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLACK),
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE, 2),
+                    template(ItemIds.DYE.lightGray(), 6)
+              ).category(CombiningBookCategory.DECORATIVE)
               .group(ItemIds.DYE.lightGray())
               .unlockedBy("has_black_dye", has(Tags.Items.DYES_BLACK))
               .unlockedBy("has_white_dye", has(Tags.Items.DYES_WHITE))
               .save(output, basePath + "black_to_light_gray");
         //Blue + green -> cyan
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GREEN),
-              template(ItemIds.DYE.cyan(), 4)
-        ).category(CombiningBookCategory.DECORATIVE)
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GREEN),
+                    template(ItemIds.DYE.cyan(), 4)
+              ).category(CombiningBookCategory.DECORATIVE)
               .group(ItemIds.DYE.cyan())
               .unlockedBy("has_blue_dye", has(Tags.Items.DYES_BLUE))
               .unlockedBy("has_green_dye", has(Tags.Items.DYES_GREEN))
               .save(output, basePath + "cyan");
         //Gray + white -> light gray
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GRAY),
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
-              template(ItemIds.DYE.lightGray(), 4)
-        ).category(CombiningBookCategory.DECORATIVE)
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GRAY),
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
+                    template(ItemIds.DYE.lightGray(), 4)
+              ).category(CombiningBookCategory.DECORATIVE)
               .group(ItemIds.DYE.lightGray())
               .unlockedBy("has_gray_dye", has(Tags.Items.DYES_GRAY))
               .unlockedBy("has_white_dye", has(Tags.Items.DYES_WHITE))
               .save(output, basePath + "gray_to_light_gray");
         //Blue + white -> light blue
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
-              template(ItemIds.DYE.lightBlue(), 4)
-        ).category(CombiningBookCategory.DECORATIVE)
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
+                    template(ItemIds.DYE.lightBlue(), 4)
+              ).category(CombiningBookCategory.DECORATIVE)
               .group(ItemIds.DYE.lightBlue())
               .unlockedBy("has_blueu_dye", has(Tags.Items.DYES_BLUE))
               .unlockedBy("has_white_dye", has(Tags.Items.DYES_WHITE))
               .save(output, basePath + "light_blue");
         //Green + white -> lime
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GREEN),
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
-              template(ItemIds.DYE.lime(), 4)
-        ).category(CombiningBookCategory.DECORATIVE)
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GREEN),
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
+                    template(ItemIds.DYE.lime(), 4)
+              ).category(CombiningBookCategory.DECORATIVE)
               .group(ItemIds.DYE.lime())
               .unlockedBy("has_green_dye", has(Tags.Items.DYES_GREEN))
               .unlockedBy("has_white_dye", has(Tags.Items.DYES_WHITE))
               .save(output, basePath + "lime");
         //Purple + pink -> magenta
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_PURPLE),
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_PINK),
-              template(ItemIds.DYE.magenta(), 4)
-        ).category(CombiningBookCategory.DECORATIVE)
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_PURPLE),
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_PINK),
+                    template(ItemIds.DYE.magenta(), 4)
+              ).category(CombiningBookCategory.DECORATIVE)
               .group(ItemIds.DYE.magenta())
               .unlockedBy("has_purple_dye", has(Tags.Items.DYES_PURPLE))
               .unlockedBy("has_pink_dye", has(Tags.Items.DYES_PINK))
               .save(output, basePath + "magenta");
         //Red + yellow -> orange
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_YELLOW),
-              template(ItemIds.DYE.orange(), 4)
-        ).category(CombiningBookCategory.DECORATIVE)
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_YELLOW),
+                    template(ItemIds.DYE.orange(), 4)
+              ).category(CombiningBookCategory.DECORATIVE)
               .group(ItemIds.DYE.orange())
               .unlockedBy("has_red_dye", has(Tags.Items.DYES_RED))
               .unlockedBy("has_yellow_dye", has(Tags.Items.DYES_YELLOW))
               .save(output, basePath + "orange");
         //Red + white -> pink
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
-              template(ItemIds.DYE.pink(), 4)
-        ).category(CombiningBookCategory.DECORATIVE)
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
+                    template(ItemIds.DYE.pink(), 4)
+              ).category(CombiningBookCategory.DECORATIVE)
               .group(ItemIds.DYE.pink())
               .unlockedBy("has_red_dye", has(Tags.Items.DYES_RED))
               .unlockedBy("has_white_dye", has(Tags.Items.DYES_WHITE))
               .save(output, basePath + "pink");
         //Blue + red -> purple
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
-              IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
-              template(ItemIds.DYE.purple(), 4)
-        ).category(CombiningBookCategory.DECORATIVE)
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
+                    template(ItemIds.DYE.purple(), 4)
+              ).category(CombiningBookCategory.DECORATIVE)
               .group(ItemIds.DYE.purple())
               .unlockedBy("has_blue_dye", has(Tags.Items.DYES_BLUE))
               .unlockedBy("has_red_dye", has(Tags.Items.DYES_RED))
@@ -170,24 +170,24 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
         ItemStackIngredient glow = IngredientCreatorAccess.item().from(this.items, Tags.Items.DUSTS_GLOWSTONE);
         //Sweet Berries -> Glow Berries
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SWEET_BERRY_CROP),
-              glow,
-              template(BlockItemIds.GLOW_BERRY_CROP)
-        ).unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
+                    IngredientCreatorAccess.item().from(this.items, BlockItemIds.SWEET_BERRY_CROP),
+                    glow,
+                    template(BlockItemIds.GLOW_BERRY_CROP)
+              ).unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
               .save(output, basePath + "berries");
         //Ink Sac -> Glow Ink Sac
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, ItemIds.INK_SAC),
-              glow,
-              template(ItemIds.GLOW_INK_SAC)
-        ).unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
+                    IngredientCreatorAccess.item().from(this.items, ItemIds.INK_SAC),
+                    glow,
+                    template(ItemIds.GLOW_INK_SAC)
+              ).unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
               .save(output, basePath + "ink_sac");
         //Item Frame -> Glow Item Frame
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(this.items, ItemIds.ITEM_FRAME),
-              glow,
-              template(ItemIds.GLOW_ITEM_FRAME)
-        ).unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
+                    IngredientCreatorAccess.item().from(this.items, ItemIds.ITEM_FRAME),
+                    glow,
+                    template(ItemIds.GLOW_ITEM_FRAME)
+              ).unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
               .save(output, basePath + "item_frame");
     }
 
@@ -209,10 +209,10 @@ class CombinerRecipeProvider extends BaseSubRecipeProvider {
                 group = "wax_unaffected";
             }
             CombinerRecipeBuilder.combining(
-                  IngredientCreatorAccess.item().from(entry.getKey()),
-                  wax,
-                  new ItemStackTemplate(result.asItem())
-            ).category(CombiningBookCategory.BUILDING)
+                        IngredientCreatorAccess.item().from(entry.getKey()),
+                        wax,
+                        new ItemStackTemplate(result.asItem())
+                  ).category(CombiningBookCategory.BUILDING)
                   .group(group)
                   .unlockedBy("has_wax", has(ItemIds.HONEYCOMB))
                   .save(output, basePath + path);

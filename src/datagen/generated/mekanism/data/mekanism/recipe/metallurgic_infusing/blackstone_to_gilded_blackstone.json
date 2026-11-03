@@ -5,6 +5,7 @@
     "amount": 100,
     "ingredient": "#mekanism:gold"
   },
+  "experience": 0.35,
   "item_input": {
     "count": 1,
     "ingredient": "minecraft:blackstone"

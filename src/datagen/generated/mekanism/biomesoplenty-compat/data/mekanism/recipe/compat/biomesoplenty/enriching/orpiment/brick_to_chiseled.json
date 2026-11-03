@@ -1,6 +1,7 @@
 {
   "type": "mekanism:enriching",
   "category": "building",
+  "experience": 0.1,
   "group": "mekanism:chiseled_orpiment_conversion",
   "input": {
     "count": 1,

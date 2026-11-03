@@ -1,6 +1,7 @@
 {
   "type": "mekanism:combining",
   "category": "building",
+  "experience": 4.0,
   "extra_input": {
     "count": 1,
     "ingredient": "minecraft:basalt"

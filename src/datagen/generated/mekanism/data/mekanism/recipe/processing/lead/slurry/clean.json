@@ -4,6 +4,7 @@
     "amount": 1,
     "ingredient": "mekanism:dirty_lead"
   },
+  "experience": 5.0E-4,
   "fluid_input": {
     "amount": 5,
     "ingredient": "#minecraft:water"

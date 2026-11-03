@@ -1,6 +1,7 @@
 {
   "type": "mekanism:enriching",
   "category": "efficiency",
+  "experience": 0.625,
   "group": "mekanism:dust_uranium",
   "input": {
     "count": 1,

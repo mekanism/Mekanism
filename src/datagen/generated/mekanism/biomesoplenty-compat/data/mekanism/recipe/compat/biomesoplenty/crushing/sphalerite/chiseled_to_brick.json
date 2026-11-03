@@ -1,6 +1,7 @@
 {
   "type": "mekanism:crushing",
   "category": "building",
+  "experience": 0.1,
   "group": "mekanism:sphalerite_brick_conversion",
   "input": {
     "count": 1,

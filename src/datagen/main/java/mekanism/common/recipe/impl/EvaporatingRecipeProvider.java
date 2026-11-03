@@ -24,16 +24,18 @@ class EvaporatingRecipeProvider extends BaseSubRecipeProvider {
         String basePath = "evaporating/";
         //Brine
         FluidToFluidRecipeBuilder.evaporating(
-              IngredientCreatorAccess.fluid().from(fluids, FluidTags.WATER, 10),
-              MekanismFluids.BRINE.asTemplate(1)
-        ).unlockedBy("in_water", RecipeProvider.insideOf(Blocks.WATER))
+                    IngredientCreatorAccess.fluid().from(fluids, FluidTags.WATER, 10),
+                    MekanismFluids.BRINE.asTemplate(1)
+              ).unlockedBy("in_water", RecipeProvider.insideOf(Blocks.WATER))
+              .minisculeExperience(0.1F)
               .save(output, basePath + "brine");
         //Lithium
         FluidToFluidRecipeBuilder.evaporating(
-              IngredientCreatorAccess.fluid().from(fluids, MekanismTags.Fluids.BRINE, 10),
-              MekanismFluids.LITHIUM.asTemplate(1)
-        ).unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
+                    IngredientCreatorAccess.fluid().from(fluids, MekanismTags.Fluids.BRINE, 10),
+                    MekanismFluids.LITHIUM.asTemplate(1)
+              ).unlockedBy("has_salt", has(MekanismTags.Items.DUSTS_SALT))
               .unlockedBy("in_brine", RecipeProvider.insideOf(MekanismFluids.BRINE.getBlock()))
+              .minisculeExperience(0.15F)
               .save(output, basePath + "lithium");
     }
 }

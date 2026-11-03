@@ -12,7 +12,10 @@ import mekanism.api.recipes.book.CrushingBookCategory;
 import mekanism.api.recipes.book.EnrichingBookCategory;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.impl.CrusherRecipeProvider;
+import mekanism.common.recipe.impl.EnrichingRecipeProvider;
 import mekanism.common.recipe.impl.PaintingRecipeProvider;
+import mekanism.common.recipe.impl.SawingRecipeProvider;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.references.ItemIds;
@@ -40,6 +43,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, certusQuartz),
                     foreignTemplate(AEItemIds.CERTUS_QUARTZ_DUST)
               ).unlockedBy("has_certus_quartz", has(certusQuartz))
+              .experience(0.65F)
               .save(output, basePath + "certus_crystal_to_dust");
 
         //Fluix Crystal -> Fluix Dust
@@ -47,6 +51,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEItemIds.FLUIX_CRYSTAL),
                     foreignTemplate(AEItemIds.FLUIX_DUST)
               ).unlockedBy(hasForeignCriterion(AEItemIds.FLUIX_CRYSTAL))
+              .experience(0.65F)
               .save(output, basePath + "fluix_crystal_to_dust");
 
         //Sky Stone -> Sky Stone Dust
@@ -54,6 +59,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEBlockIds.SKY_STONE_BLOCK),
                     foreignTemplate(AEItemIds.SKY_DUST)
               ).unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BLOCK))
+              .experience(0.2F)
               .save(output, basePath + "sky_stone_to_dust");
 
         //Sky Stone Dust -> Sky Stone
@@ -61,6 +67,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEItemIds.SKY_DUST),
                     foreignTemplate(AEBlockIds.SKY_STONE_BLOCK)
               ).unlockedBy(hasForeignCriterion(AEItemIds.SKY_DUST))
+              .experience(0.1F)
               .save(output, basePath + "sky_stone_dust_to_sky_stone");
 
         //Ender Pearl -> Ender Dust
@@ -68,6 +75,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(items, ItemIds.ENDER_PEARL),
                     foreignTemplate(AEItemIds.ENDER_DUST)
               ).unlockedBy(hasCriterion(ItemIds.ENDER_PEARL))
+              .experience(0.65F)
               .save(output, basePath + "ender_pearl_to_dust");
 
         //Sand -> Silicon
@@ -75,6 +83,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, Tags.BlockItems.SANDS),
                     foreignTemplate(AEItemIds.SILICON)
               ).unlockedBy("has_sand", has(Tags.BlockItems.SANDS))
+              .experience(0.35F)
               .save(output, basePath + "sand_to_silicon");
 
         //Certus Dust to Silicon
@@ -82,6 +91,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(this.items, AEItemIds.CERTUS_QUARTZ_DUST),
                     foreignTemplate(AEItemIds.SILICON, 2)
               ).unlockedBy(hasForeignCriterion(AEItemIds.CERTUS_QUARTZ_DUST))
+              .experience(0.35F)
               .save(output, basePath + "certus_quartz_dust_to_silicon");
 
         //Crank
@@ -91,6 +101,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     template(ItemIds.COPPER_INGOT),
                     1
               ).unlockedBy(hasForeignCriterion(AEBlockIds.CRANK))
+              .experience(SawingRecipeProvider.UNCRAFTING_EXP)
               .save(output, basePath + "sawing/crank");
 
         addDecorativeRecipes(basePath + "decorative/");
@@ -106,6 +117,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                         foreignTemplate(entry.getValue())
                   ).group(Mekanism.rl("paint_ball"))
                   .unlockedBy("has_needed_dye", has(dyeColor.getTag()))
+                  .experience(0.1F)
                   .save(output, basePath + dyeColor);
         }
     }
@@ -128,6 +140,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_CHEST))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_chest_to_chest");
 
         //Smooth Sky Stone -> Sky Stone
@@ -137,6 +150,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_BLOCK))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_to_stone");
         //Smooth Sky Stone Slab -> Sky Stone Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -145,6 +159,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_SLAB))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_slab_to_slab");
         //Smooth Sky Stone Stairs -> Sky Stone Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -153,6 +168,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_STAIRS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_stairs_to_stairs");
         //Smooth Sky Stone Wall -> Sky Stone Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -161,6 +177,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_WALL))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_wall_to_wall");
 
         //Sky Stone Brick -> Smooth Sky Stone
@@ -170,6 +187,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_to_smooth");
         //Sky Stone Brick Slab -> Smooth Sky Stone Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -178,6 +196,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK_SLAB))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_slab_to_smooth_slab");
         //Sky Stone Brick Stairs -> Smooth Sky Stone Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -186,6 +205,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK_STAIRS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_stairs_to_smooth_stairs");
         //Sky Stone Brick Wall -> Smooth Sky Stone Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -194,6 +214,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK_WALL))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_wall_to_smooth_wall");
 
         //Sky Stone Small Brick -> Sky Stone Brick
@@ -203,6 +224,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_SMALL_BRICK))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "small_brick_to_brick");
         //Sky Stone Small Brick Slab -> Sky Stone Brick Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -211,6 +233,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "small_brick_slab_to_brick_slab");
         //Sky Stone Small Brick Stairs -> Sky Stone Brick Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -219,6 +242,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "small_brick_stairs_to_brick_stairs");
         //Sky Stone Small Brick Wall -> Sky Stone Brick Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -227,6 +251,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_SMALL_BRICK_WALL))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "small_brick_wall_to_brick_wall");
     }
 
@@ -238,6 +263,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_CHEST))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chest_to_smooth_chest");
 
         //Sky Stone Slab -> Smooth Sky Stone Slab
@@ -247,6 +273,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_SLAB))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slab_to_smooth_slab");
         //Sky Stone Stairs -> Smooth Sky Stone Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -255,6 +282,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_STAIRS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_to_smooth_stairs");
         //Sky Stone Wall -> Smooth Sky Stone Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -263,6 +291,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_sky_stone_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_WALL))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "wall_to_smooth_wall");
 
         //Smooth Sky Stone -> Sky Stone Brick
@@ -272,6 +301,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_BLOCK))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_to_brick");
         //Smooth Sky Stone Slab -> Sky Stone Brick Slab
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -280,6 +310,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_SLAB))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_slab_to_brick_slab");
         //Smooth Sky Stone Stairs -> Sky Stone Brick Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -288,6 +319,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_STAIRS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_stairs_to_brick_stairs");
         //Smooth Sky Stone Wall -> Sky Stone Brick Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -296,6 +328,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_SKY_STONE_WALL))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_wall_to_brick_wall");
 
         //Sky Stone Brick -> Sky Stone Small Brick
@@ -305,6 +338,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_small_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_to_small_brick");
         //Sky Stone Brick Slab -> Sky Stone Small Brick Slab
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -313,6 +347,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_small_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK_SLAB))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_slab_to_small_brick_slab");
         //Sky Stone Brick Stairs -> Sky Stone Small Brick Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -321,6 +356,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_small_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK_STAIRS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_stairs_to_small_brick_stairs");
         //Sky Stone Brick Wall -> Sky Stone Small Brick Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -329,6 +365,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("sky_stone_small_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SKY_STONE_BRICK_WALL))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_wall_to_small_brick_wall");
     }
 
@@ -345,6 +382,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_QUARTZ_BLOCK))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_to_block");
         //Smooth Certus Quartz Slab -> Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -353,6 +391,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_QUARTZ_SLAB))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_slab_to_slab");
         //Smooth Certus Quartz Stairs -> Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -361,6 +400,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_QUARTZ_STAIRS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_stairs_to_stairs");
         //Smooth Certus Quartz Wall -> Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -369,6 +409,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.SMOOTH_QUARTZ_WALL))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "smooth_wall_to_wall");
 
         //Certus Quartz Block -> Cut Certus Quartz Block
@@ -378,6 +419,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BLOCK))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "block_to_cut");
         //Certus Quartz Slab -> Cut Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -386,6 +428,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_SLAB))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slab_to_cut");
         //Certus Quartz Stairs -> Cut Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -394,6 +437,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_STAIRS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_to_cut");
         //Certus Quartz Wall -> Cut Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -402,6 +446,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_WALL))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "wall_to_cut");
 
         //Cut Certus Quartz Block -> Certus Quartz Brick
@@ -411,6 +456,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_BLOCK))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "cut_block_to_brick");
         //Cut Certus Quartz Slab -> Certus Quartz Brick Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -419,6 +465,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_SLAB))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "cut_slab_to_brick");
         //Cut Certus Quartz Stairs -> Certus Quartz Brick Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -427,6 +474,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_STAIRS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "cut_stairs_to_brick");
         //Cut Certus Quartz Wall -> Certus Quartz Brick Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -435,6 +483,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_WALL))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "cut_wall_to_brick");
 
         //Certus Quartz Bricks -> Chiseled Certus Quartz
@@ -444,6 +493,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICKS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_to_chiseled");
         //Certus Quartz Brick Slab -> Chiseled Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -452,6 +502,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICK_SLAB))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_slab_to_chiseled");
         //Certus Quartz Brick Stairs -> Chiseled Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -460,6 +511,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICK_STAIRS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_stairs_to_chiseled");
         //Certus Quartz Brick Wall -> Chiseled Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -468,6 +520,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICK_WALL))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_wall_to_chiseled");
 
         //Chiseled Certus Quartz Block -> Certus Quartz Pillar Block
@@ -477,6 +530,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_pillar_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_BLOCK))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_block_to_pillar");
         //Chiseled Certus Quartz Slab -> Certus Quartz Pillar Slab
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -485,6 +539,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_pillar_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_SLAB))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_slab_to_pillar_slab");
         //Chiseled Certus Quartz Stairs -> Certus Quartz Pillar Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -493,6 +548,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_pillar_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_STAIRS))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_stairs_to_pillar_stairs");
         //Chiseled Certus Quartz Wall -> Certus Quartz Pillar Wall
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -501,10 +557,10 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(CrushingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_pillar_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_WALL))
+              .experience(CrusherRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_wall_to_pillar_wall");
     }
 
-    //TODO - 26.3: certus quartz bricks, smooth certus quartz, cut certus quartz?
     private void addDecorativeQuartzEnrichingRecipes(String basePath) {
         //Certus Quartz Pillar Block -> Chiseled Certus Quartz Block
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -513,6 +569,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_PILLAR))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "pillar_to_chiseled_block");
         //Certus Quartz Pillar Slab -> Chiseled Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -521,6 +578,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_PILLAR_SLAB))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "pillar_slab_to_chiseled_slab");
         //Certus Quartz Pillar Stairs -> Chiseled Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -529,6 +587,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_PILLAR_STAIRS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "pillar_stairs_to_chiseled_stairs");
         //Certus Quartz Pillar Wall -> Chiseled Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -537,6 +596,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("chiseled_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_PILLAR_WALL))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "pillar_wall_to_chiseled_wall");
 
         //Chiseled Certus Quartz Block -> Certus Quartz Bricks
@@ -546,6 +606,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_BLOCK))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_block_to_brick");
         //Chiseled Certus Quartz Slab -> Certus Quartz Brick Slab
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -554,6 +615,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_SLAB))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_slab_to_brick");
         //Chiseled Certus Quartz Stairs -> Certus Quartz Brick Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -562,6 +624,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_STAIRS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_stairs_to_brick");
         //Chiseled Certus Quartz Wall -> Certus Quartz Brick Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -570,6 +633,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_brick_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CHISELED_QUARTZ_WALL))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "chiseled_wall_to_brick");
 
         //Certus Quartz Bricks -> Cut Certus Quartz
@@ -579,6 +643,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICKS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_block_to_cut");
         //Certus Quartz Brick Slab -> Cut Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -587,6 +652,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICK_SLAB))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_slab_to_cut");
         //Certus Quartz Brick Stairs -> Cut Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -595,6 +661,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICK_STAIRS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_stairs_to_cut");
         //Certus Quartz Brick Wall -> Cut Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -603,6 +670,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("cut_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BRICK_WALL))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "brick_wall_to_cut");
 
         //Cut Certus Quartz Block -> Certus Quartz Block
@@ -612,6 +680,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_BLOCK))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "cut_block_to_block");
         //Cut Certus Quartz Slab -> Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -620,6 +689,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_SLAB))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "cut_slab_to_slab");
         //Cut Certus Quartz Stairs -> Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -628,6 +698,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_STAIRS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "cut_stairs_to_stairs");
         //Cut Certus Quartz Wall -> Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -636,6 +707,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.CUT_QUARTZ_WALL))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "cut_wall_to_wall");
 
         //Certus Quartz Block -> Smooth Certus Quartz Block
@@ -645,6 +717,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_BLOCK))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "block_to_smooth_block");
         //Certus Quartz Slab -> Smooth Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -653,6 +726,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_SLAB))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "slab_to_smooth_slab");
         //Certus Quartz Stairs -> Smooth Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -661,6 +735,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_STAIRS))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "stairs_to_smooth_stairs");
         //Certus Quartz Wall -> Smooth Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -669,6 +744,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).category(EnrichingBookCategory.BUILDING)
               .group(Mekanism.rl("smooth_certus_quartz_conversion"))
               .unlockedBy(hasForeignCriterion(AEBlockIds.QUARTZ_WALL))
+              .experience(EnrichingRecipeProvider.DECORATIVE_CONVERSION_EXP)
               .save(output, basePath + "wall_to_smooth_wall");
     }
 }

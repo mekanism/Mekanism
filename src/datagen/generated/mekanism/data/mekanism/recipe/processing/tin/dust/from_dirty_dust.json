@@ -1,6 +1,7 @@
 {
   "type": "mekanism:enriching",
   "category": "efficiency",
+  "experience": 0.35,
   "group": "mekanism:dust_tin",
   "input": {
     "count": 1,

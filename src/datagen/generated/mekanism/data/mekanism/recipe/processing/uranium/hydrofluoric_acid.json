@@ -4,6 +4,7 @@
     "amount": 1,
     "ingredient": "mekanism:sulfuric_acid"
   },
+  "experience": 0.65,
   "group": "mekanism:hydrofluoric_acid",
   "item_input": {
     "count": 1,

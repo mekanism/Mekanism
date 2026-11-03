@@ -4,6 +4,7 @@
     "amount": 240,
     "ingredient": "#mekanism:refined_obsidian"
   },
+  "experience": 0.4,
   "item_input": {
     "count": 1,
     "ingredient": "#c:circuits/elite"

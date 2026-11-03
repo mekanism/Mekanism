@@ -1,5 +1,7 @@
 {
   "type": "mekanism:enriching",
+  "experience": 0.1,
+  "group": "lapis_lazuli",
   "input": {
     "count": 1,
     "ingredient": "#c:dusts/lapis"

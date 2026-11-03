@@ -4,6 +4,7 @@
     "amount": 32,
     "ingredient": "mekanism:red"
   },
+  "experience": 0.1,
   "group": "mekanism:paint_ball",
   "item_input": {
     "count": 1,

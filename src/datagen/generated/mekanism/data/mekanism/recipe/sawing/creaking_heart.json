@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "experience": 0.1,
   "input": {
     "count": 1,
     "ingredient": "minecraft:creaking_heart"
@@ -8,7 +9,7 @@
     "count": 2,
     "id": "minecraft:pale_oak_log"
   },
-  "secondary_chance": 1.0,
+  "secondary_chance": 0.9,
   "secondary_output": {
     "id": "minecraft:resin_block"
   }

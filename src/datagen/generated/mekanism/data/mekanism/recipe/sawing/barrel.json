@@ -1,5 +1,6 @@
 {
   "type": "mekanism:sawing",
+  "experience": 0.1,
   "group": "mekanism:planks_only",
   "input": {
     "count": 1,

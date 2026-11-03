@@ -9,6 +9,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe.BookInfo;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
+import org.jetbrains.annotations.Contract;
 
 public class ExtendedSmithingRecipeBuilder extends BaseRecipeBuilder<Void, BookInfo<Void>, ExtendedSmithingRecipeBuilder> {
 
@@ -22,6 +23,12 @@ public class ExtendedSmithingRecipeBuilder extends BaseRecipeBuilder<Void, BookI
         this.template = template;
         this.base = base;
         this.addition = addition;
+    }
+
+    @Override
+    @Contract("_ -> this")
+    public ExtendedSmithingRecipeBuilder experience(float experience) {
+        throw new UnsupportedOperationException("Smithing recipes cannot have an experience value set");
     }
 
     @Override

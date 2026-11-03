@@ -4,6 +4,7 @@
     "amount": 1,
     "ingredient": "mekanism:osmium"
   },
+  "experience": 1.0,
   "item_input": {
     "count": 1,
     "ingredient": "#c:dusts/refined_obsidian"

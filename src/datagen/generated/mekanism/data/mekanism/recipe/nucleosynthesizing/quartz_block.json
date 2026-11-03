@@ -5,6 +5,7 @@
     "ingredient": "mekanism:antimatter"
   },
   "duration": 500,
+  "experience": 0.9,
   "item_input": {
     "count": 1,
     "ingredient": "minecraft:light_gray_wool"
