@@ -192,6 +192,8 @@
   "advancements.mekanism.upgraded_mekasuit.title": "True Dedication",
   "advancements.mekanism.waste_removal.description": "Safe storage for your radioactive chemicals and disposal of Nuclear Waste",
   "advancements.mekanism.waste_removal.title": "Waste Removal",
+  "advancements.mekanism.xp_containment.description": "Start gathering experience from the automated processes your machines are performing",
+  "advancements.mekanism.xp_containment.title": "Outsourcing Enlightenment",
   "advancements.mekanism.yellow_cake.description": "Create some cake that must not be eaten",
   "advancements.mekanism.yellow_cake.title": "Look, Don't Eat",
   "alias.mekanism.auto_step": "Auto-Step",
@@ -316,6 +318,7 @@
   "alias.mekanism.unit.speed.dig": "Dig Speed",
   "alias.mekanism.unit.speed.hydrostatic": "Swim Speed",
   "alias.mekanism.upgrade.augment": "Augment",
+  "alias.mekanism.upgrade.experience": "Experience Gatherer",
   "alias.mekanism.upgrade.hole_filler": "Hole Filler",
   "alias.mekanism.upgrade.muffler": "Sound Muffler",
   "alias.mekanism.upgrade.overclock": "Overclocker",
@@ -2912,6 +2915,7 @@
   "status.mekanism.format": "Status: %1$s",
   "status.mekanism.ok": "All OK",
   "tab.mekanism.main": "Main",
+  "tab.mekanism.xp_containment": "Collect all stored experience.",
   "tag.block.c.ores.fluorite": "Fluorite Ores",
   "tag.block.c.ores.lead": "Lead Ores",
   "tag.block.c.ores.osmium": "Osmium Ores",
@@ -3318,6 +3322,8 @@
   "upgrade.mekanism.speed.description": "Increases speed of machinery.",
   "upgrade.mekanism.stone_generator": "Stone Generator",
   "upgrade.mekanism.stone_generator.description": "Generates stone or cobblestone as needed.",
+  "upgrade.mekanism.xp_containment": "Xp Containment",
+  "upgrade.mekanism.xp_containment.description": "Allows machines to gather experience from automatic processing.",
   "waste_barrel.mekanism.decay_rate": "Decay Rate: %1$s mB/t",
   "waste_barrel.mekanism.decay_rate.actual": "Actual Decay Rate: %1$s mB / %2$s ticks"
 }

@@ -3,6 +3,7 @@ package mekanism.client.gui.robit;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
+import mekanism.client.gui.element.tab.GuiXpContainmentTab;
 import mekanism.client.gui.recipe_book.MekanismRecipeBookComponent;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.entity.robit.RobitContainer;
@@ -27,6 +28,7 @@ public class GuiRobitSmelting extends GuiRobit<RobitContainer> {
         super.addGuiElements();
         addRenderableWidget(new GuiProgress(robit::getScaledProgress, ProgressType.BAR, this, 78, 38).recipeViewerCategory(robit))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, robit.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
+        addRenderableWidget(new GuiXpContainmentTab(this, robit, true, 34));
         //We don't have a spot to display energy errors on this GUI, so we instead just display it on the warning tab
         trackWarning(WarningType.NOT_ENOUGH_ENERGY, robit.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
     }

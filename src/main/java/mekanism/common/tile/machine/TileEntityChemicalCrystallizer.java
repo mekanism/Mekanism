@@ -98,6 +98,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     }
 
     @Override
+    protected boolean hasItemOutput() {
+        return true;
+    }
+
+    @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
         builder.addContainer(inputTank = BasicChemicalTank.input(MAX_CHEMICAL, this::containsRecipe, recipeCacheListener));
@@ -116,7 +121,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
         builder.addContainer(inputSlot = ChemicalInventorySlot.fill(inputTank, listener, 8, 65))
               .setSlotOverlay(SlotOverlay.PLUS);
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 129, 57))
-              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience)
+              .setOnTakeCheck(recipeCacheLookupMonitor)
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 5));
         return builder.build();

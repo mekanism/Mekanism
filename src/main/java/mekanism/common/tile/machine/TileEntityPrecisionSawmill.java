@@ -97,6 +97,11 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     }
 
     @Override
+    protected boolean hasItemOutput() {
+        return true;
+    }
+
+    @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         energyContainer = MachineEnergyContainer.input(this, recipeCacheUnpauseListener);
         return SingleConfigHolder.energy(energyContainer, this);
@@ -109,9 +114,9 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         //Note: We don't add the warning checks directly to the output slots as they are rendered as a singular slot
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35))
-              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience);
+              .setOnTakeCheck(recipeCacheLookupMonitor);
         builder.addContainer(secondaryOutputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 132, 35))
-              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience);
+              .setOnTakeCheck(recipeCacheLookupMonitor);
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 56, 53));
         return builder.build();
     }

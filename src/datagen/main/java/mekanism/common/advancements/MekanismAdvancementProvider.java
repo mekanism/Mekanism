@@ -55,6 +55,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.Items;
 
 public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
@@ -161,6 +162,10 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
         advancement(MekanismAdvancements.RUNNING_FREE)
               .displayAndCriterion(MekanismItems.FREE_RUNNERS, AdvancementType.TASK, true)
+              .save(output);
+        advancement(MekanismAdvancements.XP_CONTAINMENT)
+              .display(Items.EXPERIENCE_BOTTLE.builtInRegistryHolder(), AdvancementType.TASK, true)
+              .addCriterion(UpgradeIds.XP_CONTAINMENT.identifier().getPath(), hasUpgrade(UpgradeIds.XP_CONTAINMENT))
               .save(output);
         advancement(MekanismAdvancements.PLAYING_WITH_FIRE)
               .displayAndCriterion(MekanismItems.FLAMETHROWER, AdvancementType.TASK, false)

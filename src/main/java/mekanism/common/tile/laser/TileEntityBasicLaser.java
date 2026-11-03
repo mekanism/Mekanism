@@ -23,6 +23,7 @@ import mekanism.common.particle.LaserParticleData;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.WorldUtils;
+import mekanism.common.util.WorldUtils.DropsWithXp;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -442,17 +443,21 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     protected void handleBreakBlock(BlockState state, ServerLevel level, BlockPos hitPos, Player player, ItemStack tool, TransactionContext transaction) {
-        for (ItemEntity drop : WorldUtils.getDrops(state, level, hitPos, WorldUtils.getTileEntity(level, hitPos), player, tool, true)) {
+        DropsWithXp<ItemEntity> drops = WorldUtils.getDrops(state, level, hitPos, WorldUtils.getTileEntity(level, hitPos), player, tool, true);
+        for (ItemEntity drop : drops.items()) {
             if (!drop.getItem().isEmpty()) {
                 level.addFreshEntity(drop);
             }
         }
-        breakBlock(state, level, hitPos, tool);
+        breakBlock(state, level, hitPos, tool, drops.experience());
     }
 
-    protected final void breakBlock(BlockState state, ServerLevel level, BlockPos hitPos, ItemStack tool) {
+    protected final void breakBlock(BlockState state, ServerLevel level, BlockPos hitPos, ItemStack tool, int experience) {
         state.spawnAfterBreak(level, hitPos, tool, false);
         level.removeBlock(hitPos, false);
+        if (experience > 0) {
+            state.getBlock().popExperience(level, hitPos, experience);
+        }
         //TODO: We may want to evaluate at some point doing this with our fake player so that it is fired as the "cause"?
         level.gameEvent(GameEvent.BLOCK_DESTROY, hitPos, GameEvent.Context.of(null, state));
         level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_DESTROY_BLOCK, hitPos, Block.getId(state));

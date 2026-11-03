@@ -113,6 +113,7 @@ public enum MekanismAliases implements IAliasedTranslation {
     UPGRADE_OVERCLOCK("upgrade.overclock", "Overclocker"),
     UPGRADE_MUFFLER("upgrade.muffler", "Sound Muffler"),
     UPGRADE_HOLE_FILLER("upgrade.hole_filler", "Hole Filler"),
+    UPGRADE_EXPERIENCE("upgrade.experience", "Experience Gatherer"),
     INSTALLER_FACTORY("installer.factory", "Factory Installer"),
     INSTALLER_UPGRADE("installer.upgrade", "Machine Upgrade"),
     //Units

@@ -125,6 +125,11 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     }
 
     @Override
+    protected boolean hasItemOutput() {
+        return true;
+    }
+
+    @Override
     protected ProgressRecipeCacheLookupMonitor<NucleosynthesizingRecipe> createNewCacheMonitor() {
         return new NucleosynthesizerRecipeCacheLookupMonitor(this);
     }
@@ -150,7 +155,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         builder.addContainer(inputSlot = InputInventorySlot.at((itemType, _) -> containsRecipeAB(itemType, gasTank.resource()), this::containsRecipeA, recipeCacheListener, 26, 40))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 152, 40))
-              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience)
+              .setOnTakeCheck(recipeCacheLookupMonitor)
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 173, 69));
         return builder.build();

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "minecraft:experience_bottle",
+    "A": "#mekanism:alloys/infused",
+    "G": "#c:glass_blocks/cheap"
+  },
+  "pattern": [
+    " G ",
+    "A#A",
+    " G "
+  ],
+  "result": {
+    "components": {
+      "mekanism:upgrade_type": "mekanism:xp_containment"
+    },
+    "id": "mekanism:upgrade"
+  }
+}

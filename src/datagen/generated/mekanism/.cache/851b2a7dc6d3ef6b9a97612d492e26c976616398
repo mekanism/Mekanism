@@ -1,4 +1,4 @@
-// 26.3	2026-10-08T11:52:21.1985461	Registries for World (mekanism[0]): [mekanism]
+// 26.3	2026-11-03T12:28:15.458874	Registries for World (mekanism[0]): [mekanism]
 28bed520abe8965ec27645b95e7292ed32cc0a03 data/mekanism/damage_type/disassembling.json
 52821c8942920c69142705aae7c0b11038d53cdd data/mekanism/damage_type/flamethrower.json
 3569c860b35530ba451e7442db81f25f1491a9c9 data/mekanism/damage_type/laser.json
@@ -89,6 +89,7 @@ ed3276fdfddd740fec727d8e7ce1ed46f37cd6cb data/mekanism/mekanism/upgrade/energy.j
 5c3ca7eb06697d57601bec644956a289df2c363a data/mekanism/mekanism/upgrade/muffling.json
 69e45f8ef7e994f410895e5b8b12f8731dd4bc5c data/mekanism/mekanism/upgrade/speed.json
 08ec00560448021ec962a3df3c2e6912865ebf9e data/mekanism/mekanism/upgrade/stone_generator.json
+e58e43be1ca70849b4a5850672df8ed88c9d176e data/mekanism/mekanism/upgrade/xp_containment.json
 4b5486b95ec20bf30a7181d57b88a7fe001d61b6 data/mekanism/neoforge/biome_modifier/fluorite.json
 03f4b3f12d317f18c3b6306766836593d91d0ca0 data/mekanism/neoforge/biome_modifier/lead.json
 6fda868e072a610b8a24cce473fe23e10deee556 data/mekanism/neoforge/biome_modifier/osmium.json

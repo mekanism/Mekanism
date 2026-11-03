@@ -1,0 +1,10 @@
+{
+  "color": "lime",
+  "description": {
+    "translate": "upgrade.mekanism.xp_containment.description"
+  },
+  "display_name": {
+    "translate": "upgrade.mekanism.xp_containment"
+  },
+  "max": 1
+}

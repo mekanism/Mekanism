@@ -8,11 +8,13 @@ import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
+import mekanism.common.lib.SupportsXpContainment;
 import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.ByIdMap.OutOfBoundsStrategy;
 import net.minecraft.world.entity.Entity;
@@ -63,6 +65,11 @@ public record PacketEntityGuiInteract(GuiInteractionEntity entityInteraction, in
         CONTAINER_TRACK_SKIN_SELECT((_, player, extra) -> {
             if (player.containerMenu instanceof MainRobitContainer container) {
                 container.startTrackingServer(extra, container);
+            }
+        }),
+        COLLECT_XP((entity, player, _) -> {
+            if (entity instanceof SupportsXpContainment supportsXpContainment && supportsXpContainment.hasXpContainment() && player instanceof ServerPlayer serverPlayer) {
+                supportsXpContainment.popExperience(serverPlayer);
             }
         }),
 

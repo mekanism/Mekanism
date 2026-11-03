@@ -9,7 +9,11 @@ public class FactoryRecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?,
     private final Runnable setSortingNeeded;
 
     public FactoryRecipeCacheLookupMonitor(IRecipeLookupHandler<RECIPE> handler, int cacheIndex, Runnable setSortingNeeded) {
-        super(handler, cacheIndex);
+        this(handler, true, cacheIndex, setSortingNeeded);
+    }
+
+    public FactoryRecipeCacheLookupMonitor(IRecipeLookupHandler<RECIPE> handler, boolean hasItemOutput, int cacheIndex, Runnable setSortingNeeded) {
+        super(handler, hasItemOutput, cacheIndex);
         this.setSortingNeeded = setSortingNeeded;
     }
 

@@ -30,7 +30,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?,
 
     @Override
     protected ProgressRecipeCacheLookupMonitor<RECIPE> createNewCacheMonitor() {
-        return new ProgressRecipeCacheLookupMonitor<>(this);
+        return new ProgressRecipeCacheLookupMonitor<>(this, hasItemOutput());
     }
 
     public float getScaledProgress() {

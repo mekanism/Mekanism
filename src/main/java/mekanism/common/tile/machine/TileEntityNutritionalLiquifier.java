@@ -133,6 +133,12 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     }
 
     @Override
+    protected boolean hasItemOutput() {
+        //Sometimes
+        return true;
+    }
+
+    @Override
     public IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSideWithFluidConfig(this);
         builder.addContainer(fluidTank = BasicFluidTank.output(MAX_FLUID, recipeCacheUnpauseListener));
@@ -151,7 +157,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         builder.addContainer(inputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheListener, 26, 36))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(listener, 110, 36))
-              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience)
+              .setOnTakeCheck(recipeCacheLookupMonitor)
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR)));
         builder.addContainer(containerFillSlot = FluidInventorySlot.drain(fluidTank, listener, 155, 25));
         builder.addContainer(containerOutputSlot = OutputInventorySlot.at(listener, 155, 56));

@@ -14,12 +14,12 @@ public class ProgressRecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?
 
     private int operatingTicks;
 
-    public ProgressRecipeCacheLookupMonitor(IRecipeLookupHandler<RECIPE> handler) {
-        super(handler);
+    public ProgressRecipeCacheLookupMonitor(IRecipeLookupHandler<RECIPE> handler, boolean hasItemOutput) {
+        super(handler, hasItemOutput);
     }
 
-    public ProgressRecipeCacheLookupMonitor(IRecipeLookupHandler<RECIPE> handler, int cacheIndex) {
-        super(handler, cacheIndex);
+    public ProgressRecipeCacheLookupMonitor(IRecipeLookupHandler<RECIPE> handler, boolean hasItemOutput, int cacheIndex) {
+        super(handler, hasItemOutput, cacheIndex);
     }
 
     @Override

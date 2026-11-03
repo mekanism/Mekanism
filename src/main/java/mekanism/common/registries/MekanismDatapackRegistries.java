@@ -206,6 +206,7 @@ public class MekanismDatapackRegistries {
                   context.register(UpgradeIds.MUFFLING, Upgrade.create(UpgradeIds.MUFFLING, EnumColor.INDIGO));
                   context.register(UpgradeIds.SPEED, Upgrade.create(UpgradeIds.SPEED, EnumColor.RED, 8));
                   context.register(UpgradeIds.STONE_GENERATOR, Upgrade.create(UpgradeIds.STONE_GENERATOR, EnumColor.ORANGE));
+                  context.register(UpgradeIds.XP_CONTAINMENT, Upgrade.create(UpgradeIds.XP_CONTAINMENT, EnumColor.BRIGHT_GREEN));
               })
               .add(Registries.TRIM_MATERIAL, context -> {
                   DatapackRegistryUtils.registerTrimMaterial(context, MekanismTrimMaterials.ANTIMATTER, 0xD479E5);

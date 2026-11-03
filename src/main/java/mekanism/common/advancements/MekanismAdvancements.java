@@ -41,6 +41,7 @@ public class MekanismAdvancements {
     public static final MekanismAdvancement FACTORY = advancement(BASIC_CONTROL_CIRCUIT, "factory");
     public static final MekanismAdvancement CONFIGURATION_COPYING = advancement(BASIC_CONTROL_CIRCUIT, "configuration_copying");
     public static final MekanismAdvancement RUNNING_FREE = advancement(BASIC_CONTROL_CIRCUIT, "running_free");
+    public static final MekanismAdvancement XP_CONTAINMENT = advancement(BASIC_CONTROL_CIRCUIT, "xp_containment");
     public static final MekanismAdvancement PLAYING_WITH_FIRE = advancement(ADVANCED_CONTROL_CIRCUIT, "playing_with_fire");
     public static final MekanismAdvancement MACHINE_SECURITY = advancement(ELITE_CONTROL_CIRCUIT, "machine_security");
     public static final MekanismAdvancement SOLAR_NEUTRON_ACTIVATOR = advancement(ELITE_CONTROL_CIRCUIT, "sna");

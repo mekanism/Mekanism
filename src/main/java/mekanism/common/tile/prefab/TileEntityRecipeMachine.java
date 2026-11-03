@@ -14,17 +14,23 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -50,6 +56,9 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?, ?
     private IContentsListener recipeCacheUnpauseListener;
     @Nullable
     private IContentsListener recipeCacheUnpauseSaveOnlyListener;
+    @Nullable
+    private Holder<Upgrade> xpContainmentUpgrade;
+    private boolean clientHasContainmentUpgrade;
 
     protected TileEntityRecipeMachine(Holder<Block> blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes) {
         super(blockProvider, pos, state);
@@ -72,8 +81,10 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?, ?
 
     @SuppressWarnings("unchecked")
     protected CACHE_LOOKUP createNewCacheMonitor() {
-        return (CACHE_LOOKUP) new RecipeCacheLookupMonitor<>(this);
+        return (CACHE_LOOKUP) new RecipeCacheLookupMonitor<>(this, hasItemOutput());
     }
+
+    protected abstract boolean hasItemOutput();
 
     @Override
     public void loadAdditional(ValueInput input) {
@@ -92,6 +103,30 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?, ?
         super.preRemoveSideEffects(pos, state);
         if (this.level instanceof ServerLevel serverLevel) {
             recipeCacheLookupMonitor.getRecipesToAwardAndPopExperience(serverLevel, Vec3.atCenterOf(pos));
+        }
+    }
+
+    @Override
+    public void popExperience(ServerPlayer player) {
+        recipeCacheLookupMonitor.awardUsedRecipesAndPopExperience(player);
+    }
+
+    @Override
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        if (upgradesRegistry == null) {
+            xpContainmentUpgrade = null;
+        } else {
+            //Note: We don't have to reset this on tag reload, as datapack registries do not support being reloaded without the server restarting
+            xpContainmentUpgrade = upgradesRegistry.get(UpgradeIds.XP_CONTAINMENT).orElse(null);
+        }
+    }
+
+    @Override
+    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
+        if (upgrade.is(UpgradeIds.XP_CONTAINMENT) && level instanceof ServerLevel serverLevel) {
+            recipeCacheLookupMonitor.xpContainmentChanged(serverLevel, Vec3.atCenterOf(worldPosition), totalInstalled > 0);
         }
     }
 
@@ -133,6 +168,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?, ?
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.trackArray(trackedErrors);
+        container.track(SyncableBoolean.create(this::hasXpContainment, value -> clientHasContainmentUpgrade = value));
     }
 
     @Override
@@ -160,6 +196,15 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?, ?
         // recipe the same tick and thus create uneven spikes of CPU usage
         int checkOffset = ThreadLocalRandom.current().nextInt(RECIPE_CHECK_FREQUENCY);
         return () -> !tile.playersUsing.isEmpty() && tile.getLevel() != null && tile.getLevel().getGameTime() % RECIPE_CHECK_FREQUENCY == checkOffset;
+    }
+
+    @Override
+    public boolean hasXpContainment() {
+        if (level != null && level.isClientSide()) {
+            return clientHasContainmentUpgrade;
+        }
+        //If the xp containment upgrade has been removed as an upgrade, or if there is at least one installed
+        return xpContainmentUpgrade == null || getUpgrades(xpContainmentUpgrade) > 0;
     }
 
     @Nullable

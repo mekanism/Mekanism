@@ -99,9 +99,9 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
                 lookupMonitor.unpause();
             };
             OutputInventorySlot outputSlot = OutputInventorySlot.at(updateSortingAndUnpause, xPos, 57)
-                  .setOnTakeCheck(lookupMonitor::awardUsedRecipesAndPopExperience);
+                  .setOnTakeCheck(lookupMonitor);
             OutputInventorySlot secondaryOutputSlot = OutputInventorySlot.at(updateSortingAndUnpause, xPos, 77)
-                  .setOnTakeCheck(lookupMonitor::awardUsedRecipesAndPopExperience);
+                  .setOnTakeCheck(lookupMonitor);
             //Note: As we are an item factory that has comparator's based on items we can just use the monitor as a listener directly
             FactoryInputInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, lookupMonitor, xPos, 13);
             int index = i;

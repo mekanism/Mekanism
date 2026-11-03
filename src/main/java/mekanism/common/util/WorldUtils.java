@@ -446,29 +446,43 @@ public class WorldUtils {
     /// @implNote This method ignores [GameRules#BLOCK_DROPS], and does not drop experience.
     public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity, ItemStack tool) {
         if (world instanceof ServerLevel level) {
+            int experience;
             if (entity instanceof Player player) {
-                for (ItemStack dropStack : getDrops(state, level, pos, tile, entity, tool)) {
+                DropsWithXp<ItemStack> drops = getDrops(state, level, pos, tile, entity, tool);
+                for (ItemStack dropStack : drops.items()) {
                     if (player.addItem(dropStack)) {
                         world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 1.4F + 2.0F);
                     } else {
                         player.drop(dropStack, false, Prediction.SERVER_ONLY);
                     }
                 }
+                experience = drops.experience();
+                if (experience > 0) {
+                    //Note: We just skip trying to repair players items as it isn't worth reimplementing when none of our things even drop xp like that?
+                    //TODO - 26.3: Should we make it so that machines with the xp containment upgrade go through here instead when wrenched?
+                    player.giveExperiencePoints(experience);
+                    experience = 0;
+                }
             } else {
-                for (ItemEntity drop : getDrops(state, level, pos, tile, entity, tool, true)) {
+                DropsWithXp<ItemEntity> drops = getDrops(state, level, pos, tile, entity, tool, true);
+                for (ItemEntity drop : drops.items()) {
                     if (!drop.getItem().isEmpty()) {
                         level.addFreshEntity(drop);
                     }
                 }
+                experience = drops.experience();
             }
             //Note: This will have no effect for any mek blocks currently
             state.spawnAfterBreak(level, pos, tool, false);
+            if (experience > 0) {
+                state.getBlock().popExperience(level, pos, experience);
+            }
         }
         world.removeBlock(pos, false);
     }
 
     /// Gets the drops from breaking the block at a given spot, including any drops added via the BlockDropsEvent
-    public static List<ItemEntity> getDrops(BlockState state, ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity, ItemStack tool,
+    public static DropsWithXp<ItemEntity> getDrops(BlockState state, ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity, ItemStack tool,
           boolean applyMomentum) {
         List<ItemStack> rawDrops = Block.getDrops(state, level, pos, tile, entity, tool);
         List<ItemEntity> initialDrops = new ArrayList<>(rawDrops.size());
@@ -494,22 +508,33 @@ public class WorldUtils {
         BlockDropsEvent event = new BlockDropsEvent(level, pos, state, tile, initialDrops, entity, tool);
         NeoForge.EVENT_BUS.post(event);
         if (event.isCanceled()) {
-            return Collections.emptyList();
+            return DropsWithXp.none();
         }
-        return event.getDrops();
+        return new DropsWithXp<>(event.getDrops(), event.getDroppedExperience());
     }
 
     /// Gets the drops from breaking the block at a given spot, including any drops added via the BlockDropsEvent
-    public static List<ItemStack> getDrops(BlockState state, ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity, ItemStack tool) {
-        List<ItemEntity> drops = getDrops(state, level, pos, tile, entity, tool, false);
-        List<ItemStack> result = new ArrayList<>(drops.size());
-        for (ItemEntity drop : drops) {
+    public static DropsWithXp<ItemStack> getDrops(BlockState state, ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity, ItemStack tool) {
+        DropsWithXp<ItemEntity> drops = getDrops(state, level, pos, tile, entity, tool, false);
+        List<ItemStack> result = new ArrayList<>(drops.items().size());
+        for (ItemEntity drop : drops.items()) {
             ItemStack stack = drop.getItem();
             if (!stack.isEmpty()) {
                 result.add(stack);
             }
         }
-        return result;
+        return new DropsWithXp<>(result, drops.experience());
+    }
+
+
+    public record DropsWithXp<ITEM>(List<ITEM> items, int experience) {
+
+        private static final DropsWithXp<?> NONE = new DropsWithXp<>(Collections.emptyList(), 0);
+
+        @SuppressWarnings("unchecked")
+        public static <ITEM> DropsWithXp<ITEM> none() {
+            return (DropsWithXp<ITEM>) NONE;
+        }
     }
 
     /// Gets the distance to a defined positions.

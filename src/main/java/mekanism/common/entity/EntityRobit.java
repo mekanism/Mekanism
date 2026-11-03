@@ -197,7 +197,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         getNavigation().setCanFloat(false);
         setPathfindingMalus(PathType.UNPASSABLE_RAIL, 0.0F);
         setCustomNameVisible(true);
-        recipeCacheLookupMonitor = new ProgressRecipeCacheLookupMonitor<>(this);
+        recipeCacheLookupMonitor = new ProgressRecipeCacheLookupMonitor<>(this, true);
         // Choose a random offset to check for all errors. We do this to ensure that not every tile tries to recheck errors for every
         // recipe the same tick and thus create uneven spikes of CPU usage
         int checkOffset = level().getRandom().nextInt(TileEntityRecipeMachine.RECIPE_CHECK_FREQUENCY);
@@ -223,7 +223,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had (like if it had xp logic or something)
         // Yes we probably do want this to allow for experience. Though maybe we should allow for experience for all our recipes/smelting recipes? V10
         OutputInventorySlot smeltingOutputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35)
-              .setOnTakeCheck(recipeCacheLookupMonitor::awardUsedRecipesAndPopExperience);
+              .setOnTakeCheck(recipeCacheLookupMonitor);
         inventorySlots.add(smeltingOutputSlot);
         smeltingInputSlot.tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         smeltingOutputSlot.tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
@@ -446,6 +446,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         if (level() instanceof ServerLevel serverLevel) {
             recipeCacheLookupMonitor.getRecipesToAwardAndPopExperience(serverLevel, position());
         }
+    }
+
+    @Override
+    public void popExperience(ServerPlayer player) {
+        recipeCacheLookupMonitor.awardUsedRecipesAndPopExperience(player);
     }
 
     public float getScaledProgress() {

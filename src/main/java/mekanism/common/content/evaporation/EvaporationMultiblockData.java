@@ -59,6 +59,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -130,7 +131,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
 
     public EvaporationMultiblockData(TileEntityThermalEvaporationBlock tile) {
         super(tile);
-        recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
+        recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this, false);
         recheckAllRecipeErrors = TileEntityRecipeMachine.shouldRecheckAllErrors(tile);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
@@ -210,11 +211,17 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     public void usedRecipesLoaded(Map<ResourceKey<Recipe<?>>, Integer> loadedUsage) {
-        recipeCacheLookupMonitor.usedRecipesLoaded(loadedUsage);
+        //We can just ignore the last recipe used thing as we only act on fluids so can't extract it, and we don't have upgrades so just always support it
+        recipeCacheLookupMonitor.usedRecipesLoaded(loadedUsage, null, 0);
     }
 
     public Reference2IntMap<ResourceKey<Recipe<?>>> getRecipesUsed() {
         return recipeCacheLookupMonitor.getRecipesUsed();
+    }
+
+    @Override
+    public void popExperience(ServerPlayer player) {
+        recipeCacheLookupMonitor.awardUsedRecipesAndPopExperience(player);
     }
 
     @Override

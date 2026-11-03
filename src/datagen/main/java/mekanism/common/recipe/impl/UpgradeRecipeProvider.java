@@ -14,6 +14,7 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -66,6 +67,14 @@ class UpgradeRecipeProvider extends BaseSubRecipeProvider {
               .unlockedBy("has_water_bucket", has(Tags.Items.BUCKETS_WATER))
               .unlockedBy("has_lava_bucket", has(Tags.Items.BUCKETS_LAVA))
               .save(output, basePath + getSaveName(UpgradeIds.STONE_GENERATOR));
+        ExtendedShapedRecipeBuilder.shaped(IUpgradeHelper.INSTANCE.asTemplate(upgrades, UpgradeIds.XP_CONTAINMENT))
+              .pattern(UPGRADE_PATTERN)
+              .define(MekanismRecipeProvider.GLASS_CHAR, this.items, Tags.BlockItems.GLASS_BLOCKS_CHEAP)
+              .define(Pattern.CONSTANT, this.items, ItemIds.EXPERIENCE_BOTTLE)
+              .define(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
+              .category(RecipeCategory.TOOLS)
+              .unlockedBy("has_xp_bottle", has(ItemIds.EXPERIENCE_BOTTLE))
+              .save(output, basePath + getSaveName(UpgradeIds.XP_CONTAINMENT));
     }
 
     private void addUpgradeRecipe(RecipeOutput output, ResourceKey<Upgrade> upgrade, TagKey<Item> dustTag, String basePath) {

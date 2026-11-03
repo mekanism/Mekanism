@@ -316,6 +316,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
         addUpgrade(rv, upgrades, UpgradeIds.ENERGY, MekanismAliases.ENERGY_STORAGE);
         addUpgrade(rv, upgrades, UpgradeIds.MUFFLING, MekanismAliases.UPGRADE_MUFFLER);
         addUpgrade(rv, upgrades, UpgradeIds.ANCHOR, MekanismAliases.CHUNK_LOADER);
+        addUpgrade(rv, upgrades, UpgradeIds.XP_CONTAINMENT, MekanismAliases.UPGRADE_EXPERIENCE);
         addUpgrade(rv, upgrades, UpgradeIds.STONE_GENERATOR, MekanismAliases.UPGRADE_HOLE_FILLER);
         rv.addItemHolderAliases(List.of(
               MekanismItems.BASIC_TIER_INSTALLER,

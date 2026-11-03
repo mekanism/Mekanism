@@ -1,6 +1,7 @@
 {
   "values": [
     "#mekanism:upgrade_support/simple_machine",
-    "mekanism:muffling"
+    "mekanism:muffling",
+    "mekanism:xp_containment"
   ]
 }

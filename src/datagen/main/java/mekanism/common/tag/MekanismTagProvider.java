@@ -610,12 +610,13 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(MekanismTags.Upgrades.SIMPLE_MACHINE_UPGRADES).add(UpgradeIds.ENERGY, UpgradeIds.SPEED);
         getBuilder(MekanismTags.Upgrades.DEFAULT_MACHINE_UPGRADES)
               .add(MekanismTags.Upgrades.SIMPLE_MACHINE_UPGRADES)
-              .add(UpgradeIds.MUFFLING);
+              .add(UpgradeIds.MUFFLING, UpgradeIds.XP_CONTAINMENT);
         getBuilder(MekanismTags.Upgrades.DEFAULT_ADVANCED_MACHINE_UPGRADES)
               .add(MekanismTags.Upgrades.DEFAULT_MACHINE_UPGRADES)
               .add(UpgradeIds.CHEMICAL);
         getBuilder(MekanismTags.Upgrades.ANCHOR_ONLY).add(UpgradeIds.ANCHOR);
         getBuilder(MekanismTags.Upgrades.MUFFLING_ONLY).add(UpgradeIds.MUFFLING);
+        getBuilder(MekanismTags.Upgrades.XP_CONTAINMENT_ONLY).add(UpgradeIds.XP_CONTAINMENT);
 
         getBuilder(MekanismTags.Upgrades.DIMENSIONAL_STABILIZER)
               .add(UpgradeIds.ENERGY);
@@ -626,7 +627,10 @@ public class MekanismTagProvider extends BaseTagProvider {
               .add(UpgradeIds.FILTER);
         getBuilder(MekanismTags.Upgrades.DIGITAL_MINER)
               .add(MekanismTags.Upgrades.SIMPLE_MACHINE_UPGRADES)
-              .add(UpgradeIds.ANCHOR, UpgradeIds.STONE_GENERATOR);
+              .add(UpgradeIds.ANCHOR, UpgradeIds.STONE_GENERATOR, UpgradeIds.XP_CONTAINMENT);
+        getBuilder(MekanismTags.Upgrades.NUCLEOSYNTHESIZER)
+              .add(UpgradeIds.MUFFLING, UpgradeIds.XP_CONTAINMENT);
+
     }
 
     private void addColorableItems() {

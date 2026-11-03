@@ -18,6 +18,7 @@ public class UpgradeIds {
     public static final ResourceKey<Upgrade> MUFFLING = key("muffling");
     public static final ResourceKey<Upgrade> SPEED = key("speed");
     public static final ResourceKey<Upgrade> STONE_GENERATOR = key("stone_generator");
+    public static final ResourceKey<Upgrade> XP_CONTAINMENT = key("xp_containment");
 
     private static ResourceKey<Upgrade> key(Identifier id) {
         return ResourceKey.create(MekanismRegistries.Keys.UPGRADES, id);

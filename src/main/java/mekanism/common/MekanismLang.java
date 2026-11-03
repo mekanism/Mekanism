@@ -352,6 +352,7 @@ public enum MekanismLang implements ILangEntry {
     STORAGE_ACCESS_FAIL("personal_storage", "cannot_access"),
     //Tab
     MAIN_TAB("tab", "main"),
+    XP_CONTAINMENT_TAB("tab", "xp_containment"),
     //Evaporation
     EVAPORATION_HEIGHT("evaporation", "height"),
     FLUID_PRODUCTION("evaporation", "fluid_production"),

@@ -14,13 +14,13 @@ import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.client.gui.recipe_book.BookComponentType;
-import mekanism.client.gui.recipe_book.MekanismRecipeBookComponent;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.IWarningTracker;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
+import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
@@ -42,9 +42,10 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         dynamicSlots = true;
     }
 
+    @Nullable
     @Override
-    protected MekanismRecipeBookComponent<?> createRecipeBookComponent() {
-        return new MekanismRecipeBookComponent<>(menu, tile.getMultiblock(), registryAccess(), this::font);
+    protected IRecipeLookupHandler<?> getRecipeLookupHandler() {
+        return tile.getMultiblock();
     }
 
     @Override

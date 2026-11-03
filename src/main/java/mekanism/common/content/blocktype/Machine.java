@@ -5,7 +5,6 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateFacing;
-import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.block.attribute.Attributes;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
@@ -24,8 +23,7 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE
         add(new AttributeParticleFX()
               .add(ParticleTypes.SMOKE, rand -> new Vec3(rand.nextDouble() * 0.6 - 0.3, rand.nextDouble() * 6.0 / 16.0, 0.52))
               .add(DustParticleOptions.REDSTONE, rand -> new Vec3(rand.nextDouble() * 0.6 - 0.3, rand.nextDouble() * 6.0 / 16.0, 0.52)));
-        add(Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), Attributes.INVENTORY, Attributes.SECURITY, Attributes.REDSTONE, Attributes.COMPARATOR,
-              AttributeUpgradeSupport.DEFAULT_MACHINE_UPGRADES);
+        add(Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), Attributes.INVENTORY, Attributes.SECURITY, Attributes.REDSTONE, Attributes.COMPARATOR);
     }
 
     public static class FactoryMachine<TILE extends TileEntityMekanism> extends Machine<TILE> {

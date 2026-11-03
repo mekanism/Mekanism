@@ -191,6 +191,8 @@
   "advancements.mekanism.upgraded_mekasuit.title": "uoᴉʇɐɔᴉpǝᗡ ǝnɹ⟘",
   "advancements.mekanism.waste_removal.description": "ǝʇsɐM ɹɐǝꞁɔnN ɟo ꞁɐsodsᴉp puɐ sꞁɐɔᴉɯǝɥɔ ǝʌᴉʇɔɐoᴉpɐɹ ɹnoʎ ɹoɟ ǝᵷɐɹoʇs ǝɟɐS",
   "advancements.mekanism.waste_removal.title": "ꞁɐʌoɯǝᴚ ǝʇsɐM",
+  "advancements.mekanism.xp_containment.description": "ᵷuᴉɯɹoɟɹǝd ǝɹɐ sǝuᴉɥɔɐɯ ɹnoʎ sǝssǝɔoɹd pǝʇɐɯoʇnɐ ǝɥʇ ɯoɹɟ ǝɔuǝᴉɹǝdxǝ ᵷuᴉɹǝɥʇɐᵷ ʇɹɐʇS",
+  "advancements.mekanism.xp_containment.title": "ʇuǝɯuǝʇɥᵷᴉꞁuƎ ᵷuᴉɔɹnosʇnO",
   "advancements.mekanism.yellow_cake.description": "uǝʇɐǝ ǝq ʇou ʇsnɯ ʇɐɥʇ ǝʞɐɔ ǝɯos ǝʇɐǝɹƆ",
   "advancements.mekanism.yellow_cake.title": "ʇɐƎ ʇ,uoᗡ 'ʞooꞀ",
   "alias.mekanism.auto_step": "dǝʇS-oʇnⱯ",
@@ -315,6 +317,7 @@
   "alias.mekanism.unit.speed.dig": "pǝǝdS ᵷᴉᗡ",
   "alias.mekanism.unit.speed.hydrostatic": "pǝǝdS ɯᴉʍS",
   "alias.mekanism.upgrade.augment": "ʇuǝɯᵷnⱯ",
+  "alias.mekanism.upgrade.experience": "ɹǝɹǝɥʇɐ⅁ ǝɔuǝᴉɹǝdxƎ",
   "alias.mekanism.upgrade.hole_filler": "ɹǝꞁꞁᴉℲ ǝꞁoH",
   "alias.mekanism.upgrade.muffler": "ɹǝꞁɟɟnW punoS",
   "alias.mekanism.upgrade.overclock": "ɹǝʞɔoꞁɔɹǝʌO",
@@ -2909,6 +2912,7 @@
   "status.mekanism.format": "%s :snʇɐʇS",
   "status.mekanism.ok": "ꞰO ꞁꞁⱯ",
   "tab.mekanism.main": "uᴉɐW",
+  "tab.mekanism.xp_containment": "˙ǝɔuǝᴉɹǝdxǝ pǝɹoʇs ꞁꞁɐ ʇɔǝꞁꞁoƆ",
   "tag.block.c.ores.fluorite": "sǝɹO ǝʇᴉɹonꞁℲ",
   "tag.block.c.ores.lead": "sǝɹO pɐǝꞀ",
   "tag.block.c.ores.osmium": "sǝɹO ɯnᴉɯsO",
@@ -3315,6 +3319,8 @@
   "upgrade.mekanism.speed.description": "˙ʎɹǝuᴉɥɔɐɯ ɟo pǝǝds sǝsɐǝɹɔuI",
   "upgrade.mekanism.stone_generator": "ɹoʇɐɹǝuǝ⅁ ǝuoʇS",
   "upgrade.mekanism.stone_generator.description": "˙pǝpǝǝu sɐ ǝuoʇsǝꞁqqoɔ ɹo ǝuoʇs sǝʇɐɹǝuǝ⅁",
+  "upgrade.mekanism.xp_containment": "ʇuǝɯuᴉɐʇuoƆ dX",
+  "upgrade.mekanism.xp_containment.description": "˙ᵷuᴉssǝɔoɹd ɔᴉʇɐɯoʇnɐ ɯoɹɟ ǝɔuǝᴉɹǝdxǝ ɹǝɥʇɐᵷ oʇ sǝuᴉɥɔɐɯ sʍoꞁꞁⱯ",
   "waste_barrel.mekanism.decay_rate": "ʇ/ᗺɯ %s :ǝʇɐᴚ ʎɐɔǝᗡ",
   "waste_barrel.mekanism.decay_rate.actual": "sʞɔᴉʇ %2$s / ᗺɯ %1$s :ǝʇɐᴚ ʎɐɔǝᗡ ꞁɐnʇɔⱯ"
 }

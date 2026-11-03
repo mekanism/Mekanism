@@ -1,0 +1,34 @@
+{
+  "parent": "mekanism:basic_control_circuit",
+  "criteria": {
+    "xp_containment": {
+      "conditions": {
+        "items": [
+          {
+            "predicates": {
+              "mekanism:upgrades": "mekanism:xp_containment"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.xp_containment.description"
+    },
+    "icon": {
+      "id": "minecraft:experience_bottle"
+    },
+    "title": {
+      "translate": "advancements.mekanism.xp_containment.title"
+    }
+  },
+  "requirements": [
+    [
+      "xp_containment"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

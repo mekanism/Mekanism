@@ -73,10 +73,12 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueInput;
@@ -109,6 +111,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
     private boolean sortingNeeded = true;
     //Note: We store this in a long as if the per tick is high for multiple recipes it could be over an int
     private long lastUsage = 0;
+    @Nullable
+    private Holder<Upgrade> xpContainmentUpgrade;
+    private boolean clientHasContainmentUpgrade;
 
     /// This machine's factory type.
     protected final FactoryType type;
@@ -331,6 +336,31 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
         return recipeCacheLookupMonitors[cacheIndex].getCachedRecipe(cacheIndex);
     }
 
+    @Override
+    public boolean hasXpContainment() {
+        if (level != null && level.isClientSide()) {
+            return clientHasContainmentUpgrade;
+        }
+        //If the xp containment upgrade has been removed as an upgrade, or if there is at least one installed
+        return xpContainmentUpgrade == null || getUpgrades(xpContainmentUpgrade) > 0;
+    }
+
+    @Override
+    public void popExperience(ServerPlayer player) {
+        RecipeCacheLookupMonitor.awardUsedRecipesAndPopExperience(player, getAllRecipesUsed(), hasXpContainment(), recipeCacheLookupMonitors);
+    }
+
+    @Override
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        if (upgradesRegistry == null) {
+            xpContainmentUpgrade = null;
+        } else {
+            //Note: We don't have to reset this on tag reload, as datapack registries do not support being reloaded without the server restarting
+            xpContainmentUpgrade = upgradesRegistry.get(UpgradeIds.XP_CONTAINMENT).orElse(null);
+        }
+    }
+
     public BooleanSupplier getWarningCheck(RecipeError error, int processIndex) {
         return errorTracker.getWarningCheck(error, processIndex);
     }
@@ -406,7 +436,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
         super.preRemoveSideEffects(pos, state);
         if (this.level instanceof ServerLevel serverLevel) {
             //Combine total amount crafted
-            RecipeCacheLookupMonitor.getRecipesToAwardAndPopExperience(serverLevel, Vec3.atCenterOf(pos), getAllRecipesUsed());
+            RecipeCacheLookupMonitor.getRecipesToAwardAndPopExperience(serverLevel, Vec3.atCenterOf(pos), getAllRecipesUsed(), hasXpContainment());
         }
     }
 
@@ -451,6 +481,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
         if (upgrade.is(UpgradeIds.SPEED)) {
             ticksRequired = UpgradeUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
             operationsPerTick = UpgradeUtils.getOperationsPerTick(BASE_TICKS_REQUIRED, 1, upgrade, totalInstalled);
+        } else if (upgrade.is(UpgradeIds.XP_CONTAINMENT) && level instanceof ServerLevel serverLevel) {
+            for (FactoryRecipeCacheLookupMonitor<RECIPE> recipeCacheLookupMonitor : recipeCacheLookupMonitors) {
+                recipeCacheLookupMonitor.xpContainmentChanged(serverLevel, Vec3.atCenterOf(worldPosition), totalInstalled > 0);
+            }
         }
     }
 
@@ -478,6 +512,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
         container.track(SyncableLong.create(this::getLastUsage, value -> lastUsage = value));
         container.track(SyncableBoolean.create(this::isSorting, value -> sorting = value));
         container.track(SyncableInt.create(this::getTicksRequired, value -> ticksRequired = value));
+        container.track(SyncableBoolean.create(this::hasXpContainment, value -> clientHasContainmentUpgrade = value));
     }
 
     @Override

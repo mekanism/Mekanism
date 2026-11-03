@@ -3,12 +3,14 @@ package mekanism.client.gui;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
+import mekanism.client.gui.element.tab.GuiXpContainmentTab;
 import mekanism.client.gui.element.tab.window.GuiRecipeBookWindowTab;
 import mekanism.client.gui.element.tab.window.GuiUpgradeWindowTab;
 import mekanism.client.gui.recipe_book.MekanismRecipeBookComponent;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
+import mekanism.common.lib.SupportsXpContainment;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
@@ -42,8 +44,14 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     }
 
     @Nullable
+    protected IRecipeLookupHandler<?> getRecipeLookupHandler() {
+        return tile instanceof IRecipeLookupHandler<?> recipeLookupHandler ? recipeLookupHandler : null;
+    }
+
+    @Nullable
     protected MekanismRecipeBookComponent<?> createRecipeBookComponent() {
-        if (tile instanceof IRecipeLookupHandler<?> recipeLookupHandler) {
+        IRecipeLookupHandler<?> recipeLookupHandler = getRecipeLookupHandler();
+        if (recipeLookupHandler != null) {
             return new MekanismRecipeBookComponent<>(menu, recipeLookupHandler, registryAccess(), this::font);
         }
         return null;
@@ -75,6 +83,12 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
         //Note: We check if the capability is present rather than calling hasSecurity so that we don't add the tab to the security desk
         if (tile.getLevel() != null && IBlockSecurityUtils.INSTANCE.securityCapability(tile.getLevel(), tile.getBlockPos(), tile) != null) {
             addSecurityTab();
+        }
+        IRecipeLookupHandler<?> recipeLookupHandler = getRecipeLookupHandler();
+        if (recipeLookupHandler != null) {
+            addRenderableWidget(new GuiXpContainmentTab(this, recipeLookupHandler, false, 90));
+        } else if (tile instanceof SupportsXpContainment supportsXpContainment) {
+            addRenderableWidget(new GuiXpContainmentTab(this, supportsXpContainment, false, 90, false));
         }
     }
 

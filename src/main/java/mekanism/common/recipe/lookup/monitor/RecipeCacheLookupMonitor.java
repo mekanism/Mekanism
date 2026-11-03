@@ -46,6 +46,13 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
     public static final Codec<Map<ResourceKey<Recipe<?>>, Integer>> RECIPES_USED_CODEC = Codec.unboundedMap(Recipe.KEY_CODEC, Codec.INT);
 
     private final Reference2IntOpenHashMap<ResourceKey<Recipe<?>>> recipesUsed = new Reference2IntOpenHashMap<>();
+    private final boolean hasItemOutput;
+    @Nullable
+    private ResourceKey<Recipe<?>> lastRecipeUsed;
+    private int lastRecipeCraftedAmount;
+    private boolean resetLastRecipe;
+    private boolean hadContainment;
+
     private final IRecipeLookupHandler<RECIPE> handler;
     protected final int cacheIndex;
     @Nullable
@@ -53,12 +60,13 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
     protected boolean hasNoRecipe;
     protected boolean shouldUnpause;
 
-    public RecipeCacheLookupMonitor(IRecipeLookupHandler<RECIPE> handler) {
-        this(handler, 0);
+    public RecipeCacheLookupMonitor(IRecipeLookupHandler<RECIPE> handler, boolean hasItemOutput) {
+        this(handler, hasItemOutput, 0);
     }
 
-    public RecipeCacheLookupMonitor(IRecipeLookupHandler<RECIPE> handler, int cacheIndex) {
+    public RecipeCacheLookupMonitor(IRecipeLookupHandler<RECIPE> handler, boolean hasItemOutput, int cacheIndex) {
         this.handler = handler;
+        this.hasItemOutput = hasItemOutput;
         this.cacheIndex = cacheIndex;
     }
 
@@ -123,9 +131,12 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
         }
     }
 
-    public void usedRecipesLoaded(Map<ResourceKey<Recipe<?>>, Integer> loadedUsage) {
+    public void usedRecipesLoaded(Map<ResourceKey<Recipe<?>>, Integer> loadedUsage, @Nullable ResourceKey<Recipe<?>> lastRecipeUsed, int lastRecipeCraftedAmount) {
         this.recipesUsed.clear();
         this.recipesUsed.putAll(loadedUsage);
+        this.resetLastRecipe = false;
+        this.lastRecipeUsed = lastRecipeUsed;
+        this.lastRecipeCraftedAmount = lastRecipeUsed == null ? 0 : lastRecipeCraftedAmount;
     }
 
     public Reference2IntMap<ResourceKey<Recipe<?>>> getRecipesUsed() {
@@ -133,11 +144,23 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
     }
 
     public void loadAdditional(ValueInput input) {
-        usedRecipesLoaded(input.read(SerializationConstants.RECIPES_USED, RECIPES_USED_CODEC).orElse(Collections.emptyMap()));
+        this.hadContainment = input.getBooleanOr(SerializationConstants.HAS_CONTAINMENT, false);
+        usedRecipesLoaded(
+              input.read(SerializationConstants.RECIPES_USED, RECIPES_USED_CODEC).orElse(Collections.emptyMap()),
+              hasItemOutput ? input.read(SerializationConstants.LAST_RECIPE_USED, Recipe.KEY_CODEC).orElse(null) : null,
+              hasItemOutput ? input.getIntOr(SerializationConstants.LAST_RECIPE_AMOUNT, 0) : 0
+        );
     }
 
     public void saveAdditional(ValueOutput output) {
         output.store(SerializationConstants.RECIPES_USED, RECIPES_USED_CODEC, this.recipesUsed);
+        output.putBoolean(SerializationConstants.HAS_CONTAINMENT, this.hadContainment);
+        if (this.hasItemOutput) {
+            output.storeNullable(SerializationConstants.LAST_RECIPE_USED, Recipe.KEY_CODEC, this.lastRecipeUsed);
+            if (this.lastRecipeCraftedAmount > 0) {
+                output.putInt(SerializationConstants.LAST_RECIPE_AMOUNT, this.lastRecipeCraftedAmount);
+            }
+        }
     }
 
     @Nullable
@@ -200,7 +223,20 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
                 return;
             }
             this.recipesUsed.addTo(id, operations);
+            if (hasItemOutput) {
+                if (!resetLastRecipe && this.lastRecipeUsed == id) {
+                    this.lastRecipeCraftedAmount += operations;
+                } else {
+                    this.lastRecipeUsed = id;
+                    this.lastRecipeCraftedAmount = operations;
+                    this.resetLastRecipe = false;
+                }
+            }
         }
+    }
+
+    public void outputDecreased() {
+        resetLastRecipe = true;
     }
 
     @Nullable
@@ -214,31 +250,70 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
     }
 
     public void awardUsedRecipesAndPopExperience(ServerPlayer player) {
-        List<RecipeHolder<?>> recipesToAward = getRecipesToAwardAndPopExperience(player.level(), player.position());
-        player.awardRecipes(recipesToAward);
-        //Collect any input items
-        //TODO: Vanilla's usage of the items for triggerRecipeCrafted makes no sense outside of instant craft recipes.
-        // This is somewhere in between what vanilla does for furnaces and other containers in terms of furnaces use whatever current items including result item,
-        // other containers just use inputs, but also the inputs might be out of date (or empty) compared to what it was crafted with for the furnace (just like ours)
-        List<ItemStack> items = new ArrayList<>();
-        for (IResourceContainer<?> inputContainer : handler.getRecipeContainers(cacheIndex).inputs()) {
-            if (inputContainer instanceof IInventorySlot slot) {
-                //Note: Similar to vanilla we add the stacks even if they are empty
-                items.add(slot.asItemStack());
+        awardUsedRecipesAndPopExperience(player, recipesUsed, handler.hasXpContainment(), this);
+    }
+
+    public void xpContainmentChanged(ServerLevel level, Vec3 position, boolean hasContainment) {
+        if (hasContainment != this.hadContainment) {
+            if (this.hadContainment) {
+                //We lost containment, drop stored xp on the ground
+                getRecipesToAwardAndPopExperience(level, position);
             }
+            //Note: Regardless of the direction we need to void the cached recipe information to avoid installing and uninstalled the upgrade letting you gain xp from previous ones
+            this.recipesUsed.clear();
+            if (!this.hadContainment && this.lastRecipeUsed != null && this.lastRecipeCraftedAmount > 0) {
+                //Persist the last recipe that was being crafted for how much xp we have from it so far
+                this.recipesUsed.put(this.lastRecipeUsed, this.lastRecipeCraftedAmount);
+            }
+            this.lastRecipeUsed = null;
+            this.lastRecipeCraftedAmount = 0;
+            this.hadContainment = hasContainment;
+        }
+    }
+
+    public static void awardUsedRecipesAndPopExperience(ServerPlayer player, Reference2IntMap<ResourceKey<Recipe<?>>> recipesUsed, boolean dropXp, RecipeCacheLookupMonitor<?>... monitors) {
+        ServerLevel level = player.level();
+        List<RecipeHolder<?>> recipesToAward = getRecipesToAwardAndPopExperience(level, player.position(), recipesUsed, dropXp);
+        player.awardRecipes(recipesToAward);
+        List<ItemStack> items = new ArrayList<>();
+        for (RecipeCacheLookupMonitor<?> monitor : monitors) {
+            if (monitor.hasItemOutput && !dropXp) {
+                //Note: We skip checking if resetLastRecipe is true or false, as in general it likely will be true here if the item was just removed
+                if (monitor.lastRecipeUsed != null && monitor.lastRecipeCraftedAmount > 0) {
+                    Optional<RecipeHolder<?>> holder = level.recipeAccess().byKey(monitor.lastRecipeUsed);
+                    //noinspection OptionalIsPresent - Capturing lambda
+                    if (holder.isPresent()) {
+                        awardExperience(level, player.position(), holder.get(), monitor.lastRecipeCraftedAmount);
+                    }
+                }
+                monitor.resetLastRecipe = false;
+                monitor.lastRecipeUsed = null;
+                monitor.lastRecipeCraftedAmount = 0;
+            }
+            //Collect any input items
+            //TODO: Vanilla's usage of the items for triggerRecipeCrafted makes no sense outside of instant craft recipes.
+            // This is somewhere in between what vanilla does for furnaces and other containers in terms of furnaces use whatever current items including result item,
+            // other containers just use inputs, but also the inputs might be out of date (or empty) compared to what it was crafted with for the furnace (just like ours)
+            for (IResourceContainer<?> inputContainer : monitor.handler.getRecipeContainers(monitor.cacheIndex).inputs()) {
+                if (inputContainer instanceof IInventorySlot slot) {
+                    //Note: Similar to vanilla we add the stacks even if they are empty
+                    items.add(slot.asItemStack());
+                }
+            }
+            monitor.recipesUsed.clear();
         }
         for (RecipeHolder<?> recipe : recipesToAward) {
             player.triggerRecipeCrafted(recipe, items);
         }
-        this.recipesUsed.clear();
     }
 
     //Note: We don't call this from preRemoveSideEffects for the TEP as there is no concept of a multiblock being removed
     public List<RecipeHolder<?>> getRecipesToAwardAndPopExperience(ServerLevel level, Vec3 position) {
-        return getRecipesToAwardAndPopExperience(level, position, recipesUsed);
+        return getRecipesToAwardAndPopExperience(level, position, recipesUsed, handler.hasXpContainment());
     }
 
-    public static List<RecipeHolder<?>> getRecipesToAwardAndPopExperience(ServerLevel level, Vec3 position, Reference2IntMap<ResourceKey<Recipe<?>>> recipesUsed) {
+    public static List<RecipeHolder<?>> getRecipesToAwardAndPopExperience(ServerLevel level, Vec3 position, Reference2IntMap<ResourceKey<Recipe<?>>> recipesUsed, boolean dropXp) {
+        //Note: We only drop xp if the upgrade is present, even when the block/entity is destroyed
         List<RecipeHolder<?>> recipesToAward = new ArrayList<>();
         for (ObjectIterator<Reference2IntMap.Entry<ResourceKey<Recipe<?>>>> iterator = Reference2IntMaps.fastIterator(recipesUsed); iterator.hasNext(); ) {
             Reference2IntMap.Entry<ResourceKey<Recipe<?>>> entry = iterator.next();
@@ -246,16 +321,22 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
             if (holder.isPresent()) {
                 RecipeHolder<?> recipeHolder = holder.get();
                 recipesToAward.add(recipeHolder);
-                float experience = switch (recipeHolder.value()) {
-                    case MekanismRecipe<?, ?, ?> recipe -> recipe.experience();
-                    case SmeltingRecipe recipe -> recipe.experience();
-                    default -> 0;
-                };
-                if (experience > 0) {
-                    AbstractFurnaceBlockEntity.createExperience(level, position, entry.getIntValue(), experience);
+                if (dropXp) {
+                    awardExperience(level, position, recipeHolder, entry.getIntValue());
                 }
             }
         }
         return recipesToAward;
+    }
+
+    private static void awardExperience(ServerLevel level, Vec3 position, RecipeHolder<?> recipeHolder, int crafted) {
+        float experience = switch (recipeHolder.value()) {
+            case MekanismRecipe<?, ?, ?> recipe -> recipe.experience();
+            case SmeltingRecipe recipe -> recipe.experience();
+            default -> 0;
+        };
+        if (experience > 0) {
+            AbstractFurnaceBlockEntity.createExperience(level, position, crafted, experience);
+        }
     }
 }

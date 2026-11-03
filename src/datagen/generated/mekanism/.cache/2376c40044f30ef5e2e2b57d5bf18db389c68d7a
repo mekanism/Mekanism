@@ -1,4 +1,4 @@
-// 26.3	2026-11-03T10:40:37.2116226	Registries for Reloadable (mekanism[0]): [mekanism]
+// 26.3	2026-11-03T16:31:01.9260492	Registries for Reloadable (mekanism[0]): [mekanism]
 cc0f85f030befc152798d57b040f40fe7b1e67be data/mekanism/advancement/advanced_control_circuit.json
 e00a71a74d7c77c23cd21bbb6af2460c9035af75 data/mekanism/advancement/advanced_qio_drive.json
 c6b503463ec0aa67902a2d9e498b907d2d1702aa data/mekanism/advancement/alarm.json
@@ -2012,6 +2012,7 @@ d9f6c19a497139b8446ed8a808a7d68b503aa57c data/mekanism/advancement/recipes/tools
 4b753a2cc738384448577eba2a1371e7d329257a data/mekanism/advancement/recipes/tools/upgrade/muffling.json
 bc6965cb61357d05a011b654ff6cc3a003ccf547 data/mekanism/advancement/recipes/tools/upgrade/speed.json
 981391291ea2853234ce2b9ce415bd3730dc03e7 data/mekanism/advancement/recipes/tools/upgrade/stone_generator.json
+6a3183f9ec5d704576838f6b54254d9e0a9bf001 data/mekanism/advancement/recipes/tools/upgrade/xp_containment.json
 fe3febf22e3e8942bd6b9666b22e75117178780e data/mekanism/advancement/recipes/tools/vein_mining_unit.json
 3c115555639277589cae29360c2aaf1feed44c53 data/mekanism/advancement/recipes/tools/vision_enhancement_unit.json
 06ee95bfa9160186dd726b208942f0878f18ec4f data/mekanism/advancement/recipes/transportation/elytra_unit.json
@@ -2059,6 +2060,7 @@ d91ca14a8f6aaabaded80d402ed136fb87f0465f data/mekanism/advancement/teleporter.js
 0c0bde94101399ab90b61af6811ce026040b81f8 data/mekanism/advancement/ultimate_qio_drive.json
 5452e0fb1dacc784b225ebfaa7717f2336c314ed data/mekanism/advancement/upgraded_mekasuit.json
 da76ef0e42e0b5ded731ae5850253391afd37491 data/mekanism/advancement/waste_removal.json
+4b3b5f2f507d0bc7aa0295ddf55a4e3748b41233 data/mekanism/advancement/xp_containment.json
 91f031de1c7d5ac294e0f16fe4a2a8e6745471cb data/mekanism/advancement/yellow_cake.json
 277606d858f3a444900e92e2c2d8177f731a7e8c data/mekanism/context_int_provider/cooking/time_bio_fuel.json
 eafa39ea4e8aa486c45c9481faf24f7d2f57954c data/mekanism/context_int_provider/cooking/time_bio_fuel_block.json
@@ -2180,7 +2182,7 @@ d01e4747d4afea1b46ac2721e052570969c26e00 data/mekanism/loot_table/blocks/formula
 99e1e8bd09b6a70ff60a621a79ddd6c867eff8f1 data/mekanism/loot_table/blocks/isotopic_centrifuge.json
 fcca1dc646d51a8d69b2bbfd41358c6470c61724 data/mekanism/loot_table/blocks/laser.json
 0f84d53ba77a3f6fe16596fb0ac6960afe9a8713 data/mekanism/loot_table/blocks/laser_amplifier.json
-da8dbfc9d8e3734fe21797da2e5ab5e03869d225 data/mekanism/loot_table/blocks/laser_tractor_beam.json
+6a0591596aabec4fb62810cf76e7e8e9a8f2af78 data/mekanism/loot_table/blocks/laser_tractor_beam.json
 c74a3c289c9c759afd2ecb607d050b7e7514d5d5 data/mekanism/loot_table/blocks/lead_ore.json
 3b730f5088d621439a276bb0ddbd3a9870b4adfd data/mekanism/loot_table/blocks/logistical_sorter.json
 c039b11fcb70d91201bc006e91a67dffdf967e0b data/mekanism/loot_table/blocks/metallurgic_infuser.json
@@ -2210,7 +2212,7 @@ cfacf6994bfc9704ffbf372cf8c25ce1ba203f84 data/mekanism/loot_table/blocks/resisti
 2865de9cbae5af2dd57ef36d177c7b321aea891e data/mekanism/loot_table/blocks/rotary_condensentrator.json
 0d42e4a63b4d2887b2f31ed4b60c8f8bd7f72112 data/mekanism/loot_table/blocks/security_desk.json
 378e2587fec2f8ddb525ad6a04bbb1043ebd8186 data/mekanism/loot_table/blocks/seismic_vibrator.json
-e2a3dd2126af3fbf5171476505e23712008c5602 data/mekanism/loot_table/blocks/solar_neutron_activator.json
+576394d37a08ce1bf4d453eeb95ad905a2e30b4b data/mekanism/loot_table/blocks/solar_neutron_activator.json
 414c1feddacac6501a922eb71a2de492c2539716 data/mekanism/loot_table/blocks/sps_casing.json
 3c1fbc139c05d2f0267e4124f4f312d8a7ad54b6 data/mekanism/loot_table/blocks/sps_port.json
 fd081ae9e646f01aeb3c942e42746c6e08dd53d3 data/mekanism/loot_table/blocks/steel_casing.json
@@ -4209,5 +4211,6 @@ bc8e68e9eb8fc4756d51b2e15fd3245c18726879 data/mekanism/recipe/transmitter/thermo
 1ad5bdca61df068ec2f4cc1a103eca542f4aa34f data/mekanism/recipe/upgrade/muffling.json
 ae18a0088a2a066e9c044c53f6b33410ff7add7e data/mekanism/recipe/upgrade/speed.json
 eb41c3dfc3599384c5945a69c3e348895ddebf81 data/mekanism/recipe/upgrade/stone_generator.json
+be78161bf1d8287e70077f0a75fed6ef9dfc2e69 data/mekanism/recipe/upgrade/xp_containment.json
 983ac1bb739ea1c24b86931bfcaf405269f98996 data/mekanism/recipe/vein_mining_unit.json
 334772aa5fe6547209c387232df87c7fc23d8f35 data/mekanism/recipe/vision_enhancement_unit.json

@@ -196,6 +196,8 @@ public final class SerializationConstants {
     public static final String GUI = "gui";
     public static final String HANDLE_SOUND = "handle_sound";
     /// @since 10.8.0
+    public static final String HAS_CONTAINMENT = "has_containment";
+    /// @since 10.8.0
     public static final String HEAT_CAPACITOR = "heat_capacitor";
     public static final String HEAT_CAPACITY = "heat_capacity";
     public static final String HEAT_STORED = "heat";
@@ -220,6 +222,10 @@ public final class SerializationConstants {
     public static final String KEY = "key";
     public static final String LAST_FIRED = "last_fired";
     public static final String LAST_PROCESSED = "last_processed";
+    /// @since 10.8.0
+    public static final String LAST_RECIPE_AMOUNT = "last_recipe_amount";
+    /// @since 10.8.0
+    public static final String LAST_RECIPE_USED = "last_recipe_used";
     /// @since 10.8.0
     public static final String LAST_TRANSFER_DIRECTION = "last_transfer_direction";
     public static final String LATCHED = "latched";

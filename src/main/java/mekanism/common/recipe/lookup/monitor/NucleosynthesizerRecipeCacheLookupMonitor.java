@@ -10,7 +10,7 @@ import net.minecraft.core.HolderLookup;
 public class NucleosynthesizerRecipeCacheLookupMonitor extends ProgressRecipeCacheLookupMonitor<NucleosynthesizingRecipe> {
 
     public NucleosynthesizerRecipeCacheLookupMonitor(IRecipeLookupHandler<NucleosynthesizingRecipe> handler) {
-        super(handler);
+        super(handler, true);
     }
 
     @Override

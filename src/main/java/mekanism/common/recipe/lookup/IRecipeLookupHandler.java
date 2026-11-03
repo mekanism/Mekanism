@@ -9,6 +9,7 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.lib.SupportsXpContainment;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.registration.impl.RecipeBookCategoryDeferredRegister;
@@ -20,7 +21,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> extends IContentsListener, StackedContentsCompatible {
+public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> extends IContentsListener, StackedContentsCompatible, SupportsXpContainment {
 
     /// @return The world for this [IRecipeLookupHandler].
     @Nullable
