@@ -3,10 +3,6 @@ package mekanism.common.item;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
-import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
@@ -16,14 +12,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 
-public class ItemSeismicReader extends ItemEnergized {
+public class ItemSeismicReader extends Item {
 
     public ItemSeismicReader(Properties properties) {
         super(properties.rarity(Rarity.UNCOMMON).stacksTo(1)
@@ -40,27 +35,8 @@ public class ItemSeismicReader extends ItemEnergized {
             return InteractionResult.SUCCESS_SERVER;
         }
         ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
-        if (MekanismUtils.isPlayingMode(player)) {
-            EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(itemAccess));
-            if (energyHandler == null) {
-                return needsEnergy(player);
-            }
-            //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-            try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
-                int energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
-                if (energyHandler.extract(energyUsage, transaction) < energyUsage) {
-                    return needsEnergy(player);
-                }
-                transaction.commit();
-            }
-        }
         MekanismCriteriaTriggers.VIEW_VIBRATIONS.value().trigger((ServerPlayer) player);
         MekanismContainerTypes.SEISMIC_READER.tryOpenGui(player, hand, itemAccess);
         return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
-    }
-
-    private InteractionResult needsEnergy(Player player) {
-        player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY));
-        return InteractionResult.FAIL;
     }
 }

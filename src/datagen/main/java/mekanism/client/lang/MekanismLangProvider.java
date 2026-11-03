@@ -1479,7 +1479,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.CHUNK, "Chunk: %1$s, %2$s");
         add(MekanismLang.VIBRATING, "Vibrating");
         //Seismic Reader
-        add(MekanismLang.NEEDS_ENERGY, "Not enough energy to interpret vibration");
         add(MekanismLang.NO_VIBRATIONS, "Unable to discover any vibrations");
         add(MekanismLang.ABUNDANCY, "Abundancy: %1$s");
         //Redstone Control

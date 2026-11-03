@@ -65,10 +65,6 @@ public class GearConfig extends BaseMekanismConfig {
     //Scuba Tank
     public final CachedLongValue scubaTankCapacity;
     public final CachedIntValue scubaFillRate;
-    //Seismic Reader
-    public final CachedLongValue seismicReaderMaxEnergy;
-    public final CachedIntValue seismicReaderChargeRate;
-    public final CachedIntValue seismicReaderEnergyUsage;
     //Canteen
     public final CachedLongValue canteenMaxStorage;
     public final CachedIntValue canteenTransferRate;
@@ -204,14 +200,6 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("capacity", 24L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         scubaFillRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_SCUBA_TANK_FILL_RATE.applyToBuilder(builder)
               .defineInRange("fillRate", 16, 1, Integer.MAX_VALUE));
-        builder.pop();
-
-        MekanismConfigTranslations.GEAR_SEISMIC_READER.applyToBuilder(builder).push("seismic_reader");
-        seismicReaderMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_SEISMIC_READER_MAX_ENERGY, "maxEnergy", 12_000L);
-        seismicReaderChargeRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_SEISMIC_READER_CHARGE_RATE.applyToBuilder(builder)
-              .defineInRange("chargeRate", 60, 0, Integer.MAX_VALUE));
-        seismicReaderEnergyUsage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_SEISMIC_READER_ENERGY_USAGE.applyToBuilder(builder)
-              .defineInRange("energyUsage", 250, 0, Integer.MAX_VALUE));
         builder.pop();
 
         MekanismConfigTranslations.GEAR_CANTEEN.applyToBuilder(builder).push("canteen");

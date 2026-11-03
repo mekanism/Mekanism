@@ -522,7 +522,6 @@ public enum MekanismLang implements ILangEntry {
     CHUNK("seismic_vibrator", "chunk"),
     VIBRATING("seismic_vibrator", "vibrating"),
     //Seismic Reader
-    NEEDS_ENERGY("seismic_reader", "needs_energy"),
     NO_VIBRATIONS("seismic_reader", "no_vibrations"),
     ABUNDANCY("seismic_reader", "abundancy"),
     //Redstone Control

@@ -101,10 +101,7 @@ public class MekanismItems {
           );
     public static final ItemRegistryObject<ItemConfigurationCard> CONFIGURATION_CARD = ITEMS.registerItem("configuration_card", ItemConfigurationCard::new);
     public static final ItemRegistryObject<ItemCraftingFormula> CRAFTING_FORMULA = ITEMS.registerItem("crafting_formula", ItemCraftingFormula::new);
-    public static final ItemRegistryObject<ItemSeismicReader> SEISMIC_READER = ITEMS.registerItem("seismic_reader", ItemSeismicReader::new)
-          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismConfig.gear.seismicReaderChargeRate, MekanismConfig.gear.seismicReaderMaxEnergy),
-                MekanismConfig.gear
-          );
+    public static final ItemRegistryObject<Item> SEISMIC_READER = ITEMS.registerItem("seismic_reader", ItemSeismicReader::new);
     public static final ItemRegistryObject<ItemGaugeDropper> GAUGE_DROPPER = ITEMS.registerItem("gauge_dropper", ItemGaugeDropper::new)
           .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
                 .addContainer((attachedAccess, containerIndex) -> ItemGaugeDropper.MERGED_TANK_CREATOR.create(attachedAccess, containerIndex).getChemicalTank())

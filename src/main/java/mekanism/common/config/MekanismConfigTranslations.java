@@ -402,11 +402,6 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GEAR_SCUBA_TANK_CAPACITY("gear.scuba_tank.capacity", "Capacity", "Scuba Tank capacity in mB."),
     GEAR_SCUBA_TANK_FILL_RATE("gear.scuba_tank.fill_rate", "Fill Rate", "Rate in mB/t at which a Scuba Tank can accept oxygen."),
 
-    GEAR_SEISMIC_READER("gear.seismic_reader", "Seismic Reader", "Settings for configuring Seismic Readers", true),
-    GEAR_SEISMIC_READER_MAX_ENERGY("gear.seismic_reader.max_energy", "Max Energy", "Maximum amount of energy the Seismic Reader can contain."),
-    GEAR_SEISMIC_READER_CHARGE_RATE("gear.seismic_reader.charge_rate", "Charge Rate", "Amount of energy the Seismic Reader can accept per tick."),
-    GEAR_SEISMIC_READER_ENERGY_USAGE("gear.seismic_reader.energy_usage", "Energy Usage", "Energy usage required to use the Seismic Reader."),
-
     GEAR_CANTEEN("gear.canteen", "Canteen", "Settings for configuring Canteens", true),
     GEAR_CANTEEN_CAPACITY("gear.canteen.capacity", "Capacity", "Maximum amount in mB of Nutritional Paste storable by the Canteen."),
     GEAR_CANTEEN_TRANSFER_RATE("gear.canteen.transfer_rate", "Transfer Rate", "Rate in mB/t at which Nutritional Paste can be transferred into a Canteen."),
