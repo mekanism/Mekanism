@@ -157,9 +157,9 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
     public CachedRecipe<RECIPE> createNewCachedRecipe(RecipeHolder<RECIPE> recipeHolder, int cacheIndex) {
         if (cachedIndexMatches(cacheIndex)) {
             return handler.createNewCachedRecipe(recipeHolder.value(), cacheIndex)
-                  .setOnFinish(() -> {
+                  .setOnFinish(operations -> {
                       handler.markForSave();
-                      setRecipeUsed(recipeHolder);
+                      setRecipeUsed(recipeHolder, operations);
                   });
         }
         return null;
@@ -183,7 +183,11 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
     }
 
     @Override
-    public void setRecipeUsed(@Nullable RecipeHolder<?> recipeUsed) {
+    public final void setRecipeUsed(@Nullable RecipeHolder<?> recipeUsed) {
+        setRecipeUsed(recipeUsed, 1);
+    }
+
+    private void setRecipeUsed(@Nullable RecipeHolder<?> recipeUsed, int operations) {
         //Filter out synthetic recipe ids
         if (recipeUsed != null) {
             ResourceKey<Recipe<?>> id = recipeUsed.id();
@@ -195,7 +199,7 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
                 //Synthetic recipe that isn't actually persisted
                 return;
             }
-            this.recipesUsed.addTo(id, 1);
+            this.recipesUsed.addTo(id, operations);
         }
     }
 

@@ -48,7 +48,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?, ?, ?>> {
     /// Allows for running any extra methods that need to be done when the recipe finishes processing. For example marking the tile dirty.
     ///
     /// @implNote Defaults to doing nothing.
-    private Runnable onFinish = () -> {
+    private IntConsumer onFinish = _ -> {
     };
 
     /// Gets the per tick energy consumption of this recipe.
@@ -163,10 +163,10 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?, ?, ?>> {
     /// Sets the callback that is run when this [CachedRecipe] completes processing of a recipe. This allows the [CachedRecipe] holder to do any extra handling it needs
     /// to do such as marking the tile dirty and in need of saving.
     ///
-    /// @param onFinish Runnable to execute when this [CachedRecipe] completes processing of a recipe.
+    /// @param onFinish Int consumer to execute with the number of operations performed when this [CachedRecipe] completes processing of a recipe.
     ///
     /// @apiNote If this method is not used, the `onFinish` handler of this [CachedRecipe] defaults to doing nothing.
-    public CachedRecipe<RECIPE> setOnFinish(Runnable onFinish) {
+    public CachedRecipe<RECIPE> setOnFinish(IntConsumer onFinish) {
         this.onFinish = Objects.requireNonNull(onFinish, "On finish handling cannot be null.");
         return this;
     }
@@ -285,7 +285,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?, ?, ?>> {
                     if (finishProcessing(operations, transaction)) {
                         setActive.accept(true);
                         transaction.commit();
-                        onFinish.run();
+                        onFinish.accept(operations);
                         resetCache();
                         if (ticksRequired > 1) {
                             operatingTicks = 0;
