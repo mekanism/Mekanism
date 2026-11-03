@@ -120,6 +120,20 @@ public interface IModuleHelper extends IDynamicItemHelper<ModuleData<?>> {
         return container == null ? null : container.get(type);
     }
 
+    /// Helper method to try and load a module from an item.
+    ///
+    /// @param instance Module container, for example a Meka-Tool or MekaSuit piece.
+    /// @param type     Module type.
+    ///
+    /// @return Module, or `null` if no module of the given type is installed.
+    ///
+    /// @since 10.8.0
+    @Nullable
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> IModule<?> getModule(ITEM instance, Holder<ModuleData<?>> type) {
+        IModuleContainer container = getModuleContainer(instance);
+        return container == null ? null : container.get(type);
+    }
+
     /// {@return the module if it is installed on the given item and is currently enabled}
     ///
     /// @param instance Item instance to check for being a module container and then to retrieve the container of.
@@ -129,6 +143,18 @@ public interface IModuleHelper extends IDynamicItemHelper<ModuleData<?>> {
     @Nullable
     default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> IModule<MODULE> getIfEnabled(ITEM instance,
           DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
+        IModuleContainer container = getModuleContainer(instance);
+        return container == null ? null : container.getIfEnabled(type);
+    }
+
+    /// {@return the module if it is installed on the given item and is currently enabled}
+    ///
+    /// @param instance Item instance to check for being a module container and then to retrieve the container of.
+    /// @param type     Module type.
+    ///
+    /// @since 10.8.0
+    @Nullable
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> IModule<?> getIfEnabled(ITEM instance, Holder<ModuleData<?>> type) {
         IModuleContainer container = getModuleContainer(instance);
         return container == null ? null : container.getIfEnabled(type);
     }
@@ -143,6 +169,19 @@ public interface IModuleHelper extends IDynamicItemHelper<ModuleData<?>> {
     @Nullable
     default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getIfEnabled(@Nullable LivingEntity entity, @Nullable EquipmentSlot slot,
           DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
+        IModuleContainer container = getModuleContainer(entity, slot);
+        return container == null ? null : container.getIfEnabled(type);
+    }
+
+    /// {@return the module if it is installed on the item in entity's equipment slot and is currently enabled}
+    ///
+    /// @param entity Entity that has the stack.
+    /// @param slot   Slot the stack is in.
+    /// @param type   Module type.
+    ///
+    /// @since 10.8.0
+    @Nullable
+    default IModule<?> getIfEnabled(@Nullable LivingEntity entity, @Nullable EquipmentSlot slot, Holder<ModuleData<?>> type) {
         IModuleContainer container = getModuleContainer(entity, slot);
         return container == null ? null : container.getIfEnabled(type);
     }
