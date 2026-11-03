@@ -67,5 +67,8 @@
       "maxed_gear"
     ]
   ],
+  "rewards": {
+    "experience": 400
+  },
   "sends_telemetry_event": true
 }

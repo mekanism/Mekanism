@@ -34,6 +34,7 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tags.MekanismTags.BlockItems;
 import mekanism.common.tier.FactoryTier;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.predicates.DataComponentMatchers;
 import net.minecraft.advancements.predicates.ItemPredicate;
@@ -61,7 +62,6 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         super(output);
     }
 
-    //TODO - 1.19: xp rewards for any of these?
     @Override
     public void generate() {
         HolderGetter<Item> items = output.lookup(Registries.ITEM);
@@ -335,7 +335,8 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
                     MekanismItems.MEKASUIT_PANTS,
                     MekanismItems.MEKASUIT_BOOTS,
                     MekanismItems.MEKA_TOOL
-              )).save(output);
+              )).rewards(AdvancementRewards.Builder.experience(200))//Twice the amount as for a full set of netherite
+              .save(output);
         advancement(MekanismAdvancements.MODIFICATION_STATION)
               .displayAndCriterion(MekanismBlocks.MODIFICATION_STATION, AdvancementType.TASK, true)
               .save(output);
@@ -354,7 +355,8 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
                                       .build()
                                 ).build())
                           .toArray(ItemPredicate[]::new)
-              )).save(output);
+              )).rewards(AdvancementRewards.Builder.experience(400))//Twice the amount as for just having the full set of gear
+              .save(output);
 
         advancement(MekanismAdvancements.FLUID_TRANSPORT)
               .display(MekanismBlocks.BASIC_MECHANICAL_PIPE.getItemHolder(), AdvancementType.TASK, false)
