@@ -25,8 +25,8 @@ public class ComputerCraftHelper implements IComputerCraftHelper {
         });
     }
 
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings("unchecked")
     public <TILE extends CapabilityTileEntity & IComputerTile> void addCapability(BlockEntityTypeBuilder<TILE> builder, BooleanSupplier supportsComputer) {
         builder.with(PeripheralCapability.get(), (ICapabilityProvider<? super TILE, @Nullable Direction, IPeripheral>) PROVIDER, supportsComputer);
     }
