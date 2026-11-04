@@ -35,6 +35,7 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
@@ -200,20 +201,41 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         //After we render all the contents and moved to the furthest stratum that vanilla will use
         // excluding things like tooltips or the currently carried item which should both render above windows:
         // shift the matrix to relative coordinates again, and add a new stratum for each window
-        //TODO - 26.3: Make sure this works fine and there isn't some unforseen side effects
         Matrix3x2fStack pose = graphics.pose();
         pose.pushMatrix();
         pose.translate(leftPos, topPos);
+        //Render any base things that should be above items
+        boolean pushedStratum = false;
+        for (Renderable action : renderables) {
+            if (action instanceof GuiElement element) {
+                boolean rendersBackgroundAboveItems = element.renderBackgroundAboveItems();
+                boolean rendersForegroundAboveItems = element.renderForegroundAboveItems();
+                if (rendersBackgroundAboveItems || rendersForegroundAboveItems) {
+                    if (!pushedStratum) {//Only bother pushing the stratum once between all children
+                        pushedStratum = true;
+                        graphics.nextStratum();
+                    }
+                    if (rendersBackgroundAboveItems) {
+                        element.onDrawBackground(graphics, mouseX, mouseY, a, true);
+                    }
+                    if (rendersForegroundAboveItems) {
+                        element.onRenderForeground(graphics, mouseX, mouseY, a, true);
+                    }
+                }
+            }
+        }
+
         // now render overlays in reverse-order (i.e. back to front)
         for (LRU<GuiWindow>.LRUIterator iter = getWindowsDescendingIterator(); iter.hasNext(); ) {
+            //Each window should be above everything else
             graphics.nextStratum();
             GuiWindow overlay = iter.next();
-            //Max z offset is incremented based on what is the deepest level offset we go to
-            // if our gui isn't flagged as visible we won't increment it as nothing is drawn
-            // we need to do this based on what the max is after having rendered the previous
-            // window as while the windows don't necessarily overlap, if they do we want to
-            // ensure that there is no clipping
-            overlay.onRenderForeground(graphics, mouseX, mouseY, a);
+            //Note: We don't support gui windows trying to render their background above items as that already happens anyway as part of this
+            overlay.onRenderForeground(graphics, mouseX, mouseY, a, false);
+            if (overlay.renderForegroundAboveItems()) {
+                graphics.nextStratum();
+                overlay.onRenderForeground(graphics, mouseX, mouseY, a, true);
+            }
             if (iter.hasNext()) {
                 // if this isn't the focused window, render a 'blur' effect over it
                 overlay.renderBlur(graphics);
@@ -435,19 +457,19 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
     }
 
-    @Override//TODO - 26.3: review `pose` used for zindex stuff
+    @Override
     protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         float partialTicks = MekanismRenderer.getPartialTick();
         for (GuiEventListener c : children()) {
             if (c instanceof GuiElement element) {
-                element.onDrawBackground(guiGraphics, mouseX, mouseY, partialTicks);
+                element.onDrawBackground(guiGraphics, mouseX, mouseY, partialTicks, false);
             }
         }
         drawForegroundText(guiGraphics, mouseX, mouseY);
         // first render general foregrounds
         for (GuiEventListener widget : children()) {
             if (widget instanceof GuiElement element) {
-                element.onRenderForeground(guiGraphics, mouseX, mouseY, partialTicks);
+                element.onRenderForeground(guiGraphics, mouseX, mouseY, partialTicks, false);
             }
         }
     }

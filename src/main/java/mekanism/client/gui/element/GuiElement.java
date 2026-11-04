@@ -264,24 +264,40 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
     }
 
-    public final void onRenderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public final void onRenderForegroundBoth(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        onRenderForeground(guiGraphics, mouseX, mouseY, partialTicks, false);
+        onRenderForeground(guiGraphics, mouseX, mouseY, partialTicks, true);
+    }
+
+    public final void onRenderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, boolean aboveItemsPass) {
         if (visible) {
-            // render background overlay and children above everything else
-            renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
-            // render children just above background overlay
-            for (GuiElement guiElement : children) {
-                guiElement.renderShifted(guiGraphics, mouseX, mouseY, partialTicks);
+            if (renderForegroundAboveItems() == aboveItemsPass) {
+                // render background overlay and children above everything else
+                renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
+                // render children just above background overlay
+                for (GuiElement guiElement : children) {
+                    guiElement.renderShifted(guiGraphics, mouseX, mouseY, partialTicks);
+                }
+                for (GuiElement guiElement : children) {
+                    guiElement.onDrawBackground(guiGraphics, mouseX, mouseY, partialTicks, aboveItemsPass);
+                }
+                renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
             }
-            for (GuiElement guiElement : children) {
-                guiElement.onDrawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-            }
-            renderForeground(guiGraphics, mouseX, mouseY, partialTicks);
             // translate forward to render child foreground
             for (GuiElement child : children) {
                 // Note: Does not apply to compounding with grandchildren as we want those to compound
-                child.onRenderForeground(guiGraphics, mouseX, mouseY, partialTicks);
+                child.onRenderForeground(guiGraphics, mouseX, mouseY, partialTicks, aboveItemsPass);
             }
         }
+    }
+
+    public boolean renderForegroundAboveItems() {
+        //Children elements have their background rendered as part of our foreground
+        return children.stream().anyMatch(element -> element.renderForegroundAboveItems() || element.renderBackgroundAboveItems());
+    }
+
+    public boolean renderBackgroundAboveItems() {
+        return false;
     }
 
     public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
@@ -539,8 +555,13 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
     }
 
-    public final void onDrawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        if (visible) {
+    public final void onDrawBackgroundBoth(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        onDrawBackground(guiGraphics, mouseX, mouseY, partialTicks, false);
+        onDrawBackground(guiGraphics, mouseX, mouseY, partialTicks, true);
+    }
+
+    public final void onDrawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, boolean aboveItemsPass) {
+        if (visible && renderBackgroundAboveItems() == aboveItemsPass) {
             drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         }
     }

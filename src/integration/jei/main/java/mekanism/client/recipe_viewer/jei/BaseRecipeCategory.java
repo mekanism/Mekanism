@@ -205,11 +205,11 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
             guiElement.renderShifted(guiGraphics, x, y, partialTicks);
         }
         for (GuiElement e : guiElements) {
-            e.onDrawBackground(guiGraphics, x, y, partialTicks);
+            e.onDrawBackgroundBoth(guiGraphics, x, y, partialTicks);
         }
         for (GuiElement element : guiElements) {
             matrix.pushMatrix();
-            element.onRenderForeground(guiGraphics, x, y, partialTicks);
+            element.onRenderForegroundBoth(guiGraphics, x, y, partialTicks);
             matrix.popMatrix();
         }
     }

@@ -47,6 +47,16 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     }
 
     @Override
+    public boolean renderForegroundAboveItems() {
+        return isOpen;
+    }
+
+    @Override
+    public boolean renderBackgroundAboveItems() {
+        return isOpen;
+    }
+
+    @Override
     public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         super.onClick(event, isDoubleClick);
         setDragging(true);

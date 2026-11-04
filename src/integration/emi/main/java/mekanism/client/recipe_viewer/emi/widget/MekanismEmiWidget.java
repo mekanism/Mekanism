@@ -35,14 +35,11 @@ public class MekanismEmiWidget extends Widget {
     public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         Matrix3x2fStack pose = guiGraphics.pose();
         pose.pushMatrix();
-        pose.translate(element.getGuiLeft(), element.getGuiTop(), 0);
-        element.renderShifted(guiGraphics, mouseX, mouseY, 0);
-        element.onDrawBackground(guiGraphics, mouseX, mouseY, 0);
-        //Note: We don't care that onRenderForeground updates the maxZOffset in the mekanism gui as that is just used for rendering windows
-        // and as our categories don't support windows we don't need to worry about that
-        int zOffset = 200;
+        pose.translate(element.getGuiLeft(), element.getGuiTop());
+        element.renderShifted(guiGraphics, mouseX, mouseY, delta);
+        element.onDrawBackgroundBoth(guiGraphics, mouseX, mouseY, delta);
         pose.popMatrix();
-        element.onRenderForeground(guiGraphics, mouseX, mouseY, delta);
+        element.onRenderForegroundBoth(guiGraphics, mouseX, mouseY, delta);
         pose.popMatrix();
         pose.popMatrix();
     }
