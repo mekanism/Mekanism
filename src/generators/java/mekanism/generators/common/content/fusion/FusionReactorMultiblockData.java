@@ -462,7 +462,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public void setInjectionRate(int rate, @Nullable TransactionContext transaction) {
         if (injectionRate != rate) {
             injectionRate = rate;
-            //TODO - 26.3: Should these configs be limited to ints?
             maxWater = injectionRate * MekanismGeneratorsConfig.generators.fusionWaterPerInjection.get();
             maxSteam = injectionRate * MekanismGeneratorsConfig.generators.fusionSteamPerInjection.get();
             if (!isClientSide()) {

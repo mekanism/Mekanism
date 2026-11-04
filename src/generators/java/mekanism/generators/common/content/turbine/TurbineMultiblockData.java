@@ -206,7 +206,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     private double getEnergyMultiplier() {
-        return ((double) MekanismGeneratorsConfig.generators.turbineJoulesPerSteam.get() / TurbineValidator.MAX_BLADES)
+        return ((double) MekanismGeneratorsConfig.generators.turbineEnergyPerSteam.get() / TurbineValidator.MAX_BLADES)
                * Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
     }
 
