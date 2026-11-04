@@ -84,12 +84,11 @@ public class CommonPlayerTickHandler {
             return 0;
         }
         ItemStack stack = player.getItemBySlot(EquipmentSlot.FEET);
-        if (stack.isEmpty()) {
-            return 0;
-        }
-        IModule<ModuleHydraulicPropulsionUnit> hydraulic = IModuleHelper.INSTANCE.getIfEnabled(stack, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
-        if (hydraulic != null) {
-            return hydraulic.getCustomInstance().getStepHeight();
+        if (!stack.isEmpty()) {
+            IModule<ModuleHydraulicPropulsionUnit> hydraulic = IModuleHelper.INSTANCE.getIfEnabled(stack, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
+            if (hydraulic != null) {
+                return hydraulic.getCustomInstance().getStepHeight();
+            }
         }
         ItemResource primaryFreeRunners = IFreeRunnerItem.getPrimaryFreeRunners(player);
         if (!primaryFreeRunners.isEmpty() && ((IFreeRunnerItem) primaryFreeRunners.getItem()).getFreeRunnerMode(primaryFreeRunners).providesStepBoost()) {
