@@ -63,7 +63,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         return rawJson -> rawJson.replaceAll(providerToReplace.getRegisteredName(), "mekanism:invalid");
     }
 
-    private static UnaryOperator<String> replaceInvalid(ResourceKey<?> keyToReplace) {
+    public static UnaryOperator<String> replaceInvalid(ResourceKey<?> keyToReplace) {
         return rawJson -> rawJson.replaceAll(keyToReplace.identifier().toString(), "mekanism:invalid");
     }
 
@@ -109,14 +109,6 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     public <TYPE> void succeedIfInvalidItemSerializationCycle(Codec<TYPE> codec, Function<MissingObjectTestHelper, TYPE> sourceSupplier, Predicate<TYPE> resultValidator) {
         succeedIfSerializationCycle(codec, sourceSupplier, resultValidator, REPLACE_TO_INVALID_ITEM);
-    }
-
-    public <TYPE> void succeedIfInvalidFluidSerializationCycle(Codec<TYPE> codec, Function<MissingObjectTestHelper, TYPE> sourceSupplier, Predicate<TYPE> resultValidator) {
-        succeedIfSerializationCycle(codec, sourceSupplier, resultValidator, REPLACE_TO_INVALID_FLUID);
-    }
-
-    public <TYPE> void succeedIfInvalidChemicalSerializationCycle(Codec<TYPE> codec, Function<MissingObjectTestHelper, TYPE> sourceSupplier, Predicate<TYPE> resultValidator) {
-        succeedIfSerializationCycle(codec, sourceSupplier, resultValidator, REPLACE_TO_INVALID_CHEMICAL);
     }
 
     public <TYPE> void succeedIfSerializationCycle(Codec<TYPE> codec, Function<MissingObjectTestHelper, TYPE> sourceSupplier, Predicate<TYPE> resultValidator,

@@ -1,19 +1,28 @@
 
 package mekanism.common.tests.codec;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.SecurityMode;
+import mekanism.api.upgrade.Upgrade;
+import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.component.FormulaComponent;
 import mekanism.common.component.LockData;
 import mekanism.common.component.OverflowAware;
+import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.component.qio.PortableDashboardContents;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tests.helpers.MissingObjectTestHelper;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
@@ -61,7 +70,6 @@ public class MissingObjectSerializationTest {
 
     @GameTest
     @EmptyTemplate
-    @SuppressWarnings("OptionalAssignedToNull")
     @TestHolder(description = "Tests to make sure that formula items that have formulas that contain invalid items will load as having no formula.")
     public static void testFormulaAttachmentOnItem(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
@@ -151,6 +159,25 @@ public class MissingObjectSerializationTest {
             return dashboardItem;
         }, dashboardItem -> dashboardItem.is(MekanismItems.PORTABLE_QIO_DASHBOARD) &&
                             helper.validateDashboard(dashboardItem.getOrDefault(MekanismDataComponents.QIO_DASHBOARD, PortableDashboardContents.EMPTY)));
+    }
+
+    @GameTest
+    @EmptyTemplate
+    @TestHolder(description = "Tests to make sure that upgrade components ignore invalid upgrades.")
+    public static void testUpgradeAwareUpgrades(final MissingObjectTestHelper helper) {
+        Object2IntMap<Holder<Upgrade>> upgrades = new Object2IntOpenHashMap<>();
+        HolderGetter<Upgrade> upgradeLookup = helper.getLevel().registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
+        Reference<Upgrade> speed = upgradeLookup.getOrThrow(UpgradeIds.SPEED);
+        Reference<Upgrade> energy = upgradeLookup.getOrThrow(UpgradeIds.ENERGY);
+        upgrades.put(upgradeLookup.getOrThrow(UpgradeIds.ANCHOR), 3);
+        upgrades.put(speed, 2);
+        upgrades.put(energy, 1);
+        helper.succeedIfSerializationCycle(UpgradeAware.CODEC, _ -> new UpgradeAware(upgrades, LargeResourceStack.ITEM_HELPER.empty(), LargeResourceStack.ITEM_HELPER.empty()), upgradeAware -> {
+            if (upgradeAware.inputSlot().isEmpty() && upgradeAware.outputSlot().isEmpty()) {
+                return upgradeAware.upgrades().size() == 2 && upgradeAware.upgrades().getInt(speed) == 2 && upgradeAware.upgrades().getInt(energy) == 1;
+            }
+            return false;
+        }, MissingObjectTestHelper.replaceInvalid(UpgradeIds.ANCHOR));
     }
 
     @GameTest

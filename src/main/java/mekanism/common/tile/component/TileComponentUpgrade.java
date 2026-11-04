@@ -1,6 +1,5 @@
 package mekanism.common.tile.component;
 
-import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.IInventorySlot;
@@ -40,7 +38,6 @@ import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -54,11 +51,6 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     /// How long it takes this machine to install an upgrade.
     private static final int UPGRADE_TICKS_REQUIRED = SharedConstants.TICKS_PER_SECOND;
-    //TODO - 26.3: Make sure this is lenient so if there are invalid amounts or unknown upgrades then it skips them. Maybe just LenientUnboundedMapCodec ?
-    private static final Codec<Object2IntMap<Holder<Upgrade>>> UPGRADE_MAP_CODEC = Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.POSITIVE_INT).xmap(
-          Object2IntOpenHashMap::new,
-          Function.identity()
-    );
 
     /// TileEntity implementing this component.
     private final TileEntityMekanism tile;
@@ -236,7 +228,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     @Override
     public void deserialize(ValueInput upgradeInput) {
-        Optional<Object2IntMap<Holder<Upgrade>>> storedUpgrades = upgradeInput.read(SerializationConstants.UPGRADES, UPGRADE_MAP_CODEC);
+        Optional<Object2IntMap<Holder<Upgrade>>> storedUpgrades = upgradeInput.read(SerializationConstants.UPGRADES, UpgradeAware.UPGRADES_CODEC);
         if (storedUpgrades.isPresent()) {
             upgrades = storedUpgrades.get();
         } else if (!upgrades.isEmpty()) {
@@ -263,7 +255,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     @Override
     public void serialize(ValueOutput upgradeOutput) {
         if (!upgrades.isEmpty()) {
-            upgradeOutput.store(SerializationConstants.UPGRADES, UPGRADE_MAP_CODEC, upgrades);
+            upgradeOutput.store(SerializationConstants.UPGRADES, UpgradeAware.UPGRADES_CODEC, upgrades);
         }
         //Save the inventory
         ContainerType.ITEM.saveTo(upgradeOutput, getSlots());

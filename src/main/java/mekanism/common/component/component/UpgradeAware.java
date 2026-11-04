@@ -13,6 +13,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.upgrade.Upgrade;
+import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -26,7 +27,9 @@ public record UpgradeAware(Object2IntMap<Holder<Upgrade>> upgrades, LargeResourc
 
     public static final UpgradeAware EMPTY = new UpgradeAware(Object2IntMaps.emptyMap(), LargeResourceStack.ITEM_HELPER.empty(), LargeResourceStack.ITEM_HELPER.empty());
 
-    private static final Codec<Object2IntMap<Holder<Upgrade>>> UPGRADES_CODEC = Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.POSITIVE_INT).xmap(Object2IntOpenHashMap::new, Function.identity());
+    public static final Codec<Object2IntMap<Holder<Upgrade>>> UPGRADES_CODEC = Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.POSITIVE_INT)
+          .promotePartial(error -> Mekanism.logger.error("Failed to load stored upgrades: {}", error))
+          .xmap(Object2IntOpenHashMap::new, Function.identity());
 
     public static final Codec<UpgradeAware> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           UPGRADES_CODEC.fieldOf(SerializationConstants.UPGRADES).forGetter(UpgradeAware::upgrades),
