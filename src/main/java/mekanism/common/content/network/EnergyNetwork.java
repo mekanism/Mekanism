@@ -77,7 +77,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
     public void absorbBuffer(UniversalCable transmitter, TransactionContext transaction) {
         long energy = transmitter.releaseShare();
         if (energy > 0) {
-            energyContainer.setEnergy(energyContainer.getAmountAsLong() + energy, transaction);
+            energyContainer.setEnergy(MathUtils.addClamped(energyContainer.getAmountAsLong(), energy), transaction);
         }
     }
 
