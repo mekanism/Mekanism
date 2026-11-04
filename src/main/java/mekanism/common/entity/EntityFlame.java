@@ -104,8 +104,9 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
             if (hitResult.getType() != Type.MISS) {
                 motionVec = hitResult.getLocation();
             }
+            //Dropped items are not pickable by ordinary projectiles, but flames must hit them to smelt or burn them.
             EntityHitResult entityResult = ProjectileUtil.getEntityHitResult(level(), this, localVec, motionVec,
-                  getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0), this::canHitEntity);
+                  getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0), entity -> entity instanceof ItemEntity ? entity.isAlive() : canHitEntity(entity));
             if (entityResult != null && entityResult.getType() == Type.ENTITY) {
                 if (entityResult.getEntity() instanceof Player target && getOwner() instanceof Player ownerPlayer && !ownerPlayer.canHarmPlayer(target)) {
                     hitResult = null;
