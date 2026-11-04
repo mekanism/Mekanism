@@ -72,8 +72,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     @Nullable
     protected VirtualRecipeBookComponent<?> recipeBookComponent;
 
-    private boolean hasClicked = false;
-
     protected GuiMekanism(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title);
     }
@@ -503,7 +501,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
-        hasClicked = true;
         // first try to send the mouse event to our overlays
         GuiWindow top = windows.peek();
         for (GuiWindow overlay : windows) {
@@ -545,14 +542,13 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
-        if (hasClicked) {
-            // always pass mouse released events to windows for drag checks
-            for (GuiWindow w : windows) {
-                w.onRelease(event);
-            }
-            return super.mouseReleased(event);
+        // always pass mouse released events to windows for drag checks
+        for (GuiWindow w : windows) {
+            w.mouseReleased(event);
         }
-        return false;
+        GuiEventListener focused = getFocused();
+        //Note: Intentionally use binary or to ensure both checks are ran
+        return super.mouseReleased(event) | (focused != null && focused.mouseReleased(event));
     }
 
     @Override

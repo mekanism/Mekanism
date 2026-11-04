@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.scroll;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -96,15 +98,18 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     }
 
     @Override
-    public boolean mouseReleased(MouseButtonEvent event) {
-        if (gui().currentlyQuickCrafting()) {
-            //If the player is currently quick crafting don't do any special handling for as if they clicked in the screen
-            return super.mouseReleased(event);
+    public void onRelease(MouseButtonEvent event) {
+        super.onRelease(event);
+        //If the player is currently quick crafting don't do any special handling for as if they clicked in the screen
+        if (!gui().currentlyQuickCrafting()) {
+            clickHandler.onClick(() -> getSlot(event.x(), event.y()), event.button(), event.hasShiftDown(), gui().getCarriedItem());
         }
-        super.mouseReleased(event);
-        //TODO - 26.3: Evaluate if we just want to pass the mouse button event directly?
-        clickHandler.onClick(() -> getSlot(event.x(), event.y()), event.button(), event.hasShiftDown(), gui().getCarriedItem());
-        return true;
+    }
+
+    @Override
+    protected boolean isValidClickButton(MouseButtonInfo buttonInfo) {
+        int button = buttonInfo.button();
+        return button == InputConstants.MOUSE_BUTTON_LEFT || button == InputConstants.MOUSE_BUTTON_RIGHT || button == InputConstants.MOUSE_BUTTON_MIDDLE;
     }
 
     @Nullable
@@ -183,12 +188,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
             //Note: If it would still overflow, then we just let the scrolling text handle it
             scale = 0.5F;
         }
-        //TODO - 26.3: gui zindex
-        //PoseStack pose = guiGraphics.pose();
-        //pose.pushPose();
-        //pose.translate(0, 0, 200);
         drawScaledScrollingString(guiGraphics, text, x, y + 9, TextAlignment.RIGHT, CommonColors.WHITE, INNER_SIZE, 0, true, scale);
-        //pose.popPose();
     }
 
     private List<IScrollableSlot> getSlotList() {
