@@ -54,6 +54,11 @@ public class TileComponentSecurity implements ITileComponent {
 
     public void setOwnerUUID(@Nullable UUID uuid) {
         ownerUUID = uuid;
+        Level level = tile.getLevel();
+        if (level != null && level.isClientSide()) {
+            //Frequency controllers only exist on the server, the client gets the frequency via sync
+            return;
+        }
         if (ownerUUID == null) {
             tile.getFrequencyComponent().unsetFrequency(FrequencyTypes.SECURITY);
         } else {
