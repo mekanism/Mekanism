@@ -2,6 +2,7 @@
 #it should not end up in the production jar
 issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
 license="MIT"
+licenseURL = "https://github.com/mekanism/Mekanism#license"
 
 [[mods]]
     modId="mekanism"

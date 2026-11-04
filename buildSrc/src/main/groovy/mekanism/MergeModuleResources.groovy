@@ -49,8 +49,8 @@ abstract class MergeModuleResources extends MergeServiceTask {
         // longer being written?
         def toExclude = []
         mergeBasic(toExclude, resources, 'META-INF/accesstransformer.cfg', (text, fileText) -> text + '\n' + fileText)
-        //Add all but the first four lines (which are duplicated between the files)
-        mergeBasic(toExclude, resources, 'META-INF/neoforge.mods.toml', (text, fileText) -> text + '\n' + fileText.split('\n', 3)[2])
+        //Add all but the first three lines (which are duplicated between the files)
+        mergeBasic(toExclude, resources, 'META-INF/neoforge.mods.toml', (text, fileText) -> text + '\n' + fileText.split('\n', 4)[3])
 
         mergeAtlases(toExclude)
         mergeDataMaps(toExclude)

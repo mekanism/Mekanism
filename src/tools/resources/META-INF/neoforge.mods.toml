@@ -1,5 +1,6 @@
 issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
 license="MIT"
+licenseURL = "https://github.com/mekanism/Mekanism#license"
 
 [[mods]]
     modId="mekanismtools"
