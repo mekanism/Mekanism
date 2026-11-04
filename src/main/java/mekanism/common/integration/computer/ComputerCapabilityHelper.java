@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
 import mekanism.common.integration.computer.opencomputers2.OC2CapabilityHelper;
+import mekanism.common.integration.computer.opencomputers.OCEnvironmentHelper;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -19,6 +20,10 @@ public class ComputerCapabilityHelper {
             //If OpenComputers2 is loaded add the capability for it
             OC2CapabilityHelper.addCapability(builder, supportsComputer);
         }
+        if (Mekanism.hooks.openComputers.isLoaded()) {
+            //If OpenComputers is loaded add the capability for it
+            OCEnvironmentHelper.addCapability(builder, supportsComputer);
+        }
     }
 
     public static void addBoundingComputerCapabilities(RegisterCapabilitiesEvent event) {
@@ -29,6 +34,10 @@ public class ComputerCapabilityHelper {
         if (Mekanism.hooks.oc2.isLoaded()) {
             //If OpenComputers2 is loaded add the capability for it
             OC2CapabilityHelper.addBoundingComputerCapabilities(event);
+        }
+        if (Mekanism.hooks.openComputers.isLoaded()) {
+            //If OpenComputers is loaded proxy the capability through bounding blocks
+            OCEnvironmentHelper.addBoundingComputerCapabilities(event);
         }
     }
 }

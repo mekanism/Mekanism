@@ -66,6 +66,7 @@ public final class MekanismHooks {
     public final IntegrationInfo jeiTweaker;
     public final IntegrationInfo jsonThings;
     public final IntegrationInfo oc2;
+    public final IntegrationInfo openComputers;
     public final IntegrationInfo projecte;
     public final IntegrationInfo recipeStages;
     public final IntegrationInfo theOneProbe;
@@ -89,6 +90,7 @@ public final class MekanismHooks {
         jeiTweaker = new IntegrationInfo("jeitweaker", loadedCheck);
         jsonThings = new IntegrationInfo("jsonthings", loadedCheck);
         oc2 = new IntegrationInfo("oc2", loadedCheck);
+        openComputers = new IntegrationInfo("opencomputers", loadedCheck);
         projecte = new IntegrationInfo("projecte", loadedCheck);
         recipeStages = new IntegrationInfo("recipestages", loadedCheck);
         theOneProbe = new IntegrationInfo("theoneprobe", loadedCheck);
@@ -151,7 +153,7 @@ public final class MekanismHooks {
     }
 
     public boolean computerCompatEnabled() {
-        return computerCraft.isLoaded() || oc2.isLoaded();
+        return computerCraft.isLoaded() || oc2.isLoaded() || openComputers.isLoaded();
     }
 
     public boolean recipeViewerCompatEnabled() {
