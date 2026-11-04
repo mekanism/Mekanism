@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyModifier;
+import org.lwjgl.sdl.SDLMouse;
 
 public class MekKeyHandler {
 
@@ -30,17 +31,19 @@ public class MekKeyHandler {
             try {
                 if (key.getType() == InputConstants.Type.KEYBOARD) {
                     return InputConstants.isKeyDown(keyCode);
+                } else if (key.getType() == InputConstants.Type.MOUSE) {
+                    int mouseState = SDLMouse.SDL_GetMouseState(null, null) & SDL_BUTTON_MASK(keyCode);
+                    return mouseState != 0;
                 }
-                //TODO - 26.3: Figure out if this is necessary and how to implement it
-                /*else if (key.getType() == InputConstants.Type.MOUSE) {
-                    Window window = Minecraft.getInstance().getWindow();
-                    //TODO - 26.3: Figure out how to replace this so that it doesn't need to directly access GLFW
-                    return GLFW.glfwGetMouseButton(window.handle(), keyCode) == InputConstants.PRESS;
-                }*/
             } catch (Exception _) {
             }
         }
         return false;
+    }
+
+    ///Copied from [SDLMouse#SDL_BUTTON_MASK(int)]
+    private static int SDL_BUTTON_MASK(int x) {
+        return 1 << (x - 1);
     }
 
     public static boolean isRadialPressed() {
