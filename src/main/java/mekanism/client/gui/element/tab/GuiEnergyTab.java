@@ -50,7 +50,7 @@ public class GuiEnergyTab extends GuiTexturedElement {
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
         List<Component> info = new ArrayList<>(infoHandler.get());
-        info.add(MekanismLang.UNIT.translate(MekanismLang.ENERGY_FORGE_SHORT));
+        info.add(MekanismLang.UNIT.translate(MekanismLang.ENERGY_FORGE));
         if (!info.equals(lastInfo)) {
             lastInfo = info;
             lastTooltip = TooltipUtils.create(info);

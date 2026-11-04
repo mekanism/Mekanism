@@ -35,10 +35,10 @@ public class EnergyDisplay implements IHasTextComponent {
         if (energy == Long.MAX_VALUE) {
             return MekanismLang.INFINITE.translate();
         }
-        Component energyDisplay = UnitDisplayUtils.getEnergyDisplayShort(energy);
+        Component energyDisplay = UnitDisplayUtils.getEnergyDisplay(energy);
         if (max == 0) {
             return energyDisplay;
         }
-        return MekanismLang.GENERIC_FRACTION.translate(energyDisplay, max == Long.MAX_VALUE ? MekanismLang.INFINITE : UnitDisplayUtils.getEnergyDisplayShort(max));
+        return MekanismLang.GENERIC_FRACTION.translate(energyDisplay, max == Long.MAX_VALUE ? MekanismLang.INFINITE : UnitDisplayUtils.getEnergyDisplay(max));
     }
 }

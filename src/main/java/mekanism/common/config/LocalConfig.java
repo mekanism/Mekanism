@@ -11,6 +11,7 @@ public class LocalConfig extends BaseMekanismConfig {
     private final ModConfigSpec configSpec;
 
     public final CachedEnumValue<TemperatureUnit> tempUnit;
+    public final CachedBooleanValue compactEnergyDisplay;
     public final CachedBooleanValue enableDecayTimers;
     public final CachedBooleanValue copyBlockData;
     public final CachedBooleanValue holidays;
@@ -18,6 +19,8 @@ public class LocalConfig extends BaseMekanismConfig {
     LocalConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
+        compactEnergyDisplay = CachedBooleanValue.wrap(this, MekanismConfigTranslations.COMMON_COMPACT_DISPLAY_ENERGY.applyToBuilder(builder)
+              .define("compactEnergyDisplay", true));
         tempUnit = CachedEnumValue.wrap(this, MekanismConfigTranslations.COMMON_UNIT_TEMPERATURE.applyToBuilder(builder)
               .defineEnum("temperatureUnit", TemperatureUnit.KELVIN));
         enableDecayTimers = CachedBooleanValue.wrap(this, MekanismConfigTranslations.COMMON_DECAY_TIMERS.applyToBuilder(builder)

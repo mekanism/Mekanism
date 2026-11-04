@@ -94,6 +94,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "Determines whether this window is pinned, and should open automatically when the GUI is reopened."),
 
     //Common Config
+    COMMON_COMPACT_DISPLAY_ENERGY("common.compact_display.energy", "Compact Energy Display", "Displays energy in an abbreviated form using SI prefixes."),
     COMMON_UNIT_TEMPERATURE("common.unit.temperature", "Temperature Unit", "Displayed temperature unit in Mekanism GUIs (client) and network reader readings (server)."),
     COMMON_DECAY_TIMERS("common.decay_timers", "Decay Timers",
           "Display the time it will take for radiation to decay when readings are above safe levels. Set this to false on the client side to disable "

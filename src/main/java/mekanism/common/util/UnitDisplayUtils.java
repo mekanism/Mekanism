@@ -8,6 +8,8 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -25,7 +27,7 @@ public class UnitDisplayUtils {
     private static final Unit IGNORED_UNIT = new Unit() {
 
         @Override
-        public Component appendTo(Object existing, boolean isShort, boolean spaceBetweenSymbol, boolean singular) {
+        public Component appendTo(Object existing, boolean spaceBetweenSymbol, boolean singular) {
             return TextComponentUtil.build(existing);
         }
 
@@ -34,43 +36,24 @@ public class UnitDisplayUtils {
         public Object getSymbol(boolean singular) {
             return null;
         }
-
-        @Nullable
-        @Override
-        public ILangEntry getLabel(boolean singular) {
-            return null;
-        }
     };
-    private static final Unit FORGE_ENERGY = new Unit() {
+    private static final Unit FORGE_ENERGY = _ -> MekanismLang.ENERGY_FORGE;
 
-        @Override
-        public Object getSymbol(boolean singular) {
-            return MekanismLang.ENERGY_FORGE_SHORT;
+    public static Component getEnergyDisplay(long value) {
+        if (MekanismConfig.local.compactEnergyDisplay.get()) {
+            //TODO - 26.3: Add a config option for whether the energy display should be shortened?
+            return getDisplayBase(value, FORGE_ENERGY, 2, true);
         }
-
-        @Override
-        public ILangEntry getLabel(boolean singular) {
-            return MekanismLang.ENERGY_FORGE;
-        }
-    };
-
-    public static Component getEnergyDisplayShort(long value) {
-        //TODO - 26.3: Add a config option for whether the energy display should be shortened?
-        //TODO - 26.3: Re-evaluate this, getDisplayBase takes a double, can we make it more accurate for higher values by creating a variant for longs?
-        return getDisplayBase(value, FORGE_ENERGY, 2, true, true);
+        return FORGE_ENERGY.appendTo(TextUtils.format(value), true, Mth.equal(value, 1));
     }
 
-    public static Component getDisplay(double temp, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort, boolean spaceBetweenSymbol) {
-        return getDisplayBase(unit.convertFromK(temp, shift), unit, decimalPlaces, isShort, spaceBetweenSymbol);
+    public static Component getDisplay(long value, int decimalPlaces) {
+        return getDisplayBase(value, IGNORED_UNIT, decimalPlaces, false);
     }
 
-    public static Component getDisplay(double value, int decimalPlaces) {
-        return getDisplayBase(value, IGNORED_UNIT, decimalPlaces, true, false);
-    }
-
-    private static Component getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
+    private static Component getDisplayBase(double value, Unit unit, int decimalPlaces, boolean spaceBetweenSymbol) {
         if (value == 0) {
-            return unit.appendTo("0", isShort, spaceBetweenSymbol, false);
+            return unit.appendTo("0", spaceBetweenSymbol, false);
         }
         boolean singular = Mth.equal(value, 1);
         boolean negative = value < 0;
@@ -85,31 +68,19 @@ public class UnitDisplayUtils {
                 //First element and it is below it (no more unit abbreviations before),
                 // or last element (no more unit abbreviations past),
                 // or we are within the bounds between this one and the next one
-                return lowerMeasure.getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative, singular);
+                return lowerMeasure.getDisplay(value, unit, decimalPlaces, spaceBetweenSymbol, negative, singular);
             }
         }
         //Fallback, should never be reached as should have been captured by the check in the loop
-        return MeasurementUnit.VALUES.getLast().getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative, singular);
+        return MeasurementUnit.VALUES.getLast().getDisplay(value, unit, decimalPlaces, spaceBetweenSymbol, negative, singular);
     }
 
-    public static Component getDisplayShort(double value, TemperatureUnit unit) {
-        return getDisplayShort(value, unit, true);
+    public static Component getTemperatureDisplay(double temp, TemperatureUnit unit, boolean shift, int decimalPlaces) {
+        return getDisplayBase(unit.convertFromK(temp, shift), unit, decimalPlaces, false);
     }
 
-    public static Component getDisplayShort(double value, TemperatureUnit unit, boolean shift) {
-        return getDisplayShort(value, unit, shift, 2);
-    }
-
-    public static Component getDisplayShort(double value, TemperatureUnit unit, boolean shift, int decimalPlaces) {
-        return getDisplay(value, unit, decimalPlaces, shift, true, false);
-    }
-
-    public static Component getDisplayShort(double value, RadiationUnit unit, int decimalPlaces) {
-        return getDisplayBase(value, unit, decimalPlaces, true, true);
-    }
-
-    public static double roundDecimals(boolean negative, double d, int decimalPlaces) {
-        return negative ? roundDecimals(-d, decimalPlaces) : roundDecimals(d, decimalPlaces);
+    public static Component getRadiationDisplay(double value, RadiationUnit unit, int decimalPlaces) {
+        return getDisplayBase(value, unit, decimalPlaces, true);
     }
 
     public static double roundDecimals(double d, int decimalPlaces) {
@@ -122,23 +93,18 @@ public class UnitDisplayUtils {
         return roundDecimals(d, 2);
     }
 
+    @FunctionalInterface
     private interface Unit {
 
-        default Component appendTo(Object existing, boolean isShort, boolean spaceBetweenSymbol, boolean singular) {
-            if (isShort) {
-                if (spaceBetweenSymbol) {
-                    return TextComponentUtil.build(existing + " ", getSymbol(singular));
-                }
-                return TextComponentUtil.build(existing, getSymbol(singular));
+        default Component appendTo(Object existing, boolean spaceBetweenSymbol, boolean singular) {
+            if (spaceBetweenSymbol) {
+                return TextComponentUtil.build(existing + " ", getSymbol(singular));
             }
-            return TextComponentUtil.build(existing, getLabel(singular));
+            return TextComponentUtil.build(existing, getSymbol(singular));
         }
 
         @Nullable
         Object getSymbol(boolean singular);
-
-        @Nullable
-        ILangEntry getLabel(boolean singular);
     }
 
     public enum TemperatureUnit implements IIncrementalEnum<TemperatureUnit>, IHasTranslationKey, Unit, TranslatableEnum {
@@ -183,13 +149,8 @@ public class UnitDisplayUtils {
         }
 
         @Override
-        public ILangEntry getLabel(boolean singular) {
-            return langEntry;
-        }
-
-        @Override
         public Component getTranslatedName() {
-            return getLabel(false).translate();
+            return langEntry.translate();
         }
 
         @Override
@@ -225,11 +186,6 @@ public class UnitDisplayUtils {
         @Override
         public String getSymbol(boolean singular) {
             return symbol;
-        }
-
-        @Override
-        public ILangEntry getLabel(boolean singular) {
-            return MekanismLang.ERROR;
         }
     }
 
@@ -288,10 +244,11 @@ public class UnitDisplayUtils {
             return d < value;
         }
 
-        private Component getDisplay(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol, boolean negative, boolean singular) {
-            double rounded = roundDecimals(negative, process(value), decimalPlaces);
-            String name = getName(isShort);
-            if (spaceBetweenSymbol || !isShort) {
+        private Component getDisplay(double value, Unit unit, int decimalPlaces, boolean spaceBetweenSymbol, boolean negative, boolean singular) {
+            double processed = process(value);
+            double rounded = roundDecimals(negative ? -processed : processed, decimalPlaces);
+            String name = getName(true);
+            if (spaceBetweenSymbol) {
                 name = " " + name;
             }
             String roundedStr = Double.toString(rounded);
@@ -299,7 +256,7 @@ public class UnitDisplayUtils {
                 roundedStr = roundedStr.substring(0, roundedStr.length() - 2);
             }
             //Note: We handle the space between symbols above
-            return unit.appendTo(roundedStr + name, isShort, false, singular);
+            return unit.appendTo(roundedStr + name, false, singular);
         }
     }
 }

@@ -11,7 +11,6 @@ import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.client.gui.element.GuiStateTexture;
 import mekanism.generators.common.GeneratorsLang;
@@ -37,7 +36,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
             List<Component> list = new ArrayList<>();
             list.add(EnergyDisplay.of(tile.energyContainer()).getTextComponent());
             long amount = tile.getCurrentGeneration();
-            list.add(GeneratorsLang.POWER.translate(UnitDisplayUtils.getEnergyDisplayShort(amount)));
+            list.add(GeneratorsLang.POWER.translate(EnergyDisplay.of(amount)));
             if (!tile.getActive()) {
                 ILangEntry reason = tile.isBlacklistDimension() ? GeneratorsLang.NO_WIND : GeneratorsLang.SKY_BLOCKED;
                 list.add(reason.translateColored(EnumColor.DARK_RED));

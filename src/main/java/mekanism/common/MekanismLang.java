@@ -15,7 +15,6 @@ public enum MekanismLang implements ILangEntry {
     PACK_DESCRIPTION_BWG("constants", "pack_description.bwg"),
     PACK_DESCRIPTION_FD("constants", "pack_description.fd"),
     FORGE("constants", "forge"),
-    ERROR("constants", "error"),
     INVALID_PACKET("constants", "error.packet.invalid"),
     ALPHA_WARNING("constants", "alpha_warning"),
     ALPHA_WARNING_HERE("constants", "alpha_warning.here"),
@@ -668,8 +667,7 @@ public enum MekanismLang implements ILangEntry {
     TEMPERATURE_AMBIENT("temperature", "ambient"),
     TEMPERATURE_AMBIENT_SHORT("temperature", "ambient.short"),
     //Energy
-    ENERGY_FORGE("energy", "forge"),
-    ENERGY_FORGE_SHORT("energy", "forge.short"),
+    ENERGY_FORGE("energy", "forge.short"),
     //Network Reader
     NETWORK_READER_BORDER("network_reader", "border"),
     NETWORK_READER_TEMPERATURE("network_reader", "temperature"),

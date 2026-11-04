@@ -13,12 +13,12 @@ public class TooltipHelper implements ITooltipHelper {
 
     @Override
     public Component getEnergyPerMBDisplayShort(long energy) {
-        return MekanismLang.GENERIC_PER_MB.translate(UnitDisplayUtils.getEnergyDisplayShort(energy));
+        return MekanismLang.GENERIC_PER_MB.translate(UnitDisplayUtils.getEnergyDisplay(energy));
     }
 
     @Override
     public Component getRadioactivityDisplayShort(double radioactivity) {
-        return UnitDisplayUtils.getDisplayShort(radioactivity, RadiationUnit.SVH, 2);
+        return UnitDisplayUtils.getRadiationDisplay(radioactivity, RadiationUnit.SVH, 2);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class TooltipHelper implements ITooltipHelper {
 
     @Override
     public Component getEnergyDisplay(long energy, boolean perTick) {
-        Component energyDisplay = UnitDisplayUtils.getEnergyDisplayShort(energy);
+        Component energyDisplay = UnitDisplayUtils.getEnergyDisplay(energy);
         return perTick ? MekanismLang.GENERIC_PER_TICK.translate(energyDisplay) : energyDisplay;
     }
 

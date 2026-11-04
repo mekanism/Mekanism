@@ -15,7 +15,6 @@ import net.minecraft.util.Util;
 
 public class MekanismRenderType {
 
-    //TODO - 26.3: Re-evaluate this (and if we need this to support translucency)
     public static final RenderType GUI_SPRITES = RenderType.create("mekanism_gui_sprite", RenderSetup.builder(RenderPipelines.GUI_TEXTURED)
           .withTexture("Sampler0", AtlasIds.GUI.withPrefix("textures/atlas/").withSuffix(".png"))
           .sortOnUpload()

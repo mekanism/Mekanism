@@ -73,7 +73,7 @@ public enum CableTier implements ITier, TooltipProvider {
         builder.accept(MekanismLang.CAPACITY_PER_TICK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(getCableCapacity())));
         builder.accept(CommonComponents.EMPTY);
         builder.accept(MekanismLang.CAPABLE_OF_TRANSFERRING.translateColored(EnumColor.DARK_GRAY));
-        builder.accept(MekanismLang.GENERIC_TRANSFER.translateColored(EnumColor.GRAY, MekanismLang.ENERGY_FORGE_SHORT, EnumColor.PURPLE, MekanismLang.FORGE));
+        builder.accept(MekanismLang.GENERIC_TRANSFER.translateColored(EnumColor.GRAY, MekanismLang.ENERGY_FORGE, EnumColor.PURPLE, MekanismLang.FORGE));
     }
 
     /// ONLY CALL THIS FROM TierConfig. It is used to give the CableTier a reference to the actual config value object

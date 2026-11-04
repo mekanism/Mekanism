@@ -37,7 +37,7 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
         addRenderableWidget(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
-                return MekanismRenderer.getBaseFluidTexture(Fluids.LAVA, FluidTextureType.STILL);
+                return MekanismRenderer.getFluidTexture(Fluids.LAVA, FluidTextureType.STILL);
             }
 
             @Override
@@ -62,7 +62,7 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
         addRenderableWidget(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
-                return MekanismRenderer.getBaseFluidTexture(Fluids.LAVA, FluidTextureType.STILL);
+                return MekanismRenderer.getFluidTexture(Fluids.LAVA, FluidTextureType.STILL);
             }
 
             @Override

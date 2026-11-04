@@ -32,7 +32,7 @@ public class ModuleGeigerUnit implements ICustomModule<ModuleGeigerUnit> {
           Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             double magnitude = ClientRadiation.getClientEnvironmentalRadiation();
-            Component text = UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 2);
+            Component text = UnitDisplayUtils.getRadiationDisplay(magnitude, RadiationUnit.SV, 2);
             if (MekanismConfig.local.enableDecayTimers.get() && magnitude > IRadiationManager.INSTANCE.baselineRadiation()) {
                 double maxMagnitude = ClientRadiation.getClientMaxMagnitude();
                 text = MekanismLang.GENERIC_WITH_PARENTHESIS.translate(text, TextUtils.getHoursMinutes(player.level(),

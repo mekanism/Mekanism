@@ -36,10 +36,10 @@ public class RadiationCommand {
     );
     private static final CommandResponseTracker.MessagesWithArg<LivingEntity, Double> RADIATE_RESPONSE = CommandResponseTracker.messages(
           (living, _, magnitude) -> MekanismLang.COMMAND_RADIATION_ADD_ENTITY_TARGET.translate(EnumColor.GRAY,
-                RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3),
+                RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getRadiationDisplay(magnitude, RadiationUnit.SVH, 3),
                 EnumColor.INDIGO, living.getDisplayName()),
           (entityCount, _, magnitude) -> MekanismLang.COMMAND_RADIATION_ADD_ENTITY_TARGET_MULTIPLE.translate(EnumColor.GRAY,
-                RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3),
+                RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getRadiationDisplay(magnitude, RadiationUnit.SVH, 3),
                 EnumColor.INDIGO, entityCount)
     );
 
@@ -98,7 +98,7 @@ public class RadiationCommand {
                         if (cap != null) {
                             cap.radiate(magnitude);
                             source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_ADD_ENTITY.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
-                                  UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)), true);
+                                  UnitDisplayUtils.getRadiationDisplay(magnitude, RadiationUnit.SVH, 3)), true);
                             return getReturnLevelFromRadiation(magnitude);
                         }
                         return 0;
@@ -189,7 +189,7 @@ public class RadiationCommand {
                             double reduced = radiation - newValue;
                             cap.set(newValue);
                             source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REDUCE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(reduced),
-                                  UnitDisplayUtils.getDisplayShort(reduced, RadiationUnit.SVH, 3)), true);
+                                  UnitDisplayUtils.getRadiationDisplay(reduced, RadiationUnit.SVH, 3)), true);
                             return getReturnLevelFromRadiation(reduced);
                         }
                         return 0;
@@ -211,7 +211,7 @@ public class RadiationCommand {
                                           cap.set(newValue);
                                           source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REDUCE_TARGET.translateColored(EnumColor.GRAY,
                                                 EnumColor.INDIGO, living.getDisplayName(), RadiationScale.getSeverityColor(reduced),
-                                                UnitDisplayUtils.getDisplayShort(reduced, RadiationUnit.SVH, 3)), true);
+                                                UnitDisplayUtils.getRadiationDisplay(reduced, RadiationUnit.SVH, 3)), true);
                                           tracker.track(living);
                                       }
                                   }
@@ -230,7 +230,7 @@ public class RadiationCommand {
         BlockPos location = BlockPos.containing(pos);
         IRadiationManager.INSTANCE.radiate(world, location, magnitude);
         source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_ADD.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
-              UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3), EnumColor.INDIGO, getPosition(location), EnumColor.INDIGO, world), true);
+              UnitDisplayUtils.getRadiationDisplay(magnitude, RadiationUnit.SVH, 3), EnumColor.INDIGO, getPosition(location), EnumColor.INDIGO, world), true);
         return getReturnLevelFromRadiation(magnitude);
     }
 
@@ -242,7 +242,7 @@ public class RadiationCommand {
         BlockPos location = BlockPos.containing(pos);
         double magnitude = IRadiationManager.INSTANCE.getRadiationLevel(world, location);
         source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_GET.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(location), EnumColor.INDIGO,
-                    world, RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)),
+                    world, RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getRadiationDisplay(magnitude, RadiationUnit.SVH, 3)),
               true);
         return getReturnLevelFromRadiation(magnitude);
     }
