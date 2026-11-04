@@ -41,8 +41,6 @@ tasks.named('updateDaemonJvm', UpdateDaemonJvm, {
     languageVersion = JavaLanguageVersion.of("${java_version}")
 })
 
-defaultTasks('build')
-
 idea {
     module {
         //Exclude directories from being managed
@@ -74,6 +72,7 @@ ext {
             'gender'          : new IntegrationSettings(shouldCompile: true, scope: IntegrationScope.DATA_ONLY, perModule: PerModule.ALL),
             'jade'            : new IntegrationSettings(shouldCompile: true),
             'jei'             : new IntegrationSettings(shouldCompile: true, perModule: PerModule.MODULE_ONLY),
+            'nerb'            : new IntegrationSettings(shouldCompile: true),
             'open_computers'  : new IntegrationSettings(shouldCompile: false),
             'projecte'        : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL),
             'recipe_stages'   : new IntegrationSettings(shouldCompile: false),
@@ -805,6 +804,10 @@ dependencies {
     //integrationWthitLocalRuntime("mcp.mobius.waila:wthit:neo-${wthit_version}")
     //integrationWthitLocalRuntime('lol.bai:badpackets:neo-0.12.2')
 
+    //Note: Shatterlib is necessary for compilation against the class we need in NERB
+    integrationNerbCompileOnly("curse.maven:shatterlib-916747:${shatter_lib_id}")
+    integrationNerbCompileOnly("curse.maven:nerb-738663:${nerb_id}")
+
     def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minecraft_version}:${crafttweaker_version}"
     integrationCrafttweakerCompileOnly(crt)
     integrationCrafttweakerLocalRuntime(crt)
@@ -1098,6 +1101,8 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
                     'cc-tweaked', 'oc2', 'opencomputers-rebooted',
                     //Looking at mods
                     'jade', 'the-one-probe', 'wthit-forge',
+                    //Recipe book removers
+                    'notenoughrecipebook',
                     //Recipe viewers
                     'emi', 'jei',
                     //Tweakers
@@ -1186,6 +1191,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
                 new ModDependency('nvQzSEkH', 'optional'),//Jade
                 new ModDependency('u6dRKJwZ', 'optional'),//JEI
                 new ModDependency('EiEOyeoL', 'optional'),//JEI Tweaker
+                new ModDependency('bQh7xzFq', 'optional'),//Not Enough Recipe Book
                 new ModDependency('qXkLFB0L', 'optional'),//Recipe Stages
                 new ModDependency('Eyw0UxEx', 'optional'),//The One Probe
                 new ModDependency('bcOsQHnC', 'optional'),//Wildfire's Female Gender Mod

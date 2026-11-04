@@ -1,6 +1,8 @@
 package mekanism.common.integration;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.common.integration.computer.FactoryRegistry;
@@ -28,6 +30,7 @@ public final class MekanismHooks {
     public static final String GENDER_MOD_ID = "female_gender_mod";
     public static final String JEI_MOD_ID = "jei";
     public static final String JEITWEAKER_MOD_ID = "jeitweaker";
+    public static final String NERB_MOD_ID = "nerb";
     public static final String OPEN_COMPUTERS_MOD_ID = "opencomputers";
     public static final String PROJECTE_MOD_ID = "projecte";
     public static final String TOP_MOD_ID = "theoneprobe";
@@ -66,6 +69,9 @@ public final class MekanismHooks {
     public final IntegrationInfo projecte;
     public final IntegrationInfo recipeStages;
     public final IntegrationInfo theOneProbe;
+
+    //TODO: Do we want to expose being able to add to this via IMC?
+    public final List<BooleanSupplier> recipeBookDisabledChecks = new ArrayList<>();
 
     private final EntityCapability<ResourceHandler<ItemResource>, @Nullable Void> curiosItemHandler;
 
@@ -115,7 +121,11 @@ public final class MekanismHooks {
     }
 
     public boolean isRecipeBookDisabled() {
-        //TODO - 26.3: Figure out how to implement compat for mods that remove the recipe book like https://www.curseforge.com/minecraft/mc-mods/notenoughrecipebook
+        for (BooleanSupplier recipeBookDisabledCheck : recipeBookDisabledChecks) {
+            if (recipeBookDisabledCheck.getAsBoolean()) {
+                return true;
+            }
+        }
         return false;
     }
 
