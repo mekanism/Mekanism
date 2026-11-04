@@ -28,6 +28,7 @@ public final class MekanismHooks {
     public static final String GENDER_MOD_ID = "female_gender_mod";
     public static final String JEI_MOD_ID = "jei";
     public static final String JEITWEAKER_MOD_ID = "jeitweaker";
+    public static final String OPEN_COMPUTERS_MOD_ID = "opencomputers";
     public static final String PROJECTE_MOD_ID = "projecte";
     public static final String TOP_MOD_ID = "theoneprobe";
 
@@ -61,6 +62,7 @@ public final class MekanismHooks {
     public final IntegrationInfo genderMod;
     public final IntegrationInfo jei;
     public final IntegrationInfo jeiTweaker;
+    public final IntegrationInfo openComputers;
     public final IntegrationInfo projecte;
     public final IntegrationInfo recipeStages;
     public final IntegrationInfo theOneProbe;
@@ -78,6 +80,7 @@ public final class MekanismHooks {
         jei = new IntegrationInfo(JEI_MOD_ID, loadedCheck);
         emi = new IntegrationInfo(EMI_MOD_ID, loadedCheck);
         jeiTweaker = new IntegrationInfo(JEITWEAKER_MOD_ID, loadedCheck);
+        openComputers = new IntegrationInfo(OPEN_COMPUTERS_MOD_ID, loadedCheck);
         projecte = new IntegrationInfo(PROJECTE_MOD_ID, loadedCheck);
         recipeStages = new IntegrationInfo("recipestages", loadedCheck);
         theOneProbe = new IntegrationInfo(TOP_MOD_ID, loadedCheck);
@@ -117,7 +120,7 @@ public final class MekanismHooks {
     }
 
     public boolean computerCompatEnabled() {
-        return computerCraft.isLoaded();
+        return computerCraft.isLoaded() || openComputers.isLoaded();
     }
 
     /// @apiNote DME only uses strings in IMC, so we can safely just include them here without worrying about classloading issues

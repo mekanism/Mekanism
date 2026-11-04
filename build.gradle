@@ -74,6 +74,7 @@ ext {
             'gender'          : new IntegrationSettings(shouldCompile: true, scope: IntegrationScope.DATA_ONLY, perModule: PerModule.ALL),
             'jade'            : new IntegrationSettings(shouldCompile: true),
             'jei'             : new IntegrationSettings(shouldCompile: true, perModule: PerModule.MODULE_ONLY),
+            'open_computers'  : new IntegrationSettings(shouldCompile: false),
             'projecte'        : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL),
             'recipe_stages'   : new IntegrationSettings(shouldCompile: false),
             'the_one_probe'   : new IntegrationSettings(shouldCompile: true),
@@ -716,6 +717,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
     exclusiveRepo(handler, 'https://api.modrinth.com/maven', 'maven.modrinth')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe')
+    exclusiveRepo(handler, 'https://maven.michiyo.me/releases/', 'li.cil.oc')
     exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
     exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel.projecte', 'snownee.jade')
     handler.exclusiveContent {
@@ -815,6 +817,7 @@ dependencies {
     integrationProjecteCompileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
     integrationCuriosCompileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     integrationRecipeStagesCompileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
+    integrationOpenComputersCompileOnly("li.cil.oc:opencomputers:${oc_rebooted_version}:api")
     integrationComputerCraftCompileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
     //integrationComputerCraftLocalRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     integrationFramedblocksCompileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
@@ -1092,7 +1095,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
             //Add optional deps
             addOptional(
                     //Computers
-                    'cc-tweaked', 'oc2',
+                    'cc-tweaked', 'oc2', 'opencomputers-rebooted',
                     //Looking at mods
                     'jade', 'the-one-probe', 'wthit-forge',
                     //Recipe viewers

@@ -3,6 +3,7 @@ package mekanism.common.integration.computer;
 import java.util.function.BooleanSupplier;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.computer.computercraft.IComputerCraftHelper;
+import mekanism.common.integration.computer.opencomputers.IOpenComputersHelper;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
 import mekanism.common.tile.base.CapabilityTileEntity;
 
@@ -13,6 +14,10 @@ public class ComputerCapabilityHelper {
         if (Mekanism.hooks.computerCraft.isLoaded() && IComputerCraftHelper.INSTANCE != null) {
             //If ComputerCraft is loaded add the capability for it
             IComputerCraftHelper.INSTANCE.addCapability(builder, supportsComputer);
+        }
+        if (Mekanism.hooks.computerCraft.isLoaded() && IOpenComputersHelper.INSTANCE != null) {
+            //If OpenComputers is loaded add the capability for it
+            IOpenComputersHelper.INSTANCE.addCapability(builder, supportsComputer);
         }
     }
 }
