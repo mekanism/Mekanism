@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.function.IntFunction;
 import mekanism.api.functions.TriConsumer;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
@@ -23,12 +23,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /// Used for informing the server that an action happened in a GUI
-public record PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockPos tilePosition, double extra) implements IMekanismPacket {
+public record PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockPos pos, double extra) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketGeneratorsGuiInteract> TYPE = new CustomPacketPayload.Type<>(MekanismGenerators.rl("gui_interact"));
     public static final StreamCodec<ByteBuf, PacketGeneratorsGuiInteract> STREAM_CODEC = StreamCodec.composite(
           GeneratorsGuiInteraction.STREAM_CODEC, PacketGeneratorsGuiInteract::interaction,
-          BlockPos.STREAM_CODEC, PacketGeneratorsGuiInteract::tilePosition,
+          BlockPos.STREAM_CODEC, PacketGeneratorsGuiInteract::pos,
           ByteBufCodecs.DOUBLE, PacketGeneratorsGuiInteract::extra,
           PacketGeneratorsGuiInteract::new
     );
@@ -53,8 +53,7 @@ public record PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, 
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), tilePosition);
-        if (tile != null) {
+        if (PacketUtils.blockEntity(context, pos) instanceof TileEntityMekanism tile) {
             interaction.consume(tile, player, extra);
         }
     }

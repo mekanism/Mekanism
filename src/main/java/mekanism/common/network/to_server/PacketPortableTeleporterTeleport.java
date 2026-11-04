@@ -2,16 +2,17 @@ package mekanism.common.network.to_server;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.event.MekanismTeleportEvent;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.content.teleporter.TeleporterFrequency;
-import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
@@ -25,11 +26,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
@@ -50,8 +51,8 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
     @Override
     public void handle(IPayloadContext context) {
         ServerPlayer player = (ServerPlayer) context.player();
-        ItemStack stack = player.getItemInHand(currentHand);
-        if (!stack.isEmpty() && stack.getItem() instanceof ItemPortableTeleporter) {
+        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, currentHand);
+        if (MekanismItems.PORTABLE_TELEPORTER.is(itemAccess.getResource()) && itemAccess.getAmount() == 1 && IItemSecurityUtils.INSTANCE.canAccess(player, itemAccess)) {
             TeleporterFrequency found = FrequencyTypes.TELEPORTER.getFrequency(identity, player.getUUID());
             if (found == null) {
                 return;
@@ -60,12 +61,13 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
             if (coords != null) {
                 ServerLevel teleWorld = player.level().getServer().getLevel(coords.dimension());
                 TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.pos());
+                //Note: We don't need to check if the player can access the teleporter as we only care if they can access the frequency
                 if (teleporter != null) {
                     int energyCost;
                     try (Transaction transaction = Transaction.openRoot()) {
                         if (MekanismUtils.isPlayingMode(player)) {
                             energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
-                            EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccessUtils.playerHandAccess(player, currentHand)));
+                            EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(itemAccess));
                             if (energyHandler == null || energyHandler.extract(energyCost, transaction) < energyCost) {
                                 //Fail if there is not enough energy available
                                 return;
@@ -76,7 +78,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                         teleporter.didTeleport.add(player.getUUID());
                         teleporter.teleDelay = 5;
                         BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
-                        MekanismTeleportEvent.PortableTeleporter event = new MekanismTeleportEvent.PortableTeleporter(player, teleporterTargetPos, teleWorld, stack, energyCost);
+                        MekanismTeleportEvent.PortableTeleporter event = new MekanismTeleportEvent.PortableTeleporter(player, teleporterTargetPos, teleWorld, itemAccess, energyCost);
                         if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
                             //Fail if the event was cancelled
                             return;

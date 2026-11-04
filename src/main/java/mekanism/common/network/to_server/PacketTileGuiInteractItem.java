@@ -5,10 +5,10 @@ import java.util.function.IntFunction;
 import mekanism.api.functions.TriConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -21,12 +21,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /// Used for informing the server that an action including an item happened in a tile GUI
-public record PacketTileGuiInteractItem(GuiInteractionItem itemInteraction, BlockPos tilePosition, ItemStack extraItem) implements IMekanismPacket {
+public record PacketTileGuiInteractItem(GuiInteractionItem itemInteraction, BlockPos pos, ItemStack extraItem) implements IMekanismPacket {
 
     public static final Type<PacketTileGuiInteractItem> TYPE = new Type<>(Mekanism.rl("tile_gui_interact_item"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketTileGuiInteractItem> STREAM_CODEC = StreamCodec.composite(
           GuiInteractionItem.STREAM_CODEC, packet -> packet.itemInteraction,
-          BlockPos.STREAM_CODEC, packet -> packet.tilePosition,
+          BlockPos.STREAM_CODEC, packet -> packet.pos,
           ItemStack.OPTIONAL_STREAM_CODEC, packet -> packet.extraItem,
           PacketTileGuiInteractItem::new
     );
@@ -43,8 +43,7 @@ public record PacketTileGuiInteractItem(GuiInteractionItem itemInteraction, Bloc
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), tilePosition);
-        if (tile != null) {
+        if (PacketUtils.blockEntity(context, pos) instanceof TileEntityMekanism tile) {
             itemInteraction.consume(tile, player, extraItem);
         }
     }

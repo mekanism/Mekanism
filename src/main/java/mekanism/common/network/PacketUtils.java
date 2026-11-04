@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.function.Function;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.FilterManager;
@@ -31,6 +32,7 @@ import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -108,7 +110,12 @@ public class PacketUtils {
 
     @Nullable
     public static BlockEntity blockEntity(IPayloadContext context, BlockPos pos) {
-        return WorldUtils.getTileEntity(context.player().level(), pos);
+        Player player = context.player();
+        BlockEntity blockEntity = WorldUtils.getTileEntity(player.level(), pos);
+        if (blockEntity != null && IBlockSecurityUtils.INSTANCE.canAccess(player, player.level(), pos, blockEntity)) {
+            return blockEntity;
+        }
+        return null;
     }
 
     @Nullable

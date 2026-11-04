@@ -1,19 +1,17 @@
 package mekanism.common.network.to_server.frequency;
 
-import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.util.WorldUtils;
+import mekanism.common.network.PacketUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PacketSetTileFrequency(boolean set, TypedIdentity data, BlockPos pos) implements IMekanismPacket {
@@ -38,8 +36,7 @@ public record PacketSetTileFrequency(boolean set, TypedIdentity data, BlockPos p
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        BlockEntity tile = WorldUtils.getTileEntity(player.level(), pos);
-        if (tile instanceof IFrequencyHandler frequencyHandler && IBlockSecurityUtils.INSTANCE.canAccess(player, player.level(), pos, tile)) {
+        if (PacketUtils.blockEntity(context, pos) instanceof IFrequencyHandler frequencyHandler) {
             if (set) {
                 frequencyHandler.setFrequency(data.type(), data.data(), player.getUUID());
             } else {

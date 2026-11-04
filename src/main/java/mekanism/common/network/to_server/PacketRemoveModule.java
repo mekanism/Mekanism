@@ -4,8 +4,8 @@ import mekanism.api.MekanismRegistries;
 import mekanism.api.gear.ModuleData;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.TileEntityModificationStation;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -33,8 +33,7 @@ public record PacketRemoveModule(BlockPos pos, Holder<ModuleData<?>> moduleType,
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        TileEntityModificationStation tile = WorldUtils.getTileEntity(TileEntityModificationStation.class, player.level(), pos);
-        if (tile != null) {
+        if (PacketUtils.blockEntity(context, pos) instanceof TileEntityModificationStation tile) {
             tile.removeModule(player, moduleType, removeAll);
         }
     }

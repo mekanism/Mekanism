@@ -177,7 +177,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     private boolean isValidItem(int index) {
-        return ModuleTweakerContainer.isTweakableItem(getItemType(index));
+        return minecraft.player != null && ModuleTweakerContainer.isTweakableItem(minecraft.player, getItemType(index));
     }
 
     private ItemResource getItemType(int index) {

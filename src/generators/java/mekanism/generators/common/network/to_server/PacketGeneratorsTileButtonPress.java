@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
@@ -41,8 +41,7 @@ public record PacketGeneratorsTileButtonPress(ClickedGeneratorsTileButton button
     public void handle(IPayloadContext context) {
         Player player = context.player();
         //If we are on the server (the only time we should be receiving this packet), let forge handle switching the Gui
-        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), pos);
-        if (tile != null) {
+        if (PacketUtils.blockEntity(context, pos) instanceof TileEntityMekanism tile) {
             player.openMenu(buttonClicked.getProvider(tile));
         }
     }

@@ -49,7 +49,7 @@ public record PacketEntityGuiInteract(GuiInteractionEntity entityInteraction, in
     public void handle(IPayloadContext context) {
         Player player = context.player();
         Entity entity = player.level().getEntity(entityID);
-        if (entity != null) {
+        if (entity != null && IEntitySecurityUtils.INSTANCE.canAccess(player, entity)) {
             entityInteraction.consume(entity, player, extra);
         }
     }

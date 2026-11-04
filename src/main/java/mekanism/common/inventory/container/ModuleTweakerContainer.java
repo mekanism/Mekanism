@@ -1,10 +1,12 @@
 package mekanism.common.inventory.container;
 
 import mekanism.api.gear.IModuleHelper;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.inventory.container.slot.ArmorSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.OffhandSlot;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -64,26 +66,26 @@ public class ModuleTweakerContainer extends MekanismContainer {
         });
     }
 
-    public static <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean isTweakableItem(ITEM instance) {
-        return IModuleHelper.INSTANCE.getModuleContainer(instance) != null;
+    public static <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean isTweakableItem(Player player, ITEM instance) {
+        return IModuleHelper.INSTANCE.getModuleContainer(instance) != null && IItemSecurityUtils.INSTANCE.canAccess(player, ItemAccessUtils.sideEffectFreeAccess(instance));
     }
 
     public static boolean hasTweakableItem(Player player) {
         Inventory inventory = player.getInventory();
         for (int slot = 0; slot < Inventory.getSelectionSize(); slot++) {
-            if (isTweakableItem(inventory.getItem(slot))) {
+            if (isTweakableItem(player, inventory.getItem(slot))) {
                 return true;
             }
         }
         for (EquipmentSlot equipmentslot : EquipmentSlotGroup.ARMOR) {
             if (equipmentslot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
                 ItemStack armorStack = player.getItemBySlot(equipmentslot);
-                if (!armorStack.isEmpty() && isTweakableItem(armorStack)) {
+                if (!armorStack.isEmpty() && isTweakableItem(player, armorStack)) {
                     return true;
                 }
             }
         }
-        return isTweakableItem(player.getOffhandItem());
+        return isTweakableItem(player, player.getOffhandItem());
     }
 
     @Override

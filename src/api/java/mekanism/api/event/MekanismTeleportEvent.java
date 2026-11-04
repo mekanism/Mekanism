@@ -8,7 +8,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.fml.LogicalSide;
@@ -209,14 +208,14 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
     /// @since 10.5.2
     public static class PortableTeleporter extends Teleporter {
 
-        private final ItemStack portableTeleporter;
+        private final ItemAccess portableTeleporter;
 
         /// @param player             The player that is teleporting.
         /// @param teleporterPos      Destination teleporter position.
         /// @param targetDimension    Destination dimension.
         /// @param portableTeleporter Portable Teleporter used for teleportation.
         /// @param energyCost         The energy cost to perform the teleportation.
-        public PortableTeleporter(Player player, BlockPos teleporterPos, ServerLevel targetDimension, ItemStack portableTeleporter, long energyCost) {
+        public PortableTeleporter(Player player, BlockPos teleporterPos, ServerLevel targetDimension, ItemAccess portableTeleporter, long energyCost) {
             super(player, teleporterPos, targetDimension, energyCost);
             this.portableTeleporter = portableTeleporter;
         }
@@ -226,8 +225,8 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
             return (Player) super.getEntity();
         }
 
-        /// @return The ItemStack for the Portable Teleporter the player is using to teleport.
-        public ItemStack getPortableTeleporter() {
+        /// @return The Item Access representing the Portable Teleporter the player is using to teleport.
+        public ItemAccess getPortableTeleporter() {
             return portableTeleporter;
         }
     }

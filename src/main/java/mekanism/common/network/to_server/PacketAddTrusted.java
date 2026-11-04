@@ -1,6 +1,7 @@
 package mekanism.common.network.to_server;
 
 import io.netty.buffer.ByteBuf;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
@@ -11,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PacketAddTrusted(BlockPos pos, String name) implements IMekanismPacket {
@@ -29,7 +31,9 @@ public record PacketAddTrusted(BlockPos pos, String name) implements IMekanismPa
 
     @Override
     public void handle(IPayloadContext context) {
-        if (!name.isEmpty() && InputValidator.test(name, InputValidator.USERNAME) && PacketUtils.blockEntity(context, pos) instanceof TileEntitySecurityDesk desk) {
+        Player player = context.player();
+        if (!name.isEmpty() && InputValidator.test(name, InputValidator.USERNAME) && PacketUtils.blockEntity(context, pos) instanceof TileEntitySecurityDesk desk
+            && IBlockSecurityUtils.INSTANCE.canAccess(player, player.level(), pos, desk)) {
             desk.addTrusted(name);
         }
     }

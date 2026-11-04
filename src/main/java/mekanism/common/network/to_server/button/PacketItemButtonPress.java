@@ -3,6 +3,7 @@ package mekanism.common.network.to_server.button;
 import io.netty.buffer.ByteBuf;
 import java.util.function.BiFunction;
 import java.util.function.IntFunction;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.item.interfaces.IGuiItem;
@@ -41,7 +42,7 @@ public record PacketItemButtonPress(ClickedItemButton buttonClicked, Interaction
         Player player = context.player();
         ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
         ItemResource itemType = itemAccess.getResource();
-        if (itemType.getItem() instanceof IGuiItem) {
+        if (itemType.getItem() instanceof IGuiItem && itemAccess.getAmount() == 1 && IItemSecurityUtils.INSTANCE.canAccess(player, itemAccess)) {
             player.openMenu(buttonClicked.getProvider(itemType, hand));
         }
     }

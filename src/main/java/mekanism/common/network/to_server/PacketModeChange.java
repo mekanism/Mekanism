@@ -1,6 +1,7 @@
 package mekanism.common.network.to_server;
 
 import io.netty.buffer.ByteBuf;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IModeItem.DisplayChange;
@@ -42,7 +43,7 @@ public record PacketModeChange(EquipmentSlot slot, int shift, boolean displayCha
     public void handle(IPayloadContext context) {
         Player player = context.player();
         ItemAccess itemAccess = ItemAccessUtils.forEntitySlot(player, slot);
-        if (itemAccess.getResource().getItem() instanceof IModeItem modeItem) {
+        if (itemAccess.getResource().getItem() instanceof IModeItem modeItem && IItemSecurityUtils.INSTANCE.canAccess(player, itemAccess)) {
             try (Transaction transaction = Transaction.openRoot()) {
                 modeItem.changeMode(player, itemAccess, shift, displayChange(), transaction);
                 transaction.commit();

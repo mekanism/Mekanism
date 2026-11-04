@@ -4,6 +4,7 @@ import io.netty.handler.codec.DecoderException;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.config.ModuleConfig;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleContainer;
@@ -43,7 +44,8 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
         ItemAccess itemAccess = ItemAccess.forPlayerSlot(player, slotId);
         ModuleContainer container = ModuleHelper.get().getModuleContainer(itemAccess.getResource());
         //Validate the container still has the container, and it didn't end up somehow getting removed by the time the server received the packet
-        if (container != null && container.has(target.moduleType())) {
+        // and also validate that if the container happens to be a security item, that the player that sent the packet can actually modify it
+        if (container != null && container.has(target.moduleType()) && IItemSecurityUtils.INSTANCE.canAccess(player, itemAccess)) {
             try {
                 container.replaceModuleConfig(player.registryAccess(), itemAccess, null, target.moduleType(), target.config(), true);
             } catch (IllegalArgumentException | IllegalStateException e) {

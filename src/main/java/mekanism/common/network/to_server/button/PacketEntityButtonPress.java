@@ -3,6 +3,7 @@ package mekanism.common.network.to_server.button;
 import io.netty.buffer.ByteBuf;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import mekanism.api.security.IEntitySecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.IMekanismPacket;
@@ -40,7 +41,7 @@ public record PacketEntityButtonPress(ClickedEntityButton buttonClicked, int ent
     public void handle(IPayloadContext context) {
         Player player = context.player();
         Entity entity = player.level().getEntity(entityID);
-        if (entity != null) {
+        if (entity != null && IEntitySecurityUtils.INSTANCE.canAccess(player, entity)) {
             player.openMenu(buttonClicked.getProvider(entity));
         }
     }

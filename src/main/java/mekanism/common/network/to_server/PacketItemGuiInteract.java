@@ -41,7 +41,7 @@ public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionH
     public void handle(IPayloadContext context) {
         Player player = context.player();
         ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
-        if (itemAccess.getAmount() > 0) {
+        if (itemAccess.getAmount() > 0 && IItemSecurityUtils.INSTANCE.canAccess(player, itemAccess)) {
             interaction.consume(itemAccess, player, extra);
         }
     }

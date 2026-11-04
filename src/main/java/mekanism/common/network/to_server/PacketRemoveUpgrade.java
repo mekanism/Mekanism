@@ -3,16 +3,15 @@ package mekanism.common.network.to_server;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.IUpgradeTile;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -34,12 +33,11 @@ public record PacketRemoveUpgrade(BlockPos pos, Holder<Upgrade> upgradeType, boo
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        Level level = player.level();
-        BlockEntity tile = WorldUtils.getTileEntity(level, pos);
+        BlockEntity tile = PacketUtils.blockEntity(context, pos);
         if (tile instanceof IUpgradeTile upgradeTile && upgradeTile.supportsUpgrades()) {
             TileComponentUpgrade component = upgradeTile.getComponent();
             if (component != null) {//Should never be null here
-                component.removeUpgrade(level.registryAccess(), upgradeType, removeAll);
+                component.removeUpgrade(player.level().registryAccess(), upgradeType, removeAll);
             }
         }
     }

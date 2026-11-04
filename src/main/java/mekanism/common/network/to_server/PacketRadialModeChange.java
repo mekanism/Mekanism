@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.INestedRadialMode;
 import mekanism.api.radial.mode.IRadialMode;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
 import mekanism.common.network.IMekanismPacket;
@@ -39,7 +40,8 @@ public record PacketRadialModeChange(EquipmentSlot slot, List<Identifier> path, 
     public void handle(IPayloadContext context) {
         Player player = context.player();
         ItemAccess itemAccess = ItemAccessUtils.forEntitySlot(player, slot);
-        if (itemAccess.getResource().getItem() instanceof IGenericRadialModeItem radialModeItem) {
+        //Note: In general radial items don't have security modes, but we validate it just in case
+        if (itemAccess.getResource().getItem() instanceof IGenericRadialModeItem radialModeItem && IItemSecurityUtils.INSTANCE.canAccess(player, itemAccess)) {
             RadialData<?> radialData = radialModeItem.getRadialData(itemAccess.getResource());
             if (radialData != null) {
                 for (Identifier path : path) {

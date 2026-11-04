@@ -11,6 +11,7 @@ import mekanism.common.lib.SupportsXpContainment;
 import mekanism.common.lib.inventory.IAdvancedTransportEjector;
 import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -31,7 +32,6 @@ import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.TransporterUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -45,12 +45,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /// Used for informing the server that an action happened in a tile GUI
-public record PacketGuiInteract(GuiInteraction interaction, BlockPos tilePosition, int extra) implements IMekanismPacket {
+public record PacketGuiInteract(GuiInteraction interaction, BlockPos pos, int extra) implements IMekanismPacket {
 
     public static final Type<PacketGuiInteract> TYPE = new Type<>(Mekanism.rl("gui_interact"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketGuiInteract> STREAM_CODEC = StreamCodec.composite(
           GuiInteraction.STREAM_CODEC, packet -> packet.interaction,
-          BlockPos.STREAM_CODEC, packet -> packet.tilePosition,
+          BlockPos.STREAM_CODEC, packet -> packet.pos,
           //TODO - 1.18?: Eventually we may want to try to make some form of this that can compact negatives better as well
           ByteBufCodecs.VAR_INT, packet -> packet.extra,
           PacketGuiInteract::new
@@ -77,8 +77,7 @@ public record PacketGuiInteract(GuiInteraction interaction, BlockPos tilePositio
     public void handle(IPayloadContext context) {
         Player player = context.player();
         Level level = player.level();
-        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, level, tilePosition);
-        if (tile != null) {
+        if (PacketUtils.blockEntity(context, pos) instanceof TileEntityMekanism tile) {
             interaction.consume(level, tile, player, extra);
         }
     }

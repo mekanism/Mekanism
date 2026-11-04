@@ -1,10 +1,12 @@
 package mekanism.common.network.to_server;
 
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.curios.ICuriosHelper;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IModeItem.DisplayChange;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -44,7 +46,7 @@ public record PacketModeChangeCurios(String slotType, int slot, int shift, boole
         if (Mekanism.hooks.curios.isLoaded() && ICuriosHelper.INSTANCE != null) {
             Player player = context.player();
             ItemStack stack = ICuriosHelper.INSTANCE.getCurioStack(player, slotType, slot);
-            if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem) {
+            if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem && IItemSecurityUtils.INSTANCE.canAccess(player, ItemAccessUtils.sideEffectFreeAccess(stack))) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     modeItem.changeMode(player, ItemAccess.forStack(stack), shift, displayChangeMessage ? DisplayChange.OTHER : DisplayChange.NONE, transaction);
                     transaction.commit();
