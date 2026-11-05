@@ -47,6 +47,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReactorCasing implements IReactorLogic<FissionReactorLogic> {
 
@@ -69,8 +70,8 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
                 level.updateNeighborsAt(getBlockPos(), state.getBlock());
             } else if (!EventHooks.onNeighborNotify(level, worldPosition, state, EnumSet.of(side), false).isCanceled()) {
                 BlockPos toUpdate = worldPosition.relative(side);
-                level.getBlockState(toUpdate).onNeighborChange(level, toUpdate, worldPosition);
-                //TODO - 26.3: check weak power updates, updateNeighbourForOutputSignal does some cascading extra stuff
+                level.neighborChanged(toUpdate, state.getBlock(), null);
+                level.updateNeighborsAtExceptFromFacing(toUpdate, state.getBlock(), side.getOpposite(), null);
             }
             prevStatus = status;
         }
@@ -89,8 +90,15 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         return FissionReactorLogic.VALUES;
     }
 
-    public int getRedstoneLevel(Direction side) {
-        return level != null && !level.isClientSide() && getMultiblock().isPositionOutsideBounds(worldPosition.relative(side)) && getStatusServer() == RedstoneStatus.OUTPUTTING ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
+    public int getRedstoneLevel(@Nullable Direction side) {
+        if (level != null && !level.isClientSide()) {
+            if (side == null || getMultiblock().isPositionOutsideBounds(worldPosition.relative(side))) {
+                if (getStatusServer() == RedstoneStatus.OUTPUTTING){
+                    return Redstone.SIGNAL_MAX;
+                }
+            }
+        }
+        return Redstone.SIGNAL_NONE;
     }
 
     public RedstoneStatus getStatusClient() {

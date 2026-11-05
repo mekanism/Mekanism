@@ -72,6 +72,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @Override
     protected boolean onUpdateServer(ServerLevel level) {
+        boolean wasEmittingRedstone = emittingRedstone;
         setEmittingRedstone(false);
         if (ticks < delay) {
             ticks++;
@@ -81,6 +82,11 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         boolean sendUpdatePacket = super.onUpdateServer(level);
         if (outputMode != RedstoneOutput.ENTITY_DETECTION) {
             setEmittingRedstone(false);
+        }
+        if (wasEmittingRedstone != emittingRedstone) {
+            markDirtyComparator();
+        } else if (outputMode == RedstoneOutput.ENERGY_CONTENTS && getRedstoneLevel() != getCurrentRedstoneLevel()) {
+            markDirtyComparator();
         }
         return sendUpdatePacket;
     }
@@ -114,7 +120,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     protected void notifyComparatorChange(Level level) {
         //Notify neighbors instead of just comparators as we also allow for direct redstone levels
-        level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
+        level.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockState().getBlock(), getDirection(), null);
     }
 
     public void setDelay(int delay) {

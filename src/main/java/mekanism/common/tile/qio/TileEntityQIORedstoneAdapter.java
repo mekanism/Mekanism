@@ -22,6 +22,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.ExperimentalRedstoneUtils;
 import net.minecraft.world.level.redstone.Orientation;
@@ -48,8 +49,13 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         super(MekanismBlocks.QIO_REDSTONE_ADAPTER, pos, state);
     }
 
-    public int getRedstoneLevel(Direction side) {
-        return side != getOppositeDirection() && getActive() && isEmitting ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
+    public int getRedstoneLevel(@Nullable Direction side) {
+        if (side == null || side != getOppositeDirection()) {
+            if (getActive() && isEmitting) {
+                return Redstone.SIGNAL_MAX;
+            }
+        }
+        return Redstone.SIGNAL_NONE;
     }
 
     private long getFreqStored() {
@@ -110,10 +116,14 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             needsUpdate = true;
             //Update redstone on sides except the back
             Direction front = getDirection();
-            Direction opposite = front.getOpposite();
+            Direction back = front.getOpposite();
             //Based on how buttonBlock constructs the orientation
-            Orientation orientation = ExperimentalRedstoneUtils.initialOrientation(level, opposite, opposite.getAxis().isHorizontal() ? Direction.UP : front);
-            level.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockState().getBlock(), opposite, orientation);
+            Orientation orientation = ExperimentalRedstoneUtils.initialOrientation(level, back, back.getAxis().isHorizontal() ? Direction.UP : front);
+            Block block = getBlockState().getBlock();
+            //Update immediate neighbors
+            level.updateNeighborsAtExceptFromFacing(worldPosition, block, back, orientation);
+            //Provide a strong signal update through the block it is directed at
+            level.updateNeighborsAtExceptFromFacing(worldPosition.relative(front), block, back, orientation);
         }
         return needsUpdate;
     }

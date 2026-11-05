@@ -30,17 +30,18 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
 
     @Override
     public InteractionResult onRightClick(Level level, Player player) {
-        if (!level.isClientSide() && player.hasInfiniteMaterials()) {
+        if (player.hasInfiniteMaterials()) {
             FusionReactorMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
-                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
-                    multiblock.setPlasmaTemp(10 * FusionReactorMultiblockData.BURN_TEMPERATURE, transaction);
-                    transaction.commit();
+                if (!level.isClientSide()) {
+                    try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+                        multiblock.setPlasmaTemp(10 * FusionReactorMultiblockData.BURN_TEMPERATURE, transaction);
+                        transaction.commit();
+                    }
                 }
                 return InteractionResult.SUCCESS_SERVER;
             }
         }
-        //TODO - 26.3: Don't call super on the client side if it was successful?
         return super.onRightClick(level, player);
     }
 

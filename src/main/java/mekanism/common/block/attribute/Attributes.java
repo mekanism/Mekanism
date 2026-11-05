@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
+import net.minecraft.world.level.block.state.BlockBehaviour.StatePredicate;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.storage.loot.functions.FunctionUserBuilder;
@@ -84,7 +85,15 @@ public class Attributes {
     /// If a block has a redstone input configuration.
     public static class AttributeRedstone implements Attribute {
 
+        private static final StatePredicate NEVER = (_, _, _) -> false;
+
         private AttributeRedstone() {
+        }
+
+        @Override
+        public void adjustProperties(BlockBehaviour.Properties props) {
+            //Don't allow blocks that have redstone input configuration to conduct a redstone signal through them
+            props.isRedstoneConductor(NEVER);
         }
     }
 
@@ -133,18 +142,18 @@ public class Attributes {
         private static final BiPredicate<BlockState, @Nullable Direction> DEFAULT_WIRE_CAN_CONNECT = (_, direction) -> direction != null;
 
         private final BiPredicate<BlockState, @Nullable Direction> canWireConnect;
-        private final ToIntBiFunction<TILE, Direction> redstoneFunction;
+        private final ToIntBiFunction<TILE, @Nullable Direction> redstoneFunction;
 
-        public AttributeRedstoneEmitter(ToIntBiFunction<TILE, Direction> redstoneFunction) {
+        public AttributeRedstoneEmitter(ToIntBiFunction<TILE, @Nullable Direction> redstoneFunction) {
             this(redstoneFunction, DEFAULT_WIRE_CAN_CONNECT);
         }
 
-        public AttributeRedstoneEmitter(ToIntBiFunction<TILE, Direction> redstoneFunction, BiPredicate<BlockState, @Nullable Direction> canWireConnect) {
+        public AttributeRedstoneEmitter(ToIntBiFunction<TILE, @Nullable Direction> redstoneFunction, BiPredicate<BlockState, @Nullable Direction> canWireConnect) {
             this.redstoneFunction = redstoneFunction;
             this.canWireConnect = canWireConnect;
         }
 
-        public int getRedstoneLevel(TILE tile, Direction side) {
+        public int getRedstoneLevel(TILE tile, @Nullable Direction side) {
             return redstoneFunction.applyAsInt(tile, side);
         }
 
@@ -168,7 +177,7 @@ public class Attributes {
 
         @Override
         public void adjustProperties(BlockBehaviour.Properties props) {
-            BlockStateHelper.applyLightLevelAdjustments(props, state -> light);
+            BlockStateHelper.applyLightLevelAdjustments(props, _ -> light);
         }
     }
 }

@@ -127,6 +127,26 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     @Override
+    protected int ownSignal(BlockState state, BlockGetter level, BlockPos pos) {
+        AttributeRedstoneEmitter<TileEntityMekanism> redstoneEmitter = type.get(AttributeRedstoneEmitter.class);
+        if (redstoneEmitter != null) {
+            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, level, pos);
+            if (tile != null) {
+                return redstoneEmitter.getRedstoneLevel(tile, null);
+            }
+        }
+        return super.ownSignal(state, level, pos);
+    }
+
+    @Override
+    protected int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        if (isSignalSource(state)) {
+            return state.getSignal(level, pos, direction);
+        }
+        return super.getDirectSignal(state, level, pos, direction);
+    }
+
+    @Override
     protected int getSignal(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
         AttributeRedstoneEmitter<TileEntityMekanism> redstoneEmitter = type.get(AttributeRedstoneEmitter.class);
         if (redstoneEmitter != null) {
