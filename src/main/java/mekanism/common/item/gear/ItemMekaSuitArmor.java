@@ -211,7 +211,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
             if (container != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    //TODO - 26.3: Re-evaluate this item access
                     ItemAccess itemAccess = ItemAccess.forStack(stack);
                     for (Module<?> module : container.modules()) {
                         module.tick(itemAccess, player, transaction);
