@@ -331,7 +331,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return getFrequency().getChemicalTanks().getFirst();
     }
 
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "frequency")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = {"getTemperature", "getHeatCapacity"}, docPlaceholder = "frequency")
     IHeatCapacitor getFrequencyCapacitor() throws ComputerException {
         return getFrequency().getHeatCapacitor();
     }

@@ -700,6 +700,13 @@ methods:
     returns:
       java_type: double
       type: Number (double)
+  - description: Get the heat capacity of the boiler in Joules per Kelvin. This number
+      can be thought of as the specific heat of the handler (specific heat x mass
+      of the handler).
+    methodName: getHeatCapacity
+    returns:
+      java_type: double
+      type: Number (double)
   - description: Get the contents of the heated coolant tank.
     methodName: getHeatedCoolant
     returns:
@@ -2077,7 +2084,10 @@ methods:
     returns:
       java_type: int
       type: Number (int)
-  - methodName: getHeatCapacity
+  - description: Get the heat capacity of the fission reactor in Joules per Kelvin.
+      This number can be thought of as the specific heat of the handler (specific
+      heat x mass of the handler).
+    methodName: getHeatCapacity
     returns:
       java_type: double
       type: Number (double)
@@ -2364,6 +2374,13 @@ methods:
     returns:
       java_type: mekanism.api.resource.LargeResourceStack
       type: Table (LargeResourceStack)
+  - description: Get the heat capacity of the heater in Joules per Kelvin. This number
+      can be thought of as the specific heat of the handler (specific heat x mass
+      of the handler).
+    methodName: getHeatCapacity
+    returns:
+      java_type: double
+      type: Number (double)
   - description: Get the temperature of the heater in Kelvin.
     methodName: getTemperature
     returns:
@@ -2687,6 +2704,13 @@ methods:
     returns:
       java_type: mekanism.api.resource.LargeResourceStack
       type: Table (LargeResourceStack)
+  - description: Get the heat capacity of the generator in Joules per Kelvin. This
+      number can be thought of as the specific heat of the handler (specific heat
+      x mass of the handler).
+    methodName: getHeatCapacity
+    returns:
+      java_type: double
+      type: Number (double)
   - description: Get the contents of the lava tank.
     methodName: getLava
     returns:
@@ -3967,6 +3991,13 @@ methods:
     returns:
       java_type: mekanism.common.content.entangloporter.InventoryFrequency
       type: Table (InventoryFrequency)
+  - description: Get the heat capacity of the frequency in Joules per Kelvin. This
+      number can be thought of as the specific heat of the handler (specific heat
+      x mass of the handler).
+    methodName: getHeatCapacity
+    returns:
+      java_type: double
+      type: Number (double)
   - description: Get the temperature of the frequency in Kelvin.
     methodName: getTemperature
     returns:
@@ -4025,6 +4056,13 @@ methods:
       java_type: int
       type: Number (int)
   - methodName: getEnvironmentalLoss
+    returns:
+      java_type: double
+      type: Number (double)
+  - description: Get the heat capacity of the heater in Joules per Kelvin. This number
+      can be thought of as the specific heat of the handler (specific heat x mass
+      of the handler).
+    methodName: getHeatCapacity
     returns:
       java_type: double
       type: Number (double)
@@ -4397,6 +4435,13 @@ methods:
       java_type: int
       type: Number (int)
   - methodName: getEnvironmentalLoss
+    returns:
+      java_type: double
+      type: Number (double)
+  - description: Get the heat capacity of the thermal evaporation plant in Joules
+      per Kelvin. This number can be thought of as the specific heat of the handler
+      (specific heat x mass of the handler).
+    methodName: getHeatCapacity
     returns:
       java_type: double
       type: Number (double)

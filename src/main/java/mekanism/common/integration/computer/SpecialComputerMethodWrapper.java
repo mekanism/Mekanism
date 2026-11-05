@@ -85,5 +85,10 @@ public class SpecialComputerMethodWrapper {
         public static double getTemperature(IHeatCapacitor capacitor) {
             return capacitor.getTemperature();
         }
+
+        @WrappingComputerMethodHelp("Get the heat capacity of the %s in Joules per Kelvin. This number can be thought of as the specific heat of the handler (specific heat x mass of the handler).")
+        public static double getHeatCapacity(IHeatCapacitor capacitor) {
+            return capacitor.getHeatCapacity();
+        }
     }
 }

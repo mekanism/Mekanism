@@ -87,7 +87,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                                                                                         "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
     public IChemicalTank steamTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "boiler")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = {"getTemperature", "getHeatCapacity"}, docPlaceholder = "boiler")
     VariableHeatCapacitor heatCapacitor;
 
     private double biomeAmbientTemp;

@@ -395,6 +395,14 @@
       }
     },
     {
+      "description": "Get the heat capacity of the boiler in Joules per Kelvin. This number can be thought of as the specific heat of the handler (specific heat x mass of the handler).",
+      "methodName": "getHeatCapacity",
+      "returns": {
+        "type": "Number (double)",
+        "java_type": "double"
+      }
+    },
+    {
       "description": "Get the contents of the heated coolant tank.",
       "methodName": "getHeatedCoolant",
       "returns": {
@@ -2667,6 +2675,7 @@
       }
     },
     {
+      "description": "Get the heat capacity of the fission reactor in Joules per Kelvin. This number can be thought of as the specific heat of the handler (specific heat x mass of the handler).",
       "methodName": "getHeatCapacity",
       "returns": {
         "type": "Number (double)",
@@ -3148,6 +3157,14 @@
       "returns": {
         "type": "Table (LargeResourceStack)",
         "java_type": "mekanism.api.resource.LargeResourceStack"
+      }
+    },
+    {
+      "description": "Get the heat capacity of the heater in Joules per Kelvin. This number can be thought of as the specific heat of the handler (specific heat x mass of the handler).",
+      "methodName": "getHeatCapacity",
+      "returns": {
+        "type": "Number (double)",
+        "java_type": "double"
       }
     },
     {
@@ -3686,6 +3703,14 @@
       "returns": {
         "type": "Table (LargeResourceStack)",
         "java_type": "mekanism.api.resource.LargeResourceStack"
+      }
+    },
+    {
+      "description": "Get the heat capacity of the generator in Joules per Kelvin. This number can be thought of as the specific heat of the handler (specific heat x mass of the handler).",
+      "methodName": "getHeatCapacity",
+      "returns": {
+        "type": "Number (double)",
+        "java_type": "double"
       }
     },
     {
@@ -5841,6 +5866,14 @@
       }
     },
     {
+      "description": "Get the heat capacity of the frequency in Joules per Kelvin. This number can be thought of as the specific heat of the handler (specific heat x mass of the handler).",
+      "methodName": "getHeatCapacity",
+      "returns": {
+        "type": "Number (double)",
+        "java_type": "double"
+      }
+    },
+    {
       "description": "Get the temperature of the frequency in Kelvin.",
       "methodName": "getTemperature",
       "returns": {
@@ -5936,6 +5969,14 @@
     },
     {
       "methodName": "getEnvironmentalLoss",
+      "returns": {
+        "type": "Number (double)",
+        "java_type": "double"
+      }
+    },
+    {
+      "description": "Get the heat capacity of the heater in Joules per Kelvin. This number can be thought of as the specific heat of the handler (specific heat x mass of the handler).",
+      "methodName": "getHeatCapacity",
       "returns": {
         "type": "Number (double)",
         "java_type": "double"
@@ -6551,6 +6592,14 @@
     },
     {
       "methodName": "getEnvironmentalLoss",
+      "returns": {
+        "type": "Number (double)",
+        "java_type": "double"
+      }
+    },
+    {
+      "description": "Get the heat capacity of the thermal evaporation plant in Joules per Kelvin. This number can be thought of as the specific heat of the handler (specific heat x mass of the handler).",
+      "methodName": "getHeatCapacity",
       "returns": {
         "type": "Number (double)",
         "java_type": "double"

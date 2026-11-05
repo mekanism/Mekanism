@@ -119,7 +119,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                                                                                         "getWasteFilledPercentage"}, docPlaceholder = "waste tank")
     public final IChemicalTank wasteTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "fission reactor")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = {"getTemperature", "getHeatCapacity"}, docPlaceholder = "fission reactor")
     public final VariableHeatCapacitor heatCapacitor;
 
     private double biomeAmbientTemp;
@@ -682,12 +682,6 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ComputerMethod
     double getCoolantFilledPercentage() {
         return coolantTank.getCurrentContainer().amountAsLong() / (double) cooledCoolantCapacity;
-    }
-
-    @ComputerMethod
-    public double getHeatCapacity() {
-        //TODO - 26.3 (heat): Should we expose this via the method wrapper so that all the blocks that have heat can report their heat capacity?
-        return heatCapacitor.getHeatCapacity();
     }
     //End computer related methods
 }

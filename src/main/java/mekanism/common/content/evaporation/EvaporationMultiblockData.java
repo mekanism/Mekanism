@@ -95,7 +95,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
                                                                                      "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public BasicFluidTank outputTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "thermal evaporation plant")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = {"getTemperature", "getHeatCapacity"}, docPlaceholder = "thermal evaporation plant")
     VariableHeatCapacitor heatCapacitor;
 
     private double biomeAmbientTemp;

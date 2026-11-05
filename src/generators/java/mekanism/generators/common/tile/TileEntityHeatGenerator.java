@@ -81,7 +81,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     private double lastEnvironmentLoss;
 
     @UnknownNullability//Initialized via getInitialHeatCapacitors
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "generator")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = {"getTemperature", "getHeatCapacity"}, docPlaceholder = "generator")
     BasicHeatCapacitor heatCapacitor;
     @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel item slot")

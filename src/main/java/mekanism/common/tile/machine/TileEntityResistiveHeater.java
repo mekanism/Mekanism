@@ -60,7 +60,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private ResistiveHeaterEnergyContainer energyContainer;
     @UnknownNullability//Initialized via getInitialHeatCapacitors
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "heater")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = {"getTemperature", "getHeatCapacity"}, docPlaceholder = "heater")
     BasicHeatCapacitor heatCapacitor;
     @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
