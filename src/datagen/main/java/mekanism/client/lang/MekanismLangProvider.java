@@ -1038,6 +1038,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.REDSTONE_ADAPTER_TOGGLE_SIGNAL, "Toggle output signal inversion");
         //Recipe Viewer
         add(MekanismLang.RECIPE_VIEWER_INVENTORY_FULL, "Not enough room in inventory.");
+        add(MekanismLang.RECIPE_VIEWER_CHANCE, "%1$s%% Chance");
         //JEI
         add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY, "%1$s / %2$s mB");
         add(MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER, "%1$s mB of Heavy Water can be extracted from a water source block via an electric pump with a filter upgrade installed.");

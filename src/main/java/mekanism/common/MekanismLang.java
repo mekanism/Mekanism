@@ -90,6 +90,7 @@ public enum MekanismLang implements ILangEntry {
     REDSTONE_ADAPTER_TOGGLE_SIGNAL("redstone_adapter", "toggle_signal"),
     //Recipe viewer
     RECIPE_VIEWER_INVENTORY_FULL("tooltip", "recipe_viewer.inventory_full"),
+    RECIPE_VIEWER_CHANCE("tooltip", "recipe_viewer.chance"),
     //JEI
     JEI_AMOUNT_WITH_CAPACITY("tooltip", "jei.amount.with.capacity"),
     RECIPE_VIEWER_INFO_HEAVY_WATER("info", "jei.heavy_water"),
@@ -98,6 +99,7 @@ public enum MekanismLang implements ILangEntry {
     JEI_MISSING_ITEMS("jei.tooltip.error.recipe.transfer.missing"),
     JEI_INVENTORY_FULL("jei.tooltip.error.recipe.transfer.inventory.full"),
     JEI_RECIPE_ID("jei.tooltip.recipe.id"),
+    JEI_SLOT_DISPLAY_ANY("jei.tooltip.recipe.any"),
     //Recipe Book
     RECIPE_BOOK("gui", "recipe_book"),
     RECIPE_BOOK_TOGGLE_CRUSHING("gui", "recipe_book.toggle_recipes.crushing"),

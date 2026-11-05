@@ -3250,6 +3250,7 @@
   "tooltip.mekanism.module.type": "Module Type: %1$s",
   "tooltip.mekanism.no_chemical": "No chemicals stored.",
   "tooltip.mekanism.no_fluid": "No fluid stored.",
+  "tooltip.mekanism.recipe_viewer.chance": "%1$s%% Chance",
   "tooltip.mekanism.recipe_viewer.inventory_full": "Not enough room in inventory.",
   "tooltip.mekanism.security": "Security: %1$s",
   "tooltip.mekanism.stored": "Stored %1$s: %2$s",

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import mekanism.api.IMekanismAccess;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
@@ -12,6 +13,7 @@ import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalSerializationHelper;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.gear.IModuleHelper;
+import mekanism.api.recipes.ingredients.chemical.display.ChemicalStackContentsFactory;
 import mekanism.api.upgrade.IUpgradeHelper;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.robit.GuiRobitRepair;
@@ -56,6 +58,8 @@ import mekanism.common.inventory.container.entity.robit.RobitContainer;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.display.slot.ChemicalConversionSlotDisplay;
+import mekanism.common.recipe.display.slot.ChemicalTankSlotDisplay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismFluids;
@@ -69,6 +73,7 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.IIngredientType;
+import mezz.jei.api.ingredients.ISlotDisplayInterpreter;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.neoforge.NeoForgeTypes;
@@ -84,6 +89,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISlotDisplayInterpreterRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
@@ -91,6 +97,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay.ItemSlotDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -200,6 +207,9 @@ public class MekanismJEI implements IModPlugin {
         registration.register(MekanismSlotDisplayTypes.WITH_AMOUNT.get(), chemicalType, (display, _, builder) -> builder
               .addChildDisplay(display.source(), stack -> stack.copyWithAmount(display.amount()))
         );
+        registration.register(MekanismSlotDisplayTypes.CHANCE.get(), (slotDisplay, _, builder) -> builder
+              .setTooltipHeader(MekanismLang.RECIPE_VIEWER_CHANCE.translate(Math.round(slotDisplay.chance() * 100)).withStyle(style -> style.withColor(ChatFormatting.GOLD).withItalic(true)))
+        );
 
         registration.register(MekanismSlotDisplayTypes.CHEMICAL.get(), chemicalType, (_, _, builder) -> builder
               .setWildcardForSubtypes(true)
@@ -208,8 +218,19 @@ public class MekanismJEI implements IModPlugin {
               .setTagKey(display.tag())
               .setWildcardForSubtypes(true)
         );
-        //TODO - 26.3: Add a setTooltipHeader for ChanceDisplay?, and maybe also addChildDisplay
-        //TODO - 26.3: Do we want to add a setTooltipHeader for ChemicalConversionSlotDisplay/ChemicalTankSlotDisplay??
+
+        registration.register(MekanismSlotDisplayTypes.CHEMICAL_CONVERSION.get(), setupChemicalRepresentationSlotDisplay(ChemicalConversionSlotDisplay::chemicalSource));
+        registration.register(MekanismSlotDisplayTypes.CHEMICAL_TANK.get(), setupChemicalRepresentationSlotDisplay(ChemicalTankSlotDisplay::chemicalSource));
+    }
+
+    private <D extends SlotDisplay> ISlotDisplayInterpreter<D, ItemStack> setupChemicalRepresentationSlotDisplay(Function<D, SlotDisplay> chemicalDisplayExtractor) {
+        return (slotDisplay, context, builder) -> {
+            SlotDisplay chemicalDisplay = chemicalDisplayExtractor.apply(slotDisplay);
+            ChemicalStack stack = chemicalDisplay.resolve(context.getContextMap(), ChemicalStackContentsFactory.INSTANCE).findFirst().orElse(ChemicalStack.EMPTY);
+            if (!stack.isEmpty()) {
+                builder.setTooltipHeader(MekanismLang.JEI_SLOT_DISPLAY_ANY.translate(stack).withStyle(style -> style.withColor(ChatFormatting.GOLD).withItalic(true)));
+            }
+        };
     }
 
     @Override
