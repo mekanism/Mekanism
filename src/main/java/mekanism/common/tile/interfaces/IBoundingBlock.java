@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.redstone.Redstone;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jspecify.annotations.Nullable;
@@ -13,7 +14,7 @@ import org.jspecify.annotations.Nullable;
 /// Internal interface.  A bounding block is not actually a 'bounding' block, it is really just a fake block that is used to mimic actual block bounds.
 public interface IBoundingBlock extends IComparatorSupport, IOffsetCapability, IUpgradeTile {
 
-    default void onBoundingBlockPowerChange(BlockPos boundingPos, int oldLevel, int newLevel) {
+    default void onBoundingBlockPowerChange(BlockPos boundingPos, int oldLevel, int newLevel, @Nullable Orientation orientation) {
     }
 
     default int getBoundingComparatorSignal(Vec3i offset) {

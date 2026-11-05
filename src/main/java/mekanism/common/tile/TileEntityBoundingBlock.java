@@ -23,6 +23,7 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -91,13 +92,13 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         return main != null && mainPosOffset != null && main.triggerBoundingEvent(mainPosOffset, id, param) || handled;
     }
 
-    public void onNeighborChange(LevelReader level) {
+    public void neighborChanged(LevelReader level, @Nullable Orientation orientation) {
         if (!level.isClientSide()) {
             int power = level.getBestNeighborSignal(getBlockPos());
             if (currentRedstoneLevel != power) {
                 IBoundingBlock main = getMain();
                 if (main != null) {
-                    main.onBoundingBlockPowerChange(worldPosition, currentRedstoneLevel, power);
+                    main.onBoundingBlockPowerChange(worldPosition, currentRedstoneLevel, power, orientation);
                 }
                 currentRedstoneLevel = power;
             }

@@ -104,6 +104,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -942,7 +943,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public void onBoundingBlockPowerChange(BlockPos boundingPos, int oldLevel, int newLevel) {
+    public void onBoundingBlockPowerChange(BlockPos boundingPos, int oldLevel, int newLevel, @Nullable Orientation orientation) {
         if (oldLevel > 0) {
             if (newLevel == 0) {
                 numPowering--;

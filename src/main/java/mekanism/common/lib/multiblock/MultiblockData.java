@@ -341,6 +341,34 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         return false;
     }
 
+    /// Gets the interior neighbor for the given position if the given position is part of the wall
+    @Nullable
+    public <T extends MultiblockData> BlockPos getNeighborInside(Structure structure, BlockGetter level, BlockPos pos) {
+        if (isFormed()) {
+            VoxelCuboid bounds = getBounds();
+            CuboidRelative location = bounds.getRelativeLocation(pos);
+            if (location.isWall()) {
+                //If we are in the wall check if we are really an inner position. For example evap towers
+                MultiblockManager<T> manager = (MultiblockManager<T>) structure.getManager();
+                MultiblockType<T> multiblockType = (MultiblockType<T>) structure.multiblockType();
+                if (manager != null && multiblockType != null) {
+                    IStructureValidator<T> validator = multiblockType.createValidator();
+                    if (validator instanceof CuboidStructureValidator<T> cuboidValidator) {
+                        validator.init(level, manager, multiblockType, structure);
+                        cuboidValidator.loadCuboid(bounds);
+                        for (Direction direction : EnumUtils.DIRECTIONS) {
+                            BlockPos neighborPos = pos.relative(direction);
+                            if (cuboidValidator.getStructureRequirement(neighborPos, bounds) == StructureRequirement.INNER) {
+                                return neighborPos;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     /// Checks if this multiblock is formed and the given position is insides the bounds of this multiblock
     public boolean isPositionOutsideBounds(BlockPos pos) {
         return isFormed() && getBounds().getRelativeLocation(pos) == CuboidRelative.OUTSIDE;
@@ -491,7 +519,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     }
 
     public void notifyAllUpdateComparator(Level world) {
-        for (BlockPos valvePos: valves.keySet()) {
+        for (BlockPos valvePos : valves.keySet()) {
             TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, valvePos);
             if (tile != null) {
                 tile.markDirtyComparator();
@@ -529,7 +557,8 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         return targets;
     }
 
-    public record CapabilityOutputTarget<TYPE>(BlockCapabilityCache<TYPE, @Nullable Direction> cache, BooleanSupplier isActive) implements OutputTarget<BlockCapabilityCache<TYPE, @Nullable Direction>, @Nullable Void> {
+    public record CapabilityOutputTarget<TYPE>(BlockCapabilityCache<TYPE, @Nullable Direction> cache, BooleanSupplier isActive)
+          implements OutputTarget<BlockCapabilityCache<TYPE, @Nullable Direction>, @Nullable Void> {
 
         @Override
         public boolean canOutput(@Nullable Void unused) {
@@ -537,7 +566,8 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         }
     }
 
-    public record AdvancedCapabilityOutputTarget<TYPE, DATA>(BlockCapabilityCache<TYPE, @Nullable Direction> cache, Predicate<DATA> isActive) implements OutputTarget<BlockCapabilityCache<TYPE, @Nullable Direction>, DATA> {
+    public record AdvancedCapabilityOutputTarget<TYPE, DATA>(BlockCapabilityCache<TYPE, @Nullable Direction> cache, Predicate<DATA> isActive)
+          implements OutputTarget<BlockCapabilityCache<TYPE, @Nullable Direction>, DATA> {
 
         @Override
         public boolean canOutput(DATA data) {

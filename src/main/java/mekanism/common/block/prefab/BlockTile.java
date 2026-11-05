@@ -23,7 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -103,22 +102,12 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighborPos) {
-        if (!level.isClientSide()) {
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, level, pos);
-            if (tile != null) {
-                tile.onNeighborChange(level, neighborPos);
-            }
-        }
-    }
-
-    @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, block, orientation, movedByPiston);
         if (!level.isClientSide()) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, level, pos);
             if (tile != null) {
-                tile.updatePower(level);
+                tile.neighborChanged(level, orientation);
             }
         }
     }
@@ -129,8 +118,12 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     @Override
-    public boolean shouldRedstoneWireConnectTo(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side) {
-        return type.has(AttributeRedstoneEmitter.class) || super.shouldRedstoneWireConnectTo(state, world, pos, side);
+    protected boolean shouldRedstoneWireConnectTo(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side) {
+        AttributeRedstoneEmitter<?> redstoneEmitter = type.get(AttributeRedstoneEmitter.class);
+        if (redstoneEmitter != null) {
+            return redstoneEmitter.canRedstoneWireConnectTo(state, side);
+        }
+        return super.shouldRedstoneWireConnectTo(state, world, pos, side);
     }
 
     @Override

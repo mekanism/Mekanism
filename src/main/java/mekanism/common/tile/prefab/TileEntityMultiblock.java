@@ -5,8 +5,8 @@ import java.util.UUID;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.heat.IHeatHandler;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation;
 import mekanism.common.MekanismLang;
@@ -45,6 +45,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
@@ -329,21 +330,21 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void onNeighborChange(LevelReader level, BlockPos neighborPos) {
-        super.onNeighborChange(level, neighborPos);
+    public void neighborChanged(LevelReader level, @Nullable Orientation orientation) {
+        super.neighborChanged(level, orientation);
         //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
         if (!level.isClientSide()) {
             T multiblock = getMultiblock();
-            if (multiblock.isPositionInsideBounds(getStructure(), level, neighborPos)) {
-                //If the neighbor change happened from inside the bounds of the multiblock,
-                if (level.isEmptyBlock(neighborPos) || !multiblock.internalLocations.contains(neighborPos)) {
-                    //And we are not already an internal part of the structure, or we are changing an internal part to air
-                    // then we mark the structure as needing to be re-validated
-                    //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
-                    // it won't know to invalidate it but oh well. (See java docs on internalLocations for more caveats)
-                    getStructure().markForUpdate(this.level, true);
-                }
+            Structure structure = getStructure();
+            BlockPos neighborPos = multiblock.getNeighborInside(structure, level, getBlockPos());
+            if (neighborPos != null && level.isEmptyBlock(neighborPos) == multiblock.internalLocations.contains(neighborPos)) {
+                //And we are not already an internal part of the structure, or we are changing an internal part to air
+                // then we mark the structure as needing to be re-validated
+                //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
+                // it won't know to invalidate it but oh well. (See java docs on internalLocations for more caveats)
+                structure.markForUpdate(this.level, true);
             }
+            //TODO: Can we make it detect when not formed to try and form again?
         }
     }
 

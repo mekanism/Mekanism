@@ -136,6 +136,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -990,16 +991,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         radiationScale = input.getFloatOr(SerializationConstants.RADIATION, 0);
     }
 
-    public void onNeighborChange(LevelReader level, BlockPos neighborPos) {
+    public void neighborChanged(LevelReader level, @Nullable Orientation orientation) {
         if (!level.isClientSide()) {
-            updatePower(level);
+            updatePower(level, orientation);
         }
     }
 
     @Override
     public void onAdded(Level level) {
         super.onAdded(level);
-        updatePower(level);
+        updatePower(level, null);
         if (getClientActive()) {
             currentActive = true;
         }
@@ -1106,7 +1107,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return supportsRedstone() && redstoneLastTick;
     }
 
-    public final void updatePower(LevelReader level) {
+    public final void updatePower(LevelReader level, @Nullable Orientation orientation) {
         if (supportsRedstone()) {
             boolean power = level.hasNeighborSignal(getBlockPos());
             if (redstone != power) {

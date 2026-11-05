@@ -3,15 +3,20 @@ package mekanism.common.tile.prefab;
 import java.util.Objects;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
+import mekanism.common.lib.math.voxel.VoxelCuboid;
+import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidRelative;
 import mekanism.common.lib.multiblock.IInternalMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
@@ -36,7 +41,7 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     private void setMultiblock(@Nullable LevelReader level, @Nullable UUID id) {
         UUID old = multiblockUUID;
         multiblockUUID = id;
-        if (level!= null && !Objects.equals(old, id)) {
+        if (level != null && !Objects.equals(old, id)) {
             multiblockChanged(level, old);
         }
     }
@@ -60,25 +65,26 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     }
 
     @Override
-    public void onNeighborChange(LevelReader level, BlockPos neighborPos) {
-        super.onNeighborChange(level, neighborPos);
+    public void neighborChanged(LevelReader level, @Nullable Orientation orientation) {
+        super.neighborChanged(level, orientation);
         //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
         //Note: We handle when an internal multiblock is removed that isn't touching anything in BlockMekanism#onRemove
         if (!level.isClientSide() && multiblock != null) {
-            //Check if the neighborPos is really a neighbor of this block for bad mods giving non-neighbors
-            int dX = Math.abs(neighborPos.getX() - worldPosition.getX());
-            int dY = Math.abs(neighborPos.getY() - worldPosition.getY());
-            int dZ = Math.abs(neighborPos.getZ() - worldPosition.getZ());
-            if ((dX + dY + dZ) > 1) {
-                return;
-            }
-            //If the neighbor change happened to a block inside a multiblock, and it isn't a block that is part of the multiblock
-            if (level.isEmptyBlock(neighborPos) || !multiblock.isKnownLocation(neighborPos)) {
-                //And we are not already an internal part of the structure, or we are changing an internal part to air
-                // then we mark the structure as needing to be re-validated
-                //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
-                // it won't know to invalidate it but oh well. (See java docs on internalLocations for more caveats)
-                multiblock.recheckStructure = true;
+            VoxelCuboid bounds = multiblock.getBounds();
+            for (Direction direction : EnumUtils.DIRECTIONS) {
+                BlockPos neighborPos = worldPosition.relative(direction);
+                CuboidRelative relativeLocation = bounds.getRelativeLocation(neighborPos);
+                //Note: Don't bother with structure checks, as for special cases like the tops of evap towers, this will just get caught by the  top edge
+                if (relativeLocation == CuboidRelative.INSIDE) {
+                    //If the neighbor change happened to a block inside a multiblock, and it isn't a block that is part of the multiblock
+                    if (level.isEmptyBlock(neighborPos) == multiblock.isKnownLocation(neighborPos)) {
+                        //And we are not already an internal part of the structure, or we are changing an internal part to air
+                        // then we mark the structure as needing to be re-validated
+                        //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
+                        // it won't know to invalidate it but oh well. (See java docs on internalLocations for more caveats)
+                        multiblock.recheckStructure = true;
+                    }
+                }
             }
         }
     }

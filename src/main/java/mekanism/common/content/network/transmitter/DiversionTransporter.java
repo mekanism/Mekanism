@@ -15,7 +15,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -42,7 +41,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public void onNeighborBlockChange(@Nullable Direction side) {
+    public void onNeighborBlockChange() {
         //Override onNeighborBlockChange to recheck all connections as our connections
         // might have changed due to the redstone mode changing
         boolean receivingPower = isGettingPowered();
@@ -76,14 +75,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
                 }
             }
         } else {
-            //If we can't handle redstone, just refresh the side the connection changed on so that if a transmitter is removed
-            // or is set to none then we stop trying to be connected to it
-            //TODO - 1.20.2: See if we can come up with a better way to handle this as there are definitely better ways
-            if (side == null) {//TODO - 26.3: Re-evaluate
-                refreshConnections();
-            } else {
-                refreshConnections(side);
-            }
+            super.onNeighborBlockChange();
         }
     }
 
@@ -194,7 +186,8 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     private boolean isGettingPowered() {
-        return WorldUtils.isGettingPowered(getLevel(), getBlockPos());
+        Level level = getLevel();
+        return level != null && level.hasNeighborSignal(getBlockPos());
     }
 
     public enum DiversionControl implements IIncrementalEnum<DiversionControl>, IHasEnumNameTextComponent {

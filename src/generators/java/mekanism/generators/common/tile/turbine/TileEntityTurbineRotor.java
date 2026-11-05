@@ -11,6 +11,7 @@ import net.minecraft.world.Clearable;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
@@ -37,8 +38,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Override
-    public void onNeighborChange(LevelReader level, BlockPos neighborPos) {
-        super.onNeighborChange(level, neighborPos);
+    public void neighborChanged(LevelReader level, @Nullable Orientation orientation) {
+        super.neighborChanged(level, orientation);
         if (!level.isClientSide()) {
             updateRotors(level);
         }

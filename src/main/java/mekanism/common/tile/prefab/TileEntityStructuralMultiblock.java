@@ -20,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
@@ -160,22 +161,24 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public void onNeighborChange(LevelReader level, BlockPos neighborPos) {
-        super.onNeighborChange(level, neighborPos);
+    public void neighborChanged(LevelReader level, @Nullable Orientation orientation) {
+        super.neighborChanged(level, orientation);
         if (!level.isClientSide()) {
             //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
             for (Structure s : structures.values()) {
                 //For each structure this structural multiblock is a part of
                 if (s.getController() != null) {
                     MultiblockData multiblock = getMultiblockData(s);
-                    if (multiblock != null && multiblock.isPositionInsideBounds(s, level, neighborPos)) {
-                        if (level.isEmptyBlock(neighborPos) || !multiblock.internalLocations.contains(neighborPos)) {
+                    if (multiblock != null) {
+                        BlockPos neighborPos = multiblock.getNeighborInside(s, level, getBlockPos());
+                        if (neighborPos != null && level.isEmptyBlock(neighborPos) == multiblock.internalLocations.contains(neighborPos)) {
                             //And we are not already an internal part of the structure, or we are changing an internal part to air
                             // then we mark the structure as needing to be re-validated
                             //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
                             // it won't know to invalidate it but oh well. (See java docs on internalLocations for more caveats)
                             s.markForUpdate(this.level, true);
                         }
+                        //TODO: Can we make it detect when not formed to try and form again?
                     }
                 }
             }

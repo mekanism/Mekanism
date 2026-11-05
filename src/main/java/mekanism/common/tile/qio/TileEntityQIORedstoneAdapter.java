@@ -1,7 +1,6 @@
 package mekanism.common.tile.qio;
 
 import java.util.Optional;
-import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
@@ -24,8 +23,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.ExperimentalRedstoneUtils;
 import net.minecraft.world.level.redstone.Orientation;
-import net.minecraft.world.level.redstone.Orientation.SideBias;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -110,9 +109,11 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             isEmitting = shouldEmit;
             needsUpdate = true;
             //Update redstone on sides except the back
-            //TODO - 26.3 check Orientation
-            Direction frontDirection = getDirection();
-            level.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockState().getBlock(), getOppositeDirection(), Orientation.of(RelativeSide.TOP.getDirection(frontDirection), frontDirection, SideBias.LEFT));
+            Direction front = getDirection();
+            Direction opposite = front.getOpposite();
+            //Based on how buttonBlock constructs the orientation
+            Orientation orientation = ExperimentalRedstoneUtils.initialOrientation(level, opposite, opposite.getAxis().isHorizontal() ? Direction.UP : front);
+            level.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockState().getBlock(), opposite, orientation);
         }
         return needsUpdate;
     }

@@ -1,5 +1,6 @@
 package mekanism.common.block.attribute;
 
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.ToIntBiFunction;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
@@ -128,14 +129,27 @@ public class Attributes {
     /// If a block can emit redstone.
     public static class AttributeRedstoneEmitter<TILE extends TileEntityMekanism> implements TileAttribute<TILE> {
 
+        /// Based on the default in [BlockBehaviour#shouldRedstoneWireConnectTo]
+        private static final BiPredicate<BlockState, @Nullable Direction> DEFAULT_WIRE_CAN_CONNECT = (_, direction) -> direction != null;
+
+        private final BiPredicate<BlockState, @Nullable Direction> canWireConnect;
         private final ToIntBiFunction<TILE, Direction> redstoneFunction;
 
         public AttributeRedstoneEmitter(ToIntBiFunction<TILE, Direction> redstoneFunction) {
+            this(redstoneFunction, DEFAULT_WIRE_CAN_CONNECT);
+        }
+
+        public AttributeRedstoneEmitter(ToIntBiFunction<TILE, Direction> redstoneFunction, BiPredicate<BlockState, @Nullable Direction> canWireConnect) {
             this.redstoneFunction = redstoneFunction;
+            this.canWireConnect = canWireConnect;
         }
 
         public int getRedstoneLevel(TILE tile, Direction side) {
             return redstoneFunction.applyAsInt(tile, side);
+        }
+
+        public boolean canRedstoneWireConnectTo(BlockState state, @Nullable Direction side) {
+            return canWireConnect.test(state, side);
         }
     }
 

@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -628,71 +627,6 @@ public class WorldUtils {
         return false;
     }
 
-    /// Better version of the World.getRedstonePowerFromNeighbors() method that doesn't load chunks.
-    ///
-    /// @param world the world to perform the check in
-    /// @param pos   the position of the block performing the check
-    ///
-    /// @return if the block is indirectly getting powered by LOADED chunks
-    public static boolean isGettingPowered(@Nullable Level world, BlockPos pos) {
-        if (isBlockLoaded(world, pos)) {
-            BlockPos.MutableBlockPos offset = new MutableBlockPos();
-            for (Direction side : EnumUtils.DIRECTIONS) {
-                offset.setWithOffset(pos, side);
-                if (isBlockLoaded(world, offset)) {
-                    BlockState blockState = world.getBlockState(offset);
-                    boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
-                    if (weakPower && isDirectlyGettingPowered(world, offset) || !weakPower && blockState.getSignal(world, offset, side) > 0) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    /// Checks if a block is directly getting powered by any of its neighbors without loading any chunks.
-    ///
-    /// @param world the world to perform the check in
-    /// @param pos   the BlockPos of the block to check
-    ///
-    /// @return if the block is directly getting powered
-    public static boolean isDirectlyGettingPowered(Level world, BlockPos pos) {
-        BlockPos.MutableBlockPos offset = new MutableBlockPos();
-        for (Direction side : EnumUtils.DIRECTIONS) {
-            offset.setWithOffset(pos, side);
-            if (isBlockLoaded(world, offset) && world.getSignal(pos, side) > 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /// Checks if all the positions are valid and the current block in them can be replaced.
-    ///
-    /// @return True if the blocks can be replaced and is within the world's bounds.
-    public static boolean areBlocksValidAndReplaceable(BlockGetter world, @Nullable BlockPlaceContext baseContext, BlockPos... positions) {
-        for (BlockPos position : positions) {
-            if (!isValidReplaceableBlock(world, baseContext, position)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /// Checks if all the positions are valid and the current block in them can be replaced.
-    ///
-    /// @return True if the blocks can be replaced and is within the world's bounds.
-    public static boolean areBlocksValidAndReplaceable(BlockGetter world, @Nullable BlockPlaceContext baseContext, Collection<BlockPos> positions) {
-        //TODO: Potentially move more block placement over to these methods
-        for (BlockPos position : positions) {
-            if (!isValidReplaceableBlock(world, baseContext, position)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     /// Checks if a block is valid for a position and the current block there can be replaced.
     ///
     /// @return True if the block can be replaced and is within the world's bounds.
@@ -712,6 +646,8 @@ public class WorldUtils {
     ///
     /// @param world world to perform the operation in
     /// @param pos   BlockPos to perform the operation on
+    ///
+    /// @see Level#updateNeighbourForOutputSignal
     public static void notifyLoadedNeighborsOfTileChange(Level world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         BlockPos.MutableBlockPos offset = new MutableBlockPos();
@@ -720,14 +656,14 @@ public class WorldUtils {
             if (isBlockLoaded(world, offset)) {
                 BlockState offsetState = world.getBlockState(offset);
                 offsetState.onNeighborChange(world, offset, pos);
-                offsetState.handleNeighborChanged(world, offset, state.getBlock(), null, false);
+                world.neighborChanged(offsetState, offset, state.getBlock(), null, false);
                 if (offsetState.isRedstoneConductor(world, offset)) {
                     //If redstone can be conducted through it, forward the change along an extra spot
                     offset.move(dir);
                     if (isBlockLoaded(world, offset)) {
                         offsetState = world.getBlockState(offset);
                         if (offsetState.getWeakChanges(world, offset)) {
-                            offsetState.onNeighborChange(world, offset, pos);
+                            world.neighborChanged(offsetState, offset, state.getBlock(), null, false);
                         }
                     }
                 }
@@ -735,17 +671,18 @@ public class WorldUtils {
         }
     }
 
-    /// Calls BOTH neighbour changed functions because nobody can decide on which one to implement, assuming that the neighboring position is loaded.
+    /// Calls BOTH neighbor changed functions because nobody can decide on which one to implement, assuming that the neighboring position is loaded.
     ///
     /// @param world   world the change exists in
     /// @param pos     neighbor to notify
     /// @param fromPos pos of our block that updated
     public static void notifyNeighborOfChange(@Nullable Level world, BlockPos pos, BlockPos fromPos) {
         Optional<BlockState> blockState = getBlockState(world, pos);
-        if (blockState.isPresent() && world != null) {//World can't be null here but double check it
+        if (blockState.isPresent()) {
+            assert world != null;
             BlockState state = blockState.get();
             state.onNeighborChange(world, pos, fromPos);
-            state.handleNeighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), null, false);
+            world.neighborChanged(state, pos, world.getBlockState(fromPos).getBlock(), null, false);
         }
     }
 
@@ -768,11 +705,13 @@ public class WorldUtils {
     }
 
     /// Get a packed block pos on the relative side.
-    /// @see BlockPos#relative(Direction)
     ///
-    /// @param pos Source position
+    /// @param pos       Source position
     /// @param direction direction to offset in
+    ///
     /// @return the packed offset position
+    ///
+    /// @see BlockPos#relative(Direction)
     public static long relativePos(long pos, Direction direction) {
         return BlockPos.asLong(BlockPos.getX(pos) + direction.getStepX(), BlockPos.getY(pos) + direction.getStepY(), BlockPos.getZ(pos) + direction.getStepZ());
     }
