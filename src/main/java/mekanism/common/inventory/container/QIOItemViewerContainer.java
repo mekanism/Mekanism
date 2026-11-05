@@ -163,6 +163,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         QIOItemViewerContainer container = recreateUnchecked();
         //Note: We want to make sure to pause sorting again on the new container as we only pause/unpause on key press/release and not when holding it
         container.pauseSorting(wasPaused);
+        container.setCarried(getCarried());
         return container;
     }
 

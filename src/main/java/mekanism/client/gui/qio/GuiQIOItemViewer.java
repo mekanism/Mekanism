@@ -1,7 +1,6 @@
 package mekanism.client.gui.qio;
 
 import com.google.common.collect.Sets;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +28,7 @@ import mekanism.common.content.qio.SearchQueryParser.QueryType;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
 import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
+import mekanism.common.lib.collection.LRU;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
@@ -56,6 +56,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     @UnknownNullability//Initialized via addGuiElements
     private GuiCraftingWindowTab craftingWindowTab;
     private boolean loadPinned = true;
+    private boolean recreatingViewer;
 
     protected GuiQIOItemViewer(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title, calcWidth(), calcHeight());
@@ -182,20 +183,26 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     private void recreateViewer() {
+        //Mark we are recreating the viewer so we don't want to run remove logic
+        recreatingViewer = true;
         // here we subtly recreate the entire interface + container, maintaining the same window ID
         @SuppressWarnings("unchecked")
         CONTAINER c = (CONTAINER) menu.recreate();
         GuiQIOItemViewer<CONTAINER> s = recreate(c);
         //Skip loading pinned windows for now on the new viewer as we will transfer any open windows manually (pinned or not)
         s.loadPinned = false;
-        //TODO - 26.3: Should we AT this so that it doesn't run the "on close logic" for the previous viewer? Or can we get away with just setting a boolean on the viewer
-        // and then skipping actually closing it in those cases
-        //minecraft.gui.screen = null;
         minecraft.player.containerMenu = s.getMenu();
         minecraft.gui.setScreen(s);
         s.searchField.setText(searchField.getText());
-        //Transfer all the windows to the new GUI
-        s.transferWindows(windows);
+        //Transfer all the windows to the new GUI, making sure to have the focused one be added last to maintain focus
+        s.transferWindows(getWindowsDescendingIterator());
+    }
+
+    @Override
+    public void removed() {
+        if (!recreatingViewer) {
+            super.removed();
+        }
     }
 
     @Override
@@ -205,8 +212,9 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         }
     }
 
-    protected void transferWindows(Collection<GuiWindow> windows) {
-        for (GuiWindow window : windows) {
+    protected void transferWindows(LRU<GuiWindow>.LRUIterator iter) {
+        while (iter.hasNext()) {
+            GuiWindow window = iter.next();
             //Transition all current popup windows over to the new screen.
             if (window instanceof GuiCraftingWindow craftingWindow) {
                 //Updating the references for listeners and the like for crafting windows
