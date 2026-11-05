@@ -97,7 +97,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         }));
         searchField = addRenderableWidget(new GuiTextField(this, 50, 15 + 12 + 3, imageWidth - 50 - 10, 10))
               .setOffset(0, -1)
-              .setInputValidator(this::isValidSearchChar)
+              .setInputValidator(GuiQIOItemViewer::isValidSearchChar)
               .setBackground(BackgroundType.ELEMENT_HOLDER)
               //Note: This responder will also be called when the menu is resized/repositioned and the text gets copied
               .setResponder(text -> menu.updateSearch(menu.getLevel(), text, true))
@@ -150,9 +150,13 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         }
     }
 
-    //TODO - 26.3 review this - currently anything outside the BMP is not allowed
-    private boolean isValidSearchChar(int c) {
-        return (Character.isBmpCodePoint(c) && ALLOWED_SPECIAL_CHARS.contains((char) c)) || Character.isDigit(c) || Character.isAlphabetic(c);
+    private static boolean isAllowedSpecialChar(int c) {
+        //TODO: review this - currently anything outside the BMP is not allowed
+        return Character.isBmpCodePoint(c) && ALLOWED_SPECIAL_CHARS.contains((char) c);
+    }
+
+    private static boolean isValidSearchChar(int c) {
+        return isAllowedSpecialChar(c) || Character.isDigit(c) || Character.isAlphabetic(c);
     }
 
     @Nullable

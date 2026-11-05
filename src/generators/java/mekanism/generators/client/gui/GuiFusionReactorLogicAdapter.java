@@ -39,8 +39,8 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
         super.addGuiElements();
         addRenderableWidget(new GuiElementHolder(this, 26, 31, 130, 90));
         addRenderableWidget(new ToggleButton(this, 26, 19, 11, tile::isActiveCooled,
-              (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, ((GuiFusionReactorLogicAdapter) element.gui()).tile))))
-              .setTooltip(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING);
+              (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, ((GuiFusionReactorLogicAdapter) element.gui()).tile)),
+              GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING));
         scrollBar = addRenderableWidget(new GuiScrollBar(this, 156, 31, 90, () -> tile.getModes().size(), () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {
             int typeShift = 22 * i;

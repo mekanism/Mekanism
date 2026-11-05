@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.button;
 
 import java.util.function.BooleanSupplier;
+import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.Mekanism;
@@ -21,12 +22,13 @@ public class ToggleButton extends MekanismImageButton {
     @Nullable
     private final Tooltip no;
 
-    public ToggleButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, IClickable onPress) {
-        this(gui, x, y, 18, toggled, onPress);
+    public ToggleButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, IClickable onPress, ILangEntry langEntry) {
+        this(gui, x, y, 18, toggled, onPress, langEntry);
     }
 
-    public ToggleButton(IGuiWrapper gui, int x, int y, int size, BooleanSupplier toggled, IClickable onPress) {
-        this(gui, x, y, size, size, TOGGLE, TOGGLE_FLIPPED, toggled, onPress, null, null);
+    public ToggleButton(IGuiWrapper gui, int x, int y, int size, BooleanSupplier toggled, IClickable onPress, ILangEntry langEntry) {
+        Component tooltip = langEntry.translate();
+        this(gui, x, y, size, size, TOGGLE, TOGGLE_FLIPPED, toggled, onPress, tooltip, tooltip);
     }
 
     public ToggleButton(IGuiWrapper gui, int x, int y, int width, int height, Identifier toggle, Identifier flipped,
