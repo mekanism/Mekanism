@@ -35,7 +35,7 @@ public class CuriosHelper implements ICuriosHelper {
     @Nullable
     @Override
     public ItemAccess findFirstCurio(LivingEntity entity, Predicate<ItemAccess> filter) {
-        return findFirstCurioAsResult(entity, stack -> filter.test(ItemAccessUtils.sideEffectFreeAccess(stack)))
+        return findFirstCurioAsResult(entity, stack -> filter.test(ItemAccessUtils.sideEffectFreeAccess(stack, 1)))
               .map(SlotResult::stack)
               .map(ItemAccess::forStack)
               .orElse(null);

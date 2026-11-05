@@ -59,7 +59,7 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
     @Nullable
     @Override
     public TankRenderState extractArgument(ItemStack stack) {
-        ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack));
+        ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack, 1));
         int fluidLight = 0;
         int fluidColor = 0;
         float contentsMaxY = 0;

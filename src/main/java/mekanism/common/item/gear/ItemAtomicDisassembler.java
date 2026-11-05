@@ -127,7 +127,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
-        EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack)));
+        EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack, 1)));
         if (energyHandler == null) {
             return 0;
         }
@@ -204,7 +204,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Override
     public void adjustAttributes(ItemAttributeModifierEvent event) {
         ItemStack stack = event.getItemStack();
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack));
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack, 1));
         int energy = energyHandler == null ? 0 : energyHandler.getAmountAsInt();
         int energyCost = MekanismConfig.gear.disassemblerEnergyUsageWeapon.get();
         double damage = MekanismConfig.gear.disassemblerMaxDamage.get();

@@ -74,7 +74,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                 ItemStack stack = context.getItemInHand();
                 EntityRobit spawnedRobit = MekanismEntityTypes.ROBIT.get().spawn(level, robit -> {
                     robit.setHome(chargepad.getTileGlobalPos());
-                    ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+                    ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack, 1);
                     ItemResource itemType = itemAccess.getResource();
                     UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemAccess);
                     if (ownerUUID == null) {

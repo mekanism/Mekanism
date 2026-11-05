@@ -39,7 +39,7 @@ public class ModuleElytraUnit implements ICustomModule<ModuleElytraUnit> {
 
     @Override
     public void adjustAttributes(IModule<ModuleElytraUnit> module, IModuleContainer moduleContainer, ItemAttributeModifierEvent event) {
-        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(event.getItemStack());
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(event.getItemStack(), 1);
         if (module.hasEnoughEnergy(itemAccess, MekanismConfig.gear.mekaSuitElytraEnergyUsage)) {
             //If we have enough energy to use the elytra, check if the jetpack unit is also installed, and if it is,
             // only mark that we can use the elytra if the jetpack is not set to hover or if it is if it has no hydrogen stored

@@ -117,10 +117,7 @@ public final class MekanismUtils {
     // be transitioned over to the level's tickrate
     public static final int TICKS_PER_HALF_SECOND = SharedConstants.TICKS_PER_SECOND / 2;
     public static final LongSupplier GAME_TIME_SUPPLIER = () -> {
-        //TODO - 26.3: Re-evaluate If this is a reasonable enough implementation for rate limits on items, or if there is some other way we want to do it.
-        // We could theoretically reset the limit when the root transaction is committed, and then just not care about the game time at all
-        // Yes it wouldn't stop multiple calls from different transactions from being limitted, but in general if multiple calls do happen,
-        // odds are they will be within a single overall transaction (except? maybe for cases like multiple mods wireless charging a player's inventory)
+        //Best effort to attempt at figuring out what the game time is when we don't have a level context
         Level level;
         if (FMLEnvironment.getDist().isClient()) {
             level = MekanismClient.tryGetClientWorld();

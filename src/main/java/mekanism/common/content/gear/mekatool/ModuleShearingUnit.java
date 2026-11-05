@@ -55,9 +55,9 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
                 //Only require energy if we are installed on a Meka-Tool and can thus calculate the energy required to break the block "safely"
                 // Note: We assume hardness is zero like the default is for tripwires as we don't have the target block in our current context
                 int cost = ItemMekaTool.getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
-                return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), cost);
+                return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance, 1), cost);
             } else if (action == ItemAbilities.SHEARS_DIG) {
-                EnergyHandler energyHandler = module.getEnergyHandler(ItemAccessUtils.sideEffectFreeAccess(instance), true);
+                EnergyHandler energyHandler = module.getEnergyHandler(ItemAccessUtils.sideEffectFreeAccess(instance, 1), true);
                 if (energyHandler == null) {
                     return false;
                 }
@@ -68,7 +68,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
                 //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
                 return energyRequired <= energyAvailable || ((double) energyAvailable / energyRequired) > Mth.EPSILON;
             } else if (action == ItemAbilities.SHEARS_TRIM) {
-                return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageShearTrim);
+                return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance, 1), MekanismConfig.gear.mekaToolEnergyUsageShearTrim);
             }
         }
         return ItemAbilities.DEFAULT_SHEARS_ACTIONS.contains(action);

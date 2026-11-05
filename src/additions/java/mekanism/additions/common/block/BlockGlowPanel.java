@@ -62,7 +62,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
         }
         //TODO: Is there a way for us to work around that walls return a smaller size even when wall post override is true?
         // Torches, and industrial alarms can be placed on walls and it will create the post, but glow panels need the post to be present first in order to place
-        //TODO - 26.3: PR to neo making SupportType be an extendable enum so that we can just directly call isFaceSturdy?
+        //TODO: PR to neo making SupportType be an extendable enum so that we can just directly call isFaceSturdy?
         //Like SupportType and BlockState#isFaceSturdy except without support for the block state cache and with our own custom shapes
         VoxelShape projected = offsetState.getBlockSupportShape(level, offsetPos).getFaceShape(side);
         //Don't allow placing on blocks that are too small; same restrictions as vanilla except we have a better check for placing against the side

@@ -174,7 +174,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                               .distinct()
                         ));
                     }
-                    ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(itemStack);
+                    ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(itemStack, 1);
                     //Get tags of any contained fluids
                     collectTags(DictionaryTagType.FLUID, Capabilities.FLUID.getCapability(itemAccess));
                     //Get tags of any contained chemicals

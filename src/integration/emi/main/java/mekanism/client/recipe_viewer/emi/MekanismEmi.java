@@ -106,7 +106,7 @@ public class MekanismEmi implements EmiPlugin {
     private static final Comparison MEKANISM_COMPARISON = Comparison.compareData(emiStack -> {
         Set<Object> representation = new HashSet<>();
         ItemStack stack = emiStack.getItemStack();
-        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack, 1);
         addChemicalComponent(representation, itemAccess);
         addFluidComponent(representation, itemAccess);
         addEnergyComponent(representation, itemAccess);

@@ -27,7 +27,7 @@ public interface IChemicalItem extends ICustomCreativeTabContents {
     }
 
     default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean hasChemical(ITEM instance) {
-        return hasChemical(ItemAccessUtils.sideEffectFreeAccess(instance));
+        return hasChemical(ItemAccessUtils.sideEffectFreeAccess(instance, 1));
     }
 
     @Override

@@ -32,7 +32,7 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
         }
         List<Object> subTypeData = null;
 
-        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack, 1);
         ResourceHandler<ChemicalResource> chemicalHandler = ContainerType.CHEMICAL.getCapOrUnexposed(itemAccess);
         if (chemicalHandler != null) {
             for (int tank = 0, tanks = chemicalHandler.size(); tank < tanks; tank++) {

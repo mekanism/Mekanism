@@ -221,7 +221,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
-        EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack)));
+        EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack, 1)));
         if (energyHandler == null) {
             return 0;
         }
@@ -356,7 +356,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             int unitDamage = attackAmplificationUnit.getCustomInstance().getDamage();
             if (unitDamage > 0) {
                 int energyCost = MathUtils.clampToInt(MekanismConfig.gear.mekaToolEnergyUsageWeapon.get() * (unitDamage / 4D));
-                EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack));
+                EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack, 1));
                 int energy = energyHandler == null ? 0 : energyHandler.getAmountAsInt();
                 if (energy < energyCost) {
                     //If we don't have enough power use it at a reduced power level (this will be false the majority of the time)

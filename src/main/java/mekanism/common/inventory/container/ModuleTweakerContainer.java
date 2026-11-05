@@ -67,7 +67,7 @@ public class ModuleTweakerContainer extends MekanismContainer {
     }
 
     public static <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean isTweakableItem(Player player, ITEM instance) {
-        return IModuleHelper.INSTANCE.getModuleContainer(instance) != null && IItemSecurityUtils.INSTANCE.canAccess(player, ItemAccessUtils.sideEffectFreeAccess(instance));
+        return IModuleHelper.INSTANCE.getModuleContainer(instance) != null && IItemSecurityUtils.INSTANCE.canAccess(player, ItemAccessUtils.sideEffectFreeAccess(instance, 1));
     }
 
     public static boolean hasTweakableItem(Player player) {

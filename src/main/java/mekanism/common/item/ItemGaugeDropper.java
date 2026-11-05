@@ -41,7 +41,7 @@ public class ItemGaugeDropper extends Item {
     @Override
     public boolean isBarVisible(ItemStack stack) {
         //We don't display the bar if there is nothing stored in any of the containers
-        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack, 1);
         ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
         if (handler != null && !ResourceHandlerUtil.isEmpty(handler)) {
             return true;
@@ -52,13 +52,13 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack, 1);
         return Math.max(ContainerType.CHEMICAL.getBarWidth(itemAccess), ContainerType.FLUID.getBarWidth(itemAccess));
     }
 
     @Override
     public int getBarColor(ItemStack stack) {
-        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack, 1);
         FluidResource fluid = ContainerType.FLUID.getFirstResourceFromAttachment(itemAccess);
         if (!fluid.isEmpty()) {
             return ContainerType.FLUID.getRGBDurabilityForDisplay(fluid);

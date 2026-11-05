@@ -44,7 +44,7 @@ public class GenericBarDecorator implements IItemDecorator {
         } else {
             xOffset++;
         }
-        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack, 1);
         boolean multipleBars = renderers.size() > 1;
         boolean isFirstBar = true;
         for (BarRenderer renderer : renderers) {

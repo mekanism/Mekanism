@@ -69,7 +69,7 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
 
     @Override
     public void adjustAttributes(IModule<ModuleGravitationalModulatingUnit> module, IModuleContainer moduleContainer, ItemAttributeModifierEvent event) {
-        if (module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(event.getItemStack()), MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation)) {
+        if (module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(event.getItemStack(), 1), MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation)) {
             event.addModifier(NeoForgeMod.CREATIVE_FLIGHT, CREATIVE_FLIGHT_MODIFIER, EquipmentSlotGroup.CHEST);
             //TODO - 26.3: Should one of the modules apply FLYING_SPEED? Either this or locomotive unit? Does it even effect players?
         }

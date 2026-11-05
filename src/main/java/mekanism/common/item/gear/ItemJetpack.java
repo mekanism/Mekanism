@@ -85,7 +85,7 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
             list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, getMode(instance)));
             long stored = 0;
             long capacity = 1;
-            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
+            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance, 1));
             if (handler != null && handler.size() > 0) {
                 stored = handler.getAmountAsLong(0);
                 capacity = handler.getCapacityAsLong(0, handler.getResource(0));

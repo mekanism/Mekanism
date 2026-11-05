@@ -58,7 +58,7 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
             Map<RecipeUpgradeType, List<RecipeUpgradeData<?>>> upgradeInfo = new EnumMap<>(RecipeUpgradeType.class);
             //Only bother checking input items that have NBT as ones that do not, don't have any data they may need to transfer
             for (ItemStack stack : componentInputs) {
-                ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+                ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack, 1);
                 Set<RecipeUpgradeType> stackSupportedTypes = RecipeUpgradeData.getSupportedTypes(itemAccess);
                 for (RecipeUpgradeType supportedType : stackSupportedTypes) {
                     if (supportedTypes.contains(supportedType)) {

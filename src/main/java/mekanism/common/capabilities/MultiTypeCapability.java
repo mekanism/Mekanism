@@ -38,7 +38,7 @@ public record MultiTypeCapability<HANDLER>(BlockCapability<HANDLER, @Nullable Di
 
     @Nullable
     public HANDLER getQueryOnlyCapability(TypedInstance<Item> instance) {
-        return getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
+        return getCapability(ItemAccessUtils.sideEffectFreeAccess(instance, 1));
     }
 
     @Nullable

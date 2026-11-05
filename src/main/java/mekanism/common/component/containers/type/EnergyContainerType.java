@@ -133,7 +133,7 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
     }
 
     public double getRatio(TypedInstance<Item> stack) {
-        return getRatio(ItemAccessUtils.sideEffectFreeAccess(stack));
+        return getRatio(ItemAccessUtils.sideEffectFreeAccess(stack, 1));
     }
 
     public double getRatio(ItemAccess itemAccess) {

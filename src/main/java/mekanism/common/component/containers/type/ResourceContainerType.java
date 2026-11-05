@@ -427,7 +427,7 @@ public abstract class ResourceContainerType<RESOURCE extends Resource, CONTAINER
 
     /// Gets the color that represents the first resource stored on the item instance for use in "durability" bars.
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> int getRGBDurabilityForDisplay(ITEM instance) {
-        return getRGBDurabilityForDisplay(ItemAccessUtils.sideEffectFreeAccess(instance));
+        return getRGBDurabilityForDisplay(ItemAccessUtils.sideEffectFreeAccess(instance, 1));
     }
 
     /// Gets the color that represents the first resource stored on the item access for use in "durability" bars.
@@ -462,7 +462,7 @@ public abstract class ResourceContainerType<RESOURCE extends Resource, CONTAINER
     }
 
     public int getBarWidth(ItemStack stack) {
-        return getBarWidth(ItemAccessUtils.sideEffectFreeAccess(stack));
+        return getBarWidth(ItemAccessUtils.sideEffectFreeAccess(stack, 1));
     }
 
     public int getBarWidth(ItemAccess itemAccess) {

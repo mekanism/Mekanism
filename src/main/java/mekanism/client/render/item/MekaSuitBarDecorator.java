@@ -32,7 +32,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         }
         yOffset += 12;
 
-        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack, 1);
         if (tryRender(guiGraphics, itemAccess, xOffset, yOffset, ContainerType.CHEMICAL, armor.getChemicalTankSpecs())) {
             yOffset--;
         }

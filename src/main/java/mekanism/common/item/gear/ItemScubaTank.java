@@ -46,7 +46,7 @@ public class ItemScubaTank extends ItemChemicalArmor implements IItemHUDProvider
         if (slotType == EquipmentSlot.CHEST) {
             list.add(MekanismLang.SCUBA_TANK_MODE.translateColored(EnumColor.DARK_GRAY, OnOff.of(getMode(instance), true)));
             long stored = 0;
-            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
+            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance, 1));
             if (handler != null && handler.size() > 0) {
                 stored = handler.getAmountAsLong(0);
             }

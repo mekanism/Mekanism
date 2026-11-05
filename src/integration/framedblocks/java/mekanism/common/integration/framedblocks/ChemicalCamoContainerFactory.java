@@ -86,7 +86,7 @@ final class ChemicalCamoContainerFactory extends ResourceCamoContainerFactory<Ch
 
     @Override
     public void registerTriggerItems(TriggerRegistrar registrar) {
-        Predicate<ItemStack> predicate = stack -> Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack)) != null;
+        Predicate<ItemStack> predicate = stack -> Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack, 1)) != null;
         registrar.registerApplicationPredicate(predicate);
         registrar.registerRemovalPredicate(predicate);
     }

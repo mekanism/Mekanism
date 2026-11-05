@@ -46,7 +46,7 @@ public record PacketModeChangeCurios(String slotType, int slot, int shift, boole
         if (Mekanism.hooks.curios.isLoaded() && ICuriosHelper.INSTANCE != null) {
             Player player = context.player();
             ItemStack stack = ICuriosHelper.INSTANCE.getCurioStack(player, slotType, slot);
-            if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem && IItemSecurityUtils.INSTANCE.canAccess(player, ItemAccessUtils.sideEffectFreeAccess(stack))) {
+            if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem && IItemSecurityUtils.INSTANCE.canAccess(player, ItemAccessUtils.sideEffectFreeAccess(stack, 1))) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     modeItem.changeMode(player, ItemAccess.forStack(stack), shift, displayChangeMessage ? DisplayChange.OTHER : DisplayChange.NONE, transaction);
                     transaction.commit();

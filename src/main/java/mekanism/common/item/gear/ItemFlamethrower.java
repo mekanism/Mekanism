@@ -168,7 +168,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     @Override
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(List<Component> list, Player player, ITEM instance, EquipmentSlot slotType) {
         long stored = 0;
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance, 1));
         if (handler != null && handler.size() > 0) {
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
             stored = handler.getAmountAsLong(0);

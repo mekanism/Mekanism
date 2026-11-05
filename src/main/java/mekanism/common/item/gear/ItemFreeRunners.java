@@ -97,7 +97,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(List<Component> list, Player player, ITEM instance, EquipmentSlot slotType) {
         if (slotType == EquipmentSlot.FEET) {
             list.add(MekanismLang.FREE_RUNNERS_MODE.translateColored(EnumColor.GRAY, getMode(instance).getTextComponent()));
-            EnergyHandler energyHandler = ContainerType.ENERGY.getCapOrUnexposed(ItemAccessUtils.sideEffectFreeAccess(instance));
+            EnergyHandler energyHandler = ContainerType.ENERGY.getCapOrUnexposed(ItemAccessUtils.sideEffectFreeAccess(instance, 1));
             EnergyDisplay display = energyHandler == null ? EnergyDisplay.ZERO : EnergyDisplay.of(energyHandler);
             list.add(MekanismLang.FREE_RUNNERS_STORED.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, display));
         }
