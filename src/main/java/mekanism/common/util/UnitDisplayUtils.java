@@ -41,7 +41,6 @@ public class UnitDisplayUtils {
 
     public static Component getEnergyDisplay(long value) {
         if (MekanismConfig.local.compactEnergyDisplay.get()) {
-            //TODO - 26.3: Add a config option for whether the energy display should be shortened?
             return getDisplayBase(value, FORGE_ENERGY, 2, true);
         }
         return FORGE_ENERGY.appendTo(TextUtils.format(value), true, Mth.equal(value, 1));

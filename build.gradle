@@ -439,7 +439,7 @@ void setupTasks(SourceSet sourceSet) {
     tasks.named(sourceSet.processResourcesTaskName, ProcessResources, {
         duplicatesStrategy = DuplicatesStrategy.FAIL
         var versionProperties = ['file'       : ['jarVersion': mod_version], 'mc_version': minecraft_version_range, 'neo_version': neo_version_range,
-                                 'jei_version': jei_version_range]
+                                 'jei_version': jei_version_range, 'nerb_version': nerb_version_range]
         //Mark the properties as inputs so that when they change things update
         inputs.properties(versionProperties)
         filesMatching('META-INF/neoforge.mods.toml') { expand(versionProperties) }
@@ -804,8 +804,6 @@ dependencies {
     //integrationWthitLocalRuntime("mcp.mobius.waila:wthit:neo-${wthit_version}")
     //integrationWthitLocalRuntime('lol.bai:badpackets:neo-0.12.2')
 
-    //Note: Shatterlib is necessary for compilation against the class we need in NERB
-    integrationNerbCompileOnly("curse.maven:shatterlib-916747:${shatter_lib_id}")
     integrationNerbCompileOnly("curse.maven:nerb-738663:${nerb_id}")
 
     def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minecraft_version}:${crafttweaker_version}"

@@ -1,7 +1,6 @@
 package mekanism.client.integration.nerb;
 
-import it.hurts.shatterbyte.nerb.common.config.NERBClientConfig.ButtonMode;
-import it.hurts.shatterbyte.nerb.common.init.ConfigRegistry;
+import it.hurts.shatterbyte.nerb.api.NERBApi;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.MekanismHooks;
 import net.neoforged.api.distmarker.Dist;
@@ -11,6 +10,6 @@ import net.neoforged.fml.common.Mod;
 public class MekanismNerb {
 
     public MekanismNerb() {
-        Mekanism.hooks.recipeBookDisabledChecks.add(() -> ConfigRegistry.CLIENT.getButtonMode() != ButtonMode.RECIPE_BOOK);
+        Mekanism.hooks.recipeBookDisabledChecks.add(NERBApi::isClientRecipeBookDisabled);
     }
 }
