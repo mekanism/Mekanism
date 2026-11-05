@@ -38,7 +38,8 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
     public void tickServer(IModule<ModuleChargeDistributionUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         // charge inventory first
         if (chargeInventory) {
-            EnergyHandler energyHandler = module.getEnergyHandler(itemAccess, false);
+            //Bypass the limit of it not allowing extraction
+            EnergyHandler energyHandler = module.getEnergyHandler(itemAccess, true);
             if (energyHandler != null) {
                 chargeInventory(energyHandler, player, transaction);
             }
