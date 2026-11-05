@@ -28,7 +28,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -145,8 +144,9 @@ public abstract class BlockMekanism extends Block {
         if (hasBounding != null) {
             hasBounding.removeBoundingBlocks(level, pos, state);
         }
-        //TODO - 26.3: I believe this theoretically only needs to happen if it supports comparators?
-        Containers.updateNeighboursAfterDestroy(state, level, pos);
+        if (hasAnalogOutputSignal(state)) {
+            level.updateNeighbourForOutputSignal(pos, state.getBlock());
+        }
     }
 
     @Override
@@ -233,7 +233,7 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     protected int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos, Direction direction) {
-        //TODO - 26.3: Should we add support for direction? Maybe for multiblocks to not output one inside the multiblock or something
+        //TODO: Should we add support for direction? Maybe for multiblocks to not output one inside the multiblock or something
         if (hasAnalogOutputSignal(blockState)) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             //Double-check the tile actually has comparator support
