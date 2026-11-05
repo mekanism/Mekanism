@@ -68,6 +68,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
@@ -293,6 +294,11 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public IRecipeViewerRecipeType<FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo>> recipeViewerType() {
         return RecipeViewerRecipeType.EVAPORATING;
+    }
+
+    @Override
+    public void popExperience(ServerLevel level, Vec3 position) {
+        recipeCacheLookupMonitor.popExperienceAndClearUsed(level, position);
     }
 
     @Nullable

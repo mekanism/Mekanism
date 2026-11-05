@@ -347,7 +347,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
 
     @Override
     public void popExperience(ServerPlayer player) {
-        RecipeCacheLookupMonitor.awardUsedRecipesAndPopExperience(player, getAllRecipesUsed(), hasXpContainment(), recipeCacheLookupMonitors);
+        RecipeCacheLookupMonitor.awardUsedRecipesAndPopExperience(player, getAllRecipesUsed(false), hasXpContainment(), recipeCacheLookupMonitors);
     }
 
     @Override
@@ -435,17 +435,25 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
         if (this.level instanceof ServerLevel serverLevel) {
-            //Combine total amount crafted
-            RecipeCacheLookupMonitor.getRecipesToAwardAndPopExperience(serverLevel, Vec3.atCenterOf(pos), getAllRecipesUsed(), hasXpContainment());
+            popExperience(serverLevel, Vec3.atCenterOf(pos));
         }
     }
 
-    private Reference2IntMap<ResourceKey<Recipe<?>>> getAllRecipesUsed() {
+    @Override
+    public void popExperience(ServerLevel level, Vec3 position) {
+        //Combine total amount crafted
+        RecipeCacheLookupMonitor.popExperience(level, position, getAllRecipesUsed(true), hasXpContainment());
+    }
+
+    private Reference2IntMap<ResourceKey<Recipe<?>>> getAllRecipesUsed(boolean clearUsed) {
         Reference2IntOpenHashMap<ResourceKey<Recipe<?>>> recipesUsed = new Reference2IntOpenHashMap<>();
         for (FactoryRecipeCacheLookupMonitor<RECIPE> recipeCacheLookupMonitor : recipeCacheLookupMonitors) {
             for (ObjectIterator<Reference2IntMap.Entry<ResourceKey<Recipe<?>>>> iterator = Reference2IntMaps.fastIterator(recipeCacheLookupMonitor.getRecipesUsed()); iterator.hasNext(); ) {
                 Reference2IntMap.Entry<ResourceKey<Recipe<?>>> entry = iterator.next();
                 recipesUsed.put(entry.getKey(), entry.getIntValue());
+            }
+            if (clearUsed) {
+                recipeCacheLookupMonitor.getRecipesUsed().clear();
             }
         }
         return recipesUsed;

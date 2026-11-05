@@ -444,8 +444,13 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         entityItem.setDeltaMovement(0, random.nextGaussian() * 0.05F + 0.2F, 0);
         level().addFreshEntity(entityItem);
         if (level() instanceof ServerLevel serverLevel) {
-            recipeCacheLookupMonitor.getRecipesToAwardAndPopExperience(serverLevel, position());
+            popExperience(serverLevel, position());
         }
+    }
+
+    @Override
+    public void popExperience(ServerLevel level, Vec3 position) {
+        recipeCacheLookupMonitor.popExperienceAndClearUsed(level, position);
     }
 
     @Override

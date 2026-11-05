@@ -14,11 +14,13 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.registration.impl.RecipeBookCategoryDeferredRegister;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> extends IContentsListener, StackedContentsCompatible, SupportsXpContainment {
@@ -36,6 +38,8 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> ex
     }
 
     void markForSave();
+
+    void popExperience(ServerLevel level, Vec3 position);
 
     /// Tries to lookup/get the recipe that a given cacheIndex would represent the slots/tanks/etc. for.
     ///

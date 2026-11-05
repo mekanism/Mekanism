@@ -102,8 +102,13 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?, ?
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
         if (this.level instanceof ServerLevel serverLevel) {
-            recipeCacheLookupMonitor.getRecipesToAwardAndPopExperience(serverLevel, Vec3.atCenterOf(pos));
+            popExperience(serverLevel, Vec3.atCenterOf(pos));
         }
+    }
+
+    @Override
+    public void popExperience(ServerLevel level, Vec3 position) {
+        recipeCacheLookupMonitor.popExperienceAndClearUsed(level, position);
     }
 
     @Override

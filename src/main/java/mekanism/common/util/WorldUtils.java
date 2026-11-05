@@ -11,6 +11,7 @@ import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.Structure;
+import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -445,36 +446,37 @@ public class WorldUtils {
     /// @implNote This method ignores [GameRules#BLOCK_DROPS], and does not drop experience.
     public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity, ItemStack tool) {
         if (world instanceof ServerLevel level) {
+            BlockPos xpDropPos;
             int experience;
             if (entity instanceof Player player) {
+                xpDropPos = player.blockPosition();
                 DropsWithXp<ItemStack> drops = getDrops(state, level, pos, tile, entity, tool);
+                experience = drops.experience();
                 for (ItemStack dropStack : drops.items()) {
                     if (player.addItem(dropStack)) {
-                        world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 1.4F + 2.0F);
+                        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 1.4F + 2.0F);
                     } else {
                         player.drop(dropStack, false, Prediction.SERVER_ONLY);
                     }
                 }
-                experience = drops.experience();
-                if (experience > 0) {
-                    //Note: We just skip trying to repair players items as it isn't worth reimplementing when none of our things even drop xp like that?
-                    //TODO - 26.3: Should we make it so that machines with the xp containment upgrade go through here instead when wrenched?
-                    player.giveExperiencePoints(experience);
-                    experience = 0;
+                if (tile instanceof IRecipeLookupHandler<?> recipeHandler) {
+                    //Drop any recipe related experience directly on the player when they wrench the block
+                    recipeHandler.popExperience(level, player.position());
                 }
             } else {
+                xpDropPos = pos;
                 DropsWithXp<ItemEntity> drops = getDrops(state, level, pos, tile, entity, tool, true);
+                experience = drops.experience();
                 for (ItemEntity drop : drops.items()) {
                     if (!drop.getItem().isEmpty()) {
                         level.addFreshEntity(drop);
                     }
                 }
-                experience = drops.experience();
             }
             //Note: This will have no effect for any mek blocks currently
             state.spawnAfterBreak(level, pos, tool, false);
             if (experience > 0) {
-                state.getBlock().popExperience(level, pos, experience);
+                state.getBlock().popExperience(level, xpDropPos, experience);
             }
         }
         world.removeBlock(pos, false);

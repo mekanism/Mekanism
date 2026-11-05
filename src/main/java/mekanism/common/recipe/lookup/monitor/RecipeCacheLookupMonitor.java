@@ -257,7 +257,7 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
         if (hasContainment != this.hadContainment) {
             if (this.hadContainment) {
                 //We lost containment, drop stored xp on the ground
-                getRecipesToAwardAndPopExperience(level, position);
+                getRecipesToAwardAndPopExperience(level, position, recipesUsed, true);
             }
             //Note: Regardless of the direction we need to void the cached recipe information to avoid installing and uninstalled the upgrade letting you gain xp from previous ones
             this.recipesUsed.clear();
@@ -308,11 +308,18 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
     }
 
     //Note: We don't call this from preRemoveSideEffects for the TEP as there is no concept of a multiblock being removed
-    public List<RecipeHolder<?>> getRecipesToAwardAndPopExperience(ServerLevel level, Vec3 position) {
-        return getRecipesToAwardAndPopExperience(level, position, recipesUsed, handler.hasXpContainment());
+    public void popExperienceAndClearUsed(ServerLevel level, Vec3 position) {
+        popExperience(level, position, recipesUsed, handler.hasXpContainment());
+        recipesUsed.clear();
     }
 
-    public static List<RecipeHolder<?>> getRecipesToAwardAndPopExperience(ServerLevel level, Vec3 position, Reference2IntMap<ResourceKey<Recipe<?>>> recipesUsed, boolean dropXp) {
+    public static void popExperience(ServerLevel level, Vec3 position, Reference2IntMap<ResourceKey<Recipe<?>>> recipesUsed, boolean hasXpContainment) {
+        if (hasXpContainment) {
+            getRecipesToAwardAndPopExperience(level, position, recipesUsed, true);
+        }
+    }
+
+    private static List<RecipeHolder<?>> getRecipesToAwardAndPopExperience(ServerLevel level, Vec3 position, Reference2IntMap<ResourceKey<Recipe<?>>> recipesUsed, boolean dropXp) {
         //Note: We only drop xp if the upgrade is present, even when the block/entity is destroyed
         List<RecipeHolder<?>> recipesToAward = new ArrayList<>();
         for (ObjectIterator<Reference2IntMap.Entry<ResourceKey<Recipe<?>>>> iterator = Reference2IntMaps.fastIterator(recipesUsed); iterator.hasNext(); ) {
