@@ -27,13 +27,13 @@ class PigmentExtractingPlasticRecipeProvider extends BaseSubRecipeProvider {
     private static final int PLASTIC_GLOW_BLOCK_RATE = PLASTIC_BLOCK_RATE * 7 / 8;//42
     private static final int REINFORCED_PLASTIC_BLOCK_RATE = PLASTIC_BLOCK_RATE * 7 / 8;//42
     private static final int PLASTIC_ROAD_RATE = PLASTIC_BLOCK_RATE * 7 / 8;//42
-    private static final int TRANSPARENT_PLASTIC_BLOCK_RATE = PLASTIC_BLOCK_RATE * 7 / 8;//42
+    private static final int TRANSPARENT_PLASTIC_BLOCK_RATE = PLASTIC_BLOCK_RATE / 2;//24
     private static final int PLASTIC_STAIRS_RATE = PLASTIC_BLOCK_RATE * 2 / 3;//32
     private static final int PLASTIC_SLAB_RATE = PLASTIC_BLOCK_RATE / 2;//24
     private static final int PLASTIC_GLOW_STAIRS_RATE = PLASTIC_GLOW_BLOCK_RATE * 2 / 3;//28
     private static final int PLASTIC_GLOW_SLAB_RATE = PLASTIC_GLOW_BLOCK_RATE / 2;//21
-    private static final int TRANSPARENT_PLASTIC_STAIRS_RATE = TRANSPARENT_PLASTIC_BLOCK_RATE * 2 / 3;//28
-    private static final int TRANSPARENT_PLASTIC_SLAB_RATE = TRANSPARENT_PLASTIC_BLOCK_RATE / 2;//21
+    private static final int TRANSPARENT_PLASTIC_STAIRS_RATE = TRANSPARENT_PLASTIC_BLOCK_RATE * 2 / 3;//16
+    private static final int TRANSPARENT_PLASTIC_SLAB_RATE = TRANSPARENT_PLASTIC_BLOCK_RATE / 2;//12
 
     PigmentExtractingPlasticRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
         super(items, fluids, chemicals);
@@ -53,8 +53,8 @@ class PigmentExtractingPlasticRecipeProvider extends BaseSubRecipeProvider {
             addExtractionRecipe(consumer, color, AdditionsBlocks.PLASTIC_SLABS, pigment, PLASTIC_SLAB_RATE, basePath + "slab/");
             addExtractionRecipe(consumer, color, AdditionsBlocks.PLASTIC_GLOW_STAIRS, pigment, PLASTIC_GLOW_STAIRS_RATE, basePath + "stairs/glow/");
             addExtractionRecipe(consumer, color, AdditionsBlocks.PLASTIC_GLOW_SLABS, pigment, PLASTIC_GLOW_SLAB_RATE, basePath + "slab/glow/");
-            addExtractionRecipe(consumer, color, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS, pigment, TRANSPARENT_PLASTIC_STAIRS_RATE, basePath + "stairs/transparent");
-            addExtractionRecipe(consumer, color, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS, pigment, TRANSPARENT_PLASTIC_SLAB_RATE, basePath + "slab/transparent");
+            addExtractionRecipe(consumer, color, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS, pigment, TRANSPARENT_PLASTIC_STAIRS_RATE, basePath + "stairs/transparent/");
+            addExtractionRecipe(consumer, color, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS, pigment, TRANSPARENT_PLASTIC_SLAB_RATE, basePath + "slab/transparent/");
         });
     }
 

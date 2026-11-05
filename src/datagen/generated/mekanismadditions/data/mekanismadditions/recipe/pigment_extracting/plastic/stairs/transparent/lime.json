@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "experience": 0.1,
+  "group": "lime_dye",
+  "input": {
+    "count": 1,
+    "ingredient": "mekanismadditions:lime_plastic_transparent_stairs"
+  },
+  "output": {
+    "amount": 16,
+    "id": "mekanism:lime"
+  }
+}

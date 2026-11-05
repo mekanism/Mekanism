@@ -50,7 +50,7 @@ public class PaintingRecipeProvider extends BaseSubRecipeProvider {
         addRecoloringRecipes(output, MekanismTags.Items.COLORABLE_TERRACOTTA, EIGHT_AT_A_TIME, BlockItemIds.DYED_TERRACOTTA, "terracotta_painting", basePath + "terracotta/");
         addRecoloringRecipes(output, MekanismTags.Items.COLORABLE_GLAZED_TERRACOTTA, FOUR_AT_A_TIME, BlockItemIds.GLAZED_TERRACOTTA, "glazed_terracotta_painting", basePath + "terracotta/glazed/");
         addRecoloringRecipes(output, MekanismTags.Items.COLORABLE_GLASS_PANES, EIGHT_AT_A_TIME, BlockItemIds.STAINED_GLASS_PANE, "glass_pane_painting", basePath + "glass_pane/");
-        addRecoloringRecipes(output, MekanismTags.Items.COLORABLE_CARPETS, EIGHT_AT_A_TIME, BlockItemIds.CARPET, "carpet_painting", basePath + "carpet/");
+        addRecoloringRecipes(output, MekanismTags.Items.COLORABLE_CARPETS, ONE_AT_A_TIME, BlockItemIds.CARPET, "carpet_painting", basePath + "carpet/");
         //TODO: Eventually we may want to consider taking patterns into account
         addRecoloringRecipes(output, MekanismTags.Items.COLORABLE_BANNERS, ONE_AT_A_TIME, BlockItemIds.BANNER, "banner_painting", basePath + "banner/");
         //TODO: Shulker boxes and dyed bundles? Would require us to add support for copying data

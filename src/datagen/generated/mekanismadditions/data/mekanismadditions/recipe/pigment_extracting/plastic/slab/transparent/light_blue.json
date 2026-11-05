@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "experience": 0.1,
+  "group": "light_blue_dye",
+  "input": {
+    "count": 1,
+    "ingredient": "mekanismadditions:light_blue_plastic_transparent_slab"
+  },
+  "output": {
+    "amount": 12,
+    "id": "mekanism:light_blue"
+  }
+}

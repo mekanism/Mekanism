@@ -1,4 +1,4 @@
-// 26.3	2026-11-03T16:31:01.9260492	Registries for Reloadable (mekanism[0]): [mekanism]
+// 26.3	2026-11-05T13:10:32.8027616	Registries for Reloadable (mekanism[0]): [mekanism]
 cc0f85f030befc152798d57b040f40fe7b1e67be data/mekanism/advancement/advanced_control_circuit.json
 e00a71a74d7c77c23cd21bbb6af2460c9035af75 data/mekanism/advancement/advanced_qio_drive.json
 c6b503463ec0aa67902a2d9e498b907d2d1702aa data/mekanism/advancement/alarm.json
@@ -3107,22 +3107,22 @@ eab3b95fff32a058b76ec29ad90f91e46e799e14 data/mekanism/recipe/painting/candle/pu
 02804dcfa8f3aa366c712bb69a976593223dfe38 data/mekanism/recipe/painting/candle/red.json
 1f94a81aeeb5e9a8e8dee12e97769f202f3c89a5 data/mekanism/recipe/painting/candle/white.json
 0ea45f7ebbb64a0a26a3b9219af83bc50f3a9632 data/mekanism/recipe/painting/candle/yellow.json
-e1a30cc428117a81e3091b1a46a41f083312bce8 data/mekanism/recipe/painting/carpet/black.json
-f06a4ca3d29d162b5e7ba51bc5a99b4bded73118 data/mekanism/recipe/painting/carpet/blue.json
-bccedbf10d0e826530895f43458e0f18bba76af8 data/mekanism/recipe/painting/carpet/brown.json
-8161c8843df05d4b7944c1d80c4b1a74f204befb data/mekanism/recipe/painting/carpet/cyan.json
-13cb8913cbf4ca6a72a45b29eec8603071abc0c3 data/mekanism/recipe/painting/carpet/gray.json
-3d7c34682067e1471ffac079e8b6a3ea23448d9f data/mekanism/recipe/painting/carpet/green.json
-07aaf85ded7684ada1687317203f21bd9e720261 data/mekanism/recipe/painting/carpet/light_blue.json
-d2a735995d9eb625baa2b6f853a34ee5a42817d3 data/mekanism/recipe/painting/carpet/light_gray.json
-aec2055739b0c117b8b8581069c57a0e9a88ab71 data/mekanism/recipe/painting/carpet/lime.json
-1bcaf9bb91f2b7fded106bbb61abb148ff91522d data/mekanism/recipe/painting/carpet/magenta.json
-8a601df6323a99d59c07ee811b85926528593064 data/mekanism/recipe/painting/carpet/orange.json
-143cecf2545f8a2a634dfc9ecb3ecccc833f927d data/mekanism/recipe/painting/carpet/pink.json
-b69491f58da0be33f8df0e0f4e50e07aac14234f data/mekanism/recipe/painting/carpet/purple.json
-9d8ea1a8913090f752c0488e18f57d1b1d7ac492 data/mekanism/recipe/painting/carpet/red.json
-9b2f06df401404035de6cb239d494629654c878c data/mekanism/recipe/painting/carpet/white.json
-d6af447f0a610ecfc12d36c47fc69362525b64e9 data/mekanism/recipe/painting/carpet/yellow.json
+a3c6e10694354b687fa1aa75a8738617e447ed34 data/mekanism/recipe/painting/carpet/black.json
+3a36305664acd7d9200837e561de3735fe755a95 data/mekanism/recipe/painting/carpet/blue.json
+248fcd71e8d2af75e67625ff37f4b4104e74de71 data/mekanism/recipe/painting/carpet/brown.json
+a202c19421e4776481c82e0a26839ca179b139ec data/mekanism/recipe/painting/carpet/cyan.json
+bac2c5ca99251836e93bb2f81fff871088e1702f data/mekanism/recipe/painting/carpet/gray.json
+e9d40e10e4639a707e5cc526d7c9813039d65db6 data/mekanism/recipe/painting/carpet/green.json
+3bbda63ea3972450ad00b2f4c257720c0d35e42c data/mekanism/recipe/painting/carpet/light_blue.json
+abde2e1355303d84104941d7769baaeb2fdd6d36 data/mekanism/recipe/painting/carpet/light_gray.json
+98ce4fcbc4f9014aa916d0c8ea1f1130c5374755 data/mekanism/recipe/painting/carpet/lime.json
+3383e00843f5725e2f44dd652eab8af24f21194b data/mekanism/recipe/painting/carpet/magenta.json
+25f3e4f378ed429c7c95d496f1f3dc7894cf84a5 data/mekanism/recipe/painting/carpet/orange.json
+a3b2dba67947d76ac6a691a0d9dda2d1571293b5 data/mekanism/recipe/painting/carpet/pink.json
+3d6680020d2e091645a68b5c81a0a9f8365871fa data/mekanism/recipe/painting/carpet/purple.json
+41cb5e9965f3640d65931f3ab8b6dc246009f83d data/mekanism/recipe/painting/carpet/red.json
+c01e564aec650f70319c6bc6a460beaee506bbe5 data/mekanism/recipe/painting/carpet/white.json
+d80766d161ca7a0ea795129cf397fba095779c0e data/mekanism/recipe/painting/carpet/yellow.json
 e9b1f1fd14d3efd4d6107a3504ad6ecb267babc6 data/mekanism/recipe/painting/concrete/black.json
 777422c738c3daae8491a10d5c8c6a3b2c49cf60 data/mekanism/recipe/painting/concrete/blue.json
 fa431ab45a3246491a2fd7cb1e645a68fff06998 data/mekanism/recipe/painting/concrete/brown.json
