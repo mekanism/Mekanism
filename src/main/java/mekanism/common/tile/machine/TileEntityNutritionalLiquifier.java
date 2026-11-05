@@ -125,7 +125,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         configComponent.setupOutputConfig(TransmissionType.FLUID, fluidTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
-        ejectorComponent.setOutputData(configComponent, TransmissionType.FLUID);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.FLUID, TransmissionType.ITEM);
 
         inputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(fluidTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE, outputSlot, NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR);
