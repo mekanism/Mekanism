@@ -39,11 +39,14 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.client.IItemDecorator;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
+import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -141,6 +144,12 @@ public class ClientRegistrationUtil {
         //TODO - 26.3: Should we move plastic blocks to a custom model that handles the tinting?
         if (event instanceof RegisterColorHandlersEvent.BlockTintSources blockEvent) {
             registerBlockColorHandler(blockEvent, COLORED_BLOCK_COLOR, blocks);
+        }
+    }
+
+    public static void registerDecorators(RegisterItemDecorationsEvent event, IItemDecorator decorator, ItemLike... items) {
+        for (ItemLike item : items) {
+            event.register(item, decorator);
         }
     }
 

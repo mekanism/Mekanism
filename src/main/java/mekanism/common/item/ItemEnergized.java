@@ -18,7 +18,7 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return ContainerType.ENERGY.isBarVisible(stack);
+        return stack.getMaxStackSize() == 1 && ContainerType.ENERGY.isBarVisible(stack);
     }
 
     @Override

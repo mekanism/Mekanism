@@ -13,7 +13,6 @@ import mekanism.common.component.component.AttachedSideConfig.LightConfigInfo;
 import mekanism.common.component.containers.creator.IContainerCreator;
 import mekanism.common.component.containers.energy.EnergyContainerBuilder;
 import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismBlocks;
@@ -64,21 +63,6 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip implements ICustomCrea
               .component(MekanismDataComponents.SIDE_CONFIG, SIDE_CONFIG)
               .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
         );
-    }
-
-    @Override
-    public boolean isBarVisible(ItemStack stack) {
-        return ContainerType.ENERGY.isBarVisible(stack);
-    }
-
-    @Override
-    public int getBarWidth(ItemStack stack) {
-        return ContainerType.ENERGY.getBarWidth(stack);
-    }
-
-    @Override
-    public int getBarColor(ItemStack stack) {
-        return MekanismConfig.client.energyColor.get();
     }
 
     @Override

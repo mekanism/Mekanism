@@ -159,12 +159,10 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
     }
 
     public boolean isBarVisible(ItemStack stack) {
-        if (StorageUtils.shouldDisplayBar(stack)) {
-            //We also don't display the bar if there is nothing stored in any of the containers
-            EnergyHandler energyHandler = capability.getQueryOnlyCapability(stack);
-            if (energyHandler != null) {
-                return energyHandler.getAmountAsLong() > 0;
-            }
+        //We don't display the bar if there is nothing stored in any of the containers
+        EnergyHandler energyHandler = capability.getQueryOnlyCapability(stack);
+        if (energyHandler != null) {
+            return energyHandler.getAmountAsLong() > 0;
         }
         return false;
     }

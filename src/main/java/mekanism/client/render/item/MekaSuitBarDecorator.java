@@ -50,7 +50,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
                 return false;
             }
             int tank = getDisplayTank(tankSpecs, itemAccess.getResource(), handler.size());
-            return ChemicalFluidBarDecorator.renderBars(guiGraphics, xOffset, yOffset, handler, tank, containerType::getRGBDurabilityForDisplay);
+            return GenericBarDecorator.renderBar(guiGraphics, xOffset, yOffset, true, handler, tank, true, false, containerType::getRGBDurabilityForDisplay);
         }
         return false;
     }
@@ -65,7 +65,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
                     tankIndices.add(i);
                 }
             }
-            int displayTank = ChemicalFluidBarDecorator.getDisplayTank(tankIndices.size());
+            int displayTank = GenericBarDecorator.getDisplayTank(tankIndices.size());
             return displayTank == -1 ? -1 : tankIndices.getInt(displayTank);
         }
         for (int i = 0; i < tanks && i < tankSpecs.size(); i++) {

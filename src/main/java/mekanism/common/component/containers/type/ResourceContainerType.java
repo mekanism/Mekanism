@@ -441,12 +441,9 @@ public abstract class ResourceContainerType<RESOURCE extends Resource, CONTAINER
     }
 
     public boolean isBarVisible(ItemStack stack) {
-        if (StorageUtils.shouldDisplayBar(stack)) {
-            //We also don't display the bar if there is nothing stored in any of the containers
-            ResourceHandler<RESOURCE> handler = capability.getQueryOnlyCapability(stack);
-            return handler != null && !ResourceHandlerUtil.isEmpty(handler);
-        }
-        return false;
+        //We don't display the bar if there is nothing stored in any of the containers
+        ResourceHandler<RESOURCE> handler = capability.getQueryOnlyCapability(stack);
+        return handler != null && !ResourceHandlerUtil.isEmpty(handler);
     }
 
     public double getBarRatio(ItemAccess itemAccess) {

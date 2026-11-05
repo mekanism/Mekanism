@@ -109,6 +109,7 @@ import mekanism.client.render.hud.MekaSuitEnergyLevel;
 import mekanism.client.render.hud.MekanismHUD;
 import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.client.render.hud.RadiationOverlay;
+import mekanism.client.render.item.GenericBarDecorator;
 import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.RenderRobitItem;
 import mekanism.client.render.item.TransmitterTypeDecorator;
@@ -586,8 +587,17 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerItemDecorations(RegisterItemDecorationsEvent event) {
-        event.register(MekanismItems.MEKASUIT_HELMET, MekaSuitBarDecorator.INSTANCE);
-        event.register(MekanismItems.MEKASUIT_BODYARMOR, MekaSuitBarDecorator.INSTANCE);
+        ClientRegistrationUtil.registerDecorators(event, MekaSuitBarDecorator.INSTANCE, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR);
+        ClientRegistrationUtil.registerDecorators(event, GenericBarDecorator.builder().vertical().showChemical().build(),
+              MekanismBlocks.BASIC_CHEMICAL_TANK, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismBlocks.ULTIMATE_CHEMICAL_TANK,
+              MekanismBlocks.CREATIVE_CHEMICAL_TANK
+        );
+        ClientRegistrationUtil.registerDecorators(event, GenericBarDecorator.builder().vertical().showEnergy().build(),
+              MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE,
+              MekanismBlocks.CREATIVE_ENERGY_CUBE,
+              MekanismItems.ENERGY_TABLET
+        );
+
         TransmitterTypeDecorator.registerDecorators(event, MekanismBlocks.BASIC_PRESSURIZED_TUBE, MekanismBlocks.ADVANCED_PRESSURIZED_TUBE,
               MekanismBlocks.ELITE_PRESSURIZED_TUBE, MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE, MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR,
               MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR, MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR, MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR,

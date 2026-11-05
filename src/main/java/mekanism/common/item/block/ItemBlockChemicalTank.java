@@ -7,7 +7,6 @@ import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.component.component.AttachedEjector;
 import mekanism.common.component.component.AttachedSideConfig;
 import mekanism.common.component.component.AttachedSideConfig.LightConfigInfo;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismDataComponents;
@@ -16,7 +15,6 @@ import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
 public class ItemBlockChemicalTank extends ItemBlockTooltip {
 
@@ -34,19 +32,5 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip {
               .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
               .component(MekanismDataComponents.SIDE_CONFIG, SIDE_CONFIG)
         );
-    }
-    @Override
-    public boolean isBarVisible(ItemStack stack) {
-        return ContainerType.CHEMICAL.isBarVisible(stack);
-    }
-
-    @Override
-    public int getBarWidth(ItemStack stack) {
-        return ContainerType.CHEMICAL.getBarWidth(stack);
-    }
-
-    @Override
-    public int getBarColor(ItemStack stack) {
-        return ContainerType.CHEMICAL.getRGBDurabilityForDisplay(stack);
     }
 }

@@ -10,7 +10,6 @@ import mekanism.common.component.containers.fluid.ComponentBackedFluidTank;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -41,17 +40,14 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        if (StorageUtils.shouldDisplayBar(stack)) {
-            //We also don't display the bar if there is nothing stored in any of the containers
-            ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
-            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
-            if (handler != null && !ResourceHandlerUtil.isEmpty(handler)) {
-                return true;
-            }
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
-            return fluidHandler != null && !ResourceHandlerUtil.isEmpty(fluidHandler);
+        //We don't display the bar if there is nothing stored in any of the containers
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
+        if (handler != null && !ResourceHandlerUtil.isEmpty(handler)) {
+            return true;
         }
-        return false;
+        ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
+        return fluidHandler != null && !ResourceHandlerUtil.isEmpty(fluidHandler);
     }
 
     @Override
