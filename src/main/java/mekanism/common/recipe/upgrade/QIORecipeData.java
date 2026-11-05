@@ -8,7 +8,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.UUID;
 import mekanism.common.component.qio.DriveContents;
 import mekanism.common.component.qio.DriveMetadata;
-import mekanism.common.content.qio.IQIODriveCapacity;
+import mekanism.common.component.qio.DriveMetadata.DriveCapacity;
 import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.registries.MekanismDataComponents;
@@ -71,7 +71,7 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
             //No metadata defined on output item to know what capacity it has
             return false;
         }
-        IQIODriveCapacity capacity = driveMetadata.capacity();
+        DriveCapacity capacity = driveMetadata.capacity();
         if (itemCount == 0 || itemCount > capacity.count() || itemMap.size() > capacity.types()) {
             //If we have items stored but no types, have more items stored than the output item supports, or have more types stored
             // then return that we are not able to actually apply them to the stack

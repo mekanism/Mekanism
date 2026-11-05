@@ -12,7 +12,7 @@ import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel;
 import mekanism.common.component.FrequencyAware;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.qio.DriveMetadata;
-import mekanism.common.content.qio.IQIODriveCapacity;
+import mekanism.common.component.qio.DriveMetadata.DriveCapacity;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.frequency.IFrequencyItem;
@@ -124,7 +124,7 @@ public record QIODriveArrayItemModel(
                 }
                 DriveStatus status;
                 if (hasFrequency) {
-                    IQIODriveCapacity capacity = metadata.capacity();
+                    DriveCapacity capacity = metadata.capacity();
                     if (metadata.count() == capacity.count()) {
                         //If we are at max item capacity: Full
                         status = DriveStatus.FULL;

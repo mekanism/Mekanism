@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import mekanism.common.component.qio.DriveContents;
 import mekanism.common.component.qio.DriveMetadata;
+import mekanism.common.component.qio.DriveMetadata.DriveCapacity;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.registries.MekanismDataComponents;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
 
     private final QIODriveKey key;
-    private final IQIODriveCapacity capacity;
+    private final DriveCapacity capacity;
     private final Map<ItemResource, StoredAmountJournal> itemMap = new HashMap<>();
     private int itemTypes;
     private long itemCount;

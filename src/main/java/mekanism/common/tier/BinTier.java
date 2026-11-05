@@ -21,7 +21,6 @@ import net.minecraft.world.item.component.TooltipProvider;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.3: Do we want to up the default config limits for any of these tiers?
 public enum BinTier implements IStorageTier, TooltipProvider {
     BASIC(BaseTier.BASIC, 4_096),
     ADVANCED(BaseTier.ADVANCED, 8_192),
@@ -60,7 +59,6 @@ public enum BinTier implements IStorageTier, TooltipProvider {
 
     @Override
     public int getTransferRate() {
-        //TODO - 26.3: Do we want to set a transfer rate here?
         return Integer.MAX_VALUE;
     }
 
