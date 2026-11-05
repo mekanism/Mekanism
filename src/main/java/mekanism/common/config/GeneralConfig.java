@@ -14,6 +14,7 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
+import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
@@ -159,7 +160,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_DYNAMIC_TANK.applyToBuilder(builder).push("dynamic_tank");
-        int maxVolume = 18 * 18 * 18;
+        int maxVolume = CuboidStructureValidator.MAX_SIZE * CuboidStructureValidator.MAX_SIZE * CuboidStructureValidator.MAX_SIZE;
         dynamicTankFluidPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_DYNAMIC_TANK_CAPACITY.applyToBuilder(builder)
               .defineInRange("mBPerTank", 16_000L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
         builder.pop();

@@ -6,9 +6,11 @@ import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
+import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.util.EnumUtils;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
+import mekanism.generators.common.content.turbine.TurbineValidator;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -144,7 +146,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         turbineEnergyCapacityPerVolume = CachedLongValue.define(this, builder, GeneratorsConfigTranslations.SERVER_TURBINE_ENERGY_CAPACITY,
               "energyCapacityPerVolume", 100, 1L, 1_000_000_000_000L);
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
-        int maxTurbine = 17 * 17 * 18;
+        int maxTurbine = TurbineValidator.MAX_BASE * TurbineValidator.MAX_BASE * CuboidStructureValidator.MAX_SIZE;
         turbineChemicalPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_CHEMICAL_CAPACITY.applyToBuilder(builder)
               .defineInRange("chemicalPerTank", 64L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
         turbineEnergyPerSteam = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_ENERGY_PER_STEAM.applyToBuilder(builder)
@@ -166,7 +168,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("burnPerAssembly", 1, 1, 1_000_000));
         maxFuelPerAssembly = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_FUEL_CAPACITY.applyToBuilder(builder)
               .defineInRange("maxFuelPerAssembly", 8L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / 4_096));
-        int maxVolume = 18 * 18 * 18;
+        int maxVolume = CuboidStructureValidator.MAX_SIZE * CuboidStructureValidator.MAX_SIZE * CuboidStructureValidator.MAX_SIZE;
         fissionCooledCoolantPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_COOLED_COOLANT_CAPACITY.applyToBuilder(builder)
               .defineInRange("cooledCoolantPerTank", 100L * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
         fissionHeatedCoolantPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_HEATED_COOLANT_CAPACITY.applyToBuilder(builder)

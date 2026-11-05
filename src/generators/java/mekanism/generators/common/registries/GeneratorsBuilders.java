@@ -1,7 +1,9 @@
 package mekanism.generators.common.registries;
 
 import mekanism.common.command.builders.StructureBuilder;
+import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.generators.common.content.turbine.TurbineValidator;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -16,7 +18,7 @@ public class GeneratorsBuilders {
     public static class TurbineBuilder extends StructureBuilder {
 
         public TurbineBuilder() {
-            super(17, 18, 17);
+            super(TurbineValidator.MAX_BASE, CuboidStructureValidator.MAX_SIZE, TurbineValidator.MAX_BASE);
         }
 
         @Override
@@ -58,7 +60,7 @@ public class GeneratorsBuilders {
     public static class FissionReactorBuilder extends StructureBuilder {
 
         public FissionReactorBuilder() {
-            super(18, 18, 18);
+            super(CuboidStructureValidator.MAX_SIZE, CuboidStructureValidator.MAX_SIZE, CuboidStructureValidator.MAX_SIZE);
         }
 
         @Override

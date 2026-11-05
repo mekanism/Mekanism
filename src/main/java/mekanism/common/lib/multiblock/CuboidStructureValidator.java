@@ -23,6 +23,8 @@ import org.jspecify.annotations.Nullable;
 
 public abstract class CuboidStructureValidator<T extends MultiblockData> implements IStructureValidator<T> {
 
+    public static final int MAX_SIZE = 18;
+
     private final VoxelCuboid minBounds;
     private final VoxelCuboid maxBounds;
 
@@ -39,7 +41,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     protected MultiblockType<T> multiblockType;
 
     public CuboidStructureValidator() {
-        this(new VoxelCuboid(3, 3, 3), new VoxelCuboid(18, 18, 18));
+        this(new VoxelCuboid(3, 3, 3), new VoxelCuboid(MAX_SIZE, MAX_SIZE, MAX_SIZE));
     }
 
     public CuboidStructureValidator(VoxelCuboid minBounds, VoxelCuboid maxBounds) {

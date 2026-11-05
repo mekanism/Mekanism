@@ -32,10 +32,12 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblockData> {
 
+    @SuppressWarnings("ConstantValue")
+    public static final int MAX_BASE = MAX_SIZE % 2 == 0 ? MAX_SIZE - 1 : MAX_SIZE;
     public static final int MAX_BLADES = 28;
 
     public TurbineValidator() {
-        super(new VoxelCuboid(5, 3, 5), new VoxelCuboid(17, 18, 17));
+        super(new VoxelCuboid(5, 3, 5), new VoxelCuboid(MAX_BASE, MAX_SIZE, MAX_BASE));
     }
 
     @Override

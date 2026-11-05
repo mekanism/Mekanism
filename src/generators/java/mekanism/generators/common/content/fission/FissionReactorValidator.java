@@ -27,7 +27,6 @@ import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -160,11 +159,17 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
 
     public record FormedAssembly(BlockPos pos, int height) {
 
-        //TODO - 26.3: Do we want more validation for the height part of the codec?
         public static final Codec<FormedAssembly> CODEC = RecordCodecBuilder.create(instance -> instance.group(
               BlockPos.CODEC.fieldOf(SerializationConstants.POSITION).forGetter(FormedAssembly::pos),
-              ExtraCodecs.NON_NEGATIVE_INT.fieldOf(SerializationConstants.HEIGHT).forGetter(FormedAssembly::height)
+              Codec.intRange(1, MAX_SIZE - 3).fieldOf(SerializationConstants.HEIGHT).forGetter(FormedAssembly::height)
         ).apply(instance, FormedAssembly::new));
+
+        public FormedAssembly {
+            //Assemblies must have a height of at least one, and a max height of 3 less than max size (one for each part of the frame, and one for the control rod)
+            if (height < 1 || height > MAX_SIZE - 3) {
+                throw new IllegalArgumentException("Invalid height " + height);
+            }
+        }
     }
 
     private record AssemblyPos(int x, int z) {

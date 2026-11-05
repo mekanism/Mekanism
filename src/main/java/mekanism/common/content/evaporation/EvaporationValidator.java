@@ -23,7 +23,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 public class EvaporationValidator extends CuboidStructureValidator<EvaporationMultiblockData> {
 
     private static final VoxelCuboid MIN_CUBOID = new VoxelCuboid(4, 3, 4);
-    private static final VoxelCuboid MAX_CUBOID = new VoxelCuboid(4, 18, 4);
+    private static final VoxelCuboid MAX_CUBOID = new VoxelCuboid(4, EvaporationMultiblockData.MAX_HEIGHT, 4);
 
     private boolean foundController = false;
 

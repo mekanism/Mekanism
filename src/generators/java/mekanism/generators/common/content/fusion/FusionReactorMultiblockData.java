@@ -99,8 +99,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     @ContainerSync
     private final IEnergyContainer energyContainer;
-    //TODO - 26.3 (heat): Should we do this rather than exposing lastCaseTemperature to the computer?
-    //@WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getCaseTemperature", docPlaceholder = "fusion reactor case")
     final BasicHeatCapacitor heatCapacitor;
 
     @ContainerSync(tags = HEAT_TAB)

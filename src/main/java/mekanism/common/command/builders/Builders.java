@@ -1,5 +1,7 @@
 package mekanism.common.command.builders;
 
+import mekanism.common.content.evaporation.EvaporationMultiblockData;
+import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -14,21 +16,21 @@ public class Builders {
     public static class BoilerBuilder extends StructureBuilder {
 
         public BoilerBuilder() {
-            super(18, 18, 18);
+            super(CuboidStructureValidator.MAX_SIZE, CuboidStructureValidator.MAX_SIZE, CuboidStructureValidator.MAX_SIZE);
         }
 
         @Override
         public void build(Level world, BlockPos start, boolean empty) {
             buildFrame(world, start);
             buildWalls(world, start);
-            buildInteriorLayers(world, start, 2, 14, Blocks.AIR.defaultBlockState());
-            buildInteriorLayer(world, start, 16, Blocks.AIR.defaultBlockState());
+            buildInteriorLayers(world, start, 2, sizeY - 4, Blocks.AIR.defaultBlockState());
+            buildInteriorLayer(world, start, sizeY - 2, Blocks.AIR.defaultBlockState());
             if (empty) {
                 buildInteriorLayer(world, start, 1, Blocks.AIR.defaultBlockState());
-                buildInteriorLayer(world, start, 15, Blocks.AIR.defaultBlockState());
+                buildInteriorLayer(world, start, sizeY - 3, Blocks.AIR.defaultBlockState());
             } else {
                 buildInteriorLayer(world, start, 1, MekanismBlocks.SUPERHEATING_ELEMENT.defaultState());
-                buildInteriorLayer(world, start, 15, MekanismBlocks.PRESSURE_DISPERSER.defaultState());
+                buildInteriorLayer(world, start, sizeY - 3, MekanismBlocks.PRESSURE_DISPERSER.defaultState());
             }
         }
 
@@ -41,14 +43,14 @@ public class Builders {
     public static class TankBuilder extends StructureBuilder {
 
         public TankBuilder() {
-            super(18, 18, 18);
+            super(CuboidStructureValidator.MAX_SIZE, CuboidStructureValidator.MAX_SIZE, CuboidStructureValidator.MAX_SIZE);
         }
 
         @Override
         public void build(Level world, BlockPos start, boolean empty) {
             buildFrame(world, start);
             buildWalls(world, start);
-            buildInteriorLayers(world, start, 1, 16, Blocks.AIR.defaultBlockState());
+            buildInteriorLayers(world, start, 1, sizeY - 2, Blocks.AIR.defaultBlockState());
         }
 
         @Override
@@ -60,7 +62,7 @@ public class Builders {
     public static class MatrixBuilder extends StructureBuilder {
 
         public MatrixBuilder() {
-            super(18, 18, 18);
+            super(CuboidStructureValidator.MAX_SIZE, CuboidStructureValidator.MAX_SIZE, CuboidStructureValidator.MAX_SIZE);
         }
 
         @Override
@@ -68,10 +70,10 @@ public class Builders {
             buildFrame(world, start);
             buildWalls(world, start);
             if (empty) {
-                buildInteriorLayers(world, start, 1, 16, Blocks.AIR.defaultBlockState());
+                buildInteriorLayers(world, start, 1, sizeY - 2, Blocks.AIR.defaultBlockState());
             } else {
-                buildInteriorLayers(world, start, 1, 15, MekanismBlocks.ULTIMATE_INDUCTION_CELL.defaultState());
-                buildInteriorLayer(world, start, 16, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER.defaultState());
+                buildInteriorLayers(world, start, 1, sizeY - -3, MekanismBlocks.ULTIMATE_INDUCTION_CELL.defaultState());
+                buildInteriorLayer(world, start, sizeY - 2, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER.defaultState());
             }
         }
 
@@ -84,14 +86,14 @@ public class Builders {
     public static class EvaporationBuilder extends StructureBuilder {
 
         public EvaporationBuilder() {
-            super(4, 18, 4);
+            super(4, EvaporationMultiblockData.MAX_HEIGHT, 4);
         }
 
         @Override
         public void build(Level world, BlockPos start, boolean empty) {
             buildFrame(world, start);
             buildWalls(world, start);
-            buildInteriorLayers(world, start, 1, 17, Blocks.AIR.defaultBlockState());
+            buildInteriorLayers(world, start, 1, sizeY - 1, Blocks.AIR.defaultBlockState());
             world.setBlockAndUpdate(start.offset(1, 1, 0), MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.defaultState());
         }
 
