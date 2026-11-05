@@ -43,17 +43,21 @@ public class WarningTracker implements IWarningTracker {
     @Override
     public List<Component> getWarnings() {
         List<Component> warningMessages = new ArrayList<>();
+        boolean hasNotEnoughEnergyWarning = false;
         for (Map.Entry<WarningType, List<BooleanSupplier>> entry : warnings.entrySet()) {
+            WarningType warningType = entry.getKey();
+            if (warningType == WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE && hasNotEnoughEnergyWarning) {
+                continue;
+            }
             for (BooleanSupplier warningSupplier : entry.getValue()) {
                 if (warningSupplier.getAsBoolean()) {
-                    WarningType warningType = entry.getKey();
                     warningMessages.add(warningType.langEntry.translate());
                     if (warningType == WarningType.NOT_ENOUGH_ENERGY) {
                         //If we are adding a not enough energy warning, don't bother adding one about running at a reduced rate
                         // Note: This relies on the energy warnings being the last two warnings in WarningType and would ideally
                         // have a better pairing of what warnings are mutually exclusive of each other, but this is the simplest
                         // low overhead way of implementing it for now for the one case that we care about
-                        return warningMessages;
+                        hasNotEnoughEnergyWarning = true;
                     }
                     break;
                 }
