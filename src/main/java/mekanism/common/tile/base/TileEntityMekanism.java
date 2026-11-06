@@ -976,7 +976,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         for (ITileComponent component : components) {
-            //TODO - 26.3: Do we want to be passing a child?
             component.addToUpdateTag(output);
         }
         output.putFloat(SerializationConstants.RADIATION, radiationScale);

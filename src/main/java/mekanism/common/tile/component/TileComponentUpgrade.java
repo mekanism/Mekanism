@@ -268,6 +268,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
             Object2IntMap.Entry<Holder<Upgrade>> entry = iterator.next();
             if (entry.getKey().is(UpgradeIds.MUFFLING)) {
                 output.putInt(SerializationConstants.MUFFLING_COUNT, entry.getIntValue());
+                break;
             }
         }
     }

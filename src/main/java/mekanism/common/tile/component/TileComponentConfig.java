@@ -289,11 +289,9 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
-            //TODO - 26.3: Do we want to replace it using the ordinal with using a serialized name as part of the key?
-            // Or maybe better yet, just have it be a input.child(type) and then have sub parts of the ejecting and side data?
-            int ordinalToUse = type.ordinal();
-            info.setEjecting(configInput.getBooleanOr(SerializationConstants.EJECT + ordinalToUse, info.isEjecting()));
-            Optional<int[]> optionalConfigData = configInput.getIntArray(SerializationConstants.CONFIG + ordinalToUse);
+            ValueInput transmissionInput = configInput.childOrEmpty(type.getTransmission());
+            info.setEjecting(transmissionInput.getBooleanOr(SerializationConstants.EJECT, info.isEjecting()));
+            Optional<int[]> optionalConfigData = transmissionInput.getIntArray(SerializationConstants.CONFIG);
             if (optionalConfigData.isPresent()) {
                 int[] sideData = optionalConfigData.get();
                 int sides = RelativeSide.VALUES.size();
@@ -316,14 +314,15 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         for (Entry<TransmissionType, ? extends IPersistentConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             IPersistentConfigInfo info = entry.getValue();
+            ValueOutput transmissionOutput = configOutput.child(type.getTransmission());
             if (full) {
-                configOutput.putBoolean(SerializationConstants.EJECT + type.ordinal(), info.isEjecting());
+                transmissionOutput.putBoolean(SerializationConstants.EJECT, info.isEjecting());
             }
             int[] sideData = new int[RelativeSide.VALUES.size()];
             for (int i = 0; i < sideData.length; i++) {
                 sideData[i] = info.getDataType(RelativeSide.VALUES.get(i)).ordinal();
             }
-            configOutput.putIntArray(SerializationConstants.CONFIG + type.ordinal(), sideData);
+            transmissionOutput.putIntArray(SerializationConstants.CONFIG, sideData);
         }
     }
 
