@@ -53,9 +53,8 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                                 transaction.commit();
                                 if (inserted < extracted) {
                                     // If we couldn't insert all of it, drop the remainder.
-                                    //TODO - 26.3: Would we rather use this instead of manually adding the entity?
-                                    // The main different I think would be that it fires the toss event, and also that it has a pick up delay (and positioning might be different)
-                                    //playerInv.drop(binItemType, extracted - inserted, false, false, transaction);
+                                    // Note: This intentionally doesn't use the helper in PlayerInventoryWrapper, as we don't want the toss event fired
+                                    // and don't want a pickup delay
                                     Vec3 dropPos = Vec3.upFromBottomCenterOf(pos.relative(bin.getDirection()), 0.3);
                                     world.addFreshEntity(new ItemEntity(world, dropPos.x(), dropPos.y(), dropPos.z(), binItemType.toStack(extracted - inserted), 0, 0, 0));
                                 } else {

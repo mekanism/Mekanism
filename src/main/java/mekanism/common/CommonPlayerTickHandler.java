@@ -148,11 +148,13 @@ public class CommonPlayerTickHandler {
                 ChemicalResource oxygen = ChemicalUtils.getResource(registryAccess, ChemicalIds.OXYGEN);
                 if (!oxygen.isEmpty()) {
                     try (Transaction transaction = Transaction.openRoot()) {
-                        //TODO - 26.3: Re-evaluate this single usage on its own
-                        chemicalHandler.extract(oxygen, 1, transaction);
-                        int extracted = chemicalHandler.extract(oxygen, max - player.getAirSupply(), transaction);
+                        //When active there is a constant drain of oxygen if none is being used
+                        int airNeeded = max - player.getAirSupply();
+                        int extracted = chemicalHandler.extract(oxygen, Math.max(1, airNeeded), transaction);
                         if (extracted > 0) {
-                            player.setAirSupply(player.getAirSupply() + extracted);
+                            if (airNeeded > 0) {
+                                player.setAirSupply(player.getAirSupply() + extracted);
+                            }
                             transaction.commit();
                         }
                     }
