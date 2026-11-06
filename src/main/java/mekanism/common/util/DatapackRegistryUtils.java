@@ -43,7 +43,7 @@ public class DatapackRegistryUtils {
     }
 
     public static void registerConstant(BootstrapContext<Chemical> context, IChemicalConstant constant) {
-        context.register(constant.key(), BasicChemical.builder().tint(constant.getColor()).lightLevel(constant.getLightLevel()).build());
+        context.register(constant.key(), BasicChemical.builder().tint(constant.color()).lightLevel(constant.lightLevel()).build());
     }
 
     public static ContextIntProvider cooking(HolderGetter<LootItemCondition> predicates, Holder.Reference<ContextIntProvider> normalBurnTimeDivisor,

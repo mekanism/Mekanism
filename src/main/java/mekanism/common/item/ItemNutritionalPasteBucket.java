@@ -5,6 +5,7 @@ import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.component.PasteBucketConsumption;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -32,10 +33,12 @@ public class ItemNutritionalPasteBucket extends BucketItem implements ICapabilit
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (player.canEat(false) && FluidType.BUCKET_VOLUME / MekanismConfig.general.nutritionalPasteMBPerFood.get() > 0) {
-            ItemStack stack = player.getItemInHand(hand);
-            Consumable consumable = stack.get(DataComponents.CONSUMABLE);
-            if (consumable != null) {
-                return consumable.startConsuming(player, stack, hand);
+            if (MekanismUtils.isPlayingMode(player) || !player.isShiftKeyDown()) {
+                ItemStack stack = player.getItemInHand(hand);
+                Consumable consumable = stack.get(DataComponents.CONSUMABLE);
+                if (consumable != null) {
+                    return consumable.startConsuming(player, stack, hand);
+                }
             }
         }
         return super.use(level, player, hand);

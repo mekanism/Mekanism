@@ -18,6 +18,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.DispensibleContainerItem;
 import net.minecraft.world.item.Item;
@@ -28,16 +31,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid.Flowing;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid.Source;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -65,7 +70,13 @@ public class FluidDeferredRegister {
     };
 
     public static FluidType.Properties getMekBaseBuilder() {
+        //TODO - 1.19: Decide on if we should have any of our fluids vaporize on placement
         return FluidType.Properties.create()
+              //Just mirror slow lava as most of our movement logic is based on it/water
+              .motionScale(LivingEntity.LAVA_SLOW_FLOW_SCALE)
+              //TODO - 26.3: Should we set the path type, and also re-evaluate the motion scale
+              //.pathType(null)
+              //.adjacentPathType(null)
               .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
               .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY);
     }
@@ -85,13 +96,12 @@ public class FluidDeferredRegister {
     }
 
     public FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, BucketItem> registerLiquidChemical(IChemicalConstant constants) {
-        int density = Math.round(constants.getDensity());
         return register(constants.key().identifier().getPath(), properties -> properties
-              .temperature(Math.round(constants.getTemperature()))
-              .density(density)
-              .viscosity(density)
-              .lightLevel(constants.getLightLevel()), renderProperties -> renderProperties
-              .tint(constants.getColor())
+              .temperature(Math.round(constants.temperature()))
+              .density(Math.round(constants.density()))
+              .viscosity(constants.viscosity())
+              .lightLevel(constants.lightLevel()), renderProperties -> renderProperties
+              .tint(constants.color())
         );
     }
 
@@ -119,7 +129,6 @@ public class FluidDeferredRegister {
             return fluidTypeCreator.apply(properties, renderProperties);
         });
 
-        //TODO: Ideally we wouldn't have to create holders for these suppliers and instead could just somehow use the actual registered ones
         Identifier baseKey = Identifier.fromNamespaceAndPath(fluidRegister.getNamespace(), name);
         BaseFlowingFluid.Properties fluidProperties = new BaseFlowingFluid.Properties(
               fluidType,
@@ -135,7 +144,15 @@ public class FluidDeferredRegister {
         //Note: The block properties used here is a copy of the ones for water
         DeferredHolder<Block, LiquidBlock> block = blockRegister.register(name, key -> new LiquidBlock(stillFluid.get(), BlockBehaviour.Properties.of()
               .setId(ResourceKey.create(blockRegister.getRegistryKey(), key))
-              .noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.POPPED).liquid().mapColor(color)));
+              .mapColor(color)
+              .replaceable()
+              .noCollision()
+              .strength(100.0F)
+              .pushReaction(PushReaction.POPPED)
+              .noLootTable()
+              .liquid()
+              .sound(SoundType.EMPTY)
+        ));
         FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, BUCKET> registryObject = new FluidRegistryObject<>(fluidType, stillFluid, flowingFluid, bucket, block);
         allRegistered.add(registryObject);
         return registryObject;
@@ -165,8 +182,7 @@ public class FluidDeferredRegister {
         return color;
     }
 
-    /// [Color Metric](http://www.compuphase.com/cmetric.htm)
-    /// [Stack Overflow](http://stackoverflow.com/a/6334454)
+    /// [Color Metric](http://www.compuphase.com/cmetric.htm) [Stack Overflow](http://stackoverflow.com/a/6334454)
     ///
     /// {@return 0 for equal colors, nonzero for colors that look different. The return value is farther from 0 the more different the colors look}
     private static double perceptualColorDistanceSquared(int red1, int green1, int blue1, int red2, int green2, int blue2) {
@@ -264,8 +280,6 @@ public class FluidDeferredRegister {
         public final Identifier renderOverlayTexture;
         public final int color;
 
-        //TODO - 26.3: Do we want to copy various settings of water to have it push things and allow swimming in the fluids again?
-        // And do any need to be added to FluidTags.ENTITY_FLOATABLE
         public MekanismFluidType(FluidType.Properties properties, FluidTypeRenderProperties renderProperties) {
             super(properties);
             this.stillTexture = renderProperties.stillTexture;
@@ -276,9 +290,50 @@ public class FluidDeferredRegister {
         }
 
         @Override
-        public boolean isVaporizedOnPlacement(Level level, BlockPos pos, FluidStack stack) {
-            //TODO - 1.19: Decide on this for our fluids for now default to not vaporizing
-            return false;
+        public void setItemMovement(ItemEntity entity) {
+            if (getViscosity() <= NeoForgeMod.WATER_TYPE.value().getViscosity()) {
+                super.setItemMovement(entity);
+            } else {
+                entity.setFluidMovement(.95F);
+            }
+        }
+
+        @Override
+        public boolean move(LivingEntity entity, Vec3 input, double gravity) {
+            double oldY = entity.getY();
+            boolean isFalling = entity.getDeltaMovement().y <= 0.0;
+            float speed = 0.02F;
+            if (canSwim(entity)) {
+                speed *= (float) entity.getAttributeValue(NeoForgeMod.SWIM_SPEED);
+            }
+
+            entity.moveRelative(speed, input);
+            entity.move(MoverType.SELF, entity.getDeltaMovement());
+
+            FluidType water = NeoForgeMod.WATER_TYPE.value();
+            FluidType lava = NeoForgeMod.LAVA_TYPE.value();
+            int viscosity = getViscosity();
+            //Mirror dolphin's grace if no viscosity
+            double slowDown = viscosity == 0 ? 0.96 : Math.clamp(0.8 * water.getViscosity() / Math.max(1D, getViscosity()), 0.4, 0.9);
+
+
+            Vec3 movement = entity.getDeltaMovement();
+            if (viscosity <= water.getViscosity() || entity.getFluidHeight(this) <= entity.getFluidJumpThreshold()) {
+                movement = movement.multiply(slowDown, 0.8, slowDown);
+                entity.setDeltaMovement(entity.getFluidFallingAdjustedMovement(gravity, isFalling, movement));
+            } else {
+                entity.setDeltaMovement(movement.scale(slowDown));
+            }
+
+            if (gravity != 0.0) {
+                int density = getDensity();
+                if (density > water.getDensity()) {
+                    //Scale based on how lava effects the movement
+                    entity.addDeltaMovement(new Vec3(0, (-gravity / 4) * lava.getDensity() / density, 0));
+                }
+            }
+            entity.jumpOutOfFluid(oldY);
+            return true;
         }
     }
 }

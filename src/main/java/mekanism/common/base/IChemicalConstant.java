@@ -9,14 +9,17 @@ public interface IChemicalConstant {
     ResourceKey<Chemical> key();
 
     /// @return Visual color in ARGB format
-    int getColor();
+    int color();
 
     /// @return Temperature in Kelvin that the chemical exists as a liquid
-    float getTemperature();
+    float temperature();
 
     /// @return Density as a liquid in kg/m^3
-    float getDensity();
+    float density();
+
+    /// @return Viscosity as a liquid in m/s^2
+    int viscosity();
 
     /// @return Brightness
-    int getLightLevel();
+    int lightLevel();
 }

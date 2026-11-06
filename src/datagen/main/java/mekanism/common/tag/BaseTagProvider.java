@@ -14,6 +14,7 @@ import mekanism.api.text.EnumColorCollection;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
+import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -32,10 +33,15 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid.Flowing;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid.Source;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public abstract class BaseTagProvider implements DataProvider {
@@ -183,6 +189,14 @@ public abstract class BaseTagProvider implements DataProvider {
         for (DeferredHolder<Item, ?> bucket : register.getBucketEntries()) {
             Identifier bucketTag = Tags.Items.BUCKETS.location().withSuffix("/" + bucket.getId().getPath().replaceAll("_bucket", ""));
             getBuilder(ItemTags.create(bucketTag)).add(bucket);
+        }
+        MekanismTagBuilder<Fluid> floatableTag = getBuilder(FluidTags.ENTITY_FLOATABLE);
+        int waterDensity = NeoForgeMod.WATER_TYPE.value().getDensity();
+        for (FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, ? extends BucketItem> entry : register.getEntries()) {
+            //If it is less dense than water allow it to be considered as a fluid that entities can float in
+            if (entry.getFluidType().getDensity() <= waterDensity) {
+                floatableTag.add(entry.key(), entry.getFlowingFluid().key());
+            }
         }
     }
 
