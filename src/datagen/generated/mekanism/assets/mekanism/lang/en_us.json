@@ -3262,6 +3262,7 @@
   "tooltip.mekanism.stored_energy": "Stored energy: %1$s",
   "tooltip.mekanism.stored_mb_percentage": "Stored %1$s: %2$s mB (%3$s)",
   "tooltip.mekanism.unknown": "Unknown",
+  "tooltip.mekanism.upgrade.installed.list": "Installed Upgrades:",
   "tooltip.mekanism.upgrade.max_installed": "Maximum Installed: %1$s",
   "tooltip.mekanism.upgrade.type": "Upgrade Type: %1$s",
   "transmission.mekanism.chemicals": "Chemicals",

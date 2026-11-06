@@ -459,10 +459,12 @@ public class MekanismDataComponents {
             }
         }));
         event.registerComponentAppenderAfter(UPGRADES, MODULE_TYPE.get(), ItemTooltipUtils.createSimpleAppender(UPGRADES, (_, upgradeAware, _, _, _, _, builder) -> {
-            //TODO - 26.3: Add a header for upgrades?
-            for (ObjectIterator<Object2IntMap.Entry<Holder<Upgrade>>> iterator = Object2IntMaps.fastIterator(upgradeAware.upgrades()); iterator.hasNext(); ) {
-                Object2IntMap.Entry<Holder<Upgrade>> entry = iterator.next();
-                builder.accept(UpgradeDisplay.of(entry.getKey().value(), entry.getIntValue()).getTextComponent());
+            if (!upgradeAware.upgrades().isEmpty()) {
+                builder.accept(MekanismLang.TOOLTIP_UPGRADE_INSTALLED_LIST.translateColored(EnumColor.ORANGE));
+                for (ObjectIterator<Object2IntMap.Entry<Holder<Upgrade>>> iterator = Object2IntMaps.fastIterator(upgradeAware.upgrades()); iterator.hasNext(); ) {
+                    Object2IntMap.Entry<Holder<Upgrade>> entry = iterator.next();
+                    builder.accept(UpgradeDisplay.of(entry.getKey().value(), entry.getIntValue()).getTextComponent());
+                }
             }
         }));
         event.registerComponentAppenderAfter(UPGRADE_TYPE, UPGRADES.get(), ItemTooltipUtils.createSimpleAppender(UPGRADE_TYPE, (_, upgradeType, _, _, _, _, builder) -> {

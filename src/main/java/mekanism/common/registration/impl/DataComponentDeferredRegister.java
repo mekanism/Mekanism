@@ -29,8 +29,6 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Unit;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
-//TODO - 26.3: Re-evaluate our usages of cacheEncoding. Neo's wiki states: cacheEncoding caches the encoding result of the Codec such that any subsequent encodes
-// uses the cached value if the component value hasn't changed. This should only be used if the component value is expected to rarely or never change.
 public class DataComponentDeferredRegister extends MekanismDeferredRegister<DataComponentType<?>> {
 
     public DataComponentDeferredRegister(String namespace) {

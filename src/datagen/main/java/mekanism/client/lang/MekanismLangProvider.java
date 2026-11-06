@@ -952,6 +952,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addUpgrade(UpgradeIds.XP_CONTAINMENT, "Xp Containment", "Allows machines to gather experience from automatic processing.");
         add(MekanismLang.TOOLTIP_UPGRADE_TYPE, "Upgrade Type: %1$s");
         add(MekanismLang.TOOLTIP_UPGRADE_MAX_INSTALLED, "Maximum Installed: %1$s");
+        add(MekanismLang.TOOLTIP_UPGRADE_INSTALLED_LIST, "Installed Upgrades:");
         //Transmission types
         add(MekanismLang.TRANSMISSION_TYPE_CHEMICALS, "Chemicals");
         add(MekanismLang.TRANSMISSION_TYPE_ENERGY, "Energy");

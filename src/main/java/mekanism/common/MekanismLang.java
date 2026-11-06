@@ -255,6 +255,7 @@ public enum MekanismLang implements ILangEntry {
     TOOLTIP_MODULE_TYPE("tooltip", "module.type"),
     TOOLTIP_UPGRADE_TYPE("tooltip", "upgrade.type"),
     TOOLTIP_UPGRADE_MAX_INSTALLED("tooltip", "upgrade.max_installed"),
+    TOOLTIP_UPGRADE_INSTALLED_LIST("tooltip", "upgrade.installed.list"),
     //Gui stuff
     HEIGHT("gui", "height"),
     WIDTH("gui", "width"),
