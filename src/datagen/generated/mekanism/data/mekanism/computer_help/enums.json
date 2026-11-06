@@ -72,6 +72,13 @@
     "DUMPING_EXCESS",
     "DUMPING"
   ],
+  "mekanism.common.tile.TileEntityTeleporter$TeleporterStatus": [
+    "NO_FREQUENCY",
+    "NO_FRAME",
+    "NO_DESTINATION",
+    "NOT_ENOUGH_ENERGY",
+    "READY"
+  ],
   "mekanism.common.tile.component.config.DataType": [
     "NONE",
     "INPUT",

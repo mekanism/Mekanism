@@ -153,7 +153,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     private boolean canTeleportEntity(Entity entity, @Nullable Level destinationLevel) {
-        //TODO - 26.3: Allow spectators to interact with the portal to teleport similar to what they can now do?
+        //TODO - 26.3: Allow spectators to interact with the portal to teleport similar to what they can now do with vanilla portals?
+        // The issue is that our teleporter's portal isn't physical blocks that can be interacted with
         if (entity.isSpectator() || !entity.canUsePortal(false) || entity instanceof PartEntity || entity.typeHolder().is(Tags.EntityTypes.TELEPORTING_NOT_SUPPORTED)) {
             return false;
         } else if (destinationLevel != null && !entity.canTeleport(entity.level(), destinationLevel)) {
@@ -761,17 +762,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @ComputerMethod
-    String getStatus() {
+    TeleporterStatus getStatus() {
         if (hasFrequency()) {
-            //TODO - 26.3: Evaluate making it so that these cases get handled automatically with it just being an enum?
-            return switch (status) {
-                case READY -> "ready";
-                case NO_FRAME -> "no frame";
-                case NOT_ENOUGH_ENERGY -> "needs energy";
-                default -> "no link";
-            };
+            return status;
         }
-        return "no frequency";
+        return TeleporterStatus.NO_FREQUENCY;
     }
     //End methods IComputerTile
 

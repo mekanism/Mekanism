@@ -396,6 +396,12 @@ enums:
   - IDLE
   - DUMPING_EXCESS
   - DUMPING
+  mekanism.common.tile.TileEntityTeleporter$TeleporterStatus:
+  - NO_FREQUENCY
+  - NO_FRAME
+  - NO_DESTINATION
+  - NOT_ENOUGH_ENERGY
+  - READY
   mekanism.common.tile.component.config.DataType:
   - NONE
   - INPUT
@@ -4406,8 +4412,8 @@ methods:
       type: String (EnumColor)
   - methodName: getStatus
     returns:
-      java_type: java.lang.String
-      type: String
+      java_type: mekanism.common.tile.TileEntityTeleporter$TeleporterStatus
+      type: String (TeleporterStatus)
   - methodName: hasFrequency
     returns:
       java_type: boolean

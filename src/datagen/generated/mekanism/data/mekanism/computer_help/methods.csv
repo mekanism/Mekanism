@@ -745,7 +745,7 @@ Teleporter,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of 
 Teleporter,getFrequencies,,List (Table (TeleporterFrequency)),,false,Lists public frequencies
 Teleporter,getFrequency,,Table (TeleporterFrequency),,false,Requires a frequency to be selected
 Teleporter,getFrequencyColor,,String (EnumColor),,false,Requires a frequency to be selected
-Teleporter,getStatus,,String,,false,
+Teleporter,getStatus,,String (TeleporterStatus),,false,
 Teleporter,hasFrequency,,boolean,,false,
 Teleporter,incrementFrequencyColor,,,,true,Requires a frequency to be selected
 Teleporter,setFrequency,name: String,,,true,Requires a public frequency to exist
