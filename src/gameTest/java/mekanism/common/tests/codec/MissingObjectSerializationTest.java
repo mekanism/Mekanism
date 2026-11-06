@@ -3,6 +3,7 @@ package mekanism.common.tests.codec;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import java.util.Optional;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.chemical.ChemicalResource;
@@ -10,29 +11,43 @@ import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
+import mekanism.common.Mekanism;
 import mekanism.common.component.FormulaComponent;
 import mekanism.common.component.LockData;
 import mekanism.common.component.OverflowAware;
 import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.component.qio.PortableDashboardContents;
 import mekanism.common.content.entangloporter.InventoryFrequency;
+import mekanism.common.content.transporter.SorterFilter;
+import mekanism.common.content.transporter.SorterItemStackFilter;
+import mekanism.common.content.transporter.SorterModIDFilter;
+import mekanism.common.lib.collection.HashList;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tests.helpers.MissingObjectTestHelper;
+import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.testframework.DynamicTest;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
 import net.neoforged.testframework.gametest.GameTest;
+import net.neoforged.testframework.gametest.StructureTemplateBuilder;
 
 @ForEachTest(groups = "codec.missing")
 public class MissingObjectSerializationTest {
@@ -220,6 +235,34 @@ public class MissingObjectSerializationTest {
     @TestHolder(description = "Tests to make sure that items with upgrade components that contain an invalid first item, ignores it.")
     public static void testUpgradeAwareOnItemSecondValid(final MissingObjectTestHelper helper) {
         helper.testUpgradeAwareOnItem(false, true);
+    }
+
+    @GameTest
+    @EmptyTemplate
+    @TestHolder(description = "Tests to make sure that when the filter manager encounters an invalid filter, it gets properly skipped.")
+    public static void testFilterManager(final DynamicTest test) {
+        test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(1, 1, 1).set(0, 0, 0, MekanismBlocks.LOGISTICAL_SORTER.defaultState()));
+        test.onGameTest(MissingObjectTestHelper.class, helper -> helper.startSequence()
+              .thenMap(() -> helper.getBlockEntity(0, 0, 0, TileEntityLogisticalSorter.class).getFilterManager())
+              .thenExecute(filterManager -> {
+                  SorterModIDFilter mcModIdFilter = new SorterModIDFilter(true, false, false, 0, 0, Optional.empty(), Identifier.DEFAULT_NAMESPACE);
+                  SorterItemStackFilter itemFilter = new SorterItemStackFilter(true, false, false, 0, 0, Optional.empty(), ItemResource.of(Items.STICK), true);
+                  filterManager.addFilter(mcModIdFilter);
+                  filterManager.addFilter(new SorterItemStackFilter(true, false, false, 0, 0, Optional.empty(), helper.failureItemType(), true));
+                  filterManager.addFilter(itemFilter);
+                  try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Mekanism.logger)) {
+                      TagValueOutput output = TagValueOutput.createWithContext(reporter, helper.getLevel().registryAccess());
+                      filterManager.serialize(output);
+                      CompoundTag tag = helper.cycleSerialization(CompoundTag.CODEC, output.buildResult(), MissingObjectTestHelper.REPLACE_TO_INVALID_ITEM);
+                      ValueInput input = TagValueInput.create(reporter, helper.getLevel().registryAccess(), tag);
+                      filterManager.deserialize(input);
+                  }
+                  HashList<SorterFilter<?>> filters = filterManager.getFilters();
+                  helper.assertTrue(filters.size() == 2, "Expected there to be two filters after serialization cycle loading");
+                  helper.assertTrue(filters.getFirst().equals(mcModIdFilter), "Expected first filter to be a modid filter for minecraft");
+                  helper.assertTrue(filters.getLast().equals(itemFilter), "Expected second filter to be an item filter for sticks");
+              }).thenSucceed()
+        );
     }
 
     @GameTest

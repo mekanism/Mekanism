@@ -1,5 +1,6 @@
 package mekanism.common.entity;
 
+import java.util.Objects;
 import java.util.Optional;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
@@ -52,12 +53,19 @@ import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.event.EventHooks;
+import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
 
 public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
 
     public static final int LIFESPAN = 4 * SharedConstants.TICKS_PER_SECOND;
     private static final int DAMAGE = 10;
+
+    @Nullable
+    @Internal
+    @VisibleForTesting
+    public Boolean OVERRIDE_FLAMETHROWER_DESTROY_ITEMS = null;
 
     public EntityFlame(EntityType<EntityFlame> type, Level world) {
         super(type, world);
@@ -265,9 +273,13 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         }
     }
 
+    private boolean shouldDestroyItems() {
+        return Objects.requireNonNullElseGet(OVERRIDE_FLAMETHROWER_DESTROY_ITEMS, MekanismConfig.gear.flamethrowerDestroyItems::get);
+    }
+
     private void burn(Entity entity) {
         if (entity.level() instanceof ServerLevel level) {
-            if (!(entity instanceof ItemEntity) || MekanismConfig.gear.flamethrowerDestroyItems.get()) {
+            if (!(entity instanceof ItemEntity) || shouldDestroyItems()) {
                 //Only actually burn the entity if it is not an item, or we allow destroying items
                 if (entity.hurtServer(level, MekanismDamageTypes.FLAMETHROWER.source(registryAccess(), this, getOwner()), DAMAGE)) {
                     //Mirror flame enchant of igniting for 5 seconds

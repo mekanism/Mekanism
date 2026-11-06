@@ -105,8 +105,6 @@ public class RadiationLevelData implements ValueIOSerializable {
 
     @Override
     public void deserialize(ValueInput input) {
-        //TODO - 26.3: Re-evaluate if we want this to be stored under radiation, as previously it was just as a list without needing a key
-        // Also figure out if this properly supports being lenient if say one radiation source is of a broken format
         for (RadiationSource source : input.listOrEmpty(SerializationConstants.RADIATION, RadiationSource.CODEC)) {
             addNew(source);
         }

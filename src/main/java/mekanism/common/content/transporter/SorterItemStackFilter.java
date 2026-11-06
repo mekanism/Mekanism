@@ -14,6 +14,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
 
 public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> implements IItemStackFilter<SorterItemStackFilter> {
@@ -39,8 +40,9 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
     public SorterItemStackFilter() {
     }
 
+    @VisibleForTesting
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    protected SorterItemStackFilter(boolean enabled, boolean allowDefault, boolean sizeMode, int min, int max, Optional<EnumColor> color, ItemResource itemType, boolean fuzzyMode) {
+    public SorterItemStackFilter(boolean enabled, boolean allowDefault, boolean sizeMode, int min, int max, Optional<EnumColor> color, ItemResource itemType, boolean fuzzyMode) {
         super(enabled, allowDefault, sizeMode, min, max, color.orElse(null));
         this.itemType = itemType;
         this.fuzzyMode = fuzzyMode;

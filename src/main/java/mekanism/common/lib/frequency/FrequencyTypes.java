@@ -6,14 +6,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.lib.security.SecurityFrequency;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import org.jspecify.annotations.Nullable;
@@ -60,11 +58,6 @@ public class FrequencyTypes {
         FrequencyType<FREQ> type = new FrequencyType<>(name, creationFunction, codec, streamCodec, managerType, identitySerializer, needsTick);
         registryMap.put(name, type);
         return type;
-    }
-
-    //TODO - 26.3 - investigate why no usages, remove?
-    public static <FREQ extends Frequency> FrequencyType<FREQ> load(CompoundTag tag) {
-        return (FrequencyType<FREQ>) registryMap.get(tag.getString(SerializationConstants.TYPE));
     }
 
     @Nullable

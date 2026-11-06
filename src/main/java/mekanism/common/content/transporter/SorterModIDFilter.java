@@ -16,6 +16,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
 
 public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implements IModIDFilter<SorterModIDFilter> {
@@ -38,8 +39,9 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
         modID = "";
     }
 
+    @VisibleForTesting
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    protected SorterModIDFilter(boolean enabled, boolean allowDefault, boolean sizeMode, int min, int max, Optional<EnumColor> color, String modID) {
+    public SorterModIDFilter(boolean enabled, boolean allowDefault, boolean sizeMode, int min, int max, Optional<EnumColor> color, String modID) {
         super(enabled, allowDefault, sizeMode, min, max, color.orElse(null));
         this.modID = modID;
     }
