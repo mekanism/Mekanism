@@ -22,7 +22,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 
@@ -110,12 +109,12 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     @Override
-    protected void updateEjectors(Level world) {
+    protected void updateEjectors(ServerLevel level) {
         energyOutputTargets.clear();
         for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
-            TileEntityInductionPort tile = WorldUtils.getTileEntity(TileEntityInductionPort.class, world, entry.getKey());
+            TileEntityInductionPort tile = WorldUtils.getTileEntity(TileEntityInductionPort.class, level, entry.getKey());
             if (tile != null) {
-                tile.addEnergyTargetCapability(energyOutputTargets, entry.getValue().side);
+                tile.addEnergyTargetCapability(level, energyOutputTargets, entry.getValue().side);
             }
         }
     }

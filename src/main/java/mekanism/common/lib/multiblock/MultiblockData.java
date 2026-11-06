@@ -220,11 +220,13 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
                 ContainerType.ENERGY.clampContents(container, transaction);
             }
         }
-        updateEjectors(world);
+        if (world instanceof ServerLevel level) {
+            updateEjectors(level);
+        }
         forceUpdateComparatorLevel();
     }
 
-    protected void updateEjectors(Level world) {
+    protected void updateEjectors(ServerLevel level) {
     }
 
     protected boolean isClientSide() {

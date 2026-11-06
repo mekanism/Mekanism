@@ -37,7 +37,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -115,19 +114,19 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @Override
-    protected void updateEjectors(Level world) {
+    protected void updateEjectors(ServerLevel level) {
         fluidOutputTargets.clear();
         energyOutputTargets.clear();
         for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
-            TileEntityTurbineValve tile = WorldUtils.getTileEntity(TileEntityTurbineValve.class, world, entry.getKey());
+            TileEntityTurbineValve tile = WorldUtils.getTileEntity(TileEntityTurbineValve.class, level, entry.getKey());
             if (tile != null) {
-                tile.addEnergyTargetCapability(energyOutputTargets, entry.getValue().side);
+                tile.addEnergyTargetCapability(level, energyOutputTargets, entry.getValue().side);
             }
         }
         for (VentData data : ventData) {
-            TileEntityTurbineVent vent = WorldUtils.getTileEntity(TileEntityTurbineVent.class, world, data.location);
+            TileEntityTurbineVent vent = WorldUtils.getTileEntity(TileEntityTurbineVent.class, level, data.location);
             if (vent != null) {
-                vent.addFluidTargetCapability(fluidOutputTargets, data.side);
+                vent.addFluidTargetCapability(level, fluidOutputTargets, data.side);
             }
         }
     }

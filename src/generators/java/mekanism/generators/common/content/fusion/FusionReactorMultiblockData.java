@@ -284,17 +284,17 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     @Override
-    protected void updateEjectors(Level world) {
+    protected void updateEjectors(ServerLevel level) {
         heatHandlers.clear();
         energyOutputTargets.clear();
         chemicalOutputTargets.clear();
         for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
-            TileEntityFusionReactorPort tile = WorldUtils.getTileEntity(TileEntityFusionReactorPort.class, world, entry.getKey());
+            TileEntityFusionReactorPort tile = WorldUtils.getTileEntity(TileEntityFusionReactorPort.class, level, entry.getKey());
             if (tile != null) {
                 heatHandlers.add(tile);
                 Direction side = entry.getValue().side;
-                tile.addEnergyTargetCapability(energyOutputTargets, side);
-                tile.addChemicalTargetCapability(chemicalOutputTargets, side);
+                tile.addEnergyTargetCapability(level, energyOutputTargets, side);
+                tile.addChemicalTargetCapability(level, chemicalOutputTargets, side);
             }
         }
     }

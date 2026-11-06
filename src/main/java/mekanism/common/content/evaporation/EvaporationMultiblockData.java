@@ -196,17 +196,14 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    protected void updateEjectors(Level world) {
-        if (!world.isClientSide()) {
-            //Note: We don't need to wrap valve tanks on the client side
-            for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
-                TileEntityThermalEvaporationValve tile = WorldUtils.getTileEntity(TileEntityThermalEvaporationValve.class, world, entry.getKey());
-                if (tile != null) {
-                    ValveData valve = entry.getValue();
-                    valve.resetTanks();
-                    valve.addTank(inputTank, true);
-                    valve.addTank(outputTank, false);
-                }
+    protected void updateEjectors(ServerLevel level) {
+        for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+            TileEntityThermalEvaporationValve tile = WorldUtils.getTileEntity(TileEntityThermalEvaporationValve.class, level, entry.getKey());
+            if (tile != null) {
+                ValveData valve = entry.getValue();
+                valve.resetTanks();
+                valve.addTank(inputTank, true);
+                valve.addTank(outputTank, false);
             }
         }
     }

@@ -66,10 +66,10 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
         return super.persists(type);
     }
 
-    public void addChemicalTargetCapability(List<AdvancedCapabilityOutputTarget<ResourceHandler<ChemicalResource>, BoilerValveMode>> outputTargets, Direction side) {
+    public void addChemicalTargetCapability(ServerLevel level, List<AdvancedCapabilityOutputTarget<ResourceHandler<ChemicalResource>, BoilerValveMode>> outputTargets, Direction side) {
         BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction> cache = capabilityCaches.get(side);
         if (cache == null) {
-            cache = Capabilities.CHEMICAL.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            cache = Capabilities.CHEMICAL.createCache(level, worldPosition.relative(side), side.getOpposite());
             capabilityCaches.put(side, cache);
         }
         outputTargets.add(new AdvancedCapabilityOutputTarget<>(cache, MODE_MATCHES));

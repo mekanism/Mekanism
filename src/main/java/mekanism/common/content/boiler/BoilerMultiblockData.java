@@ -232,18 +232,15 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     @Override
-    protected void updateEjectors(Level world) {
+    protected void updateEjectors(ServerLevel level) {
         chemicalOutputTargets.clear();
         for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
-            TileEntityBoilerValve tile = WorldUtils.getTileEntity(TileEntityBoilerValve.class, world, entry.getKey());
+            TileEntityBoilerValve tile = WorldUtils.getTileEntity(TileEntityBoilerValve.class, level, entry.getKey());
             if (tile != null) {
                 ValveData valve = entry.getValue();
-                tile.addChemicalTargetCapability(chemicalOutputTargets, valve.side);
-                if (!world.isClientSide()) {
-                    //Note: We don't need to wrap valve tanks on the client side
-                    valve.resetTanks();
-                    valve.addTank(waterTank, true);
-                }
+                tile.addChemicalTargetCapability(level, chemicalOutputTargets, valve.side);
+                valve.resetTanks();
+                valve.addTank(waterTank, true);
             }
         }
     }

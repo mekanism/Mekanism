@@ -35,7 +35,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -99,16 +98,13 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @Override
-    protected void updateEjectors(Level world) {
-        if (!world.isClientSide()) {
-            //Note: We don't need to wrap valve tanks on the client side
-            for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
-                TileEntityDynamicValve tile = WorldUtils.getTileEntity(TileEntityDynamicValve.class, world, entry.getKey());
-                if (tile != null) {
-                    ValveData valve = entry.getValue();
-                    valve.resetTanks();
-                    valve.addTank(mergedTank.getFluidTank(), true);
-                }
+    protected void updateEjectors(ServerLevel level) {
+        for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+            TileEntityDynamicValve tile = WorldUtils.getTileEntity(TileEntityDynamicValve.class, level, entry.getKey());
+            if (tile != null) {
+                ValveData valve = entry.getValue();
+                valve.resetTanks();
+                valve.addTank(mergedTank.getFluidTank(), true);
             }
         }
     }

@@ -76,19 +76,19 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
         return super.persists(type);
     }
 
-    public void addChemicalTargetCapability(List<CapabilityOutputTarget<ResourceHandler<ChemicalResource>>> outputTargets, Direction side) {
+    public void addChemicalTargetCapability(ServerLevel level, List<CapabilityOutputTarget<ResourceHandler<ChemicalResource>>> outputTargets, Direction side) {
         BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction> cache = chemicalCapabilityCaches.get(side);
         if (cache == null) {
-            cache = Capabilities.CHEMICAL.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            cache = Capabilities.CHEMICAL.createCache(level, worldPosition.relative(side), side.getOpposite());
             chemicalCapabilityCaches.put(side, cache);
         }
         outputTargets.add(new CapabilityOutputTarget<>(cache, this::getActive));
     }
 
-    public void addEnergyTargetCapability(List<CapabilityOutputTarget<EnergyHandler>> outputTargets, Direction side) {
+    public void addEnergyTargetCapability(ServerLevel level, List<CapabilityOutputTarget<EnergyHandler>> outputTargets, Direction side) {
         BlockCapabilityCache<EnergyHandler, @Nullable Direction> cache = energyCapabilityCaches.get(side);
         if (cache == null) {
-            cache = Capabilities.ENERGY.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            cache = Capabilities.ENERGY.createCache(level, worldPosition.relative(side), side.getOpposite());
             energyCapabilityCaches.put(side, cache);
         }
         outputTargets.add(new CapabilityOutputTarget<>(cache, this::getActive));

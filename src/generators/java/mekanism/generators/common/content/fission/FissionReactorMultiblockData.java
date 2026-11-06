@@ -248,18 +248,15 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Override
-    protected void updateEjectors(Level world) {
+    protected void updateEjectors(ServerLevel level) {
         chemicalOutputTargets.clear();
         for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
-            TileEntityFissionReactorPort tile = WorldUtils.getTileEntity(TileEntityFissionReactorPort.class, world, entry.getKey());
+            TileEntityFissionReactorPort tile = WorldUtils.getTileEntity(TileEntityFissionReactorPort.class, level, entry.getKey());
             if (tile != null) {
                 ValveData valve = entry.getValue();
-                tile.addChemicalTargetCapability(chemicalOutputTargets, valve.side);
-                if (!world.isClientSide()) {
-                    //Note: We don't need to wrap valve tanks on the client side
-                    valve.resetTanks();
-                    valve.addTank(coolantTank.getFluidTank(), true);
-                }
+                tile.addChemicalTargetCapability(level, chemicalOutputTargets, valve.side);
+                valve.resetTanks();
+                valve.addTank(coolantTank.getFluidTank(), true);
             }
         }
     }
