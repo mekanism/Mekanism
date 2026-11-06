@@ -182,7 +182,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         for (FactoryType type : FactoryType.VALUES) {
             String name = getFactoryTypeName(type);
             add(MekanismTags.BlockItems.TIERED_FACTORIES.get(type), name + " Factories");
-            add(MekanismTags.BlockItems.FACTORY_SUPPORTED.get(type), name + "Factory Supported");
+            add(MekanismTags.BlockItems.FACTORY_SUPPORTED.get(type), name + " Factory Supported");
         }
 
         add(MekanismTags.BlockItems.BINS, "Bins");

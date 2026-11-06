@@ -2,13 +2,18 @@ package mekanism.client.recipe_viewer.type;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.tags.MekanismTags.BlockItems;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
@@ -45,12 +50,21 @@ public interface IRecipeViewerRecipeType<RECIPE> extends IHasTextComponent {
         for (ItemLike itemLike : items) {
             Item item = itemLike.asItem();
             List<SlotDisplay> displays = new ArrayList<>();
-            displays.add(new SlotDisplay.ItemSlotDisplay(item));
             FactoryType factoryType = item.components().get(MekanismDataComponents.FACTORY_TYPE);
             if (factoryType != null) {
-                for (FactoryTier tier : FactoryTier.VALUES) {
-                    displays.add(new SlotDisplay.ItemSlotDisplay(MekanismBlocks.getFactory(tier, factoryType).getItemHolder()));
+                Optional<Named<Item>> tag = Optional.ofNullable(BlockItems.FACTORY_SUPPORTED.get(factoryType))
+                      .map(BlockItemTagId::item)
+                      .flatMap(BuiltInRegistries.ITEM::get);
+                if (tag.isPresent()) {
+                    displays.add(new SlotDisplay.TagSlotDisplay(tag.get()));
+                } else {
+                    displays.add(new SlotDisplay.ItemSlotDisplay(item));
+                    for (FactoryTier tier : FactoryTier.VALUES) {
+                        displays.add(new SlotDisplay.ItemSlotDisplay(MekanismBlocks.getFactory(tier, factoryType).getItemHolder()));
+                    }
                 }
+            } else {
+                displays.add(new SlotDisplay.ItemSlotDisplay(item));
             }
             allDisplays.add(MekanismUtils.compactDisplay(displays));
         }
