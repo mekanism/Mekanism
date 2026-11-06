@@ -2,6 +2,7 @@ package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiRadialSelector;
@@ -11,9 +12,11 @@ import mekanism.client.render.hud.RadiationOverlay;
 import mekanism.client.render.lib.effect.BoltFeatureRenderer;
 import mekanism.client.render.lib.effect.BoltFeatureRenderer.BoltRenderState;
 import mekanism.client.render.lib.effect.BoltRenderer;
+import mekanism.client.render.outline.BlastingOutlineRenderer;
 import mekanism.client.render.outline.Outlines;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ProfilerConstants;
+import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -27,14 +30,20 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.SharedConstants;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.extract.LevelExtractor;
+import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.state.level.PlayerRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -51,6 +60,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
@@ -60,6 +71,7 @@ import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.submit.RenderPhaseKeys;
+import net.neoforged.neoforge.common.NeoForge;
 
 public class RenderTickHandler {
 
@@ -270,8 +282,7 @@ public class RenderTickHandler {
         ProfilerFiller profiler = Profiler.get();
         BlockState blockState = event.getBlockState();
 
-        //TODO - 26.3: blasting unit. don't forget translucency check
-        /*profiler.push(ProfilerConstants.AREA_MINE_OUTLINE);
+        profiler.push(ProfilerConstants.AREA_MINE_OUTLINE);
         // Draw outlines for area mining blocks
         if (!outliningArea) {
             ItemStack stack = player.getMainHandItem();
@@ -279,20 +290,46 @@ public class RenderTickHandler {
                 Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(world, player, stack, pos, blockState);
                 if (!blocks.isEmpty()) {
                     outliningArea = true;
-                    Vec3 renderView = camera.position();
-                    LevelRenderer levelRenderer = event.getLevelRenderer();
+                    Camera camera = event.getCamera();
+                    LevelExtractor levelExtractor = event.getLevelExtractor();
+                    LevelRenderState levelRenderState = event.getLevelRenderState();
+                    BlockOutlineRenderState sourceState = levelRenderState.blockOutlineRenderState;
+                    CollisionContext context = event.getCollisionContext();
+                    boolean highContrast = minecraft.options.highContrastBlockOutline().get();
                     for (Map.Entry<BlockPos, BlockState> block : blocks.entrySet()) {
                         BlockPos blastingTarget = block.getKey();
                         // simulate ray tracing results for all block positions
-                        if (!pos.equals(blastingTarget) && TODO - 26.3: also move out of here. !ClientHooks.onDrawHighlight(levelRenderer, camera, rayTraceResult.withPosition(blastingTarget), event.getDeltaTracker(), matrix, renderer)) {
-                            levelRenderer.renderHitOutline(matrix, renderer.getBuffer(RenderTypes.lines()), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
+                        if (!pos.equals(blastingTarget)) {
+                            BlockState state = block.getValue();
+                            BlockStateModel blockStateModel = minecraft.getModelManager().getBlockStateModelSet().get(state);
+                            boolean isBlockTranslucent = blockStateModel.hasMaterialFlag(world, blastingTarget, state, BakedQuad.FLAG_TRANSLUCENT);
+                            ExtractBlockOutlineRenderStateEvent subEvent = new ExtractBlockOutlineRenderStateEvent(levelExtractor, world, blastingTarget, state,
+                                  rayTraceResult.withPosition(blastingTarget), context, isBlockTranslucent, highContrast, camera, levelRenderState);
+                            if (NeoForge.EVENT_BUS.post(subEvent).isCanceled()) {
+                                //Skip to the next position
+                                continue;
+                            }
+                            VoxelShape shape = state.getShape(world, blastingTarget, context);
+                            BlockOutlineRenderState blockOutlineRenderState;
+                            if (SharedConstants.DEBUG_SHAPES) {
+                                VoxelShape collisionShape = state.getCollisionShape(world, blastingTarget, context);
+                                VoxelShape occlusionShape = state.getOcclusionShape();
+                                VoxelShape interactionShape = state.getInteractionShape(world, blastingTarget);
+                                blockOutlineRenderState = new BlockOutlineRenderState(blastingTarget, isBlockTranslucent, highContrast, shape, collisionShape,
+                                      occlusionShape, interactionShape, subEvent.getCustomRenderers());
+                            } else {
+                                blockOutlineRenderState = new BlockOutlineRenderState(blastingTarget, isBlockTranslucent, highContrast, shape, subEvent.getCustomRenderers());
+                            }
+                            event.addCustomRenderer(new BlastingOutlineRenderer(blockOutlineRenderState));
                         }
                     }
+                    //Ensure no mod modified it during the calls for some reason
+                    levelRenderState.blockOutlineRenderState = sourceState;
                     outliningArea = false;
                 }
             }
         }
-        profiler.pop();*/
+        profiler.pop();
 
         boolean showingConfiguratorOverlay = false;
         ItemStack stack = player.getMainHandItem();

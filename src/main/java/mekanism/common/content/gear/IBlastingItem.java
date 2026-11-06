@@ -49,7 +49,7 @@ public interface IBlastingItem {
                 Map<BlockPos, BlockState> found = new HashMap<>();
                 for (BlockPos nextPos : BlockPos.betweenClosed(targetPos.offset(lower), targetPos.offset(upper))) {
                     BlockState nextState = world.getBlockState(nextPos);
-                    if (canBlastBlock(world, nextPos, nextState)) {
+                    if (world.getWorldBorder().isWithinBounds(nextPos) && canBlastBlock(world, nextPos, nextState)) {
                         found.put(nextPos.immutable(), nextState);
                     }
                 }
