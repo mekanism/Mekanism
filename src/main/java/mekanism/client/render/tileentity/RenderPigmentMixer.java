@@ -63,7 +63,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         poseStack.translate(shift, 0, shift);
         poseStack.rotateDegrees(Axis.YN, state.rotation);
         poseStack.translate(-shift, 0, -shift);
-        submitBreakableBlockModel(nodeCollector, poseStack, Sheets.cutoutBlockItemSheet(), MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel(), state);
+        submitBreakableBlockModel(nodeCollector, poseStack, Sheets.cutoutBlockItemSheet(), MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT, state);
         poseStack.popPose();
     }
 

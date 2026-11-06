@@ -2,6 +2,7 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
+import mekanism.client.model.BaseModelCache.BlockStateModelPartHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
@@ -43,18 +44,16 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity, STATE
         return !Minecraft.getInstance().isPaused() && MekanismUtils.isTickingNormally(tile.getLevel());
     }
 
-    protected void submitBreakableBlockModel(SubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts, STATE state) {
-        submitBreakableBlockModel(nodeCollector, poseStack, renderType, parts, BlockModelRenderState.EMPTY_TINTS, state.lightCoords, OverlayTexture.NO_OVERLAY,
-              EntityRenderState.NO_OUTLINE, state.breakProgress);
+    protected void submitBreakableBlockModel(SubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, BlockStateModelPartHelper model, STATE state) {
+        submitBreakableBlockModel(nodeCollector, poseStack, renderType, model.getBakedModel(), model.isBlockTranslucent(), BlockModelRenderState.EMPTY_TINTS,
+              state.lightCoords, OverlayTexture.NO_OVERLAY, EntityRenderState.NO_OUTLINE, state.breakProgress);
     }
 
-    protected void submitBreakableBlockModel(SubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts, int[] tintLayers,
-          int lightCoords, int overlayCoords, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+    protected void submitBreakableBlockModel(SubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts,
+          boolean isBlockTranslucent, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         nodeCollector.submitBlockModel(poseStack, renderType, parts, tintLayers, lightCoords, overlayCoords, outlineColor);
         if (breakProgress != null) {
-            //TODO - 26.3: Figure out what to pass for isBlockTranslucent. I think for all our calls the part is solid, so false technically works,
-            // but we should future proof if possible
-            nodeCollector.submitBreakingBlockModel(poseStack, parts, breakProgress.progress(), false);
+            nodeCollector.submitBreakingBlockModel(poseStack, parts, breakProgress.progress(), isBlockTranslucent);
         }
     }
 

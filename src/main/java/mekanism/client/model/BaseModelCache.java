@@ -24,6 +24,7 @@ import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.sprite.TextureSlots;
@@ -179,6 +180,7 @@ public class BaseModelCache {
 
         //this is a list due to SubmitNodeCollector wanting a list
         private List<BlockStateModelPart> bakedModel = Collections.emptyList();
+        private boolean isBlockTranslucent;
         protected final StandaloneModelKey<BlockStateModelPart> key;
 
         private BlockStateModelPartHelper(Identifier rl) {
@@ -191,6 +193,7 @@ public class BaseModelCache {
             super.reload(evt);
             BlockStateModelPart modelPart = evt.getBakingResult().standaloneModels().get(key);
             bakedModel = modelPart == null ? Collections.emptyList() : List.of(modelPart);
+            isBlockTranslucent = modelPart != null && (modelPart.materialFlags() & BakedQuad.FLAG_TRANSLUCENT) != 0;
         }
 
         @Override
@@ -200,6 +203,10 @@ public class BaseModelCache {
 
         public List<BlockStateModelPart> getBakedModel() {
             return bakedModel;
+        }
+
+        public boolean isBlockTranslucent() {
+            return isBlockTranslucent;
         }
     }
 

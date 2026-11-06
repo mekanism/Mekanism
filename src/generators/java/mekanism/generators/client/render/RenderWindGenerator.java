@@ -64,7 +64,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
             poseStack.translate(BLADE_OFFSET);
             MekanismRenderer.rotate(poseStack, state.direction, 0, 180, 90, 270);
             poseStack.rotateDegrees(Axis.ZP, state.rotation % 360);
-            submitBreakableBlockModel(nodeCollector, poseStack, Sheets.cutoutBlockItemSheet(), GeneratorsModelCache.INSTANCE.WIND_GENERATOR_BLADES.getBakedModel(), state);
+            submitBreakableBlockModel(nodeCollector, poseStack, Sheets.cutoutBlockItemSheet(), GeneratorsModelCache.INSTANCE.WIND_GENERATOR_BLADES, state);
             poseStack.popPose();
         }
     }
