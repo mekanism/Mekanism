@@ -125,11 +125,11 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderTitleText(guiGraphics);
         renderInventoryTextAndOther(guiGraphics, MekanismLang.LIST_SORT.translate(), imageWidth - searchDropdownX - 5);
         drawScrollingString(guiGraphics, MekanismLang.LIST_SEARCH.translate(), 4, 31, TextAlignment.RIGHT, titleTextColor(), searchField.getRelativeX() - 4, 3, false);
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

@@ -108,11 +108,11 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderTitleText(guiGraphics);
         ILangEntry modeLang = tile.getMode() ? MekanismLang.DECONDENSENTRATING : MekanismLang.CONDENSENTRATING;
         drawScrollingString(guiGraphics, modeLang.translate(), 4, imageHeight - 92, TextAlignment.LEFT, titleTextColor(), ENERGY_BAR_X - 4, 2, false);
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

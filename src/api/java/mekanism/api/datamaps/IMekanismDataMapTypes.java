@@ -117,6 +117,7 @@ public interface IMekanismDataMapTypes {
 
     /// {@return the list of all registered chemical attribute types}
     ///
+    /// @see mekanism.api.datamaps.chemical.attribute.ChemicalAttributeTypeRegistrationEvent Registering new types of attributes.
     /// @since 10.8.0
     List<DataMapType<Chemical, ? extends IChemicalAttribute>> chemicalAttributeTypes();
 }

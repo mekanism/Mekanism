@@ -191,7 +191,6 @@ public class MekanismDataComponents {
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Unit>> WASTE_DECAY = DATA_COMPONENTS.registerUnit("waste_decay");
 
-    //TODO - 26.3: Do we want to rename these components to: mode/<type>
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<DisassemblerMode>> DISASSEMBLER_MODE = DATA_COMPONENTS.simple("disassembler_mode",
           DisassemblerMode.CODEC, DisassemblerMode.STREAM_CODEC
     );

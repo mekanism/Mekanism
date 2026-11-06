@@ -79,7 +79,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     }
 
     @Override
-    public Collection<Line> applyTransformAndGetFrame(BlockEntity tile, float partialTick, PoseStack poseStack, LevelRenderState levelRenderState) {
+    public Collection<Line> applyTransformAndGetFrame(BlockEntity tile, PoseStack poseStack, LevelRenderState levelRenderState) {
         if (!(tile instanceof TileEntityPigmentMixer mixer)) {
             return Collections.emptyList();
         } else if (lines == null) {
@@ -93,7 +93,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         }
         float shift = 1 / 16F;
         poseStack.translate(shift, 0, shift);
-        poseStack.rotateDegrees(Axis.YN, getAnimationTime(levelRenderState.gameTime, partialTick) * SHAFT_SPEED % 360);
+        poseStack.rotateDegrees(Axis.YN, getAnimationTime(levelRenderState.gameTime, levelRenderState.worldPartialTicks) * SHAFT_SPEED % 360);
         poseStack.translate(-shift, 0, -shift);
         return lines;
     }

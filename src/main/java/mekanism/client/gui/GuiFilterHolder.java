@@ -83,8 +83,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
         renderInventoryText(guiGraphics);
     }
 }

@@ -47,9 +47,9 @@ public class GuiChemicalInfuser extends GuiConfigurableTile<TileEntityChemicalIn
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderTitleTextWithOffset(guiGraphics, 1, CENTER_GAUGE_X, 4, TextAlignment.LEFT);
         renderInventoryText(guiGraphics, CENTER_GAUGE_X);
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

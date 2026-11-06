@@ -15,7 +15,6 @@ import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.recipe_book.BookComponentType;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.effect.BoltFeatureRenderer.BoltRenderState;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.common.MekanismLang;
@@ -96,12 +95,11 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
         long gameTime = tile.getGameTime();
-        float partialTicks = MekanismRenderer.getPartialTick();
         bolt.update(this, boltSupplier.get(), gameTime, partialTicks);
         List<BoltRenderState> boltRenderStates = bolt.collectBoltStates(gameTime, partialTicks);
         if (!boltRenderStates.isEmpty()) {

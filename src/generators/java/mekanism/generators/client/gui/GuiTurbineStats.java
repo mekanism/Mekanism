@@ -51,7 +51,7 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderTitleText(guiGraphics);
         TurbineMultiblockData multiblock = tile.getMultiblock();
         if (multiblock.isFormed()) {
@@ -75,6 +75,6 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
             drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(EnergyDisplay.of(multiblock.getMaxProduction())), 0, 104, TextAlignment.LEFT, titleTextColor(), 6, false);
             drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_MAX_WATER_OUTPUT.translate(TextUtils.format(multiblock.getMaxWaterOutput())), 0, 113, TextAlignment.LEFT, titleTextColor(), 6, false);
         }
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

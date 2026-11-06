@@ -41,7 +41,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderTitleText(guiGraphics);
         BoilerMultiblockData multiblock = tile.getMultiblock();
         drawScrollingString(guiGraphics, MekanismLang.BOILER_MAX_WATER.translate(TextUtils.format(multiblock.waterTank.capacityAsLong(multiblock.waterTank.resource()))), 0, 26, TextAlignment.LEFT, titleTextColor(), 8, false);
@@ -49,7 +49,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
         drawScrollingString(guiGraphics, MekanismLang.BOILER_HEAT_TRANSFER.translate(), 0, 49, TextAlignment.LEFT, subheadingTextColor(), 8, false);
         drawScrollingString(guiGraphics, MekanismLang.BOILER_HEATERS.translate(multiblock.superheatingElements), 6, 58, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 6, 8, false);
         drawScrollingString(guiGraphics, MekanismLang.BOILER_CAPACITY.translate(TextUtils.format(multiblock.getBoilCapacity())), 0, 72, TextAlignment.LEFT, titleTextColor(), 8, false);
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

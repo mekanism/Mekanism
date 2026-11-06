@@ -1,11 +1,14 @@
 package mekanism.common.registries;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
+import mekanism.api.datamaps.chemical.attribute.ChemicalAttributeTypeRegistrationEvent;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
@@ -23,8 +26,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Item;
+import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.registries.datamaps.AdvancedDataMapType;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
+import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.UnmodifiableView;
 import org.jspecify.annotations.Nullable;
 
 public class MekanismDataMapTypes implements IMekanismDataMapTypes {
@@ -41,13 +47,8 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
           ChemicalRadioactivity.CODEC, ChemicalRadioactivity.RADIOACTIVITY_CODEC);
     private static final DataMapType<Chemical, CooledCoolant> COOLED_CHEMICAL_COOLANT = REGISTER.registerSimpleSynced(CooledCoolant.ID, MekanismRegistries.Keys.CHEMICAL, CooledCoolant.CODEC);
     private static final DataMapType<Chemical, HeatedCoolant> HEATED_CHEMICAL_COOLANT = REGISTER.registerSimpleSynced(HeatedCoolant.ID, MekanismRegistries.Keys.CHEMICAL, HeatedCoolant.CODEC);
-    //TODO - 26.3: Figure out how to make this extensible. Maybe just loop after the data map registry finishes being populated and do instance checks?
-    private static final List<DataMapType<Chemical, ? extends IChemicalAttribute>> ATTRIBUTE_TYPES = List.of(
-          CHEMICAL_RADIOACTIVITY,
-          CHEMICAL_FUEL,
-          COOLED_CHEMICAL_COOLANT,
-          HEATED_CHEMICAL_COOLANT
-    );
+    private final List<DataMapType<Chemical, ? extends IChemicalAttribute>> attributeTypes = new ArrayList<>();
+    private final List<DataMapType<Chemical, ? extends IChemicalAttribute>> attributeTypesView = Collections.unmodifiableList(attributeTypes);
 
     @Override
     public DataMapType<DamageType, MekaSuitAbsorption> mekaSuitAbsorption() {
@@ -97,7 +98,13 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
     }
 
     @Override
+    @UnmodifiableView
     public List<DataMapType<Chemical, ? extends IChemicalAttribute>> chemicalAttributeTypes() {
-        return ATTRIBUTE_TYPES;
+        return attributeTypesView;
+    }
+
+    @Internal
+    public void collectAttributeTypes() {
+        ModLoader.postEvent(new ChemicalAttributeTypeRegistrationEvent(attributeTypes));
     }
 }

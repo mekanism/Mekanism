@@ -161,7 +161,6 @@ public class FilterManager<FILTER extends IFilter<?>> {
         }));
     }
 
-    //TODO - 26.3: Test this and deserialization
     public void serialize(ValueOutput output) {
         if (!filters.isEmpty()) {
             TypedOutputList<IFilter<?>> filtersOutput = output.list(SerializationConstants.FILTERS, BaseFilter.GENERIC_CODEC);

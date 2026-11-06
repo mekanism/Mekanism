@@ -55,14 +55,14 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (target == null) {
             renderTitleText(guiGraphics);
         } else {
             renderTitleTextWithOffset(guiGraphics, target.getRelativeRight());
         }
         renderInventoryTextAndOther(guiGraphics, MekanismLang.DICTIONARY_TAG_TYPE.translate(), imageWidth - DROPDOWN_X - 5);
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

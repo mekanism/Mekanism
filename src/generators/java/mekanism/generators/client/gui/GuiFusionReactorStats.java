@@ -29,7 +29,7 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         FusionReactorMultiblockData multiblock = tile.getMultiblock();
         if (multiblock.isFormed()) {
             int indentation = 4;
@@ -62,6 +62,6 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
             drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_STEAM_PRODUCTION.translate(TextUtils.format(multiblock.getSteamPerTick(false))),
                   indentation, 152, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
         }
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

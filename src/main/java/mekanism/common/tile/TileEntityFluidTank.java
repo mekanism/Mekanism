@@ -112,8 +112,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
         MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSideWithOverrides(facingSupplier);
         //Note: We add an override to the top of the fluid tank, to handle valve contents being inserted
-        //TODO - 26.3: Should we add it as relative side top or Direction.UP? We used to use direction up, and this is technically the same
-        // because our fluid tanks don't support being placed on their side, but which implementation would be more robust?
         fluidTank = builder.addContainer(FluidTankFluidTank.create(this, listener),
               (tank, side) -> side == RelativeSide.TOP ? new ValveFluidTankWrapper(tank, this::getValveJournal) : tank);
         return builder.build();
@@ -315,10 +313,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
-        //updateTag.put(SerializationConstants.FLUID, fluidTank.getFluid().saveOptional(provider));
-        //updateTag.put(SerializationConstants.VALVE, valveFluid.saveOptional(provider));
         output.putFloat(SerializationConstants.SCALE, prevScale);
-        //TODO - 26.3: Re-evaluate this alternate encoding further (check history)
+        //TODO: Re-evaluate this alternate encoding further (check history)
         ValueUtils.storeNonEmpty(output, SerializationConstants.FLUID, fluidTank);
         if (!valveJournal.fluid.isEmpty()) {
             output.store(SerializationConstants.VALVE, FluidResource.CODEC, valveJournal.fluid);
@@ -328,8 +324,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        //input.child(SerializationConstants.FLUID).ifPresent(fluidTank::deserialize);
-        //valveFluid = input.read(SerializationConstants.VALVE, FluidStack.OPTIONAL_CODEC).orElse(FluidStack.EMPTY);
         float scale = input.getFloatOr(SerializationConstants.SCALE, 0);
         if (lightUpdateDelay == 0 && MekanismUtils.scaleChanged(prevScale, scale)) {
             if (prevScale == 0 || scale == 0) {

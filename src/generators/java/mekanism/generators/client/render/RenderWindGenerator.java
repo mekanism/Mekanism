@@ -91,7 +91,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
     }
 
     @Override
-    public Collection<Line> applyTransformAndGetFrame(BlockEntity tile, float partialTick, PoseStack poseStack, LevelRenderState levelRenderState) {
+    public Collection<Line> applyTransformAndGetFrame(BlockEntity tile, PoseStack poseStack, LevelRenderState levelRenderState) {
         if (!(tile instanceof TileEntityWindGenerator generator)) {
             return Collections.emptyList();
         } else if (lines == null) {
@@ -100,8 +100,8 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
         poseStack.translate(BLADE_OFFSET);
         MekanismRenderer.rotate(poseStack, generator.getDirection(), 0, 180, 90, 270);
         float angle;
-        if (generator.getActive() && partialTick > 0) {
-            angle = (generator.getAngle() + generator.getHeightSpeedRatio() * partialTick) % 360;
+        if (generator.getActive() && levelRenderState.worldPartialTicks > 0) {
+            angle = (generator.getAngle() + generator.getHeightSpeedRatio() * levelRenderState.worldPartialTicks) % 360;
         } else {
             angle = generator.getAngle();
         }

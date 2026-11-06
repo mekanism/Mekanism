@@ -88,9 +88,9 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Factor
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics, dumpButton == null ? getImageWidth() : dumpButton.getRelativeX());
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

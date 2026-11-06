@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public interface IWireFrameRenderer {
 
-    default Collection<Line> applyTransformAndGetFrame(BlockEntity tile, float partialTick, PoseStack poseStack, LevelRenderState levelRenderState) {
+    default Collection<Line> applyTransformAndGetFrame(BlockEntity tile, PoseStack poseStack, LevelRenderState levelRenderState) {
         return Collections.emptyList();
     }
 

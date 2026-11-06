@@ -45,12 +45,12 @@ public class GuiChemicalDissolutionChamber extends GuiConfigurableTile<TileEntit
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (inputGauge == null) {
             renderTitleText(guiGraphics);
         } else {
             renderTitleTextWithOffset(guiGraphics, inputGauge.getRelativeRight());
         }
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

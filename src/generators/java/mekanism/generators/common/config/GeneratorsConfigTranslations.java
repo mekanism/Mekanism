@@ -30,7 +30,6 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
     SERVER_GENERATOR_HEAT_GEN_NETHER("server.generator.heat.gen.nether", "Nether Energy Generation",
           "Add this amount to the energy produced by a heat generator if it is in an 'ultrawarm' dimension, in vanilla this is just the Nether."),
     SERVER_GENERATOR_HEAT_TANK_CAPACITY("server.generator.heat.tank_capacity", "Tank Capacity", "The capacity in mB of the fluid tank in the Heat Generator."),
-    //TODO - 26.3: Should this reference to joules go away? It is heat not energy
     SERVER_GENERATOR_HEAT_FLUID_RATE("server.generator.heat.fluid_rate", "Fluid Rate",
           "The amount of lava in mB that gets consumed to transfer heatGeneration Joules to the Heat Generator."),
 
@@ -91,7 +90,6 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
 
     SERVER_FUSION("server.fusion", "Fusion Reactor", "Settings for configuring Fusion Reactors", "Edit Reactor Settings"),
     SERVER_FUSION_FUEL_ENERGY("server.fusion.fuel_energy", "Energy Per D-T Fuel", "Affects the Injection Rate, Max Temp, and Ignition Temp."),
-    //TODO - 26.3: Should these two reference to joules go away? It is heat not energy
     SERVER_FUSION_THERMOCOUPLE_EFFICIENCY("server.fusion.thermocouple_efficiency", "Thermocouple Efficiency",
           "The fraction of the heat dissipated from the case that is converted to Joules."),
     SERVER_FUSION_THERMAL_CONDUCTIVITY("server.fusion.casing_thermal_conductivity", "Casing Thermal Conductivity",

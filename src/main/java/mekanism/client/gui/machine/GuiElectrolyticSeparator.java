@@ -50,12 +50,12 @@ public class GuiElectrolyticSeparator extends GuiConfigurableTile<TileEntityElec
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (fluidGauge == null) {
             renderTitleText(guiGraphics);
         } else {
             renderTitleTextWithOffset(guiGraphics, fluidGauge.getRelativeRight());
         }
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

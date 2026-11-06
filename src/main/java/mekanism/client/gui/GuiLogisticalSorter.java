@@ -65,8 +65,8 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
         // Write to info display
         renderTitleText(guiGraphics);
         drawScreenText(guiGraphics, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 0, 4);

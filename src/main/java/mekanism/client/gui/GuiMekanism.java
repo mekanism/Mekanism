@@ -465,7 +465,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                 element.onDrawBackground(guiGraphics, mouseX, mouseY, partialTicks, false);
             }
         }
-        drawForegroundText(guiGraphics, mouseX, mouseY);
+        drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
         // first render general foregrounds
         for (GuiEventListener widget : children()) {
             if (widget instanceof GuiElement element) {
@@ -484,7 +484,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
 
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     }
 
     @Override

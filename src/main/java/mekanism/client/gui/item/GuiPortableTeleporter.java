@@ -88,13 +88,13 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (status == null) {
             renderTitleText(guiGraphics);
         } else {
             renderTitleTextWithOffset(guiGraphics, status.getRelativeRight());
         }
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

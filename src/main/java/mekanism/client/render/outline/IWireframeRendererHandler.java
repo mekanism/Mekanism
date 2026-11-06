@@ -3,7 +3,6 @@ package mekanism.client.render.outline;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collection;
 import java.util.List;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.outline.Outlines.Line;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
@@ -26,7 +25,7 @@ public class IWireframeRendererHandler extends MekanismOutlineRenderer {
     protected void submitLineDraw(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, BlockOutlineRenderState state, LevelRenderState levelRenderState) {
         super.submitLineDraw(submitNodeCollector, poseStack, state, levelRenderState);
         poseStack.pushPose();
-        Collection<Line> movingLines = wireFrameRenderer.applyTransformAndGetFrame(tile, MekanismRenderer.getPartialTick(), poseStack, levelRenderState);
+        Collection<Line> movingLines = wireFrameRenderer.applyTransformAndGetFrame(tile, poseStack, levelRenderState);
         if (!movingLines.isEmpty()) {
             submitLineDraw(submitNodeCollector, poseStack, state, movingLines);
         }

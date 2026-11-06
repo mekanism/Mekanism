@@ -97,7 +97,6 @@ public record QIODriveArrayItemModel(
                 bakedQuads.addAll(allQuads(drivePart));
             }
         }
-        //TODO - 26.3: Test this works appropriately
         layer.setQuads(ItemQuads.split(bakedQuads));
         //noinspection deprecation
         if (this.blockStateModel.hasMaterialFlag(BakedQuad.FLAG_ANIMATED)) {

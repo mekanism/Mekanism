@@ -185,7 +185,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderTitleText(guiGraphics);
         Component ownerComponent = OwnerDisplay.of(tile.getOwnerUUID(), tile.getOwnerName()).getTextComponent();
         renderInventoryTextAndOther(guiGraphics, ownerComponent);
@@ -199,6 +199,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         }
         drawScrollingString(guiGraphics, frequencyText, 13, 103, TextAlignment.LEFT, titleTextColor(), 122, 0, false);
         drawScrollingString(guiGraphics, MekanismLang.SECURITY_ADD.translate(), 1, 70, TextAlignment.RIGHT, titleTextColor(), TRUSTED_X - 1, 3, false);
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

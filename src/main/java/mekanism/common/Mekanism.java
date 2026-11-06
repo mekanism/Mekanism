@@ -12,6 +12,8 @@ import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismRegistries;
 import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
+import mekanism.api.datamaps.chemical.attribute.ChemicalAttributeTypeRegistrationEvent;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
@@ -116,7 +118,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
-import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
@@ -223,6 +224,7 @@ public class Mekanism {
         modEventBus.addListener(NewRegistryEvent.class, this::registerRegistries);
         modEventBus.addListener(NewDatapackRegistryEvent.class, this::registerSimpleDPRegistries);
         modEventBus.addListener(GatherDataRegistryEntriesEvent.class, MekanismDatapackRegistries::register);
+        modEventBus.addListener(ChemicalAttributeTypeRegistrationEvent.class, this::registerChemicalAttributeTypes);
 
         MekanismItems.ITEMS.register(modEventBus);
         MekanismBlocks.BLOCKS.register(modEventBus);
@@ -268,6 +270,13 @@ public class Mekanism {
         event.register(MekanismRegistries.CHEMICAL_INGREDIENT_TYPES);
         event.register(MekanismRegistries.MODULES);
         event.register(MekanismRegistries.ROBIT_SKIN_SERIALIZERS);
+    }
+
+    private void registerChemicalAttributeTypes(ChemicalAttributeTypeRegistrationEvent event) {
+        event.register(IMekanismDataMapTypes.INSTANCE.chemicalRadioactivity());
+        event.register(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
+        event.register(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant());
+        event.register(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
     }
 
     public static Identifier rl(String path) {
@@ -360,6 +369,9 @@ public class Mekanism {
         NeoForge.EVENT_BUS.register(worldTickHandler);
 
         NeoForge.EVENT_BUS.register(RadiationManager.get());
+
+        //Fire chemical attribute type register event
+        ((MekanismDataMapTypes) IMekanismDataMapTypes.INSTANCE).collectAttributeTypes();
 
         //Fake player info
         logger.info("Fake player readout: UUID = {}, name = {}", gameProfile.id(), gameProfile.name());

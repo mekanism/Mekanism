@@ -77,31 +77,11 @@ public class RenderTickHandler {
         boltRenderer.update(renderer, bolt, gameTime, MekanismRenderer.getPartialTick());
     }
 
-    //TODO - 26.3: Figure out if we need this any more
-    /*@SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void renderPostHighest(ScreenEvent.Render.Post event) {
-        if (event.getScreen() instanceof GuiMekanism) {
-            //Translate forward how far we go, so that things like recipe viewers draw far enough forward
-            // Note: We will pop this in a listener at the lowest priority
-            Matrix3x2fStack pose = event.getGuiGraphics().pose();
-            pose.pushMatrix();
-            pose.translate(0, 0, GuiMekanism.maxZOffset);
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void renderPostLowest(ScreenEvent.Render.Post event) {
-        if (event.getScreen() instanceof GuiMekanism) {
-            //Matching pop to the push we did in renderPostHighest
-            event.getGuiGraphics().pose().popMatrix();
-        }
-    }*/
-
     @SubscribeEvent
     public void submitCustomGeometry(SubmitCustomGeometryEvent event) {
         if (boltRenderer.hasBoltsToRender()) {
             LevelRenderState levelState = event.getLevelRenderState();
-            List<BoltRenderState> boltRenderStates = boltRenderer.collectBoltStates(levelState.gameTime, MekanismRenderer.getPartialTick());
+            List<BoltRenderState> boltRenderStates = boltRenderer.collectBoltStates(levelState.gameTime, event.getLevelRenderState().worldPartialTicks);
             if (!boltRenderStates.isEmpty()) {
 
                 PoseStack poseStack = event.getPoseStack();
@@ -278,10 +258,8 @@ public class RenderTickHandler {
         return true;
     }
 
-    //TODO - 26.3 CustomBlockOutlineRenderer
     @SubscribeEvent
     public void onBlockHover(ExtractBlockOutlineRenderStateEvent event) {
-        //TODO - 26.3: ExtractBlockOutlineRenderStateEvent and CustomBlockOutlineRenderer?
         LocalPlayer player = minecraft.player;
         if (player == null) {
             return;

@@ -56,7 +56,6 @@ public class FoilableBlockModelRenderState extends BlockModelRenderState {
     }
 
     private RenderType glintRenderType() {
-        //TODO - 26.3: Test and validate this
         return hasTranslucency ? Sheets.translucentBlockItemGlintSheet() : Sheets.cutoutBlockItemGlintSheet();
     }
 

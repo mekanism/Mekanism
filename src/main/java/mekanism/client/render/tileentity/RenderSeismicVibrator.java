@@ -53,13 +53,13 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     }
 
     @Override
-    public Collection<Line> applyTransformAndGetFrame(BlockEntity tile, float partialTick, PoseStack poseStack, LevelRenderState levelRenderState) {
+    public Collection<Line> applyTransformAndGetFrame(BlockEntity tile, PoseStack poseStack, LevelRenderState levelRenderState) {
         if (!(tile instanceof TileEntitySeismicVibrator vibrator)) {
             return Collections.emptyList();
         } else if (lines == null) {
             lines = Outlines.extract(MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel());
         }
-        float piston = Math.max(0, (float) Math.sin((vibrator.clientPiston + (vibrator.getActive() ? partialTick : 0)) / 5F));
+        float piston = Math.max(0, (float) Math.sin((vibrator.clientPiston + (vibrator.getActive() ? levelRenderState.worldPartialTicks : 0)) / 5F));
         poseStack.translate(0, piston * 0.625, 0);
         return lines;
     }

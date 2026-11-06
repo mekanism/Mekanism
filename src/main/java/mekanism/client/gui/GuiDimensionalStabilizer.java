@@ -133,10 +133,10 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         drawScrollingString(guiGraphics, MekanismLang.NORTH_SHORT.translate(), 49, 41, TextAlignment.CENTER, titleTextColor(), 15, 2, false);
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

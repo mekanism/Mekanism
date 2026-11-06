@@ -211,8 +211,10 @@ public class MekanismJEI implements IModPlugin {
               .setTooltipHeader(MekanismLang.RECIPE_VIEWER_CHANCE.translate(Math.round(slotDisplay.chance() * 100)).withStyle(style -> style.withColor(ChatFormatting.GOLD).withItalic(true)))
         );
 
-        registration.register(MekanismSlotDisplayTypes.CHEMICAL.get(), chemicalType, (_, _, builder) -> builder
-              .setWildcardForSubtypes(true)
+        registration.register(MekanismSlotDisplayTypes.CHEMICAL.get(), chemicalType, (display, _, builder) -> builder
+              // A REFERENCE names only the item, so allow all its variants.
+              // Otherwise (for DIRECT), keep the specified variants.
+              .setWildcardForSubtypes(display.chemical().kind() == Holder.Kind.REFERENCE)
         );
         registration.register(MekanismSlotDisplayTypes.CHEMICAL_TAG.get(), chemicalType, (display, _, builder) -> builder
               .setTagKey(display.tag())

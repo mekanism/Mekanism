@@ -81,7 +81,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderTitleText(guiGraphics);
         FissionReactorMultiblockData multiblock = tile.getMultiblock();
         // heat stats
@@ -96,7 +96,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         drawScrollingString(guiGraphics, GeneratorsLang.FISSION_CURRENT_BURN_RATE.translate(), 0, 104, TextAlignment.LEFT, titleTextColor(), 6, false);
 
         drawScrollingString(guiGraphics, GeneratorsLang.FISSION_SET_RATE_LIMIT.translate(), 3, 130, TextAlignment.RIGHT, titleTextColor(), RATE_LIMIT_X - 2, 3, false);
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

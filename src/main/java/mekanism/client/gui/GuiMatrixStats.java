@@ -77,7 +77,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderTitleText(guiGraphics);
         MatrixMultiblockData multiblock = tile.getMultiblock();
         drawScrollingString(guiGraphics, MekanismLang.INPUT.translate(), 45, 26, TextAlignment.LEFT, subheadingTextColor(), this.getImageWidth() - 54, 8, false);
@@ -91,6 +91,6 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
         drawScrollingString(guiGraphics, MekanismLang.MATRIX_CONSTITUENTS.translate(), 0, 102, TextAlignment.LEFT, subheadingTextColor(), 8, false);
         drawScrollingString(guiGraphics, MekanismLang.MATRIX_CELLS.translate(multiblock.getCellCount()), 6, 111, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 6, 8, false);
         drawScrollingString(guiGraphics, MekanismLang.MATRIX_PROVIDERS.translate(multiblock.getProviderCount()), 6, 120, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 6, 8, false);
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

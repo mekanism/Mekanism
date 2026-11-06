@@ -50,9 +50,9 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderTitleTextWithOffset(guiGraphics, inputGauge == null ? 0 : inputGauge.getRelativeRight(), tile.getEnergySlotX());
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     private class OreInfo implements IOreInfo {

@@ -85,7 +85,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderTitleTextWithOffset(guiGraphics, ITEM_NAME_X, ITEM_NAME_X + ITEM_NAME_WIDTH + 4, 0, TextAlignment.CENTER);
         renderInventoryText(guiGraphics);
         int maximumCost = menu.getCost();
@@ -117,7 +117,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
         } else {
             msDisplayCost = 0;
         }
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

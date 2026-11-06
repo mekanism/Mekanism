@@ -93,13 +93,13 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (inputGauge == null) {
             renderTitleText(guiGraphics);
         } else {
             renderTitleTextWithOffset(guiGraphics, inputGauge.getRelativeRight(), OUTPUT_GAUGE_X);
         }
         renderInventoryText(guiGraphics);
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

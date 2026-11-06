@@ -21,6 +21,7 @@ public class QIODriveSlot extends BasicInventorySlot {
     private final Supplier<@Nullable Level> levelSupplier;
     @Nullable
     private final IQIODriveHolder driveHolder;
+    @Nullable
     private final QIODriveKey key;
     private boolean isSaving;
 
@@ -28,7 +29,7 @@ public class QIODriveSlot extends BasicInventorySlot {
         super(ConstantPredicates.notExternal(), ConstantPredicates.notExternal(), IS_QIO_ITEM, null, null, listener, x, y);
         this.driveHolder = driveHolder;
         this.levelSupplier = levelSupplier;
-        //TODO - 26.3: Re-evaluate nullability
+        //Note: Only actually null for game tests
         this.key = new QIODriveKey(this.driveHolder, slot);
     }
 

@@ -99,7 +99,6 @@ public class MekanismRenderer {
     }
 
     //Color
-    //TODO - 26.3: review usages to ensure it's actually used (all color() methods)
     public static int color(FluidResource fluid) {
         if (!fluid.isEmpty()) {
             return getColorARGB(fluid);
@@ -160,7 +159,6 @@ public class MekanismRenderer {
     }
 
     public static void renderColorOverlay(GuiGraphicsExtractor guiGraphics, int x, int y, int color) {
-        //TODO - 26.3: Go through all our GUIs and make sure that our things that previously used gui overlay render as expected
         guiGraphics.fill(x, y, guiGraphics.guiWidth(), guiGraphics.guiHeight(), color);
     }
 
@@ -170,7 +168,6 @@ public class MekanismRenderer {
     }
 
     public static float getPartialTick() {
-        //TODO - 26.3: Re-evaluate callers and see if any have access to the delta tracker through non static means
         return Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
     }
 

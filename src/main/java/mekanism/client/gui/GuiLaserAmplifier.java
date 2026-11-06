@@ -51,7 +51,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     }
 
     @Override
-    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         int start = energyGauge == null ? 0 : energyGauge.getRelativeRight();
         renderTitleTextWithOffset(guiGraphics, start);
         renderInventoryText(guiGraphics);
@@ -64,7 +64,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         drawScrollingString(guiGraphics, delay, start, 30, TextAlignment.LEFT, titleTextColor(), TEXT_BOX_START - start, 2, false);
         drawScrollingString(guiGraphics, MekanismLang.MIN.translate(EnergyDisplay.of(tile.getMinThreshold())), start, 45, TextAlignment.LEFT, titleTextColor(), TEXT_BOX_START - start, 2, false);
         drawScrollingString(guiGraphics, MekanismLang.MAX.translate(EnergyDisplay.of(tile.getMaxThreshold())), start, 60, TextAlignment.LEFT, titleTextColor(), TEXT_BOX_START - start, 2, false);
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     private void setText(GuiTextField text, GuiInteraction interaction) {
