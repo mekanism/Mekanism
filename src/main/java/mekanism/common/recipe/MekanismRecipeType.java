@@ -165,7 +165,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     private final ResourceLocation registryName;
     private final INPUT_CACHE inputCache;
 
-    private MekanismRecipeType(ResourceLocation name, Function<MekanismRecipeType<VANILLA_INPUT, RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
+    public MekanismRecipeType(ResourceLocation name, Function<MekanismRecipeType<VANILLA_INPUT, RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
         this.registryName = name;
         this.inputCache = inputCacheCreator.apply(this);
     }
