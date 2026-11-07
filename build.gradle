@@ -33,7 +33,7 @@ plugins {
 
 tasks.named('wrapper', Wrapper, {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '9.8.0'
+    gradleVersion = '9.9.0'
     distributionType = Wrapper.DistributionType.ALL
 })
 
@@ -68,7 +68,7 @@ ext {
             'curios'          : new IntegrationSettings(shouldCompile: true),
             'emi'             : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL, perModule: PerModule.MODULE_ONLY),
             'farmers_delight' : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.DATA_ONLY),
-            'framedblocks'    : new IntegrationSettings(shouldCompile: false),
+            'framedblocks'    : new IntegrationSettings(shouldCompile: true),
             'gender'          : new IntegrationSettings(shouldCompile: true, scope: IntegrationScope.DATA_ONLY, perModule: PerModule.ALL),
             'jade'            : new IntegrationSettings(shouldCompile: true),
             'jei'             : new IntegrationSettings(shouldCompile: true, perModule: PerModule.MODULE_ONLY),
@@ -77,7 +77,7 @@ ext {
             'projecte'        : new IntegrationSettings(shouldCompile: false, scope: IntegrationScope.ALL),
             'recipe_stages'   : new IntegrationSettings(shouldCompile: false),
             'the_one_probe'   : new IntegrationSettings(shouldCompile: true),
-            'wthit'           : new IntegrationSettings(shouldCompile: false)
+            'wthit'           : new IntegrationSettings(shouldCompile: true)
     ]
 }
 
