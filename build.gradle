@@ -16,12 +16,12 @@ import java.util.function.Consumer
 plugins {
     id('org.ajoberstar.grgit.service')//Version declared in buildSrc
     id('net.darkhax.curseforgegradle').version('1.1.26')
-    id('com.modrinth.minotaur').version('2.8.8')
+    id('com.modrinth.minotaur').version('2.10.0')
     id('java')
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.moddev').version('2.0.107')//https://projects.neoforged.net/neoforged/moddevgradle
+    id('net.neoforged.moddev').version('2.0.148')//https://projects.neoforged.net/neoforged/moddevgradle
 }
 
 tasks.named('wrapper', Wrapper) {
@@ -33,8 +33,6 @@ tasks.named('wrapper', Wrapper) {
 tasks.named('updateDaemonJvm', UpdateDaemonJvm) {
     languageVersion = JavaLanguageVersion.of("${java_version}")
 }
-
-defaultTasks('build')
 
 idea {
     module {
@@ -434,6 +432,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe', 'dev.technici4n', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
+    exclusiveRepo(handler, 'https://maven.michiyo.me/releases/', 'li.cil.oc')
     exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel.projecte')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
     handler.exclusiveContent {
@@ -509,6 +508,7 @@ dependencies {
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
+    compileOnly("li.cil.oc:opencomputers:${oc_version}:api")
     compileOnly("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge-api:${cc_tweaked_version}")
     //localRuntime("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
@@ -640,14 +640,6 @@ tasks.register('optimizePng', OptimizePng) {
             inputFiles.from(fileTree(dir: dir, includes: pngPatterns))
         }
     }
-    //TODO: Make optimize png be fully compatible with the configuration cache?
-    notCompatibleWithConfigurationCache('Up to date check is not currently compatible with the configuration cache')
-    outputs.upToDateWhen {
-        //Validate that none of the files has changed size, as the odds that a file has the exact same size and has changed is very low for an image file
-        //Note: This is from Chat-GPT, I don't understand why the any check isn't just always true (and thus this being different from returning always false)
-        // but it seems to function properly(?), whereas just always returning false does not
-        !inputFiles.files.any { file -> file.length() != file.size() }
-    }
 }
 
 //properties to put in $HOME/.gradle/gradle.properties
@@ -730,7 +722,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
             //Add optional deps
             addOptional(
                     //Computers
-                    'cc-tweaked', 'oc2',
+                    'cc-tweaked', 'oc2', 'opencomputers-rebooted',
                     //Looking at mods
                     'jade', 'the-one-probe', 'wthit-forge',
                     //Recipe viewers
@@ -770,6 +762,8 @@ void setGenericCurseArtifactData(UploadArtifact artifact, Provider<RegularFile> 
     artifact.addModLoader('NeoForge')
     artifact.addJavaVersion("Java ${java_version}")
     artifact.addGameVersion(minecraft_version)
+    //Note: Use this instead of addEnvironment so that it works with java 21 still, as the version of CurseForgeGradle that supports addEnvironment needs java 25
+    artifact.addGameVersion('Client', 'Server')
 }
 
 UploadArtifact uploadSecondaryCurseProject(TaskPublishCurseForge task, long projectId, Provider<RegularFile> changelog, TaskProvider<Jar> sourceSetJar) {
@@ -804,6 +798,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
         versionNumber = "${basicVersion}"
         versionType = "${release_type}"
         gameVersions.add("${minecraft_version}")
+        environment = 'client_and_server'
         failSilently = true
         changelog.value(changelogFile.map(file -> file.asFile.text))
         uploadFile = jar
