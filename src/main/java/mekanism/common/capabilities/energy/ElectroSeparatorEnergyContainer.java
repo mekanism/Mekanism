@@ -43,10 +43,12 @@ public class ElectroSeparatorEnergyContainer extends MachineEnergyContainer<Tile
     }
 
     @Override
-    public void updateMaxEnergy(HolderGetter<Upgrade> upgrades) {
-        super.updateMaxEnergy(upgrades);
+    protected long calculateMaxEnergy(HolderGetter<Upgrade> upgrades) {
+        long maxEnergy = super.calculateMaxEnergy(upgrades);
         if (tile.isMakingHydrogen()) {
-            setMaxEnergy(getCapacityAsLong() * tile.getBaselineMaxOperations() * AttributeEnergy.STORAGE_MULTIPLIER);
+            //The base value already contains the storage multiplier, so only scale by the number of operations
+            return maxEnergy * tile.getBaselineMaxOperations();
         }
+        return maxEnergy;
     }
 }
