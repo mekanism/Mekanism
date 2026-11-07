@@ -254,7 +254,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY
 
     private List<RecipeHolder<RECIPE>> cachedRecipes = Collections.emptyList();
 
-    private MekanismRecipeType(Identifier name, MekanismRecipeBookTypes bookCategories,
+    public MekanismRecipeType(Identifier name, MekanismRecipeBookTypes bookCategories,
           Function<MekanismRecipeType<VANILLA_INPUT, BOOK_CATEGORY, BOOK_INFO, RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
         this.registryName = name;
         this.inputCache = inputCacheCreator.apply(this);
