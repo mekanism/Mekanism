@@ -20,15 +20,13 @@ public class GeneratorsCreativeTabs {
     public static final CreativeTabDeferredRegister CREATIVE_TABS = new CreativeTabDeferredRegister(MekanismGenerators.MODID, GeneratorsCreativeTabs::addToExistingTabs);
 
     public static final MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> GENERATORS = CREATIVE_TABS.registerMain(GeneratorsLang.MEKANISM_GENERATORS,
-          GeneratorsBlocks.HEAT_GENERATOR.getItemHolder(), builder ->
-                builder.backgroundTexture(MekanismGenerators.rl("textures/gui/creative_tab.png"))
-                      .withSearchBar(50)//Allow our tabs to be searchable for convenience purposes
-                      .withTabsBefore(MekanismCreativeTabs.MEKANISM.getId())
-                      .displayItems((displayParameters, output) -> {
-                          CreativeTabDeferredRegister.addToDisplay(GeneratorsItems.ITEMS, displayParameters, output);
-                          CreativeTabDeferredRegister.addToDisplay(GeneratorsBlocks.BLOCKS, displayParameters, output);
-                          CreativeTabDeferredRegister.addToDisplay(GeneratorsFluids.FLUIDS, displayParameters, output);
-                      })
+          GeneratorsBlocks.HEAT_GENERATOR.getItemHolder(), builder -> builder
+                .withTabsBefore(MekanismCreativeTabs.MEKANISM.getId())
+                .displayItems((displayParameters, output) -> {
+                    CreativeTabDeferredRegister.addToDisplay(GeneratorsItems.ITEMS, displayParameters, output);
+                    CreativeTabDeferredRegister.addToDisplay(GeneratorsBlocks.BLOCKS, displayParameters, output);
+                    CreativeTabDeferredRegister.addToDisplay(GeneratorsFluids.FLUIDS, displayParameters, output);
+                })
     );
 
     private static void addToExistingTabs(BuildCreativeModeTabContentsEvent event) {

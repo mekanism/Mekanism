@@ -37,14 +37,13 @@ public class MekanismCreativeTabs {
     public static final CreativeTabDeferredRegister CREATIVE_TABS = new CreativeTabDeferredRegister(Mekanism.MODID, MekanismCreativeTabs::addToExistingTabs);
 
     public static final MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> MEKANISM = CREATIVE_TABS.registerMain(MekanismLang.MEKANISM,
-          MekanismBlocks.METALLURGIC_INFUSER.getItemHolder(), builder ->
-                builder.withSearchBar()//Allow our tabs to be searchable for convenience purposes
-                      .displayItems((displayParameters, output) -> {
-                          CreativeTabDeferredRegister.addToDisplay(MekanismItems.ITEMS, displayParameters, output);
-                          CreativeTabDeferredRegister.addToDisplay(MekanismBlocks.BLOCKS, displayParameters, output);
-                          CreativeTabDeferredRegister.addToDisplay(MekanismFluids.FLUIDS, displayParameters, output);
-                          addFilledTanks(displayParameters, output, true);
-                      })
+          MekanismBlocks.METALLURGIC_INFUSER.getItemHolder(), builder -> builder
+                .displayItems((displayParameters, output) -> {
+                    CreativeTabDeferredRegister.addToDisplay(MekanismItems.ITEMS, displayParameters, output);
+                    CreativeTabDeferredRegister.addToDisplay(MekanismBlocks.BLOCKS, displayParameters, output);
+                    CreativeTabDeferredRegister.addToDisplay(MekanismFluids.FLUIDS, displayParameters, output);
+                    addFilledTanks(displayParameters, output, true);
+                })
     );
 
     private static void addFilledTanks(ItemDisplayParameters parameters, CreativeModeTab.Output output, boolean chemical) {
