@@ -317,8 +317,6 @@ public class CommonPlayerTickHandler {
                 int usage = Mth.ceil(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F);
                 //Protect against any mods that might be doing transactional logic around an entity jumping. Most likely this will never be necessary
                 try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
-                    //TODO - 26.3: Why did this used to check if it can use energy from the boots but then actually use it from the legs?
-                    // Is it that it was meant to use it from both, but instead just wasn't? (And that we still need to have the legs add their energy?)
                     if (propulsionModule.useAllEnergy(player, boots, usage, transaction)) {
                         // if we're sprinting with the boost module, limit the height
                         ItemAccess legs = ItemAccessUtils.forEntitySlot(player, EquipmentSlot.LEGS);

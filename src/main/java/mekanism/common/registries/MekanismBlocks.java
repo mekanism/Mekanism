@@ -276,8 +276,7 @@ public class MekanismBlocks {
           ));
     public static final BlockRegistryObject<BlockRadioactiveWasteBarrel, BlockItem> RADIOACTIVE_WASTE_BARREL = BLOCKS.registerSimpleItem("radioactive_waste_barrel", BlockRadioactiveWasteBarrel::new,
           properties -> properties.component(MekanismDataComponents.WASTE_DECAY, Unit.INSTANCE));
-    public static final BlockRegistryObject<BlockIndustrialAlarm, BlockItem> INDUSTRIAL_ALARM = BLOCKS.registerSimpleItem("industrial_alarm", BlockIndustrialAlarm::new,
-          properties -> properties.component(MekanismDataComponents.DETAILS, Unit.INSTANCE));
+    public static final BlockRegistryObject<BlockIndustrialAlarm, BlockItem> INDUSTRIAL_ALARM = BLOCKS.register("industrial_alarm", BlockIndustrialAlarm::new);
 
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityEnrichmentChamber, FactoryMachine<TileEntityEnrichmentChamber>>, ItemBlockTooltip> ENRICHMENT_CHAMBER =
           BLOCKS.register("enrichment_chamber", properties -> new BlockFactoryMachine<>(MekanismBlockTypes.ENRICHMENT_CHAMBER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),

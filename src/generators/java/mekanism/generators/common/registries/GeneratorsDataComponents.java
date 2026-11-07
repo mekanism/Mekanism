@@ -44,10 +44,10 @@ public class GeneratorsDataComponents {
 
     private static void registerTooltipAppenders(RegisterTooltipAppendersEvent event) {
         event.registerComponentAppenderAfter(FISSION_LOGIC_TYPE, MekanismDataComponents.FACTORY_TYPE.get(), ItemTooltipUtils.createTrivialAppender(FISSION_LOGIC_TYPE,
-              logicType -> GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(logicType.getColor(), logicType)
+              logicType -> GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translateColored(EnumColor.RED, logicType.getColor(), logicType)
         ));
         event.registerComponentAppenderAfter(FUSION_LOGIC_TYPE, FISSION_LOGIC_TYPE.get(), ItemTooltipUtils.createTrivialAppender(FUSION_LOGIC_TYPE,
-              logicType -> GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(logicType.getColor(), logicType)
+              logicType -> GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translateColored(EnumColor.RED, logicType.getColor(), logicType)
         ));
         event.registerComponentAppenderAfter(ACTIVE_COOLED, FUSION_LOGIC_TYPE.get(), ItemTooltipUtils.createTrivialAppender(ACTIVE_COOLED,
               activeCooled -> GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING.translate(EnumColor.RED, OnOff.of(activeCooled))
