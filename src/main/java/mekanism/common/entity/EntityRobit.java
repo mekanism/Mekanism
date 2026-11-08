@@ -38,6 +38,8 @@ import mekanism.api.security.IEntitySecurityUtils;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
+import mekanism.api.transaction.ITransactionHelper;
+import mekanism.api.transaction.RateLimitTracker;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
@@ -45,6 +47,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
@@ -74,6 +77,7 @@ import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import mekanism.common.registries.MekanismTicketTypes;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
@@ -162,8 +166,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
 
-    public static final long MAX_ENERGY = 100_000L;
-    private static final double DISTANCE_MULTIPLIER = 1.5D;
     //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
     //TODO: Allow for upgrades in the robit?
     private static final int ticksRequired = 5 * SharedConstants.TICKS_PER_SECOND;
@@ -206,7 +208,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
             onContentsChanged();
             recipeCacheLookupMonitor.unpause();
         };
-        energyContainer = BasicEnergyContainer.input(MAX_ENERGY, recipeCacheUnpauseListener);
+        //Apply a rate limit for how fast the robit can charge
+        RateLimitTracker chargingRateLimit = ITransactionHelper.INSTANCE.createInternalBypassRateLimit(() -> level().getGameTime(),
+              EnergyUtils.calculateRate(MekanismConfig.gear.robitChargeRate, MekanismConfig.gear.robitMaxEnergy));
+        energyContainer = VariableCapacityEnergyContainer.create(MekanismConfig.gear.robitMaxEnergy, BasicEnergyContainer.notExternal, ConstantPredicates.alwaysTrue(),
+              chargingRateLimit, null, recipeCacheUnpauseListener);
 
         inventorySlots = new ArrayList<>();
         inventoryContainerSlots = new ArrayList<>();
@@ -271,7 +277,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     private int getRoundedTravelEnergy() {
-        return Mth.ceil(DISTANCE_MULTIPLIER * Math.sqrt(distanceToSqr(xo, yo, zo)));
+        return Mth.ceil(1.5 * Math.sqrt(distanceToSqr(xo, yo, zo)));
     }
 
     @Override

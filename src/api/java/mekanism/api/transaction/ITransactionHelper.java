@@ -34,6 +34,13 @@ public interface ITransactionHelper {
     }
 
     /// @param gameTimeSupplier Supplier for the current game time. Every time this value returns a different result than the previous time, the rate limit will be reset.
+    /// @param rateLimit        Transfer rate limit per tick when not using [internal automation][AutomationType#INTERNAL].
+    ///
+    /// @return A rate limit tracker that allows the given rate limit to be used for non-internal automation types, resetting every tick. The internal automation type
+    /// will behave as if it has an [infinite rate limit][#infiniteRateLimit]
+    RateLimitTracker createInternalBypassRateLimit(LongSupplier gameTimeSupplier, IntSupplier rateLimit);
+
+    /// @param gameTimeSupplier Supplier for the current game time. Every time this value returns a different result than the previous time, the rate limit will be reset.
     /// @param rateLimit        Transfer rate limit per tick when not using [manual automation][AutomationType#MANUAL].
     ///
     /// @return A rate limit tracker that allows the given rate limit to be used for non-manual automation types, resetting every tick. The manual automation type will

@@ -3,10 +3,14 @@ package mekanism.common.util;
 import com.google.common.primitives.Ints;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.common.component.containers.energy.ComponentBackedEnergyHandler;
+import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.component.containers.energy.ComponentBackedEnergyHandler;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergyHandlerTarget;
 import net.minecraft.core.Direction;
@@ -34,6 +38,10 @@ public final class EnergyUtils {
         }
         //TODO - 26.3: Do we want a way to wrap energy handlers into an energy container for purposes of things like extractManual?
         return null;
+    }
+
+    public static IntSupplier calculateRate(DoubleSupplier percentageRate, LongSupplier maxEnergy) {
+        return () -> Math.max(1, MathUtils.clampToInt(maxEnergy.getAsLong() * percentageRate.getAsDouble() / 100));
     }
 
     /// Emits energy from the given container split among the given collection of targets.
