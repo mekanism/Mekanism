@@ -15,7 +15,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
-public class FluidTankFluidTank extends BasicFluidTank {
+public class FluidTankFluidTank extends VariableCapacityFluidTank {
 
     public static FluidTankFluidTank create(TileEntityFluidTank tile, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Fluid tank tile entity cannot be null");
@@ -28,7 +28,7 @@ public class FluidTankFluidTank extends BasicFluidTank {
     private FluidTankFluidTank(TileEntityFluidTank tile, @Nullable IContentsListener listener) {
         LongSupplier gameTimeSupplier = tile::getGameTime;
         IntSupplier rateLimit = tile.tier::getTransferRate;
-        super(tile.tier.getCapacity(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+        super(tile.tier::getCapacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
               //Only limit the internal rate to change the speed at which this can be filled or drained by an item stored in a slot
               ITransactionHelper.INSTANCE.createInternalOnlyRateLimit(gameTimeSupplier, rateLimit),
               ITransactionHelper.INSTANCE.createInternalOnlyRateLimit(gameTimeSupplier, rateLimit), listener);

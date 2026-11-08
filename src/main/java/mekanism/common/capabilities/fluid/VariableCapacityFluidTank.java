@@ -27,6 +27,10 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
         return create(capacity, multiblock.formedBiPred(), multiblock.notExternalFormedBiPred(), validator, listener);
     }
 
+    public static VariableCapacityFluidTank create(LongSupplier capacity, @Nullable IContentsListener listener) {
+        return create(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener);
+    }
+
     public static VariableCapacityFluidTank input(LongSupplier capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         return create(capacity, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), validator, listener);
     }

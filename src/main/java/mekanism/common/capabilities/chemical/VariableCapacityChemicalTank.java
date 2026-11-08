@@ -7,56 +7,59 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.lib.multiblock.MultiblockData;
-import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 public class VariableCapacityChemicalTank extends BasicChemicalTank {
 
-    public static IChemicalTank createAllValid(LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
+    public static VariableCapacityChemicalTank createAllValid(LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
           BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
         return create(capacity, canExtract, canInsert, validator, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
     }
 
-    public static IChemicalTank output(LongSupplier capacity, Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
+    public static VariableCapacityChemicalTank output(LongSupplier capacity, Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Chemical validity check cannot be null");
         return create(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.internalOnly(), validator, null, listener);
     }
 
-    public static IChemicalTank create(MultiblockData multiblock, LongSupplier capacity, Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
+    public static VariableCapacityChemicalTank create(MultiblockData multiblock, LongSupplier capacity, Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
         return create(capacity, multiblock.formedBiPred(), multiblock.formedBiPred(), validator, null, listener);
     }
 
-    public static IChemicalTank create(LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
+    public static VariableCapacityChemicalTank create(LongSupplier capacity, @Nullable IContentsListener listener) {
+        return create(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener);
+    }
+
+    public static VariableCapacityChemicalTank create(LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
           BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
         return create(capacity, canExtract, canInsert, validator, null, listener);
     }
 
-    public static IChemicalTank input(MultiblockData multiblock, LongSupplier capacity, Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
+    public static VariableCapacityChemicalTank input(MultiblockData multiblock, LongSupplier capacity, Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
         return input(multiblock, capacity, validator, null, listener);
     }
 
-    public static IChemicalTank input(MultiblockData multiblock, LongSupplier capacity, Predicate<ChemicalResource> validator, @Nullable ChemicalAttributeValidator attributeValidator,
-          @Nullable IContentsListener listener) {
+    public static VariableCapacityChemicalTank input(MultiblockData multiblock, LongSupplier capacity, Predicate<ChemicalResource> validator,
+          @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         return create(capacity, multiblock.notExternalFormedBiPred(), multiblock.formedBiPred(), validator, attributeValidator, listener);
     }
 
-    public static IChemicalTank output(MultiblockData multiblock, LongSupplier capacity, Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
+    public static VariableCapacityChemicalTank output(MultiblockData multiblock, LongSupplier capacity, Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
         return output(multiblock, capacity, validator, null, listener);
     }
 
-    public static IChemicalTank output(MultiblockData multiblock, LongSupplier capacity, Predicate<ChemicalResource> validator,
+    public static VariableCapacityChemicalTank output(MultiblockData multiblock, LongSupplier capacity, Predicate<ChemicalResource> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         return create(capacity, multiblock.formedBiPred(), multiblock.notExternalFormedBiPred(), validator, attributeValidator, listener);
     }
 
-    public static IChemicalTank create(LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
+    public static VariableCapacityChemicalTank create(LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
           BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
