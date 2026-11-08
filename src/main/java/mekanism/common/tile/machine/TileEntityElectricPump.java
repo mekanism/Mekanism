@@ -375,7 +375,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     public InteractionResult onSneakRightClick(Level level, Player player) {
         reset();
         player.sendOverlayMessage(MekanismLang.PUMP_RESET.translate());
-        return InteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override

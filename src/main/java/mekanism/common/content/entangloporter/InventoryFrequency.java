@@ -18,7 +18,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
@@ -27,8 +26,10 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
+import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.EnergyNetwork;
@@ -125,10 +126,10 @@ public class InventoryFrequency extends Frequency implements IContentsListener {
     }
 
     private void presetVariables() {
-        fluidTanks = Collections.singletonList(storedFluid = BasicFluidTank.create(MekanismConfig.general.entangloporterFluidBuffer.get(), this));
-        chemicalTanks = Collections.singletonList(storedChemical = BasicChemicalTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
+        fluidTanks = Collections.singletonList(storedFluid = VariableCapacityFluidTank.create(MekanismConfig.general.entangloporterFluidBuffer, this));
+        chemicalTanks = Collections.singletonList(storedChemical = VariableCapacityChemicalTank.create(MekanismConfig.general.entangloporterChemicalBuffer, this));
         inventorySlots = Collections.singletonList(storedItem = EntangloporterInventorySlot.create(this));
-        storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.getAsLong(), this);
+        storedEnergy = VariableCapacityEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer, this);
         storedHeat = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, HeatAPI.DEFAULT_INVERSE_CONDUCTION, 1_000, null, this);
     }
 

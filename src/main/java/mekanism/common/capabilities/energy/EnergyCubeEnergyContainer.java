@@ -15,7 +15,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
-public class EnergyCubeEnergyContainer extends BasicEnergyContainer {
+public class EnergyCubeEnergyContainer extends VariableCapacityEnergyContainer {
 
     public static EnergyCubeEnergyContainer create(TileEntityEnergyCube tile, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Energy cube tile cannot be null");
@@ -31,7 +31,7 @@ public class EnergyCubeEnergyContainer extends BasicEnergyContainer {
 
     private EnergyCubeEnergyContainer(EnergyCubeTier tier, @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter,
           @Nullable IContentsListener listener) {
-        super(tier.getCapacity(), ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), insertionRateLimiter, extractionRateLimiter, listener);
+        super(tier::getCapacity, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), insertionRateLimiter, extractionRateLimiter, listener);
         isCreative = tier.isCreative();
     }
 

@@ -96,12 +96,10 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
 
     @Override
     public InteractionResult onSneakRightClick(Level level, Player player) {
-        if (!level.isClientSide()) {
-            boolean oldMode = getActive();
-            setActive(!oldMode);
-            player.sendOverlayMessage(GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)));
-        }
-        return InteractionResult.SUCCESS;
+        boolean oldMode = getActive();
+        setActive(!oldMode);
+        player.sendOverlayMessage(GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)));
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override

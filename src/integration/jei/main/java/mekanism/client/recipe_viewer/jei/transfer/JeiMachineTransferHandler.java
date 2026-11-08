@@ -150,7 +150,7 @@ public abstract class JeiMachineTransferHandler<CONTAINER extends MekanismContai
         }
     }
 
-    protected class JeiPlacementHelper implements RecipePlacementHelper<TransferResult> {
+    protected static class JeiPlacementHelper implements RecipePlacementHelper<TransferResult> {
 
         private final ResourceHandler<ItemResource> mainSlots;
         private final ResourceKey<Recipe<?>> recipeKey;

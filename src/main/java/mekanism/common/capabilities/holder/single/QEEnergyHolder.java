@@ -1,7 +1,7 @@
 package mekanism.common.capabilities.holder.single;
 
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -13,7 +13,7 @@ import org.jspecify.annotations.Nullable;
 
 public class QEEnergyHolder extends QESingleContainerHolder<IEnergyContainer> {
 
-    private final Lazy<IEnergyContainer> clientContainer = Lazy.of(() -> BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.getAsLong(), null));
+    private final Lazy<IEnergyContainer> clientContainer = Lazy.of(() -> VariableCapacityEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer, null));
 
     public QEEnergyHolder(TileEntityQuantumEntangloporter entangloporter) {
         super(entangloporter, TransmissionType.ENERGY, SingleConfigHolder.ENERGY_SLOT_PARSER, InventoryFrequency::getEnergyContainer);

@@ -5,9 +5,8 @@ import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalAttributeValidator;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.transaction.ITransactionHelper;
 import mekanism.api.transaction.RateLimitTracker;
@@ -18,7 +17,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
-public class ChemicalTankChemicalTank extends BasicChemicalTank {
+public class ChemicalTankChemicalTank extends VariableCapacityChemicalTank {
 
     public static ChemicalTankChemicalTank create(TileEntityChemicalTank tile, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Chemical tank tile cannot be null");
@@ -34,8 +33,7 @@ public class ChemicalTankChemicalTank extends BasicChemicalTank {
 
     private ChemicalTankChemicalTank(ChemicalTankTier tier, @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter,
           @Nullable IContentsListener listener) {
-        //TODO - 26.3: Should this and the one for fluid tanks and energy cubes be variable capacity instead of just caching the capacity at time of creation?
-        super(tier.getCapacity(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), insertionRateLimiter,
+        super(tier::getCapacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), insertionRateLimiter,
               extractionRateLimiter, tier.isCreative() ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
         isCreative = tier.isCreative();
     }

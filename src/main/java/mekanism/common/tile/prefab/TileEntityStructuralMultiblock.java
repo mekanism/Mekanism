@@ -186,9 +186,6 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
 
     @Override
     public InteractionResult onRightClick(Level level, Player player) {
-        if (level.isClientSide()) {
-            return InteractionResult.PASS;
-        }
         for (Structure structure : structures.values()) {
             if (structure.getController() != null) {
                 MultiblockData multiblock = getMultiblockData(structure);
