@@ -15,6 +15,7 @@ import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jspecify.annotations.Nullable;
 
@@ -37,8 +38,18 @@ public class EntityObsidianTNT extends PrimedTnt {
     }
 
     @Override
-    public boolean isPushable() {
-        return true;
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        //If any of the values were missing and set to the default, instead set them to our default
+        if (input.read("block_state", BlockState.CODEC).isEmpty()) {
+            setBlockState(AdditionsBlocks.OBSIDIAN_TNT.defaultState());
+        }
+        if (input.getShortOr("fuse", (short) -2) == -2) {
+            setFuse(MekanismAdditionsConfig.additions.obsidianTNTDelay.get());
+        }
+        if (input.getFloatOr("explosion_power", -1F) < 0) {
+            this.explosionPower = MekanismAdditionsConfig.additions.obsidianTNTBlastRadius.get();
+        }
     }
 
     @Override
@@ -50,17 +61,16 @@ public class EntityObsidianTNT extends PrimedTnt {
     }
 
     @Override
-    public BlockState getBlockState() {
-        //Note: Theoretically this shouldn't be needed to make it render correctly as we call setBlockState in the constructor,
-        // but that doesn't seem to be enough
-        return AdditionsBlocks.OBSIDIAN_TNT.defaultState();
-    }
-
-    @Override
     public EntityType<?> getType() {
         return AdditionsEntityTypes.OBSIDIAN_TNT.value();
     }
 
+    @Override
+    public ItemStack getPickResult() {
+        return new ItemStack(AdditionsBlocks.OBSIDIAN_TNT);
+    }
+
+    //TODO: Remove the below overrides once https://github.com/neoforged/NeoForge/pull/3721 is merged
     @Override
     public Holder<EntityType<?>> typeHolder() {
         return getType().builtInRegistryHolder();
@@ -74,10 +84,5 @@ public class EntityObsidianTNT extends PrimedTnt {
     @Override
     public Optional<ResourceKey<LootTable>> getLootTable() {
         return getType().getDefaultLootTable();
-    }
-
-    @Override
-    public ItemStack getPickResult() {
-        return new ItemStack(AdditionsBlocks.OBSIDIAN_TNT);
     }
 }
