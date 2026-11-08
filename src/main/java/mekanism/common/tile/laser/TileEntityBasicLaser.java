@@ -12,7 +12,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.energy.LaserEnergyContainer;
+import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -75,7 +75,7 @@ import org.jspecify.annotations.Nullable;
 public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
-    protected LaserEnergyContainer energyContainer;
+    protected VariableCapacityEnergyContainer energyContainer;
     @Nullable
     @SyntheticComputerMethod(getter = "getDiggingPos")
     private BlockPos digging;
@@ -498,7 +498,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         lastFired = input.getIntOr(SerializationConstants.LAST_FIRED, 0);
     }
 
-    public LaserEnergyContainer energyContainer() {
+    public VariableCapacityEnergyContainer energyContainer() {
         return energyContainer;
     }
 }
