@@ -67,7 +67,7 @@ public class EnergyContainerBuilder {
             LongSupplier scaledCapacity = () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, maxEnergy);
             return new ComponentBackedEnergyContainer(
                   attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
-                  scaledCapacity, EnergyUtils.calculateRate(percentageRate, maxEnergy)
+                  scaledCapacity, EnergyUtils.calculateRate(percentageRate, scaledCapacity)
             );
         });
     }
