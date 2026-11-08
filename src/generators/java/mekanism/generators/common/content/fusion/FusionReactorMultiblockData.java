@@ -134,7 +134,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded",
                                                                                         "getDTFuelFilledPercentage"}, docPlaceholder = "fuel tank")
     public IChemicalTank fuelTank;
-    @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB}, getter = "getInjectionRate")
+    @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB}, getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = DEFAULT_INJECTION_RATE;
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB})
     private int lastBurned;
@@ -465,8 +465,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
             if (!isClientSide()) {
                 ContainerType.FLUID.clampContents(waterTank, transaction);
                 ContainerType.CHEMICAL.clampContents(steamTank, transaction);
+                markForSave();
             }
-            markForSave();
         }
     }
 
