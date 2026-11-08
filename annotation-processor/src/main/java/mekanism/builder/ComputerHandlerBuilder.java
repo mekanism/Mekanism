@@ -179,7 +179,6 @@ public class ComputerHandlerBuilder {
     /// @param isPrivate        modifiers checked previously
     /// @param isStatic         modifier checked previously
     /// @param annotationValues an annotation helper for this annotation's values
-    @SuppressWarnings("unchecked")
     private void handleAtWrappingComputerMethod(Element annotatedElement, String annotatedName, boolean isPrivate, boolean isStatic, AnnotationHelper annotationValues) {
         //get the wrapper type and find its static methods
         TypeElement wrapperTypeEl;
