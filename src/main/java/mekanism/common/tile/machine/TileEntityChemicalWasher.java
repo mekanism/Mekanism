@@ -110,7 +110,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
-              .setCanTankEject(tank -> tank != inputTank);
+              .setCanChemicalTankEject((type, tank) -> tank != inputTank);
 
         slurryInputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         fluidInputHandler = InputHelper.getInputHandler(fluidTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);

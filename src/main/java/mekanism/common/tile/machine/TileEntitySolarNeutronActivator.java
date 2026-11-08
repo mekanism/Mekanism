@@ -93,7 +93,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
-              .setCanTankEject(tank -> tank != inputTank);
+              .setCanChemicalTankEject((type, tank) -> tank != inputTank);
         inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
