@@ -107,63 +107,68 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
-        Level world = context.getLevel();
-        if (!world.isClientSide() && player != null) {
-            BlockPos pos = context.getClickedPos();
-            Direction side = context.getClickedFace();
-            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-            ConfiguratorMode mode = getMode(context.getItemInHand());
-            if (mode.isConfigurating()) { //Configurate
-                TransmissionType transmissionType = Objects.requireNonNull(mode.getTransmission(), "Configurating state requires transmission type");
-                if (tile instanceof ISideConfiguration config && config.getConfig().supports(transmissionType)) {
-                    ConfigInfo info = config.getConfig().getConfig(transmissionType);
-                    if (info != null) {
-                        RelativeSide relativeSide = RelativeSide.fromDirections(config.getDirection(), side);
-                        DataType dataType = info.getDataType(relativeSide);
-                        if (!player.isShiftKeyDown()) {
-                            player.sendOverlayMessage(MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
-                                  dataType, dataType.getColor().getColoredName()));
-                        } else if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
-                            return InteractionResult.FAIL;
-                        } else {
-                            DataType old = dataType;
-                            dataType = info.incrementDataType(relativeSide);
-                            if (dataType != old) {
-                                player.sendOverlayMessage(MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
-                                      dataType, dataType.getColor().getColoredName()));
-                                config.getConfig().sideChanged(transmissionType, relativeSide);
-                            }
-                        }
+        if (player == null) {
+            return InteractionResult.PASS;
+        }
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction side = context.getClickedFace();
+        BlockEntity tile = WorldUtils.getTileEntity(level, pos);
+        if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, level, pos, tile)) {
+            return InteractionResult.FAIL;
+        }
+        ConfiguratorMode mode = getMode(context.getItemInHand());
+        if (mode.isConfigurating()) { //Configurate
+            TransmissionType transmissionType = Objects.requireNonNull(mode.getTransmission(), "Configurating state requires transmission type");
+            if (tile instanceof ISideConfiguration config && config.getConfig().supports(transmissionType)) {
+                ConfigInfo info = config.getConfig().getConfig(transmissionType);
+                if (info == null) {
+                    return InteractionResult.PASS;
+                } else if (level.isClientSide()) {
+                    //Let the server handle the hand swing animation if necessary
+                    return InteractionResult.SUCCESS_SERVER;
+                }
+                RelativeSide relativeSide = RelativeSide.fromDirections(config.getDirection(), side);
+                DataType dataType = info.getDataType(relativeSide);
+                if (player.isShiftKeyDown()) {
+                    DataType old = dataType;
+                    dataType = info.incrementDataType(relativeSide);
+                    if (dataType != old) {
+                        player.sendOverlayMessage(MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
+                              dataType, dataType.getColor().getColoredName()));
+                        config.getConfig().sideChanged(transmissionType, relativeSide);
                     }
-                    return InteractionResult.SUCCESS;
+                } else {
+                    player.sendOverlayMessage(MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
+                          dataType, dataType.getColor().getColoredName()));
                 }
-                if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
-                    return InteractionResult.FAIL;
+                return InteractionResult.SUCCESS_SERVER;
+            }
+            IConfigurable config = WorldUtils.getCapability(level, Capabilities.CONFIGURABLE, pos, null, tile, side);
+            if (config != null) {
+                if (level.isClientSide()) {
+                    //Let the server handle the hand swing animation if necessary
+                    return InteractionResult.SUCCESS_SERVER;
+                } else if (player.isShiftKeyDown()) {
+                    return config.onSneakRightClick(level, player);
                 }
-                IConfigurable config = WorldUtils.getCapability(world, Capabilities.CONFIGURABLE, pos, null, tile, side);
-                if (config != null) {
-                    if (player.isShiftKeyDown()) {
-                        return config.onSneakRightClick(world, player);
-                    }
-                    return config.onRightClick(world, player);
-                }
-            } else if (mode == ConfiguratorMode.EMPTY) { //Empty
-                if (tile instanceof TileEntityMekanism inv && inv.hasInventory()) {
-                    if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
+                return config.onRightClick(level, player);
+            }
+        } else if (mode == ConfiguratorMode.EMPTY) { //Empty
+            if (tile instanceof TileEntityMekanism inv && inv.hasInventory()) {
+                if (tile instanceof TileEntityBin bin && bin.getTier().isCreative()) {
+                    //If the tile is a creative bin only allow clearing it if the player is in creative
+                    // and don't bother popping the stack out
+                    if (!player.isCreative()) {
                         return InteractionResult.FAIL;
-                    } else if (tile instanceof TileEntityBin bin && bin.getTier().isCreative()) {
-                        //If the tile is a creative bin only allow clearing it if the player is in creative
-                        // and don't bother popping the stack out
-                        if (player.isCreative()) {
-                            ContainerType.ITEM.clearContents(bin.getBinSlot(), null);
-                            return InteractionResult.SUCCESS;
-                        }
-                        return InteractionResult.FAIL;
+                    } else if (!level.isClientSide()) {
+                        ContainerType.ITEM.clearContents(bin.getBinSlot(), null);
                     }
+                } else if (!level.isClientSide()) {
                     //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
                     for (IInventorySlot inventorySlot : inv.getInventorySlots()) {
                         if (!inventorySlot.isEmpty()) {
-                            InventoryUtils.dropStack(world, pos, side, inventorySlot.resource(), inventorySlot.amountAsLong(), (lvl, p, face, item) -> {
+                            InventoryUtils.dropStack(level, pos, side, inventorySlot.resource(), inventorySlot.amountAsLong(), (lvl, p, face, item) -> {
                                 if (face == null) {//Note: Theoretically this should never be null
                                     Block.popResource(lvl, p, item);
                                 } else {
@@ -173,21 +178,17 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                             ContainerType.ITEM.clearContents(inventorySlot, null);
                         }
                     }
-                    return InteractionResult.SUCCESS;
                 }
-            } else if (mode == ConfiguratorMode.ROTATE) { //Rotate
-                if (tile instanceof TileEntityMekanism tileMekanism) {
-                    if (!tileMekanism.isDirectional()) {
-                        return InteractionResult.PASS;
-                    } else if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
-                        return InteractionResult.FAIL;
-                    } else if (Attribute.matches(tileMekanism.getBlockHolder(), AttributeStateFacing.class, AttributeStateFacing::canRotate)) {
+                return InteractionResult.SUCCESS;
+            }
+        } else if (mode == ConfiguratorMode.ROTATE) { //Rotate
+            if (tile instanceof TileEntityMekanism tileMekanism && tileMekanism.isDirectional()) {
+                if (!level.isClientSide()) {
+                    if (Attribute.matches(tileMekanism.getBlockHolder(), AttributeStateFacing.class, AttributeStateFacing::canRotate)) {
                         tileMekanism.setFacing(player.isShiftKeyDown() ? side.getOpposite() : side);
                     }
                 }
                 return InteractionResult.SUCCESS;
-            } else if (mode == ConfiguratorMode.WRENCH) { //Wrench
-                return InteractionResult.PASS;
             }
         }
         return InteractionResult.PASS;

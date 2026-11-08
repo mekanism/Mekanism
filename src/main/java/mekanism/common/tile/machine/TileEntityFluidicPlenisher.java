@@ -291,7 +291,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public InteractionResult onSneakRightClick(Level level, Player player) {
         reset();
         player.sendOverlayMessage(MekanismLang.PLENISHER_RESET.translate());
-        return InteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override

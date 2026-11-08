@@ -88,12 +88,10 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     @Override
     public InteractionResult onSneakRightClick(Level level, Player player) {
-        if (!level.isClientSide()) {
-            FissionPortMode mode = getMode().getNext();
-            setMode(level, mode);
-            player.sendOverlayMessage(MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode));
-        }
-        return InteractionResult.SUCCESS;
+        FissionPortMode mode = getMode().getNext();
+        setMode(level, mode);
+        player.sendOverlayMessage(MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode));
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override

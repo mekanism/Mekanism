@@ -232,11 +232,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     @Override
     public InteractionResult onSneakRightClick(Level level, Player player) {
-        if (!level.isClientSide()) {
-            setActive(!getActive());
-            level.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.3F, 1);
-        }
-        return InteractionResult.SUCCESS;
+        setActive(!getActive());
+        level.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.3F, 1);
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override
