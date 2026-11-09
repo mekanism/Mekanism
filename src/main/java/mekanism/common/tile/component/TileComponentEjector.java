@@ -210,14 +210,14 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             }
                             case FluidSlotInfo fluidSlotInfo when type == TransmissionType.FLUID -> {
                                 for (IExtendedFluidTank tank : fluidSlotInfo.getTanks()) {
-                                    if (!tank.isEmpty() && (canFluidTankEject == null || canFluidTankEject.test(type, tank))) {
+                                    if (!tank.isEmpty() && (canFluidTankEject == null || canFluidTankEject.test(dataType, tank))) {
                                         addData(outputData, tank, outputSides);
                                     }
                                 }
                             }
                             case EnergySlotInfo energySlotInfo when type == TransmissionType.ENERGY -> {
                                 for (IEnergyContainer container : energySlotInfo.getContainers()) {
-                                    if (!container.isEmpty() && (canEnergyContainerEject == null || canEnergyContainerEject.test(type, container))) {
+                                    if (!container.isEmpty() && (canEnergyContainerEject == null || canEnergyContainerEject.test(dataType, container))) {
                                         addData(outputData, container, outputSides);
                                     }
                                 }
