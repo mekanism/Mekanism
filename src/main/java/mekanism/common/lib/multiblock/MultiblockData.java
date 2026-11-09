@@ -360,7 +360,10 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
                         cuboidValidator.loadCuboid(bounds);
                         for (Direction direction : EnumUtils.DIRECTIONS) {
                             BlockPos neighborPos = pos.relative(direction);
-                            if (cuboidValidator.getStructureRequirement(neighborPos, bounds) == StructureRequirement.INNER) {
+                            CuboidRelative relativeLocation = bounds.getRelativeLocation(neighborPos);
+                            if (relativeLocation == CuboidRelative.INSIDE) {
+                                return neighborPos;
+                            } else if (relativeLocation.isWall() && cuboidValidator.getStructureRequirement(neighborPos, bounds) == StructureRequirement.INNER) {
                                 return neighborPos;
                             }
                         }
