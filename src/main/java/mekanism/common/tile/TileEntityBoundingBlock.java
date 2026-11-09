@@ -1,7 +1,10 @@
 package mekanism.common.tile;
 
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import mekanism.api.SerializationConstants;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.common.Mekanism;
@@ -20,6 +23,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Nameable;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,6 +31,10 @@ import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jspecify.annotations.Nullable;
@@ -34,6 +42,9 @@ import org.jspecify.annotations.Nullable;
 /// Multi-block used by wind turbines, solar panels, and other machines
 public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUpgradeTile, Nameable {
 
+    private final Map<ProxiedShapeType, VoxelShape> proxiedShapes = new EnumMap<>(ProxiedShapeType.class);
+    @Nullable
+    private BlockState lastMainStateProxied;
     @Nullable
     private Vec3i mainPosOffset;
     private int currentRedstoneLevel;
@@ -43,7 +54,12 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     public void setMainLocationOffset(@Nullable Vec3i offset) {
-        mainPosOffset = offset;
+        //Only clear the shapes if the offset changed
+        if (!Objects.equals(mainPosOffset, offset)) {
+            mainPosOffset = offset;
+            lastMainStateProxied = null;
+            proxiedShapes.clear();
+        }
     }
 
     @Nullable
@@ -159,7 +175,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        mainPosOffset = input.read(SerializationConstants.OFFSET, Vec3i.CODEC).orElse(null);
+        setMainLocationOffset(input.read(SerializationConstants.OFFSET, Vec3i.CODEC).orElse(null));
         currentRedstoneLevel = input.getIntOr(SerializationConstants.REDSTONE, 0);
     }
 
@@ -180,7 +196,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.loadAdditional(input);//we do NOT call super directly, as it will call a load (like from disk) and BEs will never see their changes
-        mainPosOffset = input.read(SerializationConstants.OFFSET, Vec3i.CODEC).orElse(null);
+        setMainLocationOffset(input.read(SerializationConstants.OFFSET, Vec3i.CODEC).orElse(null));
         currentRedstoneLevel = input.getIntOr(SerializationConstants.REDSTONE, 0);
     }
 
@@ -214,6 +230,30 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         return getMainTile() instanceof Nameable mainTile ? mainTile.getCustomName() : null;
     }
 
+    public VoxelShape proxyShape(BlockGetter level, ProxiedShapeType proxiedShapeType, @Nullable CollisionContext context) {
+        if (mainPosOffset == null) {
+            //If we don't have a main pos, then act as if the block is empty so that we can move into it properly
+            return Shapes.empty();
+        }
+        BlockPos mainPos = worldPosition.offset(mainPosOffset);
+        BlockState mainState = level.getBlockState(mainPos);
+        if (lastMainStateProxied != mainState) {
+            //If the state changed, such as because it rotated, we need to clear the proxied shape
+            lastMainStateProxied = mainState;
+            proxiedShapes.clear();
+        }
+        //TODO: Allow resetting if collision context changed and the main block cares about that, currently none of our blocks utilize the collision context
+        VoxelShape cachedShape = proxiedShapes.get(proxiedShapeType);
+        if (cachedShape == null) {
+            VoxelShape shape = proxiedShapeType.getShape(mainState, level, mainPos, context);
+            cachedShape = shape.move(mainPosOffset);
+            //Only return the sub part of the shape that is for this specific block
+            cachedShape = Shapes.join(cachedShape, Shapes.block(), BooleanOp.AND);
+            proxiedShapes.put(proxiedShapeType, cachedShape);
+        }
+        return cachedShape;
+    }
+
     public static <CAP> void proxyCapability(RegisterCapabilitiesEvent event, BlockCapability<CAP, @Nullable Direction> capability) {
         event.registerBlock(capability, (_, _, _, blockEntity, context) -> {
             if (blockEntity instanceof TileEntityBoundingBlock bounding) {
@@ -238,5 +278,23 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
             }
             return null;
         }, MekanismBlocks.BOUNDING_BLOCK.value());
+    }
+
+    public enum ProxiedShapeType {
+        SHAPE,
+        COLLISION,
+        VISUAL,
+        BLOCK_SUPPORT,
+        INTERACTION;
+
+        public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, @Nullable CollisionContext context) {
+            return switch (this) {
+                case SHAPE -> state.getShape(level, pos, Objects.requireNonNull(context));
+                case COLLISION -> state.getCollisionShape(level, pos, Objects.requireNonNull(context));
+                case VISUAL -> state.getVisualShape(level, pos, Objects.requireNonNull(context));
+                case BLOCK_SUPPORT -> state.getBlockSupportShape(level, pos);
+                case INTERACTION -> state.getInteractionShape(level, pos);
+            };
+        }
     }
 }

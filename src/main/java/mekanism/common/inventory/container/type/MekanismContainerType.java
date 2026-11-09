@@ -82,8 +82,10 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
             throw new UnsupportedOperationException("This method is only supported on the client.");
         }
         BlockPos pos = TileContainerProvider.TILE_DATA.decode(buf);
-        TILE tile = WorldUtils.getTileEntity(type, Minecraft.getInstance().level, pos);
+        TILE tile = WorldUtils.getTileEntity(type, Minecraft.getInstance().level, pos, true);
         if (tile == null) {
+            //TODO - 26.3: If spam breaking and placing in creative this can occur in single player at least,
+            // is there some way we can just make the gui fail to open instead?
             throw new DecoderException("Client could not locate tile at " + pos + " for tile container. "
                                        + "This is likely caused by a mod breaking client side tile lookup");
         }

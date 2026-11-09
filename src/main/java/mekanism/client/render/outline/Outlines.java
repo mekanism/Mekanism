@@ -15,11 +15,13 @@ import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,6 +29,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -64,9 +68,11 @@ public class Outlines {
         if (!blockState.isAir() && level.getWorldBorder().isWithinBounds(pos)) {
             BlockPos actualPos = pos;
             BlockState actualState = blockState;
+            boolean isBounding = false;
             if (blockState.is(MekanismBlocks.BOUNDING_BLOCK)) {
                 BlockPos mainPos = BlockBounding.getMainBlockPos(level, pos);
                 if (mainPos != null) {
+                    isBounding = true;
                     actualPos = mainPos;
                     actualState = level.getBlockState(actualPos);
                 }
@@ -88,6 +94,24 @@ public class Outlines {
                     List<Line> outlinesFromModel = getOutlinesFromModel(level, actualPos, actualState);
                     event.addCustomRenderer(new MekanismOutlineRenderer(actualPos, outlinesFromModel));
                 }
+            } else if (isBounding) {
+                //If there is no custom selection box, just use the main block's selection box so that the full outline is rendered
+                CollisionContext context = event.getCollisionContext();
+                boolean highContrast = event.isHighContrast();
+                BlockStateModel blockStateModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(actualState);
+                boolean isBlockTranslucent = blockStateModel.hasMaterialFlag(level, actualPos, actualState, BakedQuad.FLAG_TRANSLUCENT);
+                VoxelShape shape = actualState.getShape(level, actualPos, context);
+                BlockOutlineRenderState proxyState;
+                if (SharedConstants.DEBUG_SHAPES) {
+                    VoxelShape collisionShape = actualState.getCollisionShape(level, actualPos, context);
+                    VoxelShape occlusionShape = actualState.getOcclusionShape();
+                    VoxelShape interactionShape = actualState.getInteractionShape(level, actualPos);
+                    proxyState = new BlockOutlineRenderState(actualPos, isBlockTranslucent, highContrast, shape, collisionShape, occlusionShape, interactionShape,
+                          Collections.emptyList());
+                } else {
+                    proxyState = new BlockOutlineRenderState(actualPos, isBlockTranslucent, highContrast, shape, Collections.emptyList());
+                }
+                event.addCustomRenderer(new ProxyOutlineRenderer(proxyState, true));
             }
         }
         profiler.pop();

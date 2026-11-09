@@ -12,7 +12,7 @@ import mekanism.client.render.hud.RadiationOverlay;
 import mekanism.client.render.lib.effect.BoltFeatureRenderer;
 import mekanism.client.render.lib.effect.BoltFeatureRenderer.BoltRenderState;
 import mekanism.client.render.lib.effect.BoltRenderer;
-import mekanism.client.render.outline.BlastingOutlineRenderer;
+import mekanism.client.render.outline.ProxyOutlineRenderer;
 import mekanism.client.render.outline.Outlines;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ProfilerConstants;
@@ -320,7 +320,7 @@ public class RenderTickHandler {
                             } else {
                                 blockOutlineRenderState = new BlockOutlineRenderState(blastingTarget, isBlockTranslucent, highContrast, shape, subEvent.getCustomRenderers());
                             }
-                            event.addCustomRenderer(new BlastingOutlineRenderer(blockOutlineRenderState));
+                            event.addCustomRenderer(new ProxyOutlineRenderer(blockOutlineRenderState, false));
                         }
                     }
                     //Ensure no mod modified it during the calls for some reason
