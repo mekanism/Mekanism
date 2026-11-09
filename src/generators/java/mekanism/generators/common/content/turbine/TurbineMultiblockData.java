@@ -144,11 +144,10 @@ public class TurbineMultiblockData extends MultiblockData {
         if (stored > 0 && energyNeeded > 0) {
             double energyMultiplier = getEnergyMultiplier();
             if (energyMultiplier >= Mth.EPSILON) {
-                int steamDivisor = MekanismGeneratorsConfig.generators.turbineSteamDivisor.get();
                 double proportion = stored / (double) getSteamCapacity();
                 double origRate = getMaxFlowRateDouble();
-                double rate = Math.min(Math.min(stored, origRate), (energyNeeded / energyMultiplier) * steamDivisor) * proportion;
-                int amountGenerated = MathUtils.clampToInt(energyMultiplier * (rate / steamDivisor));
+                double rate = Math.min(Math.min(stored, origRate), energyNeeded / energyMultiplier) * proportion;
+                int amountGenerated = MathUtils.clampToInt(energyMultiplier * rate);
                 if (rate > Mth.EPSILON && amountGenerated > 0) {
                     flow = MathUtils.clampToInt(rate);
                     flowRate = rate / origRate;
@@ -205,8 +204,9 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     private double getEnergyMultiplier() {
-        return ((double) MekanismGeneratorsConfig.generators.turbineEnergyPerSteam.get() / TurbineValidator.MAX_BLADES)
+        double baseMultiplier = ((double) MekanismGeneratorsConfig.generators.turbineEnergyPerSteam.get() / TurbineValidator.MAX_BLADES)
                * Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
+        return baseMultiplier / MekanismGeneratorsConfig.generators.turbineSteamDivisor.getAsInt();
     }
 
     @Override
@@ -263,7 +263,7 @@ public class TurbineMultiblockData extends MultiblockData {
 
     @ComputerMethod
     public int getProductionRate() {
-        return MathUtils.clampToInt(getEnergyMultiplier() * clientFlow / MekanismGeneratorsConfig.generators.turbineSteamDivisor.getAsInt());
+        return MathUtils.clampToInt(getEnergyMultiplier() * clientFlow);
     }
 
     @ComputerMethod
