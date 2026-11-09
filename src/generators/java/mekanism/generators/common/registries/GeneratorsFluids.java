@@ -1,5 +1,7 @@
 package mekanism.generators.common.registries;
 
+import mekanism.common.fluid.MekanismFluid.Flowing;
+import mekanism.common.fluid.MekanismFluid.Source;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
 import mekanism.common.registration.impl.FluidRegistryObject;
@@ -8,8 +10,6 @@ import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlock;
-import net.neoforged.neoforge.fluids.BaseFlowingFluid.Flowing;
-import net.neoforged.neoforge.fluids.BaseFlowingFluid.Source;
 
 public class GeneratorsFluids {
 

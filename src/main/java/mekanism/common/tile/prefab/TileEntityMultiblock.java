@@ -350,7 +350,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     @Override
     public InteractionResult onRightClick(Level level, Player player) {
-        if (!level.isClientSide() && !getMultiblock().isFormed()) {
+        if (!getMultiblock().isFormed()) {
             FormationResult result = getStructure().runUpdate(level);
             if (!result.isFormed() && result.getResultText() != null) {
                 player.sendSystemMessage(result.getResultText());

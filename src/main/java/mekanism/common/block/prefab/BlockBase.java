@@ -1,6 +1,7 @@
 package mekanism.common.block.prefab;
 
 import java.util.Map;
+import java.util.Objects;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.BlockMekanism;
@@ -109,7 +110,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
                 throw new IllegalStateException("AttributeStateFacing not found for a block with multiple custom shapes; " + this);
             }
             Map<Direction, VoxelShape> bounds = customShape.bounds().right().orElseThrow();
-            return bounds.get(attr.getDirection(state));
+            return Objects.requireNonNull(bounds.get(attr.getDirection(state)));
         }
         return super.getShape(state, world, pos, context);
     }

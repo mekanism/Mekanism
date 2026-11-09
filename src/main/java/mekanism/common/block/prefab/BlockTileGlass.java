@@ -45,6 +45,7 @@ public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockT
 
     @Override
     protected VoxelShape getVisualShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext ctx) {
+        //From TransparentBlock
         return Shapes.empty();
     }
 }

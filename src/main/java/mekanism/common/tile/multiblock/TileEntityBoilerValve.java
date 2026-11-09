@@ -11,12 +11,12 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.multiblock.MultiblockData.AdvancedCapabilityOutputTarget;
@@ -94,12 +94,10 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     @Override
     public InteractionResult onSneakRightClick(Level level, Player player) {
-        if (!level.isClientSide()) {
-            BoilerValveMode mode = getMode().getNext();
-            setMode(level, mode);
-            player.sendOverlayMessage(MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode));
-        }
-        return InteractionResult.SUCCESS;
+        BoilerValveMode mode = getMode().getNext();
+        setMode(level, mode);
+        player.sendOverlayMessage(MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode));
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     //Methods relating to IComputerTile

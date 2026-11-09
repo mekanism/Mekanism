@@ -11,6 +11,7 @@ import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tile.TileEntityBoundingBlock;
+import mekanism.common.tile.TileEntityBoundingBlock.ProxiedShapeType;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -157,7 +158,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             return ItemStack.EMPTY;
         }
         BlockState mainState = world.getBlockState(mainPos);
-        return mainState.getBlock().getCloneItemStack(world, mainPos, mainState, includeData, player);
+        return mainState.getCloneItemStack(mainPos, world, includeData, player);
     }
 
     @Override
@@ -233,16 +234,16 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
-        if (!level.isClientSide()) {
-            TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, pos);
-            if (tile != null) {
+        TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, pos);
+        if (tile != null) {
+            if (!level.isClientSide()) {
                 tile.neighborChanged(level, orientation);
             }
-        }
-        BlockPos mainPos = getMainBlockPos(level, pos);
-        if (mainPos != null) {
-            BlockState mainState = level.getBlockState(mainPos);
-            mainState.handleNeighborChanged(level, mainPos, block, orientation, movedByPiston);
+            BlockPos mainPos = tile.getMainPos();
+            if (mainPos != null) {
+                BlockState mainState = level.getBlockState(mainPos);
+                mainState.handleNeighborChanged(level, mainPos, block, orientation, movedByPiston);
+            }
         }
     }
 
@@ -305,47 +306,40 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return proxyShape(world, pos, context, BlockStateBase::getShape);
+        return proxyShape(world, pos, ProxiedShapeType.SHAPE, context);
     }
 
     @Override
     protected VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return proxyShape(world, pos, context, BlockStateBase::getCollisionShape);
+        return proxyShape(world, pos, ProxiedShapeType.COLLISION, context);
     }
 
     @Override
     protected VoxelShape getVisualShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return proxyShape(world, pos, context, BlockStateBase::getVisualShape);
+        return proxyShape(world, pos, ProxiedShapeType.VISUAL, context);
     }
 
     @Override
     protected VoxelShape getOcclusionShape(BlockState state) {
-        //TODO - 26.3: perhaps override getAppearance?
-        //return proxyShape(world, pos, null, (s, level, p, ctx) -> s.getOcclusionShape(level, p));
-        return super.getOcclusionShape(state);
+        //Note: We just return an empty shape as we mark ourselves as noOcclusion so this method shouldn't really ever be hit,
+        // and we don't have enough of a context to be able to proxy the shape to the main block
+        return Shapes.empty();
     }
 
     @Override
     protected VoxelShape getBlockSupportShape(BlockState state, BlockGetter world, BlockPos pos) {
-        return proxyShape(world, pos, null, (s, level, p, _) -> s.getBlockSupportShape(level, p));
+        return proxyShape(world, pos, ProxiedShapeType.BLOCK_SUPPORT, null);
     }
 
     @Override
     protected VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
-        return proxyShape(world, pos, null, (s, level, p, _) -> s.getInteractionShape(level, p));
+        return proxyShape(world, pos, ProxiedShapeType.INTERACTION, null);
     }
 
     //Context should only be null if there is none, and it isn't used in the shape proxy
-    private <CONTEXT extends @Nullable CollisionContext> VoxelShape proxyShape(BlockGetter world, BlockPos pos, CONTEXT context, ShapeProxy<CONTEXT> proxy) {
-        BlockPos mainPos = getMainBlockPos(world, pos);
-        if (mainPos == null) {
-            //If we don't have a main pos, then act as if the block is empty so that we can move into it properly
-            return Shapes.empty();
-        }
-        BlockState mainState = world.getBlockState(mainPos);
-        VoxelShape shape = proxy.getShape(mainState, world, mainPos, context);
-        //TODO: Can we somehow cache the withOffset? It potentially would have to then be moved into the Tile, but that is probably fine
-        return shape.move(mainPos.subtract(pos));
+    private VoxelShape proxyShape(BlockGetter level, BlockPos pos, ProxiedShapeType proxiedShapeType, @Nullable CollisionContext context) {
+        TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, pos);
+        return tile == null ? Shapes.empty() : tile.proxyShape(level, proxiedShapeType, context);
     }
 
     @Override
@@ -364,11 +358,5 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     protected boolean isPathfindable(BlockState state, PathComputationType type) {
         //Mark that bounding blocks do not allow movement for use by AI pathing
         return false;
-    }
-
-    @FunctionalInterface
-    private interface ShapeProxy<CONTEXT extends @Nullable CollisionContext> {
-
-        VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CONTEXT context);
     }
 }

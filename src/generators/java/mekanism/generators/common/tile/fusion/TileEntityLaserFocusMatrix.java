@@ -33,11 +33,9 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
         if (player.hasInfiniteMaterials()) {
             FusionReactorMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
-                if (!level.isClientSide()) {
-                    try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
-                        multiblock.setPlasmaTemp(10 * FusionReactorMultiblockData.BURN_TEMPERATURE, transaction);
-                        transaction.commit();
-                    }
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+                    multiblock.setPlasmaTemp(10 * FusionReactorMultiblockData.BURN_TEMPERATURE, transaction);
+                    transaction.commit();
                 }
                 return InteractionResult.SUCCESS_SERVER;
             }

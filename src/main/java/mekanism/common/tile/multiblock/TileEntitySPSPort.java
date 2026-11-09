@@ -92,12 +92,10 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
 
     @Override
     public InteractionResult onSneakRightClick(Level level, Player player) {
-        if (!level.isClientSide()) {
-            boolean oldMode = getActive();
-            setActive(!oldMode);
-            player.sendOverlayMessage(MekanismLang.SPS_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)));
-        }
-        return InteractionResult.SUCCESS;
+        boolean oldMode = getActive();
+        setActive(!oldMode);
+        player.sendOverlayMessage(MekanismLang.SPS_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)));
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override
