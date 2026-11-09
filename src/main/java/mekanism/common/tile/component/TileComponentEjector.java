@@ -81,8 +81,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private final IntSupplier energyEjectRate;
     @Nullable
     private Predicate<TransmissionType> canEject;
-    @Nullable//TODO: At some point it would be nice to be able to generify this further
-    private Predicate<IChemicalTank> canTankEject;
     @Nullable
     private BiPredicate<DataType,IChemicalTank> canChemicalTankEject;
     @Nullable
@@ -123,11 +121,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 configInfo.put(type, info);
             }
         }
-        return this;
-    }
-
-    public TileComponentEjector setCanEject(Predicate<TransmissionType> canEject) {
-        this.canEject = canEject;
         return this;
     }
 
