@@ -84,9 +84,9 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     @Nullable//TODO: At some point it would be nice to be able to generify this further
     private Predicate<IChemicalTank> canTankEject;
     @Nullable
-    private BiPredicate<TransmissionType,IChemicalTank> canChemicalTankEject;
+    private BiPredicate<DataType,IChemicalTank> canChemicalTankEject;
     @Nullable
-    private BiPredicate<TransmissionType,IFluidTank> canFluidTankEject;
+    private BiPredicate<DataType,IFluidTank> canFluidTankEject;
     private boolean strictInput = DEFAULT_STRICT_INPUT;
     @Nullable
     private EnumColor outputColor;
@@ -136,12 +136,12 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return this;
     }
 
-    public TileComponentEjector setCanChemicalTankEject(BiPredicate<TransmissionType, IChemicalTank> canChemicalTankEject) {
+    public TileComponentEjector setCanChemicalTankEject(BiPredicate<DataType, IChemicalTank> canChemicalTankEject) {
         this.canChemicalTankEject = canChemicalTankEject;
         return this;
     }
 
-    public TileComponentEjector setCanFluidTankEject(BiPredicate<TransmissionType, IFluidTank> canFluidTankEject) {
+    public TileComponentEjector setCanFluidTankEject(BiPredicate<DataType, IFluidTank> canFluidTankEject) {
         this.canFluidTankEject = canFluidTankEject;
         return this;
     }
