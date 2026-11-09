@@ -14,12 +14,14 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.CustomBlockOutlineRenderer;
 
-public class BlastingOutlineRenderer implements CustomBlockOutlineRenderer {
+public class ProxyOutlineRenderer implements CustomBlockOutlineRenderer {
 
     private final BlockOutlineRenderState state;
+    private final boolean cancelPrimary;
 
-    public BlastingOutlineRenderer(BlockOutlineRenderState state) {
+    public ProxyOutlineRenderer(BlockOutlineRenderState state, boolean cancelPrimary) {
         this.state = state;
+        this.cancelPrimary = cancelPrimary;
     }
 
     /// Copied and modified from [net.minecraft.client.renderer.LevelRenderer#submitBlockOutline]
@@ -51,6 +53,6 @@ public class BlastingOutlineRenderer implements CustomBlockOutlineRenderer {
             nodeCollector.submitShapeOutline(poseStack, state.shape(), blockOutlineRenderType, outlineColor, gameRenderer.gameRenderState().windowRenderState.appropriateLineWidth, state.isTranslucent());
             poseStack.popPose();
         }
-        return false;
+        return this.cancelPrimary;
     }
 }
