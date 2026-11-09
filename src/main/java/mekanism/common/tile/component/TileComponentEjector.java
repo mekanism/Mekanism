@@ -85,11 +85,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     @Nullable
     private Predicate<TransmissionType> canEject;
     @Nullable
-    private BiPredicate<TransmissionType,IChemicalTank> canChemicalTankEject;
+    private BiPredicate<DataType,IChemicalTank> canChemicalTankEject;
     @Nullable
-    private BiPredicate<TransmissionType,IExtendedFluidTank> canFluidTankEject;
+    private BiPredicate<DataType,IExtendedFluidTank> canFluidTankEject;
     @Nullable 
-    private BiPredicate<TransmissionType,IEnergyContainer> canEnergyContainerEject;
+    private BiPredicate<DataType,IEnergyContainer> canEnergyContainerEject;
     private boolean strictInput;
     private EnumColor outputColor;
     private int tickDelay = 0;
@@ -134,17 +134,17 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return this;
     }
 
-    public TileComponentEjector setCanChemicalTankEject(BiPredicate<TransmissionType, IChemicalTank> canChemicalTankEject) {
+    public TileComponentEjector setCanChemicalTankEject(BiPredicate<DataType, IChemicalTank> canChemicalTankEject) {
         this.canChemicalTankEject = canChemicalTankEject;
         return this;
     }
 
-    public TileComponentEjector setCanFluidTankEject(BiPredicate<TransmissionType, IExtendedFluidTank> canFluidTankEject) {
+    public TileComponentEjector setCanFluidTankEject(BiPredicate<DataType, IExtendedFluidTank> canFluidTankEject) {
         this.canFluidTankEject = canFluidTankEject;
         return this;
     }
 
-    public TileComponentEjector setCanEnergyContainerEject(BiPredicate<TransmissionType, IEnergyContainer> canEnergyContainerEject) {
+    public TileComponentEjector setCanEnergyContainerEject(BiPredicate<DataType, IEnergyContainer> canEnergyContainerEject) {
         this.canEnergyContainerEject = canEnergyContainerEject;
         return this;
     }
