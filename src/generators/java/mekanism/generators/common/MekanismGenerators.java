@@ -93,6 +93,7 @@ public class MekanismGenerators implements IModModule {
             GeneratorsFluids.FLUIDS.registerBucketDispenserBehavior();
             //Register extended build commands (in enqueue as it is not thread safe)
             BuildCommand.register("turbine", GeneratorsLang.TURBINE, new TurbineBuilder());
+            BuildCommand.register("turbine-mini", GeneratorsLang.TURBINE, new TurbineBuilder(5, 5));
             BuildCommand.register("fission", GeneratorsLang.FISSION_REACTOR, new FissionReactorBuilder());
             BuildCommand.register("fusion", GeneratorsLang.FUSION_REACTOR, new FusionReactorBuilder());
         });
