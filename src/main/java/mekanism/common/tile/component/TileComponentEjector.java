@@ -203,7 +203,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                         switch (slotInfo) {
                             case ChemicalSlotInfo chemicalSlotInfo when type == TransmissionType.CHEMICAL -> {
                                 for (IChemicalTank tank : chemicalSlotInfo.getTanks()) {
-                                    if (!tank.isEmpty() && (canChemicalTankEject == null || canChemicalTankEject.test(type, tank))) {
+                                    if (!tank.isEmpty() && (canChemicalTankEject == null || canChemicalTankEject.test(dataType, tank))) {
                                         addData(outputData, tank, outputSides);
                                     }
                                 }
