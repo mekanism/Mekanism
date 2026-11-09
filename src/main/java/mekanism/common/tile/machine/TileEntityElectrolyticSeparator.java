@@ -159,7 +159,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
-              .setCanTankEject(tank -> {
+              .setCanChemicalTankEject((type, tank) -> {
                   if (tank == leftTank) {
                       return dumpLeft != GasMode.DUMPING;
                   } else if (tank == rightTank) {

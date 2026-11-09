@@ -9,6 +9,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
@@ -83,8 +84,12 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private final LongSupplier energyEjectRate;
     @Nullable
     private Predicate<TransmissionType> canEject;
-    @Nullable//TODO: At some point it would be nice to be able to generify this further
-    private Predicate<IChemicalTank> canTankEject;
+    @Nullable
+    private BiPredicate<DataType,IChemicalTank> canChemicalTankEject;
+    @Nullable
+    private BiPredicate<DataType,IExtendedFluidTank> canFluidTankEject;
+    @Nullable 
+    private BiPredicate<DataType,IEnergyContainer> canEnergyContainerEject;
     private boolean strictInput;
     private EnumColor outputColor;
     private int tickDelay = 0;
@@ -129,8 +134,18 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return this;
     }
 
-    public TileComponentEjector setCanTankEject(Predicate<IChemicalTank> canTankEject) {
-        this.canTankEject = canTankEject;
+    public TileComponentEjector setCanChemicalTankEject(BiPredicate<DataType, IChemicalTank> canChemicalTankEject) {
+        this.canChemicalTankEject = canChemicalTankEject;
+        return this;
+    }
+
+    public TileComponentEjector setCanFluidTankEject(BiPredicate<DataType, IExtendedFluidTank> canFluidTankEject) {
+        this.canFluidTankEject = canFluidTankEject;
+        return this;
+    }
+
+    public TileComponentEjector setCanEnergyContainerEject(BiPredicate<DataType, IEnergyContainer> canEnergyContainerEject) {
+        this.canEnergyContainerEject = canEnergyContainerEject;
         return this;
     }
 
@@ -188,21 +203,21 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                         switch (slotInfo) {
                             case ChemicalSlotInfo chemicalSlotInfo when type == TransmissionType.CHEMICAL -> {
                                 for (IChemicalTank tank : chemicalSlotInfo.getTanks()) {
-                                    if (!tank.isEmpty() && (canTankEject == null || canTankEject.test(tank))) {
+                                    if (!tank.isEmpty() && (canChemicalTankEject == null || canChemicalTankEject.test(dataType, tank))) {
                                         addData(outputData, tank, outputSides);
                                     }
                                 }
                             }
                             case FluidSlotInfo fluidSlotInfo when type == TransmissionType.FLUID -> {
                                 for (IExtendedFluidTank tank : fluidSlotInfo.getTanks()) {
-                                    if (!tank.isEmpty()) {
+                                    if (!tank.isEmpty() && (canFluidTankEject == null || canFluidTankEject.test(dataType, tank))) {
                                         addData(outputData, tank, outputSides);
                                     }
                                 }
                             }
                             case EnergySlotInfo energySlotInfo when type == TransmissionType.ENERGY -> {
                                 for (IEnergyContainer container : energySlotInfo.getContainers()) {
-                                    if (!container.isEmpty()) {
+                                    if (!container.isEmpty() && (canEnergyContainerEject == null || canEnergyContainerEject.test(dataType, container))) {
                                         addData(outputData, container, outputSides);
                                     }
                                 }
