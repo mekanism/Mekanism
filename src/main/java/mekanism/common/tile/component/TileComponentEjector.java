@@ -123,9 +123,9 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
         return this;
     }
-
-    public TileComponentEjector setCanTankEject(Predicate<IChemicalTank> canTankEject) {
-        this.canTankEject = canTankEject;
+    
+    public TileComponentEjector setCanEject(Predicate<TransmissionType> canEject) {
+        this.canEject = canEject;
         return this;
     }
 
