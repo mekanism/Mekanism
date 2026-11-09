@@ -140,7 +140,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
         configComponent.addDisabledSides(RelativeSide.TOP);
 
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
-              .setCanChemicalTankEject((type, tank) -> tank == outputTank);
+              .setCanChemicalTankEject((_, tank) -> tank == outputTank);
 
         leftInputHandler = InputHelper.getInputHandler(leftInputTank, RecipeError.NOT_ENOUGH_LEFT_INPUT);
         rightInputHandler = InputHelper.getInputHandler(rightInputTank, RecipeError.NOT_ENOUGH_RIGHT_INPUT);

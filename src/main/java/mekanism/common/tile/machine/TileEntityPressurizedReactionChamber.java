@@ -127,7 +127,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
-              .setCanChemicalTankEject((type, tank) -> tank != inputGasTank);
+              .setCanChemicalTankEject((_, tank) -> tank != inputGasTank);
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot, NOT_ENOUGH_ITEM_INPUT_ERROR);
         fluidInputHandler = InputHelper.getInputHandler(inputFluidTank, NOT_ENOUGH_FLUID_INPUT_ERROR);
