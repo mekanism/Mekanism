@@ -1,22 +1,16 @@
 package mekanism.additions.common.entity;
 
-import java.util.Optional;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
-import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.loot.LootTable;
 import org.jspecify.annotations.Nullable;
 
 public class EntityObsidianTNT extends PrimedTnt {
@@ -68,21 +62,5 @@ public class EntityObsidianTNT extends PrimedTnt {
     @Override
     public ItemStack getPickResult() {
         return new ItemStack(AdditionsBlocks.OBSIDIAN_TNT);
-    }
-
-    //TODO: Remove the below overrides once https://github.com/neoforged/NeoForge/pull/3721 is merged
-    @Override
-    public Holder<EntityType<?>> typeHolder() {
-        return getType().builtInRegistryHolder();
-    }
-
-    @Override
-    public EntityDimensions getDimensions(Pose pose) {
-        return getType().getDimensions();
-    }
-
-    @Override
-    public Optional<ResourceKey<LootTable>> getLootTable() {
-        return getType().getDefaultLootTable();
     }
 }

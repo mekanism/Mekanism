@@ -40,8 +40,6 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.fluids.BaseFlowingFluid.Flowing;
-import net.neoforged.neoforge.fluids.BaseFlowingFluid.Source;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public abstract class BaseTagProvider implements DataProvider {
@@ -187,12 +185,12 @@ public abstract class BaseTagProvider implements DataProvider {
         getBuilder(CREATE_NO_INFINITE_FLUID).add(register.getFluidEntries());
         //Add bucket tags
         for (DeferredHolder<Item, ?> bucket : register.getBucketEntries()) {
-            Identifier bucketTag = Tags.Items.BUCKETS.location().withSuffix("/" + bucket.getId().getPath().replaceAll("_bucket", ""));
+            Identifier bucketTag = Tags.Items.BUCKETS.location().withSuffix("/" + bucket.getId().getPath().replace("_bucket", ""));
             getBuilder(ItemTags.create(bucketTag)).add(bucket);
         }
         MekanismTagBuilder<Fluid> floatableTag = getBuilder(FluidTags.ENTITY_FLOATABLE);
         int waterDensity = NeoForgeMod.WATER_TYPE.value().getDensity();
-        for (FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, ? extends BucketItem> entry : register.getEntries()) {
+        for (FluidRegistryObject<MekanismFluidType, ?, ?, LiquidBlock, ? extends BucketItem> entry : register.getEntries()) {
             //If it is less dense than water allow it to be considered as a fluid that entities can float in
             if (entry.getFluidType().getDensity() <= waterDensity) {
                 floatableTag.add(entry.key(), entry.getFlowingFluid().key());

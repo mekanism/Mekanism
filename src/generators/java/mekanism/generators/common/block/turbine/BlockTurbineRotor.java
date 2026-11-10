@@ -3,6 +3,7 @@ package mekanism.generators.common.block.turbine;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.util.WorldUtils;
+import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.item.ItemTurbineBlade;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.registries.GeneratorsItems;
@@ -45,6 +46,9 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
                 //If holding shift and not a full stack, allow it to try removing them
                 return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
+        } else if (stack.is(GeneratorTags.BlockItems.STRUCTURES_TURBINE.item()) && hit.getDirection().getAxis().isVertical()) {
+            //Skip trying it with an empty hand if holding a block that is part of the multiblock and being placed against the top or bottom of the shaft
+            return InteractionResult.PASS;
         }
         return super.useItemOn(stack, state, world, pos, player, hand, hit);
     }

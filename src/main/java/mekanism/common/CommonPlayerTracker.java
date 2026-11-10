@@ -41,7 +41,6 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            //TODO - 26.3: Enable alpha warning everywhere it should be
             if (MekanismConfig.general.enableAlphaWarning.getAsBoolean()) {
                 player.sendSystemMessage(ALPHA_WARNING);
             }

@@ -21,29 +21,36 @@ public class GeneratorsBuilders {
             super(TurbineValidator.MAX_BASE, CuboidStructureValidator.MAX_SIZE, TurbineValidator.MAX_BASE);
         }
 
+        public TurbineBuilder(int sizeX, int sizeY) {
+            super(sizeX, sizeY, sizeX);
+        }
+
         @Override
         protected void build(Level world, BlockPos start, boolean empty) {
             buildFrame(world, start);
             buildWalls(world, start);
             //Clear out the inside
-            buildInteriorLayers(world, start, 1, 14, Blocks.AIR.defaultBlockState());
+            buildInteriorLayers(world, start, 1, sizeY - 4, Blocks.AIR.defaultBlockState());
             if (empty) {
                 //Clear out the rest
-                buildInteriorLayers(world, start, 15, 16, Blocks.AIR.defaultBlockState());
+                buildInteriorLayers(world, start, sizeY - 3, sizeY - 2, Blocks.AIR.defaultBlockState());
             } else {
                 //Add two blades to each rotor, they will be properly scanned when the multiblock forms at the end
-                buildColumn(world, start, new BlockPos(sizeX / 2, 1, sizeZ / 2), 14, GeneratorsBlocks.TURBINE_ROTOR.defaultState(),
+                buildColumn(world, start, new BlockPos(sizeX / 2, 1, sizeZ / 2), sizeY - 4, GeneratorsBlocks.TURBINE_ROTOR.defaultState(),
                       TileEntityTurbineRotor.class, rotor -> rotor.blades = 2);
-                buildInteriorLayer(world, start, 15, MekanismBlocks.PRESSURE_DISPERSER.defaultState());
-                world.setBlockAndUpdate(start.offset(sizeX / 2, 15, sizeZ / 2), GeneratorsBlocks.ROTATIONAL_COMPLEX.defaultState());
-                buildInteriorLayer(world, start, 16, GeneratorsBlocks.SATURATING_CONDENSER.defaultState());
-                buildPlane(world, start, 5, 5, 13, 13, 16, GeneratorsBlocks.ELECTROMAGNETIC_COIL.defaultState());
+                buildInteriorLayer(world, start, sizeY - 3, MekanismBlocks.PRESSURE_DISPERSER.defaultState());
+                world.setBlockAndUpdate(start.offset(sizeX / 2, sizeY - 3, sizeZ / 2), GeneratorsBlocks.ROTATIONAL_COMPLEX.defaultState());
+                buildInteriorLayer(world, start, sizeY - 2, GeneratorsBlocks.SATURATING_CONDENSER.defaultState());
+                int coilRadiusX = sizeX / /*size*/2 / /*to radius*/2;
+                int coilRadiusZ = sizeZ / /*size*/2 / /*to radius*/2;
+                //buildPlane(world, start, 5, 5, 13, 13, sizeY - 2, GeneratorsBlocks.ELECTROMAGNETIC_COIL.defaultState());
+                buildPlane(world, start, sizeX / 2 - coilRadiusX + 1, sizeZ / 2 - coilRadiusZ + 1, sizeX / 2 + coilRadiusX + 1, sizeZ / 2 + coilRadiusZ + 1, sizeY - 2, GeneratorsBlocks.ELECTROMAGNETIC_COIL.defaultState());
             }
         }
 
         @Override
         protected BlockState getWallBlock(BlockPos pos) {
-            return pos.getY() >= 15 ? GeneratorsBlocks.TURBINE_VENT.defaultState() : super.getWallBlock(pos);
+            return pos.getY() >= sizeY - 3 ? GeneratorsBlocks.TURBINE_VENT.defaultState() : super.getWallBlock(pos);
         }
 
         @Override

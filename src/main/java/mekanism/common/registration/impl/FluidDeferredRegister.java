@@ -7,6 +7,8 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IChemicalConstant;
+import mekanism.common.fluid.MekanismFluid.Flowing;
+import mekanism.common.fluid.MekanismFluid.Source;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.dispenser.BlockSource;
@@ -41,8 +43,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
-import net.neoforged.neoforge.fluids.BaseFlowingFluid.Flowing;
-import net.neoforged.neoforge.fluids.BaseFlowingFluid.Source;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -135,7 +135,9 @@ public class FluidDeferredRegister {
               DeferredHolder.create(Registries.FLUID, baseKey),
               DeferredHolder.create(Registries.FLUID, baseKey.withPrefix("flowing_"))
         ).bucket(DeferredHolder.create(Registries.ITEM, baseKey.withSuffix("_bucket")))
-              .block(DeferredHolder.create(Registries.BLOCK, baseKey));
+              .block(DeferredHolder.create(Registries.BLOCK, baseKey))
+              //Mirror vanilla water and lava
+              .explosionResistance(100);
 
         DeferredHolder<Fluid, Source> stillFluid = fluidRegister.register(name, () -> new Source(fluidProperties));
         DeferredHolder<Fluid, Flowing> flowingFluid = fluidRegister.register("flowing_" + name, () -> new Flowing(fluidProperties));

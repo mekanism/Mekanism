@@ -144,22 +144,26 @@ public class TurbineMultiblockData extends MultiblockData {
         if (stored > 0 && energyNeeded > 0) {
             double energyMultiplier = getEnergyMultiplier();
             if (energyMultiplier >= Mth.EPSILON) {
-                int steamDivisor = MekanismGeneratorsConfig.generators.turbineSteamDivisor.get();
-                double proportion = stored / (double) getSteamCapacity();
+                double proportion = stored / (double) chemicalTank.capacityAsLong(chemicalTank.resource());
                 double origRate = getMaxFlowRateDouble();
-                double rate = Math.min(Math.min(stored, origRate), (energyNeeded / energyMultiplier) * steamDivisor) * proportion;
-                int amountGenerated = MathUtils.clampToInt(energyMultiplier * (rate / steamDivisor));
+                double energyProportion = energyNeeded / energyMultiplier;
+                double availableRate = Math.min(stored, origRate);
+                double rate = Math.min(energyProportion, availableRate) * proportion;
+                int amountGenerated = MathUtils.clampToInt(energyMultiplier * rate);
                 if (rate > Mth.EPSILON && amountGenerated > 0) {
                     flow = MathUtils.clampToInt(rate);
-                    flowRate = rate / origRate;
                     try (Transaction transaction = Transaction.openRoot()) {
-                        //TODO - 26.3: Re-evaluate these checks and the above math
                         if (energyContainer.insert(amountGenerated, transaction, AutomationType.INTERNAL) == amountGenerated &&
                             chemicalTank.extract(chemicalTank.resource(), flow, transaction, AutomationType.INTERNAL) == flow) {
-                            int waterProduced = Math.min(flow, condensers * MekanismGeneratorsConfig.generators.condenserRate.get());
+                            flowRate = rate / origRate;
+                            int waterProduced = Math.min(flow, getMaxWaterOutput());
                             if (ventTank.insert(FluidResource.of(Fluids.WATER), waterProduced, transaction, AutomationType.INTERNAL) == waterProduced) {
+                                //This should always return true
                                 transaction.commit();
                             }
+                        } else {
+                            //We were unable to actually have anything flow, so mark that as the case
+                            flow = 0;
                         }
                     }
                 }
@@ -205,8 +209,9 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     private double getEnergyMultiplier() {
-        return ((double) MekanismGeneratorsConfig.generators.turbineEnergyPerSteam.get() / TurbineValidator.MAX_BLADES)
+        double baseMultiplier = ((double) MekanismGeneratorsConfig.generators.turbineEnergyPerSteam.get() / TurbineValidator.MAX_BLADES)
                * Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
+        return baseMultiplier / MekanismGeneratorsConfig.generators.turbineSteamDivisor.getAsInt();
     }
 
     @Override
@@ -263,7 +268,7 @@ public class TurbineMultiblockData extends MultiblockData {
 
     @ComputerMethod
     public int getProductionRate() {
-        return MathUtils.clampToInt(getEnergyMultiplier() * clientFlow / MekanismGeneratorsConfig.generators.turbineSteamDivisor.getAsInt());
+        return MathUtils.clampToInt(getEnergyMultiplier() * clientFlow);
     }
 
     @ComputerMethod
