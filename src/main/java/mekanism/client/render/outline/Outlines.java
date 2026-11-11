@@ -78,6 +78,7 @@ public class Outlines {
                 }
             }
             AttributeCustomSelectionBox customSelectionBox = Attribute.get(actualState, AttributeCustomSelectionBox.class);
+            boolean addedOutline = false;
             if (customSelectionBox != null) {
                 if (customSelectionBox.isJavaModel()) {
                     //If we use a TER to render the wire frame, grab the tile
@@ -87,14 +88,17 @@ public class Outlines {
                         if (tileRenderer instanceof IWireFrameRenderer wireFrameRenderer && wireFrameRenderer.hasSelectionBox(actualState)) {
                             List<Line> outlinesFromModel = wireFrameRenderer.isCombined() ? getOutlinesFromModel(level, actualPos, actualState) : Collections.emptyList();
                             event.addCustomRenderer(new IWireframeRendererHandler(actualPos, outlinesFromModel, wireFrameRenderer, tile));
+                            addedOutline = true;
                         }
                     }
                 } else {
                     //Otherwise, skip getting the tile and just grab the model
                     List<Line> outlinesFromModel = getOutlinesFromModel(level, actualPos, actualState);
                     event.addCustomRenderer(new MekanismOutlineRenderer(actualPos, outlinesFromModel));
+                    addedOutline = true;
                 }
-            } else if (isBounding) {
+            }
+            if (!addedOutline && isBounding) {
                 //If there is no custom selection box, just use the main block's selection box so that the full outline is rendered
                 CollisionContext context = event.getCollisionContext();
                 boolean highContrast = event.isHighContrast();
