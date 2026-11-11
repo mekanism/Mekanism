@@ -10,7 +10,6 @@ import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -18,7 +17,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.IContainerFactory;
 import org.jspecify.annotations.Nullable;
 
@@ -26,29 +24,29 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
 
     public static <TILE extends TileEntityMekanism, CONTAINER extends AbstractContainerMenu> MekanismContainerType<TILE, CONTAINER> tile(Class<TILE> type,
           IMekanismContainerFactory<TILE, CONTAINER> constructor) {
-        return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getTileFromBuf(buf, type)));
+        return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getTileFromBuf(inv, buf, type)));
     }
 
     public static <TILE extends TileEntityMekanism, CONTAINER extends AbstractContainerMenu> MekanismContainerType<TILE, CONTAINER> tile(Class<TILE> type,
           IMekanismSidedContainerFactory<TILE, CONTAINER> constructor) {
-        return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getTileFromBuf(buf, type), true));
+        return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getTileFromBuf(inv, buf, type), true));
     }
 
-    public static  MekanismContainerType<TileEntityQIODashboard, QIODashboardContainer> qioDashboard() {
+    public static MekanismContainerType<TileEntityQIODashboard, QIODashboardContainer> qioDashboard() {
         return new MekanismContainerType<>(TileEntityQIODashboard.class,
               (id, inv, tile) -> new QIODashboardContainer(id, inv, tile, false, BulkQIOData.INITIAL_SERVER),
-              (id, inv, buf) -> new QIODashboardContainer(id, inv, getTileFromBuf(buf, TileEntityQIODashboard.class), true, BulkQIOData.fromPacket(buf))
+              (id, inv, buf) -> new QIODashboardContainer(id, inv, getTileFromBuf(inv, buf, TileEntityQIODashboard.class), true, BulkQIOData.fromPacket(buf))
         );
     }
 
     public static <ENTITY extends Entity, CONTAINER extends AbstractContainerMenu & IEntityContainer<ENTITY>> MekanismContainerType<ENTITY, CONTAINER> entity(Class<ENTITY> type,
           IMekanismContainerFactory<ENTITY, CONTAINER> constructor) {
-        return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getEntityFromBuf(buf, type)));
+        return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getEntityFromBuf(inv, buf, type)));
     }
 
     public static <ENTITY extends Entity, CONTAINER extends AbstractContainerMenu & IEntityContainer<ENTITY>> MekanismContainerType<ENTITY, CONTAINER> entity(Class<ENTITY> type,
           IMekanismSidedContainerFactory<ENTITY, CONTAINER> constructor) {
-        return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getEntityFromBuf(buf, type), true));
+        return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getEntityFromBuf(inv, buf, type), true));
     }
 
     protected final Class<T> type;
@@ -75,40 +73,32 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
         return null;
     }
 
-    private static <TILE extends BlockEntity> TILE getTileFromBuf(@Nullable FriendlyByteBuf buf, Class<TILE> type) {
+    private static <TILE extends BlockEntity> TILE getTileFromBuf(Inventory inventory, @Nullable FriendlyByteBuf buf, Class<TILE> type) {
         if (buf == null) {
             throw new DecoderException("Null packet buffer");
-        } else if (!FMLEnvironment.getDist().isClient()) {
-            throw new UnsupportedOperationException("This method is only supported on the client.");
         }
         BlockPos pos = TileContainerProvider.TILE_DATA.decode(buf);
-        TILE tile = WorldUtils.getTileEntity(type, Minecraft.getInstance().level, pos, true);
+        TILE tile = WorldUtils.getTileEntity(type, inventory.player.level(), pos, true);
         if (tile == null) {
             //TODO - 26.3: If spam breaking and placing in creative this can occur in single player at least,
             // is there some way we can just make the gui fail to open instead?
-            throw new DecoderException("Client could not locate tile at " + pos + " for tile container. "
-                                       + "This is likely caused by a mod breaking client side tile lookup");
+            throw new DecoderException("Could not locate tile at " + pos + " for tile container. This is likely caused by a mod breaking client side tile lookup");
         }
         return tile;
     }
 
-    private static <ENTITY extends Entity> ENTITY getEntityFromBuf(@Nullable FriendlyByteBuf buf, Class<ENTITY> type) {
+    private static <ENTITY extends Entity> ENTITY getEntityFromBuf(Inventory inventory, @Nullable FriendlyByteBuf buf, Class<ENTITY> type) {
         if (buf == null) {
             throw new DecoderException("Null packet buffer");
-        } else if (!FMLEnvironment.getDist().isClient()) {
-            throw new UnsupportedOperationException("This method is only supported on the client.");
-        }
-        if (Minecraft.getInstance().level == null) {
-            throw new DecoderException("Client world is null.");
         }
         int entityId = EntityContainerProvider.ENTITY_DATA.decode(buf);
-        Entity e = Minecraft.getInstance().level.getEntity(entityId);
+        Entity e = inventory.player.level().getEntity(entityId);
         if (type.isInstance(e)) {
             //noinspection unchecked
             return (ENTITY) e;
         }
-        throw new DecoderException("Client could not locate entity (id: " + entityId + ")  for entity container or the entity was of an invalid type. "
-                                        + "This is likely caused by a mod breaking client side entity lookup.");
+        throw new DecoderException("Could not locate entity (id: " + entityId + ")  for entity container or the entity was of an invalid type. "
+                                   + "This is likely caused by a mod breaking client side entity lookup.");
     }
 
     @FunctionalInterface
