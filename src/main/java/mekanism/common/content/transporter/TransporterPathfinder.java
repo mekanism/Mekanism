@@ -84,7 +84,7 @@ public final class TransporterPathfinder {
             if (test != null && checkPath(network, test.path(), stack)) {
                 return new Destination(test, response);
             }
-            Pathfinder p = new Pathfinder(network, start.getLevel(), dest, start.getBlockPos(), stack, response.itemType(), response.sendingAmount(),
+            Pathfinder p = new Pathfinder(network, start.getLevel(), dest, start.getBlockPos(), stack, response.itemType(), response.sendingAmount(), false,
                   (level, pos, tile, s, dataType, dataAmount, side, tx) ->
                         TransporterUtils.canInsert(level, pos, tile, s.color, dataType, dataAmount, side, false, tx));
             p.find(chunkMap, transaction);
@@ -168,13 +168,14 @@ public final class TransporterPathfinder {
             Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectOpenHashMap<>();
             //We are idling use the base stack
             Pathfinder p = new Pathfinder(network, start.getLevel(), BlockPos.of(stack.homeLocation), start.getBlockPos(), stack, stack.getItemType(), stack.size(),
-                  (level, pos, tile, s, dataType, dataAmount, side, tx) ->
+                  true, (level, pos, tile, s, dataType, dataAmount, side, tx) ->
                         TransporterUtils.canInsert(level, pos, tile, s.color, dataType, dataAmount, side, true, tx));
             p.find(chunkMap, transaction);
             if (p.hasPath()) {
                 return new IdlePathData(p.getPath(), Path.HOME);
             }
             stack.homeLocation = Long.MAX_VALUE;
+            stack.homeSide = null;
         }
 
         IdlePath d = new IdlePath(network, start.getBlockPos(), stack);
@@ -377,13 +378,14 @@ public final class TransporterPathfinder {
         private final int dataAmount;
         private final DestChecker destChecker;
         private final Level world;
+        private final boolean returningHome;
         private double finalScore;
         @Nullable
         private Direction side;
         private LongList results = new LongArrayList();
 
         public Pathfinder(InventoryNetwork network, Level world, BlockPos finalNode, BlockPos start, TransporterStack stack, ItemResource dataType, int dataAmount,
-              DestChecker checker) {
+              boolean returningHome, DestChecker checker) {
             this.destChecker = checker;
             this.network = network;
             this.world = world;
@@ -393,6 +395,7 @@ public final class TransporterPathfinder {
             this.transportStack = stack;
             this.dataType = dataType;
             this.dataAmount = dataAmount;
+            this.returningHome = returningHome && transportStack.homeLocation == finalNodeLong;
         }
 
         public boolean find(Long2ObjectMap<ChunkAccess> chunkMap, @Nullable TransactionContext transaction) {
@@ -482,7 +485,16 @@ public final class TransporterPathfinder {
             if (startTransporter != null && neighbor.equals(finalNode)) {
                 BlockEntity neighborTile = WorldUtils.getTileEntity(world, chunkMap, neighbor);
                 if (destChecker.isValid(world, neighbor, neighborTile, transportStack, dataType, dataAmount, direction, transaction)) {
-                    if (startTransporter.canEmitTo(direction) || (finalNodeLong == transportStack.homeLocation && startTransporter.canConnect(direction))) {
+                    boolean isValid;
+                    if (returningHome) {
+                        isValid = direction.getOpposite() == transportStack.homeSide && startTransporter.canConnect(direction);
+                    } else if (startTransporter.canEmitTo(direction)) {
+                        //If it isn't the home location, or it is of a different side then it is valid when we are not returning home
+                        isValid = finalNodeLong != transportStack.homeLocation || direction.getOpposite() != transportStack.homeSide;
+                    } else {
+                        isValid = false;
+                    }
+                    if (isValid) {
                         //If it is, and we can emit to it (normal or push mode),
                         // or it is the home location of the stack (it is returning due to not having been able to get to its destination) and
                         // we can connect to it (normal, push, or pull (should always be pull as otherwise canEmitTo would have been true)),

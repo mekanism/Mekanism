@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -47,18 +49,29 @@ public class InventoryNetwork extends DynamicNetwork<ResourceHandler<ItemResourc
 
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<ChunkAccess> chunkMap, LogisticalTransporterBase start,
           @Nullable TransactionContext transaction) {
+        Level level = getWorld();
+        if (level == null) {//Something went wrong, bail
+            return Collections.emptyList();
+        }
         List<AcceptorData> toReturn = new ArrayList<>();
         for (ObjectIterator<Long2ObjectMap.Entry<Map<Direction, ResourceHandler<ItemResource>>>> iterator = acceptorCache.getAcceptorFastIterator(); iterator.hasNext(); ) {
             Long2ObjectMap.Entry<Map<Direction, ResourceHandler<ItemResource>>> entry = iterator.next();
+            Map<Direction, ResourceHandler<ItemResource>> acceptors = entry.getValue();
             long pos = entry.getLongKey();
-            if (pos != stack.homeLocation) {
+            Direction sideToSkip = pos == stack.homeLocation ? stack.homeSide : null;
+            //If it isn't the home position, or there is no side being skipped, or there is at least one side that isn't being skipped in the acceptors map
+            if (pos != stack.homeLocation || sideToSkip == null || acceptors.size() > 1 || !acceptors.containsKey(sideToSkip)) {
                 BlockPos blockPos = BlockPos.of(pos);
-                BlockEntity acceptor = WorldUtils.getTileEntity(getWorld(), chunkMap, blockPos);
+                BlockEntity acceptor = WorldUtils.getTileEntity(level, chunkMap, blockPos);
                 Map<TransitResponse, AcceptorData> dataMap = new HashMap<>();
-                GlobalPos position = GlobalPos.of(getWorld().dimension(), blockPos);
-                for (Map.Entry<Direction, ResourceHandler<ItemResource>> acceptorEntry : entry.getValue().entrySet()) {
-                    ResourceHandler<ItemResource> handler = acceptorEntry.getValue();
+                GlobalPos position = GlobalPos.of(level.dimension(), blockPos);
+                for (Map.Entry<Direction, ResourceHandler<ItemResource>> acceptorEntry : acceptors.entrySet()) {
                     Direction side = acceptorEntry.getKey();
+                    if (side == sideToSkip) {
+                        //Skip the spot where the stack is coming from
+                        continue;
+                    }
+                    ResourceHandler<ItemResource> handler = acceptorEntry.getValue();
                     PathfinderCache.CachedPath cachedPath = PathfinderCache.getSingleCache(start, blockPos, side);
                     if (cachedPath != null && !TransporterPathfinder.checkPath(this, cachedPath.path(), stack)) {
                         continue;//invalid path, no need to simulate

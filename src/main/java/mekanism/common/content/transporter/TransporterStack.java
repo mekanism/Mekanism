@@ -75,6 +75,9 @@ public class TransporterStack {
     private long clientNext = Long.MAX_VALUE;
     private long clientPrev = Long.MAX_VALUE;
     //
+    /// The side of the home block that the stack is from
+    @Nullable
+    public Direction homeSide;
 
     @Nullable
     private Path pathType;
@@ -95,6 +98,7 @@ public class TransporterStack {
         TransporterStack stack = new TransporterStack(input);
         stack.idleDir = input.read(SerializationConstants.IDLE_DIR, Direction.CODEC).orElse(null);
         stack.homeLocation = input.getLongOr(SerializationConstants.HOME_LOCATION, Long.MAX_VALUE);
+        stack.homeSide = input.read(SerializationConstants.HOME_SIDE, Direction.CODEC).orElse(null);
         return stack;
     }
 
@@ -134,6 +138,7 @@ public class TransporterStack {
         if (homeLocation != Long.MAX_VALUE) {
             output.putLong(SerializationConstants.HOME_LOCATION, homeLocation);
         }
+        output.storeNullable(SerializationConstants.HOME_SIDE, Direction.CODEC, homeSide);
     }
 
     public boolean isEmpty() {

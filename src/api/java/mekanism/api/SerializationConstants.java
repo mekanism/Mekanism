@@ -202,6 +202,8 @@ public final class SerializationConstants {
     public static final String HEAT_CAPACITY = "heat_capacity";
     public static final String HEAT_STORED = "heat";
     public static final String HOME_LOCATION = "home_location";
+    /// @since 10.8.0
+    public static final String HOME_SIDE = "home_side";
     /// @since 10.7.11
     public static final String HOT_VARIANT = "hot_variant";
     public static final String HUMAN_NAME = "human_name";

@@ -480,7 +480,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     public TransitResponse insert(Level level, @Nullable BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, int min, @Nullable TransactionContext transaction) {
         Direction from = WorldUtils.sideDifference(getBlockPos(), outputterPos);
         if (from != null && canReceiveFrom(from.getOpposite())) {
-            TransporterStack stack = createInsertStack(outputterPos.asLong(), color);
+            TransporterStack stack = createInsertStack(outputterPos.asLong(), from, color);
             if (stack.canInsertToTransporter(this, from, outputter)) {
                 if (outputter instanceof IAdvancedTransportEjector ejector && ejector.getRoundRobin()) {
                     return insertUnchecked(level, (BlockEntity & IAdvancedTransportEjector) outputter, request, stack, min, transaction, TransporterStack::recalculateRRPath);
@@ -491,23 +491,24 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
         return TransitResponse.EMPTY;
     }
 
-    public <BE extends BlockEntity> int insertUnchecked(Level level, BE outputter, ItemResource type, int amountToInsert, @Nullable TransactionContext transaction,
-          PathCalculator<BE> pathCalculator) {
+    public <BE extends BlockEntity> int insertUnchecked(Level level, BE outputter, Direction outputterSide, ItemResource type, int amountToInsert,
+          @Nullable TransactionContext transaction, PathCalculator<BE> pathCalculator) {
         TransitRequest request = TransitRequest.simple(type, amountToInsert);
-        TransporterStack stack = createInsertStack(outputter.getBlockPos().asLong(), getColor());
+        TransporterStack stack = createInsertStack(outputter.getBlockPos().asLong(), outputterSide, getColor());
         return insertUnchecked(level, outputter, request, stack, 1, transaction, pathCalculator).sendingAmount();
     }
 
-    public int insertUnchecked(Level level, long outputterPos, ItemResource type, int amountToInsert, @Nullable TransactionContext transaction) {
+    public int insertUnchecked(Level level, long outputterPos, Direction outputterSide, ItemResource type, int amountToInsert, @Nullable TransactionContext transaction) {
         TransitRequest request = TransitRequest.simple(type, amountToInsert);
-        TransporterStack stack = createInsertStack(outputterPos, getColor());
+        TransporterStack stack = createInsertStack(outputterPos, outputterSide, getColor());
         return insertUnchecked(level, null, request, stack, 1, transaction, TransporterStack::recalculatePath).sendingAmount();
     }
 
-    private TransporterStack createInsertStack(long outputterCoord, @Nullable EnumColor color) {
+    private TransporterStack createInsertStack(long outputterCoord, Direction outputterSide, @Nullable EnumColor color) {
         TransporterStack stack = new TransporterStack();
         stack.originalLocation = outputterCoord;
         stack.homeLocation = outputterCoord;
+        stack.homeSide = outputterSide;
         stack.color = color;
         return stack;
     }

@@ -23,6 +23,6 @@ public record PacketResetPlayerClient(UUID uuid) implements IMekanismPacket {
 
     @Override
     public void handle(IPayloadContext context) {
-        Mekanism.playerState.clearPlayer(uuid, true);
+        Mekanism.playerState.clearPlayer(uuid, context.player());
     }
 }
