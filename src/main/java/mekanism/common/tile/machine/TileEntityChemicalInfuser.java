@@ -135,7 +135,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalC
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
-              .setCanTankEject(tank -> tank == centerTank);
+              .setCanChemicalTankEject((_, tank)  -> tank == centerTank);
 
         leftInputHandler = InputHelper.getInputHandler(leftTank, RecipeError.NOT_ENOUGH_LEFT_INPUT);
         rightInputHandler = InputHelper.getInputHandler(rightTank, RecipeError.NOT_ENOUGH_RIGHT_INPUT);
