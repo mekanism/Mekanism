@@ -278,7 +278,7 @@ public class GearConfig extends BaseMekanismConfig {
         mekaToolEnergyUsageShearTrim = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_SHEAR_BLOCK.applyToBuilder(builder)
               .defineInRange("shearTrim", 1, 0, Integer.MAX_VALUE));
         mekaToolEnergyUsageTeleport = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_TELEPORT.applyToBuilder(builder)
-              .defineInRange("teleport", 1_000, 0, Integer.MAX_VALUE));
+              .defineInRange("teleport", 1, 0, Integer.MAX_VALUE));
         builder.pop(2);
 
         MekanismConfigTranslations.GEAR_MEKA_SUIT.applyToBuilder(builder).push(MEKASUIT_CATEGORY);
