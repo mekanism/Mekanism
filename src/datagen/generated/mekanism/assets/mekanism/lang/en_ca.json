@@ -60,6 +60,8 @@
   "configuration.mekanism.gear.meka_suit.charge_rate.chestplate": "Bodyarmour Charge Rate",
   "configuration.mekanism.gear.meka_suit.charge_rate.chestplate.tooltip": "Percentage of max energy the MekaSuit Bodyarmour can accept per tick.",
   "configuration.mekanism.gear.meka_suit.damage_absorption.unspecified.tooltip": "Percent of damage taken from other non explicitly supported damage types that don't bypass armour when the MekaSuit has enough power and a full suit is equipped. Note: Support for specific damage types can be added by adding an entry for the damage type in the mekanism:mekasuit_absorption data map.",
+  "configuration.mekanism.gear.meka_suit.energy_usage.chestplate.damage": "Bodyarmour Damage Reduction",
+  "configuration.mekanism.gear.meka_suit.energy_usage.chestplate.damage.tooltip": "Energy usage of MekaSuit Bodyarmour per unit of damage applied.",
   "configuration.mekanism.general.misc.alloy_upgrading.tooltip": "Allow upgrading Universal Cables, Mechanical Pipes, Pressurised Tubes, Logistical Transporters, and Thermodynamic Conductors by right clicking them with the next tier of alloy.",
   "configuration.mekanism.general.misc.chunkloading.tooltip": "Controls whether Mekanism allows players to load chunks. If this is disabled, neither the Anchor Upgrade nor the Dimensional Stabiliser will provide any functionality.",
   "configuration.mekanism.projecte.mapper.chemical_crystallizer": "Mekanism Crystalliser",

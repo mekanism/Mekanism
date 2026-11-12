@@ -359,6 +359,17 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         };
     }
 
+    private static IntSupplier getEnergyCost(EquipmentSlot armorType) {
+        return switch (armorType) {
+            case HEAD -> MekanismConfig.gear.mekaSuitHelmetEnergyUsageDamage;
+            //Just re-use this config for body as well
+            case CHEST, BODY -> MekanismConfig.gear.mekaSuitChestplateEnergyUsageDamage;
+            case LEGS -> MekanismConfig.gear.mekaSuitLeggingsEnergyUsageDamage;
+            case FEET -> MekanismConfig.gear.mekaSuitBootsEnergyUsageDamage;
+            default -> throw new IllegalArgumentException("Unknown Equipment Slot Armor Type");
+        };
+    }
+
     public static float getDamageAbsorbed(LivingEntity entity, DamageSource source, float amount) {
         if (amount <= 0) {
             return 0;
@@ -377,7 +388,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                         ItemAccess itemAccess = ItemAccess.forHandlerIndexStrict(armorSlot, 0);
                         EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(itemAccess));
                         if (energyHandler != null) {
-                            FoundArmorDetails details = new FoundArmorDetails(energyHandler, getAbsorption(armorType));
+                            FoundArmorDetails details = new FoundArmorDetails(energyHandler, getAbsorption(armorType), getEnergyCost(armorType));
                             armorDetails.add(details);
                             for (IModule<?> module : IModuleHelper.INSTANCE.getAllModules(itemType)) {
                                 if (module.isEnabled()) {
@@ -424,7 +435,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                         }
                     }
                     float absorption = details.armorAbsorption * absorbRatio;
-                    ratioAbsorbed += absorbDamage(details.energyHandler, amount, absorption, ratioAbsorbed, MekanismConfig.gear.mekaSuitEnergyUsageDamage, transaction);
+                    ratioAbsorbed += absorbDamage(details.energyHandler, amount, absorption, ratioAbsorbed, details.energyCost, transaction);
                     if (ratioAbsorbed >= 1) {
                         //If we have fully absorbed the damage, stop checking/trying to absorb more
                         break;
@@ -467,6 +478,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return 0;
     }
 
-    private record FoundArmorDetails(EnergyHandler energyHandler, float armorAbsorption) {
+    private record FoundArmorDetails(EnergyHandler energyHandler, float armorAbsorption, IntSupplier energyCost) {
     }
 }
