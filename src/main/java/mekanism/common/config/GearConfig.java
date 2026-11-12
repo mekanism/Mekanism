@@ -97,12 +97,16 @@ public class GearConfig extends BaseMekanismConfig {
     //MekaSuit
     public final CachedLongValue mekaSuitBaseHelmetEnergyCapacity;
     public final CachedDoubleValue mekaSuitBaseHelmetChargeRate;
+    public final CachedIntValue mekaSuitHelmetEnergyUsageDamage;
     public final CachedLongValue mekaSuitBaseChestplateEnergyCapacity;
     public final CachedDoubleValue mekaSuitBaseChestplateChargeRate;
+    public final CachedIntValue mekaSuitChestplateEnergyUsageDamage;
     public final CachedLongValue mekaSuitBaseLeggingsEnergyCapacity;
     public final CachedDoubleValue mekaSuitBaseLeggingsChargeRate;
+    public final CachedIntValue mekaSuitLeggingsEnergyUsageDamage;
     public final CachedLongValue mekaSuitBaseBootsEnergyCapacity;
     public final CachedDoubleValue mekaSuitBaseBootsChargeRate;
+    public final CachedIntValue mekaSuitBootsEnergyUsageDamage;
     public final CachedIntValue mekaSuitBaseJumpEnergyUsage;
     public final CachedIntValue mekaSuitElytraEnergyUsage;
     public final CachedIntValue mekaSuitEnergyUsagePotionTick;
@@ -114,7 +118,6 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue mekaSuitEnergyUsageVisionEnhancement;
     public final CachedIntValue mekaSuitEnergyUsageHydrostaticRepulsion;
     public final CachedIntValue mekaSuitEnergyUsageNutritionalInjection;
-    public final CachedIntValue mekaSuitEnergyUsageDamage;
     public final CachedIntValue mekaSuitEnergyUsageItemAttraction;
     public final CachedBooleanValue mekaSuitGravitationalVibrations;
     public final CachedLongValue mekaSuitNutritionalMaxStorage;
@@ -306,8 +309,14 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("jetpackTransferRate", 256, 1, Integer.MAX_VALUE));
 
         MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE.applyToBuilder(builder).push("energy_usage");
-        mekaSuitEnergyUsageDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_DAMAGE.applyToBuilder(builder)
-              .defineInRange("damage", 100_000, 0, Integer.MAX_VALUE));
+        mekaSuitHelmetEnergyUsageDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_HELMET_DAMAGE.applyToBuilder(builder)
+              .defineInRange("helmetDamage", 1, 0, Integer.MAX_VALUE));
+        mekaSuitChestplateEnergyUsageDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_CHESTPLATE_DAMAGE.applyToBuilder(builder)
+              .defineInRange("chestplateDamage", 1, 0, Integer.MAX_VALUE));
+        mekaSuitLeggingsEnergyUsageDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_LEGGINGS_DAMAGE.applyToBuilder(builder)
+              .defineInRange("leggingsDamage", 1, 0, Integer.MAX_VALUE));
+        mekaSuitBootsEnergyUsageDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_BOOTS_DAMAGE.applyToBuilder(builder)
+              .defineInRange("bootsDamage", 1, 0, Integer.MAX_VALUE));
         mekaSuitEnergyUsageMagicReduce = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_MAGIC.applyToBuilder(builder)
               .defineInRange("magicReduce", 1_000, 0, Integer.MAX_VALUE));
         mekaSuitEnergyUsageFall = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_FALL.applyToBuilder(builder)

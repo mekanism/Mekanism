@@ -465,7 +465,10 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GEAR_MEKA_SUIT_JETPACK_TRANSFER_RATE("gear.meka_suit.jetpack.transfer_rate", "Jetpack Transfer Rate", "Rate in mB/t at which Hydrogen can be transferred into the jetpack unit."),
 
     GEAR_MEKA_SUIT_ENERGY_USAGE("gear.meka_suit.energy_usage", "Energy Usage", "Settings for configuring the MekaSuit's Energy Usage", true),
-    GEAR_MEKA_SUIT_ENERGY_USAGE_DAMAGE("gear.meka_suit.energy_usage.damage", "Damage Reduction", "Energy usage of MekaSuit per unit of damage applied."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_HELMET_DAMAGE("gear.meka_suit.energy_usage.helmet.damage", "Helmet Damage Reduction", "Energy usage of MekaSuit Helmet per unit of damage applied."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_CHESTPLATE_DAMAGE("gear.meka_suit.energy_usage.chestplate.damage", "Bodyarmor Damage Reduction", "Energy usage of MekaSuit Bodyarmor per unit of damage applied."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_LEGGINGS_DAMAGE("gear.meka_suit.energy_usage.leggings.damage", "Pants Damage Reduction", "Energy usage of MekaSuit Pants per unit of damage applied."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_BOOTS_DAMAGE("gear.meka_suit.energy_usage.boots.damage", "Boots Damage Reduction", "Energy usage of MekaSuit Boots per unit of damage applied."),
     GEAR_MEKA_SUIT_ENERGY_USAGE_MAGIC("gear.meka_suit.energy_usage.magic", "Magic Prevention",
           "Energy cost multiplier for reducing magic damage via the inhalation purification unit. Energy cost is: MagicDamage * magicReduce. (1 MagicDamage is 1 half heart)."),
     GEAR_MEKA_SUIT_ENERGY_USAGE_FALL("gear.meka_suit.energy_usage.fall", "Fall Reduction",
