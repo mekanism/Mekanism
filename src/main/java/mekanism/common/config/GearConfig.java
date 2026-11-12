@@ -27,7 +27,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue disassemblerEnergyUsageWeapon;
     public final CachedIntValue disassemblerMiningCount;
     public final CachedDoubleValue disassemblerSlowEnergyChance;
-    public final CachedIntValue disassemblerFastEnergyMultiplier;
+    public final CachedIntValue disassemblerFastEnergyUsage;
     public final CachedBooleanValue disassemblerSlowMode;
     public final CachedBooleanValue disassemblerFastMode;
     public final CachedBooleanValue disassemblerVeinMining;
@@ -77,7 +77,11 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue mekaToolEnergyUsageWeapon;
     public final CachedIntValue mekaToolEnergyUsageTeleport;
     public final CachedIntValue mekaToolEnergyUsage;
-    public final CachedIntValue mekaToolEnergyUsageSilk;
+    public final CachedIntValue mekaToolEnergyUsageFast;
+    public final CachedIntValue mekaToolEnergyUsageSuperFast;
+    public final CachedIntValue mekaToolEnergyUsageExtreme;
+    public final CachedIntValue mekaToolEnergyMultiplierSilk;
+    public final CachedDoubleValue mekaToolSlowEnergyChance;
     public final CachedIntValue mekaToolMaxTeleportReach;
     public final CachedIntValue mekaToolBaseDamage;
     public final CachedDoubleValue mekaToolAttackSpeed;
@@ -145,8 +149,8 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("slowEnergyChance", 0.5D, 0, 1));
         disassemblerFastMode = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_FAST.applyToBuilder(builder)
               .define("fastMode", true));
-        disassemblerFastEnergyMultiplier = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_FAST_ENERGY_USAGE.applyToBuilder(builder)
-              .defineInRange("fastEnergyMultiplier", 5, 1, Integer.MAX_VALUE));
+        disassemblerFastEnergyUsage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_FAST_ENERGY_USAGE.applyToBuilder(builder)
+              .defineInRange("fastEnergyUsage", 5, 0, Integer.MAX_VALUE));
         disassemblerVeinMining = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_VEIN_MINING.applyToBuilder(builder)
               .define("veinMining", false));
         disassemblerMiningCount = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_MINING_COUNT.applyToBuilder(builder)
@@ -246,10 +250,18 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("maxTeleportReach", 100, 3, 1_024));
 
         MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE.applyToBuilder(builder).push("energy_usage");
-        mekaToolEnergyUsage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_BASE.applyToBuilder(builder)
-              .defineInRange("base", 1, 0, Integer.MAX_VALUE));
-        mekaToolEnergyUsageSilk = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_SILK.applyToBuilder(builder)
+        mekaToolEnergyUsage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_NORMAL.applyToBuilder(builder)
+              .defineInRange("normal", 1, 0, Integer.MAX_VALUE));
+        mekaToolEnergyUsageFast = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_FAST.applyToBuilder(builder)
+              .defineInRange("fast", 5, 0, Integer.MAX_VALUE));
+        mekaToolEnergyUsageSuperFast = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_SUPER_FAST.applyToBuilder(builder)
+              .defineInRange("super_fast", 10, 0, Integer.MAX_VALUE));
+        mekaToolEnergyUsageExtreme = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_EXTREME.applyToBuilder(builder)
+              .defineInRange("extreme", 15, 0, Integer.MAX_VALUE));
+        mekaToolEnergyMultiplierSilk = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_MULTIPLIER_SILK.applyToBuilder(builder)
               .defineInRange("silk", 10, 0, Integer.MAX_VALUE));
+        mekaToolSlowEnergyChance = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_SLOW_CHANCE.applyToBuilder(builder)
+              .defineInRange("slowEnergyChance", 0.5D, 0, 1));
         mekaToolEnergyUsageWeapon = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_WEAPON.applyToBuilder(builder)
               .defineInRange("weapon", 2, 0, Integer.MAX_VALUE));
         mekaToolEnergyUsageHoe = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_HOE.applyToBuilder(builder)
