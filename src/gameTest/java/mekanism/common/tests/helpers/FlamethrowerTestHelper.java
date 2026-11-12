@@ -10,6 +10,7 @@ import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class FlamethrowerTestHelper extends MekGameTestHelper {
@@ -23,7 +24,7 @@ public class FlamethrowerTestHelper extends MekGameTestHelper {
         //Similar to GameTestHelper#spawnItem, but slightly adjusted
         ItemEntity item = new ItemEntity(getLevel(), pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, new ItemStack(Items.COBBLESTONE, 3));
         item.setNoGravity(true);
-        item.setDeltaMovement(0, 0, 0);
+        item.setDeltaMovement(Vec3.ZERO);
         if (aged) {
             item.tickCount = 5 * SharedConstants.TICKS_PER_SECOND + 1;
         }

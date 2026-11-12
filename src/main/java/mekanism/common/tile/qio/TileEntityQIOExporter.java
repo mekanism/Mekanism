@@ -327,6 +327,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
             boolean randomizeEject = ejectChance < 1;
             int maxTypes = exporter.getMaxTransitTypes();
             int maxCount = exporter.getMaxTransitCount();
+            Direction outputterSide = exporter.getOppositeDirection();
             Set<ItemResource> removedTypes = new HashSet<>();
             int amountRemoved = 0;
             for (T obj : ejectMap) {
@@ -347,7 +348,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                     } else {
                         //Note: We don't use transporter#insert as we already know the transporter is valid due to it having exposed a capability
                         // We also can't just use the transporter's handler as we want to support round-robin
-                        toUse = transporter.insertUnchecked(level, exporter, type, amountToInsert, transaction, pathCalculator);
+                        toUse = transporter.insertUnchecked(level, exporter, outputterSide, type, amountToInsert, transaction, pathCalculator);
                     }
                     //Try to remove the item from the frequency
                     if (toUse > 0 && freq.removeByType(type, toUse, transaction) == toUse) {

@@ -18,7 +18,6 @@ import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
 import mekanism.common.registries.MekanismModules;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -58,18 +57,22 @@ public class PlayerState {
         }
     }
 
-    public void clearPlayer(UUID uuid, boolean isClientSide) {
+    public void clearPlayer(Player player) {
+        clearPlayer(player.getUUID(), null);
+    }
+
+    public void clearPlayer(UUID uuid, @Nullable Player clientPlayer) {
         activeJetpacks.remove(uuid);
         activeScubaMasks.remove(uuid);
         activeGravitationalModulators.remove(uuid);
-        if (isClientSide) {
+        if (clientPlayer != null) {
             SoundHandler.clearPlayerSounds(uuid);
-            if (Minecraft.getInstance().player == null || Minecraft.getInstance().player.getUUID().equals(uuid)) {
+            if (clientPlayer.getUUID().equals(uuid)) {
                 SoundHandler.radiationSoundMap.clear();
             }
         }
         PlayerExposure.resetPlayer(uuid);
-        if (!isClientSide) {
+        if (clientPlayer != null) {
             PacketDistributor.sendToAllPlayers(new PacketResetPlayerClient(uuid));
         }
     }

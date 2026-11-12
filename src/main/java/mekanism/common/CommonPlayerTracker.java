@@ -50,14 +50,13 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void onPlayerLogoutEvent(PlayerLoggedOutEvent event) {
-        Player player = event.getEntity();
-        Mekanism.playerState.clearPlayer(player.getUUID(), false);
+        Mekanism.playerState.clearPlayer(event.getEntity());
     }
 
     @SubscribeEvent
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
-        Mekanism.playerState.clearPlayer(player.getUUID(), false);
+        Mekanism.playerState.clearPlayer(player);
         PlayerExposure.updateClientRadiation(player);
     }
 

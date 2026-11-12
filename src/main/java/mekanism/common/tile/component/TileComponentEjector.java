@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import mekanism.api.RelativeSide;
@@ -80,8 +81,10 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private final IntSupplier energyEjectRate;
     @Nullable
     private Predicate<TransmissionType> canEject;
-    @Nullable//TODO: At some point it would be nice to be able to generify this further
-    private Predicate<IChemicalTank> canTankEject;
+    @Nullable
+    private BiPredicate<DataType,IChemicalTank> canChemicalTankEject;
+    @Nullable
+    private BiPredicate<DataType,IFluidTank> canFluidTankEject;
     private boolean strictInput = DEFAULT_STRICT_INPUT;
     @Nullable
     private EnumColor outputColor;
@@ -120,14 +123,19 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
         return this;
     }
-
+    
     public TileComponentEjector setCanEject(Predicate<TransmissionType> canEject) {
         this.canEject = canEject;
         return this;
     }
 
-    public TileComponentEjector setCanTankEject(Predicate<IChemicalTank> canTankEject) {
-        this.canTankEject = canTankEject;
+    public TileComponentEjector setCanChemicalTankEject(BiPredicate<DataType, IChemicalTank> canChemicalTankEject) {
+        this.canChemicalTankEject = canChemicalTankEject;
+        return this;
+    }
+
+    public TileComponentEjector setCanFluidTankEject(BiPredicate<DataType, IFluidTank> canFluidTankEject) {
+        this.canFluidTankEject = canFluidTankEject;
         return this;
     }
 
@@ -185,14 +193,14 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                         switch (slotInfo) {
                             case ChemicalSlotInfo chemicalSlotInfo when type == TransmissionType.CHEMICAL -> {
                                 for (IChemicalTank tank : chemicalSlotInfo.getTanks()) {
-                                    if (!tank.isEmpty() && (canTankEject == null || canTankEject.test(tank))) {
+                                    if (!tank.isEmpty() && (canChemicalTankEject == null || canChemicalTankEject.test(dataType, tank))) {
                                         addData(outputData, tank, outputSides);
                                     }
                                 }
                             }
                             case FluidSlotInfo fluidSlotInfo when type == TransmissionType.FLUID -> {
                                 for (IFluidTank tank : fluidSlotInfo.getTanks()) {
-                                    if (!tank.isEmpty()) {
+                                    if (!tank.isEmpty() && (canFluidTankEject == null || canFluidTankEject.test(dataType, tank))) {
                                         addData(outputData, tank, outputSides);
                                     }
                                 }

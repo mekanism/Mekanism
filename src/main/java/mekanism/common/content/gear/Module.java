@@ -113,13 +113,15 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         return customModule;
     }
 
-    public void tick(ItemAccess itemAccess, Player player, TransactionContext transaction) {
+    public void tickClient(ItemAccess itemAccess, Player player, TransactionContext transaction) {
         if (isEnabled()) {
-            if (player.level().isClientSide()) {
-                customModule.tickClient(this, itemAccess, player, transaction);
-            } else {
-                customModule.tickServer(this, itemAccess, player, transaction);
-            }
+            customModule.tickClient(this, itemAccess, player, transaction);
+        }
+    }
+
+    public void tickServer(ItemAccess itemAccess, Player player, TransactionContext transaction) {
+        if (isEnabled()) {
+            customModule.tickServer(this, itemAccess, player, transaction);
         }
     }
 

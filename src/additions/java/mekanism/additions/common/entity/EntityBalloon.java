@@ -25,6 +25,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.InterpolationHandler;
+import net.minecraft.world.entity.LinearInterpolationHandler;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoveSimulationType;
 import net.minecraft.world.entity.MoverType;
@@ -100,8 +102,6 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     public void tick() {
-        setOldPos();
-
         if (level().isOutsideBuildHeight(getBlockY())) {
             pop();
             return;
@@ -123,14 +123,35 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
                 entityData.set(LATCHED_ENTITY, Optional.empty());
             }
         }
+        super.tick();
 
         if (isLatchedToPos()) {
-            setDeltaMovement(0, 0, 0);
+            setDeltaMovement(Vec3.ZERO);
         } else if (latchedEntity != null && latchedEntity.isAlive()) {
-            if (!isFlying(latchedEntity)) {
+            boolean isFlying = isFlying(latchedEntity);
+            Vec3 position = position();
+            double addedHeight = getAddedHeight(latchedEntity);
+            Vec3 newPosition = latchedEntity.position().add(0, addedHeight, 0);
+            if (!position.equals(newPosition)) {
+                if (isFlying) {
+                    //Just set the position to the amount above the player's head
+                    setPos(newPosition);
+                } else {
+                    Vec3 delta = newPosition.subtract(position);
+                    setDeltaMovement(delta);
+                    move(MoverType.SELF, delta);
+                }
+            } else {
+                setDeltaMovement(Vec3.ZERO);
+            }
+            if (!isFlying) {
                 //If an entity is flying (creative flight), don't adjust the height they are at
                 Vec3 motion = latchedEntity.getDeltaMovement();
                 double targetElevation = getTargetElevation(latchedEntity);
+                if (verticalCollision) {
+                    //Clamp the max elevation if the balloon collided with something while trying to move upwards
+                    targetElevation = Math.min(targetElevation, getY() - addedHeight);
+                }
                 if (latchedEntity.getY() - Mth.EPSILON < targetElevation) {
                     //The entity is below the target height, apply vertical motion to it
                     // Note: We allow for a smaller level of precision than when comparing to if it is above the height
@@ -145,7 +166,6 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
                     latchedEntity.setDeltaMovement(motion.x(), 0, motion.z());
                 }
             }
-            setPos(latchedEntity.getX(), latchedEntity.getY() + getAddedHeight(latchedEntity), latchedEntity.getZ());
         } else {
             Vec3 motion = getDeltaMovement();
             setDeltaMovement(motion.x(), Math.min(motion.y() * 1.02F, 0.2F), motion.z());
@@ -164,6 +184,11 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
             }
             setDeltaMovement(motion);
         }
+    }
+
+    @Override
+    protected InterpolationHandler createInterpolationHandler() {
+        return LinearInterpolationHandler.create(this);
     }
 
     @Override
@@ -194,6 +219,11 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
             }
         }
         return 0;
+    }
+
+    @Override
+    protected void onBelowWorld() {
+        pop();
     }
 
     private void pop() {

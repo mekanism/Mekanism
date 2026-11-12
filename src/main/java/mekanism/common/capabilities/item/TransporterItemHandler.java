@@ -2,6 +2,7 @@ package mekanism.common.capabilities.item;
 
 import java.util.Objects;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
@@ -11,11 +12,13 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 public class TransporterItemHandler implements ResourceHandler<ItemResource> {
 
     private final LogisticalTransporterBase transporter;
+    private final Direction fromSide;
     private final long fromPos;
 
-    TransporterItemHandler(LogisticalTransporterBase transporter, long fromPos) {
+    TransporterItemHandler(LogisticalTransporterBase transporter, long fromPos, Direction fromSide) {
         this.transporter = transporter;
         this.fromPos = fromPos;
+        this.fromSide = fromSide;
     }
 
     public LogisticalTransporterBase getTransporter() {
@@ -66,7 +69,7 @@ public class TransporterItemHandler implements ResourceHandler<ItemResource> {
         //Note: We skip checking Transmitter#canConnectMutual, as transporters should never end up using this path,
         // so then it would just fall back to having checked Transmitter#canConnect, which is already covered by
         // the check to LogisticalTransporterBase#exposesInsertCap in TransporterCapabilityResolver
-        return transporter.insertUnchecked(level, fromPos, resource, Math.min(amount, transporter.tier.getPullAmount()), transaction);
+        return transporter.insertUnchecked(level, fromPos, fromSide, resource, Math.min(amount, transporter.tier.getPullAmount()), transaction);
     }
 
     @Override
