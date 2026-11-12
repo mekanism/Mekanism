@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
+import java.util.function.IntSupplier;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -22,6 +24,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
@@ -126,12 +129,12 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
     }
 
     public enum ExcavationMode implements IIncrementalEnum<ExcavationMode>, IHasTextComponent, TranslatableEnum, IRadialMode, StringRepresentable {
-        OFF(MekanismLang.RADIAL_EXCAVATION_SPEED_OFF, 0, EnumColor.WHITE, "speed_off"),
-        SLOW(MekanismLang.RADIAL_EXCAVATION_SPEED_SLOW, 4, EnumColor.PINK, "speed_slow"),
-        NORMAL(MekanismLang.RADIAL_EXCAVATION_SPEED_NORMAL, 16, EnumColor.BRIGHT_GREEN, "speed_normal"),
-        FAST(MekanismLang.RADIAL_EXCAVATION_SPEED_FAST, 32, EnumColor.YELLOW, "speed_fast"),
-        SUPER_FAST(MekanismLang.RADIAL_EXCAVATION_SPEED_SUPER, 64, EnumColor.ORANGE, "speed_super"),
-        EXTREME(MekanismLang.RADIAL_EXCAVATION_SPEED_EXTREME, 128, EnumColor.RED, "speed_extreme");
+        OFF(MekanismLang.RADIAL_EXCAVATION_SPEED_OFF, 0, ConstantPredicates.ZERO, EnumColor.WHITE, "speed_off"),
+        SLOW(MekanismLang.RADIAL_EXCAVATION_SPEED_SLOW, 4, MekanismConfig.gear.mekaToolEnergyUsage, EnumColor.PINK, "speed_slow"),
+        NORMAL(MekanismLang.RADIAL_EXCAVATION_SPEED_NORMAL, 16, MekanismConfig.gear.mekaToolEnergyUsage, EnumColor.BRIGHT_GREEN, "speed_normal"),
+        FAST(MekanismLang.RADIAL_EXCAVATION_SPEED_FAST, 32, MekanismConfig.gear.mekaToolEnergyUsageFast, EnumColor.YELLOW, "speed_fast"),
+        SUPER_FAST(MekanismLang.RADIAL_EXCAVATION_SPEED_SUPER, 64, MekanismConfig.gear.mekaToolEnergyUsageSuperFast, EnumColor.ORANGE, "speed_super"),
+        EXTREME(MekanismLang.RADIAL_EXCAVATION_SPEED_EXTREME, 128, MekanismConfig.gear.mekaToolEnergyUsageExtreme, EnumColor.RED, "speed_extreme");
 
         @Unmodifiable
         public static final List<ExcavationMode> VALUES = List.of(values());
@@ -139,6 +142,7 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
         public static final IntFunction<ExcavationMode> BY_ID = ByIdMap.continuous(ExcavationMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
         public static final StreamCodec<ByteBuf, ExcavationMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ExcavationMode::ordinal);
 
+        private final IntSupplier energyUsage;
         private final String serializedName;
         private final Identifier icon;
         private final ILangEntry langEntry;
@@ -146,10 +150,11 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
         private final EnumColor color;
         private final int efficiency;
 
-        ExcavationMode(ILangEntry langEntry, int efficiency, EnumColor color, String texture) {
+        ExcavationMode(ILangEntry langEntry, int efficiency, IntSupplier energyUsage, EnumColor color, String texture) {
             this.serializedName = name().toLowerCase(Locale.ROOT);
             this.langEntry = langEntry;
             this.efficiency = efficiency;
+            this.energyUsage = energyUsage;
             this.color = color;
             this.icon = Mekanism.rl("radial/" + texture);
             this.label = TextComponentUtil.getString(Integer.toString(efficiency));
@@ -177,6 +182,10 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
 
         public int getEfficiency() {
             return efficiency;
+        }
+
+        public int getEnergyUsage() {
+            return energyUsage.getAsInt();
         }
 
         @Override
