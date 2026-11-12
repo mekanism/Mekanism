@@ -385,8 +385,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                     BlockPos pos = result.getBlockPos();
                     // make sure we fit
                     if (isValidDestinationBlock(world, pos.above()) && isValidDestinationBlock(world, pos.above(2))) {
-                        double distance = player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
-                        if (distance < 5) {
+                        double distanceToSqr = player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
+                        if (distanceToSqr < 5) {
                             return InteractionResult.PASS;
                         }
                         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
@@ -396,7 +396,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                                 if (energyHandler == null) {
                                     return InteractionResult.PASS;
                                 }
-                                int energyNeeded = Mth.ceil(MekanismConfig.gear.mekaToolEnergyUsageTeleport.get() * (distance / 10D));
+                                int energyNeeded = Mth.ceil(MekanismConfig.gear.mekaToolEnergyUsageTeleport.get() * Math.sqrt(distanceToSqr));
                                 if (energyHandler.extract(energyNeeded, transaction) < energyNeeded) {
                                     //Not enough energy to operate
                                     return InteractionResult.PASS;

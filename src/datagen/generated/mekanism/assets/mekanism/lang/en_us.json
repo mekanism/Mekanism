@@ -1098,7 +1098,7 @@
   "configuration.mekanism.gear.meka_tool.energy_usage.super_fast": "Super Fast",
   "configuration.mekanism.gear.meka_tool.energy_usage.super_fast.tooltip": "Energy usage of the Meka-Tool when set to 'Super Fast' excavation speed.",
   "configuration.mekanism.gear.meka_tool.energy_usage.teleport": "Teleport Energy Usage",
-  "configuration.mekanism.gear.meka_tool.energy_usage.teleport.tooltip": "Energy cost of using the Meka-Tool to teleport 10 blocks.",
+  "configuration.mekanism.gear.meka_tool.energy_usage.teleport.tooltip": "Energy cost of using the Meka-Tool to teleport one block.",
   "configuration.mekanism.gear.meka_tool.energy_usage.tooltip": "Settings for configuring the Meka-Tool's Energy Usage",
   "configuration.mekanism.gear.meka_tool.energy_usage.weapon": "Weapon",
   "configuration.mekanism.gear.meka_tool.energy_usage.weapon.tooltip": "Energy cost of using the Meka-Tool to deal 4 units of damage.",

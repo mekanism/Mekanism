@@ -436,7 +436,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GEAR_MEKA_TOOL_AXE("gear.meka_tool.axe", "Axe", "Energy cost of using the Meka-Tool as an axe for stripping logs, scraping, or removing wax."),
     GEAR_MEKA_TOOL_SHEAR_ENTITY("gear.meka_tool.shear.entity", "Shear Entities", "Energy cost of using the Meka-Tool to shear entities."),
     GEAR_MEKA_TOOL_SHEAR_BLOCK("gear.meka_tool.shear.block", "Shear Blocks", "Energy cost of using the Meka-Tool to carefully shear and trim blocks."),
-    GEAR_MEKA_TOOL_ENERGY_USAGE_TELEPORT("gear.meka_tool.energy_usage.teleport", "Teleport Energy Usage", "Energy cost of using the Meka-Tool to teleport 10 blocks."),
+    GEAR_MEKA_TOOL_ENERGY_USAGE_TELEPORT("gear.meka_tool.energy_usage.teleport", "Teleport Energy Usage", "Energy cost of using the Meka-Tool to teleport one block."),
 
     GEAR_MEKA_SUIT("gear.meka_suit", "MekaSuit", "Settings for configuring the MekaSuit", true),
     GEAR_MEKA_SUIT_HELMET_CAPACITY("gear.meka_suit.capacity.helmet.energy", "Helmet Max Energy",
