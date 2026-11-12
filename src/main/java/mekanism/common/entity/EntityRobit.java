@@ -384,7 +384,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         }
         setFollowing(false);
         if (!event.isTransDimensional()) {
-            setDeltaMovement(0, 0, 0);
+            setDeltaMovement(Vec3.ZERO);
             teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
         } else {
             ServerLevel newWorld = ((ServerLevel) this.level()).getServer().getLevel(event.getTargetDimension());
