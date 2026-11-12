@@ -18,7 +18,7 @@ public interface IItemHUDProvider {
         //Note: We use the passed in stack rather than this instance so that if we implement the hud provider
         // on a non armor (such as for modules) then it can still forward the call if the module container is an armor item
         Equippable equippable = instance.get(DataComponents.EQUIPPABLE);
-        if (equippable != null && equippable.slot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
+        if (equippable != null && equippable.slot().isArmor()) {
             addHUDStrings(list, player, instance, equippable.slot());
         }
     }

@@ -31,6 +31,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityType.Builder;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -127,7 +128,7 @@ public class AdditionsEntityTypes {
 
     public static <BABY extends LivingEntity & ArmorSpawnable> void depopulateDefaultEquipmentSlots(BABY baby) {
         if (!baby.canSpawnArmor()) {
-            for (EquipmentSlot slot : EquipmentSlot.VALUES) {
+            for (EquipmentSlot slot : EquipmentSlotGroup.ARMOR) {
                 if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
                     baby.setItemSlot(slot, ItemStack.EMPTY);
                 }

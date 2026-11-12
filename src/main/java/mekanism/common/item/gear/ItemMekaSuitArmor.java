@@ -74,6 +74,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.Equippable;
+import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.Tags;
@@ -206,14 +207,27 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-        super.inventoryTick(stack, level, entity, slot);
-        if (slot != null && slot.getType() == Type.HUMANOID_ARMOR && entity instanceof Player player) {
+        inventoryTick(stack, entity, slot, false);
+    }
+
+    @Override
+    public void clientInventoryTick(ItemStack stack, Level level, Entity entity, @Nullable EquipmentSlot slot) {
+        //Theoretically isClientSide should always be true here, but in case a mod is doing funky things check it
+        inventoryTick(stack, entity, slot, level.isClientSide());
+    }
+
+    private void inventoryTick(ItemStack stack, Entity entity, @Nullable EquipmentSlot slot, boolean isClientSide) {
+        if (slot != null && slot.isArmor() && entity instanceof Player player) {
             ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
             if (container != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     ItemAccess itemAccess = ItemAccess.forStack(stack);
                     for (Module<?> module : container.modules()) {
-                        module.tick(itemAccess, player, transaction);
+                        if (isClientSide) {
+                            module.tickClient(itemAccess, player, transaction);
+                        } else {
+                            module.tickServer(itemAccess, player, transaction);
+                        }
                     }
                     transaction.commit();
                 }
