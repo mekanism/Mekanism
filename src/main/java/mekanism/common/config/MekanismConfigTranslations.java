@@ -397,6 +397,11 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GEAR_PORTABLE_TELEPORTER("gear.portable_teleporter", "Portable Teleporter", "Settings for configuring the Portable Teleporter", true),
     GEAR_PORTABLE_TELEPORTER_MAX_ENERGY("gear.portable_teleporter.max_energy", "Max Energy", "Maximum amount of energy the Portable Teleporter can contain."),
     GEAR_PORTABLE_TELEPORTER_CHARGE_RATE("gear.portable_teleporter.charge_rate", "Charge Rate", "Percentage of max energy the Portable Teleporter can accept per tick."),
+    GEAR_PORTABLE_TELEPORTER_BASE("gear.portable_teleporter.base", "Base Energy Usage", "Base energy cost for teleporting the player."),
+    GEAR_PORTABLE_TELEPORTER_DISTANCE("gear.portable_teleporter.distance", "Distance Energy Usage",
+          "FE per unit of distance travelled during teleportation - sqrt(xDiff^2 + yDiff^2 + zDiff^2)."),
+    GEAR_PORTABLE_TELEPORTER_PENALTY("gear.portable_teleporter.penalty.dimension", "Dimension Energy Penalty",
+          "Flat additional cost for interdimensional teleportation. Distance is still taken into account minimizing energy cost based on dimension scales."),
     GEAR_PORTABLE_TELEPORTER_DELAY("gear.portable_teleporter.delay", "Teleportation Delay",
           "Delay in ticks before a player is teleported after clicking the Teleport button in the portable teleporter."),
 
