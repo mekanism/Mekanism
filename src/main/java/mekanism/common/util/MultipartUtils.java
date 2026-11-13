@@ -66,10 +66,6 @@ public final class MultipartUtils {
 
     public record AdvancedRayTraceResult(HitResult hit, VoxelShape bounds, int subHit) {
 
-        public boolean valid() {
-            return hit != null && bounds != null;
-        }
-
         public double squareDistanceTo(Vec3 vec) {
             return hit.getLocation().distanceToSqr(vec);
         }

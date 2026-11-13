@@ -6,7 +6,6 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.tile.TileEntityBin;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
@@ -20,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -38,8 +38,8 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
         if (!world.isClientSide()) {
             TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
             if (bin != null) {
-                BlockHitResult mop = MekanismUtils.rayTrace(player);
-                if (mop.getType() != Type.MISS && mop.getDirection() == bin.getDirection()) {
+                HitResult mop = player.pick(player.blockInteractionRange(), 1, false);;
+                if (mop.getType() == Type.BLOCK && ((BlockHitResult) mop).getDirection() == bin.getDirection()) {
                     BinInventorySlot binSlot = bin.getBinSlot();
                     if (!binSlot.isEmpty() && bin.removeTicks == 0) {
                         bin.removeTicks = 3;

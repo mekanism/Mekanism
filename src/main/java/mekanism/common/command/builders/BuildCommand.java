@@ -17,7 +17,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.MekanismPermissions;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -73,11 +72,11 @@ public class BuildCommand {
     }
 
     private static BlockPos rayTracePos(CommandSourceStack source) throws CommandSyntaxException {
-        BlockHitResult result = MekanismUtils.rayTrace(source.getPlayerOrException(), 100);
-        if (result.getType() == HitResult.Type.MISS) {
-            throw MISS.create();
+        HitResult result = source.getPlayerOrException().pick(100, 1, false);
+        if (result.getType() == HitResult.Type.BLOCK) {
+            return ((BlockHitResult) result).getBlockPos();
         }
-        return result.getBlockPos();
+        throw MISS.create();
     }
 
     private static int build(CommandContext<CommandSourceStack> ctx, ILangEntry localizedName, StructureBuilder builder, BlockPos start, boolean empty) {

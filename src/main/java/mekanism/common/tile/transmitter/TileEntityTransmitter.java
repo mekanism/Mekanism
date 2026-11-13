@@ -232,7 +232,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     @Nullable
     private Direction getSideLookingAt(Player player) {
         AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(player, getBlockPos(), getCollisionBoxes());
-        if (result != null && result.valid()) {
+        if (result != null) {
             List<Direction> list = new ArrayList<>(EnumUtils.DIRECTIONS.length);
             byte connections = getTransmitter().getAllCurrentConnections();
             for (Direction dir : EnumUtils.DIRECTIONS) {

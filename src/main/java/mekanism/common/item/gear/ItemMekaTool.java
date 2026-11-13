@@ -374,11 +374,11 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     @Override
     public InteractionResult use(Level world, Player player, InteractionHand hand) {
-        if (!world.isClientSide()) {
-            ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
-            IModule<ModuleTeleportationUnit> module = getEnabledModule(itemAccess.getResource(), MekanismModules.TELEPORTATION_UNIT);
-            if (module != null) {
-                BlockHitResult result = MekanismUtils.rayTrace(player, MekanismConfig.gear.mekaToolMaxTeleportReach.get());
+        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
+        IModule<ModuleTeleportationUnit> module = getEnabledModule(itemAccess.getResource(), MekanismModules.TELEPORTATION_UNIT);
+        if (module != null) {
+            HitResult hitResult = player.pick(MekanismConfig.gear.mekaToolMaxTeleportReach.get(), 1, false);
+            if (hitResult instanceof BlockHitResult result) {
                 //If we don't require a block target or are not a miss, allow teleporting
                 if (!module.getCustomInstance().requiresBlockTarget() || result.getType() != HitResult.Type.MISS) {
                     BlockPos pos = result.getBlockPos();
@@ -400,6 +400,9 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                                     //Not enough energy to operate
                                     return InteractionResult.PASS;
                                 }
+                            }
+                            if (world.isClientSide()) {
+                                return InteractionResult.SUCCESS_SERVER;
                             }
                             double targetX = pos.getX() + 0.5;
                             double targetY = pos.getY() + 1.5;
