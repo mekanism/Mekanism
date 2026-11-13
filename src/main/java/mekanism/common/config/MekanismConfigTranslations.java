@@ -434,7 +434,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GEAR_MEKA_TOOL_ENERGY_USAGE_FAST("gear.meka_tool.energy_usage.fast", "Fast", "Energy usage of the Meka-Tool when set to 'Fast' excavation speed."),
     GEAR_MEKA_TOOL_ENERGY_USAGE_SUPER_FAST("gear.meka_tool.energy_usage.super_fast", "Super Fast", "Energy usage of the Meka-Tool when set to 'Super Fast' excavation speed."),
     GEAR_MEKA_TOOL_ENERGY_USAGE_EXTREME("gear.meka_tool.energy_usage.extreme", "Extreme", "Energy usage of the Meka-Tool when set to 'Extreme' excavation speed."),
-    GEAR_MEKA_TOOL_ENERGY_MULTIPLIER_SILK("gear.meka_tool.energy_multiplier.silk", "Silk Touch", "Silk touch energy multiplier of the Meka-Tool."),
+    GEAR_MEKA_TOOL_ENERGY_USAGE_SILK("gear.meka_tool.energy_usage.silk", "Silk Touch", "Additional energy used when mining with Silk touch with the Meka-Tool."),
     GEAR_MEKA_TOOL_ENERGY_USAGE_WEAPON("gear.meka_tool.energy_usage.weapon", "Weapon", "Energy cost of using the Meka-Tool to deal 4 units of damage."),
     GEAR_MEKA_TOOL_HOE("gear.meka_tool.hoe", "Hoe", "Energy cost of using the Meka-Tool as a hoe."),
     GEAR_MEKA_TOOL_SHOVEL("gear.meka_tool.shovel", "Shovel", "Energy cost of using the Meka-Tool as a shovel for making paths and dowsing campfires."),

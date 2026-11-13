@@ -124,17 +124,10 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return module.getCustomInstance().canPerformAction(module, moduleContainer, instance, action);
     }
 
-    public static int getDestroyEnergy(IModuleContainer container, float hardness, boolean silk) {
+    public static int getDestroyEnergy(IModuleContainer container, float hardness) {
         IModule<ModuleExcavationEscalationUnit> module = container.getIfEnabled(MekanismModules.EXCAVATION_ESCALATION_UNIT);
         ExcavationMode mode = module == null ? ExcavationMode.NORMAL : module.getCustomInstance().excavationMode();
-        return getDestroyEnergy(getDestroyEnergy(mode.getEnergyUsage(), silk), hardness);
-    }
-
-    private static int getDestroyEnergy(int energyUsage, boolean silk) {
-        if (silk) {
-            return energyUsage * MekanismConfig.gear.mekaToolEnergyMultiplierSilk.get();
-        }
-        return energyUsage;
+        return getDestroyEnergy(mode.getEnergyUsage(), hardness);
     }
 
     private static int getDestroyEnergy(int baseDestroyEnergy, float hardness) {
@@ -236,7 +229,14 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
         try (Transaction simulation = TransactionHelper.openTransactionSafe()) {
             //Use raw hardness to get the best guess of if it is zero or not
-            int energyRequired = getDestroyEnergy(container, state.destroySpeed, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
+            if (container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT)) {
+                int silkEnergy = MekanismConfig.gear.mekaToolEnergyUsageSilk.get();
+                if (energyHandler.extract(silkEnergy, simulation) < silkEnergy) {
+                    //We require at least the amount of energy necessary to process it as silk touch, otherwise we mark it as we don't have enough energy to mine
+                    return 0;
+                }
+            }
+            int energyRequired = getDestroyEnergy(container, state.destroySpeed);
             int energyAvailable = energyHandler.extract(energyRequired, simulation);
             if (energyAvailable < energyRequired) {
                 //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
@@ -262,11 +262,17 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         } else if (world.isClientSide()) {
             return true;
         }
-        boolean silk = container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT);
-        int baseDestroyEnergy = getDestroyEnergy(mode.getEnergyUsage(), silk);
-        int energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
         try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+            int silkEnergy = MekanismConfig.gear.mekaToolEnergyUsageSilk.get();
+            boolean silk = container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT);
+            if (silk) {
+                if (energyHandler.extract(silkEnergy, transaction) < silkEnergy) {
+                    //We always need to be able to handle the amount of energy for silk touch
+                    return false;
+                }
+            }
+            int energyRequired = getDestroyEnergy(mode.getEnergyUsage(), state.getDestroySpeed(world, pos));
             if (mode != ExcavationMode.SLOW || world.getRandom().nextDouble() < MekanismConfig.gear.mekaToolSlowEnergyChance.get()) {
                 //When on slow mode, only require it some of the time
                 energyHandler.extract(energyRequired, transaction);
@@ -275,7 +281,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             if (entity instanceof ServerPlayer player && MekanismUtils.isPlayingMode(player)) {
                 boolean hasEnergyToVeinMine;
                 try (Transaction simulation = Transaction.open(transaction)) {
-                    hasEnergyToVeinMine = energyHandler.extract(energyRequired, simulation) == energyRequired;
+                    int neededEnergy = energyRequired + silkEnergy;
+                    hasEnergyToVeinMine = energyHandler.extract(neededEnergy, simulation) == neededEnergy;
                 }
                 if (hasEnergyToVeinMine) {
                     Map<BlockPos, BlockState> blocks = getBlastedBlocks(world, player, stack, pos, state);
@@ -287,8 +294,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                     Object2IntMap<BlockPos> veinedBlocks = getVeinedBlocks(world, stack, blocks, oreTracker);
                     if (!veinedBlocks.isEmpty()) {
                         double energyUsageChance = mode == ExcavationMode.SLOW ? MekanismConfig.gear.mekaToolSlowEnergyChance.get() : 1;
-                        MekanismUtils.veinMineArea(energyHandler, baseDestroyEnergy, energyUsageChance, (ServerLevel) world, pos, player, stack, this, veinedBlocks,
-                              transaction, ItemMekaTool::getDestroyEnergy, (base, hardness, distance, bs) -> {
+                        MekanismUtils.veinMineArea(energyHandler, mode.getEnergyUsage(), silkEnergy, energyUsageChance, (ServerLevel) world, pos, player, stack, this,
+                              veinedBlocks, transaction, ItemMekaTool::getDestroyEnergy, (base, hardness, distance, bs) -> {
                                   double multiplier = 0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2);
                                   return Mth.ceil(getDestroyEnergy(base, hardness) * multiplier);
                               });

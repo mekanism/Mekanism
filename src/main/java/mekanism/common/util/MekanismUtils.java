@@ -613,12 +613,8 @@ public final class MekanismUtils {
         return fluidsIn;
     }
 
-    public static void veinMineArea(EnergyHandler energyHandler, int baseEnergy, double energyUsageChance, ServerLevel world, BlockPos pos, ServerPlayer player,
+    public static void veinMineArea(EnergyHandler energyHandler, int baseEnergy, int silkEnergy, double energyUsageChance, ServerLevel world, BlockPos pos, ServerPlayer player,
           ItemStack stack, Item usedTool, Object2IntMap<BlockPos> found, TransactionContext transaction, BlastEnergyFunction blastEnergy, VeinEnergyFunction veinEnergy) {
-        if (energyUsageChance <= 0) {
-            //Nothing can be done
-            return;
-        }
         Stat<Item> itemStat = Stats.ITEM_USED.get(usedTool);
         for (ObjectIterator<Object2IntMap.Entry<BlockPos>> iterator = Object2IntMaps.fastIterator(found); iterator.hasNext(); ) {
             Object2IntMap.Entry<BlockPos> foundEntry = iterator.next();
@@ -634,10 +630,14 @@ public final class MekanismUtils {
             if (hardness == Block.INDESTRUCTIBLE) {
                 continue;
             }
-            int distance = foundEntry.getIntValue();
-            int destroyEnergy = distance == 0 ? blastEnergy.calc(baseEnergy, hardness) : veinEnergy.calc(baseEnergy, hardness, distance, targetState);
             try (Transaction subTransaction = Transaction.open(transaction)) {
-                if (energyUsageChance >= 1 || world.getRandom().nextDouble() < energyUsageChance) {
+                if (energyHandler.extract(silkEnergy, subTransaction) < silkEnergy) {
+                    //We don't have enough energy to mine with silk touch, that means we never will so just break
+                    break;
+                }
+                if (energyUsageChance >= 1 || energyUsageChance > 0 && world.getRandom().nextDouble() < energyUsageChance) {
+                    int distance = foundEntry.getIntValue();
+                    int destroyEnergy = distance == 0 ? blastEnergy.calc(baseEnergy, hardness) : veinEnergy.calc(baseEnergy, hardness, distance, targetState);
                     //Only use energy if we always use it, or if our chance passes
                     if (energyHandler.extract(destroyEnergy, subTransaction) < destroyEnergy) {
                         //If we don't have energy to break the block continue

@@ -54,17 +54,27 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
             if (action == ItemAbilities.SHEARS_DISARM) {
                 //Only require energy if we are installed on a Meka-Tool and can thus calculate the energy required to break the block "safely"
                 // Note: We assume hardness is zero like the default is for tripwires as we don't have the target block in our current context
-                int cost = ItemMekaTool.getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
+                int cost = ItemMekaTool.getDestroyEnergy(container, 0);
+                if (container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT)) {
+                    cost += MekanismConfig.gear.mekaToolEnergyUsageSilk.get();
+                }
                 return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance, 1), cost);
             } else if (action == ItemAbilities.SHEARS_DIG) {
                 EnergyHandler energyHandler = module.getEnergyHandler(ItemAccessUtils.sideEffectFreeAccess(instance, 1), true);
                 if (energyHandler == null) {
                     return false;
                 }
+                int energyAvailable = energyHandler.getAmountAsInt();
+                if (container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT)) {
+                    energyAvailable -= MekanismConfig.gear.mekaToolEnergyUsageSilk.get();
+                    if (energyAvailable <= 0) {
+                        //We require at least the amount of energy necessary to process it as silk touch, otherwise we mark it as we don't have enough energy to mine
+                        return false;
+                    }
+                }
                 //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
                 // as that is the best guess we can currently give whether the corresponding dig action is supported
-                int energyRequired = ItemMekaTool.getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
-                int energyAvailable = energyHandler.getAmountAsInt();
+                int energyRequired = ItemMekaTool.getDestroyEnergy(container, 0);
                 //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
                 return energyRequired <= energyAvailable || ((double) energyAvailable / energyRequired) > Mth.EPSILON;
             } else if (action == ItemAbilities.SHEARS_TRIM) {
