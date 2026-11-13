@@ -21,13 +21,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 
 public class ItemDictionary extends Item {
@@ -86,9 +86,9 @@ public class ItemDictionary extends Item {
             }
             return InteractionResult.SUCCESS_SERVER;
         }
-        BlockHitResult result = MekanismUtils.rayTrace(player, ClipContext.Fluid.ANY);
-        if (result.getType() != Type.MISS) {
-            FluidState fluidState = world.getFluidState(result.getBlockPos());
+        HitResult result = player.pick(player.blockInteractionRange(), 1, true);
+        if (result.getType() == Type.BLOCK) {
+            FluidState fluidState = world.getFluidState(((BlockHitResult) result).getBlockPos());
             if (!fluidState.isEmpty()) {
                 if (!world.isClientSide()) {
                     sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidState.tags());

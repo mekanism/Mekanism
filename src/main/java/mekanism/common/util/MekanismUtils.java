@@ -71,7 +71,6 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.item.slot.SlotCollection;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -89,7 +88,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.util.thread.EffectiveSide;
@@ -301,43 +299,6 @@ public final class MekanismUtils {
     public static boolean isLiquidBlock(Block block) {
         //Treat bubble columns as liquids
         return block instanceof LiquidBlock || block instanceof BubbleColumnBlock;
-    }
-
-    /// Ray-traces what block a player is looking at.
-    ///
-    /// @param player player to raytrace
-    ///
-    /// @return raytraced value
-    public static BlockHitResult rayTrace(Player player) {
-        return rayTrace(player, ClipContext.Fluid.NONE);
-    }
-
-    public static BlockHitResult rayTrace(Player player, ClipContext.Fluid fluidMode) {
-        return rayTrace(player, player.blockInteractionRange(), fluidMode);
-    }
-
-    public static BlockHitResult rayTrace(Player player, double reach) {
-        return rayTrace(player, reach, ClipContext.Fluid.NONE);
-    }
-
-    public static BlockHitResult rayTrace(Player player, double reach, ClipContext.Fluid fluidMode) {
-        Vec3 headVec = getHeadVec(player);
-        Vec3 lookVec = player.getViewVector(1);
-        Vec3 endVec = headVec.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
-        return player.level().clip(new ClipContext(headVec, endVec, ClipContext.Block.OUTLINE, fluidMode, player));
-    }
-
-    /// Gets the head vector of a player for a ray trace.
-    ///
-    /// @param player player to check
-    ///
-    /// @return head location
-    private static Vec3 getHeadVec(Player player) {
-        double posY = player.getY() + player.getEyeHeight();
-        if (player.isCrouching()) {
-            posY -= 0.08;
-        }
-        return new Vec3(player.getX(), posY, player.getZ());
     }
 
     public static int calculateUsage(long capacity) {

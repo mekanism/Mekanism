@@ -47,7 +47,7 @@ public class MekaSuitEnergyLevel implements GuiLayer {
         if (capacity > 0) {
             int x = graphics.guiWidth() / 2 - 91;
             int y = graphics.guiHeight() - minecraft.gui.hud.leftHeight + 2;
-            int length = (int) Math.round(((double) stored / capacity) * 79);
+            int length = (int) Math.round(MathUtils.divideToLevel(stored, capacity) * 79);
             graphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiBar.BAR, x, y, 81, 6);
             graphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiHorizontalPowerBar.ENERGY_BAR, x + 1, y + 1, length, 4);
             minecraft.gui.hud.leftHeight += 8;
