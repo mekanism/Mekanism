@@ -183,7 +183,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                           Reference2BooleanMaps.singleton(state.getBlock(), true));
                     //Note: Because vein mining is always on "normal" mode we don't need to check if it is on slow and then reduce the energy chance sometimes
                     // and can just pass that the energy is always used
-                    MekanismUtils.veinMineArea(energyHandler, baseDestroyEnergy, 1, (ServerLevel) world, pos, player, stack, this, found, transaction,
+                    MekanismUtils.veinMineArea(energyHandler, baseDestroyEnergy, 0, 1, (ServerLevel) world, pos, player, stack, this, found, transaction,
                           (_, _) -> 0,
                           (base, hardness, distance, _) -> Mth.ceil(getDestroyEnergy(base, hardness) * (0.5 * Math.pow(distance, 1.5))));
                 }
