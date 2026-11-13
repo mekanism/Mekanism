@@ -64,6 +64,9 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedLongValue portableTeleporterMaxEnergy;
     public final CachedDoubleValue portableTeleporterChargeRate;
     public final CachedIntValue portableTeleporterDelay;
+    public final CachedIntValue portableTeleporterBase;
+    public final CachedIntValue portableTeleporterDistance;
+    public final CachedIntValue portableTeleporterDimensionPenalty;
     //Robit
     public final CachedLongValue robitMaxEnergy;
     public final CachedDoubleValue robitChargeRate;
@@ -213,6 +216,12 @@ public class GearConfig extends BaseMekanismConfig {
         portableTeleporterMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_MAX_ENERGY, "maxEnergy", 1_000);
         portableTeleporterChargeRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_CHARGE_RATE.applyToBuilder(builder)
               .defineInRange("chargeRate", 1, Double.MIN_VALUE, 100));
+        portableTeleporterBase = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_BASE.applyToBuilder(builder)
+              .defineInRange("base", 100, 0, Integer.MAX_VALUE));
+        portableTeleporterDistance = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_DISTANCE.applyToBuilder(builder)
+              .defineInRange("distance", 1, 0, Integer.MAX_VALUE));
+        portableTeleporterDimensionPenalty = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_PENALTY.applyToBuilder(builder)
+              .defineInRange("dimensionPenalty", 1_000, 0, Integer.MAX_VALUE));
         portableTeleporterDelay = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_DELAY.applyToBuilder(builder)
               .defineInRange("delay", 0, 0, 5 * SharedConstants.TICKS_PER_MINUTE));
         builder.pop();

@@ -66,7 +66,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                     int energyCost;
                     try (Transaction transaction = Transaction.openRoot()) {
                         if (MekanismUtils.isPlayingMode(player)) {
-                            energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
+                            energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords, true);
                             EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(itemAccess));
                             if (energyHandler == null || energyHandler.extract(energyCost, transaction) < energyCost) {
                                 //Fail if there is not enough energy available
