@@ -80,9 +80,7 @@ public class AttributeHasBounding implements Attribute {
                 TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, boundingLocation, true);
                 if (tile != null) {
                     tile.setMainLocationOffset(offset);
-                    if (!level.isClientSide()) {
-                        tile.sendUpdatePacket();
-                    }
+                    tile.sendUpdatePacket();
                 } else {
                     Mekanism.logger.warn("Unable to find Bounding Block Tile for sync at: {} in {}", boundingLocation, level.dimension().identifier());
                 }
