@@ -574,7 +574,7 @@ public final class MekanismUtils {
         return fluidsIn;
     }
 
-    public static void veinMineArea(EnergyHandler energyHandler, int baseBlastEnergy, int baseVeinEnergy, ServerLevel world, BlockPos pos, ServerPlayer player,
+    public static void veinMineArea(EnergyHandler energyHandler, int baseEnergy, int silkEnergy, double energyUsageChance, ServerLevel world, BlockPos pos, ServerPlayer player,
           ItemStack stack, Item usedTool, Object2IntMap<BlockPos> found, TransactionContext transaction, BlastEnergyFunction blastEnergy, VeinEnergyFunction veinEnergy) {
         Stat<Item> itemStat = Stats.ITEM_USED.get(usedTool);
         for (ObjectIterator<Object2IntMap.Entry<BlockPos>> iterator = Object2IntMaps.fastIterator(found); iterator.hasNext(); ) {
@@ -591,17 +591,24 @@ public final class MekanismUtils {
             if (hardness == Block.INDESTRUCTIBLE) {
                 continue;
             }
-            int distance = foundEntry.getIntValue();
-            int destroyEnergy = distance == 0 ? blastEnergy.calc(baseBlastEnergy, hardness) : veinEnergy.calc(baseVeinEnergy, hardness, distance, targetState);
             try (Transaction subTransaction = Transaction.open(transaction)) {
-                if (energyHandler.extract(destroyEnergy, subTransaction) < destroyEnergy) {
-                    //If we don't have energy to break the block continue
-                    //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
-                    // Given we validate the blocks are the same but their block states may be different thus making them have different
-                    // block hardness values in a modded context
-                    continue;
+                if (energyHandler.extract(silkEnergy, subTransaction) < silkEnergy) {
+                    //We don't have enough energy to mine with silk touch, that means we never will so just break
+                    break;
                 }
-                //Note: This only gets fired on the server, so technically it may redundantly sync the cancellation to the client
+                if (energyUsageChance >= 1 || energyUsageChance > 0 && world.getRandom().nextDouble() < energyUsageChance) {
+                    int distance = foundEntry.getIntValue();
+                    int destroyEnergy = distance == 0 ? blastEnergy.calc(baseEnergy, hardness) : veinEnergy.calc(baseEnergy, hardness, distance, targetState);
+                    //Only use energy if we always use it, or if our chance passes
+                    if (energyHandler.extract(destroyEnergy, subTransaction) < destroyEnergy) {
+                        //If we don't have energy to break the block continue
+                        //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
+                        // Given we validate the blocks are the same but their block states may be different thus making them have different
+                        // block hardness values in a modded context
+                        continue;
+                    }
+                }
+                //Note: This only gets fired on the server, so technically it may redundantly sync the cancellation to the client,
                 // but it doesn't really matter if the client just thinks the block is what it already was
                 BreakBlockEvent event = CommonHooks.fireBlockBreak(world, player.gameMode(), player, foundPos, targetState);
                 if (event.isCanceled()) {

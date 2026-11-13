@@ -290,7 +290,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         List<Entity> toTeleport = getToTeleport(sameDimension, targetWorld);
         int sum = 0;
         for (Entity entity : toTeleport) {
-            int cost = calculateEnergyCost(entity, targetWorld, closestCoords);
+            int cost = calculateEnergyCost(entity, targetWorld, closestCoords, false);
             int r = sum + cost;
             // HD 2-12 Overflow iff both arguments have the opposite sign of the result
             if (((sum ^ r) & (cost ^ r)) < 0) {
@@ -352,7 +352,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 try (Transaction subTransaction = Transaction.open(transaction)) {
                     //Calculate energy cost before teleporting the entity, as after teleporting it
                     // the cost will be negligible due to being on top of the destination
-                    int energyCost = calculateEnergyCost(entity, teleWorld, teleportInfo.closest);
+                    int energyCost = calculateEnergyCost(entity, teleWorld, teleportInfo.closest, false);
                     if (energyContainer.extract(energyCost, subTransaction, AutomationType.INTERNAL) < energyCost) {
                         //Failed to extract the energy we need for this action that we simulated we would have, skip teleporting this entity stack
                         continue;
@@ -475,22 +475,31 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     /// @return energy cost or -1 if invalid.
     ///
     /// @apiNote Only call from the server side
-    public static int calculateEnergyCost(Entity entity, GlobalPos pos) {
+    public static int calculateEnergyCost(Entity entity, GlobalPos pos, boolean isPortable) {
         if (entity.level() instanceof ServerLevel level) {
             Level targetWorld = level.getServer().getLevel(pos.dimension());
             if (targetWorld != null) {
-                return calculateEnergyCost(entity, targetWorld, pos);
+                return calculateEnergyCost(entity, targetWorld, pos, isPortable);
             }
         }
         return -1;
     }
 
-    public static int calculateEnergyCost(Entity entity, Level targetWorld, GlobalPos coords) {
+    public static int calculateEnergyCost(Entity entity, Level targetWorld, GlobalPos coords, boolean isPortable) {
         boolean sameDimension = entity.level().dimension() == coords.dimension();
         BlockPos pos = coords.pos();
+        int configuredBaseUsage;
+        int configuredDistanceUsage;
+        if (isPortable) {
+            configuredBaseUsage = MekanismConfig.gear.portableTeleporterBase.get();
+            configuredDistanceUsage = MekanismConfig.gear.portableTeleporterDistance.get();
+        } else {
+            configuredBaseUsage = MekanismConfig.usage.teleporterBase.get();
+            configuredDistanceUsage = MekanismConfig.usage.teleporterDistance.get();
+        }
         long distanceCost;
         if (sameDimension) {
-            distanceCost = Math.round(MekanismConfig.usage.teleporterDistance.get() * Math.sqrt(entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ())));
+            distanceCost = Math.round(configuredDistanceUsage * Math.sqrt(entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ())));
         } else {
             double currentScale = entity.level().dimensionType().coordinateScale();
             double targetScale = targetWorld.dimensionType().coordinateScale();
@@ -513,9 +522,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 zDifference = entity.getZ() - pos.getZ() * inverseScale;
             }
             double distance = Mth.length(xDifference, yDifference, zDifference);
-            distanceCost = MekanismConfig.usage.teleporterDimensionPenalty.get() + Math.round(MekanismConfig.usage.teleporterDistance.get() * distance);
+            int configuredDimensionPenalty = isPortable ? MekanismConfig.gear.portableTeleporterDimensionPenalty.get() : MekanismConfig.usage.teleporterDimensionPenalty.get();
+            distanceCost = configuredDimensionPenalty + Math.round(configuredDistanceUsage * distance);
         }
-        int energyCost = MathUtils.addClamped(MekanismConfig.usage.teleporterBase.get(), Ints.saturatedCast(distanceCost));
+        int energyCost = MathUtils.addClamped(configuredBaseUsage, Ints.saturatedCast(distanceCost));
         //Factor the number of passengers of this entity into the teleportation energy cost
         Set<Entity> passengers = new HashSet<>();
         fillIndirectPassengers(entity, sameDimension, targetWorld, passengers);

@@ -26,6 +26,8 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue disassemblerEnergyUsage;
     public final CachedIntValue disassemblerEnergyUsageWeapon;
     public final CachedIntValue disassemblerMiningCount;
+    public final CachedDoubleValue disassemblerSlowEnergyChance;
+    public final CachedIntValue disassemblerFastEnergyUsage;
     public final CachedBooleanValue disassemblerSlowMode;
     public final CachedBooleanValue disassemblerFastMode;
     public final CachedBooleanValue disassemblerVeinMining;
@@ -33,16 +35,16 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue disassemblerMaxDamage;
     public final CachedDoubleValue disassemblerAttackSpeed;
     public final CachedLongValue disassemblerMaxEnergy;
-    public final CachedIntValue disassemblerChargeRate;
+    public final CachedDoubleValue disassemblerChargeRate;
 
     //Electric Bow
     public final CachedLongValue electricBowMaxEnergy;
-    public final CachedIntValue electricBowChargeRate;
+    public final CachedDoubleValue electricBowChargeRate;
     public final CachedIntValue electricBowEnergyUsage;
     public final CachedIntValue electricBowEnergyUsageFire;
     //Energy Tablet
     public final CachedLongValue tabletMaxEnergy;
-    public final CachedIntValue tabletChargeRate;
+    public final CachedDoubleValue tabletChargeRate;
     //Gauge Dropper
     public final CachedIntValue gaugeDroppedTransferRate;
     public final CachedLongValue gaugeDropperCapacity;
@@ -54,14 +56,20 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue freeRunnerFallEnergyCost;
     public final CachedFloatValue freeRunnerFallDamageRatio;
     public final CachedLongValue freeRunnerMaxEnergy;
-    public final CachedIntValue freeRunnerChargeRate;
+    public final CachedDoubleValue freeRunnerChargeRate;
     //Jetpack
     public final CachedLongValue jetpackCapacity;
     public final CachedIntValue jetpackFillRate;
     //Portable Teleporter
     public final CachedLongValue portableTeleporterMaxEnergy;
-    public final CachedIntValue portableTeleporterChargeRate;
+    public final CachedDoubleValue portableTeleporterChargeRate;
     public final CachedIntValue portableTeleporterDelay;
+    public final CachedIntValue portableTeleporterBase;
+    public final CachedIntValue portableTeleporterDistance;
+    public final CachedIntValue portableTeleporterDimensionPenalty;
+    //Robit
+    public final CachedLongValue robitMaxEnergy;
+    public final CachedDoubleValue robitChargeRate;
     //Scuba Tank
     public final CachedLongValue scubaTankCapacity;
     public final CachedIntValue scubaFillRate;
@@ -72,13 +80,17 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue mekaToolEnergyUsageWeapon;
     public final CachedIntValue mekaToolEnergyUsageTeleport;
     public final CachedIntValue mekaToolEnergyUsage;
+    public final CachedIntValue mekaToolEnergyUsageFast;
+    public final CachedIntValue mekaToolEnergyUsageSuperFast;
+    public final CachedIntValue mekaToolEnergyUsageExtreme;
     public final CachedIntValue mekaToolEnergyUsageSilk;
+    public final CachedDoubleValue mekaToolSlowEnergyChance;
     public final CachedIntValue mekaToolMaxTeleportReach;
     public final CachedIntValue mekaToolBaseDamage;
     public final CachedDoubleValue mekaToolAttackSpeed;
     public final CachedFloatValue mekaToolBaseEfficiency;
     public final CachedLongValue mekaToolBaseEnergyCapacity;
-    public final CachedIntValue mekaToolBaseChargeRate;
+    public final CachedDoubleValue mekaToolBaseChargeRate;
     public final CachedIntValue mekaToolEnergyUsageHoe;
     public final CachedIntValue mekaToolEnergyUsageShovel;
     public final CachedIntValue mekaToolEnergyUsageAxe;
@@ -86,8 +98,18 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue mekaToolEnergyUsageShearTrim;
     public final CachedBooleanValue mekaToolExtendedMining;
     //MekaSuit
-    public final CachedLongValue mekaSuitBaseEnergyCapacity;
-    public final CachedIntValue mekaSuitBaseChargeRate;
+    public final CachedLongValue mekaSuitBaseHelmetEnergyCapacity;
+    public final CachedDoubleValue mekaSuitBaseHelmetChargeRate;
+    public final CachedIntValue mekaSuitHelmetEnergyUsageDamage;
+    public final CachedLongValue mekaSuitBaseChestplateEnergyCapacity;
+    public final CachedDoubleValue mekaSuitBaseChestplateChargeRate;
+    public final CachedIntValue mekaSuitChestplateEnergyUsageDamage;
+    public final CachedLongValue mekaSuitBaseLeggingsEnergyCapacity;
+    public final CachedDoubleValue mekaSuitBaseLeggingsChargeRate;
+    public final CachedIntValue mekaSuitLeggingsEnergyUsageDamage;
+    public final CachedLongValue mekaSuitBaseBootsEnergyCapacity;
+    public final CachedDoubleValue mekaSuitBaseBootsChargeRate;
+    public final CachedIntValue mekaSuitBootsEnergyUsageDamage;
     public final CachedIntValue mekaSuitBaseJumpEnergyUsage;
     public final CachedIntValue mekaSuitElytraEnergyUsage;
     public final CachedIntValue mekaSuitEnergyUsagePotionTick;
@@ -99,7 +121,6 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue mekaSuitEnergyUsageVisionEnhancement;
     public final CachedIntValue mekaSuitEnergyUsageHydrostaticRepulsion;
     public final CachedIntValue mekaSuitEnergyUsageNutritionalInjection;
-    public final CachedIntValue mekaSuitEnergyUsageDamage;
     public final CachedIntValue mekaSuitEnergyUsageItemAttraction;
     public final CachedBooleanValue mekaSuitGravitationalVibrations;
     public final CachedLongValue mekaSuitNutritionalMaxStorage;
@@ -115,13 +136,13 @@ public class GearConfig extends BaseMekanismConfig {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
         MekanismConfigTranslations.GEAR_DISASSEMBLER.applyToBuilder(builder).push("atomic_disassembler");
-        disassemblerMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_DISASSEMBLER_MAX_ENERGY, "maxEnergy", 1_000_000);
-        disassemblerChargeRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_CHARGE_RATE.applyToBuilder(builder)
-              .defineInRange("chargeRate", 5_000, 0, Integer.MAX_VALUE));
+        disassemblerMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_DISASSEMBLER_MAX_ENERGY, "maxEnergy", 1_500);
+        disassemblerChargeRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_CHARGE_RATE.applyToBuilder(builder)
+              .defineInRange("chargeRate", 1, Double.MIN_VALUE, 100));
         disassemblerEnergyUsage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_ENERGY_USAGE.applyToBuilder(builder)
-              .defineInRange("energyUsage", 10, 0, Integer.MAX_VALUE));
+              .defineInRange("energyUsage", 1, 0, Integer.MAX_VALUE));
         disassemblerEnergyUsageWeapon = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_ENERGY_USAGE_WEAPON.applyToBuilder(builder)
-              .defineInRange("energyUsageWeapon", 2_000, 0, Integer.MAX_VALUE));
+              .defineInRange("energyUsageWeapon", 5, 0, Integer.MAX_VALUE));
         disassemblerMinDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_MIN_DAMAGE.applyToBuilder(builder)
               .defineInRange("minDamage", 4, 0, 1_000));
         disassemblerMaxDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_MAX_DAMAGE.applyToBuilder(builder)
@@ -130,8 +151,12 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("attackSpeed", -2.4, -Attributes.ATTACK_SPEED.value().getDefaultValue(), 100));
         disassemblerSlowMode = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_SLOW.applyToBuilder(builder)
               .define("slowMode", true));
+        disassemblerSlowEnergyChance = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_SLOW_ENERGY_CHANCE.applyToBuilder(builder)
+              .defineInRange("slowEnergyChance", 0.5D, 0, 1));
         disassemblerFastMode = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_FAST.applyToBuilder(builder)
               .define("fastMode", true));
+        disassemblerFastEnergyUsage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_FAST_ENERGY_USAGE.applyToBuilder(builder)
+              .defineInRange("fastEnergyUsage", 5, 0, Integer.MAX_VALUE));
         disassemblerVeinMining = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_VEIN_MINING.applyToBuilder(builder)
               .define("veinMining", false));
         disassemblerMiningCount = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_DISASSEMBLER_MINING_COUNT.applyToBuilder(builder)
@@ -139,19 +164,19 @@ public class GearConfig extends BaseMekanismConfig {
         builder.pop();
 
         MekanismConfigTranslations.GEAR_BOW.applyToBuilder(builder).push("electric_bow");
-        electricBowMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_BOW_MAX_ENERGY, "maxEnergy", 120_000);
-        electricBowChargeRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_BOW_CHARGE_RATE.applyToBuilder(builder)
-              .defineInRange("chargeRate", 600, 0, Integer.MAX_VALUE));
+        electricBowMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_BOW_MAX_ENERGY, "maxEnergy", 128);
+        electricBowChargeRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_BOW_CHARGE_RATE.applyToBuilder(builder)
+              .defineInRange("chargeRate", 1, Double.MIN_VALUE, 100));
         electricBowEnergyUsage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_BOW_ENERGY_USAGE.applyToBuilder(builder)
-              .defineInRange("energyUsage", 120, 0, Integer.MAX_VALUE));
+              .defineInRange("energyUsage", 1, 0, Integer.MAX_VALUE));
         electricBowEnergyUsageFire = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_BOW_ENERGY_USAGE_FLAME.applyToBuilder(builder)
-              .defineInRange("energyUsageFlame", 1_200, 0, Integer.MAX_VALUE));
+              .defineInRange("energyUsageFlame", 5, 0, Integer.MAX_VALUE));
         builder.pop();
 
         MekanismConfigTranslations.GEAR_ENERGY_TABLET.applyToBuilder(builder).push("energy_tablet");
-        tabletMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_ENERGY_TABLET_MAX_ENERGY, "maxEnergy", 1_000_000);
-        tabletChargeRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_ENERGY_TABLET_CHARGE_RATE.applyToBuilder(builder)
-              .defineInRange("chargeRate", 5_000, 0, Integer.MAX_VALUE));
+        tabletMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_ENERGY_TABLET_MAX_ENERGY, "maxEnergy", 1_250);
+        tabletChargeRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_ENERGY_TABLET_CHARGE_RATE.applyToBuilder(builder)
+              .defineInRange("chargeRate", 1, Double.MIN_VALUE, 100));
         builder.pop();
 
         MekanismConfigTranslations.GEAR_GAUGE_DROPPER.applyToBuilder(builder).push("gauge_dropper");
@@ -171,11 +196,11 @@ public class GearConfig extends BaseMekanismConfig {
         builder.pop();
 
         MekanismConfigTranslations.GEAR_FREE_RUNNERS.applyToBuilder(builder).push(FREE_RUNNER_CATEGORY);
-        freeRunnerMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_FREE_RUNNERS_MAX_ENERGY, "maxEnergy", 64_000L);
-        freeRunnerChargeRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_FREE_RUNNERS_CHARGE_RATE.applyToBuilder(builder)
-              .defineInRange("chargeRate", 320, 0, Integer.MAX_VALUE));
+        freeRunnerMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_FREE_RUNNERS_MAX_ENERGY, "maxEnergy", 430);
+        freeRunnerChargeRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_FREE_RUNNERS_CHARGE_RATE.applyToBuilder(builder)
+              .defineInRange("chargeRate", 1, Double.MIN_VALUE, 100));
         freeRunnerFallEnergyCost = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_FREE_RUNNERS_FALL_COST.applyToBuilder(builder)
-              .defineInRange("fallEnergyCost", 50, 0, Integer.MAX_VALUE));
+              .defineInRange("fallEnergyCost", 1, 0, Integer.MAX_VALUE));
         freeRunnerFallDamageRatio = CachedFloatValue.wrap(this, MekanismConfigTranslations.GEAR_FREE_RUNNERS_FALL_DAMAGE.applyToBuilder(builder)
               .defineInRange("fallDamageReductionRatio", 1D, 0, 1));
         builder.pop();
@@ -188,11 +213,23 @@ public class GearConfig extends BaseMekanismConfig {
         builder.pop();
 
         MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER.applyToBuilder(builder).push("portable_teleporter");
-        portableTeleporterMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_MAX_ENERGY, "maxEnergy", 1_000_000L);
-        portableTeleporterChargeRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_CHARGE_RATE.applyToBuilder(builder)
-              .defineInRange("chargeRate", 5_000, 0, Integer.MAX_VALUE));
+        portableTeleporterMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_MAX_ENERGY, "maxEnergy", 1_000);
+        portableTeleporterChargeRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_CHARGE_RATE.applyToBuilder(builder)
+              .defineInRange("chargeRate", 1, Double.MIN_VALUE, 100));
+        portableTeleporterBase = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_BASE.applyToBuilder(builder)
+              .defineInRange("base", 100, 0, Integer.MAX_VALUE));
+        portableTeleporterDistance = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_DISTANCE.applyToBuilder(builder)
+              .defineInRange("distance", 1, 0, Integer.MAX_VALUE));
+        portableTeleporterDimensionPenalty = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_PENALTY.applyToBuilder(builder)
+              .defineInRange("dimensionPenalty", 1_000, 0, Integer.MAX_VALUE));
         portableTeleporterDelay = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_PORTABLE_TELEPORTER_DELAY.applyToBuilder(builder)
               .defineInRange("delay", 0, 0, 5 * SharedConstants.TICKS_PER_MINUTE));
+        builder.pop();
+
+        MekanismConfigTranslations.GEAR_ROBIT.applyToBuilder(builder).push("robit");
+        robitMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_ROBIT_MAX_ENERGY, "maxEnergy", 1_000);
+        robitChargeRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_ROBIT_CHARGE_RATE.applyToBuilder(builder)
+              .defineInRange("chargeRate", 1, Double.MIN_VALUE, 100));
         builder.pop();
 
         MekanismConfigTranslations.GEAR_SCUBA_TANK.applyToBuilder(builder).push("scuba_tank");
@@ -210,9 +247,9 @@ public class GearConfig extends BaseMekanismConfig {
         builder.pop();
 
         MekanismConfigTranslations.GEAR_MEKA_TOOL.applyToBuilder(builder).push("mekatool");
-        mekaToolBaseEnergyCapacity = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_MEKA_TOOL_CAPACITY, "baseEnergyCapacity", 16_000_000L);
-        mekaToolBaseChargeRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_CHARGE_RATE.applyToBuilder(builder)
-              .defineInRange("chargeRate", 100_000, 0, Integer.MAX_VALUE));
+        mekaToolBaseEnergyCapacity = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_MEKA_TOOL_CAPACITY, "baseEnergyCapacity", 2_500);
+        mekaToolBaseChargeRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_CHARGE_RATE.applyToBuilder(builder)
+              .defineInRange("chargeRate", 1, Double.MIN_VALUE, 100));
         mekaToolBaseDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_DAMAGE.applyToBuilder(builder)
               .defineInRange("baseDamage", 4, 0, 100_000));
         mekaToolAttackSpeed = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ATTACK_SPEED.applyToBuilder(builder)
@@ -225,30 +262,48 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("maxTeleportReach", 100, 3, 1_024));
 
         MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE.applyToBuilder(builder).push("energy_usage");
-        mekaToolEnergyUsage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_BASE.applyToBuilder(builder)
-              .defineInRange("base", 10, 0, Integer.MAX_VALUE));
+        mekaToolEnergyUsage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_NORMAL.applyToBuilder(builder)
+              .defineInRange("normal", 1, 0, Integer.MAX_VALUE));
+        mekaToolEnergyUsageFast = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_FAST.applyToBuilder(builder)
+              .defineInRange("fast", 5, 0, Integer.MAX_VALUE));
+        mekaToolEnergyUsageSuperFast = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_SUPER_FAST.applyToBuilder(builder)
+              .defineInRange("super_fast", 10, 0, Integer.MAX_VALUE));
+        mekaToolEnergyUsageExtreme = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_EXTREME.applyToBuilder(builder)
+              .defineInRange("extreme", 15, 0, Integer.MAX_VALUE));
         mekaToolEnergyUsageSilk = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_SILK.applyToBuilder(builder)
-              .defineInRange("silk", 100, 0, Integer.MAX_VALUE));
+              .defineInRange("silk", 10, 0, Integer.MAX_VALUE));
+        mekaToolSlowEnergyChance = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_SLOW_CHANCE.applyToBuilder(builder)
+              .defineInRange("slowEnergyChance", 0.5D, 0, 1));
         mekaToolEnergyUsageWeapon = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_WEAPON.applyToBuilder(builder)
-              .defineInRange("weapon", 2_000, 0, Integer.MAX_VALUE));
+              .defineInRange("weapon", 2, 0, Integer.MAX_VALUE));
         mekaToolEnergyUsageHoe = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_HOE.applyToBuilder(builder)
-              .defineInRange("hoe", 10, 0, Integer.MAX_VALUE));
+              .defineInRange("hoe", 1, 0, Integer.MAX_VALUE));
         mekaToolEnergyUsageShovel = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_SHOVEL.applyToBuilder(builder)
-              .defineInRange("shovel", 10, 0, Integer.MAX_VALUE));
+              .defineInRange("shovel", 1, 0, Integer.MAX_VALUE));
         mekaToolEnergyUsageAxe = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_AXE.applyToBuilder(builder)
-              .defineInRange("axe", 10, 0, Integer.MAX_VALUE));
+              .defineInRange("axe", 1, 0, Integer.MAX_VALUE));
         mekaToolEnergyUsageShearEntity = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_SHEAR_ENTITY.applyToBuilder(builder)
-              .defineInRange("shearEntity", 10, 0, Integer.MAX_VALUE));
+              .defineInRange("shearEntity", 1, 0, Integer.MAX_VALUE));
         mekaToolEnergyUsageShearTrim = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_SHEAR_BLOCK.applyToBuilder(builder)
-              .defineInRange("shearTrim", 10, 0, Integer.MAX_VALUE));
+              .defineInRange("shearTrim", 1, 0, Integer.MAX_VALUE));
         mekaToolEnergyUsageTeleport = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_TOOL_ENERGY_USAGE_TELEPORT.applyToBuilder(builder)
-              .defineInRange("teleport", 1_000, 0, Integer.MAX_VALUE));
+              .defineInRange("teleport", 1, 0, Integer.MAX_VALUE));
         builder.pop(2);
 
         MekanismConfigTranslations.GEAR_MEKA_SUIT.applyToBuilder(builder).push(MEKASUIT_CATEGORY);
-        mekaSuitBaseEnergyCapacity = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_MEKA_SUIT_CAPACITY, "baseEnergyCapacity", 16_000_000L);
-        mekaSuitBaseChargeRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_CHARGE_RATE.applyToBuilder(builder)
-              .defineInRange("chargeRate", 100_000, 0, Integer.MAX_VALUE));
+        mekaSuitBaseHelmetEnergyCapacity = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_MEKA_SUIT_HELMET_CAPACITY, "baseHelmetEnergyCapacity", 400);
+        mekaSuitBaseHelmetChargeRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_HELMET_CHARGE_RATE.applyToBuilder(builder)
+              .defineInRange("helmetChargeRate", 1, Double.MIN_VALUE, 100));
+        mekaSuitBaseChestplateEnergyCapacity = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_MEKA_SUIT_CHESTPLATE_CAPACITY, "baseChestplateEnergyCapacity", 600);
+        mekaSuitBaseChestplateChargeRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_CHESTPLATE_CHARGE_RATE.applyToBuilder(builder)
+              .defineInRange("chestplateChargeRate", 1, Double.MIN_VALUE, 100));
+        mekaSuitBaseLeggingsEnergyCapacity = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_MEKA_SUIT_LEGGINGS_CAPACITY, "baseLeggingsEnergyCapacity", 500);
+        mekaSuitBaseLeggingsChargeRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_LEGGINGS_CHARGE_RATE.applyToBuilder(builder)
+              .defineInRange("leggingsChargeRate", 1, Double.MIN_VALUE, 100));
+        mekaSuitBaseBootsEnergyCapacity = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_MEKA_SUIT_BOOTS_CAPACITY, "baseBootsEnergyCapacity", 400);
+        mekaSuitBaseBootsChargeRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_BOOTS_CHARGE_RATE.applyToBuilder(builder)
+              .defineInRange("bootsChargeRate", 1, Double.MIN_VALUE, 100));
+
         mekaSuitInventoryChargeRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_CHARGE_RATE_INVENTORY.applyToBuilder(builder)
               .defineInRange("inventoryChargeRate", 10_000, 0, Integer.MAX_VALUE));
         mekaSuitGravitationalVibrations = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_FLIGHT_VIBRATIONS.applyToBuilder(builder)
@@ -263,8 +318,14 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("jetpackTransferRate", 256, 1, Integer.MAX_VALUE));
 
         MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE.applyToBuilder(builder).push("energy_usage");
-        mekaSuitEnergyUsageDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_DAMAGE.applyToBuilder(builder)
-              .defineInRange("damage", 100_000, 0, Integer.MAX_VALUE));
+        mekaSuitHelmetEnergyUsageDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_HELMET_DAMAGE.applyToBuilder(builder)
+              .defineInRange("helmetDamage", 1, 0, Integer.MAX_VALUE));
+        mekaSuitChestplateEnergyUsageDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_CHESTPLATE_DAMAGE.applyToBuilder(builder)
+              .defineInRange("chestplateDamage", 1, 0, Integer.MAX_VALUE));
+        mekaSuitLeggingsEnergyUsageDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_LEGGINGS_DAMAGE.applyToBuilder(builder)
+              .defineInRange("leggingsDamage", 1, 0, Integer.MAX_VALUE));
+        mekaSuitBootsEnergyUsageDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_BOOTS_DAMAGE.applyToBuilder(builder)
+              .defineInRange("bootsDamage", 1, 0, Integer.MAX_VALUE));
         mekaSuitEnergyUsageMagicReduce = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_MAGIC.applyToBuilder(builder)
               .defineInRange("magicReduce", 1_000, 0, Integer.MAX_VALUE));
         mekaSuitEnergyUsageFall = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_FALL.applyToBuilder(builder)

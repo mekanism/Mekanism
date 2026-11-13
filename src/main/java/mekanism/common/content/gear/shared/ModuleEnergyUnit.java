@@ -1,14 +1,13 @@
 package mekanism.common.content.gear.shared;
 
-import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.MathUtils;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.EnergyUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -22,14 +21,6 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
             return base.getAsLong();
         }
         return MathUtils.clampToLong(base.getAsLong() * Math.pow(2, module.getInstalledCount()));
-    }
-
-    public static int getChargeRate(ItemAccess attachedAccess, IntSupplier base) {
-        IModule<ModuleEnergyUnit> module = IModuleHelper.INSTANCE.getModule(attachedAccess.getResource(), MekanismModules.ENERGY_UNIT);
-        if (module == null) {
-            return base.getAsInt();
-        }
-        return MathUtils.clampToInt(base.getAsInt() * Math.pow(2, module.getInstalledCount()));
     }
 
     @Override
