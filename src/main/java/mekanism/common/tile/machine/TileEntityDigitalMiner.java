@@ -530,46 +530,55 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                         try (Transaction subTransaction = Transaction.open(transaction)) {
                             //If we can, then validate we can fit the drops and try to see if we can replace it properly as well
                             DropsWithXp<ItemStack> drops = getDrops(level, state, pos, subTransaction);
-                            if (tryInsert(drops.items(), subTransaction)) {
-                                Mekanism.worldTickHandler.fallbackItemCollector = overflowCollector;
-                                //Validate if we can replace the block with the replace stack that we will extract
-                                if (setReplace(level, state, pos, matchingFilter, subTransaction)) {
-                                    //Try to add any drops that might have been caused by breaking the block but didn't show up in the loot table.
-                                    // This mainly will be the case for some single block multiblocks and also for storage containers like chests
-                                    tryAddOverflow(subTransaction);
-                                    //Commit the transaction to actually insert the items that we checked if we could fit
-                                    // and to actually remove the item we tried to use to replace the block
-                                    subTransaction.commit();
-                                    //Check if the xp can even be handled
-                                    if (drops.experience() > 0 && hasXpContainment()) {
-                                        int roomFor = Integer.MAX_VALUE - storedExperience;
-                                        if (drops.experience() <= roomFor) {
-                                            storedExperience += drops.experience();
-                                        } else {
-                                            storedExperience = Integer.MAX_VALUE;
-                                        }
-                                        markForSave();
+                            if (!tryInsert(drops.items(), subTransaction)) {
+                                //We have no room to store the mined blocks, we can just skip continuing to check
+                                return;
+                            }
+                            Mekanism.worldTickHandler.fallbackItemCollector = overflowCollector;
+                            //Validate if we can replace the block with the replace stack that we will extract
+                            ReplaceResult replaceResult = setReplace(level, state, pos, matchingFilter, subTransaction);
+                            if (replaceResult == ReplaceResult.SUCCESS) {
+                                //Try to add any drops that might have been caused by breaking the block but didn't show up in the loot table.
+                                // This mainly will be the case for some single block multiblocks and also for storage containers like chests
+                                tryAddOverflow(subTransaction);
+                                //Commit the transaction to actually insert the items that we checked if we could fit
+                                // and to actually remove the item we tried to use to replace the block
+                                subTransaction.commit();
+                                //Check if the xp can even be handled
+                                if (drops.experience() > 0 && hasXpContainment()) {
+                                    int roomFor = Integer.MAX_VALUE - storedExperience;
+                                    if (drops.experience() <= roomFor) {
+                                        storedExperience += drops.experience();
+                                    } else {
+                                        storedExperience = Integer.MAX_VALUE;
                                     }
-                                    missingStack = ItemStack.EMPTY;
-                                    level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_DESTROY_BLOCK, pos, Block.getId(state));
-                                    //Remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
-                                    cachedToMine--;
-                                    chunkToMine.clear(index);
-                                    if (chunkToMine.isEmpty()) {
-                                        // if we are out of stored elements then we remove this chunk and continue to check other chunks
-                                        // remove it so that we don't have to check the chunk next time around
-                                        iterator.remove();
-                                        // we no longer have a chunk we are targeting, so remove it. We might get a new chunk to target
-                                        // next time we try to mine but there is no reason to keep the old chunk in memory in the meantime
-                                        updateTargetChunk(null);
-                                    }
+                                    markForSave();
                                 }
-                                //Reset the global fallback collector to null as we are done collecting for this miner and block
-                                Mekanism.worldTickHandler.fallbackItemCollector = null;
+                                missingStack = ItemStack.EMPTY;
+                                level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_DESTROY_BLOCK, pos, Block.getId(state));
+                                //Remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
+                                cachedToMine--;
+                                chunkToMine.clear(index);
+                                if (chunkToMine.isEmpty()) {
+                                    // if we are out of stored elements then we remove this chunk and continue to check other chunks
+                                    // remove it so that we don't have to check the chunk next time around
+                                    iterator.remove();
+                                    // we no longer have a chunk we are targeting, so remove it. We might get a new chunk to target
+                                    // next time we try to mine but there is no reason to keep the old chunk in memory in the meantime
+                                    updateTargetChunk(null);
+                                }
+                            }
+                            //Reset the global fallback collector to null as we are done collecting for this miner and block
+                            Mekanism.worldTickHandler.fallbackItemCollector = null;
+                            if (replaceResult != ReplaceResult.NOT_VALID_FOR_POSITION) {
+                                //We mined the block or are missing the stack we need to replace this one. Exit and wait for the stack or our next mining
+                                // Note: If the item isn't valid for this position but is required for replacement, we just continue and act as if this block can't
+                                // be mined
+                                return;
+                            } else if (MekanismAPI.debug) {
+                                Mekanism.logger.error("Replacement stack not valid for placement at {} {}", level.dimension().identifier(), pos);
                             }
                         }
-                        //Exit out. We either mined the block or don't have room so there is no reason to continue checking
-                        return;
                     } else if (MekanismAPI.debug) {
                         Mekanism.logger.error("Filter failed or can't mine: {} @ {} {}", state, level.dimension().identifier(), pos);
                     }
@@ -599,36 +608,41 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     /// @param filter Filter that was matched, if in inverse mode this will be null
-    ///
-    /// @return false if unsuccessful
-    private boolean setReplace(ServerLevel level, BlockState state, BlockPos pos, @Nullable MinerFilter<?> filter, TransactionContext transaction) {
-        Item replaceTarget;
-        ItemStack stack;
-        if (filter == null) {
-            stack = getReplace(level, replaceTarget = inverseReplaceTarget, this::inverseReplaceTargetMatches, transaction);
-        } else {
-            stack = getReplace(level, replaceTarget = filter.replaceTarget, filter::replaceTargetMatches, transaction);
-        }
-        if (stack.isEmpty()) {
-            if (replaceTarget == Items.AIR || (filter == null && !inverseRequiresReplacement) || (filter != null && !filter.requiresReplacement)) {
-                level.removeBlock(pos, false);
-                level.gameEvent(GameEvent.BLOCK_DESTROY, pos, GameEvent.Context.of(null, state));
-                return true;
+    private ReplaceResult setReplace(ServerLevel level, BlockState state, BlockPos pos, @Nullable MinerFilter<?> filter, TransactionContext transaction) {
+        try (Transaction subTransaction = Transaction.open(transaction)) {
+            Item replaceTarget;
+            ItemStack stack;
+            if (filter == null) {
+                stack = getReplace(level, replaceTarget = inverseReplaceTarget, this::inverseReplaceTargetMatches, transaction);
+            } else {
+                stack = getReplace(level, replaceTarget = filter.replaceTarget, filter::replaceTargetMatches, transaction);
             }
-            missingStack = new ItemStack(replaceTarget);
-            return false;
+            BlockState newState = stack.isEmpty() ? null : getStateForPlacement(level, stack, pos);
+            if (newState == null || !newState.canSurvive(level, pos)) {
+                if (replaceTarget == Items.AIR || (filter == null && !inverseRequiresReplacement) || (filter != null && !filter.requiresReplacement)) {
+                    //If there is no replace target, or we don't require replacement, just remove the block without performing any replacement
+                    // We allow the sub transaction to roll back as we aren't actually consuming the stack if there was one
+                    level.removeBlock(pos, false);
+                    level.gameEvent(GameEvent.BLOCK_DESTROY, pos, GameEvent.Context.of(null, state));
+                    return ReplaceResult.SUCCESS;
+                }
+                if (stack.isEmpty()) {
+                    //Note: We only mark the item as missing if we couldn't find the replacement. If we just couldn't place it we don't bother marking it as missing
+                    missingStack = new ItemStack(replaceTarget);
+                    return ReplaceResult.FAIL;
+                }
+                //If we have an item, but it isn't valid for placing there, then we return that we were unsuccessful
+                return ReplaceResult.NOT_VALID_FOR_POSITION;
+            }
+            //Commit the consumption of the replacement stack as we actually used it
+            subTransaction.commit();
+            //TODO: We may want to evaluate at some point doing this with our fake player so that it is fired as the "cause"?
+            level.gameEvent(GameEvent.BLOCK_DESTROY, pos, GameEvent.Context.of(null, state));
+            level.setBlockAndUpdate(pos, newState);
+            newState.getBlock().setPlacedBy(level, pos, newState, null, stack);
+            level.gameEvent(GameEvent.BLOCK_PLACE, pos, GameEvent.Context.of(null, newState));
+            return ReplaceResult.SUCCESS;
         }
-        BlockState newState = getStateForPlacement(level, stack, pos);
-        if (newState == null || !newState.canSurvive(level, pos)) {
-            //If the spot is not a valid position for the block, then we return that we were unsuccessful
-            return false;
-        }
-        //TODO: We may want to evaluate at some point doing this with our fake player so that it is fired as the "cause"?
-        level.gameEvent(GameEvent.BLOCK_DESTROY, pos, GameEvent.Context.of(null, state));
-        level.setBlockAndUpdate(pos, newState);
-        newState.getBlock().setPlacedBy(level, pos, newState, null, stack);
-        level.gameEvent(GameEvent.BLOCK_PLACE, pos, GameEvent.Context.of(null, newState));
-        return true;
     }
 
     private boolean canMine(ServerLevel level, BlockState state, BlockPos pos) {
@@ -1479,4 +1493,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         return filterManager.removeFilter(filter);
     }
     //End methods IComputerTile
+
+    private enum ReplaceResult {
+        SUCCESS,
+        FAIL,
+        NOT_VALID_FOR_POSITION
+    }
 }
