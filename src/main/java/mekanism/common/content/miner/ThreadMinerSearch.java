@@ -12,11 +12,7 @@ import java.util.function.IntFunction;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import mekanism.common.tags.MekanismTags;
-import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -24,14 +20,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BedPart;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
@@ -65,7 +55,6 @@ public class ThreadMinerSearch extends Thread {
         BlockPos pos = tile.getStartingPos();
         int diameter = tile.getDiameter();
         int size = tile.getTotalSize();
-        Block info;
         BlockPos minerPos = tile.getBlockPos();
         for (int i = 0; i < size; i++) {
             if (tile.isRemoved() || isInterrupted()) {
@@ -73,31 +62,28 @@ public class ThreadMinerSearch extends Thread {
                 return;
             }
             BlockPos testPos = TileEntityDigitalMiner.getOffsetForIndex(pos, diameter, i);
-            if (minerPos.equals(testPos) || WorldUtils.getTileEntity(TileEntityBoundingBlock.class, chunkCache, testPos) != null) {
-                //Skip the miner itself, and also skip any bounding blocks
+            if (minerPos.equals(testPos)) {
+                //Skip the miner itself
                 continue;
             }
             BlockState state = chunkCache.getBlockState(testPos);
-            if (state.isAir() || state.is(MekanismTags.Blocks.MINER_BLACKLIST) || shouldSkipState(state) || state.getDestroySpeed(chunkCache, testPos) < 0) {
-                //Skip air, blacklisted blocks, special cased block states, and unbreakable blocks
+            if (!TileEntityDigitalMiner.canBreakBlock(chunkCache, testPos, state)) {
+                //Skip air, blacklisted blocks, bounding blocks, special cased block states, unbreakable blocks, and liquids
                 continue;
             }
-            info = state.getBlock();
-            if (MekanismUtils.isLiquidBlock(info)) {//Skip liquids
-                continue;
-            }
+            Block block = state.getBlock();
             boolean accepted;
-            if (acceptedItems.containsKey(info)) {
-                accepted = acceptedItems.getBoolean(info);
+            if (acceptedItems.containsKey(block)) {
+                accepted = acceptedItems.getBoolean(block);
             } else {
-                if (tile.isReplaceTarget(ItemResource.of(info))) {
+                if (tile.isReplaceTarget(ItemResource.of(block))) {
                     //If it is a replace target just mark it as never being accepted
                     accepted = false;
                 } else {
                     //Ensure that the inverse mode is the opposite of the filter match
                     accepted = tile.getInverse() != tile.getFilterManager().anyEnabledMatch(state, MinerFilter::canFilter);
                 }
-                acceptedItems.put(info, accepted);
+                acceptedItems.put(block, accepted);
             }
             if (accepted) {
                 long chunk = ChunkPos.pack(testPos);
@@ -115,18 +101,6 @@ public class ThreadMinerSearch extends Thread {
             //Only update search if we are still valid and didn't get replaced due to a reset call
             tile.updateFromSearch(oresToMine, found);
         }
-    }
-
-    /// Special cased vanilla blocks that only have one state actually have the drop and the other one just causes it to break. This includes things like two tall
-    /// flowers, beds, and doors. If a data pack modifies the loot table so that the "secondary" block also provides drops those will then be handled by the fallback we
-    /// have for collecting any drops that happen from breaking the block.
-    private boolean shouldSkipState(BlockState state) {
-        if (state.getBlock() instanceof BedBlock) {
-            return state.getValue(BlockStateProperties.BED_PART) == BedPart.FOOT;
-        } else if (state.getBlock() instanceof DoorBlock || state.getBlock() instanceof DoublePlantBlock) {
-            return state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER;
-        }
-        return false;
     }
 
     public enum State implements IHasEnumNameTextComponent, StringRepresentable {

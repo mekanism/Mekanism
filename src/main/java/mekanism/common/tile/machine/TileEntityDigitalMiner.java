@@ -98,11 +98,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BedPart;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.redstone.Redstone;
@@ -507,71 +514,71 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                 }
                 BlockPos pos = getOffsetForIndex(startingPos, diameter, index);
                 BlockState state = WorldUtils.getBlockStateIfLoaded(level, pos);
-                if (state != null) {
-                    if (!state.isAir() && !state.is(MekanismTags.Blocks.MINER_BLACKLIST)) {
-                        //Make sure the block is loaded and is not air, and is not in the blacklist of blocks the miner can break
-                        // then check if the block matches one of our filters
-                        MinerFilter<?> matchingFilter = null;
-                        for (MinerFilter<?> filter : filterManager.getEnabledFilters()) {
-                            if (filter.canFilter(state)) {
-                                matchingFilter = filter;
-                                break;
-                            }
+                if (state != null && canBreakBlock(level, pos, state)) {
+                    //Make sure the block is loaded and is not air, and is not in the blacklist of blocks the miner can break
+                    // then check if the block matches one of our filters
+                    MinerFilter<?> matchingFilter = null;
+                    for (MinerFilter<?> filter : filterManager.getEnabledFilters()) {
+                        if (filter.canFilter(state)) {
+                            matchingFilter = filter;
+                            break;
                         }
-                        //If our hasFilter state matches our inversion state, that means we should try to mine
-                        // the block, so we check if we can mine it
-                        if (inverse == (matchingFilter == null) && canMine(level, state, pos)) {
-                            try (Transaction subTransaction = Transaction.open(transaction)) {
-                                //If we can, then validate we can fit the drops and try to see if we can replace it properly as well
-                                DropsWithXp<ItemStack> drops = getDrops(level, state, pos, subTransaction);
-                                if (tryInsert(drops.items(), subTransaction)) {
-                                    Mekanism.worldTickHandler.fallbackItemCollector = overflowCollector;
-                                    //Validate if we can replace the block with the replace stack that we will extract
-                                    if (setReplace(level, state, pos, matchingFilter, subTransaction)) {
-                                        //Try to add any drops that might have been caused by breaking the block but didn't show up in the loot table.
-                                        // This mainly will be the case for some single block multiblocks and also for storage containers like chests
-                                        tryAddOverflow(subTransaction);
-                                        //Commit the transaction to actually insert the items that we checked if we could fit
-                                        // and to actually remove the item we tried to use to replace the block
-                                        subTransaction.commit();
-                                        //Check if the xp can even be handled
-                                        if (drops.experience() > 0 && hasXpContainment()) {
-                                            int roomFor = Integer.MAX_VALUE - storedExperience;
-                                            if (drops.experience() <= roomFor) {
-                                                storedExperience += drops.experience();
-                                            } else {
-                                                storedExperience = Integer.MAX_VALUE;
-                                            }
-                                            markForSave();
+                    }
+                    //If our hasFilter state matches our inversion state, that means we should try to mine
+                    // the block, so we check if we can mine it
+                    if (inverse == (matchingFilter == null) && canMine(level, state, pos)) {
+                        try (Transaction subTransaction = Transaction.open(transaction)) {
+                            //If we can, then validate we can fit the drops and try to see if we can replace it properly as well
+                            DropsWithXp<ItemStack> drops = getDrops(level, state, pos, subTransaction);
+                            if (tryInsert(drops.items(), subTransaction)) {
+                                Mekanism.worldTickHandler.fallbackItemCollector = overflowCollector;
+                                //Validate if we can replace the block with the replace stack that we will extract
+                                if (setReplace(level, state, pos, matchingFilter, subTransaction)) {
+                                    //Try to add any drops that might have been caused by breaking the block but didn't show up in the loot table.
+                                    // This mainly will be the case for some single block multiblocks and also for storage containers like chests
+                                    tryAddOverflow(subTransaction);
+                                    //Commit the transaction to actually insert the items that we checked if we could fit
+                                    // and to actually remove the item we tried to use to replace the block
+                                    subTransaction.commit();
+                                    //Check if the xp can even be handled
+                                    if (drops.experience() > 0 && hasXpContainment()) {
+                                        int roomFor = Integer.MAX_VALUE - storedExperience;
+                                        if (drops.experience() <= roomFor) {
+                                            storedExperience += drops.experience();
+                                        } else {
+                                            storedExperience = Integer.MAX_VALUE;
                                         }
-                                        missingStack = ItemStack.EMPTY;
-                                        level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_DESTROY_BLOCK, pos, Block.getId(state));
-                                        //Remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
-                                        cachedToMine--;
-                                        chunkToMine.clear(index);
-                                        if (chunkToMine.isEmpty()) {
-                                            // if we are out of stored elements then we remove this chunk and continue to check other chunks
-                                            // remove it so that we don't have to check the chunk next time around
-                                            iterator.remove();
-                                            // we no longer have a chunk we are targeting, so remove it. We might get a new chunk to target
-                                            // next time we try to mine but there is no reason to keep the old chunk in memory in the meantime
-                                            updateTargetChunk(null);
-                                        }
+                                        markForSave();
                                     }
-                                    //Reset the global fallback collector to null as we are done collecting for this miner and block
-                                    Mekanism.worldTickHandler.fallbackItemCollector = null;
+                                    missingStack = ItemStack.EMPTY;
+                                    level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_DESTROY_BLOCK, pos, Block.getId(state));
+                                    //Remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
+                                    cachedToMine--;
+                                    chunkToMine.clear(index);
+                                    if (chunkToMine.isEmpty()) {
+                                        // if we are out of stored elements then we remove this chunk and continue to check other chunks
+                                        // remove it so that we don't have to check the chunk next time around
+                                        iterator.remove();
+                                        // we no longer have a chunk we are targeting, so remove it. We might get a new chunk to target
+                                        // next time we try to mine but there is no reason to keep the old chunk in memory in the meantime
+                                        updateTargetChunk(null);
+                                    }
                                 }
+                                //Reset the global fallback collector to null as we are done collecting for this miner and block
+                                Mekanism.worldTickHandler.fallbackItemCollector = null;
                             }
-                            //Exit out. We either mined the block or don't have room so there is no reason to continue checking
-                            return;
-                        } else if (MekanismAPI.debug) {
-                            Mekanism.logger.error("Filter failed or can't mine: {} @ {} {}", state, level.dimension().identifier(), pos);
                         }
+                        //Exit out. We either mined the block or don't have room so there is no reason to continue checking
+                        return;
                     } else if (MekanismAPI.debug) {
-                        Mekanism.logger.error("State was air or was blacklisted (mismatch between search and runtime): {} @ {} {}", state, level.dimension().identifier(), pos);
+                        Mekanism.logger.error("Filter failed or can't mine: {} @ {} {}", state, level.dimension().identifier(), pos);
                     }
                 } else if (MekanismAPI.debug) {
-                    Mekanism.logger.debug("Block was not loaded {} {}", level.dimension().identifier(), pos);
+                    if (state == null) {
+                        Mekanism.logger.debug("Block was not loaded {} {}", level.dimension().identifier(), pos);
+                    } else {
+                        Mekanism.logger.error("State was air or was blacklisted (mismatch between search and runtime): {} @ {} {}", state, level.dimension().identifier(), pos);
+                    }
                 }
                 //If we failed to mine the block, because it isn't loaded, is air, or we shouldn't mine it
                 // remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
@@ -1293,6 +1300,25 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         DropsWithXp<ItemStack> drops = WorldUtils.getDrops(state, level, pos, WorldUtils.getTileEntity(level, pos), dummy, stack);
         dummy.cleanupFakePlayer(level);
         return drops;
+    }
+
+    public static boolean canBreakBlock(BlockGetter level, BlockPos pos, BlockState state) {
+        return !shouldSkipState(state) && state.getDestroySpeed(level, pos) >= 0;
+    }
+
+    private static boolean shouldSkipState(BlockState state) {
+        if (state.isAir() || state.is(MekanismTags.Blocks.MINER_BLACKLIST) || state.is(MekanismBlocks.BOUNDING_BLOCK) || MekanismUtils.isLiquidBlock(state.getBlock())) {
+            return true;
+        }
+        // Special cased vanilla blocks that only have one state actually have the drop and the other one just causes it to break. This includes things like two tall
+        // flowers, beds, and doors. If a data pack modifies the loot table so that the "secondary" block also provides drops those will then be handled by the fallback
+        // we have for collecting any drops that happen from breaking the block.
+        if (state.getBlock() instanceof BedBlock) {
+            return state.getValue(BlockStateProperties.BED_PART) == BedPart.FOOT;
+        } else if (state.getBlock() instanceof DoorBlock || state.getBlock() instanceof DoublePlantBlock) {
+            return state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER;
+        }
+        return false;
     }
 
     //Methods relating to IComputerTile
