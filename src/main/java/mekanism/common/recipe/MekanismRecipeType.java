@@ -278,7 +278,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY
         return this;
     }
 
-    private void clearCaches() {
+    public final void clearCaches() {
         cachedRecipes = Collections.emptyList();
         inputCache.clear();
     }
@@ -326,7 +326,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY
     /// Get a list of recipes directly from the manager
     ///
     /// @param recipeMap The recipes map
-    private Collection<RecipeHolder<RECIPE>> getRecipesUncached(RecipeMap recipeMap) {
+    protected Collection<RecipeHolder<RECIPE>> getRecipesUncached(RecipeMap recipeMap) {
         Collection<RecipeHolder<RECIPE>> recipes = recipeMap.byType(this);
         if (this == SMELTING.get()) {
             //Ensure the recipes can be modified
@@ -353,7 +353,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY
         return (RECIPE) o;
     }
 
-    private boolean checkMyIncompleteRecipes(RecipeManager recipeManager) {
+    public final boolean checkMyIncompleteRecipes(RecipeManager recipeManager) {
         boolean incomplete = false;
         for (RecipeHolder<RECIPE> holder : getRecipesUncached(recipeManager.recipeMap())) {
             if (holder.value().placementInfo().isImpossibleToPlace()) {
