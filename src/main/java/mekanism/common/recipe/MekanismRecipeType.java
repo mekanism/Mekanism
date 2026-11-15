@@ -107,7 +107,9 @@ import mekanism.common.registration.impl.RecipeTypeRegistryObject;
 import mekanism.common.registries.MekanismRecipeBookCategories;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -123,7 +125,7 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jspecify.annotations.Nullable;
 
@@ -226,7 +228,11 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY
     }
 
     public static void clearCache() {
-        for (Holder<RecipeType<?>> entry : RECIPE_TYPES.getEntries()) {
+        clearCache(RECIPE_TYPES);
+    }
+
+    public static void clearCache(DeferredRegister<RecipeType<?>> recipeTypes) {
+        for (Holder<RecipeType<?>> entry : recipeTypes.getEntries()) {
             //Note: We expect all entries to be a MekanismRecipeType, but we validate it just to be sure
             if (entry.value() instanceof MekanismRecipeType<?, ?, ?, ?, ?> recipeType) {
                 recipeType.clearCaches();
@@ -239,10 +245,15 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY
     }
 
     public static boolean checkIncompleteRecipes(RecipeManager recipeManager, RegistryAccess registryAccess) {
+        Optional<Registry<RecipeType<?>>> recipeRegistry = registryAccess.lookup(Registries.RECIPE_TYPE);
+        if (recipeRegistry.isEmpty()) {
+            return false;
+        }
         boolean foundIncompleteRecipes = false;
-        for (DeferredHolder<RecipeType<?>, ? extends RecipeType<?>> holder : RECIPE_TYPES.getEntries()) {
-            MekanismRecipeType<?, ?, ?, ?, ?> recipeType = (MekanismRecipeType<?, ?, ?, ?, ?>) holder.value();
-            foundIncompleteRecipes |= recipeType.checkMyIncompleteRecipes(recipeManager);
+        for (RecipeType<?> recipeType : recipeRegistry.get()) {
+            if (recipeType instanceof MekanismRecipeType<?, ?, ?, ?, ?> mekanismRecipeType) {
+                foundIncompleteRecipes |= mekanismRecipeType.checkMyIncompleteRecipes(recipeManager);
+            }
         }
         return foundIncompleteRecipes;
     }
@@ -323,10 +334,10 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY
         return cachedRecipes;
     }
 
-    /// Get a list of recipes directly from the manager
+    /// Get a list of recipes directly from the manager and adds any extra synthetic recipes to the known recipes
     ///
     /// @param recipeMap The recipes map
-    private Collection<RecipeHolder<RECIPE>> getRecipesUncached(RecipeMap recipeMap) {
+    protected Collection<RecipeHolder<RECIPE>> getRecipesUncached(RecipeMap recipeMap) {
         Collection<RecipeHolder<RECIPE>> recipes = recipeMap.byType(this);
         if (this == SMELTING.get()) {
             //Ensure the recipes can be modified
@@ -339,7 +350,6 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, BOOK_CATEGORY
                 ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo> possiblyUnwrapped = WrappedSmelterRecipe.tryUnwrap(smeltingRecipe);
                 ResourceKey<Recipe<?>> generateId = RegistryUtils.syntheticKey(recipeHolder.id(), "mekanism_generated");
                 recipes.add(new RecipeHolder<>(generateId, castRecipe(possiblyUnwrapped)));
-
             }
         }
         return recipes;
