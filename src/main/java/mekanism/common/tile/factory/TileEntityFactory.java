@@ -493,6 +493,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
                 recipeCacheLookupMonitor.xpContainmentChanged(serverLevel, Vec3.atCenterOf(worldPosition), totalInstalled > 0);
             }
         }
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     @Override
