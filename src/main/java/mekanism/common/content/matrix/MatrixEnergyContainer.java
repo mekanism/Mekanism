@@ -120,7 +120,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
                     energyOutputSlot.fillContainerOrConvert(subTransaction);
                 }
                 if (!targets.isEmpty()) {
-                    //Next we emit any power we
+                    //Next we emit any power we have up to our output threshold
                     long sent = EnergyUtils.emit(targets, getRemainingOutput(), subTransaction);
                     if (sent > 0) {
                         //Increase how much we are outputting by the amount we accepted
@@ -207,7 +207,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         if (amount == 0 || !multiblock.isFormed() || !isValidForInsertion(automationType)) {
             return 0;
         }
-        int toAdd = Ints.saturatedCast(Math.min(Math.min(amount, getRemainingInput()), getNeededAsLong()));
+        int toAdd = Ints.saturatedCast(Math.min(amount, getRemainingInput()));
         if (toAdd > 0) {
             queuedInput.updateSnapshots(transaction);
             //Increase how much we are inputting
@@ -223,11 +223,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         if (isEmpty() || amount == 0 || !multiblock.isFormed() || !isValidForExtraction(automationType)) {
             return 0;
         }
-        //We limit it overall by the amount we can extract plus how much energy we have
-        // as we want to be as accurate as possible with the values we return
-        // It is possible that the energy we have stored is a lot less than the amount we
-        // can output at once such as if the matrix is almost empty.
-        int toRemove = Ints.saturatedCast(Math.min(Math.min(amount, getRemainingOutput()), getAmountAsLong()));
+        int toRemove = Ints.saturatedCast(Math.min(amount, getRemainingOutput()));
         if (toRemove > 0) {
             //Increase how much we are outputting by the amount we sent
             queuedOutput.updateSnapshots(transaction);
@@ -263,11 +259,15 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     private long getRemainingInput() {
-        return transferCap - queuedInput.value;
+        return Math.min(transferCap - queuedInput.value, getNeededAsLong());
     }
 
     private long getRemainingOutput() {
-        return transferCap - queuedOutput.value;
+        //We limit it overall by the amount we can extract plus how much energy we have
+        // as we want to be as accurate as possible with the values we return
+        // It is possible that the energy we have stored is a lot less than the amount we
+        // can output at once such as if the matrix is almost empty.
+        return Math.min(transferCap - queuedOutput.value, getAmountAsLong());
     }
 
     public long getMaxTransfer() {

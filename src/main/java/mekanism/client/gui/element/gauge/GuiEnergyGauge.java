@@ -53,12 +53,14 @@ public class GuiEnergyGauge extends GuiGauge<@Nullable Void> {
         if (dummy || infoHandler == null) {
             return height - 2;
         }
-        if (infoHandler.getEnergy() == 0L) {
+        long energy = infoHandler.getEnergy();
+        if (energy <= 0L) {
+            //Note: Should never be less than zero unless something went wrong, but handle rendering more gracefully in case it did
             return 0;
-        } else if (infoHandler.getEnergy() == Long.MAX_VALUE) {
+        } else if (energy == Long.MAX_VALUE) {
             return height - 2;
         }
-        return Math.max(1, (int) ((height - 2) * MathUtils.divideToLevel(infoHandler.getEnergy(), infoHandler.getMaxEnergy())));
+        return Math.max(1, (int) ((height - 2) * MathUtils.divideToLevel(energy, infoHandler.getMaxEnergy())));
     }
 
     @Override
@@ -76,10 +78,13 @@ public class GuiEnergyGauge extends GuiGauge<@Nullable Void> {
     public List<Component> getTooltipText() {
         if (dummy || infoHandler == null) {
             return Collections.emptyList();
-        } else if (infoHandler.getEnergy() == 0) {
+        }
+        long energy = infoHandler.getEnergy();
+        if (energy <= 0) {
+            //Note: Should never be less than zero unless something went wrong, but handle rendering more gracefully in case it did
             return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
-        return Collections.singletonList(EnergyDisplay.of(infoHandler.getEnergy(), infoHandler.getMaxEnergy()).getTextComponent());
+        return Collections.singletonList(EnergyDisplay.of(energy, infoHandler.getMaxEnergy()).getTextComponent());
     }
 
     public static IEnergyInfoHandler getInfoHandler(IEnergyContainer container) {
