@@ -185,7 +185,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         return this;
     }
 
-    private void clearCaches() {
+    public final void clearCaches() {
         cachedRecipes = Collections.emptyList();
         inputCache.clear();
     }
@@ -266,7 +266,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
      * @param registryAccess Registry access to use (for Smelting only). Call {@link #tryGetRegistryAccess()} if none directly available
      */
     @NotNull
-    private List<RecipeHolder<RECIPE>> getRecipesUncached(@NotNull RecipeManager recipeManager, @Nullable RegistryAccess registryAccess) {
+    protected List<RecipeHolder<RECIPE>> getRecipesUncached(@NotNull RecipeManager recipeManager, @Nullable RegistryAccess registryAccess) {
         //Note: This is a fresh mutable list that gets returned
         List<RecipeHolder<RECIPE>> recipes = recipeManager.getAllRecipesFor(this);
         if (this == SMELTING.get()) {
@@ -302,7 +302,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         return (RECIPE) o;
     }
 
-    private boolean checkMyIncompleteRecipes(RecipeManager recipeManager, RegistryAccess registryAccess) {
+    public final boolean checkMyIncompleteRecipes(RecipeManager recipeManager, RegistryAccess registryAccess) {
         boolean incomplete = false;
         for (RecipeHolder<RECIPE> holder : getRecipesUncached(recipeManager, registryAccess)) {
             if (!holder.value().isIncomplete()) {
