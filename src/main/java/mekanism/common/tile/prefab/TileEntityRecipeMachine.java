@@ -129,10 +129,10 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?, ?
 
     @Override
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.XP_CONTAINMENT) && level instanceof ServerLevel serverLevel) {
             recipeCacheLookupMonitor.xpContainmentChanged(serverLevel, Vec3.atCenterOf(worldPosition), totalInstalled > 0);
         }
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     protected IContentsListener getRecipeCacheSaveOnlyListener() {

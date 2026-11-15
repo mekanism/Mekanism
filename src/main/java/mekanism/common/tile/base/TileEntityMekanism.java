@@ -725,22 +725,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void setLevel(Level world) {
-        super.setLevel(world);
+    public void setLevel(Level level) {
+        super.setLevel(level);
         if (supportsUpgrades()) {
-            if (level == null) {//Can this actually be null?
-                upgradesRegistry = null;
-                anchorUpgrade = null;
-                mufflingUpgrade = null;
-            } else {
-                upgradesRegistry = level.registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
-                //Note: We don't have to reset this on tag reload, as datapack registries do not support being reloaded without the server restarting
-                if (hasChunkloader) {
-                    anchorUpgrade = upgradesRegistry.get(UpgradeIds.ANCHOR).orElse(null);
-                }
-                if (hasSound()) {
-                    mufflingUpgrade = upgradesRegistry.get(UpgradeIds.MUFFLING).orElse(null);
-                }
+            upgradesRegistry = level.registryAccess().lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
+            //Note: We don't have to reset this on tag reload, as datapack registries do not support being reloaded without the server restarting
+            if (hasChunkloader) {
+                anchorUpgrade = upgradesRegistry.get(UpgradeIds.ANCHOR).orElse(null);
+            }
+            if (hasSound()) {
+                mufflingUpgrade = upgradesRegistry.get(UpgradeIds.MUFFLING).orElse(null);
             }
         }
     }
@@ -1195,7 +1189,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public float getVolumeFactor() {
         //Note: Muffling upgrade will only be non-null if we support sound
-        if (mufflingUpgrade != null && supportsUpgrade(mufflingUpgrade)) {
+        if (supportsUpgrade(mufflingUpgrade)) {
             int maxMufflingUpgrades = mufflingUpgrade.value().max();
             int mufflerCount = Math.min(getUpgrades(mufflingUpgrade), maxMufflingUpgrades);
             return 1.0F - (mufflerCount / (float) maxMufflingUpgrades);
@@ -1459,7 +1453,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     protected boolean isFullyMuffled() {
-        if (hasSound() && mufflingUpgrade != null && supportsUpgrade(mufflingUpgrade)) {
+        if (hasSound() && supportsUpgrade(mufflingUpgrade)) {
             return getUpgrades(mufflingUpgrade) >= mufflingUpgrade.value().max();
         }
         return false;

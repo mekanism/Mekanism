@@ -50,7 +50,7 @@ public class UpgradeUtils implements IUpgradeHelper {
     public static int getBaseUsage(HolderGetter<Upgrade> upgrades, IUpgradeTile tile, int def) {
         //getGasPerTickMean * required ticks (not rounded)
         Holder.Reference<Upgrade> chemicalUpgrade = upgrades.get(UpgradeIds.CHEMICAL).orElse(null);
-        if (chemicalUpgrade != null && tile.supportsUpgrade(chemicalUpgrade)) {
+        if (tile.supportsUpgrade(chemicalUpgrade)) {
             // def * (upgradeMultiplier ^ ((2 * speed - gas) / 8)) * (upgradeMultiplier ^ (-speed / 8)) =
             // def * upgradeMultiplier ^ ((speed - gas) / 8)
             //TODO: We may want to validate this provides the numbers we desire if we ever end up with any machines
@@ -122,7 +122,7 @@ public class UpgradeUtils implements IUpgradeHelper {
         Holder.Reference<Upgrade> speedUpgrade = upgrades.get(UpgradeIds.SPEED).orElse(null);
         if (speedUpgrade != null) {
             Holder.Reference<Upgrade> chemicalUpgrade = upgrades.get(UpgradeIds.CHEMICAL).orElse(null);
-            if (chemicalUpgrade != null && tile.supportsUpgrade(chemicalUpgrade)) {
+            if (tile.supportsUpgrade(chemicalUpgrade)) {
                 return Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, speedUpgrade) - fractionUpgrades(tile, chemicalUpgrade));
             }
             return Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, speedUpgrade));

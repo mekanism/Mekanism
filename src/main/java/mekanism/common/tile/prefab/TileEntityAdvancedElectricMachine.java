@@ -216,7 +216,6 @@ public abstract class TileEntityAdvancedElectricMachine<BOOK_CATEGORY extends Me
 
     @Override
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED) || (upgrade.is(UpgradeIds.CHEMICAL) && supportsUpgrade(upgrade))) {
             if (useStatisticalMechanics()) {
                 gasPerTickMeanMultiplier = UpgradeUtils.getGasPerTickMeanMultiplier(upgrades, this);
@@ -224,6 +223,7 @@ public abstract class TileEntityAdvancedElectricMachine<BOOK_CATEGORY extends Me
                 baseTotalUsage = UpgradeUtils.getBaseUsage(upgrades, this, baseTicksRequired);
             }
         }
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     @Override

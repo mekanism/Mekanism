@@ -11,6 +11,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
 public interface IUpgradeTile {
@@ -22,8 +23,9 @@ public interface IUpgradeTile {
     @Nullable
     TagKey<Upgrade> getSupportedUpgrade();
 
-    default boolean supportsUpgrade(Holder<Upgrade> upgradeType) {
-        if (supportsUpgrades()) {
+    @Contract("null -> false")
+    default boolean supportsUpgrade(@Nullable Holder<Upgrade> upgradeType) {
+        if (upgradeType != null && supportsUpgrades()) {
             TileComponentUpgrade component = getComponent();
             //Note: This should never be null given supportsUpgrades is true, but if it is, handle it gracefully
             return component != null && component.supports(upgradeType);

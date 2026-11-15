@@ -182,8 +182,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void setLevel(Level world) {
-        super.setLevel(world);
+    public void setLevel(Level level) {
+        super.setLevel(level);
         //Invalidate the cache as if the level changed then it might no longer be valid
         fluidHandlerAbove = null;
         if (upgradesRegistry == null) {
@@ -390,11 +390,11 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     @Override
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED)) {
             ticksRequired = UpgradeUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
             outputRate = BASE_OUTPUT_RATE * (totalInstalled + 1);
         }
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     @Override

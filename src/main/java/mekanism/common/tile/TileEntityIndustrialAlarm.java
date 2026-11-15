@@ -23,10 +23,8 @@ public class TileEntityIndustrialAlarm extends TileEntityMekanism {
     }
 
     @Override
-    public void setLevel(Level world) {
-        super.setLevel(world);
-        if (level != null) {
-            onPowerChange(level);
-        }
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        onPowerChange(level);
     }
 }

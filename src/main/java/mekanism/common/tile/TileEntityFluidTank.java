@@ -190,8 +190,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public void setLevel(Level world) {
-        super.setLevel(world);
+    public void setLevel(Level level) {
+        super.setLevel(level);
         //Invalidate the cache as if the level changed then it might no longer be valid
         belowTankCache = null;
     }

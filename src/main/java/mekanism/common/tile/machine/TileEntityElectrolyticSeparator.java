@@ -332,12 +332,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     @Override
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED)) {
             double speed = Math.pow(2, totalInstalled);
             baselineMaxOperations = (int) speed;
             dumpRate = (int) (BASE_DUMP_RATE * speed);
         }
+        //Note: Must be after we update the number of operations so that the container can properly calculate how much capacity it needs
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     @Override
@@ -406,6 +407,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         container.track(SyncableInt.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 
+    public boolean isMakingHydrogen() {
+        return isMakingHydrogen;
+    }
+
+    public int getBaselineMaxOperations() {
+        return baselineMaxOperations;
+    }
+
     //Methods relating to IComputerTile
     @ComputerMethod(requiresPublicSecurity = true)
     void setLeftOutputDumpingMode(GasMode mode) throws ComputerException {
@@ -451,12 +460,4 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         markForSave();
     }
     //End methods IComputerTile
-
-    public boolean isMakingHydrogen() {
-        return isMakingHydrogen;
-    }
-
-    public int getBaselineMaxOperations() {
-        return baselineMaxOperations;
-    }
 }

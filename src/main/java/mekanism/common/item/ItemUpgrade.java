@@ -33,7 +33,7 @@ public class ItemUpgrade extends Item implements ICustomCreativeTabContents {
             if (tile instanceof IUpgradeTile upgradeTile && upgradeTile.supportsUpgrades()) {
                 ItemStack stack = context.getItemInHand();
                 Holder<Upgrade> upgradeType = stack.get(IUpgradeHelper.INSTANCE.dataComponent());
-                if (upgradeType != null && upgradeTile.supportsUpgrade(upgradeType)) {
+                if (upgradeTile.supportsUpgrade(upgradeType)) {
                     if (!world.isClientSide()) {
                         int added = upgradeTile.addUpgrades(world.registryAccess(), upgradeType, stack.count());
                         if (added > 0) {

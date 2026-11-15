@@ -167,8 +167,8 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     @Override
-    public void setLevel(Level world) {
-        super.setLevel(world);
+    public void setLevel(Level level) {
+        super.setLevel(level);
         updateCoord();
     }
 

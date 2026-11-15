@@ -876,8 +876,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public void setLevel(Level world) {
-        super.setLevel(world);
+    public void setLevel(Level level) {
+        super.setLevel(level);
         //Update miner energy as the world height is likely different compared to the old pre 1.18 values
         energyContainer.updateMinerEnergyPerTick();
         if (upgradesRegistry == null) {
@@ -1117,7 +1117,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     @Override
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED)) {
             delayLength = UpgradeUtils.getTicks(MekanismConfig.general.minerTicksPerMine.get(), upgrade, totalInstalled);
         } else if (upgrade.is(UpgradeIds.XP_CONTAINMENT) && totalInstalled == 0 && storedExperience > 0 && level instanceof ServerLevel serverLevel) {
@@ -1125,6 +1124,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             ExperienceOrb.award(serverLevel, Vec3.atCenterOf(worldPosition), storedExperience);
             storedExperience = 0;
         }
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     @Nullable

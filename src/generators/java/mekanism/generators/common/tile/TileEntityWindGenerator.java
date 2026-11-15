@@ -127,12 +127,12 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     }
 
     @Override
-    public void setLevel(Level world) {
-        super.setLevel(world);
+    public void setLevel(Level level) {
+        super.setLevel(level);
         // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
         // an initial activity status and the client (in MP) will show the windmills turning while not
         // generating any power
-        isBlacklistDimension = world.dimensionTypeRegistration().is(MekanismAPITags.DimensionTypes.NO_WIND);
+        isBlacklistDimension = level.dimensionTypeRegistration().is(MekanismAPITags.DimensionTypes.NO_WIND);
         if (isBlacklistDimension) {
             setActive(false);
         }

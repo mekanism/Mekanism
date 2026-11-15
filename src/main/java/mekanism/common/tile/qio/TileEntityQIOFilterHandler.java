@@ -42,13 +42,13 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     @Override
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED)) {
             // 64 to 320 items
             maxTransitCount = getUpgradeEffect(totalInstalled, BASE_TRANSIT_COUNT);
             // 1 to 5 types
             maxTransitTypes = getUpgradeEffect(totalInstalled, 1);
         }
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     private float getUpgradeEffectRaw(int totalInstalled, int base) {

@@ -34,7 +34,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?,
     }
 
     public float getScaledProgress() {
-        return getRecipeProgress() / (float) ticksRequired;
+        return getRecipeProgress() / (float) getTicksRequired();
     }
 
     @ComputerMethod

@@ -301,10 +301,10 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     @Override
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED)) {
             ticksRequired = UpgradeUtils.getTicks(BASE_TICKS_REQUIRED, upgrade, totalInstalled);
         }
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     @Override

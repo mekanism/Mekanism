@@ -278,7 +278,6 @@ public class TileEntityItemStackChemicalToItemStackFactory<BOOK_CATEGORY extends
 
     @Override
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED) || upgrade.is(UpgradeIds.CHEMICAL) && supportsUpgrade(upgrade)) {
             if (useStatisticalMechanics()) {
                 chemicalPerTickMeanMultiplier = UpgradeUtils.getGasPerTickMeanMultiplier(upgrades, this);
@@ -286,6 +285,7 @@ public class TileEntityItemStackChemicalToItemStackFactory<BOOK_CATEGORY extends
                 baseTotalUsage = UpgradeUtils.getBaseUsage(upgrades, this, BASE_TICKS_REQUIRED);
             }
         }
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     @Override

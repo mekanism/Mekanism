@@ -224,10 +224,10 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
 
     @Override
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.SPEED)) {
             baselineMaxOperations = (int) Math.pow(2, totalInstalled);
         }
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     @Override

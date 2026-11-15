@@ -225,7 +225,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     @Override
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
         if (upgrade.is(UpgradeIds.CHEMICAL) || upgrade.is(UpgradeIds.SPEED)) {
             if (useStatisticalMechanics()) {
                 injectUsage = UpgradeUtils.getGasPerTickMeanMultiplier(upgrades, this);
@@ -233,6 +232,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
                 baseTotalUsage = UpgradeUtils.getBaseUsage(upgrades, this, baseTicksRequired);
             }
         }
+        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
     public MachineEnergyContainer<TileEntityChemicalDissolutionChamber> energyContainer() {
