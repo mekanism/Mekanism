@@ -252,7 +252,8 @@ public final class MekanismUtils {
         float targetScale;
         long stored = container.getAmountAsLong();
         long capacity = container.getCapacityAsLong();
-        if (capacity == 0L) {
+        if (capacity <= 0L) {
+            //If something went wrong just treat it as zero for the scale
             targetScale = 0;
         } else {
             targetScale = (float) ((double) stored / capacity);
@@ -465,12 +466,16 @@ public final class MekanismUtils {
         return EMPTY_SLOT_PROVIDER;
     }
 
+    public static int redstoneLevelFromContents(IEnergyContainer energyContainer) {
+        return redstoneLevelFromContents(energyContainer.getAmountAsLong(), energyContainer.getCapacityAsLong());
+    }
+
     /// @param amount   Amount currently stored
     /// @param capacity Total amount that can be stored.
     ///
     /// @return A redstone level based on the percentage of the amount stored.
     public static int redstoneLevelFromContents(long amount, long capacity) {
-        double fractionFull = capacity == 0 ? 0 : ((double) amount / capacity);
+        double fractionFull = capacity <= 0 ? 0 : ((double) amount / capacity);
         return Mth.lerpDiscrete((float) fractionFull, Redstone.SIGNAL_NONE, Redstone.SIGNAL_MAX);
     }
 

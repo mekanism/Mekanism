@@ -107,7 +107,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(energyContainer.getAmountAsLong(), energyContainer.getCapacityAsLong());
+        return MekanismUtils.redstoneLevelFromContents(energyContainer);
     }
 
     @Override
