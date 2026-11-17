@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.MekanismPreconditions;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -179,6 +180,7 @@ public class ChemicalResource implements RegisteredResource<Chemical>, ChemicalI
 
         @Nullable
         private Holder<Chemical> emptyHolder = null;
+        private boolean isClientSide = false;
 
         private EmptyChemicalResource() {
             super(null);
@@ -192,13 +194,16 @@ public class ChemicalResource implements RegisteredResource<Chemical>, ChemicalI
 
         /// **DO NOT CALL THIS METHOD**
         @Internal
-        public void updateEmptyHolder(Holder<Chemical> holder) {
-            emptyHolder = holder;
+        public void updateEmptyHolder(Registry<Chemical> registry) {
+            emptyHolder = registry.getOrThrow(ChemicalIds.EMPTY);
         }
 
         @SubscribeEvent
         private void clientTagsLoaded(TagsUpdatedEvent.ClientPacketReceived event) {
-            emptyHolder = event.getRegistries().get(ChemicalIds.EMPTY).orElse(null);
+            if (event.shouldUpdateStaticData()) {
+                emptyHolder = event.getRegistries().get(ChemicalIds.EMPTY).orElse(null);
+                isClientSide =  true;
+            }
         }
 
         @SubscribeEvent
@@ -210,7 +215,10 @@ public class ChemicalResource implements RegisteredResource<Chemical>, ChemicalI
 
         @SubscribeEvent
         private void clientLeftServer(ClientPlayerNetworkEvent.LoggingOut event) {
-            emptyHolder = null;
+            if (isClientSide) {
+                emptyHolder = null;
+                isClientSide = false;
+            }
         }
     }
 }

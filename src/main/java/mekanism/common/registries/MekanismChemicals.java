@@ -41,7 +41,7 @@ public class MekanismChemicals {
         CHEMICALS.createAndRegisterWorldRegistry(modEventBus, ChemicalSerializationHelper.DIRECT_CODEC, ChemicalSerializationHelper.NETWORK_CODEC,
               registryBuilder -> registryBuilder
                     .defaultKey(ChemicalIds.EMPTY)
-                    .onBake(registry -> ((EmptyChemicalResource) ChemicalResource.EMPTY).updateEmptyHolder(registry.getOrThrow(ChemicalIds.EMPTY)))
+                    .onBake(((EmptyChemicalResource) ChemicalResource.EMPTY)::updateEmptyHolder)
         );
     }
 }
