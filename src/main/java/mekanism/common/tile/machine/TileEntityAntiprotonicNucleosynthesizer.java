@@ -176,6 +176,9 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         int oldTicksRequired = ticksRequired;
         //Note: Because we don't support speed or energy upgrades we can do this in a much cleaner way than how we have to do it for the PRC
         ticksRequired = cachedRecipe == null ? BASE_TICKS_REQUIRED : cachedRecipe.getRecipe().getDuration();
+        if (ticksRequired != oldTicksRequired) {
+            energyContainer.updateEnergy(getUpgradeLookup(recipeContext));
+        }
     }
 
     @Override

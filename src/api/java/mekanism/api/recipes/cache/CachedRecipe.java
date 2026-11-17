@@ -88,8 +88,10 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?, ?, ?>> {
     private IntConsumer operatingTicksChanged = _ -> {
     };
 
-    /// Whether multiple operations multiply the power usage. Currently only used for Hydrogen separating.
-    private boolean multipleOperationsCost = false;
+    /// Whether multiple operations multiply the power usage. Currently used to disable scaling for all exponential processing recipes except for Hydrogen separating.
+    ///
+    /// @since 10.8.0
+    private boolean consumeEnergyPerOperation = true;
 
     /// @param recipe           Recipe.
     /// @param recheckAllErrors Returns `true` if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not do
@@ -197,9 +199,11 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?, ?, ?>> {
         return this;
     }
 
-    /// Sets whether the calculated operations increase the energy cost subtracted from the container. Currently only used for Hydrogen Separation.
-    public CachedRecipe<RECIPE> setOperationsCost(boolean value) {
-        this.multipleOperationsCost = value;
+    /// Sets whether the calculated operations increase the energy cost subtracted from the container.
+    ///
+    /// @since 10.8.0
+    public CachedRecipe<RECIPE> setConsumeEnergyPerOperation(boolean value) {
+        this.consumeEnergyPerOperation = value;
         return this;
     }
 
@@ -262,7 +266,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?, ?, ?>> {
                     postProcessOperations.accept(tracker);
                     //If we should continue checking try to cap the max at the max amount we have for energy that we didn't cap it at earlier
                     // Note: We don't have to always try and cap it as if we shouldn't continue checking that means we are already stopped.
-                    if (tracker.shouldContinueChecking() && multipleOperationsCost && tracker.capAtMaxForEnergy()) {
+                    if (tracker.shouldContinueChecking() && tracker.capAtMaxForEnergy()) {
                         //If we lowered the maximum number of operations due to our available energy, then we add an error that we don't have
                         // enough energy to run at our maximum rate
                         tracker.addError(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE);
@@ -353,7 +357,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?, ?, ?>> {
     /// @return `true` if enough energy was used.
     protected boolean useEnergy(int operations, TransactionContext transaction) {
         int energy = perTickEnergy.getAsInt();
-        if (this.multipleOperationsCost) {
+        if (this.consumeEnergyPerOperation) {
             //Note: We know this shouldn't overflow, as we clamped the operations based on energy usage in calculateOperationsThisTick
             energy *= operations;
         }
@@ -377,15 +381,22 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?, ?, ?>> {
                 try (Transaction simulation = tracker.openSimulation()) {
                     //Validate how much energy we are able to extract from the stored value
                     int availableEnergy = energyUsage.useEnergy(storedEnergy.getAsInt(), simulation);
-                    //Make sure we don't have any integer overflow in calculating how much we have room for
-                    operations = availableEnergy / energyPerTick;
+                    if (consumeEnergyPerOperation) {
+                        //Make sure we don't have any integer overflow in calculating how much we have room for
+                        operations = availableEnergy / energyPerTick;
+                    } else if (availableEnergy < energyPerTick) {
+                        //Not enough energy to process, bail
+                        operations = 0;
+                    } else {
+                        operations = tracker.maxForEnergy;
+                    }
                 }
                 //Update the max amount we can perform from our energy (we apply this at the end so that we can see if we have a reduced
-                // operation count due to energy
+                // operation count due to energy)
                 tracker.maxForEnergy = operations;
                 if (operations == 0) {
                     //If we have no operations we can perform however, just update it immediately
-                    tracker.updateOperations(operations);
+                    tracker.updateOperations(0);
                     tracker.addError(RecipeError.NOT_ENOUGH_ENERGY);
                 }
             }
@@ -460,7 +471,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?, ?, ?>> {
             this.lastErrors = lastErrors;
             this.checkAll = checkAll;
             this.currentMax = startingMax;
-            this.maxForEnergy = currentMax;
+            this.maxForEnergy = startingMax;
             this.transaction = transaction;
         }
 

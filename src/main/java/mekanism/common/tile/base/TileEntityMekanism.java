@@ -227,6 +227,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     protected final ResourceHandlerManager<ChemicalResource, IChemicalTank> chemicalHandlerManager;
     @Nullable
     protected final EnergyHandlerManager energyHandlerManager;
+    protected boolean needsEnergyUpdate;
 
     //Variables for handling IMekanismChemicalHandler
     private float radiationScale;
@@ -632,8 +633,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
         }
-        //TODO - 26.3: Should we validate this is a server level??
-        boolean sendUpdatePacket = tile.onUpdateServer((ServerLevel) level);
+        if (tile.needsEnergyUpdate && tile.getEnergyContainer() instanceof MachineEnergyContainer<?> energyContainer) {
+            tile.needsEnergyUpdate = false;
+            energyContainer.updateEnergy(tile.getUpgradeLookup(level.registryAccess()));
+        }
+        boolean sendUpdatePacket = tile.onUpdateServer(level);
         if (tile.updateRadiationScale(level)) {
             sendUpdatePacket = true;
         }
@@ -1210,15 +1214,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        if (upgrade.is(UpgradeIds.SPEED)) {
-            if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
-                machineEnergy.updateEnergyPerTick(upgrades);
-                machineEnergy.updateMaxEnergy(upgrades);
-            }
-        } else if (upgrade.is(UpgradeIds.ENERGY)) {
-            if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
-                machineEnergy.updateEnergyPerTick(upgrades);
-                machineEnergy.updateMaxEnergy(upgrades);
+        if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
+            if (upgrade.is(UpgradeIds.SPEED) || upgrade.is(UpgradeIds.ENERGY)) {
+                //If we end up having upgrades get checked and that leads us to updating the energy, we can unset our delayed request for an energy update
+                needsEnergyUpdate = false;
+                machineEnergy.updateEnergy(upgrades);
             }
         }
     }

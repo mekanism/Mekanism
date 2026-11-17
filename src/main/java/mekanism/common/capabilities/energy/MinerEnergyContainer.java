@@ -7,7 +7,7 @@ import mekanism.api.upgrade.Upgrade;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import net.minecraft.core.HolderGetter;
+import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
@@ -19,35 +19,15 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
         return new MinerEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), tile, listener);
     }
 
-    private int minerEnergyPerTick;
-
     private MinerEnergyContainer(long maxEnergy, int energyPerTick, TileEntityDigitalMiner tile, @Nullable IContentsListener listener) {
         super(maxEnergy, energyPerTick, notExternal, ConstantPredicates.alwaysTrue(), tile, listener);
-        this.minerEnergyPerTick = getBaseEnergyPerTick();
     }
 
     @Override
-    public void setEnergyPerTick(int energyPerTick) {
-        super.setEnergyPerTick(energyPerTick);
-        this.minerEnergyPerTick = energyPerTick;
-    }
-
-    @Override
-    public int getEnergyPerTick() {
-        return minerEnergyPerTick;
-    }
-
-    @Override
-    public void updateEnergyPerTick(HolderGetter<Upgrade> upgrades) {
-        super.updateEnergyPerTick(upgrades);
-        //Also update our miner's energy specific values
-        updateMinerEnergyPerTick();
-    }
-
-    public void updateMinerEnergyPerTick() {
-        minerEnergyPerTick = super.getEnergyPerTick();
+    protected int calculateEnergyPerTick(int baseEnergyPerTick, Holder.@Nullable Reference<Upgrade> speedUpgrade, Holder.@Nullable Reference<Upgrade> energyUpgrade) {
+        int energyPerTick = super.calculateEnergyPerTick(baseEnergyPerTick, speedUpgrade, energyUpgrade);
         if (tile.getSilkTouch()) {
-            minerEnergyPerTick = MathUtils.multiplyClamped(minerEnergyPerTick, MekanismConfig.general.minerSilkMultiplier.get());
+            energyPerTick = MathUtils.multiplyClamped(energyPerTick, MekanismConfig.general.minerSilkMultiplier.get());
         }
         //Ranges are difference between max and default
         double radiusRange = MekanismConfig.general.minerMaxRadius.get() - TileEntityDigitalMiner.DEFAULT_RADIUS;
@@ -62,17 +42,17 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
         }
         //If the range for a specific thing is zero, ignore it from the cost calculations
         double radiusCost;
-        double heightCost;
         if (radiusRange == 0) {
             radiusCost = 0;
         } else {
             radiusCost = Math.max((tile.getRadius() - TileEntityDigitalMiner.DEFAULT_RADIUS) / radiusRange, 0);
         }
+        double heightCost;
         if (heightRange == 0) {
             heightCost = 0;
         } else {
             heightCost = Math.max((tile.getMaxY() - tile.getMinY() - TileEntityDigitalMiner.DEFAULT_HEIGHT_RANGE) / heightRange, 0);
         }
-        minerEnergyPerTick = Mth.ceil(minerEnergyPerTick * (1 + radiusCost) * (1 + heightCost));
+        return Mth.ceil(energyPerTick * (1 + radiusCost) * (1 + heightCost));
     }
 }

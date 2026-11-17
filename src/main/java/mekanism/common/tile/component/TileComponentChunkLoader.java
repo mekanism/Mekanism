@@ -100,11 +100,6 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     /// Release and re-register tickets, call when chunk set changes
-    public void refreshChunkTickets(@Nullable Holder<Upgrade> anchorUpgrade) {
-        refreshChunkTickets(anchorUpgrade, tile.getLevel(), tile.getBlockPos());
-    }
-
-    /// Release and re-register tickets, call when chunk set changes
     public void refreshChunkTickets(@Nullable Holder<Upgrade> anchorUpgrade, @Nullable Level level, BlockPos pos) {
         if (level != null && !level.isClientSide()) {
             refreshChunkTickets(anchorUpgrade, (ServerLevel) level, pos, true);

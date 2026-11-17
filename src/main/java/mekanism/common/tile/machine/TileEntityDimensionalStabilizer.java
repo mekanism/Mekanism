@@ -2,6 +2,7 @@ package mekanism.common.tile.machine;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.IntPredicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
@@ -11,7 +12,7 @@ import mekanism.api.functions.IntObjectToIntFunction;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.upgrade.Upgrade;
-import mekanism.common.capabilities.energy.FixedUsageEnergyContainer;
+import mekanism.common.capabilities.energy.StabilizerEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
@@ -59,10 +60,11 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     private final boolean[][] loadingChunks;
     @SyntheticComputerMethod(getter = "getChunksLoaded", getterDescription = "Get the number of chunks being loaded.")
     private int chunksLoaded = 1;
+    private boolean refreshChunkTickets;
     private boolean clientRendering;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
-    private FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> energyContainer;
+    private StabilizerEnergyContainer energyContainer;
     @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
@@ -78,7 +80,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
-        energyContainer = FixedUsageEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, listener);
+        energyContainer = StabilizerEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, listener);
         return _ -> energyContainer;
     }
 
@@ -92,6 +94,11 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     @Override
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
+        if (refreshChunkTickets) {
+            refreshChunkTickets = false;
+            //Refresh the chunks that are loaded as it has changed
+            getChunkLoader().refreshChunkTickets(anchorUpgrade, level, worldPosition);
+        }
         energySlot.fillContainerOrConvert(null);
         //Only attempt to use power if chunk loading isn't disabled in the config
         boolean isActive = false;
@@ -117,9 +124,8 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         if (x >= 0 && x < MAX_LOAD_DIAMETER && z >= 0 && z < MAX_LOAD_DIAMETER) {
             if (setChunkLoadingAt(x, z, !isChunkLoadingAt(x, z))) {
                 setChanged(false);
-                energyContainer.updateEnergyPerTick(null);
-                //Refresh the chunks that are loaded as it has changed
-                getChunkLoader().refreshChunkTickets(anchorUpgrade);
+                needsEnergyUpdate = true;
+                refreshChunkTickets = true;
             }
         }
     }
@@ -142,9 +148,8 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 // in theory from packet something will always change, but in case there is a desync or in case this
                 // is done via a computer mod on already set chunks, don't actually update anything
                 setChanged(false);
-                energyContainer.updateEnergyPerTick(null);
-                //Refresh the chunks that are loaded as it has changed
-                getChunkLoader().refreshChunkTickets(anchorUpgrade);
+                needsEnergyUpdate = true;
+                refreshChunkTickets = true;
             }
         }
     }
@@ -227,47 +232,34 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     @Override
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
-        boolean changed = false;
-        int lastChunksLoaded = chunksLoaded;
         byte[] chunksToLoad = input.read(SerializationConstants.STABILIZER_CHUNKS_TO_LOAD, StabilizedChunks.CODEC).orElse(StabilizedChunks.NONE).chunks();
-        for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
-            for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
-                changed |= setChunkLoadingAt(x, z, chunksToLoad[x * MAX_LOAD_DIAMETER + z] == 1);
-            }
-        }
-        if (changed) {
-            if (chunksLoaded != lastChunksLoaded) {
-                //If the number of chunks loaded is different we need to update our energy to use
-                energyContainer.updateEnergyPerTick(null);
-            }
-            //Refresh the chunks that are loaded as it has changed
-            getChunkLoader().refreshChunkTickets(anchorUpgrade, level, worldPosition);
-        }
+        loadChunkData(i -> chunksToLoad[i] == 1);
     }
 
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
+        StabilizedChunks chunksToLoad = input.getOrDefault(MekanismDataComponents.STABILIZER_CHUNKS, StabilizedChunks.NONE);
+        if (chunksToLoad != StabilizedChunks.NONE) {
+            loadChunkData(chunksToLoad::loaded);
+        }
+        //Note: This must happen after handling the targeted chunks to ensure that when the energy is calculated
         super.applyImplicitComponents(input);
-        //TODO - 1.20.4: Deduplicate this and the from nbt
+    }
+
+    private void loadChunkData(IntPredicate isChunkLoaded) {
         boolean changed = false;
         int lastChunksLoaded = chunksLoaded;
-        StabilizedChunks chunksToLoad = input.getOrDefault(MekanismDataComponents.STABILIZER_CHUNKS, StabilizedChunks.NONE);
-        if (chunksToLoad == StabilizedChunks.NONE) {
-            //Skip if we don't have any data
-            return;
-        }
         for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
             for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
-                changed |= setChunkLoadingAt(x, z, chunksToLoad.loaded(x * MAX_LOAD_DIAMETER + z));
+                changed |= setChunkLoadingAt(x, z, isChunkLoaded.test(x * MAX_LOAD_DIAMETER + z));
             }
         }
         if (changed) {
             if (chunksLoaded != lastChunksLoaded) {
                 //If the number of chunks loaded is different we need to update our energy to use
-                energyContainer.updateEnergyPerTick(null);
+                needsEnergyUpdate = true;
             }
-            //Refresh the chunks that are loaded as it has changed
-            getChunkLoader().refreshChunkTickets(anchorUpgrade, level, worldPosition);
+            refreshChunkTickets = true;
         }
     }
 
@@ -277,14 +269,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         builder.set(MekanismDataComponents.STABILIZER_CHUNKS, StabilizedChunks.create(this));
     }
 
-    @Override
-    public void configurationDataSet() {
-        super.configurationDataSet();
-        //Refresh the chunk tickets as they may have changed
-        getChunkLoader().refreshChunkTickets(anchorUpgrade);
-    }
-
-    public FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> energyContainer() {
+    public StabilizerEnergyContainer energyContainer() {
         return energyContainer;
     }
 
@@ -314,9 +299,8 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         if (setChunkLoadingAt(validateDimension(x, true), validateDimension(z, false), load)) {
             //If it changed we need to mark it as such and update various things
             setChanged(false);
-            energyContainer.updateEnergyPerTick(null);
-            //Refresh the chunks that are loaded as it has changed
-            getChunkLoader().refreshChunkTickets(anchorUpgrade);
+            needsEnergyUpdate = true;
+            refreshChunkTickets = true;
         }
     }
 

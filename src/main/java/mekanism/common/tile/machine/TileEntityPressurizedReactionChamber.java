@@ -10,6 +10,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
+import mekanism.api.functions.IntObjectToIntFunction;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
@@ -27,7 +28,7 @@ import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
-import mekanism.common.capabilities.energy.PRCEnergyContainer;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
@@ -66,8 +67,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityPressurizedReactionChamber extends TileEntityProgressMachine<PressurizedReactionRecipe>
-      implements ItemFluidChemicalRecipeLookupHandler<PressurizedReactionRecipe> {
+public class TileEntityPressurizedReactionChamber extends TileEntityProgressMachine<PressurizedReactionRecipe> implements ItemFluidChemicalRecipeLookupHandler<PressurizedReactionRecipe> {
 
     public static final RecipeError NOT_ENOUGH_ITEM_INPUT_ERROR = RecipeError.create();
     public static final RecipeError NOT_ENOUGH_FLUID_INPUT_ERROR = RecipeError.create();
@@ -86,6 +86,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     private static final int BASE_DURATION = 5 * SharedConstants.TICKS_PER_SECOND;
     public static final long MAX_FLUID = 10L * FluidType.BUCKET_VOLUME;
     public static final long MAX_GAS = 10L * FluidType.BUCKET_VOLUME;
+    private static final IntObjectToIntFunction<TileEntityPressurizedReactionChamber> BASE_ENERGY_CALCULATOR = (base, tile) -> base + tile.getRecipeEnergyRequired();
 
     @UnknownNullability//Initialized via getInitialFluidTanks
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInputFluid", "getInputFluidCapacity", "getInputFluidNeeded",
@@ -108,7 +109,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     private final RecipeContainers recipeContainers;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
-    private PRCEnergyContainer energyContainer;
+    private MachineEnergyContainer<TileEntityPressurizedReactionChamber> energyContainer;
     @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "item input slot")
     InputInventorySlot inputSlot;
@@ -163,7 +164,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
 
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        energyContainer = PRCEnergyContainer.input(this, recipeCacheUnpauseListener);
+        energyContainer = MachineEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, recipeCacheUnpauseListener);
         return SingleConfigHolder.energy(energyContainer, this);
     }
 
@@ -197,15 +198,15 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         HolderGetter<Upgrade> upgrades = getUpgradeLookup(recipeContext);
         if (update) {
             Optional<Reference<Upgrade>> upgrade = upgrades.get(UpgradeIds.SPEED);
-            //noinspection OptionalIsPresent - Capturing lambda
             if (upgrade.isPresent()) {
                 Reference<Upgrade> speedUpgrade = upgrade.get();
                 recalculateUpgrades(upgrades, speedUpgrade, getUpgrades(speedUpgrade));
+                //Note: We can early exit if we end up recalculating the upgrades, as that will handle updating the energy container's energy
+                return;
             }
         }
         //Ensure we take our recipe's energy per tick into account
-        energyContainer.updateEnergyPerTick(upgrades);
-        energyContainer.updateMaxEnergy(upgrades);
+        energyContainer.updateEnergy(upgrades);
     }
 
     @Override
@@ -246,7 +247,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         return recipeContainers;
     }
 
-    public PRCEnergyContainer energyContainer() {
+    @Override
+    public MachineEnergyContainer<TileEntityPressurizedReactionChamber> energyContainer() {
         return energyContainer;
     }
 

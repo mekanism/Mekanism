@@ -72,6 +72,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.IHasVisualization;
+import mekanism.common.tile.interfaces.IMultiTickProcessing;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -131,7 +132,7 @@ import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunkLoader, IBoundingBlock, ITileFilterHolder<MinerFilter<?>>, IHasVisualization,
-      SupportsXpContainment {
+      SupportsXpContainment, IMultiTickProcessing {
 
     public static final int DEFAULT_HEIGHT_RANGE = 60;
     public static final int DEFAULT_RADIUS = 10;
@@ -174,7 +175,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private int storedExperience;
 
     private int delay;
-    private int delayLength = MekanismConfig.general.minerTicksPerMine.get();
+    private int ticksRequired = MekanismConfig.general.minerTicksPerMine.get();
     private int cachedToMine;
     private boolean silkTouch = DEFAULT_SILK_TOUCH;
     private boolean running;
@@ -296,7 +297,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                     // being too much to fit
                     if (delay == 0) {
                         tryMineBlock(level, transaction);
-                        delay = getDelay();
+                        delay = getTicksRequired();
                     }
                     transaction.commit();
                 }
@@ -341,8 +342,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         markForSave();
     }
 
-    public int getDelay() {
-        return delayLength;
+    @Override
+    public int getTicksRequired() {
+        return ticksRequired;
     }
 
     @ComputerMethod(methodDescription = "Whether Silk Touch mode is enabled or not")
@@ -383,9 +385,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private void setSilkTouch(boolean newSilkTouch) {
         if (silkTouch != newSilkTouch) {
             silkTouch = newSilkTouch;
-            if (level != null && !level.isClientSide()) {
-                energyContainer.updateMinerEnergyPerTick();
-            }
+            needsEnergyUpdate = true;
         }
     }
 
@@ -432,8 +432,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private void setRadius(int newRadius) {
         if (radius != newRadius && newRadius >= 0) {
             radius = newRadius;
+            needsEnergyUpdate = true;
             if (level != null && !level.isClientSide()) {
-                energyContainer.updateMinerEnergyPerTick();
                 // If the radius changed, and we're on the server, go ahead and refresh the chunk set
                 getChunkLoader().refreshChunkTickets(anchorUpgrade, level, worldPosition);
             }
@@ -453,9 +453,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private void setMinY(int newMinY) {
         if (minY != newMinY) {
             minY = newMinY;
-            if (level != null && !level.isClientSide()) {
-                energyContainer.updateMinerEnergyPerTick();
-            }
+            needsEnergyUpdate = true;
         }
     }
 
@@ -472,9 +470,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private void setMaxY(int newMaxY) {
         if (maxY != newMaxY) {
             maxY = newMaxY;
-            if (level != null && !level.isClientSide()) {
-                energyContainer.updateMinerEnergyPerTick();
-            }
+            needsEnergyUpdate = true;
         }
     }
 
@@ -860,11 +856,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             // pretend we had finished searching so that we will start again on the first tick
             searcher.state = State.FINISHED;
         }
-        //Update energy per tick in case any of the values changed. It would be slightly cleaner to also validate the fact
-        // the values changed, but it would make the code a decent bit messier, as we couldn't use NBTUtils, and it is a
-        // rather quick check to update the energy per tick, and in most cases at least one of the settings will not be at
-        // the default value
-        energyContainer.updateMinerEnergyPerTick();
     }
 
     @Override
@@ -879,7 +870,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     public void setLevel(Level level) {
         super.setLevel(level);
         //Update miner energy as the world height is likely different compared to the old pre 1.18 values
-        energyContainer.updateMinerEnergyPerTick();
+        needsEnergyUpdate = true;
         if (upgradesRegistry == null) {
             stoneGeneratorUpgrade = null;
             xpContainmentUpgrade = null;
@@ -1119,7 +1110,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Override
     public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
         if (upgrade.is(UpgradeIds.SPEED)) {
-            delayLength = UpgradeUtils.getTicks(MekanismConfig.general.minerTicksPerMine.get(), upgrade, totalInstalled);
+            ticksRequired = UpgradeUtils.getTicks(MekanismConfig.general.minerTicksPerMine.get(), upgrade, totalInstalled);
         } else if (upgrade.is(UpgradeIds.XP_CONTAINMENT) && totalInstalled == 0 && storedExperience > 0 && level instanceof ServerLevel serverLevel) {
             //Drop all stored xp on the ground
             ExperienceOrb.award(serverLevel, Vec3.atCenterOf(worldPosition), storedExperience);
