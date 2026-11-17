@@ -38,7 +38,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
@@ -119,9 +118,9 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected void notifyComparatorChange(Level level) {
+    protected void notifyComparatorChange(ServerLevel level, BlockPos pos, BlockState state) {
         //Notify neighbors instead of just comparators as we also allow for direct redstone levels
-        level.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockState().getBlock(), getDirection(), null);
+        level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), getDirection(), null);
     }
 
     public void setDelay(int delay) {

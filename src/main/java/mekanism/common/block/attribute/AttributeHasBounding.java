@@ -8,6 +8,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
@@ -70,23 +71,21 @@ public class AttributeHasBounding implements Attribute {
         });
     }
 
-    public void syncMasterPosition(Level world, BlockPos orig, BlockState state) {
-        if (!world.isClientSide()) {
-            handle(world, orig, state, orig, (level, boundingLocation, data) -> {
-                Vec3i offset = getOffset(boundingLocation, data);
-                if (!validateOffset(level, boundingLocation, offset)) {
-                    return false;
-                }
-                TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, boundingLocation, true);
-                if (tile != null) {
-                    tile.setMainLocationOffset(offset);
-                    tile.sendUpdatePacket();
-                } else {
-                    Mekanism.logger.warn("Unable to find Bounding Block Tile for sync at: {} in {}", boundingLocation, level.dimension().identifier());
-                }
-                return true;
-            });
-        }
+    public void syncMasterPosition(ServerLevel world, BlockPos orig, BlockState state) {
+        handle(world, orig, state, orig, (level, boundingLocation, data) -> {
+            Vec3i offset = getOffset(boundingLocation, data);
+            if (!validateOffset(level, boundingLocation, offset)) {
+                return false;
+            }
+            TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, boundingLocation, true);
+            if (tile != null) {
+                tile.setMainLocationOffset(offset);
+                tile.sendUpdatePacket();
+            } else {
+                Mekanism.logger.warn("Unable to find Bounding Block Tile for sync at: {} in {}", boundingLocation, level.dimension().identifier());
+            }
+            return true;
+        });
     }
 
     private static Vec3i getOffset(BlockPos boundingPos, BlockPos mainPos) {

@@ -197,12 +197,9 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         }
     }
 
-    public void tickServer(@Nullable Holder<Upgrade> anchorUpgrade) {
-        Level world = tile.getLevel();
-        if (world != null) {
-            //Update tickets if the position changed, or we are no longer able to operate
-            refreshChunkTickets(anchorUpgrade, (ServerLevel) world, tile.getBlockPos(), false);
-        }
+    public void tickServer(ServerLevel level, BlockPos pos, @Nullable Holder<Upgrade> anchorUpgrade) {
+        //Update tickets if the position changed, or we are no longer able to operate
+        refreshChunkTickets(anchorUpgrade, level, pos, false);
     }
 
     @Override

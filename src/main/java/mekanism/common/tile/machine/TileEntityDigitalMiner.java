@@ -994,15 +994,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    protected void notifyComparatorChange(Level level) {
-        super.notifyComparatorChange(level);
+    protected void notifyComparatorChange(ServerLevel level, BlockPos pos, BlockState state) {
+        super.notifyComparatorChange(level, pos, state);
         Direction facing = getDirection();
         Direction left = MekanismUtils.getLeft(facing);
         BlockBounding boundingBlock = MekanismBlocks.BOUNDING_BLOCK.value();
         //Proxy the comparator updates to the various ports we expose comparators to
-        level.updateNeighbourForOutputSignal(worldPosition.relative(left), boundingBlock);
-        level.updateNeighbourForOutputSignal(worldPosition.relative(left.getOpposite()), boundingBlock);
-        level.updateNeighbourForOutputSignal(worldPosition.relative(facing.getOpposite()).above(), boundingBlock);
+        level.updateNeighbourForOutputSignal(pos.relative(left), boundingBlock);
+        level.updateNeighbourForOutputSignal(pos.relative(left.getOpposite()), boundingBlock);
+        level.updateNeighbourForOutputSignal(pos.relative(facing.getOpposite()).above(), boundingBlock);
     }
 
     @Override
@@ -1194,7 +1194,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         if (!Objects.equals(targetChunk, target)) {
             //Only update the target if it has changed
             targetChunk = target;
-            getChunkLoader().refreshChunkTickets(anchorUpgrade);
+            getChunkLoader().refreshChunkTickets(anchorUpgrade, level, worldPosition);
         }
     }
 

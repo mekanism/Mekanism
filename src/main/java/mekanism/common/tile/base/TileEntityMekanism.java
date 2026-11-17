@@ -506,8 +506,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    protected void notifyComparatorChange(Level level) {
-        level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
+    protected void notifyComparatorChange(ServerLevel level, BlockPos pos, BlockState state) {
+        level.updateNeighbourForOutputSignal(pos, state.getBlock());
     }
 
     protected WrenchResult tryWrenchDismantle(Level level, BlockState state, Player player, ItemStack stack) {
@@ -601,7 +601,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         //tile.ticker++;
     }
 
-    public static void tickServer(Level level, BlockPos pos, BlockState state, TileEntityMekanism tile) {
+    public static void tickServer(Level world, BlockPos pos, BlockState state, TileEntityMekanism tile) {
+        //TODO - 26.3: Should we validate this is a server level??
+        ServerLevel level = (ServerLevel) world;
         if (tile.hasBounding && tile.syncMasterToBounding) {
             //TODO: Evaluate checking every x ticks to make sure we have bounding blocks (at least if we haven't already checked) in case we are missing them
             // for example if someone set the main block by using a command
@@ -617,7 +619,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             Objects.requireNonNull(tile.upgradeComponent).tickServer(level.registryAccess(), null);
         }
         if (tile.hasChunkloader) {
-            ((IChunkLoader) tile).getChunkLoader().tickServer(tile.anchorUpgrade);
+            ((IChunkLoader) tile).getChunkLoader().tickServer(level, pos, tile.anchorUpgrade);
         }
         if (tile.isActivatable()) {
             if (tile.updateDelay > 0) {
@@ -647,7 +649,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             int newRedstoneLevel = tile.getRedstoneLevel();
             if (newRedstoneLevel != tile.currentRedstoneLevel) {
                 tile.currentRedstoneLevel = newRedstoneLevel;
-                tile.notifyComparatorChange(level);
+                tile.notifyComparatorChange(level, pos, state);
             }
             tile.updateComparators = false;
         }
@@ -1235,7 +1237,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     /// @apiNote Only call on server.
-    private boolean updateRadiationScale(Level level) {
+    private boolean updateRadiationScale(ServerLevel level) {
         if (shouldDumpRadiation()) {
             float scale = ITileRadioactive.calculateRadiationScale(level, getChemicalTanks());
             if (Math.abs(scale - radiationScale) > 0.05F) {
