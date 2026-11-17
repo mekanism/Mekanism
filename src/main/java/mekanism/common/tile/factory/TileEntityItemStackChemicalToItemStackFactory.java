@@ -56,6 +56,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -225,7 +226,7 @@ public class TileEntityItemStackChemicalToItemStackFactory<BOOK_CATEGORY extends
     }
 
     @Override
-    public CachedRecipe<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe, int cacheIndex, ContextMap recipeContext) {
         CachedRecipe<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], chemicalInputHandler,
@@ -233,13 +234,7 @@ public class TileEntityItemStackChemicalToItemStackFactory<BOOK_CATEGORY extends
         } else {
             cachedRecipe = new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], chemicalInputHandler, outputHandlers[cacheIndex]);
         }
-        return cachedRecipe
-              .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
-              .setCanHolderFunction(this::canFunction)
-              .setActive(active -> setActiveState(active, cacheIndex))
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setBaselineMaxOperations(this::getOperationsPerTick);
+        return setCommonSettings(cachedRecipe, cacheIndex);
     }
 
     @Override

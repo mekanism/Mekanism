@@ -24,8 +24,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
-import mekanism.api.upgrade.Upgrade;
-import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
@@ -34,7 +32,6 @@ import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.capabilities.holder.single.SingleConfigHolder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
-import mekanism.common.integration.computer.ComputerConstants;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
@@ -44,7 +41,6 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
@@ -57,13 +53,12 @@ import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.interfaces.IHasMode;
-import mekanism.common.tile.prefab.TileEntityRecipeMachine;
+import mekanism.common.tile.prefab.TileEntityExponentialMachine;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -76,7 +71,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<RotaryRecipe, RecipeCacheLookupMonitor<RotaryRecipe>> implements IHasMode {
+public class TileEntityRotaryCondensentrator extends TileEntityExponentialMachine<RotaryRecipe, RecipeCacheLookupMonitor<RotaryRecipe>> implements IHasMode {
 
     public static final RecipeError NOT_ENOUGH_FLUID_INPUT_ERROR = RecipeError.create();
     public static final RecipeError NOT_ENOUGH_GAS_INPUT_ERROR = RecipeError.create();
@@ -113,9 +108,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     private final IInputHandler<Chemical, ChemicalStack> gasInputHandler;
     private final RecipeContainers fluidToChemicalRecipeContainers;
     private final RecipeContainers chemicalToFluidRecipeContainers;
-
-    private int clientEnergyUsed = 0;
-    private int baselineMaxOperations = 1;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityRotaryCondensentrator> energyContainer;
@@ -220,7 +212,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
             gasInputSlot.fillTankFromSlot(gasOutputSlot, null);
             fluidInputSlot.drainTankIntoSlot(fluidOutputSlot, null);
         }
-        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(level.registryAccess(), energyContainer);
+        updateAndProcessRecipe(level);
         return sendUpdatePacket;
     }
 
@@ -238,11 +230,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     public void previousMode() {
         //We only have two modes just flip it
         nextMode();
-    }
-
-    @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public int getEnergyUsed() {
-        return clientEnergyUsed;
     }
 
     @Override
@@ -294,18 +281,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         return mode ? inputCache.findFirstRecipe(level, fluidInputHandler.getInput()) : inputCache.findFirstRecipe(level, gasInputHandler.getInput());
     }
 
+    @Override
     public MachineEnergyContainer<TileEntityRotaryCondensentrator> energyContainer() {
         return energyContainer;
     }
 
     @Override
-    public CachedRecipe<RotaryRecipe> createNewCachedRecipe(RotaryRecipe recipe, int cacheIndex) {
-        return new RotaryCachedRecipe(recipe, recheckAllRecipeErrors, fluidInputHandler, gasInputHandler, gasOutputHandler, fluidOutputHandler, this::getMode)
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setBaselineMaxOperations(() -> baselineMaxOperations);
+    public CachedRecipe<RotaryRecipe> createNewCachedRecipe(RotaryRecipe recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new RotaryCachedRecipe(recipe, recheckAllRecipeErrors, fluidInputHandler, gasInputHandler, gasOutputHandler, fluidOutputHandler, this::getMode));
     }
 
     @Override
@@ -314,23 +297,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     }
 
     @Override
-    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        if (upgrade.is(UpgradeIds.SPEED)) {
-            baselineMaxOperations = (int) Math.pow(2, totalInstalled);
-        }
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
-    }
-
-    @Override
-    public boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
-        return upgrade.is(UpgradeIds.SPEED);
-    }
-
-    @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(this::getMode, value -> mode = value));
-        container.track(SyncableInt.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 
     //Methods relating to IComputerTile

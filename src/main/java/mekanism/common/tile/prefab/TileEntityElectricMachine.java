@@ -35,6 +35,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -111,7 +112,7 @@ public abstract class TileEntityElectricMachine<BOOK_CATEGORY extends MekanismBo
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
-        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
+        recipeCacheLookupMonitor.updateAndProcess(level);
         return sendUpdatePacket;
     }
 
@@ -122,13 +123,8 @@ public abstract class TileEntityElectricMachine<BOOK_CATEGORY extends MekanismBo
     }
 
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> createNewCachedRecipe(ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe, int cacheIndex) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired);
+    public CachedRecipe<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> createNewCachedRecipe(ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler));
     }
 
     @Override
@@ -141,6 +137,7 @@ public abstract class TileEntityElectricMachine<BOOK_CATEGORY extends MekanismBo
         return new MachineUpgradeData(provider, redstone, getControlType(), energyContainer, energySlot, recipeCacheLookupMonitor, inputSlot, outputSlot, getComponents(), problemPath());
     }
 
+    @Override
     public MachineEnergyContainer<TileEntityElectricMachine<BOOK_CATEGORY, BOOK_INFO>> energyContainer() {
         return energyContainer;
     }

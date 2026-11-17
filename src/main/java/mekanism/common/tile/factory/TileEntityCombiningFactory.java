@@ -32,6 +32,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -133,14 +134,8 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    public CachedRecipe<CombinerRecipe> createNewCachedRecipe(CombinerRecipe recipe, int cacheIndex) {
-        return new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], extraInputHandler, outputHandlers[cacheIndex])
-              .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
-              .setCanHolderFunction(this::canFunction)
-              .setActive(active -> setActiveState(active, cacheIndex))
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setBaselineMaxOperations(this::getOperationsPerTick);
+    public CachedRecipe<CombinerRecipe> createNewCachedRecipe(CombinerRecipe recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], extraInputHandler, outputHandlers[cacheIndex]), cacheIndex);
     }
 
     @Override

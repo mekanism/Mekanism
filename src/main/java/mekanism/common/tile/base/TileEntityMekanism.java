@@ -126,10 +126,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Util;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -1181,6 +1183,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Nullable
     public Registry<Upgrade> getUpgradeRegistry() {
+        return upgradesRegistry;
+    }
+
+    public final HolderGetter<Upgrade> getUpgradeLookup(ContextMap recipeContext) {
+        if (upgradesRegistry == null) {
+            return recipeContext.getOrThrow(SlotDisplayContext.REGISTRIES).lookupOrThrow(MekanismRegistries.Keys.UPGRADES);
+        }
         return upgradesRegistry;
     }
 

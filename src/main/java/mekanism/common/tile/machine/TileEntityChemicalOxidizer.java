@@ -44,6 +44,7 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -133,7 +134,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         outputSlot.drainTankIntoSlot(null);
-        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
+        recipeCacheLookupMonitor.updateAndProcess(level);
         return sendUpdatePacket;
     }
 
@@ -155,13 +156,8 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     }
 
     @Override
-    public CachedRecipe<ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo>> createNewCachedRecipe(ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo> recipe, int cacheIndex) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired);
+    public CachedRecipe<ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo>> createNewCachedRecipe(ItemStackToChemicalRecipe<OxidizingBookCategory, OxidizingBookInfo> recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler));
     }
 
     @Override
@@ -169,6 +165,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
         return recipeContainers;
     }
 
+    @Override
     public MachineEnergyContainer<TileEntityChemicalOxidizer> energyContainer() {
         return energyContainer;
     }

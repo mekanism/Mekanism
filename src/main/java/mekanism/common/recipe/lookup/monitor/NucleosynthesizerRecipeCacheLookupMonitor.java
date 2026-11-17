@@ -1,11 +1,10 @@
 package mekanism.common.recipe.lookup.monitor;
 
 import com.google.common.primitives.Ints;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.Level;
 
 public class NucleosynthesizerRecipeCacheLookupMonitor extends ProgressRecipeCacheLookupMonitor<NucleosynthesizingRecipe> {
 
@@ -13,16 +12,11 @@ public class NucleosynthesizerRecipeCacheLookupMonitor extends ProgressRecipeCac
         super(handler, true);
     }
 
-    @Override
-    public int updateAndProcess(HolderLookup.Provider registries, IEnergyContainer energyContainer) {
-        if (!(energyContainer instanceof MachineEnergyContainer<?> machineEnergyContainer)) {
-            //Unknown energy container type just don't handle it
-            return 0;
-        }
+    public int updateAndProcess(Level level, MachineEnergyContainer<?> energyContainer) {
         long prev = energyContainer.getAmountAsLong();
-        if (updateAndProcess(registries) && cachedRecipe != null) {
+        if (updateAndProcess(level) && cachedRecipe != null) {
             //TODO: Re-evaluate this at some point
-            int toProcess = (int) Math.sqrt(prev / (double) machineEnergyContainer.getEnergyPerTick());
+            int toProcess = (int) Math.sqrt(prev / (double) energyContainer.getEnergyPerTick());
             for (int i = 0; i < toProcess - 1; i++) {
                 cachedRecipe.process();
             }

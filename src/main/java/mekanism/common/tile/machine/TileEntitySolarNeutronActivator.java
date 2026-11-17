@@ -50,6 +50,7 @@ import mekanism.common.util.LightLevelUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
@@ -163,7 +164,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         inputSlot.fillTankFromSlot(null);
         outputSlot.drainTankIntoSlot(null);
         productionRate = recalculateProductionRate(level);
-        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
+        recipeCacheLookupMonitor.updateAndProcess(level);
         return sendUpdatePacket;
     }
 
@@ -207,11 +208,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     }
 
     @Override
-    public CachedRecipe<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>> createNewCachedRecipe(ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo> recipe, int cacheIndex) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
+    public CachedRecipe<ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo>> createNewCachedRecipe(ChemicalToChemicalRecipe<ActivatingBookCategory, ActivatingBookInfo> recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler))
               //Edge case handling, this should almost always end up being 1
               .setRequiredTicks(() -> productionRate > 0 && productionRate < 1 ? Mth.ceil(1 / productionRate) : 1)
               .setBaselineMaxOperations(() -> productionRate > 0 && productionRate < 1 ? 1 : (int) productionRate);

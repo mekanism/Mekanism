@@ -33,7 +33,7 @@ public class GuiElectrolyticSeparator extends GuiConfigurableTile<TileEntityElec
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getEnergyUsed));
+        addRenderableWidget(GuiEnergyTab.create(this, tile));
         fluidGauge = addRecipeBookComponent(new GuiFluidGauge(() -> tile.fluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 5, 10), BookComponentType.INPUT)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_INPUT));
         addRecipeBookComponent(new GuiChemicalGauge(() -> tile.leftTank, tile::getChemicalTanks, GaugeType.SMALL, this, 58, 18), BookComponentType.OUTPUT)

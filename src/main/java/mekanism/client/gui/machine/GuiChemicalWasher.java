@@ -37,7 +37,7 @@ public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWas
         addRenderableWidget(new GuiHorizontalPowerBar(this, tile.energyContainer(), 115, 75))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY))
               .warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE));
-        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getEnergyUsed));
+        addRenderableWidget(GuiEnergyTab.create(this, tile));
         addRecipeBookComponent(new GuiChemicalGauge(() -> tile.inputTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 28, 13), BookComponentType.INPUT)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_INPUT));
         addRecipeBookComponent(new GuiFluidGauge(() -> tile.fluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 7, 13), BookComponentType.INPUT)

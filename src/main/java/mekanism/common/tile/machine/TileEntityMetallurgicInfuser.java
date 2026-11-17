@@ -57,6 +57,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -161,7 +162,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         infusionSlot.fillTankOrConvert(null);
-        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
+        recipeCacheLookupMonitor.updateAndProcess(level);
         return sendUpdatePacket;
     }
 
@@ -185,7 +186,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
 
     @Override
     public CachedRecipe<ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>> createNewCachedRecipe(
-          ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo> recipe, int cacheIndex) {
+          ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo> recipe, int cacheIndex, ContextMap recipeContext) {
         CachedRecipe<ItemStackChemicalToItemStackRecipe<MetallurgicInfusingBookCategory, MetallurgicInfusingBookInfo>> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, infusionInputHandler,
@@ -193,13 +194,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
         } else {
             cachedRecipe = new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, itemInputHandler, infusionInputHandler, outputHandler);
         }
-        return cachedRecipe
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setBaselineMaxOperations(this::getOperationsPerTick);
+        return setCommonSettings(cachedRecipe);
     }
 
     @Override
@@ -213,6 +208,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
               infusionSlot, energySlot, inputSlot, outputSlot, getComponents(), problemPath());
     }
 
+    @Override
     public MachineEnergyContainer<TileEntityMetallurgicInfuser> energyContainer() {
         return energyContainer;
     }

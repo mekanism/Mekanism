@@ -44,6 +44,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -129,7 +130,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
-        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
+        recipeCacheLookupMonitor.updateAndProcess(level);
         return sendUpdatePacket;
     }
 
@@ -150,14 +151,8 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     }
 
     @Override
-    public CachedRecipe<CombinerRecipe> createNewCachedRecipe(CombinerRecipe recipe, int cacheIndex) {
-        return new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, extraInputHandler, outputHandler)
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setBaselineMaxOperations(this::getOperationsPerTick);
+    public CachedRecipe<CombinerRecipe> createNewCachedRecipe(CombinerRecipe recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, extraInputHandler, outputHandler));
     }
 
     @Override
@@ -170,6 +165,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
         return new CombinerUpgradeData(provider, redstone, getControlType(), energyContainer, recipeCacheLookupMonitor, energySlot, extraInputSlot, mainInputSlot, outputSlot, getComponents(), problemPath());
     }
 
+    @Override
     public MachineEnergyContainer<TileEntityCombiner> energyContainer() {
         return energyContainer;
     }

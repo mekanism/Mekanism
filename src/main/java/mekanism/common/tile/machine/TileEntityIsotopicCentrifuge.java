@@ -23,8 +23,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
-import mekanism.api.upgrade.Upgrade;
-import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -34,15 +32,11 @@ import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.capabilities.holder.single.SingleConfigHolder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
-import mekanism.common.integration.computer.ComputerConstants;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
-import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
-import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -53,18 +47,17 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IBoundingBlock;
-import mekanism.common.tile.prefab.TileEntityRecipeMachine;
+import mekanism.common.tile.prefab.TileEntityExponentialMachine;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>,
+public class TileEntityIsotopicCentrifuge extends TileEntityExponentialMachine<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>,
       RecipeCacheLookupMonitor<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>>>
       implements IBoundingBlock, ChemicalRecipeLookupHandler<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>> {
 
@@ -85,9 +78,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public IChemicalTank outputTank;
-
-    private int clientEnergyUsed = 0;
-    private int baselineMaxOperations = 1;
 
     private final IOutputHandler<ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Chemical, ChemicalStack> inputHandler;
@@ -160,13 +150,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
         energySlot.fillContainerOrConvert(null);
         inputSlot.fillTankFromSlot(null);
         outputSlot.drainTankIntoSlot(null);
-        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(level.registryAccess(), energyContainer);
         return sendUpdatePacket;
-    }
-
-    @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public int getEnergyUsed() {
-        return clientEnergyUsed;
     }
 
     @Override
@@ -187,13 +171,8 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
     }
 
     @Override
-    public CachedRecipe<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>> createNewCachedRecipe(ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo> recipe, int cacheIndex) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setBaselineMaxOperations(() -> baselineMaxOperations);
+    public CachedRecipe<ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo>> createNewCachedRecipe(ChemicalToChemicalRecipe<CentrifugingBookCategory, CentrifugingBookInfo> recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler));
     }
 
     @Override
@@ -202,18 +181,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
     }
 
     @Override
-    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        if (upgrade.is(UpgradeIds.SPEED)) {
-            baselineMaxOperations = (int) Math.pow(2, totalInstalled);
-        }
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
-    }
-
-    @Override
-    public boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
-        return upgrade.is(UpgradeIds.SPEED);
-    }
-
     public MachineEnergyContainer<TileEntityIsotopicCentrifuge> energyContainer() {
         return energyContainer;
     }
@@ -226,11 +193,5 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
     @Override
     protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         return type == ContainerType.CHEMICAL;
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableInt.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 }

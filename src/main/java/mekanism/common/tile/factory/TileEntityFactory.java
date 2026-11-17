@@ -67,7 +67,6 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -75,9 +74,11 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -247,12 +248,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
             sortingNeeded = true;
         }
 
-        HolderLookup.Provider registries = level.registryAccess();
+        ContextMap recipeContext = SlotDisplayContext.fromLevel(level);
         //Copy this so that if it changes we still have the original amount. Don't bother making it a constant though as this way
         // we can then use minusEqual instead of subtract to remove an extra copy call
         long prev = energyContainer.getAmountAsLong();
         for (int i = 0; i < recipeCacheLookupMonitors.length; i++) {
-            if (!recipeCacheLookupMonitors[i].updateAndProcess(registries)) {
+            if (!recipeCacheLookupMonitors[i].updateAndProcess(recipeContext)) {
                 //If we don't have a recipe in that slot make sure that our active state for that position is false
                 activeStates[i] = false;
             }
@@ -318,9 +319,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
             //We could not find any valid recipe for the given item that matches the items in the current output slots
             return null;
         }
-        if (updateCache) {
+        if (updateCache && level != null) {
             //If we want to update the cache, then create a new cache with the recipe we found and update the cache
-            recipeCacheLookupMonitors[process].updateCachedRecipe(foundRecipe);
+            recipeCacheLookupMonitors[process].updateCachedRecipe(foundRecipe, SlotDisplayContext.fromLevel(level));
         }
         return foundRecipe.value();
     }
@@ -334,6 +335,15 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
     private CachedRecipe<RECIPE> getCachedRecipe(int cacheIndex) {
         //TODO: Sanitize that cacheIndex is in bounds?
         return recipeCacheLookupMonitors[cacheIndex].getCachedRecipe(cacheIndex);
+    }
+
+    protected final CachedRecipe<RECIPE> setCommonSettings(CachedRecipe<RECIPE> recipe, int cacheIndex) {
+        return recipe.setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
+              .setCanHolderFunction(this::canFunction)
+              .setActive(active -> setActiveState(active, cacheIndex))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
+              .setRequiredTicks(this::getTicksRequired)
+              .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 
     @Override

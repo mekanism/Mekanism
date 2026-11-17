@@ -12,12 +12,20 @@ import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.tile.prefab.TileEntityExponentialMachine;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
 public class GuiEnergyTab extends GuiTexturedElement {
+
+    public static GuiEnergyTab create(IGuiWrapper gui, TileEntityExponentialMachine<?, ?> tile) {
+        if (tile.hasVariableEnergyUsage()) {
+            return new GuiEnergyTab(gui, tile.energyContainer(), tile::getEnergyUsed);
+        }
+        return new GuiEnergyTab(gui, tile.energyContainer(), tile::getActive);
+    }
 
     private final Supplier<List<Component>> infoHandler;
 

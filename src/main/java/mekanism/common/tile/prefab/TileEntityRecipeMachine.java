@@ -13,6 +13,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
@@ -210,6 +211,12 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?, ?
         }
         //If the xp containment upgrade has been removed as an upgrade, or if there is at least one installed
         return xpContainmentUpgrade == null || getUpgrades(xpContainmentUpgrade) > 0;
+    }
+
+    protected CachedRecipe<RECIPE> setCommonSettings(CachedRecipe<RECIPE> recipe) {
+        return recipe.setErrorsChanged(this::onErrorsChanged)
+              .setCanHolderFunction(this::canFunction)
+              .setActive(this::setActive);
     }
 
     @Nullable

@@ -44,6 +44,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -125,7 +126,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
-        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
+        recipeCacheLookupMonitor.updateAndProcess(level);
         return sendUpdatePacket;
     }
 
@@ -146,14 +147,8 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     }
 
     @Override
-    public CachedRecipe<SawmillRecipe> createNewCachedRecipe(SawmillRecipe recipe, int cacheIndex) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setBaselineMaxOperations(this::getOperationsPerTick);
+    public CachedRecipe<SawmillRecipe> createNewCachedRecipe(SawmillRecipe recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler));
     }
 
     @Override
@@ -167,6 +162,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
               getComponents(), problemPath());
     }
 
+    @Override
     public MachineEnergyContainer<TileEntityPrecisionSawmill> energyContainer() {
         return energyContainer;
     }

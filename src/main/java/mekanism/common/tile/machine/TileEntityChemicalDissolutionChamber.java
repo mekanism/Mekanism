@@ -58,6 +58,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -176,7 +177,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         energySlot.fillContainerOrConvert(null);
         gasInputSlot.fillTankOrConvert(null);
         outputSlot.drainTankIntoSlot(null);
-        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
+        recipeCacheLookupMonitor.updateAndProcess(level);
         return sendUpdatePacket;
     }
 
@@ -201,7 +202,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     }
 
     @Override
-    public CachedRecipe<ChemicalDissolutionRecipe> createNewCachedRecipe(ChemicalDissolutionRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ChemicalDissolutionRecipe> createNewCachedRecipe(ChemicalDissolutionRecipe recipe, int cacheIndex, ContextMap recipeContext) {
         CachedRecipe<ChemicalDissolutionRecipe> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler,
@@ -209,13 +210,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         } else {
             cachedRecipe = new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler, outputHandler);
         }
-        return cachedRecipe
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setBaselineMaxOperations(this::getOperationsPerTick);
+        return setCommonSettings(cachedRecipe);
     }
 
     @Override
@@ -235,6 +230,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
+    @Override
     public MachineEnergyContainer<TileEntityChemicalDissolutionChamber> energyContainer() {
         return energyContainer;
     }

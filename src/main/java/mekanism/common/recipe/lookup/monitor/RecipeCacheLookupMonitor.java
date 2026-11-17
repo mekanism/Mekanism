@@ -1,6 +1,5 @@
 package mekanism.common.recipe.lookup.monitor;
 
-import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
@@ -13,7 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -22,17 +20,19 @@ import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.RecipeCraftingHolder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -90,24 +90,15 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
         shouldUnpause = true;
     }
 
-    /// Helper that wraps [#updateAndProcess(HolderLookup.Provider)] inside of a brief check to calculate how much energy actually got used.
-    public int updateAndProcess(HolderLookup.Provider registries, IEnergyContainer energyContainer) {
-        //Copy this so that if it changes we still have the original amount. Don't bother making it a constant though as this way
-        // we can then use minusEqual instead of subtract to remove an extra copy call
-        long prev = energyContainer.getAmountAsLong();
-        if (updateAndProcess(registries)) {
-            //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-            return Math.max(0, Ints.saturatedCast(prev - energyContainer.getAmountAsLong()));
-        }
-        //If we don't have a cached recipe so didn't process anything at all just return zero
-        return 0;
+    public boolean updateAndProcess(Level level) {
+        return updateAndProcess(SlotDisplayContext.fromLevel(level));
     }
 
-    public boolean updateAndProcess(HolderLookup.Provider registries) {
+    public boolean updateAndProcess(ContextMap recipeContext) {
         CachedRecipe<RECIPE> oldCache = cachedRecipe;
-        cachedRecipe = getUpdatedCache(cacheIndex);
+        cachedRecipe = getUpdatedCache(cacheIndex, recipeContext);
         if (cachedRecipe != oldCache) {
-            handler.onCachedRecipeChanged(registries, cachedRecipe, cacheIndex);
+            handler.onCachedRecipeChanged(cachedRecipe, cacheIndex, recipeContext);
         }
         if (cachedRecipe != null) {
             if (shouldUnpause) {
@@ -171,15 +162,15 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?, ?>> im
 
     @Nullable
     @Override
-    public RecipeHolder<RECIPE> getRecipe(int cacheIndex) {
+    public RecipeHolder<RECIPE> getRecipe(int cacheIndex, ContextMap recipeContext) {
         return cachedIndexMatches(cacheIndex) ? handler.getRecipe(cacheIndex) : null;
     }
 
     @Nullable
     @Override
-    public CachedRecipe<RECIPE> createNewCachedRecipe(RecipeHolder<RECIPE> recipeHolder, int cacheIndex) {
+    public CachedRecipe<RECIPE> createNewCachedRecipe(RecipeHolder<RECIPE> recipeHolder, int cacheIndex, ContextMap recipeContext) {
         if (cachedIndexMatches(cacheIndex)) {
-            return handler.createNewCachedRecipe(recipeHolder.value(), cacheIndex)
+            return handler.createNewCachedRecipe(recipeHolder.value(), cacheIndex, recipeContext)
                   .setOnFinish(operations -> {
                       handler.markForSave();
                       setRecipeUsed(recipeHolder, operations);

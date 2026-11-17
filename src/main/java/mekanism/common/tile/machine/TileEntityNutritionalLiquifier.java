@@ -59,6 +59,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -181,7 +182,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         containerFillSlot.drainTankIntoSlot(containerOutputSlot, null);
-        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
+        recipeCacheLookupMonitor.updateAndProcess(level);
         float pasteScale = MekanismUtils.getScale(lastPasteScale, fluidTank);
         if (MekanismUtils.scaleChanged(pasteScale, lastPasteScale)) {
             lastPasteScale = pasteScale;
@@ -254,14 +255,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     @Override
     public CachedRecipe<ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo>> createNewCachedRecipe(
-          ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo> recipe, int cacheIndex) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setBaselineMaxOperations(this::getOperationsPerTick);
+          ItemStackToFluidOptionalItemRecipe<LiquificationBookCategory, LiquificationBookInfo> recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler));
     }
 
     @Override
@@ -269,6 +264,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         return recipeContainers;
     }
 
+    @Override
     public MachineEnergyContainer<TileEntityNutritionalLiquifier> energyContainer() {
         return energyContainer;
     }

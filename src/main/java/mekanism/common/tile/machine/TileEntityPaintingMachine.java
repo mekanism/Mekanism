@@ -51,6 +51,7 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -156,7 +157,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         pigmentInputSlot.fillTankOrConvert(null);
-        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
+        recipeCacheLookupMonitor.updateAndProcess(level);
         return sendUpdatePacket;
     }
 
@@ -178,7 +179,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     }
 
     @Override
-    public CachedRecipe<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo> recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo> recipe, int cacheIndex, ContextMap recipeContext) {
         CachedRecipe<ItemStackChemicalToItemStackRecipe<PaintingBookCategory, PaintingBookInfo>> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, pigmentInputHandler,
@@ -186,13 +187,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
         } else {
             cachedRecipe = new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, itemInputHandler, pigmentInputHandler, outputHandler);
         }
-        return cachedRecipe
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setBaselineMaxOperations(this::getOperationsPerTick);
+        return setCommonSettings(cachedRecipe);
     }
 
     @Override
@@ -200,6 +195,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
         return recipeContainers;
     }
 
+    @Override
     public MachineEnergyContainer<TileEntityPaintingMachine> energyContainer() {
         return energyContainer;
     }

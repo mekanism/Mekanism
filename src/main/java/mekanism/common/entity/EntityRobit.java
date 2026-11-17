@@ -93,6 +93,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -342,7 +343,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
             }
 
             energySlot.fillContainerOrConvert(null);
-            recipeCacheLookupMonitor.updateAndProcess(registryAccess());
+            recipeCacheLookupMonitor.updateAndProcess(level());
 
             if (!isDefaultSkinManuallySelected() && HolidayManager.hasRobitSkinsToday() && getSkinId() == MekanismRobitSkins.BASE) {
                 //Randomize the robit's skin
@@ -650,7 +651,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>> createNewCachedRecipe(ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo> recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo>> createNewCachedRecipe(ItemStackToItemStackRecipe<SmeltingBookCategory, SmeltingBookInfo> recipe, int cacheIndex, ContextMap recipeContext) {
         //TODO: Make a robit specific smelting energy usage config
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(errors -> {

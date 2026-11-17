@@ -56,7 +56,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
         addRenderableWidget(new GuiHorizontalPowerBar(this, tile.energyContainer(), ENERGY_BAR_X, 75))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY))
               .warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE));
-        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getEnergyUsed));
+        addRenderableWidget(GuiEnergyTab.create(this, tile));
         GuiFluidGauge fluidGauge = addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 133, 13));
         fluidGauge.warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(TileEntityRotaryCondensentrator.NOT_ENOUGH_FLUID_INPUT_ERROR))
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(TileEntityRotaryCondensentrator.NOT_ENOUGH_SPACE_FLUID_OUTPUT_ERROR));

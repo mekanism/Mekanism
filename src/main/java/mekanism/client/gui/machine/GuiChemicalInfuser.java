@@ -33,7 +33,7 @@ public class GuiChemicalInfuser extends GuiConfigurableTile<TileEntityChemicalIn
         addRenderableWidget(new GuiHorizontalPowerBar(this, tile.energyContainer(), 115, 75))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY))
               .warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE));
-        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getEnergyUsed));
+        addRenderableWidget(GuiEnergyTab.create(this, tile));
         addRecipeBookComponent(new GuiChemicalGauge(() -> tile.leftTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 25, 13), BookComponentType.INPUT)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_LEFT_INPUT));
         addRecipeBookComponent(new GuiChemicalGauge(() -> tile.centerTank, tile::getChemicalTanks, GaugeType.STANDARD, this, CENTER_GAUGE_X, 4), BookComponentType.OUTPUT)

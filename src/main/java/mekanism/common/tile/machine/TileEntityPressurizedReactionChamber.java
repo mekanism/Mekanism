@@ -54,8 +54,8 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -181,8 +181,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     }
 
     @Override
-    public void onCachedRecipeChanged(HolderLookup.Provider registries, @Nullable CachedRecipe<PressurizedReactionRecipe> cachedRecipe, int cacheIndex) {
-        super.onCachedRecipeChanged(registries, cachedRecipe, cacheIndex);
+    public void onCachedRecipeChanged(@Nullable CachedRecipe<PressurizedReactionRecipe> cachedRecipe, int cacheIndex, ContextMap recipeContext) {
+        super.onCachedRecipeChanged(cachedRecipe, cacheIndex, recipeContext);
         int recipeDuration;
         if (cachedRecipe == null) {
             recipeDuration = BASE_DURATION;
@@ -194,7 +194,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         }
         boolean update = baseTicksRequired != recipeDuration;
         baseTicksRequired = recipeDuration;
-        HolderGetter<Upgrade> upgrades = getUpgradeLookup(registries);
+        HolderGetter<Upgrade> upgrades = getUpgradeLookup(recipeContext);
         if (update) {
             Optional<Reference<Upgrade>> upgrade = upgrades.get(UpgradeIds.SPEED);
             //noinspection OptionalIsPresent - Capturing lambda
@@ -212,7 +212,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
-        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
+        recipeCacheLookupMonitor.updateAndProcess(level);
         return sendUpdatePacket;
     }
 
@@ -237,14 +237,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     }
 
     @Override
-    public CachedRecipe<PressurizedReactionRecipe> createNewCachedRecipe(PressurizedReactionRecipe recipe, int cacheIndex) {
-        return new PressurizedReactionCachedRecipe(recipe, recheckAllRecipeErrors, itemInputHandler, fluidInputHandler, gasInputHandler, outputHandler)
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setBaselineMaxOperations(this::getOperationsPerTick);
+    public CachedRecipe<PressurizedReactionRecipe> createNewCachedRecipe(PressurizedReactionRecipe recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new PressurizedReactionCachedRecipe(recipe, recheckAllRecipeErrors, itemInputHandler, fluidInputHandler, gasInputHandler, outputHandler));
     }
 
     @Override

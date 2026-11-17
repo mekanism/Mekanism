@@ -21,8 +21,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.BiChemicalRecipeInput;
-import mekanism.api.upgrade.Upgrade;
-import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -30,15 +28,11 @@ import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.capabilities.holder.single.SingleConfigHolder;
-import mekanism.common.integration.computer.ComputerConstants;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
-import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
-import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -53,18 +47,17 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IBoundingBlock;
-import mekanism.common.tile.prefab.TileEntityRecipeMachine;
+import mekanism.common.tile.prefab.TileEntityExponentialMachine;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>,
+public class TileEntityPigmentMixer extends TileEntityExponentialMachine<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>,
       RecipeCacheLookupMonitor<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>>> implements IBoundingBlock,
       EitherSideChemicalRecipeLookupHandler<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>> {
 
@@ -92,9 +85,6 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output pigment tank")
     public IChemicalTank outputTank;
-
-    private int clientEnergyUsed = 0;
-    private int baselineMaxOperations = 1;
 
     private final IOutputHandler<ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Chemical, ChemicalStack> leftInputHandler;
@@ -193,13 +183,8 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
         leftInputSlot.fillTankFromSlot(null);
         rightInputSlot.fillTankFromSlot(null);
         outputSlot.drainTankIntoSlot(null);
-        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(level.registryAccess(), energyContainer);
+        updateAndProcessRecipe(level);
         return sendUpdatePacket;
-    }
-
-    @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public int getEnergyUsed() {
-        return clientEnergyUsed;
     }
 
     @Override
@@ -220,13 +205,8 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     }
 
     @Override
-    public CachedRecipe<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>> createNewCachedRecipe(ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo> recipe, int cacheIndex) {
-        return new OrderlessTwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, leftInputHandler, rightInputHandler, outputHandler)
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setBaselineMaxOperations(() -> baselineMaxOperations);
+    public CachedRecipe<ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo>> createNewCachedRecipe(ChemicalChemicalToChemicalRecipe<PigmentMixingBookCategory, PigmentMixingBookInfo> recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new OrderlessTwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, leftInputHandler, rightInputHandler, outputHandler));
     }
 
     @Override
@@ -235,25 +215,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     }
 
     @Override
-    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        if (upgrade.is(UpgradeIds.SPEED)) {
-            baselineMaxOperations = (int) Math.pow(2, totalInstalled);
-        }
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
-    }
-
-    @Override
-    public boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
-        return upgrade.is(UpgradeIds.SPEED);
-    }
-
     public MachineEnergyContainer<TileEntityPigmentMixer> energyContainer() {
         return energyContainer;
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableInt.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 }

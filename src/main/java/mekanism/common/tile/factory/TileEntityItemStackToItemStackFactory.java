@@ -17,6 +17,7 @@ import mekanism.common.upgrade.MachineUpgradeData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -96,14 +97,8 @@ public class TileEntityItemStackToItemStackFactory<BOOK_CATEGORY extends Mekanis
     }
 
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> createNewCachedRecipe(ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe, int cacheIndex) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], outputHandlers[cacheIndex])
-              .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
-              .setCanHolderFunction(this::canFunction)
-              .setActive(active -> setActiveState(active, cacheIndex))
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setBaselineMaxOperations(this::getOperationsPerTick);
+    public CachedRecipe<ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> createNewCachedRecipe(ItemStackToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], outputHandlers[cacheIndex]), cacheIndex);
     }
 
     @Override

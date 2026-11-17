@@ -1,6 +1,7 @@
 package mekanism.api.recipes.cache;
 
 import mekanism.api.recipes.MekanismRecipe;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jspecify.annotations.Nullable;
 
@@ -9,11 +10,12 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe<?, ?, ?>> {
 
     /// Gets an updated cache for a given cacheIndex if needed.
     ///
-    /// @param cacheIndex The "recipe index" for which cache to interact with.
+    /// @param cacheIndex    The "recipe index" for which cache to interact with.
+    /// @param recipeContext The recipe context including registry access.
     ///
     /// @return An updated cache for the given cacheIndex, the current cached recipe, or null if there is no current cached recipe or the cache is invalid.
     @Nullable
-    default CachedRecipe<RECIPE> getUpdatedCache(int cacheIndex) {
+    default CachedRecipe<RECIPE> getUpdatedCache(int cacheIndex, ContextMap recipeContext) {
         boolean cacheInvalid = invalidateCache();
         //If we should invalidate the cache, set the current cache to null so that we properly recalculate the values
         // Otherwise lookup what the current cache is set to
@@ -22,14 +24,14 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe<?, ?, ?>> {
         if (currentCache == null || !currentCache.isInputValid()) {
             if (cacheInvalid || !hasNoRecipe(cacheIndex)) {
                 //If our cache is not valid, or we may have a recipe, check if we do
-                RecipeHolder<RECIPE> recipeHolder = getRecipe(cacheIndex);
+                RecipeHolder<RECIPE> recipeHolder = getRecipe(cacheIndex, recipeContext);
                 if (recipeHolder == null) {
                     //If we don't, mark that we have no recipe so that we can cache and short circuit following
                     // recipe lookups until either the cache becomes invalid or we may have a recipe again
                     setHasNoRecipe(cacheIndex);
                 } else {
                     //Otherwise, create a new cached recipe
-                    CachedRecipe<RECIPE> cached = createNewCachedRecipe(recipeHolder, cacheIndex);
+                    CachedRecipe<RECIPE> cached = createNewCachedRecipe(recipeHolder, cacheIndex, recipeContext);
                     if (currentCache == null || cached != null) {
                         //Only override our cached recipe if we were able to find a recipe that matches, or we don't have a cached recipe.
                         // This way if we end up getting back to the same recipe we won't have to recalculate quite as much
@@ -72,22 +74,24 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe<?, ?, ?>> {
 
     /// Tries to lookup/get the recipe that a given cacheIndex would represent the slots/tanks/etc. for.
     ///
-    /// @param cacheIndex The "recipe index" for which cache to interact with.
+    /// @param cacheIndex    The "recipe index" for which cache to interact with.
+    /// @param recipeContext The recipe context including registry access.
     ///
     /// @return Recipe that a given cacheIndex corresponds to, or null if there is no matching recipe or if the holder does not handle the given cacheIndex.
     ///
     /// @implNote This method should ignore what recipe is currently cached as this method is mainly used for finding a backing recipe to create a new cached recipe.
     @Nullable
-    RecipeHolder<RECIPE> getRecipe(int cacheIndex);
+    RecipeHolder<RECIPE> getRecipe(int cacheIndex, ContextMap recipeContext);
 
     /// Creates a new cached recipe representing a given recipe.
     ///
-    /// @param recipeHolder The backing recipe to create a cached version of.
-    /// @param cacheIndex   The "recipe index" for which cache to interact with.
+    /// @param recipeHolder  The backing recipe to create a cached version of.
+    /// @param cacheIndex    The "recipe index" for which cache to interact with.
+    /// @param recipeContext The recipe context including registry access.
     ///
     /// @return A new cached recipe representing the given recipe, or null if the holder does not handle the given cacheIndex.
     @Nullable
-    CachedRecipe<RECIPE> createNewCachedRecipe(RecipeHolder<RECIPE> recipeHolder, int cacheIndex);
+    CachedRecipe<RECIPE> createNewCachedRecipe(RecipeHolder<RECIPE> recipeHolder, int cacheIndex, ContextMap recipeContext);
 
     /// Checks if the cache should be invalidated because it is no longer valid.
     ///

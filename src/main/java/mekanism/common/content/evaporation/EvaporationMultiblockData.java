@@ -61,6 +61,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -186,7 +187,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
             inputInputSlot.fillTankFromSlot(outputInputSlot, transaction);
             transaction.commit();
         }
-        recipeCacheLookupMonitor.updateAndProcess(world.registryAccess());
+        recipeCacheLookupMonitor.updateAndProcess(world);
         float scale = MekanismUtils.getScale(prevScale, inputTank);
         if (MekanismUtils.scaleChanged(scale, prevScale)) {
             prevScale = scale;
@@ -310,7 +311,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public CachedRecipe<FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo>> createNewCachedRecipe(FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo> recipe, int cacheIndex) {
+    public CachedRecipe<FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo>> createNewCachedRecipe(FluidToFluidRecipe<EvaporatingBookCategory, EvaporatingBookInfo> recipe, int cacheIndex, ContextMap recipeContext) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(errors -> {
                   for (int i = 0; i < trackedErrors.length; i++) {

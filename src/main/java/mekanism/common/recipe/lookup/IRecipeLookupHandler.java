@@ -13,8 +13,8 @@ import mekanism.common.lib.SupportsXpContainment;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.registration.impl.RecipeBookCategoryDeferredRegister;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.StackedContentsCompatible;
@@ -51,23 +51,23 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?, ?, ?>> ex
 
     /// Creates a new cached recipe representing a given recipe.
     ///
-    /// @param recipe     The backing recipe to create a cached version of.
-    /// @param cacheIndex The "recipe index" for which cache to interact with.
+    /// @param recipe        The backing recipe to create a cached version of.
+    /// @param cacheIndex    The "recipe index" for which cache to interact with.
+    /// @param recipeContext The recipe context including registry access.
     ///
     /// @return A new cached recipe representing the given recipe.
-    CachedRecipe<RECIPE> createNewCachedRecipe(RECIPE recipe, int cacheIndex);
+    CachedRecipe<RECIPE> createNewCachedRecipe(RECIPE recipe, int cacheIndex, ContextMap recipeContext);
 
     /// Called when the cached recipe changes at a given index before processing the new cached recipe.
     ///
-    /// @param registries   Registry lookup.
-    /// @param cachedRecipe New cached recipe, or null if there is none due to the caches being invalidated.
-    /// @param cacheIndex   The "recipe index" for which cache to interact with.
-    default void onCachedRecipeChanged(HolderLookup.Provider registries, @Nullable CachedRecipe<RECIPE> cachedRecipe, int cacheIndex) {
+    /// @param cachedRecipe  New cached recipe, or null if there is none due to the caches being invalidated.
+    /// @param cacheIndex    The "recipe index" for which cache to interact with.
+    /// @param recipeContext The recipe context including registry access.
+    default void onCachedRecipeChanged(@Nullable CachedRecipe<RECIPE> cachedRecipe, int cacheIndex, ContextMap recipeContext) {
         clearRecipeErrors(cacheIndex);
     }
 
-    /// Called by [#onCachedRecipeChanged(HolderLookup.Provider, CachedRecipe, int)] when the list of cached errors should be reset due to the recipe not being valid
-    /// anymore.
+    /// Called by [#onCachedRecipeChanged(CachedRecipe, int, ContextMap)] when the list of cached errors should be reset due to the recipe not being valid anymore.
     ///
     /// @param cacheIndex The "recipe index" for which cache to interact with.
     default void clearRecipeErrors(int cacheIndex) {

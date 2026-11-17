@@ -5,6 +5,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -45,8 +46,8 @@ public class ProgressRecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?, ?
 
     @Nullable
     @Override
-    public CachedRecipe<RECIPE> createNewCachedRecipe(RecipeHolder<RECIPE> recipeHolder, int cacheIndex) {
-        CachedRecipe<RECIPE> cachedRecipe = super.createNewCachedRecipe(recipeHolder, cacheIndex);
+    public CachedRecipe<RECIPE> createNewCachedRecipe(RecipeHolder<RECIPE> recipeHolder, int cacheIndex, ContextMap recipeContext) {
+        CachedRecipe<RECIPE> cachedRecipe = super.createNewCachedRecipe(recipeHolder, cacheIndex, recipeContext);
         if (cachedRecipe == null) {
             return null;
         }

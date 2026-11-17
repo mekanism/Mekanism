@@ -53,6 +53,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -173,7 +174,7 @@ public abstract class TileEntityAdvancedElectricMachine<BOOK_CATEGORY extends Me
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         secondarySlot.fillTankOrConvert(null);
-        recipeCacheLookupMonitor.updateAndProcess(level.registryAccess());
+        recipeCacheLookupMonitor.updateAndProcess(level);
         return sendUpdatePacket;
     }
 
@@ -192,7 +193,7 @@ public abstract class TileEntityAdvancedElectricMachine<BOOK_CATEGORY extends Me
     }
 
     @Override
-    public CachedRecipe<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO> recipe, int cacheIndex, ContextMap recipeContext) {
         CachedRecipe<ItemStackChemicalToItemStackRecipe<BOOK_CATEGORY, BOOK_INFO>> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, chemicalInputHandler,
@@ -200,13 +201,7 @@ public abstract class TileEntityAdvancedElectricMachine<BOOK_CATEGORY extends Me
         } else {
             cachedRecipe = new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, itemInputHandler, chemicalInputHandler, outputHandler);
         }
-        return cachedRecipe
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setBaselineMaxOperations(this::getOperationsPerTick);
+        return setCommonSettings(cachedRecipe);
     }
 
     @Override
@@ -232,6 +227,7 @@ public abstract class TileEntityAdvancedElectricMachine<BOOK_CATEGORY extends Me
               energySlot, inputSlot, outputSlot, getComponents(), problemPath());
     }
 
+    @Override
     public MachineEnergyContainer<TileEntityAdvancedElectricMachine<BOOK_CATEGORY, BOOK_INFO>> energyContainer() {
         return energyContainer;
     }

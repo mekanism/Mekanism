@@ -40,6 +40,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -162,14 +163,8 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     }
 
     @Override
-    public CachedRecipe<SawmillRecipe> createNewCachedRecipe(SawmillRecipe recipe, int cacheIndex) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], outputHandlers[cacheIndex])
-              .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
-              .setCanHolderFunction(this::canFunction)
-              .setActive(active -> setActiveState(active, cacheIndex))
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setBaselineMaxOperations(this::getOperationsPerTick);
+    public CachedRecipe<SawmillRecipe> createNewCachedRecipe(SawmillRecipe recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], outputHandlers[cacheIndex]), cacheIndex);
     }
 
     @Override

@@ -54,8 +54,8 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -171,9 +171,10 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     }
 
     @Override
-    public void onCachedRecipeChanged(HolderLookup.Provider registries, @Nullable CachedRecipe<NucleosynthesizingRecipe> cachedRecipe, int cacheIndex) {
-        super.onCachedRecipeChanged(registries, cachedRecipe, cacheIndex);
-        //Note: Because we don't support speed upgrades we can do this in a much cleaner way than how we have to do it for the PRC
+    public void onCachedRecipeChanged(@Nullable CachedRecipe<NucleosynthesizingRecipe> cachedRecipe, int cacheIndex, ContextMap recipeContext) {
+        super.onCachedRecipeChanged(cachedRecipe, cacheIndex, recipeContext);
+        int oldTicksRequired = ticksRequired;
+        //Note: Because we don't support speed or energy upgrades we can do this in a much cleaner way than how we have to do it for the PRC
         ticksRequired = cachedRecipe == null ? BASE_TICKS_REQUIRED : cachedRecipe.getRecipe().getDuration();
     }
 
@@ -182,7 +183,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         gasInputSlot.fillTankOrConvert(null);
-        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(level.registryAccess(), energyContainer);
+        clientEnergyUsed = ((NucleosynthesizerRecipeCacheLookupMonitor) recipeCacheLookupMonitor).updateAndProcess(level, energyContainer);
         return sendUpdatePacket;
     }
 
@@ -193,7 +194,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     }
 
     @Override
-    public CachedRecipe<NucleosynthesizingRecipe> createNewCachedRecipe(NucleosynthesizingRecipe recipe, int cacheIndex) {
+    public CachedRecipe<NucleosynthesizingRecipe> createNewCachedRecipe(NucleosynthesizingRecipe recipe, int cacheIndex, ContextMap recipeContext) {
         CachedRecipe<NucleosynthesizingRecipe> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler,
@@ -201,13 +202,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         } else {
             cachedRecipe = new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler, outputHandler);
         }
-        return cachedRecipe
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(this::getTicksRequired)
-              .setBaselineMaxOperations(this::getOperationsPerTick);
+        return setCommonSettings(cachedRecipe);
     }
 
     @Override
@@ -215,6 +210,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         return recipeContainers;
     }
 
+    @Override
     public MachineEnergyContainer<TileEntityAntiprotonicNucleosynthesizer> energyContainer() {
         return energyContainer;
     }

@@ -22,8 +22,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.SingleFluidChemicalRecipeInput;
-import mekanism.api.upgrade.Upgrade;
-import mekanism.api.upgrade.UpgradeIds;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -34,16 +32,12 @@ import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.capabilities.holder.single.SingleConfigHolder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
-import mekanism.common.integration.computer.ComputerConstants;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
-import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
-import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
@@ -55,11 +49,10 @@ import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.FluidChemicalRec
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.FluidChemical;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.prefab.TileEntityRecipeMachine;
+import mekanism.common.tile.prefab.TileEntityExponentialMachine;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -68,7 +61,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>,
+public class TileEntityChemicalWasher extends TileEntityExponentialMachine<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>,
       RecipeCacheLookupMonitor<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>>>
       implements FluidChemicalRecipeLookupHandler<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>> {
 
@@ -95,9 +88,6 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSlurryOutput", "getSlurryOutputCapacity", "getSlurryOutputNeeded",
                                                                                         "getSlurryOutputFilledPercentage"}, docPlaceholder = "output slurry tank")
     public IChemicalTank outputTank;
-
-    private int clientEnergyUsed = 0;
-    private int baselineMaxOperations = 1;
 
     private final IOutputHandler<ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Fluid, FluidStack> fluidInputHandler;
@@ -181,13 +171,8 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
         energySlot.fillContainerOrConvert(null);
         fluidSlot.fillTankFromSlot(fluidOutputSlot, null);
         slurryOutputSlot.drainTankIntoSlot(null);
-        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(level.registryAccess(), energyContainer);
+        updateAndProcessRecipe(level);
         return sendUpdatePacket;
-    }
-
-    @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public int getEnergyUsed() {
-        return clientEnergyUsed;
     }
 
     @Override
@@ -208,31 +193,13 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     }
 
     @Override
-    public CachedRecipe<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>> createNewCachedRecipe(FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo> recipe, int cacheIndex) {
-        return new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, fluidInputHandler, slurryInputHandler, outputHandler)
-              .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(this::canFunction)
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setBaselineMaxOperations(() -> baselineMaxOperations);
+    public CachedRecipe<FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo>> createNewCachedRecipe(FluidChemicalToChemicalRecipe<WashingBookCategory, WashingBookInfo> recipe, int cacheIndex, ContextMap recipeContext) {
+        return setCommonSettings(new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, fluidInputHandler, slurryInputHandler, outputHandler));
     }
 
     @Override
     public RecipeContainers getRecipeContainers(int cacheIndex) {
         return recipeContainers;
-    }
-
-    @Override
-    public void recalculateUpgrades(HolderGetter<Upgrade> upgrades, Holder<Upgrade> upgrade, int totalInstalled) {
-        if (upgrade.is(UpgradeIds.SPEED)) {
-            baselineMaxOperations = (int) Math.pow(2, totalInstalled);
-        }
-        super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
-    }
-
-    @Override
-    public boolean upgradeInfoIsExponential(Holder<Upgrade> upgrade) {
-        return upgrade.is(UpgradeIds.SPEED);
     }
 
     @Override
@@ -245,13 +212,8 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
         return type == ContainerType.CHEMICAL;
     }
 
+    @Override
     public MachineEnergyContainer<TileEntityChemicalWasher> energyContainer() {
         return energyContainer;
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableInt.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 }

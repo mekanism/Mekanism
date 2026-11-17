@@ -2,9 +2,11 @@ package mekanism.common.tile.prefab;
 
 import java.util.List;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -59,6 +61,17 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?,
     public int getOperationsPerTick() {
         return this.operationsPerTick;
     }
+
+    @Override
+    protected CachedRecipe<RECIPE> setCommonSettings(CachedRecipe<RECIPE> recipe) {
+        MachineEnergyContainer<?> energyContainer = energyContainer();
+        return super.setCommonSettings(recipe)
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
+              .setRequiredTicks(this::getTicksRequired)
+              .setBaselineMaxOperations(this::getOperationsPerTick);
+    }
+
+    protected abstract MachineEnergyContainer<?> energyContainer();
 
     @Override
     public void addContainerTrackers(MekanismContainer container) {

@@ -31,6 +31,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
@@ -70,7 +71,7 @@ public class TileComponentFrequency implements ITileComponent {
         return nonSecurityFrequencies.keySet();
     }
 
-    public void tickServer(Level level, BlockPos pos) {
+    public void tickServer(ServerLevel level, BlockPos pos) {
         if (level.getGameTime() % 5 == tickOffset) {
             if (securityFrequency != null) {
                 updateFrequency(FrequencyTypes.SECURITY, securityFrequency, level);
