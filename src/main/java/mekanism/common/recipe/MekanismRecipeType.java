@@ -51,7 +51,9 @@ import mekanism.common.registration.impl.RecipeTypeDeferredRegister;
 import mekanism.common.registration.impl.RecipeTypeRegistryObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
@@ -66,7 +68,7 @@ import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -140,7 +142,11 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     }
 
     public static void clearCache() {
-        for (Holder<RecipeType<?>> entry : RECIPE_TYPES.getEntries()) {
+        clearCache(RECIPE_TYPES);
+    }
+
+    public static void clearCache(DeferredRegister<RecipeType<?>> recipeTypes) {
+        for (Holder<RecipeType<?>> entry : recipeTypes.getEntries()) {
             //Note: We expect all entries to be a MekanismRecipeType, but we validate it just to be sure
             if (entry.value() instanceof MekanismRecipeType<?, ?, ?> recipeType) {
                 recipeType.clearCaches();
@@ -153,10 +159,15 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     }
 
     public static boolean checkIncompleteRecipes(RecipeManager recipeManager, RegistryAccess registryAccess) {
+        Optional<Registry<RecipeType<?>>> recipeRegistry = registryAccess.registry(Registries.RECIPE_TYPE);
+        if (recipeRegistry.isEmpty()) {
+            return false;
+        }
         boolean foundIncompleteRecipes = false;
-        for (DeferredHolder<RecipeType<?>, ? extends RecipeType<?>> holder : RECIPE_TYPES.getEntries()) {
-            MekanismRecipeType<?, ?, ?> recipeType = (MekanismRecipeType<?, ?, ?>) holder.value();
-            foundIncompleteRecipes |= recipeType.checkMyIncompleteRecipes(recipeManager, registryAccess);
+        for (RecipeType<?> recipeType : recipeRegistry.get()) {
+            if (recipeType instanceof MekanismRecipeType<?, ?, ?> mekanismRecipeType) {
+                foundIncompleteRecipes |= mekanismRecipeType.checkMyIncompleteRecipes(recipeManager, registryAccess);
+            }
         }
         return foundIncompleteRecipes;
     }
@@ -266,7 +277,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
      * @param registryAccess Registry access to use (for Smelting only). Call {@link #tryGetRegistryAccess()} if none directly available
      */
     @NotNull
-    private List<RecipeHolder<RECIPE>> getRecipesUncached(@NotNull RecipeManager recipeManager, @Nullable RegistryAccess registryAccess) {
+    protected List<RecipeHolder<RECIPE>> getRecipesUncached(@NotNull RecipeManager recipeManager, @Nullable RegistryAccess registryAccess) {
         //Note: This is a fresh mutable list that gets returned
         List<RecipeHolder<RECIPE>> recipes = recipeManager.getAllRecipesFor(this);
         if (this == SMELTING.get()) {
