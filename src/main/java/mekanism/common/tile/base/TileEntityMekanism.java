@@ -743,10 +743,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         redstone = input.getBooleanOr(SerializationConstants.REDSTONE, false);
+        //Ensure any configuration data that might affect the capacities of blocks get handled before we try upgrading capacities based on upgrades
+        readSustainedData(input);
         for (ITileComponent component : components) {
             component.read(input);
         }
-        readSustainedData(input);
         for (IContainerType<?, ?> type : ContainerType.TYPES) {
             if (type.canHandle(this) && persists(type)) {
                 type.readFrom(input, this);
@@ -759,19 +760,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (supportsComparator()) {
             currentRedstoneLevel = input.getIntOr(SerializationConstants.CURRENT_REDSTONE, 0);
         }
-        if (isNameable()) {
-            customName = parseCustomNameSafe(input, SerializationConstants.CUSTOM_NAME);
-        }
     }
 
     @Override
     public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putBoolean(SerializationConstants.REDSTONE, redstone);
+        writeSustainedData(output);
         for (ITileComponent component : components) {
             component.write(output);
         }
-        writeSustainedData(output);
 
         for (IContainerType<?, ?> type : ContainerType.TYPES) {
             if (type.canHandle(this) && persists(type)) {
@@ -786,22 +784,24 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (supportsComparator()) {
             output.putInt(SerializationConstants.CURRENT_REDSTONE, currentRedstoneLevel);
         }
-
-        // Save the custom name, if the tile can be named. storeNullable will handle ensuring it doesn't write it when there is no name
-        if (isNameable()) {
-            output.storeNullable(SerializationConstants.CUSTOM_NAME, ComponentSerialization.CODEC, this.customName);
-        }
     }
 
     public void writeSustainedData(ValueOutput output) {
         if (supportsRedstone()) {
             output.store(SerializationConstants.CONTROL_TYPE, RedstoneControl.CODEC, controlType);
         }
+        // Save the custom name, if the tile can be named. storeNullable will handle ensuring it doesn't write it when there is no name
+        if (isNameable()) {
+            output.storeNullable(SerializationConstants.CUSTOM_NAME, ComponentSerialization.CODEC, this.customName);
+        }
     }
 
     public void readSustainedData(ValueInput input) {
         if (supportsRedstone()) {
             controlType = supportedOrNextType(input.read(SerializationConstants.CONTROL_TYPE, RedstoneControl.CODEC).orElse(RedstoneControl.DISABLED));
+        }
+        if (isNameable()) {
+            customName = parseCustomNameSafe(input, SerializationConstants.CUSTOM_NAME);
         }
     }
 

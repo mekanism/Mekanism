@@ -218,6 +218,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
             upgradeSlot.setContents(upgradeAware.inputSlot(), null);
             upgradeOutputSlot.setContents(upgradeAware.outputSlot(), null);
         }
+        //Note: Upgrades are rechecked in TilEntityMekanism
     }
 
     @Override

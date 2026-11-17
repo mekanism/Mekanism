@@ -1088,7 +1088,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
-        super.applyImplicitComponents(input);
         setRadius(Math.min(input.getOrDefault(MekanismDataComponents.RADIUS, DEFAULT_RADIUS), MekanismConfig.general.minerMaxRadius.get()));
         int newMinY = input.getOrDefault(MekanismDataComponents.MIN_Y, DEFAULT_MIN_Y);
         int newMaxY = input.getOrDefault(MekanismDataComponents.MAX_Y, DEFAULT_MAX_Y);
@@ -1113,6 +1112,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         // to insert anything before when it was saving, but it doesn't really hurt and then if the last tick had it get overflow or
         // had the inventory change which caused a save, but the next tick never happened the overflow may actually need to be updated
         recheckOverflow = hasOverflow;
+        //Note: This must happen after handling the radius and other things that make up the miner's energy per tick before calculating the energy capacity
+        super.applyImplicitComponents(input);
     }
 
     @Override
