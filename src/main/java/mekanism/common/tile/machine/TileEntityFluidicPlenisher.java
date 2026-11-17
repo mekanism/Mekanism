@@ -36,6 +36,7 @@ import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.IMultiTickProcessing;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
@@ -62,7 +63,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.UnknownNullability;
 
-public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IConfigurable {
+public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IConfigurable, IMultiTickProcessing {
 
     private static final EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));
     /// How many ticks it takes to run an operation.
@@ -134,7 +135,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                 int energyPerTick = energyContainer.getEnergyPerTick();
                 if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
                     operatingTicks++;
-                    if (operatingTicks >= ticksRequired) {
+                    if (operatingTicks >= getTicksRequired()) {
                         operatingTicks = 0;
                         FluidResource fluidType = fluidTank.resource();
                         if (finishedCalc) {
@@ -326,6 +327,11 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     public boolean usedEnergy() {
         return usedEnergy;
+    }
+
+    @Override
+    public int getTicksRequired() {
+        return ticksRequired;
     }
 
     public MachineEnergyContainer<TileEntityFluidicPlenisher> energyContainer() {

@@ -734,14 +734,6 @@
       }
     },
     {
-      "description": "Get the energy used in the last tick by the machine",
-      "methodName": "getEnergyUsage",
-      "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
-      }
-    },
-    {
       "description": "Get the contents of the left input tank.",
       "methodName": "getLeftInput",
       "returns": {
@@ -1015,14 +1007,6 @@
       "returns": {
         "type": "Table (LargeResourceStack)",
         "java_type": "mekanism.api.resource.LargeResourceStack"
-      }
-    },
-    {
-      "description": "Get the energy used in the last tick by the machine",
-      "methodName": "getEnergyUsage",
-      "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
       }
     },
     {
@@ -1968,14 +1952,6 @@
       }
     },
     {
-      "description": "Get the energy used in the last tick by the machine",
-      "methodName": "getEnergyUsage",
-      "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
-      }
-    },
-    {
       "description": "Get the contents of the input tank.",
       "methodName": "getInput",
       "returns": {
@@ -2158,6 +2134,16 @@
       }
     }
   ],
+  "Exponential Machine": [
+    {
+      "description": "Get the energy used in the last tick by the machine",
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "Number (int)",
+        "java_type": "int"
+      }
+    }
+  ],
   "Factory Machine": [
     {
       "description": "Get the contents of the energy slot.",
@@ -2214,14 +2200,6 @@
           "name": "process"
         }
       ],
-      "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
-      }
-    },
-    {
-      "description": "Total number of ticks it takes currently for the recipe to complete",
-      "methodName": "getTicksRequired",
       "returns": {
         "type": "Number (int)",
         "java_type": "int"
@@ -3098,13 +3076,6 @@
       }
     },
     {
-      "methodName": "getTicksRequired",
-      "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
-      }
-    },
-    {
       "methodName": "hasRecipe",
       "returns": {
         "type": "boolean",
@@ -3761,6 +3732,16 @@
       }
     }
   ],
+  "I Multi Tick Processing": [
+    {
+      "description": "Total number of ticks it takes currently processing operation to complete",
+      "methodName": "getTicksRequired",
+      "returns": {
+        "type": "Number (int)",
+        "java_type": "int"
+      }
+    }
+  ],
   "Induction Matrix Multiblock (formed)": [
     {
       "description": "Get the contents of the input slot.",
@@ -3976,14 +3957,6 @@
       "returns": {
         "type": "Table (LargeResourceStack)",
         "java_type": "mekanism.api.resource.LargeResourceStack"
-      }
-    },
-    {
-      "description": "Get the energy used in the last tick by the machine",
-      "methodName": "getEnergyUsage",
-      "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
       }
     },
     {
@@ -4416,13 +4389,6 @@
   "Machine with Recipe Progress": [
     {
       "methodName": "getRecipeProgress",
-      "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
-      }
-    },
-    {
-      "methodName": "getTicksRequired",
       "returns": {
         "type": "Number (int)",
         "java_type": "int"
@@ -5059,14 +5025,6 @@
       "returns": {
         "type": "Table (LargeResourceStack)",
         "java_type": "mekanism.api.resource.LargeResourceStack"
-      }
-    },
-    {
-      "description": "Get the energy used in the last tick by the machine",
-      "methodName": "getEnergyUsage",
-      "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
       }
     },
     {
@@ -6046,14 +6004,6 @@
       "returns": {
         "type": "Table (LargeResourceStack)",
         "java_type": "mekanism.api.resource.LargeResourceStack"
-      }
-    },
-    {
-      "description": "Get the energy used in the last tick by the machine",
-      "methodName": "getEnergyUsage",
-      "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
       }
     },
     {
