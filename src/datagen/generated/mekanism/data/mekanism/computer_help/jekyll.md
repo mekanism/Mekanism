@@ -2728,13 +2728,6 @@ methods:
     returns:
       java_type: double
       type: Number (double)
-  I Multi Tick Processing:
-  - description: Total number of ticks it takes currently processing operation to
-      complete
-    methodName: getTicksRequired
-    returns:
-      java_type: int
-      type: Number (int)
   Induction Matrix Multiblock (formed):
   - description: Get the contents of the input slot.
     methodName: getInputItem
@@ -3307,6 +3300,13 @@ methods:
       java_type: net.minecraft.core.BlockPos
       type: Table (BlockPos)
   - methodName: getWidth
+    returns:
+      java_type: int
+      type: Number (int)
+  Multiple Tick Processing Machine:
+  - description: Total number of ticks it takes currently processing operation to
+      complete
+    methodName: getTicksRequired
     returns:
       java_type: int
       type: Number (int)

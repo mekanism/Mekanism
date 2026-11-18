@@ -36,6 +36,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackChemicalToItemStackFactory;
+import mekanism.common.tile.interfaces.IMultiTickProcessing;
 import mekanism.common.tile.laser.TileEntityBasicLaser;
 import mekanism.common.tile.multiblock.TileEntityInductionPort;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
@@ -240,6 +241,7 @@ public class ComputerHelpProvider implements DataProvider {
           Map.entry(QIOFilter.class, "Filter Wrapper (QIO)"),
           Map.entry(SorterFilter.class, "Filter Wrapper (Logistical Sorter)"),
           Map.entry(ComputerFilterHelper.class, "API Global: computerFilterHelper"),
+          Map.entry(IMultiTickProcessing.class, "Multiple Tick Processing Machine"),
           Map.entry(MultiblockData.class, "Multiblock (formed)"),
           Map.entry(TileEntityMekanism.class, "Generic Mekanism Machine"),
           Map.entry(TileEntityFactory.class, "Factory Machine"),

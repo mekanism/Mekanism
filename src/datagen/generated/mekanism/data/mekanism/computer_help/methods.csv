@@ -430,7 +430,6 @@ Heat Generator,getLavaFilledPercentage,,Number (double),,false,Get the filled pe
 Heat Generator,getLavaNeeded,,Number (long),,false,Get the amount needed to fill the lava tank.
 Heat Generator,getTemperature,,Number (double),,false,Get the temperature of the generator in Kelvin.
 Heat Generator,getTransferLoss,,Number (double),,false,
-I Multi Tick Processing,getTicksRequired,,Number (int),,false,Total number of ticks it takes currently processing operation to complete
 Induction Matrix Multiblock (formed),getInputItem,,Table (LargeResourceStack),,false,Get the contents of the input slot.
 Induction Matrix Multiblock (formed),getInstalledCells,,Number (int),,false,
 Induction Matrix Multiblock (formed),getInstalledProviders,,Number (int),,false,
@@ -541,6 +540,7 @@ Multiblock (formed),getLength,,Number (int),,false,
 Multiblock (formed),getMaxPos,,Table (BlockPos),,false,
 Multiblock (formed),getMinPos,,Table (BlockPos),,false,
 Multiblock (formed),getWidth,,Number (int),,false,
+Multiple Tick Processing Machine,getTicksRequired,,Number (int),,false,Total number of ticks it takes currently processing operation to complete
 Nutritional Liquifier,getContainerFillItem,,Table (LargeResourceStack),,false,Get the contents of the fillable container slot.
 Nutritional Liquifier,getContainerOutputItem,,Table (LargeResourceStack),,false,Get the contents of the filled container output slot.
 Nutritional Liquifier,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy slot.

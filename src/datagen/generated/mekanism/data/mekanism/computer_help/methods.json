@@ -3732,16 +3732,6 @@
       }
     }
   ],
-  "I Multi Tick Processing": [
-    {
-      "description": "Total number of ticks it takes currently processing operation to complete",
-      "methodName": "getTicksRequired",
-      "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
-      }
-    }
-  ],
   "Induction Matrix Multiblock (formed)": [
     {
       "description": "Get the contents of the input slot.",
@@ -4732,6 +4722,16 @@
     },
     {
       "methodName": "getWidth",
+      "returns": {
+        "type": "Number (int)",
+        "java_type": "int"
+      }
+    }
+  ],
+  "Multiple Tick Processing Machine": [
+    {
+      "description": "Total number of ticks it takes currently processing operation to complete",
+      "methodName": "getTicksRequired",
       "returns": {
         "type": "Number (int)",
         "java_type": "int"
