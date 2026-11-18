@@ -80,7 +80,6 @@ Chemical Dissolution Chamber,getOutputFilledPercentage,,Number (double),,false,G
 Chemical Dissolution Chamber,getOutputItem,,Table (LargeResourceStack),,false,Get the contents of the output slot.
 Chemical Dissolution Chamber,getOutputNeeded,,Number (long),,false,Get the amount needed to fill the output tank.
 Chemical Infuser,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy slot.
-Chemical Infuser,getEnergyUsage,,Number (int),,false,Get the energy used in the last tick by the machine
 Chemical Infuser,getLeftInput,,Table (LargeResourceStack),,false,Get the contents of the left input tank.
 Chemical Infuser,getLeftInputCapacity,,Number (long),,false,Get the capacity of the left input tank.
 Chemical Infuser,getLeftInputFilledPercentage,,Number (double),,false,Get the filled percentage of the left input tank.
@@ -115,7 +114,6 @@ Chemical Tank,getStored,,Table (LargeResourceStack),,false,Get the contents of t
 Chemical Tank,incrementDumpingMode,,,,true,Advance the Dumping mode to the next configuration in the list
 Chemical Tank,setDumpingMode,mode: String (GasMode),,,true,Set the Dumping mode of the tank
 Chemical Washer,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy slot.
-Chemical Washer,getEnergyUsage,,Number (int),,false,Get the energy used in the last tick by the machine
 Chemical Washer,getFluid,,Table (LargeResourceStack),,false,Get the contents of the fluid tank.
 Chemical Washer,getFluidCapacity,,Number (long),,false,Get the capacity of the fluid tank.
 Chemical Washer,getFluidFilledPercentage,,Number (double),,false,Get the filled percentage of the fluid tank.
@@ -221,7 +219,6 @@ Electric Pump,reset,,,,true,
 Electrolytic Separator,decrementLeftOutputDumpingMode,,,,true,
 Electrolytic Separator,decrementRightOutputDumpingMode,,,,true,
 Electrolytic Separator,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy slot.
-Electrolytic Separator,getEnergyUsage,,Number (int),,false,Get the energy used in the last tick by the machine
 Electrolytic Separator,getInput,,Table (LargeResourceStack),,false,Get the contents of the input tank.
 Electrolytic Separator,getInputCapacity,,Number (long),,false,Get the capacity of the input tank.
 Electrolytic Separator,getInputFilledPercentage,,Number (double),,false,Get the filled percentage of the input tank.
@@ -245,12 +242,12 @@ Electrolytic Separator,setLeftOutputDumpingMode,mode: String (GasMode),,,true,
 Electrolytic Separator,setRightOutputDumpingMode,mode: String (GasMode),,,true,
 Energy Cube,getChargeItem,,Table (LargeResourceStack),,false,Get the contents of the charge slot.
 Energy Cube,getDischargeItem,,Table (LargeResourceStack),,false,Get the contents of the discharge slot.
+Exponential Machine,getEnergyUsage,,Number (int),,false,Get the energy used in the last tick by the machine
 Factory Machine,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy slot.
 Factory Machine,getEnergyUsage,,Number (long),,false,Get the energy used in the last tick by the machine
 Factory Machine,getInput,process: Number (int),Table (LargeResourceStack),,false,Get the contents of the input slot.
 Factory Machine,getOutput,process: Number (int),Table (LargeResourceStack),,false,Get the contents of the output slot.
 Factory Machine,getRecipeProgress,process: Number (int),Number (int),,false,
-Factory Machine,getTicksRequired,,Number (int),,false,Total number of ticks it takes currently for the recipe to complete
 Factory Machine,isAutoSortEnabled,,boolean,,false,
 Factory Machine,setAutoSort,enabled: boolean,,,true,
 Filter Wrapper,getFilterType,,String (FilterType),,false,
@@ -358,7 +355,6 @@ Formulaic Assemblicator,getItemInSlot,slot: Number (int),Table (LargeResourceSta
 Formulaic Assemblicator,getRecipeProgress,,Number (int),,false,
 Formulaic Assemblicator,getSlots,,Number (int),,false,
 Formulaic Assemblicator,getStockControl,,boolean,,true,Requires valid encoded formula
-Formulaic Assemblicator,getTicksRequired,,Number (int),,false,
 Formulaic Assemblicator,hasRecipe,,boolean,,false,
 Formulaic Assemblicator,hasValidFormula,,boolean,,false,
 Formulaic Assemblicator,setAutoMode,mode: boolean,,,true,Requires valid encoded formula
@@ -463,7 +459,6 @@ Industrial Turbine Multiblock (formed),getVents,,Number (int),,false,
 Industrial Turbine Multiblock (formed),incrementDumpingMode,,,,false,
 Industrial Turbine Multiblock (formed),setDumpingMode,mode: String (GasMode),,,false,
 Isotopic Centrifuge,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy slot.
-Isotopic Centrifuge,getEnergyUsage,,Number (int),,false,Get the energy used in the last tick by the machine
 Isotopic Centrifuge,getInput,,Table (LargeResourceStack),,false,Get the contents of the input tank.
 Isotopic Centrifuge,getInputCapacity,,Number (long),,false,Get the capacity of the input tank.
 Isotopic Centrifuge,getInputFilledPercentage,,Number (double),,false,Get the filled percentage of the input tank.
@@ -512,7 +507,6 @@ Machine with Ejector Component,setInputColor,"side: String (RelativeSide), color
 Machine with Ejector Component,setOutputColor,color: String (EnumColor),,,true,
 Machine with Ejector Component,setStrictInput,strict: boolean,,,true,
 Machine with Recipe Progress,getRecipeProgress,,Number (int),,false,
-Machine with Recipe Progress,getTicksRequired,,Number (int),,false,
 Machine with Security Component,getOwnerName,,String,,false,
 Machine with Security Component,getOwnerUUID,,String (UUID),,false,
 Machine with Security Component,getSecurityMode,,String (SecurityMode),,false,
@@ -546,6 +540,7 @@ Multiblock (formed),getLength,,Number (int),,false,
 Multiblock (formed),getMaxPos,,Table (BlockPos),,false,
 Multiblock (formed),getMinPos,,Table (BlockPos),,false,
 Multiblock (formed),getWidth,,Number (int),,false,
+Multiple Tick Processing Machine,getTicksRequired,,Number (int),,false,Total number of ticks it takes currently processing operation to complete
 Nutritional Liquifier,getContainerFillItem,,Table (LargeResourceStack),,false,Get the contents of the fillable container slot.
 Nutritional Liquifier,getContainerOutputItem,,Table (LargeResourceStack),,false,Get the contents of the filled container output slot.
 Nutritional Liquifier,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy slot.
@@ -579,7 +574,6 @@ Pigment Extractor,getOutputFilledPercentage,,Number (double),,false,Get the fill
 Pigment Extractor,getOutputItem,,Table (LargeResourceStack),,false,Get the contents of the output slot.
 Pigment Extractor,getOutputNeeded,,Number (long),,false,Get the amount needed to fill the pigment tank.
 Pigment Mixer,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy slot.
-Pigment Mixer,getEnergyUsage,,Number (int),,false,Get the energy used in the last tick by the machine
 Pigment Mixer,getLeftInput,,Table (LargeResourceStack),,false,Get the contents of the left pigment tank.
 Pigment Mixer,getLeftInputCapacity,,Number (long),,false,Get the capacity of the left pigment tank.
 Pigment Mixer,getLeftInputFilledPercentage,,Number (double),,false,Get the filled percentage of the left pigment tank.
@@ -691,7 +685,6 @@ Resource Transmitter,getCapacity,,Number (long),,false,
 Resource Transmitter,getFilledPercentage,,Number (double),,false,
 Resource Transmitter,getNeeded,,Number (long),,false,
 Rotary Condensentrator,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy slot.
-Rotary Condensentrator,getEnergyUsage,,Number (int),,false,Get the energy used in the last tick by the machine
 Rotary Condensentrator,getFluid,,Table (LargeResourceStack),,false,Get the contents of the fluid tank.
 Rotary Condensentrator,getFluidCapacity,,Number (long),,false,Get the capacity of the fluid tank.
 Rotary Condensentrator,getFluidFilledPercentage,,Number (double),,false,Get the filled percentage of the fluid tank.

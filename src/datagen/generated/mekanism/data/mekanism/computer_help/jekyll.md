@@ -919,11 +919,6 @@ methods:
     returns:
       java_type: mekanism.api.resource.LargeResourceStack
       type: Table (LargeResourceStack)
-  - description: Get the energy used in the last tick by the machine
-    methodName: getEnergyUsage
-    returns:
-      java_type: int
-      type: Number (int)
   - description: Get the contents of the left input tank.
     methodName: getLeftInput
     returns:
@@ -1095,11 +1090,6 @@ methods:
     returns:
       java_type: mekanism.api.resource.LargeResourceStack
       type: Table (LargeResourceStack)
-  - description: Get the energy used in the last tick by the machine
-    methodName: getEnergyUsage
-    returns:
-      java_type: int
-      type: Number (int)
   - description: Get the contents of the fluid tank.
     methodName: getFluid
     returns:
@@ -1686,11 +1676,6 @@ methods:
     returns:
       java_type: mekanism.api.resource.LargeResourceStack
       type: Table (LargeResourceStack)
-  - description: Get the energy used in the last tick by the machine
-    methodName: getEnergyUsage
-    returns:
-      java_type: int
-      type: Number (int)
   - description: Get the contents of the input tank.
     methodName: getInput
     returns:
@@ -1801,6 +1786,12 @@ methods:
     returns:
       java_type: mekanism.api.resource.LargeResourceStack
       type: Table (LargeResourceStack)
+  Exponential Machine:
+  - description: Get the energy used in the last tick by the machine
+    methodName: getEnergyUsage
+    returns:
+      java_type: int
+      type: Number (int)
   Factory Machine:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
@@ -1835,11 +1826,6 @@ methods:
     - java_type: int
       name: process
       type: Number (int)
-    returns:
-      java_type: int
-      type: Number (int)
-  - description: Total number of ticks it takes currently for the recipe to complete
-    methodName: getTicksRequired
     returns:
       java_type: int
       type: Number (int)
@@ -2344,10 +2330,6 @@ methods:
     returns:
       java_type: boolean
       type: boolean
-  - methodName: getTicksRequired
-    returns:
-      java_type: int
-      type: Number (int)
   - methodName: hasRecipe
     returns:
       java_type: boolean
@@ -2871,11 +2853,6 @@ methods:
     returns:
       java_type: mekanism.api.resource.LargeResourceStack
       type: Table (LargeResourceStack)
-  - description: Get the energy used in the last tick by the machine
-    methodName: getEnergyUsage
-    returns:
-      java_type: int
-      type: Number (int)
   - description: Get the contents of the input tank.
     methodName: getInput
     returns:
@@ -3124,10 +3101,6 @@ methods:
     returns:
       java_type: int
       type: Number (int)
-  - methodName: getTicksRequired
-    returns:
-      java_type: int
-      type: Number (int)
   Machine with Security Component:
   - methodName: getOwnerName
     returns:
@@ -3330,6 +3303,13 @@ methods:
     returns:
       java_type: int
       type: Number (int)
+  Multiple Tick Processing Machine:
+  - description: Total number of ticks it takes currently processing operation to
+      complete
+    methodName: getTicksRequired
+    returns:
+      java_type: int
+      type: Number (int)
   Nutritional Liquifier:
   - description: Get the contents of the fillable container slot.
     methodName: getContainerFillItem
@@ -3509,11 +3489,6 @@ methods:
     returns:
       java_type: mekanism.api.resource.LargeResourceStack
       type: Table (LargeResourceStack)
-  - description: Get the energy used in the last tick by the machine
-    methodName: getEnergyUsage
-    returns:
-      java_type: int
-      type: Number (int)
   - description: Get the contents of the left pigment tank.
     methodName: getLeftInput
     returns:
@@ -4110,11 +4085,6 @@ methods:
     returns:
       java_type: mekanism.api.resource.LargeResourceStack
       type: Table (LargeResourceStack)
-  - description: Get the energy used in the last tick by the machine
-    methodName: getEnergyUsage
-    returns:
-      java_type: int
-      type: Number (int)
   - description: Get the contents of the fluid tank.
     methodName: getFluid
     returns:

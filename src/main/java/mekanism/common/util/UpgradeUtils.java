@@ -13,7 +13,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -82,7 +81,7 @@ public class UpgradeUtils implements IUpgradeHelper {
     /// @param def the original, default ticks required
     ///
     /// @return required operating ticks
-    public static double getTicksD(int def, Holder<Upgrade> speedUpgrade, int installedUpgrades) {
+    private static double getTicksD(int def, Holder<Upgrade> speedUpgrade, int installedUpgrades) {
         return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(installedUpgrades, speedUpgrade));
     }
 
@@ -98,19 +97,6 @@ public class UpgradeUtils implements IUpgradeHelper {
             return defaultOperations;
         }
         return MathUtils.clampToInt(Math.max(1, 1 / ticksD) * defaultOperations);
-    }
-
-    /// Gets the energy required per tick for a machine via its upgrades.
-    ///
-    /// @param tile tile containing upgrades
-    /// @param def  the original, default energy required
-    ///
-    /// @return required energy per tick
-    public static int getEnergyPerTick(IUpgradeTile tile, int def, Holder<Upgrade> energyUpgrade, Holder<Upgrade> speedUpgrade) {
-        return Mth.ceil(def * Math.pow(
-              MekanismConfig.general.maxUpgradeMultiplier.get(),
-              2 * fractionUpgrades(tile, speedUpgrade) - fractionUpgrades(tile, energyUpgrade)
-        ));
     }
 
     /// Gets the secondary energy multiplier required per tick for a machine via upgrades.
@@ -130,17 +116,7 @@ public class UpgradeUtils implements IUpgradeHelper {
         return 1;
     }
 
-    /// Gets the maximum energy for a machine via its upgrades.
-    ///
-    /// @param tile tile containing upgrades
-    /// @param def  original, default max energy
-    ///
-    /// @return max energy
-    public static long getMaxEnergy(IUpgradeTile tile, long def, Holder<Upgrade> energyUpgrade) {
-        return MathUtils.clampToLong(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, energyUpgrade)));
-    }
-
-    private static double fractionUpgrades(IUpgradeTile tile, Holder<Upgrade> type) {
+    public static double fractionUpgrades(IUpgradeTile tile, Holder<Upgrade> type) {
         return fractionUpgrades(tile.getUpgrades(type), type);
     }
 

@@ -54,6 +54,7 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasMode;
+import mekanism.common.tile.interfaces.IMultiTickProcessing;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
@@ -78,7 +79,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMachine implements IHasMode {
+public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMachine implements IHasMode, IMultiTickProcessing {
 
     public static final Predicate<ItemResource> FORMULA_SLOT_VALIDATOR = MekanismItems.CRAFTING_FORMULA::is;
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
@@ -565,7 +566,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return operatingTicks;
     }
 
-    @ComputerMethod
+    @Override
     public int getTicksRequired() {
         return ticksRequired;
     }

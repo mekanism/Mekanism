@@ -86,7 +86,8 @@ public abstract class TileEntityExponentialMachine<RECIPE extends MekanismRecipe
         MachineEnergyContainer<?> energyContainer = energyContainer();
         return super.setCommonSettings(recipe)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setBaselineMaxOperations(() -> baselineMaxOperations);
+              .setBaselineMaxOperations(() -> baselineMaxOperations)
+              .setConsumeEnergyPerOperation(!hasVariableEnergyUsage);
     }
 
     public abstract MachineEnergyContainer<?> energyContainer();

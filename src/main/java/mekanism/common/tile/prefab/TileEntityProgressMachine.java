@@ -11,6 +11,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.recipe.lookup.monitor.ProgressRecipeCacheLookupMonitor;
+import mekanism.common.tile.interfaces.IMultiTickProcessing;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -18,7 +19,8 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?, ?, ?>> extends TileEntityRecipeMachine<RECIPE, ProgressRecipeCacheLookupMonitor<RECIPE>> {
+public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?, ?, ?>> extends TileEntityRecipeMachine<RECIPE, ProgressRecipeCacheLookupMonitor<RECIPE>>
+      implements IMultiTickProcessing {
 
     protected int baseTicksRequired;
     public int ticksRequired;
@@ -44,7 +46,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?,
         return recipeCacheLookupMonitor.getSavedOperatingTicks(0);
     }
 
-    @ComputerMethod
+    @Override
     public int getTicksRequired() {
         return ticksRequired;
     }
@@ -58,6 +60,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?,
         super.recalculateUpgrades(upgrades, upgrade, totalInstalled);
     }
 
+    @Override
     public int getOperationsPerTick() {
         return this.operationsPerTick;
     }

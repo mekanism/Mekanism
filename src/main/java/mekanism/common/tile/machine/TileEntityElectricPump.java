@@ -42,6 +42,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.IMultiTickProcessing;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.UpgradeUtils;
@@ -76,7 +77,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable {
+public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable, IMultiTickProcessing {
 
     /// How many ticks it takes to run an operation.
     private static final int BASE_TICKS_REQUIRED = 19;
@@ -157,7 +158,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                         clientEnergyUsed = energyPerTick;
                     }
                     operatingTicks++;
-                    if (operatingTicks >= ticksRequired) {
+                    if (operatingTicks >= getTicksRequired()) {
                         operatingTicks = 0;
                         if (suck(level, transaction)) {
                             clientEnergyUsed = energyPerTick;
@@ -413,6 +414,11 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     public boolean usedEnergy() {
         return usedEnergy;
+    }
+
+    @Override
+    public int getTicksRequired() {
+        return ticksRequired;
     }
 
     public FluidResource getActiveType() {

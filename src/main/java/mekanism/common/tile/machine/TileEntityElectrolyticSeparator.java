@@ -13,7 +13,6 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
-import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.api.recipes.book.ElectrolysisBookCategory;
 import mekanism.api.recipes.book.ElectrolysisBookCategory.ElectrolysisBookInfo;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -74,7 +73,6 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
@@ -167,7 +165,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityExponentialMachin
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
-              .setCanChemicalTankEject((_, tank)  -> {
+              .setCanChemicalTankEject((_, tank) -> {
                   if (tank == leftTank) {
                       return dumpLeft != GasMode.DUMPING;
                   } else if (tank == rightTank) {
@@ -228,25 +226,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityExponentialMachin
             isMakingHydrogen = false;
         } else {
             recipeEnergyMultiplier = cachedRecipe.getRecipe().getEnergyMultiplier();
-            isMakingHydrogen = isHydrogenElectrolysis(cachedRecipe.getRecipe());
+            isMakingHydrogen = cachedRecipe.getRecipe().isHydrogenElectrolysis(recipeContext);
         }
-        HolderGetter<Upgrade> upgrades = getUpgradeLookup(recipeContext);
-        energyContainer.updateEnergyPerTick(upgrades);
-        energyContainer.updateMaxEnergy(upgrades);
-    }
-
-    private boolean isHydrogenElectrolysis(ElectrolysisRecipe recipe) {
-        if (recipe instanceof BasicElectrolysisRecipe basicRecipe) {
-            return basicRecipe.getOutputRaw().has(ChemicalIds.HYDROGEN);
-        }
-        //do it the slow way
-        ContextMap contextMap = level == null ? ContextMap.EMPTY : SlotDisplayContext.fromLevel(level);
-        for (ElectrolysisRecipeOutput electrolysisRecipeOutput : recipe.getOutputDefinition(contextMap)) {
-            if (electrolysisRecipeOutput.left().is(ChemicalIds.HYDROGEN) || electrolysisRecipeOutput.right().is(ChemicalIds.HYDROGEN)) {
-                return true;
-            }
-        }
-        return false;
+        energyContainer.updateEnergy(getUpgradeLookup(recipeContext));
     }
 
     @Override
@@ -308,7 +290,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityExponentialMachin
     @Override
     public CachedRecipe<ElectrolysisRecipe> createNewCachedRecipe(ElectrolysisRecipe recipe, int cacheIndex, ContextMap recipeContext) {
         return setCommonSettings(new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler))
-              .setOperationsCost(isHydrogenElectrolysis(recipe));
+              //Ensure per operation energy usage is enabled for hydrogen processing
+              .setConsumeEnergyPerOperation(recipe.isHydrogenElectrolysis(recipeContext));
     }
 
     @Override
@@ -341,6 +324,22 @@ public class TileEntityElectrolyticSeparator extends TileEntityExponentialMachin
         }
     }
 
+    private void checkHydrogenOnLoad() {
+        //If we already are making hydrogen just assume that is accurate
+        if (!isMakingHydrogen) {
+            // otherwise given we just loaded, assume that we have no cached recipe and check if we have hydrogen stored in either output
+            if (leftTank.resource().is(ChemicalIds.HYDROGEN) || rightTank.resource().is(ChemicalIds.HYDROGEN)) {
+                isMakingHydrogen = true;
+            }
+        }
+    }
+
+    @Override
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        checkHydrogenOnLoad();
+    }
+
     @Override
     public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
@@ -367,6 +366,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityExponentialMachin
         super.applyImplicitComponents(input);
         dumpLeft = input.getOrDefault(MekanismDataComponents.DUMP_MODE, GasMode.IDLE);
         dumpRight = input.getOrDefault(MekanismDataComponents.SECONDARY_DUMP_MODE, GasMode.IDLE);
+        checkHydrogenOnLoad();
     }
 
     @Override

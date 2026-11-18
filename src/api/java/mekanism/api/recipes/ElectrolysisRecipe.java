@@ -21,6 +21,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -59,6 +60,11 @@ public abstract class ElectrolysisRecipe extends FluidInputRecipe<ElectrolysisRe
     /// {@inheritDoc} The first element with be for the left output, the second will be for the right output.
     @Override
     public abstract SlotDisplay.Composite getOutputDisplay();
+
+    /// {@return true if this recipe is producing hydrogen}
+    ///
+    /// @since 10.8.0
+    public abstract boolean isHydrogenElectrolysis(ContextMap contextMap);
 
     @Override
     public List<RecipeDisplay> display() {

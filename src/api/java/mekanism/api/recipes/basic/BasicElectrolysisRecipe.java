@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalIds;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
@@ -59,6 +60,11 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     @Override
     public SlotDisplay.Composite getOutputDisplay() {
         return output.asDisplay();
+    }
+
+    @Override
+    public boolean isHydrogenElectrolysis(ContextMap contextMap) {
+        return output.has(ChemicalIds.HYDROGEN);
     }
 
     @Override

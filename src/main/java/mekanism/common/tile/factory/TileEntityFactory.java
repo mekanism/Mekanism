@@ -57,6 +57,7 @@ import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
+import mekanism.common.tile.interfaces.IMultiTickProcessing;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.upgrade.IUpgradeData;
@@ -92,7 +93,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
+public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE>,
+      IMultiTickProcessing {
 
     /// How many ticks it takes, by default, to run an operation.
     protected static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
@@ -416,11 +418,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?, ?, ?>> 
         return lastUsage;
     }
 
-    @ComputerMethod(methodDescription = "Total number of ticks it takes currently for the recipe to complete")
+    @Override
     public int getTicksRequired() {
         return ticksRequired;
     }
 
+    @Override
     public int getOperationsPerTick() {
         return this.operationsPerTick;
     }
