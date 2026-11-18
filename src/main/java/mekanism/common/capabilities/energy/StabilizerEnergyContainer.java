@@ -1,40 +1,39 @@
 package mekanism.common.capabilities.energy;
 
-import java.util.function.Predicate;
-import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.functions.IntObjectToIntFunction;
 import mekanism.api.math.MathUtils;
 import mekanism.api.upgrade.Upgrade;
-import mekanism.api.upgrade.UpgradeIds;
-import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.Holder.Reference;
-import net.minecraft.core.HolderGetter;
 import org.jspecify.annotations.Nullable;
 
 public class StabilizerEnergyContainer extends MachineEnergyContainer<TileEntityDimensionalStabilizer> {
 
-    public static StabilizerEnergyContainer input(TileEntityDimensionalStabilizer tile, IntObjectToIntFunction<TileEntityDimensionalStabilizer> baseEnergyCalculator,
-          @Nullable IContentsListener listener) {
-        AttributeEnergy electricBlock = validateBlock(tile);
-        return new StabilizerEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, baseEnergyCalculator, listener);
-    }
+    private static final IntObjectToIntFunction<TileEntityDimensionalStabilizer> BASE_ENERGY_CALCULATOR = (base, tile) -> MathUtils.multiplyClamped(base, tile.getChunksLoaded());
 
-    private StabilizerEnergyContainer(long maxEnergy, int energyPerTick, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert,
-          TileEntityDimensionalStabilizer tile, IntObjectToIntFunction<TileEntityDimensionalStabilizer> baseEnergyCalculator, @Nullable IContentsListener listener) {
-        super(maxEnergy, energyPerTick, canExtract, canInsert, tile, baseEnergyCalculator, listener);
+    private final int maxEnergyPerTick;
+
+    public StabilizerEnergyContainer(TileEntityDimensionalStabilizer tile, @Nullable IContentsListener listener) {
+        super(tile, BASE_ENERGY_CALCULATOR, listener);
+        maxEnergyPerTick = attributeEnergy.getUsage() * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER;
     }
 
     @Override
-    public void updateEnergy(HolderGetter<Upgrade> upgrades) {
-        setEnergyPerTick(getBaseEnergyPerTick());
-        //Override handling to special case the stabilizer so that the energy buffer actually increases with the number of energy upgrades
-        Reference<Upgrade> energyUpgrade = upgrades.get(UpgradeIds.ENERGY).orElse(null);
-        double fractionEnergy = energyUpgrade == null ? 0 : UpgradeUtils.fractionUpgrades(tile, energyUpgrade);
-        setMaxEnergy(MathUtils.clampToLong(getBaseMaxEnergy() * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionEnergy)));
+    protected long calculateMaxEnergy(int energyPerTick, long bufferMultiplier, @Nullable Reference<Upgrade> speedUpgrade, @Nullable Reference<Upgrade> energyUpgrade) {
+        if (energyUpgrade == null) {
+            return super.calculateMaxEnergy(energyPerTick, bufferMultiplier, null, null);
+        }
+        //Override handling to special case the stabilizer so that the energy buffer can only reach its maximum potential with full energy upgrades
+        double fractionEnergy = UpgradeUtils.fractionUpgrades(tile, energyUpgrade);
+        return MathUtils.clampToLong(attributeEnergy.getBaseMultiplier() * maxEnergyPerTick * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionEnergy - 1));
+    }
+
+    @Override
+    protected int calculateEnergyPerTick(int baseEnergyPerTick, @Nullable Reference<Upgrade> speedUpgrade, @Nullable Reference<Upgrade> energyUpgrade) {
+        //Theoretically super will end up just returning this, but short circuit it and ensure it does just in case a datapack changes the supported upgrades
+        return baseEnergyPerTick;
     }
 }

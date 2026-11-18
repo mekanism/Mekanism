@@ -72,7 +72,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
-        energyContainer = ResistiveHeaterEnergyContainer.input(this, listener);
+        energyContainer = new ResistiveHeaterEnergyContainer(this, listener);
         return new BasicSingleHolder<>(energyContainer, facingSupplier, Set.of(RelativeSide.LEFT, RelativeSide.RIGHT));
     }
 

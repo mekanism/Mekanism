@@ -4,12 +4,13 @@ import mekanism.common.block.prefab.BlockBasicMultiblock;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.component.containers.chemical.ChemicalTanksBuilder;
+import mekanism.common.component.containers.energy.EnergyContainerBuilder;
 import mekanism.common.component.containers.fluid.FluidTanksBuilder;
 import mekanism.common.component.containers.heat.HeatCapacitorBuilder;
 import mekanism.common.component.containers.item.ItemSlotsBuilder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.item.block.ItemBlockTooltip;
+import mekanism.common.item.block.MekanismBlockItem;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismDataComponents;
@@ -59,7 +60,7 @@ public class GeneratorsBlocks {
 
     public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(MekanismGenerators.MODID);
 
-    public static final BlockRegistryObject<BlockTileModel<TileEntityHeatGenerator, Generator<TileEntityHeatGenerator>>, ItemBlockTooltip> HEAT_GENERATOR =
+    public static final BlockRegistryObject<BlockTileModel<TileEntityHeatGenerator, Generator<TileEntityHeatGenerator>>, MekanismBlockItem> HEAT_GENERATOR =
           BLOCKS.registerDetails("heat_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.HEAT_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.METAL)))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
@@ -71,12 +72,15 @@ public class GeneratorsBlocks {
                             .addFluidFuelSlot(0, itemType -> itemType.has(DataComponents.COOKING_FUEL))
                             .addEnergy()
                             .build()
-                      )
+                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.HEAT_GENERATOR), MekanismGeneratorsConfig.storageConfig)
                 );
-    public static final BlockRegistryObject<BlockTileModel<TileEntitySolarGenerator, Generator<TileEntitySolarGenerator>>, ItemBlockTooltip> SOLAR_GENERATOR =
+    public static final BlockRegistryObject<BlockTileModel<TileEntitySolarGenerator, Generator<TileEntitySolarGenerator>>, MekanismBlockItem> SOLAR_GENERATOR =
           BLOCKS.registerDetails("solar_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.SOLAR_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_BLUE)))
-                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build()));
-    public static final BlockRegistryObject<BlockTileModel<TileEntityGasGenerator, Generator<TileEntityGasGenerator>>, ItemBlockTooltip> GAS_BURNING_GENERATOR =
+                .forItemHolder(holder -> holder
+                      .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
+                      .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.SOLAR_GENERATOR), MekanismGeneratorsConfig.storageConfig)
+                );
+    public static final BlockRegistryObject<BlockTileModel<TileEntityGasGenerator, Generator<TileEntityGasGenerator>>, MekanismBlockItem> GAS_BURNING_GENERATOR =
           BLOCKS.registerDetails("gas_burning_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.GAS_BURNING_GENERATOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -86,9 +90,9 @@ public class GeneratorsBlocks {
                             .addChemicalFillSlot(0)
                             .addEnergy()
                             .build()
-                      )
+                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.GAS_BURNING_GENERATOR))
                 );
-    public static final BlockRegistryObject<BlockTileModel<TileEntityBioGenerator, Generator<TileEntityBioGenerator>>, ItemBlockTooltip> BIO_GENERATOR =
+    public static final BlockRegistryObject<BlockTileModel<TileEntityBioGenerator, Generator<TileEntityBioGenerator>>, MekanismBlockItem> BIO_GENERATOR =
           BLOCKS.registerDetails("bio_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.BIO_GENERATOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
@@ -98,13 +102,19 @@ public class GeneratorsBlocks {
                             .addFluidFuelSlot(0, itemType -> itemType.is(MekanismTags.Items.FUELS_BIO) || itemType.is(MekanismTags.Items.FUELS_BLOCK_BIO))
                             .addEnergy()
                             .build()
-                      )
+                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.BIO_GENERATOR), MekanismGeneratorsConfig.storageConfig)
                 );
-    public static final BlockRegistryObject<BlockTileModel<TileEntityAdvancedSolarGenerator, Generator<TileEntityAdvancedSolarGenerator>>, ItemBlockTooltip> ADVANCED_SOLAR_GENERATOR =
+    public static final BlockRegistryObject<BlockTileModel<TileEntityAdvancedSolarGenerator, Generator<TileEntityAdvancedSolarGenerator>>, MekanismBlockItem> ADVANCED_SOLAR_GENERATOR =
           BLOCKS.registerDetails("advanced_solar_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.ADVANCED_SOLAR_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_BLUE)))
-                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build()));
-    public static final BlockRegistryObject<BlockTileModel<TileEntityWindGenerator, Generator<TileEntityWindGenerator>>, ItemBlockTooltip> WIND_GENERATOR = BLOCKS.registerDetails("wind_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.WIND_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.METAL)))
-          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build()));
+                .forItemHolder(holder -> holder
+                      .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
+                      .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.ADVANCED_SOLAR_GENERATOR), MekanismGeneratorsConfig.storageConfig)
+                );
+    public static final BlockRegistryObject<BlockTileModel<TileEntityWindGenerator, Generator<TileEntityWindGenerator>>, MekanismBlockItem> WIND_GENERATOR = BLOCKS.registerDetails("wind_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.WIND_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.METAL)))
+          .forItemHolder(holder -> holder
+                .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
+                .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.WIND_GENERATOR), MekanismGeneratorsConfig.storageConfig)
+          );
 
     public static final BlockRegistryObject<BlockTurbineRotor, BlockItem> TURBINE_ROTOR = BLOCKS.register("turbine_rotor", BlockTurbineRotor::new);
     public static final BlockRegistryObject<BlockTile<TileEntityRotationalComplex, BlockTypeTile<TileEntityRotationalComplex>>, BlockItem> ROTATIONAL_COMPLEX = BLOCKS.register("rotational_complex", properties -> new BlockTile<>(GeneratorsBlockTypes.ROTATIONAL_COMPLEX, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())));

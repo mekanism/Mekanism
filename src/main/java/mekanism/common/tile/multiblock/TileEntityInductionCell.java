@@ -3,7 +3,8 @@ package mekanism.common.tile.multiblock;
 import mekanism.api.IContentsListener;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.UnknownNullability;
 public class TileEntityInductionCell extends TileEntityInternalMultiblock {
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
-    private MachineEnergyContainer<TileEntityInductionCell> energyContainer;
+    private VariableCapacityEnergyContainer energyContainer;
     public final InductionCellTier tier;
 
     public TileEntityInductionCell(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
@@ -26,11 +27,11 @@ public class TileEntityInductionCell extends TileEntityInternalMultiblock {
 
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
-        energyContainer = MachineEnergyContainer.internal(this, listener);
+        energyContainer = VariableCapacityEnergyContainer.create(tier::getMaxEnergy, BasicEnergyContainer.internalOnly, BasicEnergyContainer.internalOnly, listener);
         return _ -> energyContainer;
     }
 
-    public MachineEnergyContainer<TileEntityInductionCell> energyContainer() {
+    public VariableCapacityEnergyContainer energyContainer() {
         return energyContainer;
     }
 }

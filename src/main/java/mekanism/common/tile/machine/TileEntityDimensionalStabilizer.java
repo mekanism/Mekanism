@@ -8,9 +8,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.functions.IntObjectToIntFunction;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.MathUtils;
 import mekanism.api.upgrade.Upgrade;
 import mekanism.common.capabilities.energy.StabilizerEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
@@ -54,7 +52,6 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     public static final int ARRAY_SIZE = MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER;
     private static final String COMPUTER_RANGE_STR = "Range: [-" + MAX_LOAD_RADIUS + ", " + MAX_LOAD_RADIUS + "]";
     private static final String COMPUTER_RANGE_RAD = "Range: [1, " + MAX_LOAD_RADIUS + "]";
-    private static final IntObjectToIntFunction<TileEntityDimensionalStabilizer> BASE_ENERGY_CALCULATOR = (base, tile) -> MathUtils.multiplyClamped(base, tile.chunksLoaded);
 
     private final ChunkLoader chunkLoaderComponent;
     private final boolean[][] loadingChunks;
@@ -80,7 +77,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
-        energyContainer = StabilizerEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, listener);
+        energyContainer = new StabilizerEnergyContainer(this, listener);
         return _ -> energyContainer;
     }
 
@@ -189,6 +186,10 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
             }
         }
         return chunkSet;
+    }
+
+    public int getChunksLoaded() {
+        return chunksLoaded;
     }
 
     @Override

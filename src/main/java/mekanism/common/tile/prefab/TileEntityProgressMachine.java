@@ -27,9 +27,9 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?,
     private int operationsPerTick = 1;//will increase for modified upgrade multipliers
 
     protected TileEntityProgressMachine(Holder<Block> blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, int baseTicksRequired) {
-        super(blockProvider, pos, state, errorTypes);
         this.baseTicksRequired = baseTicksRequired;
-        ticksRequired = this.baseTicksRequired;
+        this.ticksRequired = baseTicksRequired;
+        super(blockProvider, pos, state, errorTypes);
     }
 
     @Override

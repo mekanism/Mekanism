@@ -1,7 +1,6 @@
 package mekanism.common.content.blocktype;
 
 import java.util.function.Supplier;
-import mekanism.api.math.MathUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeFactoryType;
@@ -42,8 +41,7 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
 
     private void setMachineData(FactoryTier tier) {
         setFrom(origMachine, AttributeSound.class, AttributeFactoryType.class, AttributeUpgradeSupport.class);
-        AttributeEnergy origEnergy = origMachine.getOrThrow(AttributeEnergy.class);
-        add(new AttributeEnergy(origEnergy::getUsage, () -> MathUtils.clampToLong(Math.max(origEnergy.getConfigStorage() * 0.5, origEnergy.getUsage()) * tier.processes)));
+        add(origMachine.getOrThrow(AttributeEnergy.class).scaleForFactory(tier));
     }
 
     public static class FactoryBuilder<FACTORY extends Factory<TILE>, TILE extends TileEntityFactory<?>, T extends MachineBuilder<FACTORY, TILE, T>>

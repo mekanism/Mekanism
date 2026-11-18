@@ -13,7 +13,7 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.component.component.UpgradeAware;
-import mekanism.common.item.block.ItemBlockTooltip;
+import mekanism.common.item.block.MekanismBlockItem;
 import mekanism.common.registration.DoubleDeferredRegister;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
@@ -53,8 +53,8 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
         return register(name, blockCreator, BlockItem::new);
     }
 
-    public <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip> registerDetails(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator) {
-        return register(name, blockCreator, (block, properties) -> new ItemBlockTooltip(block, properties.component(MekanismDataComponents.DETAILS, Unit.INSTANCE)));
+    public <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, MekanismBlockItem> registerDetails(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator) {
+        return register(name, blockCreator, (block, properties) -> new MekanismBlockItem(block, properties.component(MekanismDataComponents.DETAILS, Unit.INSTANCE)));
     }
 
     public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator,

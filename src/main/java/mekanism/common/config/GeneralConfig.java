@@ -210,7 +210,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         minerMaxRadius = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_MINER_MAX_RADIUS.applyToBuilder(builder)
               .defineInRange("maxRadius", 32, 1, Integer.MAX_VALUE));
         minerTicksPerMine = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_MINER_TICK_RATE.applyToBuilder(builder)
-              .defineInRange("ticksPerMine", 80, 1, Integer.MAX_VALUE));
+              .defineInRange("ticksPerMine", 4 * SharedConstants.TICKS_PER_SECOND, 1, Integer.MAX_VALUE));
         easyMinerFilters = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_MINER_EASY_FILTERS.applyToBuilder(builder)
               .define("easyMinerFilters", false));
         builder.pop();

@@ -1,4 +1,4 @@
-package mekanism.common.item.block.machine;
+package mekanism.common.item.block;
 
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
@@ -7,7 +7,6 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
-import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.lib.transaction.TransactionHelper;
@@ -62,7 +61,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-public class ItemBlockFluidTank extends ItemBlockTooltip implements IAttachmentBasedModeItem<Boolean> {
+public class ItemBlockFluidTank extends MekanismBlockItem implements IAttachmentBasedModeItem<Boolean> {
 
     public ItemBlockFluidTank(BlockFluidTank block, Item.Properties properties) {
         super(block, properties
@@ -110,14 +109,12 @@ public class ItemBlockFluidTank extends ItemBlockTooltip implements IAttachmentB
 
     @Nullable
     private SoundEvent getMilkSound(LivingEntity entity) {
-        if (entity instanceof Goat goat) {
-            return goat.isScreamingGoat() ? SoundEvents.GOAT_SCREAMING_MILK : SoundEvents.GOAT_MILK;
-        } else if (entity instanceof MushroomCow) {
-            return SoundEvents.MOOSHROOM_MILK;
-        } else if (entity instanceof Cow) {
-            return SoundEvents.COW_MILK;
-        }
-        return null;
+        return switch (entity) {
+            case Goat goat -> goat.isScreamingGoat() ? SoundEvents.GOAT_SCREAMING_MILK : SoundEvents.GOAT_MILK;
+            case MushroomCow _ -> SoundEvents.MOOSHROOM_MILK;
+            case Cow _ -> SoundEvents.COW_MILK;
+            default -> null;
+        };
     }
 
     @Override

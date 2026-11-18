@@ -6,8 +6,8 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
+import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.level.storage.ValueInput;
@@ -24,18 +24,21 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
         return new ComponentBackedResistiveEnergyContainer(attachedAccess);
     }
 
+    private final AttributeEnergy attributeEnergy;
+
     private ComponentBackedResistiveEnergyContainer(ItemAccess attachedAccess) {
+        this.attributeEnergy = MekanismBlockTypes.RESISTIVE_HEATER.getOrThrow(AttributeEnergy.class);
         super(attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), MekanismUtils::calculateUsage);
     }
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long getCapacityAsLong() {
-        return AttributeEnergy.STORAGE_MULTIPLIER * getEnergyPerTick();
+        return getEnergyPerTick() * attributeEnergy.getBaseMultiplier();
     }
 
     public int getEnergyPerTick() {
-        return attachedAccess.getResource().getOrDefault(MekanismDataComponents.ENERGY_USAGE, TileEntityResistiveHeater.BASE_USAGE);
+        return attachedAccess.getResource().getOrDefault(MekanismDataComponents.ENERGY_USAGE, attributeEnergy.getUsage());
     }
 
     private void updateEnergyUsage(int energyUsage, @Nullable TransactionContext transaction) {

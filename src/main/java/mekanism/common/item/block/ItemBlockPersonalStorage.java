@@ -36,7 +36,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-public class ItemBlockPersonalStorage extends ItemBlockTooltip implements IDroppableContents, IGuiItem {
+public class ItemBlockPersonalStorage extends MekanismBlockItem implements IDroppableContents, IGuiItem {
 
     private final Identifier openStat;
 

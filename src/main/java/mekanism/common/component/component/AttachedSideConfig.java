@@ -57,6 +57,23 @@ public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configIn
         return new AttachedSideConfig(configInfo);
     });
 
+    public static final AttachedSideConfig CHEMICAL_TANK = Util.make(() -> {
+        Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
+        configInfo.put(TransmissionType.ITEM, LightConfigInfo.FRONT_OUT_NO_EJECT);
+        configInfo.put(TransmissionType.CHEMICAL, LightConfigInfo.FRONT_OUT_EJECT);
+        return new AttachedSideConfig(configInfo);
+    });
+
+    public static final AttachedSideConfig ENTANGLOPORTER = Util.make(() -> {
+        Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
+        configInfo.put(TransmissionType.ITEM, LightConfigInfo.FRONT_OUT_NO_EJECT);
+        configInfo.put(TransmissionType.FLUID, LightConfigInfo.FRONT_OUT_NO_EJECT);
+        configInfo.put(TransmissionType.CHEMICAL, LightConfigInfo.FRONT_OUT_NO_EJECT);
+        configInfo.put(TransmissionType.ENERGY, LightConfigInfo.FRONT_OUT_NO_EJECT);
+        configInfo.put(TransmissionType.HEAT, LightConfigInfo.INPUT_OUT_ALL);
+        return new AttachedSideConfig(configInfo);
+    });
+
     public static final AttachedSideConfig CRYSTALLIZER = Util.make(() -> {
         Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
         configInfo.put(TransmissionType.ITEM, LightConfigInfo.MACHINE);

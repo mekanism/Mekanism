@@ -201,7 +201,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityExponentialMachin
 
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        energyContainer = ElectroSeparatorEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, recipeCacheUnpauseListener);
+        energyContainer = new ElectroSeparatorEnergyContainer(this, BASE_ENERGY_CALCULATOR, recipeCacheUnpauseListener);
         return SingleConfigHolder.energy(energyContainer, this);
     }
 

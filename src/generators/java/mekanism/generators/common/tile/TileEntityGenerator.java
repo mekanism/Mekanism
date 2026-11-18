@@ -6,9 +6,9 @@ import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.common.block.attribute.AttributeEnergyStorage;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.holder.single.BasicSingleHolder;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
@@ -46,7 +46,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
 
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
-        energyContainer = VariableCapacityEnergyContainer.output(MachineEnergyContainer.validateBlock(this)::getStorage, listener);
+        energyContainer = VariableCapacityEnergyContainer.output(AttributeEnergyStorage.validateBlock(this), listener);
         return new BasicSingleHolder<>(energyContainer, facingSupplier, getEnergySides());
     }
 

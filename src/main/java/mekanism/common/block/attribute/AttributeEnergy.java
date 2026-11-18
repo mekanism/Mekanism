@@ -1,42 +1,50 @@
 package mekanism.common.block.attribute;
 
 import java.util.function.IntSupplier;
-import java.util.function.LongSupplier;
-import mekanism.api.functions.ConstantPredicates;
-import org.jspecify.annotations.Nullable;
+import mekanism.common.tier.FactoryTier;
 
-//TODO: Eventually we may want to make these suppliers be used more like suppliers in that:
-// if the config updates it doesn't require a server restart (or chunk reload to take effect
 public class AttributeEnergy implements Attribute {
 
     /// How many ticks of usage should the storage for machines get multiplied by
     ///
     /// @implNote This is a long so that we don't have to worry about overflow if someone sets the usage config to max int
-    public static final long STORAGE_MULTIPLIER = 4;
+    private static final long STORAGE_MULTIPLIER = 4;
 
-    private IntSupplier energyUsage = ConstantPredicates.ZERO;
-    //TODO - 26.3: Validate this is the proper change, Sara believes in the energy rework thiakil changed things to call 4 * getUsage instead of modifying the default energy storage
-    // We also should update the comment above
-    private LongSupplier energyStorage = () -> STORAGE_MULTIPLIER * energyUsage.getAsInt();
+    private final IntSupplier energyUsage;
+    private final IntSupplier baseTicksRequired;
+    private final long baseMultiplier;
 
-    public AttributeEnergy(@Nullable IntSupplier energyUsage, @Nullable LongSupplier energyStorage) {
-        if (energyUsage != null) {
-            this.energyUsage = energyUsage;
-        }
-        if (energyStorage != null) {
-            this.energyStorage = energyStorage;
-        }
+    public AttributeEnergy(IntSupplier energyUsage, IntSupplier baseTicksRequired) {
+        this(energyUsage, baseTicksRequired, 1);
+    }
+
+    private AttributeEnergy(IntSupplier energyUsage, IntSupplier baseTicksRequired, long multiplier) {
+        this.energyUsage = energyUsage;
+        this.baseTicksRequired = baseTicksRequired;
+        this.baseMultiplier = multiplier;
     }
 
     public int getUsage() {
         return energyUsage.getAsInt();
     }
 
-    public long getConfigStorage() {
-        return energyStorage.getAsLong();
+    public long getStorage() {
+        return getUsage() * getBaseMultiplier();
     }
 
-    public long getStorage() {
-        return Math.max(getConfigStorage(), getUsage());
+    public int getBaseTicksRequired() {
+        return baseTicksRequired.getAsInt();
+    }
+
+    public long getBaseMultiplier() {
+        return getMultiplier(getBaseTicksRequired());
+    }
+
+    public long getMultiplier(int ticksRequired) {
+        return Math.max(ticksRequired, STORAGE_MULTIPLIER) * baseMultiplier;
+    }
+
+    public AttributeEnergy scaleForFactory(FactoryTier tier) {
+        return new AttributeEnergy(energyUsage, baseTicksRequired, baseMultiplier * tier.processes);
     }
 }

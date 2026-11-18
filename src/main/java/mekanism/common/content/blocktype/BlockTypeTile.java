@@ -7,6 +7,7 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.block.attribute.AttributeEnergy;
+import mekanism.common.block.attribute.AttributeEnergyStorage;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -54,16 +55,20 @@ public class BlockTypeTile<TILE extends TileEntityUpdateable> extends BlockType 
             return with(new AttributeGui(containerRegistrar, customName));
         }
 
-        public T withEnergyConfig(@Nullable IntSupplier energyUsage, @Nullable LongSupplier energyStorage) {
-            return with(new AttributeEnergy(energyUsage, energyStorage));
+        public T withEnergyUsage(IntSupplier energyUsage) {
+            return withEnergyUsage(energyUsage, 1);
         }
 
-        public T withEnergyUsage(IntSupplier energyUsage) {
-            return withEnergyConfig(energyUsage, null);
+        public T withEnergyUsage(IntSupplier energyUsage, int defaultTicksRequired) {
+            return withEnergyUsage(energyUsage,  () -> defaultTicksRequired);
+        }
+
+        public T withEnergyUsage(IntSupplier energyUsage, IntSupplier defaultTicksRequired) {
+            return with(new AttributeEnergy(energyUsage, defaultTicksRequired));
         }
 
         public T withEnergyStorage(LongSupplier energyStorage) {
-            return withEnergyConfig(null, energyStorage);
+            return with(new AttributeEnergyStorage(energyStorage));
         }
 
         @SafeVarargs

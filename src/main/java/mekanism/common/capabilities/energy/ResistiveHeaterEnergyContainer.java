@@ -1,13 +1,9 @@
 package mekanism.common.capabilities.energy;
 
-import java.util.function.Predicate;
-import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.component.containers.energy.ComponentBackedResistiveEnergyContainer;
-import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -16,14 +12,8 @@ import org.jspecify.annotations.Nullable;
 
 public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileEntityResistiveHeater> {
 
-    public static ResistiveHeaterEnergyContainer input(TileEntityResistiveHeater tile, @Nullable IContentsListener listener) {
-        AttributeEnergy electricBlock = validateBlock(tile);
-        return new ResistiveHeaterEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, listener);
-    }
-
-    private ResistiveHeaterEnergyContainer(long maxEnergy, int energyPerTick, Predicate<AutomationType> canExtract,
-          Predicate<AutomationType> canInsert, TileEntityResistiveHeater tile, @Nullable IContentsListener listener) {
-        super(maxEnergy, energyPerTick, canExtract, canInsert, tile, listener);
+    public ResistiveHeaterEnergyContainer(TileEntityResistiveHeater tile, @Nullable IContentsListener listener) {
+        super(tile, listener);
     }
 
     @Override
@@ -33,7 +23,7 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
 
     public void updateEnergyUsage(int energyUsage) {
         setEnergyPerTick(energyUsage);
-        setMaxEnergy(AttributeEnergy.STORAGE_MULTIPLIER * energyUsage);
+        setMaxEnergy(energyUsage * calculateBufferMultiplier());
     }
 
     @Override

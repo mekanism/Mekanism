@@ -4,14 +4,11 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.component.component.AttachedEjector;
 import mekanism.common.component.component.AttachedSideConfig;
 import mekanism.common.component.component.AttachedSideConfig.LightConfigInfo;
-import mekanism.common.component.containers.creator.IContainerCreator;
-import mekanism.common.component.containers.energy.EnergyContainerBuilder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
@@ -27,7 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
-public class ItemBlockEnergyCube extends ItemBlockTooltip implements ICustomCreativeTabContents {
+public class ItemBlockEnergyCube extends MekanismBlockItem implements ICustomCreativeTabContents {
 
     public static final AttachedSideConfig SIDE_CONFIG = sideConfig(LightConfigInfo.FRONT_OUT_EJECT);
     public static final AttachedSideConfig ALL_INPUT = Util.make(() -> {
@@ -84,10 +81,5 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip implements ICustomCrea
     public static ItemResource withCreativeSideConfig(AttachedSideConfig config) {
         return ItemResource.of(MekanismBlocks.CREATIVE_ENERGY_CUBE)
               .with(MekanismDataComponents.SIDE_CONFIG, config);
-    }
-
-    @Override
-    protected IContainerCreator<IEnergyContainer, Long> getDefaultEnergyContainer() {
-        return EnergyContainerBuilder.ENERGY_CUBE;
     }
 }

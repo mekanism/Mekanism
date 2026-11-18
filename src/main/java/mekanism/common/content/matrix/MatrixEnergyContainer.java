@@ -11,7 +11,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
-import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.transaction.SimpleLongJournal;
 import mekanism.common.tier.InductionProviderTier;
@@ -52,7 +51,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     public void addCell(BlockPos pos, TileEntityInductionCell cell) {
         //As we already have the two different variables just pass them instead of accessing world to get tile again
-        MachineEnergyContainer<TileEntityInductionCell> energyContainer = cell.energyContainer();
+        IEnergyContainer energyContainer = cell.energyContainer();
         cells.put(pos, energyContainer);
         storageCap = MathUtils.addClamped(storageCap, energyContainer.getCapacityAsLong());
         cachedTotal = MathUtils.addClamped(cachedTotal, energyContainer.getAmountAsLong());

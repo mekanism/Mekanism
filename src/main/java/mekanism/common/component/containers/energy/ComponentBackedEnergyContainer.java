@@ -30,6 +30,10 @@ public class ComponentBackedEnergyContainer extends SimpleComponentBackedContain
     private final RateLimitTracker extractionRateLimiter;
     private final LongSupplier maxEnergy;
 
+    public ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, LongSupplier maxEnergy) {
+        this(attachedAccess, canExtract, canInsert, maxEnergy, () -> MekanismUtils.calculateUsage(maxEnergy.getAsLong()));
+    }
+
     public ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, LongSupplier maxEnergy,
           IntSupplier rate) {
         //Allow manual interaction to bypass rate limit for the item

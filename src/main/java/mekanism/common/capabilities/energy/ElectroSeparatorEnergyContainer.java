@@ -1,27 +1,17 @@
 package mekanism.common.capabilities.energy;
 
-import java.util.function.Predicate;
-import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.functions.IntObjectToIntFunction;
 import mekanism.api.upgrade.Upgrade;
-import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityElectrolyticSeparator;
 import net.minecraft.core.Holder;
 import org.jspecify.annotations.Nullable;
 
 public class ElectroSeparatorEnergyContainer extends MachineEnergyContainer<TileEntityElectrolyticSeparator> {
 
-    public static ElectroSeparatorEnergyContainer input(TileEntityElectrolyticSeparator tile, IntObjectToIntFunction<TileEntityElectrolyticSeparator> baseEnergyCalculator,
+    public ElectroSeparatorEnergyContainer(TileEntityElectrolyticSeparator tile, IntObjectToIntFunction<TileEntityElectrolyticSeparator> baseEnergyCalculator,
           @Nullable IContentsListener listener) {
-        AttributeEnergy electricBlock = validateBlock(tile);
-        return new ElectroSeparatorEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, baseEnergyCalculator, listener);
-    }
-
-    private ElectroSeparatorEnergyContainer(long maxEnergy, int energyPerTick, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert,
-          TileEntityElectrolyticSeparator tile, IntObjectToIntFunction<TileEntityElectrolyticSeparator> baseEnergyCalculator, @Nullable IContentsListener listener) {
-        super(maxEnergy, energyPerTick, canExtract, canInsert, tile, baseEnergyCalculator, listener);
+        super(tile, baseEnergyCalculator, listener);
     }
 
     @Override

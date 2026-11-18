@@ -80,7 +80,7 @@ import org.jspecify.annotations.Nullable;
 public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable, IMultiTickProcessing {
 
     /// How many ticks it takes to run an operation.
-    private static final int BASE_TICKS_REQUIRED = 19;
+    public static final int BASE_TICKS_REQUIRED = 19;
     public static final long MAX_FLUID = 10L * FluidType.BUCKET_VOLUME;
     private static final int BASE_OUTPUT_RATE = 256;
 

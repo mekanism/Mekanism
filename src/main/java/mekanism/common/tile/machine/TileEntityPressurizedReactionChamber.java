@@ -83,7 +83,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
           NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    private static final int BASE_DURATION = 5 * SharedConstants.TICKS_PER_SECOND;
+    public static final int BASE_DURATION = 5 * SharedConstants.TICKS_PER_SECOND;
     public static final long MAX_FLUID = 10L * FluidType.BUCKET_VOLUME;
     public static final long MAX_GAS = 10L * FluidType.BUCKET_VOLUME;
     private static final IntObjectToIntFunction<TileEntityPressurizedReactionChamber> BASE_ENERGY_CALCULATOR = (base, tile) -> base + tile.getRecipeEnergyRequired();

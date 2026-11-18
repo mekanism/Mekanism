@@ -26,6 +26,7 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
+import mekanism.common.tile.interfaces.IMultiTickProcessing;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -40,12 +41,12 @@ import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.UnknownNullability;
 
-public class TileEntityModificationStation extends TileEntityMekanism implements IBoundingBlock {
+public class TileEntityModificationStation extends TileEntityMekanism implements IBoundingBlock, IMultiTickProcessing {
 
-    private static final int BASE_TICKS_REQUIRED = MekanismUtils.TICKS_PER_HALF_SECOND;
+    public static final int BASE_TICKS_REQUIRED = MekanismUtils.TICKS_PER_HALF_SECOND;
 
-    public int ticksRequired = BASE_TICKS_REQUIRED;
-    public int operatingTicks;
+    private int ticksRequired = BASE_TICKS_REQUIRED;
+    private int operatingTicks;
     private boolean usedEnergy = false;
     @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
@@ -176,5 +177,10 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         super.addContainerTrackers(container);
         container.track(SyncableInt.create(() -> operatingTicks, value -> operatingTicks = value));
         container.track(SyncableBoolean.create(this::usedEnergy, value -> usedEnergy = value));
+    }
+
+    @Override
+    public int getTicksRequired() {
+        return ticksRequired;
     }
 }

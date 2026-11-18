@@ -10,8 +10,9 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.block.attribute.AttributeEnergyStorage;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.ProxiedContainerHolder;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
@@ -40,7 +41,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
 
     private final Map<Direction, BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> chemicalCapabilityCaches = new EnumMap<>(Direction.class);
     @UnknownNullability//Initialized via getInitialEnergyContainer
-    private MachineEnergyContainer<TileEntitySPSPort> energyContainer;
+    private VariableCapacityEnergyContainer energyContainer;
 
     public TileEntitySPSPort(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SPS_PORT, pos, state);
@@ -63,7 +64,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
 
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
-        energyContainer = MachineEnergyContainer.input(this, listener);
+        energyContainer = VariableCapacityEnergyContainer.input(AttributeEnergyStorage.validateBlock(this), listener);
         return ProxiedSingleContainerHolder.energy(_ -> !getActive(), _ -> getActive(), _ -> energyContainer);
     }
 

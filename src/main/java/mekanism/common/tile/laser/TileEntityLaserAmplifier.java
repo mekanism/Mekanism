@@ -15,7 +15,6 @@ import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.component.containers.type.ContainerType;
@@ -66,7 +65,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
-        energyContainer = VariableCapacityEnergyContainer.create(MachineEnergyContainer.validateBlock(this)::getStorage, ConstantPredicates.alwaysTrue(), BasicEnergyContainer.internalOnly, listener);
+        energyContainer = VariableCapacityEnergyContainer.create(MekanismConfig.storage.laserAmplifier, ConstantPredicates.alwaysTrue(), BasicEnergyContainer.internalOnly, listener);
         return _ -> energyContainer;
     }
 

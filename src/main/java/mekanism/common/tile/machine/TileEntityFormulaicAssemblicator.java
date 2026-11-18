@@ -84,7 +84,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     public static final Predicate<ItemResource> FORMULA_SLOT_VALIDATOR = MekanismItems.CRAFTING_FORMULA::is;
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
 
-    private static final int BASE_TICKS_REQUIRED = 2 * SharedConstants.TICKS_PER_SECOND;
+    public static final int BASE_TICKS_REQUIRED = 2 * SharedConstants.TICKS_PER_SECOND;
     private static final boolean DEFAULT_AUTO_MODE = false;
     private static final boolean DEFAULT_STOCK_CONTROL = false;
 

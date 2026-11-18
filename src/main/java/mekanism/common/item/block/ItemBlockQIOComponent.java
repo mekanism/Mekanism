@@ -1,13 +1,10 @@
-package mekanism.common.item.block.machine;
+package mekanism.common.item.block;
 
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.component.FrequencyAware;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IColoredItem;
-import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.FrequencyTypes;
-import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentType;
@@ -18,10 +15,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-public class ItemBlockQIOComponent extends ItemBlockTooltip implements IColoredItem, IFrequencyItem {
+public class ItemBlockQIOComponent extends FrequencyBlockItem implements IColoredItem {
 
     public ItemBlockQIOComponent(BlockTile<?, ?> block, Item.Properties properties) {
-        super(block, properties);
+        super(block, FrequencyTypes.QIO, properties);
     }
 
     @Override
@@ -29,11 +26,6 @@ public class ItemBlockQIOComponent extends ItemBlockTooltip implements IColoredI
         if (level.getGameTime() % (5 * SharedConstants.TICKS_PER_SECOND) == 0) {
             syncColorWithFrequency(stack);
         }
-    }
-
-    @Override
-    public FrequencyType<?> getFrequencyType() {
-        return FrequencyTypes.QIO;
     }
 
     @Override

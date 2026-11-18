@@ -11,11 +11,11 @@ import mekanism.api.upgrade.Upgrade;
 import mekanism.api.upgrade.UpgradeIds;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -60,7 +60,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor implemen
 
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
-        energyContainer = VariableCapacityEnergyContainer.create(MachineEnergyContainer.validateBlock(this)::getStorage, BasicEnergyContainer.notExternal, BasicEnergyContainer.internalOnly, listener);
+        energyContainer = VariableCapacityEnergyContainer.create(MekanismConfig.storage.laserTractorBeam, BasicEnergyContainer.notExternal, BasicEnergyContainer.internalOnly, listener);
         return _ -> energyContainer;
     }
 

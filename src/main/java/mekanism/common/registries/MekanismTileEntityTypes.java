@@ -13,7 +13,6 @@ import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.computer.ComputerCapabilityHelper;
-import mekanism.common.item.block.ItemBlockChemicalTank;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
@@ -593,7 +592,7 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> ULTIMATE_CHEMICAL_TANK = registerChemicalTank(MekanismBlocks.ULTIMATE_CHEMICAL_TANK);
     public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> CREATIVE_CHEMICAL_TANK = registerChemicalTank(MekanismBlocks.CREATIVE_CHEMICAL_TANK);
 
-    private static TileEntityTypeRegistryObject<TileEntityChemicalTank> registerChemicalTank(BlockRegistryObject<?, ItemBlockChemicalTank> block) {
+    private static TileEntityTypeRegistryObject<TileEntityChemicalTank> registerChemicalTank(BlockRegistryObject<?, ?> block) {
         return TILE_ENTITY_TYPES.mekBuilder(block, (pos, state) -> new TileEntityChemicalTank(block, pos, state))
               .serverTicker(TileEntityMekanism::tickServer)
               .withSimple(Capabilities.CONFIG_CARD)

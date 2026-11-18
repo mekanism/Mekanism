@@ -210,7 +210,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
-        energyContainer = MinerEnergyContainer.input(this, listener);
+        energyContainer = new MinerEnergyContainer(this, listener);
         return new BasicSingleHolder<>(energyContainer, facingSupplier, EnumSet.of(RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BOTTOM));
     }
 

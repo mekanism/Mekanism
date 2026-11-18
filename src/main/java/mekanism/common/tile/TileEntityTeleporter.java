@@ -31,7 +31,8 @@ import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
-import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.block.attribute.AttributeEnergyStorage;
+import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
@@ -127,7 +128,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     private final TileComponentChunkLoader<TileEntityTeleporter> chunkLoaderComponent;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
-    private MachineEnergyContainer<TileEntityTeleporter> energyContainer;
+    private VariableCapacityEnergyContainer energyContainer;
     @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
@@ -141,7 +142,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
-        energyContainer = MachineEnergyContainer.input(this, listener);
+        energyContainer = VariableCapacityEnergyContainer.input(AttributeEnergyStorage.validateBlock(this), listener);
         return _ -> energyContainer;
     }
 
@@ -657,7 +658,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return getRedstoneLevel();
     }
 
-    public MachineEnergyContainer<TileEntityTeleporter> energyContainer() {
+    public VariableCapacityEnergyContainer energyContainer() {
         return energyContainer;
     }
 
