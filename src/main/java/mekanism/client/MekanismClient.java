@@ -120,6 +120,10 @@ public class MekanismClient {
         return Minecraft.getInstance().player;
     }
 
+    public static boolean tryGetAdvancedTooltips() {
+        return Minecraft.getInstance().options.advancedItemTooltips;
+    }
+
     @SubscribeEvent
     public static void onCloneRespawn(ClientPlayerNetworkEvent.Clone event) {
         if (event.getOldPlayer().level() != event.getNewPlayer().level()) {

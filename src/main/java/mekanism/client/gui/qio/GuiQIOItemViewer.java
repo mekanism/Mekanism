@@ -100,7 +100,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
               .setInputValidator(GuiQIOItemViewer::isValidSearchChar)
               .setBackground(BackgroundType.ELEMENT_HOLDER)
               //Note: This responder will also be called when the menu is resized/repositioned and the text gets copied
-              .setResponder(text -> menu.updateSearch(menu.getLevel(), text, true))
+              .setResponder(text -> menu.updateSearch(text, true))
               .setMaxLength(50)
               .setVisible(true)
               .setTextColor(CommonColors.WHITE);

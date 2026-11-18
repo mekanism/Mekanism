@@ -37,6 +37,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.client.ClientTooltipFlag;
 
 public class ChemicalEmiStack extends EmiStack {
 
@@ -119,7 +120,8 @@ public class ChemicalEmiStack extends EmiStack {
             return Collections.emptyList();
         }
         ChemicalStack stack = new ChemicalStack(chemical, amount > 1 ? Ints.saturatedCast(amount) : 1);
-        return stack.getTooltipLines(getRVTooltipContext(), null, TooltipFlag.NORMAL);
+        TooltipFlag tooltipFlag = ClientTooltipFlag.of(Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+        return stack.getTooltipLines(getRVTooltipContext(), null, tooltipFlag);
     }
 
     private static TooltipContext getRVTooltipContext() {

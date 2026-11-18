@@ -18,8 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag.Default;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
@@ -203,20 +202,30 @@ public class SearchQueryParser {
         // ~ is a dummy char, not actually used by parser
         NAME('~') {
             @Override
-            public boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack) {
+            public boolean matches(Player player, String key, ItemStack stack) {
                 return stack.getHoverName().getString().toLowerCase(Locale.ROOT).contains(key);
             }
         },
         MOD_ID('@') {
             @Override
-            public boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack) {
-                return level != null && MekanismUtils.getModId(level.registryAccess(), stack).toLowerCase(Locale.ROOT).contains(key);
+            public boolean matches(Player player, String key, ItemStack stack) {
+                return MekanismUtils.getModId(player.level().registryAccess(), stack).toLowerCase(Locale.ROOT).contains(key);
             }
         },
         TOOLTIP('$') {
+            private record DisplayAllTooltipFlag(boolean isAdvanced, boolean isCreative) implements TooltipFlag {
+
+                @Override
+                public boolean shouldDisplayAllInformation() {
+                    return true;
+                }
+            };
+
             @Override
-            public boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack) {
-                for (Component tooltipLine : stack.getTooltipLines(Item.TooltipContext.of(level, player), player, Default.NORMAL)) {
+            public boolean matches(Player player, String key, ItemStack stack) {
+                //If the player is in creative allow searching creative only tooltips (be it ones that are hidden or ones like the suspicious stew effects)
+                TooltipFlag tooltipFlag = new DisplayAllTooltipFlag(MekanismUtils.tryGetAdvancedTooltips(), player.isCreative());
+                for (Component tooltipLine : stack.getTooltipLines(Item.TooltipContext.of(player.level(), player), player, tooltipFlag)) {
                     String tooltip = tooltipLine.getString().toLowerCase(Locale.ROOT);
                     if (tooltip.contains(key)) {
                         return true;
@@ -227,9 +236,10 @@ public class SearchQueryParser {
         },
         TAG('#') {
             @Override
-            public boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack) {
+            public boolean matches(Player player, String key, ItemStack stack) {
+                //Note: The tags returned by getItemTags are already lowercase
                 for (String tag : TagCache.getItemTags(stack)) {
-                    if (tag.toLowerCase(Locale.ROOT).contains(key)) {
+                    if (tag.contains(key)) {
                         return true;
                     }
                 }
@@ -262,7 +272,7 @@ public class SearchQueryParser {
             this.prefix = prefix;
         }
 
-        public abstract boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack);
+        public abstract boolean matches(Player player, String key, ItemStack stack);
     }
 
     public static class SearchQuery implements ISearchQuery {
@@ -271,11 +281,11 @@ public class SearchQueryParser {
         private final Map<QueryType, List<String>> queryStrings = new EnumMap<>(QueryType.class);
 
         @Override
-        public boolean test(@Nullable Level level, @Nullable Player player, ItemStack stack) {
+        public boolean test(Player player, ItemStack stack) {
             for (Map.Entry<QueryType, List<String>> entry : queryStrings.entrySet()) {
                 boolean hasNoMatch = true;
                 for (String key : entry.getValue()) {
-                    if (entry.getKey().matches(level, player, key, stack)) {
+                    if (entry.getKey().matches(player, key, stack)) {
                         hasNoMatch = false;
                         break;
                     }
@@ -325,13 +335,13 @@ public class SearchQueryParser {
         }
 
         @Override
-        public boolean test(@Nullable Level level, @Nullable Player player, ItemStack stack) {
+        public boolean test(Player player, ItemStack stack) {
             // allow empty query lists to match all stacks
             if (queries.isEmpty()) {
                 return true;
             }
             for (SearchQuery query : queries) {
-                if (query.test(level, player, stack)) {
+                if (query.test(player, stack)) {
                     return true;
                 }
             }
@@ -366,9 +376,9 @@ public class SearchQueryParser {
     @FunctionalInterface
     public interface ISearchQuery {
 
-        ISearchQuery INVALID = (_, _, _) -> false;
+        ISearchQuery INVALID = (_, _) -> false;
 
-        boolean test(@Nullable Level level, @Nullable Player player, ItemStack stack);
+        boolean test(Player player, ItemStack stack);
 
         default boolean isInvalid() {
             return this == INVALID;

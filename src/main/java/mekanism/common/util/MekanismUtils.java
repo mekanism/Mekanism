@@ -164,6 +164,13 @@ public final class MekanismUtils {
         return null;
     }
 
+    public static boolean tryGetAdvancedTooltips() {
+        if (FMLEnvironment.getDist().isClient()) {
+            return MekanismClient.tryGetAdvancedTooltips();
+        }
+        return false;
+    }
+
     public static Supplier<@Nullable RegistryAccess> registryAccess(Supplier<? extends @Nullable LevelReader> levelSupplier) {
         return () -> {
             LevelReader level = levelSupplier.get();

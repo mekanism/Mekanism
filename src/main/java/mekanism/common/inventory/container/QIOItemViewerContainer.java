@@ -57,7 +57,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.TranslatableEnum;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -139,7 +138,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             //If we want to rebuild the search (such as if we eventually make it so that we can persist the current search query in a client config)
             // then we need to update the search list
             if (sortingData.rebuildSearch()) {
-                updateSearch(getLevel(), rawSearchQuery, false);
+                updateSearch(rawSearchQuery, false);
             }
         } else {
             craftingGridInputSlots = new List[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS];
@@ -423,7 +422,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                     //Mark that we have some items that changed (which may affect the sort order)
                     sortingNeeded = sortingNeeded.concat(SortingNeeded.ITEMS_ONLY);
                     //If the item we added matches the current search query
-                    if (searchQuery.test(getLevel(), inv.player, slotData.itemType().toStack())) {
+                    if (searchQuery.test(inv.player, slotData.itemType().toStack())) {
                         // add it to the end of the search list
                         // Note: We already know it isn't part of the searchList, as it wasn't part of our universe (cachedInventory)
                         searchList.add(slotData);
@@ -437,7 +436,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                     if (sortType.usesCount()) {
                         //If our sort type actually makes use of the item count on some level, then we need to mark that the item list needs to be sorted
                         sortingNeeded = sortingNeeded.concat(SortingNeeded.ITEMS_ONLY);
-                        if (searchQuery.test(getLevel(), inv.player, slotData.itemType().toStack())) {
+                        if (searchQuery.test(inv.player, slotData.itemType().toStack())) {
                             // and if the item is in our search query, then we also need to sort the search list
                             sortingNeeded = sortingNeeded.concat(SortingNeeded.SEARCH_ONLY);
                         }
@@ -463,7 +462,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             // we only need to do reference equality instead of object equality
             //TODO: Can we somehow make removing more efficient by taking advantage of the fact that itemList is sorted?
             itemList.remove(oldData);
-            if (searchQuery.test(getLevel(), inv.player, oldData.itemType().toStack())) {
+            if (searchQuery.test(inv.player, oldData.itemType().toStack())) {
                 //If item being removed matched the existing search, we want to remove it from the search list as well
                 searchList.remove(oldData);
             }
@@ -596,9 +595,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         sortingNeeded = SortingNeeded.NONE;
     }
 
-    public void updateSearch(@Nullable Level level, String queryText, boolean skipSameQuery) {
+    public void updateSearch(String queryText, boolean skipSameQuery) {
         // searches should only be updated on the client-side
-        if (level == null || !level.isClientSide()) {
+        if (!getLevel().isClientSide()) {
             return;
         }
         queryText = queryText.trim().toLowerCase(Locale.ROOT);
@@ -630,7 +629,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         searchList.clear();
         if (!searchQuery.isInvalid()) {
             for (IScrollableSlot slot : itemList) {
-                if (searchQuery.test(level, inv.player, slot.itemType().toStack())) {
+                if (searchQuery.test(inv.player, slot.itemType().toStack())) {
                     searchList.add(slot);
                 }
             }
