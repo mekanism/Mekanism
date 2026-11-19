@@ -47,13 +47,12 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.LightLevelUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.UnknownNullability;
@@ -136,30 +135,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         return builder.build();
     }
 
-    private void recheckSettings(ServerLevel level) {
-        int seaLevel = level.getSeaLevel();
-        BlockPos pos = getBlockPos();
-        Biome b = level.getBiomeManager().getBiome(pos).value();
-        boolean needsRainCheck = b.getPrecipitationAt(pos, seaLevel) != Precipitation.NONE;
-        // Consider the best temperature to be 0.8; biomes that are higher than that
-        // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
-        // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
-        float tempEff = 0.3F * (0.8F - b.getTemperature(pos, seaLevel));
-
-        // Treat rainfall as a proxy for humidity; any humidity works as a drag on overall efficiency.
-        // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness
-        // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
-        // (like the End) have rainfall set, but can't actually support rain.
-        float humidityEff = needsRainCheck ? -0.3F * b.getModifiedClimateSettings().downfall() : 0.0F;
-        peakProductionRate = MekanismConfig.general.maxSolarNeutronActivatorRate.get() * (1.0F + tempEff + humidityEff);
-        settingsChecked = true;
-    }
-
     @Override
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
         if (!settingsChecked) {
-            recheckSettings(level);
+            peakProductionRate = MekanismConfig.general.maxSolarNeutronActivatorRate.get() * WorldUtils.calculateSolarProduction(level, getBlockPos());
+            settingsChecked = true;
         }
         inputSlot.fillTankFromSlot(null);
         outputSlot.drainTankIntoSlot(null);

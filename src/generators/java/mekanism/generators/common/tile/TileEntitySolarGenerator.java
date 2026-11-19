@@ -16,14 +16,13 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.LightLevelUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -136,41 +135,23 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     protected static class SolarCheck {
 
-        private final boolean needsRainCheck;
         private final float peakMultiplier;
         protected final BlockPos pos;
-        protected final Level world;
+        protected final Level level;
         protected boolean canSeeSun;
 
-        public SolarCheck(Level world, BlockPos pos) {
-            this.world = world;
+        public SolarCheck(Level level, BlockPos pos) {
+            this.level = level;
             this.pos = pos;
-            int seaLevel = world.getSeaLevel();
-            Biome b = this.world.getBiomeManager().getBiome(this.pos).value();
-            needsRainCheck = b.getPrecipitationAt(this.pos, seaLevel) != Precipitation.NONE;
-            // Consider the best temperature to be 0.8; biomes that are higher than that
-            // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
-            // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
-            float tempEff = 0.3F * (0.8F - b.getTemperature(this.pos, seaLevel));
-
-            // Treat rainfall as a proxy for humidity; any humidity works as a drag on overall efficiency.
-            // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness
-            // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
-            // (like the End) have rainfall set, but can't actually support rain.
-            float humidityEff = needsRainCheck ? -0.3F * b.getModifiedClimateSettings().downfall() : 0;
-            peakMultiplier = 1.0F + tempEff + humidityEff;
+            this.peakMultiplier = WorldUtils.calculateSolarProduction(this.level, this.pos);
         }
 
         public void recheckCanSeeSun() {
-            canSeeSun = LightLevelUtils.canSeeSun(world, pos);
+            canSeeSun = LightLevelUtils.canSeeSun(level, pos);
         }
 
         public boolean canSeeSun() {
             return canSeeSun;
-        }
-
-        public float getPeakMultiplier() {
-            return peakMultiplier;
         }
 
         public float getGenerationMultiplier() {

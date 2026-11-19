@@ -34,6 +34,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -697,6 +699,24 @@ public class WorldUtils {
         if (isBlockLoaded(world, pos)) {
             world.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
         }
+    }
+
+    public static float calculateSolarProduction(Level level, BlockPos pos) {
+         int seaLevel = level.getSeaLevel();
+        Biome b = level.getBiomeManager().getBiome(pos).value();
+        boolean needsRainCheck = b.getPrecipitationAt(pos, seaLevel) != Precipitation.NONE;
+        // Consider the best temperature to be 0.8; biomes that are higher than that
+        // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
+        // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
+        float tempEff = 0.3F * (0.8F - b.getTemperature(pos, seaLevel));
+
+        // Treat rainfall as a proxy for humidity; any humidity works as a drag on overall efficiency.
+        // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness
+        // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
+        // (like the End) have rainfall set, but can't actually support rain.
+        float humidityEff = needsRainCheck ? -0.3F * b.getModifiedClimateSettings().downfall() : 0;
+        //Validate we are producing anything as for extremely hot biomes solar panels might not work https://github.com/mekanism/Mekanism/issues/8563
+        return Math.max(0, 1 + tempEff + humidityEff);
     }
 
     /// Converts a long representing a [ChunkPos] to a [BlockPos] without creating a temporary [ChunkPos] object.

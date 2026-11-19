@@ -172,10 +172,9 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         if (positions.length == 0) {
             throw new IllegalArgumentException("No positions given.");
         }
-        int seaLevel = world.getSeaLevel();
         double sum = 0;
         for (BlockPos pos : positions) {
-            sum += world.getBiome(pos).value().getTemperature(pos, seaLevel);
+            sum += HeatAPI.getAmbientTemp(world, pos);
         }
         return sum / positions.length;
     }

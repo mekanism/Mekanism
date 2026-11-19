@@ -40,7 +40,6 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
         }
         BlockPos topPos = worldPosition.above(2);
         solarCheck = new AdvancedSolarCheck(level, topPos);
-        float totalPeak = solarCheck.getPeakMultiplier();
         for (int i = 0; i < solarChecks.length; i++) {
             if (i < 3) {
                 solarChecks[i] = new AdvancedSolarCheck(level, topPos.offset(-1, 0, i - 1));
@@ -51,7 +50,6 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
             } else {
                 solarChecks[i] = new AdvancedSolarCheck(level, topPos.offset(1, 0, i - 6));
             }
-            totalPeak += solarChecks[i].getPeakMultiplier();
         }
     }
 
@@ -109,14 +107,14 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
         @Override
         public void recheckCanSeeSun() {
-            if (!world.dimensionType().hasSkyLight() || world.getSkyDarken() >= 4) {
+            if (!level.dimensionType().hasSkyLight() || level.getSkyDarken() >= 4) {
                 //Inline of most of WorldUtils#canSeeSun so that we can exit early if it is not day or there is no skylight
                 // We start with the basic dimension checks and always run those, as they are simple and quick checks, and
                 // we want to be able to stop quickly when it gets too dark
                 canSeeSun = false;
                 return;
             }
-            long time = world.getGameTime();
+            long time = level.getGameTime();
             if (time < lastCheckedSun + recheckFrequency) {
                 //If we have checked for blocks above the solar panel in the past recheckFrequency
                 // number of ticks, skip checking for now for performance reasons
@@ -124,14 +122,14 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
             }
             // otherwise, mark that we checked and actually check
             lastCheckedSun = time;
-            if (world.getFluidState(pos).isEmpty()) {
+            if (level.getFluidState(pos).isEmpty()) {
                 //If the top isn't fluid logged we can just quickly check if the top can see the sun
-                canSeeSun = world.canSeeSky(pos);
+                canSeeSun = level.canSeeSky(pos);
             } else {
                 BlockPos above = pos.above();
-                if (world.canSeeSky(above)) {
+                if (level.canSeeSky(above)) {
                     //If the spot above can see the sun, check to make sure we can see through the block there
-                    BlockState state = world.getBlockState(above);
+                    BlockState state = level.getBlockState(above);
                     canSeeSun = !state.liquid() && state.getLightDampening() <= 0;
                 } else {
                     canSeeSun = false;
