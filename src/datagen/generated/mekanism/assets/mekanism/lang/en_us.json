@@ -880,6 +880,8 @@
   "configuration.mekanism.common.unit.temperature": "Temperature Unit",
   "configuration.mekanism.common.unit.temperature.tooltip": "Displayed temperature unit in Mekanism GUIs (client) and network reader readings (server).",
   "configuration.mekanism.config_type": "%1$s Config",
+  "configuration.mekanism.gear.base.charge_rate": "Base Charge Rate",
+  "configuration.mekanism.gear.base.charge_rate.tooltip": "Percentage of max energy that items without specific charge rate configs can accept per tick.",
   "configuration.mekanism.gear.bow": "Electric Bow",
   "configuration.mekanism.gear.bow.button": "Edit Electric Bow",
   "configuration.mekanism.gear.bow.charge_rate": "Charge Rate",

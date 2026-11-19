@@ -9,7 +9,6 @@ import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -28,7 +27,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
 
     private ComponentBackedResistiveEnergyContainer(ItemAccess attachedAccess) {
         this.attributeEnergy = MekanismBlockTypes.RESISTIVE_HEATER.getOrThrow(AttributeEnergy.class);
-        super(attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), MekanismUtils::calculateUsage);
+        super(attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue());
     }
 
     @Override

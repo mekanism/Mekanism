@@ -80,7 +80,7 @@ public class MekanismItems {
                 .addInput(MekanismRecipeType.SMELTING, SingleInputRecipeCache::containsInput)
                 .addOutput()
                 .build()
-          ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismConfig.gear.robitChargeRate, MekanismConfig.gear.robitMaxEnergy));
+          ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismConfig.gear.robitChargeRate, MekanismConfig.gear.robitMaxEnergy), MekanismConfig.gear);
     public static final ItemRegistryObject<ItemEnergized> ENERGY_TABLET = ITEMS.registerItem("energy_tablet", properties -> new ItemEnergized(properties.rarity(Rarity.UNCOMMON)))
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(),
                 MekanismConfig.gear.tabletChargeRate, MekanismConfig.gear.tabletMaxEnergy), MekanismConfig.gear

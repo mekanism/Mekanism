@@ -309,10 +309,6 @@ public final class MekanismUtils {
         return block instanceof LiquidBlock || block instanceof BubbleColumnBlock;
     }
 
-    public static int calculateUsage(long capacity) {
-        return Math.max(1, MathUtils.clampToInt(0.005 * capacity));
-    }
-
     /// Gets a rounded energy display of a defined amount of energy.
     ///
     /// @param temp temperature to display

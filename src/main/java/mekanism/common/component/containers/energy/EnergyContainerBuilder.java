@@ -27,7 +27,6 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.util.EnergyUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -37,44 +36,20 @@ public class EnergyContainerBuilder {
 
     public static final IContainerCreator<IEnergyContainer, Long> ENERGY_CUBE = creator(ComponentBackedEnergyCubeContainer::create);
     public static final IContainerCreator<IEnergyContainer, Long> RESISTIVE_HEATER = creator(ComponentBackedResistiveEnergyContainer::create);
-    public static final IContainerCreator<IEnergyContainer, Long> DIGITAL_MINER = creator(attachedAccess -> new ComponentBackedEnergyContainer(
-          attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), new LazyMinerStorage(attachedAccess))
-    );
-    public static final IContainerCreator<IEnergyContainer, Long> DIMENSIONAL_STABILIZER = creator(attachedAccess -> new ComponentBackedEnergyContainer(
-          attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), new LazyStabilizerStorage(attachedAccess))
-    );
-    public static final IContainerCreator<IEnergyContainer, Long> ELECTROLYTIC_SEPARATOR = creator(attachedAccess -> new ComponentBackedEnergyContainer(
-          attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), new LazySeparatorStorage(attachedAccess))
-    );
+    public static final IContainerCreator<IEnergyContainer, Long> DIGITAL_MINER = createBasicLazy(LazyMinerStorage::new);
+    public static final IContainerCreator<IEnergyContainer, Long> DIMENSIONAL_STABILIZER = createBasicLazy(LazyStabilizerStorage::new);
+    public static final IContainerCreator<IEnergyContainer, Long> ELECTROLYTIC_SEPARATOR = createBasicLazy(LazySeparatorStorage::new);
 
     private EnergyContainerBuilder() {
     }
 
-    public static IContainerCreator<IEnergyContainer, Long> manualCreator(LongSupplier maxEnergy) {
-        return basicCreator(BasicEnergyContainer.manualOnly, BasicEnergyContainer.manualOnly, () -> MekanismUtils.calculateUsage(maxEnergy.getAsLong()), maxEnergy);
+    public static IContainerCreator<IEnergyContainer, Long> generatorCreator(BlockType type) {
+        //Allow extracting energy that was stored in a generator, but don't allow inserting energy back into a generator
+        return basicCreator(ConstantPredicates.alwaysTrue(), BasicEnergyContainer.manualOnly, type.getOrThrow(AttributeEnergyStorage.class));
     }
 
-    public static IContainerCreator<IEnergyContainer, Long> basicCreator(LongSupplier maxEnergy) {
-        //TODO - 26.3: Re-evaluate callers of calculateUsage and what should instead go through the percentage rate config helper
-        return basicCreator(() -> MekanismUtils.calculateUsage(maxEnergy.getAsLong()), maxEnergy);
-    }
-
-    public static IContainerCreator<IEnergyContainer, Long> mekaGear(DoubleSupplier percentageRate, LongSupplier maxEnergy) {
-        return creator(attachedAccess -> {
-            LongSupplier scaledCapacity = () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, maxEnergy);
-            return new ComponentBackedEnergyContainer(
-                  attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
-                  scaledCapacity, EnergyUtils.calculateRate(percentageRate, scaledCapacity)
-            );
-        });
-    }
-
-    public static IContainerCreator<IEnergyContainer, Long> basicCreator(DoubleSupplier percentageRate, LongSupplier maxEnergy) {
-        return basicCreator(EnergyUtils.calculateRate(percentageRate, maxEnergy), maxEnergy);
-    }
-
-    public static IContainerCreator<IEnergyContainer, Long> basicCreator(IntSupplier rate, LongSupplier maxEnergy) {
-        return basicCreator(BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), rate, maxEnergy);
+    public static IContainerCreator<IEnergyContainer, Long> manualStorageCreator(BlockType type) {
+        return basicCreator(BasicEnergyContainer.manualOnly, BasicEnergyContainer.manualOnly, type.getOrThrow(AttributeEnergyStorage.class));
     }
 
     public static IContainerCreator<IEnergyContainer, Long> basicCreator(BlockType type) {
@@ -88,19 +63,51 @@ public class EnergyContainerBuilder {
 
     public static IContainerCreator<IEnergyContainer, Long> upgradeableUsageStorageCreator(BlockType type, boolean exponential) {
         AttributeEnergy attributeEnergy = type.getOrThrow(AttributeEnergy.class);
-        return creator(attachedAccess -> new ComponentBackedEnergyContainer(
-              attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), new LazyUsageStorage(attachedAccess, attributeEnergy, exponential))
-        );
+        return createBasicLazy(attachedAccess -> new LazyUsageStorage(attachedAccess, attributeEnergy, exponential));
     }
 
-    public static IContainerCreator<IEnergyContainer, Long> basicCreator(Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, DoubleSupplier percentageRate,
+    public static IContainerCreator<IEnergyContainer, Long> basicCreator(LongSupplier maxEnergy) {
+        return basicCreator(BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), maxEnergy);
+    }
+
+    public static IContainerCreator<IEnergyContainer, Long> mekaGear(DoubleSupplier percentageRate, LongSupplier maxEnergy) {
+        return creator(attachedAccess -> {
+            LongSupplier scaledCapacity = () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, maxEnergy);
+            return new ComponentBackedEnergyContainer(
+                  attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
+                  scaledCapacity, EnergyUtils.calculateRate(percentageRate, scaledCapacity)
+            );
+        });
+    }
+
+    public static IContainerCreator<IEnergyContainer, Long> basicCreator(DoubleSupplier percentageRate, LongSupplier maxEnergy) {
+        return basicCreator(BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), percentageRate, maxEnergy);
+    }
+
+    public static IContainerCreator<IEnergyContainer, Long> basicCreator(Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert,
           LongSupplier maxEnergy) {
+        return basicCreator(canExtract, canInsert, MekanismConfig.gear.baseItemChargeRate, maxEnergy);
+    }
+
+    public static IContainerCreator<IEnergyContainer, Long> basicCreator(Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert,
+          DoubleSupplier percentageRate, LongSupplier maxEnergy) {
         return basicCreator(canExtract, canInsert, EnergyUtils.calculateRate(percentageRate, maxEnergy), maxEnergy);
     }
 
     public static IContainerCreator<IEnergyContainer, Long> basicCreator(Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, IntSupplier rate,
           LongSupplier maxEnergy) {
         return creator(attachedAccess -> new ComponentBackedEnergyContainer(attachedAccess, canExtract, canInsert, maxEnergy, rate));
+    }
+
+    public static IContainerCreator<IEnergyContainer, Long> createBasicLazy(Function<ItemAccess, LongSupplier> lazyMaxEnergy) {
+        return createLazy(BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), lazyMaxEnergy);
+    }
+
+    public static IContainerCreator<IEnergyContainer, Long> createLazy(Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, Function<ItemAccess, LongSupplier> lazyMaxEnergy) {
+        return creator(attachedAccess -> {
+            LongSupplier maxEnergy = lazyMaxEnergy.apply(attachedAccess);
+            return new ComponentBackedEnergyContainer(attachedAccess, canExtract, canInsert, maxEnergy, EnergyUtils.calculateRate(MekanismConfig.gear.baseItemChargeRate, maxEnergy));
+        });
     }
 
     public static IContainerCreator<IEnergyContainer, Long> creator(Function<ItemAccess, IEnergyContainer> creator) {

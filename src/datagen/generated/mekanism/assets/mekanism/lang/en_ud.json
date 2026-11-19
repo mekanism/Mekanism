@@ -879,6 +879,8 @@
   "configuration.mekanism.common.unit.temperature": "ʇᴉu∩ ǝɹnʇɐɹǝdɯǝ⟘",
   "configuration.mekanism.common.unit.temperature.tooltip": "˙(ɹǝʌɹǝs) sᵷuᴉpɐǝɹ ɹǝpɐǝɹ ʞɹoʍʇǝu puɐ (ʇuǝᴉꞁɔ) sI∩⅁ ɯsᴉuɐʞǝW uᴉ ʇᴉun ǝɹnʇɐɹǝdɯǝʇ pǝʎɐꞁdsᴉᗡ",
   "configuration.mekanism.config_type": "ᵷᴉɟuoƆ %s",
+  "configuration.mekanism.gear.base.charge_rate": "ǝʇɐᴚ ǝᵷɹɐɥƆ ǝsɐᗺ",
+  "configuration.mekanism.gear.base.charge_rate.tooltip": "˙ʞɔᴉʇ ɹǝd ʇdǝɔɔɐ uɐɔ sᵷᴉɟuoɔ ǝʇɐɹ ǝᵷɹɐɥɔ ɔᴉɟᴉɔǝds ʇnoɥʇᴉʍ sɯǝʇᴉ ʇɐɥʇ ʎᵷɹǝuǝ xɐɯ ɟo ǝᵷɐʇuǝɔɹǝԀ",
   "configuration.mekanism.gear.bow": "ʍoᗺ ɔᴉɹʇɔǝꞁƎ",
   "configuration.mekanism.gear.bow.button": "ʍoᗺ ɔᴉɹʇɔǝꞁƎ ʇᴉpƎ",
   "configuration.mekanism.gear.bow.charge_rate": "ǝʇɐᴚ ǝᵷɹɐɥƆ",

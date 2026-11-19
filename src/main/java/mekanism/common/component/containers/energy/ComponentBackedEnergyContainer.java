@@ -3,7 +3,6 @@ package mekanism.common.component.containers.energy;
 import com.google.common.primitives.Ints;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
-import java.util.function.LongToIntFunction;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismPreconditions;
@@ -14,6 +13,8 @@ import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.component.containers.SimpleComponentBackedContainer;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.EnergyContainerType;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -29,10 +30,6 @@ public class ComponentBackedEnergyContainer extends SimpleComponentBackedContain
     private final RateLimitTracker insertionRateLimiter;
     private final RateLimitTracker extractionRateLimiter;
     private final LongSupplier maxEnergy;
-
-    public ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, LongSupplier maxEnergy) {
-        this(attachedAccess, canExtract, canInsert, maxEnergy, () -> MekanismUtils.calculateUsage(maxEnergy.getAsLong()));
-    }
 
     public ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, LongSupplier maxEnergy,
           IntSupplier rate) {
@@ -52,12 +49,12 @@ public class ComponentBackedEnergyContainer extends SimpleComponentBackedContain
     }
 
     //For the resistive heater
-    protected ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, LongToIntFunction capacityToRateLimit) {
+    protected ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert) {
         super(attachedAccess);
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.maxEnergy = ConstantPredicates.ZERO_LONG;
-        IntSupplier rate = () -> capacityToRateLimit.applyAsInt(getCapacityAsLong());
+        IntSupplier rate = EnergyUtils.calculateRate(MekanismConfig.gear.baseItemChargeRate, this::getCapacityAsLong);
         this.insertionRateLimiter = ITransactionHelper.INSTANCE.createManualBypassRateLimit(MekanismUtils.GAME_TIME_SUPPLIER, rate);
         this.extractionRateLimiter = ITransactionHelper.INSTANCE.createManualBypassRateLimit(MekanismUtils.GAME_TIME_SUPPLIER, rate);
     }

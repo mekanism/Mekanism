@@ -22,6 +22,8 @@ public class GearConfig extends BaseMekanismConfig {
 
     private final ModConfigSpec configSpec;
 
+    public final CachedDoubleValue baseItemChargeRate;
+
     //Atomic Disassembler
     public final CachedIntValue disassemblerEnergyUsage;
     public final CachedIntValue disassemblerEnergyUsageWeapon;
@@ -134,6 +136,9 @@ public class GearConfig extends BaseMekanismConfig {
 
     GearConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+
+        baseItemChargeRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GEAR_BASE_CHARGE_RATE.applyToBuilder(builder)
+              .defineInRange("baseItemChargeRate", 1, Double.MIN_VALUE, 100));
 
         MekanismConfigTranslations.GEAR_DISASSEMBLER.applyToBuilder(builder).push("atomic_disassembler");
         disassemblerMaxEnergy = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_DISASSEMBLER_MAX_ENERGY, "maxEnergy", 1_500);

@@ -9,6 +9,7 @@ import mekanism.common.component.containers.fluid.FluidTanksBuilder;
 import mekanism.common.component.containers.heat.HeatCapacitorBuilder;
 import mekanism.common.component.containers.item.ItemSlotsBuilder;
 import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.item.block.MekanismBlockItem;
 import mekanism.common.registration.impl.BlockDeferredRegister;
@@ -70,13 +71,13 @@ public class GeneratorsBlocks {
                             .addFluidFuelSlot(0, itemType -> itemType.has(DataComponents.COOKING_FUEL))
                             .addEnergy()
                             .build()
-                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.HEAT_GENERATOR), MekanismGeneratorsConfig.storageConfig)
+                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.generatorCreator(GeneratorsBlockTypes.HEAT_GENERATOR), MekanismGeneratorsConfig.storageConfig, MekanismConfig.gear)
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntitySolarGenerator, Generator<TileEntitySolarGenerator>>, MekanismBlockItem> SOLAR_GENERATOR =
           BLOCKS.registerMekItem("solar_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.SOLAR_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_BLUE)))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
-                      .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.SOLAR_GENERATOR), MekanismGeneratorsConfig.storageConfig)
+                      .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.generatorCreator(GeneratorsBlockTypes.SOLAR_GENERATOR), MekanismGeneratorsConfig.storageConfig, MekanismConfig.gear)
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityGasGenerator, Generator<TileEntityGasGenerator>>, MekanismBlockItem> GAS_BURNING_GENERATOR =
           BLOCKS.registerMekItem("gas_burning_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.GAS_BURNING_GENERATOR, BlockTile.defaultProperties(properties)
@@ -89,7 +90,7 @@ public class GeneratorsBlocks {
                             .addChemicalFillSlot(0)
                             .addEnergy()
                             .build()
-                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.GAS_BURNING_GENERATOR))
+                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.generatorCreator(GeneratorsBlockTypes.GAS_BURNING_GENERATOR), MekanismConfig.gear)
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityBioGenerator, Generator<TileEntityBioGenerator>>, MekanismBlockItem> BIO_GENERATOR =
           BLOCKS.registerMekItem("bio_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.BIO_GENERATOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
@@ -101,19 +102,19 @@ public class GeneratorsBlocks {
                             .addFluidFuelSlot(0, itemType -> itemType.is(MekanismTags.Items.FUELS_BIO) || itemType.is(MekanismTags.Items.FUELS_BLOCK_BIO))
                             .addEnergy()
                             .build()
-                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.BIO_GENERATOR), MekanismGeneratorsConfig.storageConfig)
+                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.generatorCreator(GeneratorsBlockTypes.BIO_GENERATOR), MekanismGeneratorsConfig.storageConfig, MekanismConfig.gear)
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityAdvancedSolarGenerator, Generator<TileEntityAdvancedSolarGenerator>>, MekanismBlockItem> ADVANCED_SOLAR_GENERATOR =
           BLOCKS.registerMekItem("advanced_solar_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.ADVANCED_SOLAR_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_BLUE)))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
-                      .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.ADVANCED_SOLAR_GENERATOR), MekanismGeneratorsConfig.storageConfig)
+                      .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.generatorCreator(GeneratorsBlockTypes.ADVANCED_SOLAR_GENERATOR), MekanismGeneratorsConfig.storageConfig, MekanismConfig.gear)
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityWindGenerator, Generator<TileEntityWindGenerator>>, MekanismBlockItem> WIND_GENERATOR = BLOCKS.registerMekItem("wind_generator",
                 properties -> new BlockTileModel<>(GeneratorsBlockTypes.WIND_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.METAL)))
           .forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
-                .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.WIND_GENERATOR), MekanismGeneratorsConfig.storageConfig)
+                .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.generatorCreator(GeneratorsBlockTypes.WIND_GENERATOR), MekanismGeneratorsConfig.storageConfig, MekanismConfig.gear)
           );
 
     public static final BlockRegistryObject<BlockTurbineRotor, BlockItem> TURBINE_ROTOR = BLOCKS.register("turbine_rotor", BlockTurbineRotor::new);

@@ -340,6 +340,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     WORLD_SALT_HALF_HEIGHT("world.salt.half_height", "Half Height", "Number of blocks to extend up and down when placing a vein of salt."),
 
     //Gear Config
+    GEAR_BASE_CHARGE_RATE("gear.base.charge_rate", "Base Charge Rate", "Percentage of max energy that items without specific charge rate configs can accept per tick."),
     GEAR_DISASSEMBLER("gear.disassembler", "Atomic Disassembler", "Settings for configuring the Atomic Disassembler", "Edit Disassembler Settings"),
     GEAR_DISASSEMBLER_MAX_ENERGY("gear.disassembler.max_energy", "Max Energy", "Maximum amount of energy the Atomic Disassembler can contain."),
     GEAR_DISASSEMBLER_CHARGE_RATE("gear.disassembler.charge_rate", "Charge Rate", "Percentage of max energy the Atomic Disassembler can accept per tick."),
