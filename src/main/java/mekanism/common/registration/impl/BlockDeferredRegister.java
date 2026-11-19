@@ -18,7 +18,6 @@ import mekanism.common.registration.DoubleDeferredRegister;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.util.Unit;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -53,8 +52,8 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
         return register(name, blockCreator, BlockItem::new);
     }
 
-    public <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, MekanismBlockItem> registerDetails(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator) {
-        return register(name, blockCreator, (block, properties) -> new MekanismBlockItem(block, properties.component(MekanismDataComponents.DETAILS, Unit.INSTANCE)));
+    public <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, MekanismBlockItem> registerMekItem(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator) {
+        return register(name, blockCreator, MekanismBlockItem::new);
     }
 
     public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator,

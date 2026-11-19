@@ -116,7 +116,6 @@ public class MekanismDataComponents {
     private static final DataComponentDeferredRegister DATA_COMPONENTS = new DataComponentDeferredRegister(Mekanism.MODID);
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Component>> DESCRIPTION = DATA_COMPONENTS.registerComponent("description");
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Unit>> DETAILS = DATA_COMPONENTS.registerUnit("details");
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ModuleContainer>> MODULE_CONTAINER = DATA_COMPONENTS.simple("module_container",
           builder -> builder.persistent(ModuleContainer.CODEC)
@@ -586,12 +585,7 @@ public class MekanismDataComponents {
               MekanismLang.FLOWING.translateColored(EnumColor.GRAY, YesNo.of(mode, true))
         ));
 
-        event.registerComponentAppenderAfterAll(DETAILS, ItemTooltipUtils.createSimpleAppender(DETAILS, TooltipHideType.DESCRIPTION, (_, _, context, _, player, flag, builder) -> {
-            if (!ItemTooltipUtils.shouldDisplayDetails(context, player, flag)) {
-                builder.accept(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
-            }
-        }));
-        event.registerComponentAppenderAfter(DESCRIPTION, DETAILS.get(), ItemTooltipUtils.createSimpleAppender(DESCRIPTION, TooltipHideType.NONE, (_, description, context, _, player, flag, builder) -> {
+        event.registerComponentAppenderAfterAll(DESCRIPTION, ItemTooltipUtils.createSimpleAppender(DESCRIPTION, TooltipHideType.NONE, (_, description, context, _, player, flag, builder) -> {
             if (ItemTooltipUtils.shouldDisplayDescription(context, player, flag)) {
                 builder.accept(description);
             } else {

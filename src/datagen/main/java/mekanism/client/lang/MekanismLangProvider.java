@@ -1142,7 +1142,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.TOP, "Top");
         add(APILang.BOTTOM, "Bottom");
         //Hold for
-        add(MekanismLang.HOLD_FOR_DETAILS, "Hold %1$s for details.");
         add(MekanismLang.HOLD_FOR_DESCRIPTION, "Hold %1$s for a description.");
         add(MekanismLang.HOLD_FOR_MODULES, "Hold %1$s for installed modules.");
         add(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS, "Hold %1$s for supporting items and conflicting modules.");

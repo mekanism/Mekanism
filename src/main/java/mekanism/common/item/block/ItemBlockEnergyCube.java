@@ -17,7 +17,6 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.core.Holder;
-import net.minecraft.util.Unit;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.Item;
@@ -49,16 +48,11 @@ public class ItemBlockEnergyCube extends MekanismBlockItem implements ICustomCre
         return new AttachedSideConfig(configInfo);
     }
 
-    private final EnergyCubeTier tier;
-
     public ItemBlockEnergyCube(BlockEnergyCube block, Item.Properties properties) {
-        EnergyCubeTier tier = Attribute.getTierNN(block, EnergyCubeTier.class);
-        this.tier = tier;
         super(block, properties
-              .component(MekanismDataComponents.ENERGY_CUBE_TIER, tier)
+              .component(MekanismDataComponents.ENERGY_CUBE_TIER, Attribute.getTierNN(block, EnergyCubeTier.class))
               .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
               .component(MekanismDataComponents.SIDE_CONFIG, SIDE_CONFIG)
-              .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
         );
     }
 
@@ -75,7 +69,7 @@ public class ItemBlockEnergyCube extends MekanismBlockItem implements ICustomCre
 
     @Override
     public boolean addDefault() {
-        return !tier.isCreative();
+        return !Attribute.getTierNN(getBlock(), EnergyCubeTier.class).isCreative();
     }
 
     public static ItemResource withCreativeSideConfig(AttachedSideConfig config) {

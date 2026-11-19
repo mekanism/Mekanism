@@ -25,7 +25,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.settings.KeyModifier;
 
 public class MekanismKeyHandler {
 
@@ -78,8 +77,7 @@ public class MekanismKeyHandler {
     public static final KeyMapping descriptionKey = new MekKeyBindingBuilder()
           .description(MekanismLang.KEY_DESCRIPTION_MODE)
           .conflictInGui()
-          .modifier(KeyModifier.SHIFT)
-          .keyCode(InputConstants.KEY_N)
+          .keyCode(InputConstants.KEY_LALT)
           .build();
     public static final KeyMapping moduleTweakerKey = new MekKeyBindingBuilder()
           .description(MekanismLang.KEY_MODULE_TWEAKER)

@@ -179,7 +179,6 @@ public enum MekanismLang implements ILangEntry {
     GENERIC_LESS_THAN("generic", "less_than"),
     GENERIC_LESS_THAN_EQUAL("generic", "less_than_equal"),
     //Hold for
-    HOLD_FOR_DETAILS("tooltip", "hold_for_details"),
     HOLD_FOR_DESCRIPTION("tooltip", "hold_for_description"),
     HOLD_FOR_MODULES("tooltip", "hold_for_modules"),
     HOLD_FOR_SUPPORTED_ITEMS("tooltip", "hold_for_supported_items"),

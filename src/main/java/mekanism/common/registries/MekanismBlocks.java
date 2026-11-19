@@ -68,10 +68,10 @@ import mekanism.common.item.block.FrequencyBlockItem;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.item.block.ItemBlockEnergyCube;
-import mekanism.common.item.block.ItemBlockPersonalStorage;
-import mekanism.common.item.block.MekanismBlockItem;
 import mekanism.common.item.block.ItemBlockFluidTank;
+import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.block.ItemBlockQIOComponent;
+import mekanism.common.item.block.MekanismBlockItem;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
@@ -267,7 +267,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityBoilerCasing>, BlockItem> BOILER_CASING = BLOCKS.register("boiler_casing", properties -> new BlockBasicMultiblock<>(MekanismBlockTypes.BOILER_CASING, BlockBasicMultiblock.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())));
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityBoilerValve>, BlockItem> BOILER_VALVE = BLOCKS.register("boiler_valve", properties -> new BlockBasicMultiblock<>(MekanismBlockTypes.BOILER_VALVE, BlockBasicMultiblock.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())));
     public static final BlockRegistryObject<BlockTileModel<TileEntitySecurityDesk, BlockTypeTile<TileEntitySecurityDesk>>, MekanismBlockItem> SECURITY_DESK =
-          BLOCKS.registerDetails("security_desk", properties -> new BlockTileModel<>(MekanismBlockTypes.SECURITY_DESK,
+          BLOCKS.registerMekItem("security_desk", properties -> new BlockTileModel<>(MekanismBlockTypes.SECURITY_DESK,
                 BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor()))
           ).forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                 .addUnlockSlot()
@@ -284,7 +284,6 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.FACTORY_TYPE, FactoryType.ENRICHING)
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.ELECTRIC_MACHINE)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
@@ -300,7 +299,6 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.FACTORY_TYPE, FactoryType.COMPRESSING)
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.ADVANCED_MACHINE)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -320,7 +318,6 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.FACTORY_TYPE, FactoryType.COMBINING)
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.EXTRA_MACHINE)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
@@ -337,7 +334,6 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.FACTORY_TYPE, FactoryType.CRUSHING)
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.ELECTRIC_MACHINE)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
@@ -361,7 +357,6 @@ public class MekanismBlocks {
                 .component(MekanismDataComponents.REPLACE_STACK, Items.AIR)
                 .component(MekanismDataComponents.OVERFLOW_AWARE, OverflowAware.EMPTY)
                 .component(MekanismDataComponents.FILTER_AWARE, FilterAware.EMPTY)
-                .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
           )).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                       .addMinerSlots(3 * 9)
@@ -376,7 +371,6 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.FACTORY_TYPE, FactoryType.INFUSING)
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.ADVANCED_MACHINE)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -396,7 +390,6 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.FACTORY_TYPE, FactoryType.PURIFYING)
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.ADVANCED_MACHINE_INPUT_ONLY)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -416,7 +409,6 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.FACTORY_TYPE, FactoryType.SMELTING)
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.ELECTRIC_MACHINE)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
@@ -428,15 +420,13 @@ public class MekanismBlocks {
           );
     public static final BlockRegistryObject<BlockTile<TileEntityTeleporter, Machine<TileEntityTeleporter>>, FrequencyBlockItem> TELEPORTER =
           BLOCKS.register("teleporter", properties -> new BlockTile<>(MekanismBlockTypes.TELEPORTER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
-                (block, properties) -> new FrequencyBlockItem(block, FrequencyTypes.TELEPORTER, properties
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
-                )
+                (block, properties) -> new FrequencyBlockItem(block, FrequencyTypes.TELEPORTER, properties)
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
                 .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.TELEPORTER), MekanismConfig.storage)
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityElectricPump, Machine<TileEntityElectricPump>>, MekanismBlockItem> ELECTRIC_PUMP =
-          BLOCKS.registerDetails("electric_pump", properties -> new BlockTileModel<>(MekanismBlockTypes.ELECTRIC_PUMP, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
+          BLOCKS.registerMekItem("electric_pump", properties -> new BlockTileModel<>(MekanismBlockTypes.ELECTRIC_PUMP, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
                             .addBasic(TileEntityElectricPump.MAX_FLUID)
@@ -450,7 +440,7 @@ public class MekanismBlocks {
                 );
     public static final BlockRegistryObject<BlockPersonalBarrel, ItemBlockPersonalStorage> PERSONAL_BARREL = BLOCKS.register("personal_barrel", BlockPersonalBarrel::new, (block, properties) -> new ItemBlockPersonalStorage(block, properties, Stats.OPEN_BARREL));
     public static final BlockRegistryObject<BlockPersonalChest, ItemBlockPersonalStorage> PERSONAL_CHEST = BLOCKS.register("personal_chest", BlockPersonalChest::new, (block, properties) -> new ItemBlockPersonalStorage(block, properties, Stats.OPEN_CHEST));
-    public static final BlockRegistryObject<BlockChargepad, MekanismBlockItem> CHARGEPAD = BLOCKS.registerDetails("chargepad", BlockChargepad::new)
+    public static final BlockRegistryObject<BlockChargepad, BlockItem> CHARGEPAD = BLOCKS.register("chargepad", BlockChargepad::new)
           .forItemHolder(holder -> holder
                 .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.CHARGEPAD), MekanismConfig.usage)
           );
@@ -460,7 +450,6 @@ public class MekanismBlocks {
                 .component(MekanismDataComponents.ROUND_ROBIN, false)
                 .component(MekanismDataComponents.SINGLE_ITEM, false)
                 .component(MekanismDataComponents.FILTER_AWARE, FilterAware.EMPTY)
-                .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
           ));
     public static final BlockRegistryObject<BlockTileModel<TileEntityRotaryCondensentrator, Machine<TileEntityRotaryCondensentrator>>, MekanismBlockItem> ROTARY_CONDENSENTRATOR =
           BLOCKS.register("rotary_condensentrator", properties -> new BlockTileModel<>(MekanismBlockTypes.ROTARY_CONDENSENTRATOR,
@@ -468,7 +457,6 @@ public class MekanismBlocks {
                 .component(MekanismDataComponents.ROTARY_MODE, false)
                 .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                 .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.ROTARY)
-                .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
           )).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
                       .addBasic(TileEntityRotaryCondensentrator.CAPACITY, MekanismRecipeType.ROTARY, RotaryInputRecipeCache::containsInputFluid)
@@ -490,7 +478,6 @@ public class MekanismBlocks {
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.CHEMICAL_OUT_MACHINE)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -508,7 +495,6 @@ public class MekanismBlocks {
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.CHEMICAL_INFUSING)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -530,7 +516,6 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.FACTORY_TYPE, FactoryType.INJECTING)
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.ADVANCED_MACHINE_INPUT_ONLY)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -551,7 +536,6 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.SECONDARY_DUMP_MODE, GasMode.IDLE)
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.SEPARATOR)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
@@ -575,7 +559,6 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.FACTORY_TYPE, FactoryType.SAWING)
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.ELECTRIC_MACHINE)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
@@ -591,7 +574,6 @@ public class MekanismBlocks {
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.DISSOLUTION)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
                       .addBasic(TileEntityChemicalDissolutionChamber.MAX_CHEMICAL, MekanismRecipeType.DISSOLUTION, ItemChemical::containsInputB)
@@ -610,7 +592,6 @@ public class MekanismBlocks {
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.WASHER)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
@@ -633,7 +614,6 @@ public class MekanismBlocks {
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.CRYSTALLIZER)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
                       .addBasic(TileEntityChemicalCrystallizer.MAX_CHEMICAL, MekanismRecipeType.CRYSTALLIZING, SingleChemical::containsInput)
@@ -646,7 +626,7 @@ public class MekanismBlocks {
                 ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CHEMICAL_CRYSTALLIZER, false), MekanismConfig.usage)
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntitySeismicVibrator, Machine<TileEntitySeismicVibrator>>, MekanismBlockItem> SEISMIC_VIBRATOR =
-          BLOCKS.registerDetails("seismic_vibrator", properties -> new BlockTileModel<>(MekanismBlockTypes.SEISMIC_VIBRATOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
+          BLOCKS.registerMekItem("seismic_vibrator", properties -> new BlockTileModel<>(MekanismBlockTypes.SEISMIC_VIBRATOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
                       .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.SEISMIC_VIBRATOR), MekanismConfig.usage)
@@ -656,7 +636,6 @@ public class MekanismBlocks {
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.REACTION)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
@@ -678,7 +657,6 @@ public class MekanismBlocks {
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.CENTRIFUGE)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -697,7 +675,6 @@ public class MekanismBlocks {
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.LIQUIFIER)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
@@ -720,7 +697,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> CREATIVE_FLUID_TANK = registerFluidTank(MekanismBlockTypes.CREATIVE_FLUID_TANK);
 
     public static final BlockRegistryObject<BlockTileModel<TileEntityFluidicPlenisher, Machine<TileEntityFluidicPlenisher>>, MekanismBlockItem> FLUIDIC_PLENISHER =
-          BLOCKS.registerDetails("fluidic_plenisher", properties -> new BlockTileModel<>(MekanismBlockTypes.FLUIDIC_PLENISHER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
+          BLOCKS.registerMekItem("fluidic_plenisher", properties -> new BlockTileModel<>(MekanismBlockTypes.FLUIDIC_PLENISHER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
                             .addBasic(TileEntityFluidicPlenisher.MAX_FLUID)
@@ -733,7 +710,7 @@ public class MekanismBlocks {
                       ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.FLUIDIC_PLENISHER, false), MekanismConfig.usage)
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityLaser, BlockTypeTile<TileEntityLaser>>, MekanismBlockItem> LASER =
-          BLOCKS.registerDetails("laser", properties -> new BlockTileModel<>(MekanismBlockTypes.LASER, BlockTile.defaultProperties(properties)
+          BLOCKS.registerMekItem("laser", properties -> new BlockTileModel<>(MekanismBlockTypes.LASER, BlockTile.defaultProperties(properties)
                 .mapColor(BlockResourceInfo.STEEL.getMapColor()))
           ).forItemHolder(holder -> holder
                 .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.LASER), MekanismConfig.usage)
@@ -744,15 +721,13 @@ public class MekanismBlocks {
                 .component(MekanismDataComponents.REDSTONE_OUTPUT, RedstoneOutput.OFF)
                 .component(MekanismDataComponents.DELAY, 0)
                 .component(MekanismDataComponents.MIN_THRESHOLD, 0)
-                .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
           )).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ENERGY, () -> EnergyContainerBuilder.manualCreator(MekanismConfig.storage.laserAmplifier))
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityLaserTractorBeam, BlockTypeTile<TileEntityLaserTractorBeam>>, MekanismBlockItem> LASER_TRACTOR_BEAM =
-          BLOCKS.register("laser_tractor_beam", properties -> new BlockTileModel<>(MekanismBlockTypes.LASER_TRACTOR_BEAM,
-                BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_GRAY)), (block, properties) -> new MekanismBlockItem(block, properties
-                .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
-          )).forItemHolder(holder -> holder
+          BLOCKS.registerMekItem("laser_tractor_beam", properties -> new BlockTileModel<>(MekanismBlockTypes.LASER_TRACTOR_BEAM,
+                BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_GRAY))
+          ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addOutput(3 * 9).build())
                 .addAttachmentOnlyContainers(ContainerType.ENERGY, () -> EnergyContainerBuilder.manualCreator(MekanismConfig.storage.laserTractorBeam))
           );
@@ -762,14 +737,12 @@ public class MekanismBlocks {
                 new FrequencyBlockItem(block, FrequencyTypes.INVENTORY, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.ENTANGLOPORTER)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 ));
     public static final BlockRegistryObject<BlockTileModel<TileEntitySolarNeutronActivator, Machine<TileEntitySolarNeutronActivator>>, MekanismBlockItem> SOLAR_NEUTRON_ACTIVATOR =
           BLOCKS.register("solar_neutron_activator", properties -> new BlockTileModel<>(MekanismBlockTypes.SOLAR_NEUTRON_ACTIVATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_BLUE)),
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.SNA)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -788,7 +761,6 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.FILTER_AWARE, FilterAware.EMPTY)
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, new AttachedSideConfig(Map.of(TransmissionType.ITEM, LightConfigInfo.OUT_NO_EJECT)))
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                 .addOredictionificatorInput()
@@ -799,7 +771,6 @@ public class MekanismBlocks {
           BLOCKS.register("resistive_heater", properties -> new BlockTileModel<>(MekanismBlockTypes.RESISTIVE_HEATER,
                 BlockTile.defaultProperties(properties).mapColor(MapColor.METAL)), (block, properties) -> new MekanismBlockItem(block, properties
                 .component(MekanismDataComponents.ENERGY_USAGE, TileEntityResistiveHeater.BASE_USAGE)
-                .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
           )).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.HEAT, () -> HeatCapacitorBuilder.basicCreator(
                       TileEntityResistiveHeater.HEAT_CAPACITY, TileEntityResistiveHeater.INVERSE_CONDUCTION_COEFFICIENT, TileEntityResistiveHeater.INVERSE_INSULATION_COEFFICIENT
@@ -811,7 +782,6 @@ public class MekanismBlocks {
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.EXTRA_MACHINE)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
@@ -824,14 +794,14 @@ public class MekanismBlocks {
                 ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.FORMULAIC_ASSEMBLICATOR, false), MekanismConfig.usage)
           );
     public static final BlockRegistryObject<BlockTile<TileEntityFuelwoodHeater, BlockTypeTile<TileEntityFuelwoodHeater>>, MekanismBlockItem> FUELWOOD_HEATER =
-          BLOCKS.registerDetails("fuelwood_heater", properties -> new BlockTile<>(MekanismBlockTypes.FUELWOOD_HEATER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
+          BLOCKS.registerMekItem("fuelwood_heater", properties -> new BlockTile<>(MekanismBlockTypes.FUELWOOD_HEATER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.HEAT, () -> HeatCapacitorBuilder.basicCreator(
                             TileEntityFuelwoodHeater.HEAT_CAPACITY, TileEntityFuelwoodHeater.INVERSE_CONDUCTION_COEFFICIENT, TileEntityFuelwoodHeater.INVERSE_INSULATION_COEFFICIENT
                       )).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addFuelSlot().build())
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>, MekanismBlockItem> MODIFICATION_STATION =
-          BLOCKS.registerDetails("modification_station", properties -> new BlockTileModel<>(MekanismBlockTypes.MODIFICATION_STATION, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
+          BLOCKS.registerMekItem("modification_station", properties -> new BlockTileModel<>(MekanismBlockTypes.MODIFICATION_STATION, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addInput(itemType -> itemType.has(IModuleHelper.INSTANCE.dataComponent()))
@@ -845,7 +815,6 @@ public class MekanismBlocks {
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.ADVANCED_MACHINE_INPUT_ONLY)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -864,7 +833,6 @@ public class MekanismBlocks {
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.CHEMICAL_OUT_MACHINE)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -883,7 +851,6 @@ public class MekanismBlocks {
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.PIGMENT_MIXER)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -904,7 +871,6 @@ public class MekanismBlocks {
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.PAINTING)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -923,12 +889,12 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntitySPSCasing>, BlockItem> SPS_CASING = BLOCKS.registerSimpleItem("sps_casing",
           properties -> new BlockBasicMultiblock<>(MekanismBlockTypes.SPS_CASING, BlockBasicMultiblock.defaultProperties(properties).mapColor(MapColor.COLOR_LIGHT_GRAY)),
           properties -> properties.rarity(Rarity.EPIC));
-    public static final BlockRegistryObject<BlockBasicMultiblock<TileEntitySPSPort>, MekanismBlockItem> SPS_PORT = BLOCKS.register("sps_port",
-                properties -> new BlockBasicMultiblock<>(MekanismBlockTypes.SPS_PORT, BlockBasicMultiblock.defaultProperties(properties).mapColor(MapColor.COLOR_LIGHT_GRAY)),
-                (block, props) -> new MekanismBlockItem(block, props.rarity(Rarity.EPIC)))
-          .forItemHolder(holder -> holder
-                .addAttachmentOnlyContainers(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.SPS_PORT))
-          );
+    public static final BlockRegistryObject<BlockBasicMultiblock<TileEntitySPSPort>, BlockItem> SPS_PORT = BLOCKS.registerSimpleItem("sps_port",
+          properties -> new BlockBasicMultiblock<>(MekanismBlockTypes.SPS_PORT, BlockBasicMultiblock.defaultProperties(properties).mapColor(MapColor.COLOR_LIGHT_GRAY)),
+          properties -> properties.rarity(Rarity.EPIC)
+    ).forItemHolder(holder -> holder
+          .addAttachmentOnlyContainers(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.SPS_PORT))
+    );
     public static final BlockRegistryObject<BlockTileModel<TileEntitySuperchargedCoil, BlockTypeTile<TileEntitySuperchargedCoil>>, BlockItem> SUPERCHARGED_COIL = BLOCKS.registerSimpleItem("supercharged_coil",
           properties -> new BlockTileModel<>(MekanismBlockTypes.SUPERCHARGED_COIL, BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_ORANGE)),
           properties -> properties.rarity(Rarity.EPIC));
@@ -937,7 +903,6 @@ public class MekanismBlocks {
                       BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
                 (block, properties) -> new MekanismBlockItem(block, properties
                       .component(MekanismDataComponents.STABILIZER_CHUNKS, StabilizedChunks.NONE)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 )).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
                 .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.DIMENSIONAL_STABILIZER, MekanismConfig.usage)
@@ -945,9 +910,8 @@ public class MekanismBlocks {
 
     public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIODriveArray, BlockTypeTile<TileEntityQIODriveArray>>, ItemBlockQIOComponent> QIO_DRIVE_ARRAY =
           BLOCKS.register("qio_drive_array", properties -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_DRIVE_ARRAY,
-                BlockTile.defaultProperties(properties).mapColor(MapColor.METAL)), (block, properties) -> new ItemBlockQIOComponent(block, properties
-                .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
-          )).forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                BlockTile.defaultProperties(properties).mapColor(MapColor.METAL)), ItemBlockQIOComponent::new
+          ).forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                 .addQIODriveSlots(2 * 6)
                 .build()
           ));
@@ -955,7 +919,6 @@ public class MekanismBlocks {
           BLOCKS.register("qio_dashboard", properties -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_DASHBOARD,
                       BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_GRAY)), (block, properties) -> new ItemBlockQIOComponent(block, properties
                       .component(MekanismDataComponents.INSERT_INTO_FREQUENCY, true)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 ))
                 //Note: While the attachment is mainly used for the portable dashboard, it is a convenient way to also handle window construction
                 // and setting up the proper predicates for the actual dashboard block
@@ -965,7 +928,6 @@ public class MekanismBlocks {
                 (block, properties) -> new ItemBlockQIOComponent(block, properties
                       .component(MekanismDataComponents.AUTO, false)
                       .component(MekanismDataComponents.FILTER_AWARE, FilterAware.EMPTY)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 ));
     public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIOExporter, BlockTypeTile<TileEntityQIOExporter>>, ItemBlockQIOComponent> QIO_EXPORTER =
           BLOCKS.register("qio_exporter", properties -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_EXPORTER, BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_GRAY)),
@@ -973,7 +935,6 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.AUTO, false)
                       .component(MekanismDataComponents.ROUND_ROBIN, false)
                       .component(MekanismDataComponents.FILTER_AWARE, FilterAware.EMPTY)
-                      .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
                 ));
     public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIORedstoneAdapter, BlockTypeTile<TileEntityQIORedstoneAdapter>>, ItemBlockQIOComponent> QIO_REDSTONE_ADAPTER =
           BLOCKS.register("qio_redstone_adapter", properties -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_REDSTONE_ADAPTER,
@@ -982,7 +943,6 @@ public class MekanismBlocks {
                 .component(MekanismDataComponents.INVERSE, false)
                 .component(MekanismDataComponents.LONG_AMOUNT, 0L)
                 .component(MekanismDataComponents.ITEM_TARGET, ItemResource.EMPTY)
-                .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
           ));
 
     public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> BASIC_ENERGY_CUBE = registerEnergyCube(MekanismBlockTypes.BASIC_ENERGY_CUBE);
@@ -1066,7 +1026,8 @@ public class MekanismBlocks {
         return registerTieredBlock(type, "_induction_provider", (properties, color) -> new BlockTile<>(type, BlockTile.defaultProperties(properties).mapColor(color)),
               (block, properties) -> new BlockItem(block, properties
                     .component(MekanismDataComponents.INDUCTION_PROVIDER_TIER, Attribute.getTierNN(block, InductionProviderTier.class))
-              ));
+              )
+        );
     }
 
     private static BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> registerFluidTank(Machine<TileEntityFluidTank> type) {
@@ -1170,7 +1131,6 @@ public class MekanismBlocks {
                     .component(MekanismDataComponents.SORTING, false)
                     .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                     .component(MekanismDataComponents.SIDE_CONFIG, sideConfig)
-                    .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
               ));
         factory.forItemHolder(holder -> {
             int processes = tier.processes;

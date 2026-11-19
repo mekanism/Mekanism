@@ -13,7 +13,6 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.item.block.MekanismBlockItem;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
-import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.GeneratorTags;
@@ -49,7 +48,6 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Unit;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.material.MapColor;
 
@@ -61,7 +59,7 @@ public class GeneratorsBlocks {
     public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(MekanismGenerators.MODID);
 
     public static final BlockRegistryObject<BlockTileModel<TileEntityHeatGenerator, Generator<TileEntityHeatGenerator>>, MekanismBlockItem> HEAT_GENERATOR =
-          BLOCKS.registerDetails("heat_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.HEAT_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.METAL)))
+          BLOCKS.registerMekItem("heat_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.HEAT_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.METAL)))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
                             .addBasic(MekanismGeneratorsConfig.generators.heatTankCapacity, fluid -> fluid.is(FluidTags.LAVA))
@@ -75,13 +73,14 @@ public class GeneratorsBlocks {
                       ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.HEAT_GENERATOR), MekanismGeneratorsConfig.storageConfig)
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntitySolarGenerator, Generator<TileEntitySolarGenerator>>, MekanismBlockItem> SOLAR_GENERATOR =
-          BLOCKS.registerDetails("solar_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.SOLAR_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_BLUE)))
+          BLOCKS.registerMekItem("solar_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.SOLAR_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_BLUE)))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
                       .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.SOLAR_GENERATOR), MekanismGeneratorsConfig.storageConfig)
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityGasGenerator, Generator<TileEntityGasGenerator>>, MekanismBlockItem> GAS_BURNING_GENERATOR =
-          BLOCKS.registerDetails("gas_burning_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.GAS_BURNING_GENERATOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
+          BLOCKS.registerMekItem("gas_burning_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.GAS_BURNING_GENERATOR, BlockTile.defaultProperties(properties)
+                      .mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
                             .addBasic(MekanismGeneratorsConfig.generators.gbgTankCapacity, chemical -> chemical.getFuel(null) != null)
@@ -93,7 +92,7 @@ public class GeneratorsBlocks {
                       ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.GAS_BURNING_GENERATOR))
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityBioGenerator, Generator<TileEntityBioGenerator>>, MekanismBlockItem> BIO_GENERATOR =
-          BLOCKS.registerDetails("bio_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.BIO_GENERATOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
+          BLOCKS.registerMekItem("bio_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.BIO_GENERATOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
                             .addBasic(MekanismGeneratorsConfig.generators.bioTankCapacity, fluid -> fluid.is(GeneratorTags.Fluids.BIOETHANOL))
@@ -105,12 +104,13 @@ public class GeneratorsBlocks {
                       ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.BIO_GENERATOR), MekanismGeneratorsConfig.storageConfig)
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityAdvancedSolarGenerator, Generator<TileEntityAdvancedSolarGenerator>>, MekanismBlockItem> ADVANCED_SOLAR_GENERATOR =
-          BLOCKS.registerDetails("advanced_solar_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.ADVANCED_SOLAR_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_BLUE)))
+          BLOCKS.registerMekItem("advanced_solar_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.ADVANCED_SOLAR_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_BLUE)))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
                       .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.ADVANCED_SOLAR_GENERATOR), MekanismGeneratorsConfig.storageConfig)
                 );
-    public static final BlockRegistryObject<BlockTileModel<TileEntityWindGenerator, Generator<TileEntityWindGenerator>>, MekanismBlockItem> WIND_GENERATOR = BLOCKS.registerDetails("wind_generator", properties -> new BlockTileModel<>(GeneratorsBlockTypes.WIND_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.METAL)))
+    public static final BlockRegistryObject<BlockTileModel<TileEntityWindGenerator, Generator<TileEntityWindGenerator>>, MekanismBlockItem> WIND_GENERATOR = BLOCKS.registerMekItem("wind_generator",
+                properties -> new BlockTileModel<>(GeneratorsBlockTypes.WIND_GENERATOR, BlockTile.defaultProperties(properties).mapColor(MapColor.METAL)))
           .forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
                 .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(GeneratorsBlockTypes.WIND_GENERATOR), MekanismGeneratorsConfig.storageConfig)
@@ -130,24 +130,20 @@ public class GeneratorsBlocks {
           properties -> new BlockBasicMultiblock<>(GeneratorsBlockTypes.FISSION_REACTOR_CASING, BlockBasicMultiblock.defaultProperties(properties).mapColor(MapColor.COLOR_LIGHT_GRAY)));
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityFissionReactorPort>, BlockItem> FISSION_REACTOR_PORT = BLOCKS.register("fission_reactor_port",
           properties -> new BlockBasicMultiblock<>(GeneratorsBlockTypes.FISSION_REACTOR_PORT, BlockBasicMultiblock.defaultProperties(properties).mapColor(MapColor.COLOR_LIGHT_GRAY)));
-    public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityFissionReactorLogicAdapter>, BlockItem> FISSION_REACTOR_LOGIC_ADAPTER = BLOCKS.register("fission_reactor_logic_adapter",
+    public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityFissionReactorLogicAdapter>, BlockItem> FISSION_REACTOR_LOGIC_ADAPTER = BLOCKS.registerSimpleItem("fission_reactor_logic_adapter",
           properties -> new BlockBasicMultiblock<>(GeneratorsBlockTypes.FISSION_REACTOR_LOGIC_ADAPTER, BlockBasicMultiblock.defaultProperties(properties).mapColor(MapColor.COLOR_LIGHT_GRAY)),
-          (block, properties) -> new BlockItem(block, properties
-                .component(GeneratorsDataComponents.FISSION_LOGIC_TYPE, FissionReactorLogic.DISABLED)
-                .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
-          ));
+          properties -> properties.component(GeneratorsDataComponents.FISSION_LOGIC_TYPE, FissionReactorLogic.DISABLED)
+    );
     public static final BlockRegistryObject<BlockTileModel<TileEntityFissionFuelAssembly, BlockTypeTile<TileEntityFissionFuelAssembly>>, BlockItem> FISSION_FUEL_ASSEMBLY = BLOCKS.register("fission_fuel_assembly", properties -> new BlockTileModel<>(GeneratorsBlockTypes.FISSION_FUEL_ASSEMBLY, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())));
     public static final BlockRegistryObject<BlockTileModel<TileEntityControlRodAssembly, BlockTypeTile<TileEntityControlRodAssembly>>, BlockItem> CONTROL_ROD_ASSEMBLY = BLOCKS.register("control_rod_assembly", properties -> new BlockTileModel<>(GeneratorsBlockTypes.CONTROL_ROD_ASSEMBLY, BlockTile.defaultProperties(properties).mapColor(MapColor.METAL)));
 
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityFusionReactorController>, BlockItem> FUSION_REACTOR_CONTROLLER = BLOCKS.register("fusion_reactor_controller", properties -> new BlockBasicMultiblock<>(GeneratorsBlockTypes.FUSION_REACTOR_CONTROLLER, BlockBasicMultiblock.defaultProperties(properties).mapColor(MapColor.COLOR_ORANGE)));
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityFusionReactorBlock>, BlockItem> FUSION_REACTOR_FRAME = BLOCKS.register("fusion_reactor_frame", properties -> new BlockBasicMultiblock<>(GeneratorsBlockTypes.FUSION_REACTOR_FRAME, BlockBasicMultiblock.defaultProperties(properties).mapColor(MapColor.TERRACOTTA_BROWN)));
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityFusionReactorPort>, BlockItem> FUSION_REACTOR_PORT = BLOCKS.register("fusion_reactor_port", properties -> new BlockBasicMultiblock<>(GeneratorsBlockTypes.FUSION_REACTOR_PORT, BlockBasicMultiblock.defaultProperties(properties).mapColor(MapColor.TERRACOTTA_BROWN)));
-    public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityFusionReactorLogicAdapter>, BlockItem> FUSION_REACTOR_LOGIC_ADAPTER = BLOCKS.register("fusion_reactor_logic_adapter",
+    public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityFusionReactorLogicAdapter>, BlockItem> FUSION_REACTOR_LOGIC_ADAPTER = BLOCKS.registerSimpleItem("fusion_reactor_logic_adapter",
           properties -> new BlockBasicMultiblock<>(GeneratorsBlockTypes.FUSION_REACTOR_LOGIC_ADAPTER, BlockBasicMultiblock.defaultProperties(properties).mapColor(MapColor.TERRACOTTA_BROWN)),
-          (block, properties) -> new BlockItem(block, properties
-                .component(GeneratorsDataComponents.FUSION_LOGIC_TYPE, FusionReactorLogic.DISABLED)
+          properties -> properties.component(GeneratorsDataComponents.FUSION_LOGIC_TYPE, FusionReactorLogic.DISABLED)
                 .component(GeneratorsDataComponents.ACTIVE_COOLED, false)
-                .component(MekanismDataComponents.DETAILS, Unit.INSTANCE)
-          ));
+    );
     public static final BlockRegistryObject<BlockLaserFocusMatrix, BlockItem> LASER_FOCUS_MATRIX = BLOCKS.register("laser_focus_matrix", BlockLaserFocusMatrix::new);
 }

@@ -15,10 +15,8 @@ import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -41,7 +39,7 @@ public class ItemBlockPersonalStorage extends MekanismBlockItem implements IDrop
     private final Identifier openStat;
 
     public ItemBlockPersonalStorage(BlockPersonalStorage<?, ?> block, Item.Properties properties, Identifier openStat) {
-        super(block, properties.component(MekanismDataComponents.DETAILS, Unit.INSTANCE));
+        super(block, properties);
         this.openStat = openStat;
     }
 

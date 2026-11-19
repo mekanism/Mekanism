@@ -3235,7 +3235,6 @@
   "tooltip.mekanism.fire_mode": "Fire Mode: %1$s",
   "tooltip.mekanism.flowing": "Flowing: %1$s",
   "tooltip.mekanism.hold_for_description": "Hold %1$s for a description.",
-  "tooltip.mekanism.hold_for_details": "Hold %1$s for details.",
   "tooltip.mekanism.hold_for_modules": "Hold %1$s for installed modules.",
   "tooltip.mekanism.hold_for_supported_items": "Hold %1$s for supporting items and conflicting modules.",
   "tooltip.mekanism.invalid": "(Invalid)",
