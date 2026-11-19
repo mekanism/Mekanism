@@ -1378,8 +1378,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void onSecurityChanged(SecurityMode old, SecurityMode mode) {
-        if (level != null && !level.isClientSide() && hasGui()) {
-            BlockSecurityUtils.get().securityChanged(playersUsing, level, worldPosition, this, old, mode);
+        if (level != null && !level.isClientSide()) {
+            if (hasGui()) {
+                BlockSecurityUtils.get().securityChanged(playersUsing, level, worldPosition, this, old, mode);
+            }
+            //Sync the security mode change to the client so that it can properly determine if the block can be broken https://github.com/mekanism/Mekanism/issues/8534
+            sendUpdatePacket();
+            markForSave();
         }
     }
     //End methods ITileSecurity

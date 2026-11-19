@@ -81,10 +81,6 @@ public class TileComponentSecurity implements ITileComponent {
             SecurityMode old = securityMode;
             securityMode = mode;
             tile.onSecurityChanged(old, securityMode);
-            Level level = tile.getLevel();
-            if (level != null && !level.isClientSide()) {
-                tile.markForSave();
-            }
         }
     }
 
@@ -145,10 +141,14 @@ public class TileComponentSecurity implements ITileComponent {
             output.store(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC, ownerUUID);
             output.putString(SerializationConstants.OWNER_NAME, MekanismUtils.getLastKnownUsername(ownerUUID));
         }
+        if (securityMode != SecurityMode.PUBLIC) {
+            output.store(SerializationConstants.SECURITY_MODE, SecurityMode.CODEC, securityMode);
+        }
     }
 
     @Override
     public void readFromUpdateTag(ValueInput input) {
+        securityMode = input.read(SerializationConstants.SECURITY_MODE, SecurityMode.CODEC).orElse(SecurityMode.PUBLIC);
         input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(uuid -> ownerUUID = uuid);
         ownerName = input.getString(SerializationConstants.OWNER_NAME).orElse(ownerName);
     }
