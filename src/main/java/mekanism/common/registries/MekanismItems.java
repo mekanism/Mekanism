@@ -9,9 +9,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.component.containers.chemical.ChemicalTanksBuilder;
-import mekanism.common.component.containers.energy.ComponentBackedEnergyContainer;
 import mekanism.common.component.containers.energy.EnergyContainerBuilder;
 import mekanism.common.component.containers.fluid.FluidTanksBuilder;
 import mekanism.common.component.containers.item.ItemSlotsBuilder;
@@ -20,8 +18,6 @@ import mekanism.common.component.qio.DriveContents;
 import mekanism.common.component.qio.DriveMetadata;
 import mekanism.common.component.qio.DriveMetadata.DriveCapacity;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.shared.ModuleEnergyUnit;
-import mekanism.common.entity.EntityRobit;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
@@ -58,7 +54,6 @@ import mekanism.common.resource.IResource;
 import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Unit;
@@ -85,7 +80,7 @@ public class MekanismItems {
                 .addInput(MekanismRecipeType.SMELTING, SingleInputRecipeCache::containsInput)
                 .addOutput()
                 .build()
-          ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(() -> MekanismUtils.calculateUsage(EntityRobit.MAX_ENERGY), () -> EntityRobit.MAX_ENERGY));
+          ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismConfig.gear.robitChargeRate, MekanismConfig.gear.robitMaxEnergy));
     public static final ItemRegistryObject<ItemEnergized> ENERGY_TABLET = ITEMS.registerItem("energy_tablet", properties -> new ItemEnergized(properties.rarity(Rarity.UNCOMMON)))
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(),
                 MekanismConfig.gear.tabletChargeRate, MekanismConfig.gear.tabletMaxEnergy), MekanismConfig.gear
@@ -129,13 +124,21 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_BOOTS = ITEMS.registerItem("hazmat_boots", props -> new ItemHazmatSuitArmor(ArmorType.BOOTS, props));
 
     public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_HELMET = ITEMS.registerItem("mekasuit_helmet", props -> new ItemMekaSuitArmor(ArmorType.HELMET, props.fireResistant()))
-          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.MEKASUIT, MekanismConfig.gear);
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () ->
+                      EnergyContainerBuilder.mekaGear(MekanismConfig.gear.mekaSuitBaseHelmetChargeRate, MekanismConfig.gear.mekaSuitBaseHelmetEnergyCapacity),
+                MekanismConfig.gear);
     public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BODYARMOR = ITEMS.registerItem("mekasuit_bodyarmor", props -> new ItemMekaSuitArmor(ArmorType.CHESTPLATE, props.fireResistant()))
-          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.MEKASUIT, MekanismConfig.gear);
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () ->
+                      EnergyContainerBuilder.mekaGear(MekanismConfig.gear.mekaSuitBaseChestplateChargeRate, MekanismConfig.gear.mekaSuitBaseChestplateEnergyCapacity),
+                MekanismConfig.gear);
     public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_PANTS = ITEMS.registerItem("mekasuit_pants", props -> new ItemMekaSuitArmor(ArmorType.LEGGINGS, props.fireResistant()))
-          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.MEKASUIT, MekanismConfig.gear);
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () ->
+                      EnergyContainerBuilder.mekaGear(MekanismConfig.gear.mekaSuitBaseLeggingsChargeRate, MekanismConfig.gear.mekaSuitBaseLeggingsEnergyCapacity),
+                MekanismConfig.gear);
     public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BOOTS = ITEMS.registerItem("mekasuit_boots", props -> new ItemMekaSuitArmor(ArmorType.BOOTS, props.fireResistant()))
-          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.MEKASUIT, MekanismConfig.gear);
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () ->
+                      EnergyContainerBuilder.mekaGear(MekanismConfig.gear.mekaSuitBaseBootsChargeRate, MekanismConfig.gear.mekaSuitBaseBootsEnergyCapacity),
+                MekanismConfig.gear);
 
     public static final ItemRegistryObject<Item> MODULE_BASE = ITEMS.register("module_base");
     public static final ItemRegistryObject<Item> MODULE = ITEMS.register("module");
@@ -226,10 +229,9 @@ public class MekanismItems {
                 .build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerItem("meka_tool", ItemMekaTool::new)
-          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.creator(attachedAccess -> new ComponentBackedEnergyContainer(
-                      attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
-                      () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, MekanismConfig.gear.mekaToolBaseEnergyCapacity), () -> ModuleEnergyUnit.getChargeRate(attachedAccess, MekanismConfig.gear.mekaToolBaseChargeRate)
-                )), MekanismConfig.gear
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () ->
+                      EnergyContainerBuilder.mekaGear(MekanismConfig.gear.mekaToolBaseChargeRate, MekanismConfig.gear.mekaToolBaseEnergyCapacity),
+                MekanismConfig.gear
           );
     // Armor
     public static final ItemRegistryObject<ItemFreeRunners> FREE_RUNNERS = ITEMS.registerItem("free_runners", properties -> new ItemFreeRunners(properties, MekanismEquipmentAssets.FREE_RUNNERS))

@@ -1,5 +1,6 @@
 package mekanism.common.component.containers.energy;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
@@ -25,6 +26,7 @@ import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -33,10 +35,6 @@ import org.jspecify.annotations.Nullable;
 
 public class EnergyContainerBuilder {
 
-    public static final IContainerCreator<IEnergyContainer, Long> MEKASUIT = creator(attachedAccess -> new ComponentBackedEnergyContainer(
-          attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
-          () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, MekanismConfig.gear.mekaSuitBaseEnergyCapacity), () -> ModuleEnergyUnit.getChargeRate(attachedAccess, MekanismConfig.gear.mekaSuitBaseChargeRate)
-    ));
     public static final IContainerCreator<IEnergyContainer, Long> ENERGY_CUBE = creator(ComponentBackedEnergyCubeContainer::create);
     public static final IContainerCreator<IEnergyContainer, Long> RESISTIVE_HEATER = creator(ComponentBackedResistiveEnergyContainer::create);
     public static final IContainerCreator<IEnergyContainer, Long> DIGITAL_MINER = creator(attachedAccess -> new ComponentBackedEnergyContainer(
@@ -64,6 +62,20 @@ public class EnergyContainerBuilder {
         return basicCreator(() -> MekanismUtils.calculateUsage(maxEnergy.getAsLong()), maxEnergy);
     }
 
+    public static IContainerCreator<IEnergyContainer, Long> mekaGear(DoubleSupplier percentageRate, LongSupplier maxEnergy) {
+        return creator(attachedAccess -> {
+            LongSupplier scaledCapacity = () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, maxEnergy);
+            return new ComponentBackedEnergyContainer(
+                  attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
+                  scaledCapacity, EnergyUtils.calculateRate(percentageRate, maxEnergy)
+            );
+        });
+    }
+
+    public static IContainerCreator<IEnergyContainer, Long> basicCreator(DoubleSupplier percentageRate, LongSupplier maxEnergy) {
+        return basicCreator(EnergyUtils.calculateRate(percentageRate, maxEnergy), maxEnergy);
+    }
+
     public static IContainerCreator<IEnergyContainer, Long> basicCreator(IntSupplier rate, LongSupplier maxEnergy) {
         return basicCreator(BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), rate, maxEnergy);
     }
@@ -82,6 +94,11 @@ public class EnergyContainerBuilder {
         return creator(attachedAccess -> new ComponentBackedEnergyContainer(
               attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), new LazyUsageStorage(attachedAccess, attributeEnergy, exponential))
         );
+    }
+
+    public static IContainerCreator<IEnergyContainer, Long> basicCreator(Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, DoubleSupplier percentageRate,
+          LongSupplier maxEnergy) {
+        return basicCreator(canExtract, canInsert, EnergyUtils.calculateRate(percentageRate, maxEnergy), maxEnergy);
     }
 
     public static IContainerCreator<IEnergyContainer, Long> basicCreator(Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, IntSupplier rate,
