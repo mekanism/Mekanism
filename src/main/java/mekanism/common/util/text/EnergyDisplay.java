@@ -4,6 +4,7 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.UnitDisplayUtils;
 import net.minecraft.network.chat.Component;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 
 public class EnergyDisplay implements IHasTextComponent {
@@ -14,6 +15,11 @@ public class EnergyDisplay implements IHasTextComponent {
     private final long max;
 
     private EnergyDisplay(long energy, long max) {
+        if (max > 0 && energy > max && !FMLEnvironment.isProduction()) {
+            //Mask edge cases when there might be more energy stored than max energy except in dev
+            //Note: We skip doing this for when the max energy is zero as that is used to represent only the energy value should be displayed
+            max = energy;
+        }
         this.energy = Math.max(0, energy);
         this.max = Math.max(0, max);
     }
