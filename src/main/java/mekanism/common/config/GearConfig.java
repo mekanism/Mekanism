@@ -334,7 +334,7 @@ public class GearConfig extends BaseMekanismConfig {
         mekaSuitEnergyUsageMagicReduce = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_MAGIC.applyToBuilder(builder)
               .defineInRange("magicReduce", 1_000, 0, Integer.MAX_VALUE));
         mekaSuitEnergyUsageFall = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_FALL.applyToBuilder(builder)
-              .defineInRange("fall", 50, 0, Integer.MAX_VALUE));
+              .defineInRange("fall", 1, 0, Integer.MAX_VALUE));
         mekaSuitBaseJumpEnergyUsage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_JUMP.applyToBuilder(builder)
               .defineInRange("jump", 1_000, 0, Integer.MAX_VALUE));
         mekaSuitElytraEnergyUsage = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_ELYTRA.applyToBuilder(builder)

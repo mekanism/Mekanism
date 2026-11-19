@@ -86,8 +86,8 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
 
     public enum Range implements IHasTextComponent, StringRepresentable {
         OFF(0),
-        LOW(1F),
-        MED(3F),
+        LOW(1),
+        MED(3),
         HIGH(5),
         ULTRA(10);
 

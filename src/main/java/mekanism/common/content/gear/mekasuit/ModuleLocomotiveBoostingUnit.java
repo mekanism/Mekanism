@@ -83,7 +83,7 @@ public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements I
     public boolean canFunction(IModule<ModuleLocomotiveBoostingUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         //Don't allow boosting unit to work when flying with the elytra, a jetpack should be used instead
         if (!player.isFallFlying() && player.isSprinting() && sprintBoost != SprintBoost.OFF) {
-            int energyRequired = MathUtils.clampToInt(MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get() * sprintBoost.getBoost() / 0.1D);
+            int energyRequired = MathUtils.clampToInt(MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get() * 10 * sprintBoost.getBoost());
             return module.useAllEnergy(player, itemAccess, energyRequired, transaction);
         }
         return false;
