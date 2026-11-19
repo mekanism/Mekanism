@@ -70,7 +70,7 @@ public enum CableTier implements ITier, TooltipProvider {
 
     @Override
     public void addToTooltip(TooltipContext context, Consumer<Component> builder, TooltipFlag flag, DataComponentGetter components) {
-        builder.accept(MekanismLang.CAPACITY_PER_TICK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(getCableCapacity())));
+        builder.accept(MekanismLang.CAPACITY_PER_TICK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(getCableCapacity(), flag.hasShiftDown())));
         builder.accept(CommonComponents.EMPTY);
         builder.accept(MekanismLang.CAPABLE_OF_TRANSFERRING.translateColored(EnumColor.DARK_GRAY));
         builder.accept(MekanismLang.GENERIC_TRANSFER.translateColored(EnumColor.GRAY, MekanismLang.ENERGY_FORGE, EnumColor.PURPLE, MekanismLang.FORGE));

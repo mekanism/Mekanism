@@ -241,7 +241,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     protected IBarInfoHandler getBarProgressTimer() {
         return new IBarInfoHandler() {
             @Override
-            public Component getTooltip() {
+            public Component getTooltip(IGuiWrapper gui) {
                 return MekanismLang.PROGRESS.translate(TextUtils.getPercent(getLevel()));
             }
 

@@ -2,6 +2,7 @@ package mekanism.client.gui.item;
 
 import mekanism.client.ClientTickHandler;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
@@ -46,9 +47,9 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         status = addRenderableWidget(new GuiTeleporterStatus(this, () -> getFrequency() != null, menu::getStatus));
         addRenderableWidget(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
                   @Override
-                  public Component getTooltip() {
+                  public Component getTooltip(IGuiWrapper gui) {
                       EnergyHandler energyHandler = menu.getEnergyHandler();
-                      return energyHandler == null ? EnergyDisplay.ZERO.getTextComponent() : EnergyDisplay.of(energyHandler).getTextComponent();
+                      return energyHandler == null ? EnergyDisplay.ZERO.getTextComponent() : gui.energyDisplayOf(energyHandler).getTextComponent();
                   }
 
                   @Override

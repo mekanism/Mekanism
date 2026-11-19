@@ -12,8 +12,8 @@ import net.minecraft.network.chat.Component;
 public class TooltipHelper implements ITooltipHelper {
 
     @Override
-    public Component getEnergyPerMBDisplayShort(long energy) {
-        return MekanismLang.GENERIC_PER_MB.translate(UnitDisplayUtils.getEnergyDisplay(energy));
+    public Component getEnergyPerMBDisplayShort(long energy, boolean fullEnergyDisplay) {
+        return MekanismLang.GENERIC_PER_MB.translate(UnitDisplayUtils.getEnergyDisplay(energy, fullEnergyDisplay));
     }
 
     @Override
@@ -37,8 +37,8 @@ public class TooltipHelper implements ITooltipHelper {
     }
 
     @Override
-    public Component getEnergyDisplay(long energy, boolean perTick) {
-        Component energyDisplay = UnitDisplayUtils.getEnergyDisplay(energy);
+    public Component getEnergyDisplay(long energy, boolean perTick, boolean fullEnergyDisplay) {
+        Component energyDisplay = UnitDisplayUtils.getEnergyDisplay(energy, fullEnergyDisplay);
         return perTick ? MekanismLang.GENERIC_PER_TICK.translate(energyDisplay) : energyDisplay;
     }
 

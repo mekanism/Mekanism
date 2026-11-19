@@ -7,6 +7,7 @@ import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.book.LiquificationBookCategory;
 import mekanism.api.recipes.book.LiquificationBookCategory.LiquificationBookInfo;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
 import mekanism.common.MekanismLang;
@@ -46,7 +47,7 @@ public class RecipeViewerUtils {
         int time = SharedConstants.MILLIS_PER_TICK * processTime;
         return new IBarInfoHandler() {
             @Override
-            public Component getTooltip() {
+            public Component getTooltip(IGuiWrapper gui) {
                 return tooltip;
             }
 

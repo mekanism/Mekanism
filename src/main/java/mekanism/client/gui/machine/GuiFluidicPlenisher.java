@@ -15,7 +15,6 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.machine.TileEntityFluidicPlenisher;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -35,7 +34,7 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 54, 23, 80, 42, () -> {
             List<Component> list = new ArrayList<>();
-            list.add(EnergyDisplay.of(tile.energyContainer()).getTextComponent());
+            list.add(energyDisplayOf(tile.energyContainer()).getTextComponent());
             list.add(MekanismLang.FINISHED.translate(YesNo.of(tile.finishedCalc)));
             if (tile.fluidTank.isEmpty()) {
                 list.add(MekanismLang.NO_FLUID.translate());

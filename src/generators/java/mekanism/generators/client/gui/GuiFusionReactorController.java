@@ -10,7 +10,6 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.IWarningTracker;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.client.gui.element.GuiFusionReactorTab;
 import mekanism.generators.client.gui.element.GuiFusionReactorTab.FusionReactorTab;
 import mekanism.generators.common.GeneratorsLang;
@@ -33,10 +32,10 @@ public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusion
     protected void addGuiElements() {
         super.addGuiElements();
         if (tile.getMultiblock().isFormed()) {
-            addRenderableWidget(new GuiEnergyTab(this, () -> {
+            addRenderableWidget(new GuiEnergyTab(this, gui -> {
                 FusionReactorMultiblockData multiblock = tile.getMultiblock();
-                return List.of(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.energyContainer())),
-                      GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(false, true))));
+                return List.of(MekanismLang.STORING.translate(gui.energyDisplayOf(multiblock.energyContainer())),
+                      GeneratorsLang.PRODUCING_AMOUNT.translate(gui.energyDisplayOf(multiblock.getPassiveGeneration(false, true))));
             }));
             addRenderableWidget(new GuiHeatTab(this, () -> {
                 FusionReactorMultiblockData multiblock = tile.getMultiblock();

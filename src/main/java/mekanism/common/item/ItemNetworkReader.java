@@ -81,12 +81,13 @@ public class ItemNetworkReader extends Item {
         displayBorder(player, MekanismLang.MEKANISM, true);
         Transmitter<?, ?, ?> transmitter = tile.getTransmitter();
         if (transmitter.hasTransmitterNetwork()) {
+            boolean hasShiftDown = player.isShiftKeyDown();
             DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetworkNN();
             player.sendSystemMessage(MekanismLang.NETWORK_READER_TRANSMITTERS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitterNetwork.transmittersSize()));
             player.sendSystemMessage(MekanismLang.NETWORK_READER_ACCEPTORS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitterNetwork.getAcceptorCount()));
-            sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_NEEDED, transmitterNetwork.getNeededInfo());
-            sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_BUFFER, transmitterNetwork.getStoredInfo());
-            sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_THROUGHPUT, transmitterNetwork.getFlowInfo());
+            sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_NEEDED, transmitterNetwork.getNeededInfo(hasShiftDown));
+            sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_BUFFER, transmitterNetwork.getStoredInfo(hasShiftDown));
+            sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_THROUGHPUT, transmitterNetwork.getFlowInfo(hasShiftDown));
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_CAPACITY, transmitterNetwork.getNetworkReaderCapacity());
             IHeatHandler heatHandler = WorldUtils.getCapability(level, Capabilities.HEAT, pos, null, tile, opposite);
             if (heatHandler != null) {

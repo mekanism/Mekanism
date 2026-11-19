@@ -8,6 +8,7 @@ import mekanism.client.render.IFancyFontRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
+import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
@@ -16,6 +17,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 
@@ -62,6 +64,18 @@ public interface IGuiWrapper extends ContainerEventHandler, IFancyFontRenderer {
     default BooleanSupplier trackWarning(WarningType type, BooleanSupplier warningSupplier) {
         Mekanism.logger.error("Tried to call 'trackWarning' but unsupported in {}", getClass().getName());
         return warningSupplier;
+    }
+
+    default EnergyDisplay energyDisplayOf(EnergyHandler energyHandler) {
+        return energyDisplayOf(energyHandler.getAmountAsLong(), energyHandler.getCapacityAsLong());
+    }
+
+    default EnergyDisplay energyDisplayOf(long energy) {
+        return energyDisplayOf(energy, 0);
+    }
+
+    default EnergyDisplay energyDisplayOf(long energy, long max) {
+        return EnergyDisplay.of(energy, max, Minecraft.getInstance().hasShiftDown());
     }
 
     //TODO - 26.3: Make this render via a PiP so that it supports scaling to sizes greater than one? Maybe we can hijack OversizedItemRenderState?

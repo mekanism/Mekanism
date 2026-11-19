@@ -39,8 +39,8 @@ public class UnitDisplayUtils {
     };
     private static final Unit FORGE_ENERGY = _ -> MekanismLang.ENERGY_FORGE;
 
-    public static Component getEnergyDisplay(long value) {
-        if (MekanismConfig.local.compactEnergyDisplay.get()) {
+    public static Component getEnergyDisplay(long value, boolean fullEnergyDisplay) {
+        if (!fullEnergyDisplay && Math.abs(value) >= MekanismConfig.local.compactEnergyThreshold.get()) {
             return getDisplayBase(value, FORGE_ENERGY, 2, true);
         }
         return FORGE_ENERGY.appendTo(TextUtils.format(value), true, Mth.equal(value, 1));

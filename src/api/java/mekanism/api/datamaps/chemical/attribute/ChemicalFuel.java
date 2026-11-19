@@ -55,9 +55,9 @@ public record ChemicalFuel(int maxBurnPerTick, int energyPerTick) implements ICh
         ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_MAX_BURN.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getFluidDisplay(maxBurnPerTick(), true)));
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-              tooltipHelper.getEnergyPerMBDisplayShort(energyDensity())));
+              tooltipHelper.getEnergyPerMBDisplayShort(energyDensity(), tooltipFlag.hasShiftDown())));
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_MAX_TOTAL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-              tooltipHelper.getEnergyDisplay(getMaxEnergyPerTick(), true)));
+              tooltipHelper.getEnergyDisplay(getMaxEnergyPerTick(), true, tooltipFlag.hasShiftDown())));
     }
 
     private int getMaxEnergyPerTick() {

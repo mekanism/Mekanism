@@ -30,7 +30,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
 
             @Nullable
             @Override
-            public Component getTooltip() {
+            public Component getTooltip(IGuiWrapper gui) {
                 QIOFrequency freq = frequencySupplier.get();
                 return freq == null ? null : MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                       TextUtils.format(freq.getTotalItemCount()), TextUtils.format(freq.getTotalItemCountCapacity()));
@@ -45,7 +45,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
 
             @Nullable
             @Override
-            public Component getTooltip() {
+            public Component getTooltip(IGuiWrapper gui) {
                 QIOFrequency freq = frequencySupplier.get();
                 return freq == null ? null : MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                       TextUtils.format(freq.getTotalItemTypes(true)), TextUtils.format(freq.getTotalItemTypeCapacity()));

@@ -3,6 +3,7 @@ package mekanism.common.integration.lookingat;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.render.IFancyFontRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -33,7 +34,7 @@ public abstract sealed class LookingAtElement implements ILookingAtElement, IFan
                 GuiUtils.drawTiledSprite(guiGraphics, x + 1, y + 1, scale, height - 2, icon, TilingDirection.DOWN_RIGHT, getRenderColor());
             }
         }
-        drawScrollingString(guiGraphics, getText(), x, y + 3, TextAlignment.LEFT, textColor, 4, false);
+        drawScrollingString(guiGraphics, getText(Minecraft.getInstance().hasShiftDown()), x, y + 3, TextAlignment.LEFT, textColor, 4, false);
     }
 
     public int getWidth() {
@@ -54,7 +55,7 @@ public abstract sealed class LookingAtElement implements ILookingAtElement, IFan
     @Nullable
     public abstract TextureAtlasSprite getIcon();
 
-    public abstract Component getText();
+    public abstract Component getText(boolean hasShiftDown);
 
     protected int getRenderColor() {
         return CommonColors.WHITE;

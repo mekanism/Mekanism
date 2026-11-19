@@ -94,7 +94,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
-        Component tooltip = handler.getTooltip();
+        Component tooltip = handler.getTooltip(gui());
         if (!Objects.equals(tooltip, lastInfo)) {
             lastTooltip = TooltipUtils.create(tooltip);
         }
@@ -110,7 +110,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     public interface IBarInfoHandler {
 
         @Nullable
-        default Component getTooltip() {
+        default Component getTooltip(IGuiWrapper gui) {
             return null;
         }
 

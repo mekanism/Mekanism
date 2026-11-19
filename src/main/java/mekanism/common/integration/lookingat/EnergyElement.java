@@ -50,8 +50,8 @@ public non-sealed class EnergyElement extends LookingAtElement {
     }
 
     @Override
-    public Component getText() {
-        return EnergyDisplay.of(energy, maxEnergy).getTextComponent();
+    public Component getText(boolean hasShiftDown) {
+        return EnergyDisplay.of(energy, maxEnergy, hasShiftDown).getTextComponent();
     }
 
     @Override

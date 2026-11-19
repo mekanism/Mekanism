@@ -487,9 +487,9 @@ public class MekanismDataComponents {
 
         event.registerComponentAppenderAfter(INDUCTION_PROVIDER_TIER, SPECIALIZED_TRANSPORTER.get(), ItemTooltipUtils.createComponentAppender(INDUCTION_PROVIDER_TIER));
         event.registerComponentAppenderAfter(INDUCTION_CELL_TIER, INDUCTION_PROVIDER_TIER.get(), ItemTooltipUtils.createComponentAppender(INDUCTION_CELL_TIER));
-        event.registerComponentAppenderAfter(ATTACHED_ENERGY, INDUCTION_CELL_TIER.get(), ItemTooltipUtils.createSimpleAppender(ATTACHED_ENERGY, (stack, energy, _, _, _, _, builder) -> {
+        event.registerComponentAppenderAfter(ATTACHED_ENERGY, INDUCTION_CELL_TIER.get(), ItemTooltipUtils.createSimpleAppender(ATTACHED_ENERGY, (stack, energy, _, _, _, flag, builder) -> {
             EnergyHandler energyHandler = ContainerType.ENERGY.getCapOrUnexposed(ItemAccessUtils.sideEffectFreeAccess(stack, 1));
-            EnergyDisplay display = energyHandler == null ? EnergyDisplay.of(energy) : EnergyDisplay.of(energyHandler);
+            EnergyDisplay display = energyHandler == null ? EnergyDisplay.of(energy, flag.hasShiftDown()) : EnergyDisplay.of(energyHandler, flag.hasShiftDown());
             builder.accept(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, display));
         }));
         event.registerComponentAppenderAfter(ENERGY_CUBE_TIER, ATTACHED_ENERGY.get(), ItemTooltipUtils.createComponentAppender(ENERGY_CUBE_TIER));

@@ -98,7 +98,9 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         if (slotType == EquipmentSlot.FEET) {
             list.add(MekanismLang.FREE_RUNNERS_MODE.translateColored(EnumColor.GRAY, getMode(instance).getTextComponent()));
             EnergyHandler energyHandler = ContainerType.ENERGY.getCapOrUnexposed(ItemAccessUtils.sideEffectFreeAccess(instance, 1));
-            EnergyDisplay display = energyHandler == null ? EnergyDisplay.ZERO : EnergyDisplay.of(energyHandler);
+            //Don't display the full energy value unless they have their config set to display it as we don't want to make their hud have random changes
+            // going on when they are sneaking
+            EnergyDisplay display = energyHandler == null ? EnergyDisplay.ZERO : EnergyDisplay.of(energyHandler, false);
             list.add(MekanismLang.FREE_RUNNERS_STORED.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, display));
         }
     }

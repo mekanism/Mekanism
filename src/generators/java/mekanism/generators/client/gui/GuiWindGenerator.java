@@ -34,17 +34,17 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 48, 21, 80, 44, () -> {
             List<Component> list = new ArrayList<>();
-            list.add(EnergyDisplay.of(tile.energyContainer()).getTextComponent());
+            list.add(energyDisplayOf(tile.energyContainer()).getTextComponent());
             long amount = tile.getCurrentGeneration();
-            list.add(GeneratorsLang.POWER.translate(EnergyDisplay.of(amount)));
+            list.add(GeneratorsLang.POWER.translate(energyDisplayOf(amount)));
             if (!tile.getActive()) {
                 ILangEntry reason = tile.isBlacklistDimension() ? GeneratorsLang.NO_WIND : GeneratorsLang.SKY_BLOCKED;
                 list.add(reason.translateColored(EnumColor.DARK_RED));
             }
             return list;
         }));
-        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(
-              GeneratorsLang.PRODUCING_AMOUNT.translate(tile.getActive() ? EnergyDisplay.of(tile.getCurrentGeneration()) : EnergyDisplay.ZERO)
+        addRenderableWidget(new GuiEnergyTab(this, gui -> List.of(
+              GeneratorsLang.PRODUCING_AMOUNT.translate(tile.getActive() ? gui.energyDisplayOf(tile.getCurrentGeneration()) : EnergyDisplay.ZERO)
         )));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15));
         addRenderableWidget(new GuiStateTexture(this, 18, 35, tile::getActive, MekanismGenerators.rl("state/wind_on"), MekanismGenerators.rl("state/wind_off")));

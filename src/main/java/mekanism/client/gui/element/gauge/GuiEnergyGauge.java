@@ -8,7 +8,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
@@ -84,7 +83,7 @@ public class GuiEnergyGauge extends GuiGauge<@Nullable Void> {
             //Note: Should never be less than zero unless something went wrong, but handle rendering more gracefully in case it did
             return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
-        return Collections.singletonList(EnergyDisplay.of(energy, infoHandler.getMaxEnergy()).getTextComponent());
+        return Collections.singletonList(gui().energyDisplayOf(energy, infoHandler.getMaxEnergy()).getTextComponent());
     }
 
     public static IEnergyInfoHandler getInfoHandler(IEnergyContainer container) {

@@ -10,7 +10,6 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -29,11 +28,11 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Mek
         //Add the side holder before the slots, as it holds a couple of the slots
         addRenderableWidget(GuiSideHolder.create(this, -26, 6, 98, true, true, SpecialColors.TAB_ARMOR_SLOTS));
         super.addGuiElements();
-        addRenderableWidget(new GuiEnergyTab(this, () -> {
+        addRenderableWidget(new GuiEnergyTab(this, gui -> {
             long fuelDensity = tile.getCachedFuel() == null ? 0 : tile.getCachedFuel().energyDensity();
             long productionAmount = MathUtils.clampToLong(fuelDensity * tile.getUsed());
             return List.of(
-                  GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(productionAmount))
+                  GeneratorsLang.PRODUCING_AMOUNT.translate(gui.energyDisplayOf(productionAmount))
             );
         }));
         addRenderableWidget(new GuiChemicalGauge(tile::getFuelTank, tile::getChemicalTanks, GaugeType.WIDE, this, 55, 18));

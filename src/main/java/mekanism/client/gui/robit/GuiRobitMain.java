@@ -24,7 +24,6 @@ import mekanism.common.network.to_server.PacketEntityGuiInteract;
 import mekanism.common.network.to_server.PacketEntityGuiInteract.GuiInteractionEntity;
 import mekanism.common.network.to_server.button.PacketEntityButtonPress;
 import mekanism.common.network.to_server.button.PacketEntityButtonPress.ClickedEntityButton;
-import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
@@ -74,7 +73,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         addRenderableWidget(new GuiInnerScreen(this, 27, 16, 122, 56, () -> List.of(
               MekanismLang.ROBIT_GREETING.translate(robit.getName()),
               CommonComponents.EMPTY,
-              MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer().getAmountAsLong())),
+              MekanismLang.ENERGY.translate(energyDisplayOf(robit.getEnergyContainer().getAmountAsLong())),
               MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()),
               MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()),
               MekanismLang.ROBIT_OWNER.translate(robit.getOwnerName())

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -45,7 +46,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             List<Component> list = new ArrayList<>();
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
-                list.add(GeneratorsLang.TURBINE_PRODUCTION_AMOUNT.translate(EnergyDisplay.of(multiblock.getProductionRate())));
+                list.add(GeneratorsLang.TURBINE_PRODUCTION_AMOUNT.translate(energyDisplayOf(multiblock.getProductionRate())));
                 list.add(GeneratorsLang.TURBINE_FLOW_RATE.translate(TextUtils.format(multiblock.clientFlow)));
                 list.add(GeneratorsLang.TURBINE_CAPACITY.translate(TextUtils.format(multiblock.getSteamCapacity())));
                 list.add(GeneratorsLang.TURBINE_MAX_FLOW.translate(TextUtils.format(multiblock.getMaxFlowRate())));
@@ -55,10 +56,10 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         addRenderableWidget(new GuiTurbineTab(this, tile, TurbineTab.STAT));
         addRenderableWidget(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
-            public Component getTooltip() {
+            public Component getTooltip(IGuiWrapper gui) {
                 TurbineMultiblockData multiblock = tile.getMultiblock();
                 if (multiblock.isFormed()) {
-                    return EnergyDisplay.of(multiblock.energyContainer()).getTextComponent();
+                    return gui.energyDisplayOf(multiblock.energyContainer()).getTextComponent();
                 }
                 return EnergyDisplay.ZERO.getTextComponent();
             }
@@ -74,7 +75,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         }, 178, 16));
         addRenderableWidget(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
-            public Component getTooltip() {
+            public Component getTooltip(IGuiWrapper gui) {
                 return GeneratorsLang.TURBINE_STEAM_INPUT_RATE.translate(TextUtils.format(tile.getMultiblock().lastSteamInput));
             }
 
@@ -93,13 +94,13 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             }
         }, 40, 13));
         addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().chemicalTank, () -> tile.getMultiblock().getChemicalTanks(), GaugeType.MEDIUM, this, 6, 13));
-        addRenderableWidget(new GuiEnergyTab(this, () -> {
+        addRenderableWidget(new GuiEnergyTab(this, gui -> {
             EnergyDisplay storing;
             EnergyDisplay producing;
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
-                storing = EnergyDisplay.of(multiblock.energyContainer());
-                producing = EnergyDisplay.of(multiblock.getProductionRate());
+                storing = gui.energyDisplayOf(multiblock.energyContainer());
+                producing = gui.energyDisplayOf(multiblock.getProductionRate());
             } else {
                 storing = EnergyDisplay.ZERO;
                 producing = EnergyDisplay.ZERO;

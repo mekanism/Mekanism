@@ -156,18 +156,18 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
     }
 
     @Override
-    public Component getNeededInfo() {
-        return EnergyDisplay.of(energyContainer.getNeededAsLong()).getTextComponent();
+    public Component getNeededInfo(boolean hasShiftDown) {
+        return EnergyDisplay.of(energyContainer.getNeededAsLong(), hasShiftDown).getTextComponent();
     }
 
     @Override
-    public Component getStoredInfo() {
-        return EnergyDisplay.of(energyContainer.getAmountAsLong()).getTextComponent();
+    public Component getStoredInfo(boolean hasShiftDown) {
+        return EnergyDisplay.of(energyContainer.getAmountAsLong(), hasShiftDown).getTextComponent();
     }
 
     @Override
-    public Component getFlowInfo() {
-        return MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(prevTransferAmount));
+    public Component getFlowInfo(boolean hasShiftDown) {
+        return MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(prevTransferAmount, hasShiftDown));
     }
 
     @Override

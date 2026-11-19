@@ -61,7 +61,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         addRenderableWidget(GuiTexturedElement.downArrow(this, 156, 39));
         addRenderableWidget(new GuiHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
-            public Component getTooltip() {
+            public Component getTooltip(IGuiWrapper gui) {
                 return MekanismUtils.getTemperatureDisplay(tile.getMultiblock().getTemperature(), TemperatureUnit.KELVIN, true);
             }
 

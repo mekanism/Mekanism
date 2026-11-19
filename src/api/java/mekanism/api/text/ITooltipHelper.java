@@ -11,7 +11,7 @@ public interface ITooltipHelper {
 
     ITooltipHelper INSTANCE = MekanismAPI.getService(ITooltipHelper.class);
 
-    Component getEnergyPerMBDisplayShort(long energy);
+    Component getEnergyPerMBDisplayShort(long energy, boolean fullEnergyDisplay);
 
     Component getRadioactivityDisplayShort(double radioactivity);
 
@@ -21,7 +21,7 @@ public interface ITooltipHelper {
 
     Component getPercent(double ratio);
 
-    Component getEnergyDisplay(long energy, boolean perTick);
+    Component getEnergyDisplay(long energy, boolean perTick, boolean fullEnergyDisplay);
 
     Component getFluidDisplay(long mb, boolean perTick);
 }

@@ -5,7 +5,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -22,8 +21,8 @@ public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
     public GuiVerticalPowerBar(IGuiWrapper gui, IEnergyContainer container, int x, int y, int desiredHeight) {
         this(gui, new IBarInfoHandler() {
             @Override
-            public Component getTooltip() {
-                return EnergyDisplay.of(container).getTextComponent();
+            public Component getTooltip(IGuiWrapper gui) {
+                return gui.energyDisplayOf(container).getTextComponent();
             }
 
             @Override

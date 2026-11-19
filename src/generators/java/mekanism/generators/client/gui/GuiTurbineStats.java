@@ -28,13 +28,13 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiTurbineTab(this, tile, TurbineTab.MAIN));
-        addRenderableWidget(new GuiEnergyTab(this, () -> {
+        addRenderableWidget(new GuiEnergyTab(this, gui -> {
             EnergyDisplay storing;
             EnergyDisplay producing;
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
-                storing = EnergyDisplay.of(multiblock.energyContainer());
-                producing = EnergyDisplay.of(multiblock.getProductionRate());
+                storing = gui.energyDisplayOf(multiblock.energyContainer());
+                producing = gui.energyDisplayOf(multiblock.getProductionRate());
             } else {
                 storing = EnergyDisplay.ZERO;
                 producing = EnergyDisplay.ZERO;
@@ -65,7 +65,7 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
             drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_PRODUCTION.translate(), 0, 72, TextAlignment.LEFT, subheadingTextColor(), 6, false);
             drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_BLADES.translate(blades, coils * 4 > blades ? limiting : ""), 4, 81, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 4, 6, false);
             drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_COILS.translate(coils, coils * 4 < blades ? limiting : ""), 4, 90, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 4, 6, false);
-            drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(EnergyDisplay.of(multiblock.getMaxProduction())), 0, 104, TextAlignment.LEFT, titleTextColor(), 6, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(energyDisplayOf(multiblock.getMaxProduction())), 0, 104, TextAlignment.LEFT, titleTextColor(), 6, false);
             drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_MAX_WATER_OUTPUT.translate(TextUtils.format(multiblock.getMaxWaterOutput())), 0, 113, TextAlignment.LEFT, titleTextColor(), 6, false);
         }
         super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);

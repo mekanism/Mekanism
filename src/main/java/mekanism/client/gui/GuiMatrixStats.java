@@ -14,7 +14,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
-import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -43,8 +42,8 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
         }, GaugeType.STANDARD, this, 6, 13));
         addRenderableWidget(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
-            public Component getTooltip() {
-                return MekanismLang.MATRIX_RECEIVING_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastInput()));
+            public Component getTooltip(IGuiWrapper gui) {
+                return MekanismLang.MATRIX_RECEIVING_RATE.translate(gui.energyDisplayOf(tile.getMultiblock().getLastInput()));
             }
 
             @Override
@@ -55,8 +54,8 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
         }, 30, 13));
         addRenderableWidget(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
-            public Component getTooltip() {
-                return MekanismLang.MATRIX_OUTPUTTING_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastOutput()));
+            public Component getTooltip(IGuiWrapper gui) {
+                return MekanismLang.MATRIX_OUTPUTTING_RATE.translate(gui.energyDisplayOf(tile.getMultiblock().getLastOutput()));
             }
 
             @Override
@@ -68,11 +67,11 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
                 return MathUtils.divideToLevel(multiblock.getLastOutput(), multiblock.getTransferCap());
             }
         }, 38, 13));
-        addRenderableWidget(new GuiEnergyTab(this, () -> {
+        addRenderableWidget(new GuiEnergyTab(this, gui -> {
             MatrixMultiblockData multiblock = tile.getMultiblock();
-            return List.of(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.getEnergy(), multiblock.getStorageCap())),
-                  MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(multiblock.getLastInput())),
-                  MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(multiblock.getLastOutput())));
+            return List.of(MekanismLang.STORING.translate(gui.energyDisplayOf(multiblock.getEnergy(), multiblock.getStorageCap())),
+                  MekanismLang.MATRIX_INPUT_RATE.translate(gui.energyDisplayOf(multiblock.getLastInput())),
+                  MekanismLang.MATRIX_OUTPUT_RATE.translate(gui.energyDisplayOf(multiblock.getLastOutput())));
         }));
     }
 
@@ -81,9 +80,9 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
         renderTitleText(guiGraphics);
         MatrixMultiblockData multiblock = tile.getMultiblock();
         drawScrollingString(guiGraphics, MekanismLang.INPUT.translate(), 45, 26, TextAlignment.LEFT, subheadingTextColor(), this.getImageWidth() - 54, 8, false);
-        drawScrollingString(guiGraphics, EnergyDisplay.of(multiblock.getLastInput(), multiblock.getTransferCap()).getTextComponent(), 51, 35, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 60, 8, false);
+        drawScrollingString(guiGraphics, energyDisplayOf(multiblock.getLastInput(), multiblock.getTransferCap()).getTextComponent(), 51, 35, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 60, 8, false);
         drawScrollingString(guiGraphics, MekanismLang.OUTPUT.translate(), 45, 46, TextAlignment.LEFT, subheadingTextColor(), this.getImageWidth() - 54, 8, false);
-        drawScrollingString(guiGraphics, EnergyDisplay.of(multiblock.getLastOutput(), multiblock.getTransferCap()).getTextComponent(), 51, 55, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 60, 8, false);
+        drawScrollingString(guiGraphics, energyDisplayOf(multiblock.getLastOutput(), multiblock.getTransferCap()).getTextComponent(), 51, 55, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 60, 8, false);
         drawScrollingString(guiGraphics, MekanismLang.MATRIX_DIMENSIONS.translate(), 0, 82, TextAlignment.LEFT, subheadingTextColor(), 8, false);
         if (multiblock.isFormed()) {
             drawScrollingString(guiGraphics, MekanismLang.MATRIX_DIMENSION_REPRESENTATION.translate(multiblock.width(), multiblock.height(), multiblock.length()), 6, 91, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 6, 8, false);

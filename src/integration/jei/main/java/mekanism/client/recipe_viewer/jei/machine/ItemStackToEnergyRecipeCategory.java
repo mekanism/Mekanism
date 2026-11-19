@@ -11,7 +11,6 @@ import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.text.EnergyDisplay;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
@@ -60,7 +59,7 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
             int energy = getOutputEnergy(recipeHolder, recipeSlotsView);
             if (energy > 0) {
                 //Manually add the tooltip showing the amounts if the mouse is over the energy gauge
-                tooltip.add(EnergyDisplay.of(energy).getTextComponent());
+                tooltip.add(energyDisplayOf(energy).getTextComponent());
                 if (Minecraft.getInstance().options.advancedItemTooltips || Minecraft.getInstance().hasShiftDown()) {
                     tooltip.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, MekanismLang.JEI_RECIPE_ID.translate(recipeHolder.id())));
                 }

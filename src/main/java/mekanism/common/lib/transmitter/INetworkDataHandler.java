@@ -6,17 +6,17 @@ import org.jspecify.annotations.Nullable;
 public interface INetworkDataHandler {
 
     @Nullable
-    default Component getNeededInfo() {
+    default Component getNeededInfo(boolean hasShiftDown) {
         return null;
     }
 
     @Nullable
-    default Component getStoredInfo() {
+    default Component getStoredInfo(boolean hasShiftDown) {
         return null;
     }
 
     @Nullable
-    default Component getFlowInfo() {
+    default Component getFlowInfo(boolean hasShiftDown) {
         return null;
     }
 

@@ -26,7 +26,6 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.network.to_server.button.PacketTileButtonPress;
 import mekanism.common.network.to_server.button.PacketTileButtonPress.ClickedTileButton;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -90,12 +89,12 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addRenderableWidget(new GuiSlot(this, missingStackX, 21).setRenderAboveSlots().validity(() -> tile.missingStack)
               .with(() -> tile.missingStack.isEmpty() ? SlotOverlay.CHECK : null)
               .hover(element -> ((GuiDigitalMiner) element.gui()).tile.missingStack.isEmpty() ? List.of(MekanismLang.MINER_WELL.translate()) : List.of(MekanismLang.MINER_MISSING_BLOCK.translate())));
-        addRenderableWidget(new GuiEnergyTab(this, () -> {
+        addRenderableWidget(new GuiEnergyTab(this, gui -> {
             MinerEnergyContainer energyContainer = tile.energyContainer();
             return List.of(
-                  MekanismLang.MINER_ENERGY_CAPACITY.translate(EnergyDisplay.of(energyContainer.getCapacityAsLong())),
-                  MekanismLang.NEEDED_PER_TICK.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),
-                  MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(energyContainer.getNeededAsLong()))
+                  MekanismLang.MINER_ENERGY_CAPACITY.translate(gui.energyDisplayOf(energyContainer.getCapacityAsLong())),
+                  MekanismLang.NEEDED_PER_TICK.translate(gui.energyDisplayOf(energyContainer.getEnergyPerTick())),
+                  MekanismLang.MINER_BUFFER_FREE.translate(gui.energyDisplayOf(energyContainer.getNeededAsLong()))
             );
         }));
 

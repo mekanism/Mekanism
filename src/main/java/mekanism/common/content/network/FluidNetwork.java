@@ -41,7 +41,7 @@ public class FluidNetwork extends DynamicBufferedResourceNetwork<FluidResource, 
     }
 
     @Override
-    public Component getNeededInfo() {
+    public Component getNeededInfo(boolean hasShiftDown) {
         return MekanismLang.FLUID_NETWORK_NEEDED.translate(container.getNeededAsLong(FluidResource.EMPTY) / (float) FluidType.BUCKET_VOLUME);
     }
 

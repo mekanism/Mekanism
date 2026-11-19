@@ -32,7 +32,7 @@ public class SPSEmiRecipe extends MekanismEmiRecipe<SPSRecipeViewerRecipe> {
         addElement(widgetHolder, new GuiInnerScreen(this, 26, 13, 122, 60, () -> {
             List<Component> list = new ArrayList<>();
             list.add(MekanismLang.STATUS.translate(MekanismLang.ACTIVE));
-            list.add(MekanismLang.SPS_ENERGY_INPUT.translate(EnergyDisplay.of(
+            list.add(MekanismLang.SPS_ENERGY_INPUT.translate(energyDisplayOf(
                   MathUtils.multiplyClamped(MekanismConfig.general.spsEnergyPerInput.get(), MekanismConfig.general.spsInputPerAntimatter.get()))));
             list.add(MekanismLang.PROCESS_RATE_MB.translate(1.0));
             return list;

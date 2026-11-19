@@ -14,7 +14,6 @@ import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.Color;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -39,14 +38,14 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
             boolean active = multiblock.lastProcessed > 0;
             list.add(MekanismLang.STATUS.translate(active ? MekanismLang.ACTIVE : MekanismLang.IDLE));
             if (active) {
-                list.add(MekanismLang.SPS_ENERGY_INPUT.translate(EnergyDisplay.of(multiblock.lastReceivedEnergy)));
+                list.add(MekanismLang.SPS_ENERGY_INPUT.translate(energyDisplayOf(multiblock.lastReceivedEnergy)));
                 list.add(MekanismLang.PROCESS_RATE_MB.translate(multiblock.getProcessRate()));
             }
             return list;
         }).recipeViewerCategories(RecipeViewerRecipeType.SPS));
         addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
-            public Component getTooltip() {
+            public Component getTooltip(IGuiWrapper gui) {
                 return MekanismLang.PROGRESS.translate(TextUtils.getPercent(tile.getMultiblock().getScaledProgress()));
             }
 

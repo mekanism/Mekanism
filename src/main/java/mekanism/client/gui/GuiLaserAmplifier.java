@@ -12,7 +12,6 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -34,7 +33,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     protected void addGuiElements() {
         super.addGuiElements();
         energyGauge = addRenderableWidget(new GuiEnergyGauge(tile.energyContainer(), GaugeType.STANDARD, this, 6, 10));
-        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(MekanismLang.STORING.translate(EnergyDisplay.of(tile.energyContainer())))));
+        addRenderableWidget(new GuiEnergyTab(this, gui -> List.of(MekanismLang.STORING.translate(gui.energyDisplayOf(tile.energyContainer())))));
         addRenderableWidget(new GuiAmplifierTab(this, tile));
         addRenderableWidget(new GuiTextField(this, TEXT_BOX_START, 28, 36, 11))
               .setMaxLength(4)
@@ -62,8 +61,8 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
             delay = MekanismLang.NO_DELAY.translate();
         }
         drawScrollingString(guiGraphics, delay, start, 30, TextAlignment.LEFT, titleTextColor(), TEXT_BOX_START - start, 2, false);
-        drawScrollingString(guiGraphics, MekanismLang.MIN.translate(EnergyDisplay.of(tile.getMinThreshold())), start, 45, TextAlignment.LEFT, titleTextColor(), TEXT_BOX_START - start, 2, false);
-        drawScrollingString(guiGraphics, MekanismLang.MAX.translate(EnergyDisplay.of(tile.getMaxThreshold())), start, 60, TextAlignment.LEFT, titleTextColor(), TEXT_BOX_START - start, 2, false);
+        drawScrollingString(guiGraphics, MekanismLang.MIN.translate(energyDisplayOf(tile.getMinThreshold())), start, 45, TextAlignment.LEFT, titleTextColor(), TEXT_BOX_START - start, 2, false);
+        drawScrollingString(guiGraphics, MekanismLang.MAX.translate(energyDisplayOf(tile.getMaxThreshold())), start, 60, TextAlignment.LEFT, titleTextColor(), TEXT_BOX_START - start, 2, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY, partialTicks);
     }
 

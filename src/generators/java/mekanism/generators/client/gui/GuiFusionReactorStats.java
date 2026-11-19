@@ -4,7 +4,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import mekanism.generators.client.gui.element.GuiFusionReactorTab;
 import mekanism.generators.client.gui.element.GuiFusionReactorTab.FusionReactorTab;
@@ -44,7 +43,7 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
                   indentation, 56, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
             drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_MAX_CASING.translate(MekanismUtils.getTemperatureDisplay(multiblock.getMaxCasingTemperature(false), TemperatureUnit.KELVIN, true)),
                   indentation, 66, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
-            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_PASSIVE_RATE.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(false, false))),
+            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_PASSIVE_RATE.translate(energyDisplayOf(multiblock.getPassiveGeneration(false, false))),
                   indentation, 76, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
 
             drawScrollingString(guiGraphics,GeneratorsLang.REACTOR_ACTIVE.translateColored(EnumColor.DARK_BLUE),
@@ -57,7 +56,7 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
                   indentation, 122, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
             drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_MAX_CASING.translate(MekanismUtils.getTemperatureDisplay(multiblock.getMaxCasingTemperature(true), TemperatureUnit.KELVIN, true)),
                   indentation, 132, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
-            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_PASSIVE_RATE.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(true, false))),
+            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_PASSIVE_RATE.translate(energyDisplayOf(multiblock.getPassiveGeneration(true, false))),
                   indentation, 142, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
             drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_STEAM_PRODUCTION.translate(TextUtils.format(multiblock.getSteamPerTick(false))),
                   indentation, 152, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);

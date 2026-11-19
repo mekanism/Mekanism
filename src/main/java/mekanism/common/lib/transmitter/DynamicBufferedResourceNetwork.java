@@ -175,7 +175,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     }
 
     @Override
-    public Component getStoredInfo() {
+    public Component getStoredInfo(boolean hasShiftDown) {
         if (container.isEmpty()) {
             return MekanismLang.NONE.translate();
         }
@@ -183,7 +183,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     }
 
     @Override
-    public Component getFlowInfo() {
+    public Component getFlowInfo(boolean hasShiftDown) {
         return MekanismLang.NETWORK_MB_PER_TICK.translate(prevTransferAmount);
     }
 

@@ -17,7 +17,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
-import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,10 +39,10 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         addRenderableWidget(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
         addRenderableWidget(new GuiInnerScreen(this, 49, 21, 84, 46, () -> {
             MatrixMultiblockData multiblock = tile.getMultiblock();
-            return List.of(MekanismLang.ENERGY.translate(EnergyDisplay.of(multiblock.getEnergy())),
-                  MekanismLang.CAPACITY.translate(EnergyDisplay.of(multiblock.getStorageCap())),
-                  MekanismLang.MATRIX_INPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(multiblock.getLastInput()))),
-                  MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(multiblock.getLastOutput()))));
+            return List.of(MekanismLang.ENERGY.translate(energyDisplayOf(multiblock.getEnergy())),
+                  MekanismLang.CAPACITY.translate(energyDisplayOf(multiblock.getStorageCap())),
+                  MekanismLang.MATRIX_INPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(energyDisplayOf(multiblock.getLastInput()))),
+                  MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(energyDisplayOf(multiblock.getLastOutput()))));
         }).spacing(1));
         addRenderableWidget(new GuiMatrixTab(this, tile, MatrixTab.STAT));
         addRenderableWidget(new GuiEnergyGauge(new IEnergyInfoHandler() {
@@ -57,11 +56,11 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
                 return tile.getMultiblock().getStorageCap();
             }
         }, GaugeType.MEDIUM, this, 7, 16, 34, 56));
-        addRenderableWidget(new GuiEnergyTab(this, () -> {
+        addRenderableWidget(new GuiEnergyTab(this, gui -> {
             MatrixMultiblockData multiblock = tile.getMultiblock();
-            return List.of(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.getEnergy(), multiblock.getStorageCap())),
-                  MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(multiblock.getLastInput())),
-                  MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(multiblock.getLastOutput())));
+            return List.of(MekanismLang.STORING.translate(gui.energyDisplayOf(multiblock.getEnergy(), multiblock.getStorageCap())),
+                  MekanismLang.MATRIX_INPUT_RATE.translate(gui.energyDisplayOf(multiblock.getLastInput())),
+                  MekanismLang.MATRIX_OUTPUT_RATE.translate(gui.energyDisplayOf(multiblock.getLastOutput())));
         }));
     }
 

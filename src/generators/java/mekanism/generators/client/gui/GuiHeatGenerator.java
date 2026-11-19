@@ -15,7 +15,6 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.IWarningTracker;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -34,8 +33,8 @@ public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, M
         //Add the side holder before the slots, as it holds a couple of the slots
         addRenderableWidget(GuiSideHolder.create(this, -26, 6, 98, true, true, SpecialColors.TAB_ARMOR_SLOTS));
         super.addGuiElements();
-        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(
-              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProductionRate()))
+        addRenderableWidget(new GuiEnergyTab(this, gui -> List.of(
+              GeneratorsLang.PRODUCING_AMOUNT.translate(gui.energyDisplayOf(tile.getProductionRate()))
         )));
         addRenderableWidget(new GuiFluidGauge(() -> tile.lavaTank, tile::getFluidTanks, GaugeType.WIDE, this, 55, 18));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15));

@@ -19,7 +19,6 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -38,7 +37,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 48, 23, 80, 42, () -> List.of(
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)),
-              MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.energyContainer().getEnergyPerTick()))
+              MekanismLang.RESISTIVE_HEATER_USAGE.translate(energyDisplayOf(tile.energyContainer().getEnergyPerTick()))
         )).clearFormat());
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {

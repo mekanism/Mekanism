@@ -36,7 +36,7 @@ public abstract sealed class ResourceElement<RESOURCE extends Resource> extends 
     }
 
     @Override
-    public Component getText() {
+    public Component getText(boolean hasShiftDown) {
         if (stored.isEmpty()) {
             return MekanismLang.EMPTY.translate();
         } else if (stored.amount() == Long.MAX_VALUE) {

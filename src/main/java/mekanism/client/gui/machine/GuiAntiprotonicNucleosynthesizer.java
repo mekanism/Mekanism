@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiInnerScreen.VerticalPositioning;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -82,7 +83,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
         addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
-            public Component getTooltip() {
+            public Component getTooltip(IGuiWrapper gui) {
                 return MekanismLang.PROGRESS.translate(TextUtils.getPercent(tile.getScaledProgress()));
             }
 

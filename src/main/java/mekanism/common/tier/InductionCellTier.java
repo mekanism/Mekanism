@@ -69,7 +69,7 @@ public enum InductionCellTier implements ITier, TooltipProvider {
 
     @Override
     public void addToTooltip(TooltipContext context, Consumer<Component> builder, TooltipFlag flag, DataComponentGetter components) {
-        builder.accept(MekanismLang.CAPACITY.translateColored(getBaseTier().getTextColor(), EnumColor.GRAY, EnergyDisplay.of(getMaxEnergy())));
+        builder.accept(MekanismLang.CAPACITY.translateColored(getBaseTier().getTextColor(), EnumColor.GRAY, EnergyDisplay.of(getMaxEnergy(), flag.hasShiftDown())));
     }
 
     /// ONLY CALL THIS FROM TierConfig. It is used to give the InductionCellTier a reference to the actual config value object

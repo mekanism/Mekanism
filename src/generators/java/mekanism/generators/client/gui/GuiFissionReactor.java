@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiBigLight;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -106,7 +107,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
         addRenderableWidget(new GuiBigLight(this, 173, 76, tile.getMultiblock()::isActive));
         addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
-            public Component getTooltip() {
+            public Component getTooltip(IGuiWrapper gui) {
                 return MekanismUtils.getTemperatureDisplay(tile.getMultiblock().heatCapacitor.getTemperature(), TemperatureUnit.KELVIN, true);
             }
 

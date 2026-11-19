@@ -15,7 +15,6 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
-import mekanism.common.util.text.EnergyDisplay;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.ICodecHelper;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -34,7 +33,7 @@ public class SPSRecipeCategory extends SyntheticRecipeCategory<SPSRecipeViewerRe
         addElement(new GuiInnerScreen(this, 26, 13, 122, 60, () -> {
             List<Component> list = new ArrayList<>();
             list.add(MekanismLang.STATUS.translate(MekanismLang.ACTIVE));
-            list.add(MekanismLang.SPS_ENERGY_INPUT.translate(EnergyDisplay.of(
+            list.add(MekanismLang.SPS_ENERGY_INPUT.translate(energyDisplayOf(
                   MathUtils.multiplyClamped(MekanismConfig.general.spsEnergyPerInput.get(), MekanismConfig.general.spsInputPerAntimatter.get()))));
             list.add(MekanismLang.PROCESS_RATE_MB.translate(1.0));
             return list;

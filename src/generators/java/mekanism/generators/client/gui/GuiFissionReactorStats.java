@@ -2,6 +2,7 @@ package mekanism.generators.client.gui;
 
 import java.util.Collections;
 import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.tab.GuiHeatTab;
@@ -41,7 +42,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         addRenderableWidget(new GuiFissionReactorTab(this, tile, FissionReactorTab.MAIN));
         addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
-            public Component getTooltip() {
+            public Component getTooltip(IGuiWrapper gui) {
                 return GeneratorsLang.GAS_BURN_RATE.translate(tile.getMultiblock().lastBurnRate);
             }
 

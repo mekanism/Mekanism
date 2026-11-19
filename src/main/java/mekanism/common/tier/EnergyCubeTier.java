@@ -84,7 +84,7 @@ public enum EnergyCubeTier implements IStorageTier, TooltipProvider {
 
     @Override
     public void addToTooltip(TooltipContext context, Consumer<Component> builder, TooltipFlag flag, DataComponentGetter components) {
-        builder.accept(MekanismLang.CAPACITY.translateColored(getBaseTier().getTextColor(), EnumColor.GRAY, EnergyDisplay.of(getCapacity())));
+        builder.accept(MekanismLang.CAPACITY.translateColored(getBaseTier().getTextColor(), EnumColor.GRAY, EnergyDisplay.of(getCapacity(), flag.hasShiftDown())));
     }
 
     /// ONLY CALL THIS FROM TierConfig. It is used to give the EnergyCubeTier a reference to the actual config value object

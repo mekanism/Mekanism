@@ -48,7 +48,7 @@ public class ChemicalNetwork extends DynamicBufferedResourceNetwork<ChemicalReso
     }
 
     @Override
-    public Component getNeededInfo() {
+    public Component getNeededInfo(boolean hasShiftDown) {
         return TextComponentUtil.build(container.getNeededAsLong(ChemicalResource.EMPTY));
     }
 

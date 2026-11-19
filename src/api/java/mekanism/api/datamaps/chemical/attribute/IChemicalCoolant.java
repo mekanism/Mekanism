@@ -39,7 +39,7 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
         ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getPercent(conductivity())));
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-              tooltipHelper.getEnergyPerMBDisplayShort(MathUtils.clampToLong(thermalEnthalpy()))));
+              tooltipHelper.getEnergyPerMBDisplayShort(MathUtils.clampToLong(thermalEnthalpy()), tooltipFlag.hasShiftDown())));
     }
 
     static <COOLANT extends IChemicalCoolant> Products.P3<Mu<COOLANT>, Holder<Chemical>, Double, Double> createBaseCodec(RecordCodecBuilder.Instance<COOLANT> instance,

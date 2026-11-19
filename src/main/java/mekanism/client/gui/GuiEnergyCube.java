@@ -10,7 +10,6 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityEnergyCube;
-import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -34,8 +33,8 @@ public class GuiEnergyCube extends GuiConfigurableTile<TileEntityEnergyCube, Mek
         addRenderableWidget(GuiSideHolder.create(this, imageWidth, 36, 98, false, true, SpecialColors.TAB_ARMOR_SLOTS));
         super.addGuiElements();
         addRenderableWidget(new GuiEnergyGauge(tile.energyContainer(), GaugeType.WIDE, this, 55, 18));
-        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getInputRate())),
-              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getTier().getTransferRate())))));
+        addRenderableWidget(new GuiEnergyTab(this, gui -> List.of(MekanismLang.MATRIX_INPUT_RATE.translate(gui.energyDisplayOf(tile.getInputRate())),
+              MekanismLang.MAX_OUTPUT.translate(gui.energyDisplayOf(tile.getTier().getTransferRate())))));
     }
 
     @Override

@@ -29,12 +29,12 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
     }
 
     @Override
-    public Component getStoredInfo() {
+    public Component getStoredInfo(boolean hasShiftDown) {
         return MekanismLang.HEAT_NETWORK_STORED.translate(MekanismUtils.getTemperatureDisplay(meanTemp, TemperatureUnit.KELVIN, true));
     }
 
     @Override
-    public Component getFlowInfo() {
+    public Component getFlowInfo(boolean hasShiftDown) {
         Component transferred = MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN, false);
         Component lost = MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN, false);
         if (heatTransferred + heatLost == 0) {

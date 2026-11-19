@@ -16,7 +16,6 @@ import mekanism.common.network.to_server.button.PacketTileButtonPress;
 import mekanism.common.network.to_server.button.PacketTileButtonPress.ClickedTileButton;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
@@ -37,10 +36,10 @@ public abstract class GuiFusionReactorInfo extends GuiMekanismTile<TileEntityFus
         addRenderableWidget(new MekanismImageButton(this, 6, 6, 14, Mekanism.rl("button/back"),
               (element, _, _) -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.BACK_BUTTON, ((GuiFusionReactorInfo) element.gui()).tile))))
               .setTooltip(TooltipUtils.BACK);
-        addRenderableWidget(new GuiEnergyTab(this, () -> {
+        addRenderableWidget(new GuiEnergyTab(this, gui -> {
             FusionReactorMultiblockData multiblock = tile.getMultiblock();
-            return List.of(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.energyContainer())),
-                  GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(false, true))));
+            return List.of(MekanismLang.STORING.translate(gui.energyDisplayOf(multiblock.energyContainer())),
+                  GeneratorsLang.PRODUCING_AMOUNT.translate(gui.energyDisplayOf(multiblock.getPassiveGeneration(false, true))));
         }));
         addRenderableWidget(new GuiHeatTab(this, () -> {
             FusionReactorMultiblockData multiblock = tile.getMultiblock();
