@@ -51,14 +51,11 @@ public class EnergyContainerBuilder {
     }
 
     public static IContainerCreator<IEnergyContainer, Long> manualCreator(LongSupplier maxEnergy) {
-        return manualCreator(() -> MekanismUtils.calculateUsage(maxEnergy.getAsLong()), maxEnergy);
-    }
-
-    public static IContainerCreator<IEnergyContainer, Long> manualCreator(IntSupplier rate, LongSupplier maxEnergy) {
-        return basicCreator(BasicEnergyContainer.manualOnly, BasicEnergyContainer.manualOnly, rate, maxEnergy);
+        return basicCreator(BasicEnergyContainer.manualOnly, BasicEnergyContainer.manualOnly, () -> MekanismUtils.calculateUsage(maxEnergy.getAsLong()), maxEnergy);
     }
 
     public static IContainerCreator<IEnergyContainer, Long> basicCreator(LongSupplier maxEnergy) {
+        //TODO - 26.3: Re-evaluate callers of calculateUsage and what should instead go through the percentage rate config helper
         return basicCreator(() -> MekanismUtils.calculateUsage(maxEnergy.getAsLong()), maxEnergy);
     }
 
