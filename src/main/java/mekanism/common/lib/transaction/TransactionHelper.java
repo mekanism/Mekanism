@@ -14,6 +14,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 public class TransactionHelper implements ITransactionHelper {
 
     private final Predicate<AutomationType> manualBypass = automationType -> !automationType.isManual();
+    private final Predicate<AutomationType> internalBypass = automationType -> !automationType.isInternal();
     private final RateLimitTracker infiniteLimit = new RateLimitTracker() {
 
         @Override
@@ -33,6 +34,11 @@ public class TransactionHelper implements ITransactionHelper {
     @Override
     public RateLimitTracker createManualBypassRateLimit(LongSupplier gameTimeSupplier, IntSupplier rateLimit) {
         return createRateLimitTracker(gameTimeSupplier, rateLimit, manualBypass);
+    }
+
+    @Override
+    public RateLimitTracker createInternalBypassRateLimit(LongSupplier gameTimeSupplier, IntSupplier rateLimit) {
+        return createRateLimitTracker(gameTimeSupplier, rateLimit, internalBypass);
     }
 
     @Override

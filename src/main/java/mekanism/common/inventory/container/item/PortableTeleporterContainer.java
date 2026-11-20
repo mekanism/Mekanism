@@ -71,7 +71,7 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
                     }
                     GlobalPos coords = freq.getClosestCoords(getLevel().dimension(), inv.player.blockPosition());
                     if (coords != null) {
-                        int energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
+                        int energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords, true);
                         //Note: We just use a rough estimate for if there is enough energy, so that we can skip retreiving the transactional state for sync checking
                         if (energyNeeded != -1 && energyHandler.getAmountAsLong() < energyNeeded) {
                             return TeleporterStatus.NOT_ENOUGH_ENERGY;

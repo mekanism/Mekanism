@@ -3808,9 +3808,6 @@
   ],
   "Industrial Turbine Multiblock (formed)": [
     {
-      "methodName": "decrementDumpingMode"
-    },
-    {
       "methodName": "getBlades",
       "returns": {
         "type": "Number (int)",
@@ -3836,13 +3833,6 @@
       "returns": {
         "type": "Number (int)",
         "java_type": "int"
-      }
-    },
-    {
-      "methodName": "getDumpingMode",
-      "returns": {
-        "type": "String (GasMode)",
-        "java_type": "mekanism.common.tile.TileEntityChemicalTank$GasMode"
       }
     },
     {
@@ -3925,19 +3915,6 @@
         "type": "Number (int)",
         "java_type": "int"
       }
-    },
-    {
-      "methodName": "incrementDumpingMode"
-    },
-    {
-      "methodName": "setDumpingMode",
-      "params": [
-        {
-          "type": "String (GasMode)",
-          "java_type": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
-          "name": "mode"
-        }
-      ]
     }
   ],
   "Isotopic Centrifuge": [

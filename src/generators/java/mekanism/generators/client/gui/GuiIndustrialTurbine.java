@@ -2,18 +2,15 @@ package mekanism.generators.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.bar.GuiVerticalRateBar;
-import mekanism.client.gui.element.button.GuiGasMode;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -42,7 +39,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiInnerScreen(this, 50, 18, 126, 50, () -> {
+        addRenderableWidget(new GuiInnerScreen(this, 50, 13, 126, 60, () -> {
             List<Component> list = new ArrayList<>();
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
@@ -72,7 +69,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 }
                 return 1;
             }
-        }, 178, 16));
+        }, 178, 13, 58));
         addRenderableWidget(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public Component getTooltip(IGuiWrapper gui) {
@@ -107,10 +104,6 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             }
             return List.of(MekanismLang.STORING.translate(storing), GeneratorsLang.PRODUCING_AMOUNT.translate(producing));
         }));
-        Component warning = GeneratorsLang.TURBINE_DUMPING_STEAM_WARNING.translateColored(EnumColor.RED);
-        addRenderableWidget(new GuiGasMode(this, 173, 72, true, () -> tile.getMultiblock().dumpMode, tile.getBlockPos(), 0,
-              TooltipUtils.create(GeneratorsLang.TURBINE_DUMPING_EXCESS_STEAM.translate(), warning),
-              TooltipUtils.create(GeneratorsLang.TURBINE_DUMPING_STEAM.translate(), warning)));
     }
 
     @Override

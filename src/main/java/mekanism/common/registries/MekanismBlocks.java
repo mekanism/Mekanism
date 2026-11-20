@@ -291,7 +291,7 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.ENRICHMENT_CHAMBER, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.ENRICHMENT_CHAMBER, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityOsmiumCompressor, FactoryMachine<TileEntityOsmiumCompressor>>, MekanismBlockItem> OSMIUM_COMPRESSOR =
           BLOCKS.register("osmium_compressor", properties -> new BlockFactoryMachine<>(MekanismBlockTypes.OSMIUM_COMPRESSOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -310,7 +310,7 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.OSMIUM_COMPRESSOR, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.OSMIUM_COMPRESSOR, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityCombiner, FactoryMachine<TileEntityCombiner>>, MekanismBlockItem> COMBINER =
           BLOCKS.register("combiner", properties -> new BlockFactoryMachine<>(MekanismBlockTypes.COMBINER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -326,7 +326,7 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.COMBINER, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.COMBINER, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityCrusher, FactoryMachine<TileEntityCrusher>>, MekanismBlockItem> CRUSHER =
           BLOCKS.register("crusher", properties -> new BlockFactoryMachine<>(MekanismBlockTypes.CRUSHER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -341,7 +341,7 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CRUSHER, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CRUSHER, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityDigitalMiner, Machine<TileEntityDigitalMiner>>, MekanismBlockItem> DIGITAL_MINER =
           BLOCKS.register("digital_miner", properties -> new BlockTileModel<>(MekanismBlockTypes.DIGITAL_MINER,
@@ -362,7 +362,7 @@ public class MekanismBlocks {
                       .addMinerSlots(3 * 9)
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.DIGITAL_MINER, MekanismConfig.usage, MekanismConfig.general)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.DIGITAL_MINER, MekanismConfig.usage, MekanismConfig.general, MekanismConfig.gear)
           );
 
     public static final BlockRegistryObject<BlockFactoryMachineModel<TileEntityMetallurgicInfuser, FactoryMachine<TileEntityMetallurgicInfuser>>, MekanismBlockItem> METALLURGIC_INFUSER =
@@ -382,7 +382,7 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.METALLURGIC_INFUSER, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.METALLURGIC_INFUSER, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityPurificationChamber, FactoryMachine<TileEntityPurificationChamber>>, MekanismBlockItem> PURIFICATION_CHAMBER =
           BLOCKS.register("purification_chamber", properties -> new BlockFactoryMachine<>(MekanismBlockTypes.PURIFICATION_CHAMBER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -401,7 +401,7 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.PURIFICATION_CHAMBER, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.PURIFICATION_CHAMBER, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityEnergizedSmelter, FactoryMachine<TileEntityEnergizedSmelter>>, MekanismBlockItem> ENERGIZED_SMELTER =
           BLOCKS.register("energized_smelter", properties -> new BlockFactoryMachine<>(MekanismBlockTypes.ENERGIZED_SMELTER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -416,14 +416,14 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.ENERGIZED_SMELTER, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.ENERGIZED_SMELTER, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTile<TileEntityTeleporter, Machine<TileEntityTeleporter>>, FrequencyBlockItem> TELEPORTER =
           BLOCKS.register("teleporter", properties -> new BlockTile<>(MekanismBlockTypes.TELEPORTER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
                 (block, properties) -> new FrequencyBlockItem(block, FrequencyTypes.TELEPORTER, properties)
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
-                .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.TELEPORTER), MekanismConfig.storage)
+                .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.TELEPORTER), MekanismConfig.storage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityElectricPump, Machine<TileEntityElectricPump>>, MekanismBlockItem> ELECTRIC_PUMP =
           BLOCKS.registerMekItem("electric_pump", properties -> new BlockTileModel<>(MekanismBlockTypes.ELECTRIC_PUMP, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
@@ -436,13 +436,13 @@ public class MekanismBlocks {
                             .addOutput()
                             .addEnergy()
                             .build()
-                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.ELECTRIC_PUMP, false), MekanismConfig.usage)
+                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.ELECTRIC_PUMP, false), MekanismConfig.usage, MekanismConfig.gear)
                 );
     public static final BlockRegistryObject<BlockPersonalBarrel, ItemBlockPersonalStorage> PERSONAL_BARREL = BLOCKS.register("personal_barrel", BlockPersonalBarrel::new, (block, properties) -> new ItemBlockPersonalStorage(block, properties, Stats.OPEN_BARREL));
     public static final BlockRegistryObject<BlockPersonalChest, ItemBlockPersonalStorage> PERSONAL_CHEST = BLOCKS.register("personal_chest", BlockPersonalChest::new, (block, properties) -> new ItemBlockPersonalStorage(block, properties, Stats.OPEN_CHEST));
     public static final BlockRegistryObject<BlockChargepad, BlockItem> CHARGEPAD = BLOCKS.register("chargepad", BlockChargepad::new)
           .forItemHolder(holder -> holder
-                .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.CHARGEPAD), MekanismConfig.usage)
+                .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.CHARGEPAD), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockLogisticalSorter, MekanismBlockItem> LOGISTICAL_SORTER = BLOCKS.register("logistical_sorter", BlockLogisticalSorter::new,
           (block, properties) -> new MekanismBlockItem(block, properties
@@ -471,7 +471,7 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.ROTARY_CONDENSENTRATOR, true), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.ROTARY_CONDENSENTRATOR, true), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalOxidizer, Machine<TileEntityChemicalOxidizer>>, MekanismBlockItem> CHEMICAL_OXIDIZER =
           BLOCKS.register("chemical_oxidizer", properties -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_OXIDIZER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -488,7 +488,7 @@ public class MekanismBlocks {
                       .addChemicalDrainSlot(0)
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CHEMICAL_OXIDIZER, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CHEMICAL_OXIDIZER, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalInfuser, Machine<TileEntityChemicalInfuser>>, MekanismBlockItem> CHEMICAL_INFUSER =
           BLOCKS.register("chemical_infuser", properties -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_INFUSER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -508,7 +508,7 @@ public class MekanismBlocks {
                       .addChemicalDrainSlot(2)
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CHEMICAL_INFUSER, true), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CHEMICAL_INFUSER, true), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityChemicalInjectionChamber, FactoryMachine<TileEntityChemicalInjectionChamber>>, MekanismBlockItem> CHEMICAL_INJECTION_CHAMBER =
           BLOCKS.register("chemical_injection_chamber", properties -> new BlockFactoryMachine<>(MekanismBlockTypes.CHEMICAL_INJECTION_CHAMBER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -527,7 +527,7 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CHEMICAL_INJECTION_CHAMBER, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CHEMICAL_INJECTION_CHAMBER, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityElectrolyticSeparator, Machine<TileEntityElectrolyticSeparator>>, MekanismBlockItem> ELECTROLYTIC_SEPARATOR =
           BLOCKS.register("electrolytic_separator", properties -> new BlockTileModel<>(MekanismBlockTypes.ELECTROLYTIC_SEPARATOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -551,7 +551,7 @@ public class MekanismBlocks {
                       .addChemicalDrainSlot(1)
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.ELECTROLYTIC_SEPARATOR)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.ELECTROLYTIC_SEPARATOR, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityPrecisionSawmill, FactoryMachine<TileEntityPrecisionSawmill>>, MekanismBlockItem> PRECISION_SAWMILL =
           BLOCKS.register("precision_sawmill", properties -> new BlockFactoryMachine<>(MekanismBlockTypes.PRECISION_SAWMILL, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -567,7 +567,7 @@ public class MekanismBlocks {
                       .addOutput()//Secondary output
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.PRECISION_SAWMILL, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.PRECISION_SAWMILL, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalDissolutionChamber, Machine<TileEntityChemicalDissolutionChamber>>, MekanismBlockItem> CHEMICAL_DISSOLUTION_CHAMBER =
           BLOCKS.register("chemical_dissolution_chamber", properties -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_DISSOLUTION_CHAMBER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -585,7 +585,7 @@ public class MekanismBlocks {
                       .addChemicalDrainSlot(1)
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CHEMICAL_DISSOLUTION_CHAMBER, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CHEMICAL_DISSOLUTION_CHAMBER, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalWasher, Machine<TileEntityChemicalWasher>>, MekanismBlockItem> CHEMICAL_WASHER =
           BLOCKS.register("chemical_washer", properties -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_WASHER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -607,7 +607,7 @@ public class MekanismBlocks {
                       .addChemicalDrainSlot(1)
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CHEMICAL_WASHER, true), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CHEMICAL_WASHER, true), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalCrystallizer, Machine<TileEntityChemicalCrystallizer>>, MekanismBlockItem> CHEMICAL_CRYSTALLIZER =
           BLOCKS.register("chemical_crystallizer", properties -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_CRYSTALLIZER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -623,13 +623,13 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CHEMICAL_CRYSTALLIZER, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.CHEMICAL_CRYSTALLIZER, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntitySeismicVibrator, Machine<TileEntitySeismicVibrator>>, MekanismBlockItem> SEISMIC_VIBRATOR =
           BLOCKS.registerMekItem("seismic_vibrator", properties -> new BlockTileModel<>(MekanismBlockTypes.SEISMIC_VIBRATOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
-                      .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.SEISMIC_VIBRATOR), MekanismConfig.usage)
+                      .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.SEISMIC_VIBRATOR), MekanismConfig.usage, MekanismConfig.gear)
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityPressurizedReactionChamber, Machine<TileEntityPressurizedReactionChamber>>, MekanismBlockItem> PRESSURIZED_REACTION_CHAMBER =
           BLOCKS.register("pressurized_reaction_chamber", properties -> new BlockTileModel<>(MekanismBlockTypes.PRESSURIZED_REACTION_CHAMBER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -650,7 +650,7 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.PRESSURIZED_REACTION_CHAMBER, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.PRESSURIZED_REACTION_CHAMBER, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityIsotopicCentrifuge, Machine<TileEntityIsotopicCentrifuge>>, MekanismBlockItem> ISOTOPIC_CENTRIFUGE =
           BLOCKS.register("isotopic_centrifuge", properties -> new BlockTileModel<>(MekanismBlockTypes.ISOTOPIC_CENTRIFUGE, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -668,7 +668,7 @@ public class MekanismBlocks {
                       .addChemicalDrainSlot(1)
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.ISOTOPIC_CENTRIFUGE, true), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.ISOTOPIC_CENTRIFUGE, true), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTile<TileEntityNutritionalLiquifier, Machine<TileEntityNutritionalLiquifier>>, MekanismBlockItem> NUTRITIONAL_LIQUIFIER =
           BLOCKS.register("nutritional_liquifier", properties -> new BlockTile<>(MekanismBlockTypes.NUTRITIONAL_LIQUIFIER, BlockTile.defaultProperties(properties).noOcclusion().mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -687,7 +687,7 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.NUTRITIONAL_LIQUIFIER, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.NUTRITIONAL_LIQUIFIER, false), MekanismConfig.usage, MekanismConfig.gear)
           );
 
     public static final BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> BASIC_FLUID_TANK = registerFluidTank(MekanismBlockTypes.BASIC_FLUID_TANK);
@@ -707,13 +707,13 @@ public class MekanismBlocks {
                             .addOutput()
                             .addEnergy()
                             .build()
-                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.FLUIDIC_PLENISHER, false), MekanismConfig.usage)
+                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.FLUIDIC_PLENISHER, false), MekanismConfig.usage, MekanismConfig.gear)
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityLaser, BlockTypeTile<TileEntityLaser>>, MekanismBlockItem> LASER =
           BLOCKS.registerMekItem("laser", properties -> new BlockTileModel<>(MekanismBlockTypes.LASER, BlockTile.defaultProperties(properties)
                 .mapColor(BlockResourceInfo.STEEL.getMapColor()))
           ).forItemHolder(holder -> holder
-                .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.LASER), MekanismConfig.usage)
+                .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.LASER), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityLaserAmplifier, BlockTypeTile<TileEntityLaserAmplifier>>, MekanismBlockItem> LASER_AMPLIFIER =
           BLOCKS.register("laser_amplifier", properties -> new BlockTileModel<>(MekanismBlockTypes.LASER_AMPLIFIER,
@@ -722,14 +722,14 @@ public class MekanismBlocks {
                 .component(MekanismDataComponents.DELAY, 0)
                 .component(MekanismDataComponents.MIN_THRESHOLD, 0)
           )).forItemHolder(holder -> holder
-                .addAttachmentOnlyContainers(ContainerType.ENERGY, () -> EnergyContainerBuilder.manualCreator(MekanismConfig.storage.laserAmplifier))
+                .addAttachmentOnlyContainers(ContainerType.ENERGY, () -> EnergyContainerBuilder.manualStorageCreator(MekanismBlockTypes.LASER_AMPLIFIER))
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityLaserTractorBeam, BlockTypeTile<TileEntityLaserTractorBeam>>, MekanismBlockItem> LASER_TRACTOR_BEAM =
           BLOCKS.registerMekItem("laser_tractor_beam", properties -> new BlockTileModel<>(MekanismBlockTypes.LASER_TRACTOR_BEAM,
                 BlockTile.defaultProperties(properties).mapColor(MapColor.COLOR_GRAY))
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addOutput(3 * 9).build())
-                .addAttachmentOnlyContainers(ContainerType.ENERGY, () -> EnergyContainerBuilder.manualCreator(MekanismConfig.storage.laserTractorBeam))
+                .addAttachmentOnlyContainers(ContainerType.ENERGY, () -> EnergyContainerBuilder.manualStorageCreator(MekanismBlockTypes.LASER_TRACTOR_BEAM))
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityQuantumEntangloporter, BlockTypeTile<TileEntityQuantumEntangloporter>>, FrequencyBlockItem> QUANTUM_ENTANGLOPORTER =
           BLOCKS.register("quantum_entangloporter", properties -> new BlockTileModel<>(MekanismBlockTypes.QUANTUM_ENTANGLOPORTER,
@@ -775,7 +775,7 @@ public class MekanismBlocks {
                 .addAttachmentOnlyContainers(ContainerType.HEAT, () -> HeatCapacitorBuilder.basicCreator(
                       TileEntityResistiveHeater.HEAT_CAPACITY, TileEntityResistiveHeater.INVERSE_CONDUCTION_COEFFICIENT, TileEntityResistiveHeater.INVERSE_INSULATION_COEFFICIENT
                 )).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
-                .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.RESISTIVE_HEATER)
+                .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.RESISTIVE_HEATER, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTile<TileEntityFormulaicAssemblicator, Machine<TileEntityFormulaicAssemblicator>>, MekanismBlockItem> FORMULAIC_ASSEMBLICATOR =
           BLOCKS.register("formulaic_assemblicator", properties -> new BlockTile<>(MekanismBlockTypes.FORMULAIC_ASSEMBLICATOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -791,7 +791,7 @@ public class MekanismBlocks {
                       .addOutput(3 * 2)
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.FORMULAIC_ASSEMBLICATOR, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.FORMULAIC_ASSEMBLICATOR, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTile<TileEntityFuelwoodHeater, BlockTypeTile<TileEntityFuelwoodHeater>>, MekanismBlockItem> FUELWOOD_HEATER =
           BLOCKS.registerMekItem("fuelwood_heater", properties -> new BlockTile<>(MekanismBlockTypes.FUELWOOD_HEATER, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
@@ -808,7 +808,7 @@ public class MekanismBlocks {
                             .addInput(IModuleHelper.INSTANCE::isModuleContainer)
                             .addEnergy()
                             .build()
-                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.MODIFICATION_STATION), MekanismConfig.usage)
+                      ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.MODIFICATION_STATION), MekanismConfig.usage, MekanismConfig.gear)
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityAntiprotonicNucleosynthesizer, Machine<TileEntityAntiprotonicNucleosynthesizer>>, MekanismBlockItem> ANTIPROTONIC_NUCLEOSYNTHESIZER =
           BLOCKS.register("antiprotonic_nucleosynthesizer", properties -> new BlockTileModel<>(MekanismBlockTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER, BlockTile.defaultProperties(properties).mapColor(MapColor.METAL)),
@@ -826,7 +826,7 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.basicCreator(MekanismBlockTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTile<TileEntityPigmentExtractor, Machine<TileEntityPigmentExtractor>>, MekanismBlockItem> PIGMENT_EXTRACTOR =
           BLOCKS.register("pigment_extractor", properties -> new BlockTile<>(MekanismBlockTypes.PIGMENT_EXTRACTOR, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -843,7 +843,7 @@ public class MekanismBlocks {
                       .addChemicalDrainSlot(0)
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.PIGMENT_EXTRACTOR, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.PIGMENT_EXTRACTOR, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     //Note: Bottom of the mixer block has no model, so it uses the normal BlockTile instead of BlockTileModel
     public static final BlockRegistryObject<BlockTile<TileEntityPigmentMixer, Machine<TileEntityPigmentMixer>>, MekanismBlockItem> PIGMENT_MIXER =
@@ -864,7 +864,7 @@ public class MekanismBlocks {
                       .addChemicalDrainSlot(2)
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.PIGMENT_MIXER, true), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.PIGMENT_MIXER, true), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockTile<TileEntityPaintingMachine, Machine<TileEntityPaintingMachine>>, MekanismBlockItem> PAINTING_MACHINE =
           BLOCKS.register("painting_machine", properties -> new BlockTile<>(MekanismBlockTypes.PAINTING_MACHINE, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())),
@@ -884,7 +884,7 @@ public class MekanismBlocks {
                       .addOutput()
                       .addEnergy()
                       .build()
-                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.PAINTING_MACHINE, false), MekanismConfig.usage)
+                ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(MekanismBlockTypes.PAINTING_MACHINE, false), MekanismConfig.usage, MekanismConfig.gear)
           );
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntitySPSCasing>, BlockItem> SPS_CASING = BLOCKS.registerSimpleItem("sps_casing",
           properties -> new BlockBasicMultiblock<>(MekanismBlockTypes.SPS_CASING, BlockBasicMultiblock.defaultProperties(properties).mapColor(MapColor.COLOR_LIGHT_GRAY)),
@@ -905,7 +905,7 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.STABILIZER_CHUNKS, StabilizedChunks.NONE)
                 )).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
-                .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.DIMENSIONAL_STABILIZER, MekanismConfig.usage)
+                .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.DIMENSIONAL_STABILIZER, MekanismConfig.usage, MekanismConfig.gear)
           );
 
     public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIODriveArray, BlockTypeTile<TileEntityQIODriveArray>>, ItemBlockQIOComponent> QIO_DRIVE_ARRAY =
@@ -1188,7 +1188,7 @@ public class MekanismBlocks {
                       .build()
                 );
             }
-            holder.addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(type, false), MekanismConfig.usage);
+            holder.addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainerBuilder.upgradeableUsageStorageCreator(type, false), MekanismConfig.usage, MekanismConfig.gear);
         });
         return factory;
     }

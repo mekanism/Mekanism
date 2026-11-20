@@ -7,31 +7,18 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.transaction.ITransactionHelper;
 import mekanism.api.transaction.RateLimitTracker;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEnergyContainer {
 
     public static final Predicate<AutomationType> internalOnly = AutomationType::isInternal;
     public static final Predicate<AutomationType> manualOnly = AutomationType::isManual;
     public static final Predicate<AutomationType> notExternal = automationType -> !automationType.isExternal();
-
-    public static BasicEnergyContainer create(long maxEnergy, @Nullable IContentsListener listener) {
-        return create(maxEnergy, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), listener);
-    }
-
-    public static BasicEnergyContainer input(long maxEnergy, @Nullable IContentsListener listener) {
-        return create(maxEnergy, notExternal, ConstantPredicates.alwaysTrue(), listener);
-    }
-
-    public static BasicEnergyContainer output(long maxEnergy, @Nullable IContentsListener listener) {
-        return create(maxEnergy, ConstantPredicates.alwaysTrue(), internalOnly, listener);
-    }
 
     public static BasicEnergyContainer create(long maxEnergy, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert,
           @Nullable IContentsListener listener) {

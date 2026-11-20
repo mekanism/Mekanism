@@ -2772,7 +2772,6 @@ methods:
       name: output
       type: boolean
   Industrial Turbine Multiblock (formed):
-  - methodName: decrementDumpingMode
   - methodName: getBlades
     returns:
       java_type: int
@@ -2789,10 +2788,6 @@ methods:
     returns:
       java_type: int
       type: Number (int)
-  - methodName: getDumpingMode
-    returns:
-      java_type: mekanism.common.tile.TileEntityChemicalTank$GasMode
-      type: String (GasMode)
   - methodName: getFlowRate
     returns:
       java_type: int
@@ -2841,12 +2836,6 @@ methods:
     returns:
       java_type: int
       type: Number (int)
-  - methodName: incrementDumpingMode
-  - methodName: setDumpingMode
-    params:
-    - java_type: mekanism.common.tile.TileEntityChemicalTank$GasMode
-      name: mode
-      type: String (GasMode)
   Isotopic Centrifuge:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem

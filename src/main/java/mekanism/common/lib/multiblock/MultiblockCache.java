@@ -10,6 +10,7 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
@@ -153,7 +154,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
     public static final CacheSubstance<IEnergyContainer> ENERGY = new CacheSingleSubstance<>(ContainerType.ENERGY) {
         @Override
         protected void defaultPrefab(MultiblockCache<?> cache) {
-            cache.energyContainer = BasicEnergyContainer.create(Long.MAX_VALUE, null);
+            cache.energyContainer = BasicEnergyContainer.create(Long.MAX_VALUE, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), null);
         }
 
         @Nullable
